@@ -9,6 +9,7 @@ description: |
   /u-bug-report, /u-backlog, defect, bug, issue, fix request
 
   Do NOT use for: 테스트 케이스 설계, 테스트 실행, 코드 수정.
+model: sonnet
 permissionMode: acceptEdits
 tools:
   - Read

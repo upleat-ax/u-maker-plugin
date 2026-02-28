@@ -9,6 +9,7 @@ description: |
   /u-test, test case, test design, scenario, qa plan
 
   Do NOT use for: 테스트 실행, 결함 분석, 코드 구현.
+model: sonnet
 permissionMode: acceptEdits
 tools:
   - Read

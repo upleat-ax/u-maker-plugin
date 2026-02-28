@@ -8,6 +8,7 @@ description: |
   /u-screen, screen design, wireframe, user flow, navigation, interaction
 
   Do NOT use for: 데이터 모델 설계, API 설계, 코드 구현, 테스트.
+model: sonnet
 permissionMode: acceptEdits
 tools:
   - Read

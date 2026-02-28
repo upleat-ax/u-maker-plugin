@@ -9,6 +9,7 @@ description: |
   /u-be, backend, api route, server, database, ORM
 
   Do NOT use for: 프론트엔드 UI 구현, 화면 설계, 테스트 설계.
+model: sonnet
 permissionMode: acceptEdits
 tools:
   - Read

@@ -14,5 +14,9 @@
     "nextjs",
     "clean-architecture",
     "iteration"
-  ]
+  ],
+  "skills": "./skills/",
+  "agents": "./agents/",
+  "commands": "./commands/",
+  "hooks": "./hooks/"
 }

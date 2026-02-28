@@ -9,6 +9,7 @@ description: |
   test run, test execute, test result, run tests
 
   Do NOT use for: 테스트 케이스 설계, 결함 분석, 코드 수정.
+model: haiku
 permissionMode: acceptEdits
 tools:
   - Read

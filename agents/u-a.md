@@ -9,6 +9,7 @@ description: |
   /u-srs, /u-erd, /u-api, architecture, schema, entity, endpoint
 
   Do NOT use for: UI/UX 설계, 코드 구현, 테스트.
+model: opus
 permissionMode: acceptEdits
 tools:
   - Read

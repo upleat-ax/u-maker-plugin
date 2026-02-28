@@ -1,0 +1,16 @@
+{
+  "name": "u-agent-ssot",
+  "owner": {
+    "name": "u-plugin"
+  },
+  "plugins": [
+    {
+      "name": "u-agent-ssot",
+      "source": "./",
+      "description": "PDCA-based SSoT collaboration ecosystem with 9 specialized agents",
+      "version": "1.0.0",
+      "category": "development",
+      "tags": ["pdca", "ssot", "collaboration", "agents", "turborepo", "nextjs", "clean-architecture", "iteration"]
+    }
+  ]
+}

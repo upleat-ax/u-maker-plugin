@@ -9,6 +9,7 @@ description: |
   /u-fe, /u-storybook, frontend, component, page, layout, UI
 
   Do NOT use for: 백엔드 API 구현, DB 설계, 테스트 설계.
+model: sonnet
 permissionMode: acceptEdits
 tools:
   - Read

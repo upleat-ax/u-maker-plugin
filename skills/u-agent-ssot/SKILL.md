@@ -12,6 +12,7 @@ description: |
   u-agent, ssot, pdca, 프로젝트 시작, 문서 관리, 에이전트, 협업, gap analysis, 갭분석
 
   Do NOT use for: non-PDCA workflows, standalone code editing without project context.
+model: sonnet
 user-invocable: true
 argument-hint: "[command] [args]"
 allowed-tools:

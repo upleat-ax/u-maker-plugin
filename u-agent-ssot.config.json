@@ -1,7 +1,13 @@
 {
   "version": "1.0.0",
   "pdca": {
-    "phases": ["plan", "design", "do", "check", "act"],
+    "phases": [
+      "plan",
+      "design",
+      "do",
+      "check",
+      "act"
+    ],
     "currentPhase": "plan",
     "currentIteration": 1,
     "maxIterations": 10,
@@ -20,44 +26,96 @@
   },
   "documents": {
     "01-plan": {
-      "1PM_Roadmap.md": { "owner": "u-pm", "required": true },
-      "1A_SRS.md": { "owner": "u-a", "required": true },
-      "1CX_IA.md": { "owner": "u-cx", "required": true },
-      "1M_Index.md": { "owner": "u-m", "required": true }
+      "1PM_Roadmap.md": {
+        "owner": "u-pm",
+        "required": true
+      },
+      "1A_SRS.md": {
+        "owner": "u-a",
+        "required": true
+      },
+      "1CX_IA.md": {
+        "owner": "u-cx",
+        "required": true
+      },
+      "1M_Index.md": {
+        "owner": "u-m",
+        "required": true
+      }
     },
     "02-design": {
-      "2A_ERD.md": { "owner": "u-a", "required": true },
-      "2A_API.md": { "owner": "u-a", "required": true },
-      "2CX_Screen.md": { "owner": "u-cx", "required": true }
+      "2A_ERD.md": {
+        "owner": "u-a",
+        "required": true
+      },
+      "2A_API.md": {
+        "owner": "u-a",
+        "required": true
+      },
+      "2CX_Screen.md": {
+        "owner": "u-cx",
+        "required": true
+      }
     },
     "03-dev": {
-      "3DV_Code.md": { "owner": "u-dv-fe", "required": true }
+      "3DV_Code.md": {
+        "owner": "u-dv-fe",
+        "required": true
+      }
     },
     "04-check": {
-      "4QA_Case.md": { "owner": "u-qa-a", "required": true },
-      "4QA_Report.md": { "owner": "u-qa-t", "required": true }
+      "4QA_Case.md": {
+        "owner": "u-qa-a",
+        "required": true
+      },
+      "4QA_Report.md": {
+        "owner": "u-qa-t",
+        "required": true
+      }
     },
     "05-act": {
-      "5ACT_Backlog.md": { "owner": "u-qa-n", "required": true },
-      "5ACT_Iteration_Log.md": { "owner": "u-m", "required": true },
-      "5ACT_Retrospective.md": { "owner": "u-pm", "required": true }
+      "5ACT_Backlog.md": {
+        "owner": "u-qa-n",
+        "required": true
+      },
+      "5ACT_Iteration_Log.md": {
+        "owner": "u-m",
+        "required": true
+      },
+      "5ACT_Retrospective.md": {
+        "owner": "u-pm",
+        "required": true
+      }
     }
   },
   "phaseGates": {
     "plan-to-design": {
-      "required": ["1PM_Roadmap.md", "1A_SRS.md", "1CX_IA.md"],
+      "required": [
+        "1PM_Roadmap.md",
+        "1A_SRS.md",
+        "1CX_IA.md"
+      ],
       "status": "Final",
       "validator": "u-m"
     },
     "design-to-do": {
-      "required": ["2A_ERD.md", "2A_API.md", "2CX_Screen.md"],
+      "required": [
+        "2A_ERD.md",
+        "2A_API.md",
+        "2CX_Screen.md"
+      ],
       "status": "Final",
       "validator": "u-m",
       "additionalCheck": "u-m-consistency-review"
     },
     "do-to-check": {
-      "required": ["3DV_Code.md"],
-      "conditions": ["code-implementation-complete", "build-success"]
+      "required": [
+        "3DV_Code.md"
+      ],
+      "conditions": [
+        "code-implementation-complete",
+        "build-success"
+      ]
     },
     "check-to-complete": {
       "conditions": [
@@ -71,8 +129,16 @@
       "trigger": "check-to-complete-failed"
     },
     "act-to-plan": {
-      "required": ["5ACT_Backlog.md", "5ACT_Iteration_Log.md", "5ACT_Retrospective.md"],
-      "conditions": ["backlog-organized", "retrospective-complete", "archive-complete"]
+      "required": [
+        "5ACT_Backlog.md",
+        "5ACT_Iteration_Log.md",
+        "5ACT_Retrospective.md"
+      ],
+      "conditions": [
+        "backlog-organized",
+        "retrospective-complete",
+        "archive-complete"
+      ]
     }
   },
   "exitCriteria": {
@@ -84,60 +150,175 @@
   "agents": {
     "routing": {
       "u-pm": {
-        "phases": ["plan", "act"],
-        "triggers": ["roadmap", "user-story", "milestone", "project-init"]
+        "phases": [
+          "plan",
+          "act"
+        ],
+        "triggers": [
+          "roadmap",
+          "user-story",
+          "milestone",
+          "project-init"
+        ]
       },
       "u-m": {
-        "phases": ["plan", "design", "act"],
-        "triggers": ["index", "validate", "consistency", "status"]
+        "phases": [
+          "plan",
+          "design",
+          "act"
+        ],
+        "triggers": [
+          "index",
+          "validate",
+          "consistency",
+          "status"
+        ]
       },
       "u-a": {
-        "phases": ["plan", "design"],
-        "triggers": ["srs", "erd", "api-contract", "architecture"]
+        "phases": [
+          "plan",
+          "design"
+        ],
+        "triggers": [
+          "srs",
+          "erd",
+          "api-contract",
+          "architecture"
+        ]
       },
       "u-cx": {
-        "phases": ["plan", "design"],
-        "triggers": ["ia", "screen", "ux", "user-flow"]
+        "phases": [
+          "plan",
+          "design"
+        ],
+        "triggers": [
+          "ia",
+          "screen",
+          "ux",
+          "user-flow"
+        ]
       },
       "u-dv-fe": {
-        "phases": ["do"],
-        "triggers": ["frontend", "component", "storybook", "react"]
+        "phases": [
+          "do"
+        ],
+        "triggers": [
+          "frontend",
+          "component",
+          "storybook",
+          "react"
+        ]
       },
       "u-dv-be": {
-        "phases": ["do"],
-        "triggers": ["backend", "api-route", "prisma", "drizzle"]
+        "phases": [
+          "do"
+        ],
+        "triggers": [
+          "backend",
+          "api-route",
+          "prisma",
+          "drizzle"
+        ]
       },
       "u-qa-a": {
-        "phases": ["check"],
-        "triggers": ["test-case", "test-design", "qa-plan"]
+        "phases": [
+          "check"
+        ],
+        "triggers": [
+          "test-case",
+          "test-design",
+          "qa-plan"
+        ]
       },
       "u-qa-t": {
-        "phases": ["check"],
-        "triggers": ["test-run", "test-execute", "test-result"]
+        "phases": [
+          "check"
+        ],
+        "triggers": [
+          "test-run",
+          "test-execute",
+          "test-result"
+        ]
       },
       "u-qa-n": {
-        "phases": ["check", "act"],
-        "triggers": ["defect", "bug-report", "defect-analysis"]
+        "phases": [
+          "check",
+          "act"
+        ],
+        "triggers": [
+          "defect",
+          "bug-report",
+          "defect-analysis"
+        ]
       }
     }
   },
   "techStack": {
     "rules": [
-      { "id": "TS-01", "rule": "Clean Architecture folder structure", "enforce": true },
-      { "id": "TS-02", "rule": "react-query for data fetching (usecase pattern forbidden)", "enforce": true },
-      { "id": "TS-03", "rule": "Plain .css files only (CSS-in-JS forbidden)", "enforce": true },
-      { "id": "TS-04", "rule": "Next.js App Router", "enforce": true },
-      { "id": "TS-05", "rule": "eslint-plugin-header forbidden", "enforce": true },
-      { "id": "TS-06", "rule": "Turborepo monorepo", "enforce": true },
-      { "id": "TS-07", "rule": "Functional components only (class components forbidden)", "enforce": true },
-      { "id": "TS-08", "rule": "Storybook for component documentation", "enforce": true },
-      { "id": "TS-09", "rule": "Design Token based styling", "enforce": true },
-      { "id": "TS-10", "rule": "bun package manager (npm/yarn/pnpm forbidden)", "enforce": true }
+      {
+        "id": "TS-01",
+        "rule": "Clean Architecture folder structure",
+        "enforce": true
+      },
+      {
+        "id": "TS-02",
+        "rule": "react-query for data fetching (usecase pattern forbidden)",
+        "enforce": true
+      },
+      {
+        "id": "TS-03",
+        "rule": "Plain .css files only (CSS-in-JS forbidden)",
+        "enforce": true
+      },
+      {
+        "id": "TS-04",
+        "rule": "Next.js App Router",
+        "enforce": true
+      },
+      {
+        "id": "TS-05",
+        "rule": "eslint-plugin-header forbidden",
+        "enforce": true
+      },
+      {
+        "id": "TS-06",
+        "rule": "Turborepo monorepo",
+        "enforce": true
+      },
+      {
+        "id": "TS-07",
+        "rule": "Functional components only (class components forbidden)",
+        "enforce": true
+      },
+      {
+        "id": "TS-08",
+        "rule": "Storybook for component documentation",
+        "enforce": true
+      },
+      {
+        "id": "TS-09",
+        "rule": "Design Token based styling",
+        "enforce": true
+      },
+      {
+        "id": "TS-10",
+        "rule": "bun package manager (npm/yarn/pnpm forbidden)",
+        "enforce": true
+      }
     ],
     "monorepo": {
       "structure": {
-        "apps": ["web"],
-        "packages": ["ui", "data", "domain", "infrastructure", "tokens", "config"]
+        "apps": [
+          "web"
+        ],
+        "packages": [
+          "ui",
+          "data",
+          "domain",
+          "infrastructure",
+          "tokens",
+          "config"
+        ]
       }
     }
   },
@@ -149,8 +330,19 @@
       "files": "kebab-case"
     },
     "documentHeader": {
-      "required": ["Owner", "Status", "Version", "Last Updated", "Related Docs"]
+      "required": [
+        "Owner",
+        "Status",
+        "Version",
+        "Last Updated",
+        "Related Docs"
+      ]
     },
-    "statusValues": ["Draft", "Review", "Final"]
-  }
+    "statusValues": [
+      "Draft",
+      "Review",
+      "Final"
+    ]
+  },
+  "lastSessionEnd": "2026-02-28T15:39:22.911Z"
 }

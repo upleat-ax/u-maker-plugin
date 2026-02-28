@@ -9,6 +9,7 @@ description: |
   /u-index, /u-validate, /u-status, /u-docs, consistency, document check
 
   Do NOT use for: 실제 문서 내용 작성, 코드 생성, 테스트 실행.
+model: opus
 permissionMode: acceptEdits
 tools:
   - Read

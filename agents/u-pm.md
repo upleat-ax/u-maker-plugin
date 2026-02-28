@@ -9,6 +9,7 @@ description: |
   /u-plan, /u-create-project, project, roadmap, milestone, user story
 
   Do NOT use for: 기술 설계, 코드 생성, 테스트 작업.
+model: sonnet
 permissionMode: acceptEdits
 tools:
   - Read
