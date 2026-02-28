@@ -158,7 +158,8 @@
           "roadmap",
           "user-story",
           "milestone",
-          "project-init"
+          "project-init",
+          "project-init-existing"
         ]
       },
       "u-m": {
@@ -344,5 +345,5 @@
       "Final"
     ]
   },
-  "lastSessionEnd": "2026-02-28T15:39:22.911Z"
+  "lastSessionEnd": "2026-02-28T18:51:26.327Z"
 }
