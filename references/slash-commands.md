@@ -18,6 +18,20 @@
 | **Prerequisites** | None |
 | **Output** | `u-docs/` 디렉토리 구조 생성, `1M_Index.md` 초기화, `u-ssot.config.json` 초기화 |
 
+### `/u-init`
+
+| Field | Value |
+|-------|-------|
+| **Syntax** | `/u-init [project-path]` |
+| **Description** | 기존 프로젝트의 리소스(package.json, 소스코드, DB 스키마, README 등)를 분석하여 SSoT 문서를 역공학으로 자동 생성한다 |
+| **Calling Agents** | Orchestrator → `u-M` → `u-A` → `u-CX` → `u-PM` → `u-M` |
+| **Prerequisites** | 프로젝트 파일 존재 (package.json 등) |
+| **Output** | `u-docs/` 구조 생성, 분석 기반 SSoT 문서 자동 생성 (Draft), `u-ssot.config.json` 업데이트 |
+
+**Scan Targets**: package.json, README.md, 페이지/라우트 구조, API 라우트, Prisma/Drizzle 스키마, 컴포넌트 파일
+
+**Difference from `/u-create-project`**: 새 프로젝트를 스캐폴딩하는 것이 아니라, 기존 코드에서 정보를 추출하여 문서를 사전 작성한다. 모든 문서는 Draft 상태로 생성되어 사용자 검토가 필요하다.
+
 ### `/u-plan`
 
 | Field | Value |
@@ -385,6 +399,7 @@ CHECK Phase에서 설계-구현 일치도를 분석하는 커맨드.
 | Category | Command | Phase | Agents |
 |----------|---------|-------|--------|
 | Lifecycle | `/u-create-project` | - | Orch → u-PM → u-M |
+| Lifecycle | `/u-init` | - | Orch → u-M → u-A → u-CX → u-PM → u-M |
 | Lifecycle | `/u-plan` | PLAN | Orch → u-PM → u-A → u-CX → u-M |
 | Lifecycle | `/u-design` | DESIGN | Orch → u-CX → u-A → u-M |
 | Lifecycle | `/u-dev` | DO | Orch → u-DV-FE + u-DV-BE |

@@ -4,13 +4,14 @@ description: |
   PDCA 기반 SSoT 협업 오케스트레이터. 9개 전문 에이전트를 조율하여
   Plan-Design-Do-Check-Act 사이클로 소프트웨어 개발을 자동화한다.
 
-  Triggers: /u-create-project, /u-plan, /u-design, /u-dev, /u-check, /u-act,
+  Triggers: /u-create-project, /u-init, /u-plan, /u-design, /u-dev, /u-check, /u-act,
   /u-loop, /u-loop-from, /u-stop, /u-resume, /u-status, /u-docs, /u-validate,
   /u-backlog, /u-index, /u-srs, /u-erd, /u-api, /u-screen, /u-fe, /u-be,
   /u-test, /u-bug-report, /u-gap-detector,
   /u-help, /u-history, /u-archive, /u-storybook, /u-build, /u-summary, /u-git-pr,
   /u-backlog-add, 백로그 추가, backlog add, new backlog,
-  u-agent, ssot, pdca, 프로젝트 시작, 문서 관리, 에이전트, 협업, gap analysis, 갭분석, git pr, 커밋
+  u-agent, ssot, pdca, 프로젝트 시작, 프로젝트 초기화, 기존 프로젝트 분석, init project, reverse engineer,
+  문서 관리, 에이전트, 협업, gap analysis, 갭분석, git pr, 커밋
 
   Do NOT use for: non-PDCA workflows, standalone code editing without project context.
 model: sonnet
@@ -89,6 +90,7 @@ agents:
 | Command | Description | Agent | Action |
 |---------|-------------|-------|--------|
 | `/u-create-project` | 새 프로젝트 초기화 | `u-pm` → `u-m` | Turborepo + u-docs 구조 생성, 1M_Index 초기화 |
+| `/u-init` | 기존 프로젝트 분석 → SSoT 문서 자동 생성 | `u-m` → `u-a` → `u-cx` → `u-pm` | 리소스 스캔 → 문서 역공학 생성 |
 | `/u-plan` | PLAN Phase 실행 | `u-pm` → `u-a` → `u-cx` → `u-m` | 로드맵 → SRS → IA → 인덱스 생성 |
 | `/u-design` | DESIGN Phase 실행 | `u-cx` → `u-a` → `u-m` | 화면설계 → ERD + API → 모순검수 |
 | `/u-dev` | DO Phase 실행 | `u-dv-fe` + `u-dv-be` | Contract 기반 병렬 개발 |
@@ -145,6 +147,144 @@ agents:
 | `/u-build` | 프로젝트 빌드 | `bun run build` 실행 및 결과 보고 |
 | `/u-summary` | 프로젝트 요약 | 프로젝트 개요 + 개발 상태를 `u-docs/summary.md`에 생성 |
 | `/u-git-pr` | Feature별 Git Commit + PR | 변경 파일을 feature 단위로 커밋하고 GitHub PR 생성 |
+
+---
+
+## Project Init from Existing Codebase (`/u-init`)
+
+기존 프로젝트의 리소스를 스캔하여 SSoT 문서를 역공학(reverse-engineer)으로 자동 생성한다.
+`/u-create-project`와 달리, 이미 존재하는 코드/설정/스키마에서 정보를 추출하여 문서를 사전 작성(pre-fill)한다.
+
+### Syntax
+
+```
+/u-init [project-path]
+```
+
+- `[project-path]`: 분석할 프로젝트 경로 (기본값: 현재 작업 디렉토리)
+
+### Init Flow
+
+```
+1. 프로젝트 루트 탐색 및 기본 정보 수집
+   ├── package.json → 프로젝트명, 의존성, 스크립트
+   ├── README.md → 프로젝트 설명, 기능 목록
+   ├── .env.example → 환경 변수 목록
+   └── tsconfig.json / next.config.* → 기술 스택 확인
+
+2. 소스코드 구조 분석
+   ├── 페이지/라우트 스캔 (app/, pages/, src/app/) → IA, Screen 도출
+   ├── 컴포넌트 스캔 (components/, ui/) → Screen 도출
+   ├── API 라우트 스캔 (api/, route.ts) → API Contract 도출
+   └── 미들웨어/인증 스캔 → NFR 도출
+
+3. 데이터베이스 스키마 분석
+   ├── Prisma (prisma/schema.prisma) → ERD 도출
+   ├── Drizzle (drizzle/, schema.ts) → ERD 도출
+   └── SQL 마이그레이션 파일 → ERD 보충
+
+4. u-docs/ 디렉토리 구조 생성 (없는 경우)
+
+5. SSoT 문서 생성 (분석 결과 기반)
+   ├── Phase 1 - PLAN 문서
+   │   ├── 1PM_Roadmap.md ← README + package.json에서 추출
+   │   ├── 1A_SRS.md ← 소스코드 분석에서 FR/NFR 도출
+   │   ├── 1CX_IA.md ← 페이지/라우트 구조에서 도출
+   │   └── 1M_Index.md ← 생성된 문서 종합
+   ├── Phase 2 - DESIGN 문서 (해당 리소스 존재 시)
+   │   ├── 2A_ERD.md ← DB 스키마에서 도출
+   │   ├── 2A_API.md ← API 라우트에서 도출
+   │   └── 2CX_Screen.md ← 페이지/컴포넌트에서 도출
+   └── Phase 3 - DEV 문서 (코드 존재 시)
+       └── 3DV_Code.md ← 구현 현황 기록
+
+6. Phase 상태 결정
+   ├── PLAN 문서만 생성됨 → currentPhase = "plan"
+   ├── DESIGN 문서까지 생성됨 → currentPhase = "design"
+   └── 코드까지 존재 → currentPhase = "do"
+
+7. u-ssot.config.json 업데이트
+
+8. 결과 리포트 출력
+```
+
+### Scan Targets (리소스 → 문서 매핑)
+
+| Scan Target | File Patterns | Output Document | Extraction |
+|-------------|---------------|-----------------|------------|
+| 프로젝트 메타 | `package.json`, `README.md` | 1PM_Roadmap | 프로젝트명, 목표, 기능 목록, 스택 |
+| 소스코드 기능 | `src/**/*.{ts,tsx}`, `app/**` | 1A_SRS | FR 목록, 비즈니스 로직 |
+| 페이지/라우트 | `app/**/page.tsx`, `pages/**` | 1CX_IA | 화면 계층, 네비게이션, Screen ID |
+| DB 스키마 | `prisma/schema.prisma`, `drizzle/**` | 2A_ERD | Entity, Relationship, Attribute |
+| API 라우트 | `app/api/**/route.ts`, `pages/api/**` | 2A_API | Endpoint, Method, Request/Response |
+| UI 컴포넌트 | `components/**`, `app/**/page.tsx` | 2CX_Screen | 화면 목록, 컴포넌트 구성 |
+| 구현 코드 | 전체 소스 파일 | 3DV_Code | 파일 목록, 구현 상태 |
+
+### Agent Sequence
+
+```
+u-m (Master): 프로젝트 스캔 → 리소스 수집 → u-docs/ 구조 생성
+  ↓
+u-a (Architect): package.json + DB 스키마 + API 라우트 분석 → SRS, ERD, API 문서 생성
+  ↓
+u-cx (CX Designer): 페이지/컴포넌트 구조 분석 → IA, Screen 문서 생성
+  ↓
+u-pm (PM): README + 분석 결과 → Roadmap 문서 생성
+  ↓
+u-m (Master): 1M_Index 생성, u-ssot.config.json 업데이트, 결과 리포트 출력
+```
+
+### Output Report Format
+
+```
+==========================================
+  u-Agent SSoT Init Report
+==========================================
+  Project: [project-name]
+  Path: [project-path]
+  Tech Stack Detected: [Next.js, Prisma, etc.]
+------------------------------------------
+  Scanned Resources:
+    [V] package.json
+    [V] README.md
+    [V] prisma/schema.prisma
+    [V] app/ (12 pages found)
+    [V] app/api/ (8 routes found)
+    [ ] drizzle/ (not found)
+------------------------------------------
+  Generated Documents:
+    [V] 1PM_Roadmap.md     Draft  (from README + package.json)
+    [V] 1A_SRS.md          Draft  (14 FRs extracted)
+    [V] 1CX_IA.md          Draft  (12 screens mapped)
+    [V] 1M_Index.md        Draft
+    [V] 2A_ERD.md          Draft  (8 entities from Prisma)
+    [V] 2A_API.md          Draft  (8 endpoints from routes)
+    [V] 2CX_Screen.md      Draft  (12 screens mapped)
+    [V] 3DV_Code.md        Draft  (implementation record)
+------------------------------------------
+  Phase: DO (code already exists)
+  Iteration: 1
+  Next Step: /u-plan 으로 문서 검토 및 보완
+==========================================
+```
+
+### Rules
+
+- 모든 생성 문서의 Status는 `Draft`로 설정 (사용자 검토 필요)
+- 분석 불가능한 항목은 `{{TODO: 수동 입력 필요}}` 플레이스홀더 표시
+- 기존 `u-docs/` 문서가 있으면 덮어쓰지 않음 (사용자 확인 후 진행)
+- 스캔 결과가 없는 문서는 빈 템플릿으로 생성하지 않음 (정보가 있는 문서만 생성)
+- `u-ssot.config.json`이 이미 존재하면 기존 설정 유지하되 문서 상태만 업데이트
+
+### Difference from `/u-create-project`
+
+| Aspect | `/u-create-project` | `/u-init` |
+|--------|---------------------|-----------|
+| 대상 | 새 프로젝트 | 기존 프로젝트 |
+| 코드 생성 | Turborepo 스캐폴딩 | 코드 생성 없음 |
+| 문서 내용 | 빈 템플릿 (플레이스홀더) | 분석 결과로 사전 작성 |
+| Phase 설정 | 항상 PLAN | 분석 깊이에 따라 자동 결정 |
+| 사전 조건 | 없음 | 프로젝트 파일 존재 |
 
 ---
 
