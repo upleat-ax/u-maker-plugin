@@ -27,7 +27,7 @@ imports:
   - ${PLUGIN_ROOT}/references/iteration-rules.md
   - ${PLUGIN_ROOT}/templates/01-plan/1PM_Roadmap.template.md
   - ${PLUGIN_ROOT}/templates/05-act/5ACT_Retrospective.template.md
-  - ${PLUGIN_ROOT}/u-agent-ssot.config.json
+  - ${PLUGIN_ROOT}/u-ssot.config.json
 ---
 
 ## u-PM: Project Manager Agent

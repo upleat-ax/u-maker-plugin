@@ -4,4 +4,4 @@ description: |
   Triggers: /u-check, check phase, 검증, 테스트
 ---
 
-Invoke the `u-agent-ssot` skill with argument `/u-check` and pass any user-provided arguments.
+Invoke the `u-ssot` skill with argument `/u-check` and pass any user-provided arguments.

@@ -4,4 +4,4 @@ description: |
   Triggers: /u-create-project, 프로젝트 생성, 프로젝트 시작, new project
 ---
 
-Invoke the `u-agent-ssot` skill with argument `/u-create-project` and pass any user-provided project name or arguments.
+Invoke the `u-ssot` skill with argument `/u-create-project` and pass any user-provided project name or arguments.

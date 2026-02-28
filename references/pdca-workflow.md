@@ -1,6 +1,6 @@
 # PDCA Workflow
 
-> u-agent-ssot의 PDCA(Plan-Design-Do-Check-Act) 5-Phase 워크플로우를 정의한다.
+> u-ssot의 PDCA(Plan-Design-Do-Check-Act) 5-Phase 워크플로우를 정의한다.
 > 모든 에이전트는 이 워크플로우를 기반으로 협업한다.
 
 ---

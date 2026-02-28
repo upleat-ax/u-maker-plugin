@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * session-start.js — u-agent-ssot SessionStart Hook
+ * session-start.js — u-ssot SessionStart Hook
  *
  * Checks if u-docs/ exists in the current working directory.
  * If not, creates the full SSoT folder structure.
@@ -46,7 +46,7 @@ function ensureUdocsStructure() {
     fs.writeFileSync(readmePath, [
       '# u-docs: SSoT Document Repository',
       '',
-      'Managed by the u-agent-ssot plugin.',
+      'Managed by the u-ssot plugin.',
       '',
       '| Directory | Phase |',
       '|-----------|-------|',
@@ -75,7 +75,7 @@ try {
       hookSpecificOutput: {
         hookEventName: 'SessionStart',
         additionalContext: [
-          '# u-agent-ssot: Session Start',
+          '# u-ssot: Session Start',
           '',
           `u-docs/ structure created at ${udocsRoot}`,
           `Created directories: ${created.join(', ')}`,
@@ -93,7 +93,7 @@ try {
       hookSpecificOutput: {
         hookEventName: 'SessionStart',
         additionalContext: [
-          '# u-agent-ssot: Session Start',
+          '# u-ssot: Session Start',
           '',
           `u-docs/ found at ${udocsRoot}`,
           created.length > 0
@@ -111,7 +111,7 @@ try {
     result: 'success',
     hookSpecificOutput: {
       hookEventName: 'SessionStart',
-      additionalContext: `u-agent-ssot session start warning: ${err.message}`,
+      additionalContext: `u-ssot session start warning: ${err.message}`,
     },
   }));
 }

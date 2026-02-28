@@ -1,6 +1,6 @@
 # SSoT Document Standard
 
-> u-agent-ssot 플러그인의 모든 SSoT 문서가 준수해야 하는 표준 양식을 정의한다.
+> u-ssot 플러그인의 모든 SSoT 문서가 준수해야 하는 표준 양식을 정의한다.
 
 ---
 

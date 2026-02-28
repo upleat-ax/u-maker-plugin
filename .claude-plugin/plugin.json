@@ -1,5 +1,5 @@
 {
-  "name": "u-agent-ssot",
+  "name": "u-ssot",
   "version": "1.0.0",
   "description": "PDCA-based SSoT collaboration ecosystem with 9 specialized agents",
   "author": {
@@ -14,9 +14,5 @@
     "nextjs",
     "clean-architecture",
     "iteration"
-  ],
-  "skills": "./skills/",
-  "agents": "./agents/",
-  "commands": "./commands/",
-  "hooks": "./hooks/"
+  ]
 }

@@ -4,4 +4,4 @@ description: |
   Triggers: /u-storybook, 스토리북, storybook run
 ---
 
-Invoke the `u-agent-ssot` skill with argument `/u-storybook`.
+Invoke the `u-ssot` skill with argument `/u-storybook`.

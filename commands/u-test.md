@@ -4,4 +4,4 @@ description: |
   Triggers: /u-test, 테스트 케이스, test case, QA
 ---
 
-Invoke the `u-agent-ssot` skill with argument `/u-test` and pass any user-provided arguments.
+Invoke the `u-ssot` skill with argument `/u-test` and pass any user-provided arguments.

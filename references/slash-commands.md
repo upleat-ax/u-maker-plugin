@@ -1,6 +1,6 @@
 # Slash Commands Reference
 
-> u-agent-ssot 플러그인의 모든 슬래시 커맨드(`/u-*`) 정의 및 동작 명세.
+> u-ssot 플러그인의 모든 슬래시 커맨드(`/u-*`) 정의 및 동작 명세.
 
 ---
 
@@ -16,7 +16,7 @@
 | **Description** | 새 프로젝트를 생성하고 u-docs/ 구조를 초기화한다 |
 | **Calling Agents** | Orchestrator → `u-PM` → `u-M` |
 | **Prerequisites** | None |
-| **Output** | `u-docs/` 디렉토리 구조 생성, `1M_Index.md` 초기화, `u-agent-ssot.config.json` 초기화 |
+| **Output** | `u-docs/` 디렉토리 구조 생성, `1M_Index.md` 초기화, `u-ssot.config.json` 초기화 |
 
 ### `/u-plan`
 

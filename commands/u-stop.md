@@ -4,4 +4,4 @@ description: |
   Triggers: /u-stop, 루프 중단, stop loop
 ---
 
-Invoke the `u-agent-ssot` skill with argument `/u-stop`.
+Invoke the `u-ssot` skill with argument `/u-stop`.

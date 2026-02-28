@@ -4,4 +4,4 @@ description: |
   Triggers: /u-fe, 프론트엔드, frontend, 화면 구현
 ---
 
-Invoke the `u-agent-ssot` skill with argument `/u-fe` and pass any user-provided arguments.
+Invoke the `u-ssot` skill with argument `/u-fe` and pass any user-provided arguments.

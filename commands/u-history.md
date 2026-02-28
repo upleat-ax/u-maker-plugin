@@ -4,4 +4,4 @@ description: |
   Triggers: /u-history, 이력, iteration history
 ---
 
-Invoke the `u-agent-ssot` skill with argument `/u-history`.
+Invoke the `u-ssot` skill with argument `/u-history`.

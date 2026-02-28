@@ -4,4 +4,4 @@ description: |
   Triggers: /u-bug-report, 버그 리포트, 결함 분석, defect report
 ---
 
-Invoke the `u-agent-ssot` skill with argument `/u-bug-report` and pass any user-provided arguments.
+Invoke the `u-ssot` skill with argument `/u-bug-report` and pass any user-provided arguments.

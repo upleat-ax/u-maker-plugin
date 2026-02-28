@@ -1,6 +1,6 @@
 # Iteration Rules
 
-> u-agent-ssot의 Iteration 반복 시스템과 `/u-loop` 관련 규칙을 정의한다.
+> u-ssot의 Iteration 반복 시스템과 `/u-loop` 관련 규칙을 정의한다.
 
 ---
 

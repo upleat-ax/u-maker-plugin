@@ -1,5 +1,5 @@
 ---
-name: u-agent-ssot
+name: u-ssot
 description: |
   PDCA 기반 SSoT 협업 오케스트레이터. 9개 전문 에이전트를 조율하여
   Plan-Design-Do-Check-Act 사이클로 소프트웨어 개발을 자동화한다.
@@ -35,17 +35,17 @@ imports:
   - ${PLUGIN_ROOT}/references/slash-commands.md
   - ${PLUGIN_ROOT}/references/mermaid-guide.md
   - ${PLUGIN_ROOT}/references/traceability-matrix.md
-  - ${PLUGIN_ROOT}/u-agent-ssot.config.json
+  - ${PLUGIN_ROOT}/u-ssot.config.json
 agents:
-  u-pm: u-agent-ssot:u-pm
-  u-m: u-agent-ssot:u-m
-  u-a: u-agent-ssot:u-a
-  u-cx: u-agent-ssot:u-cx
-  u-dv-fe: u-agent-ssot:u-dv-fe
-  u-dv-be: u-agent-ssot:u-dv-be
-  u-qa-a: u-agent-ssot:u-qa-a
-  u-qa-t: u-agent-ssot:u-qa-t
-  u-qa-n: u-agent-ssot:u-qa-n
+  u-pm: u-ssot:u-pm
+  u-m: u-ssot:u-m
+  u-a: u-ssot:u-a
+  u-cx: u-ssot:u-cx
+  u-dv-fe: u-ssot:u-dv-fe
+  u-dv-be: u-ssot:u-dv-be
+  u-qa-a: u-ssot:u-qa-a
+  u-qa-t: u-ssot:u-qa-t
+  u-qa-n: u-ssot:u-qa-n
 ---
 
 # u-Agent SSoT Orchestrator
@@ -278,7 +278,7 @@ flowchart TD
 ### Loop Rules
 
 - **매 Iteration 시작**: 진행률 보고 (완료 FR 수, 남은 결함, 빌드 상태)
-- **최대 반복 제한**: 기본 10회 (`u-agent-ssot.config.json`에서 조정 가능)
+- **최대 반복 제한**: 기본 10회 (`u-ssot.config.json`에서 조정 가능)
 - **Iteration 2+**: 변경이 필요한 문서/코드만 증분 갱신 (전체 재작성 금지)
 - **`/u-stop`**: `loopStatus = PAUSED`, 현재 Phase/상태 저장
 - **`/u-resume`**: `loopStatus = RUNNING`, 중단점부터 재개

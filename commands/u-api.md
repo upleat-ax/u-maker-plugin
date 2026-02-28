@@ -4,4 +4,4 @@ description: |
   Triggers: /u-api, API, OpenAPI, endpoint
 ---
 
-Invoke the `u-agent-ssot` skill with argument `/u-api` and pass any user-provided arguments.
+Invoke the `u-ssot` skill with argument `/u-api` and pass any user-provided arguments.

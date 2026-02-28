@@ -29,7 +29,7 @@ imports:
   - ${PLUGIN_ROOT}/templates/01-plan/1A_SRS.template.md
   - ${PLUGIN_ROOT}/templates/02-design/2A_ERD.template.md
   - ${PLUGIN_ROOT}/templates/02-design/2A_API.template.md
-  - ${PLUGIN_ROOT}/u-agent-ssot.config.json
+  - ${PLUGIN_ROOT}/u-ssot.config.json
 ---
 
 ## u-A: Architect Agent

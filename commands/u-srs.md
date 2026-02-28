@@ -4,4 +4,4 @@ description: |
   Triggers: /u-srs, SRS, 요구사항 명세
 ---
 
-Invoke the `u-agent-ssot` skill with argument `/u-srs` and pass any user-provided arguments.
+Invoke the `u-ssot` skill with argument `/u-srs` and pass any user-provided arguments.

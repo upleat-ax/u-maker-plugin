@@ -4,4 +4,4 @@ description: |
   Triggers: /u-archive, 아카이브, archive iteration
 ---
 
-Invoke the `u-agent-ssot` skill with argument `/u-archive`.
+Invoke the `u-ssot` skill with argument `/u-archive`.

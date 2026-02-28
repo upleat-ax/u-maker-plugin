@@ -4,4 +4,4 @@ description: |
   Triggers: /u-index, 인덱스, index update
 ---
 
-Invoke the `u-agent-ssot` skill with argument `/u-index`.
+Invoke the `u-ssot` skill with argument `/u-index`.

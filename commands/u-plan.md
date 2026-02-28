@@ -4,4 +4,4 @@ description: |
   Triggers: /u-plan, plan phase, 플랜, 계획
 ---
 
-Invoke the `u-agent-ssot` skill with argument `/u-plan` and pass any user-provided arguments.
+Invoke the `u-ssot` skill with argument `/u-plan` and pass any user-provided arguments.

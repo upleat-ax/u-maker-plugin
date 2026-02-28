@@ -4,4 +4,4 @@ description: |
   Triggers: /u-resume, 루프 재개, resume loop
 ---
 
-Invoke the `u-agent-ssot` skill with argument `/u-resume`.
+Invoke the `u-ssot` skill with argument `/u-resume`.

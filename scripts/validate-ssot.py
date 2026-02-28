@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 validate-ssot.py — SSoT Document Validation Script
-u-agent-ssot plugin
+u-ssot plugin
 
 Validates:
   1. Common header fields (Owner, Status, Version, Last Updated)
@@ -132,7 +132,7 @@ def main():
         sys.exit(1)
 
     print("=" * 60)
-    print("  u-agent-ssot: SSoT Document Validation")
+    print("  u-ssot: SSoT Document Validation")
     print(f"  Path: {udocs_root}")
     print("=" * 60)
     print()

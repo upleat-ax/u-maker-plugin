@@ -4,4 +4,4 @@ description: |
   Triggers: /u-validate, 검증, 무결성, validate
 ---
 
-Invoke the `u-agent-ssot` skill with argument `/u-validate`.
+Invoke the `u-ssot` skill with argument `/u-validate`.

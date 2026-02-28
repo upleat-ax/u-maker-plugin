@@ -24,7 +24,7 @@ imports:
   - ${PLUGIN_ROOT}/references/ssot-standard.md
   - ${PLUGIN_ROOT}/references/traceability-matrix.md
   - ${PLUGIN_ROOT}/templates/04-check/4QA_Case.template.md
-  - ${PLUGIN_ROOT}/u-agent-ssot.config.json
+  - ${PLUGIN_ROOT}/u-ssot.config.json
 ---
 
 ## u-QA-A: QA Analyst Agent

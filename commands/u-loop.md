@@ -4,4 +4,4 @@ description: |
   Triggers: /u-loop, 루프, 자동 반복, auto loop
 ---
 
-Invoke the `u-agent-ssot` skill with argument `/u-loop` and pass any user-provided arguments.
+Invoke the `u-ssot` skill with argument `/u-loop` and pass any user-provided arguments.

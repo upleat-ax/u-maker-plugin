@@ -44,7 +44,7 @@
 
 | Skill/Command | Model | 근거 |
 |---------------|-------|------|
-| `u-agent-ssot` (Orchestrator) | **sonnet** | 명령어 라우팅, Phase Gate 검증, Agent 체인 호출. 복잡하지만 규칙 기반 |
+| `u-ssot` (Orchestrator) | **sonnet** | 명령어 라우팅, Phase Gate 검증, Agent 체인 호출. 복잡하지만 규칙 기반 |
 | `help` (Command) | **haiku** | 정적 텍스트 출력. 추론 불필요 |
 
 ---

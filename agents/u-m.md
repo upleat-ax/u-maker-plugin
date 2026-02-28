@@ -27,7 +27,7 @@ imports:
   - ${PLUGIN_ROOT}/references/pdca-workflow.md
   - ${PLUGIN_ROOT}/templates/01-plan/1M_Index.template.md
   - ${PLUGIN_ROOT}/templates/05-act/5ACT_Iteration_Log.template.md
-  - ${PLUGIN_ROOT}/u-agent-ssot.config.json
+  - ${PLUGIN_ROOT}/u-ssot.config.json
 ---
 
 ## u-M: Master (SSoT Guardian) Agent

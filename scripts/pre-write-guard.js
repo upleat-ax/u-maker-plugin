@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * pre-write-guard.js — u-agent-ssot PreToolUse Guard (Write|Edit)
+ * pre-write-guard.js — u-ssot PreToolUse Guard (Write|Edit)
  *
  * Validates:
  * 1. SSoT documents (pattern: *_*.md) must be under u-docs/

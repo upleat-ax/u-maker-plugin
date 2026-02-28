@@ -4,4 +4,4 @@ description: |
   Triggers: /u-act, act phase, 개선, 회고
 ---
 
-Invoke the `u-agent-ssot` skill with argument `/u-act` and pass any user-provided arguments.
+Invoke the `u-ssot` skill with argument `/u-act` and pass any user-provided arguments.

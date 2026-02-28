@@ -4,4 +4,4 @@ description: |
   Triggers: /u-backlog, 백로그, open items
 ---
 
-Invoke the `u-agent-ssot` skill with argument `/u-backlog`.
+Invoke the `u-ssot` skill with argument `/u-backlog`.

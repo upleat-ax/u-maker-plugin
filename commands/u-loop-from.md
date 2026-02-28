@@ -5,4 +5,4 @@ description: |
 argument-hint: "[phase]"
 ---
 
-Invoke the `u-agent-ssot` skill with argument `/u-loop-from` and pass the user-specified phase (plan, design, do, check, act).
+Invoke the `u-ssot` skill with argument `/u-loop-from` and pass the user-specified phase (plan, design, do, check, act).

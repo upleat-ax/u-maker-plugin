@@ -24,7 +24,7 @@ imports:
   - ${PLUGIN_ROOT}/references/ssot-standard.md
   - ${PLUGIN_ROOT}/references/iteration-rules.md
   - ${PLUGIN_ROOT}/templates/05-act/5ACT_Backlog.template.md
-  - ${PLUGIN_ROOT}/u-agent-ssot.config.json
+  - ${PLUGIN_ROOT}/u-ssot.config.json
 ---
 
 ## u-QA-N: QA Defect Analyst Agent

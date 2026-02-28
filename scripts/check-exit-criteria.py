@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 check-exit-criteria.py — Iteration Exit Criteria Checker
-u-agent-ssot plugin
+u-ssot plugin
 
 Checks 4 exit criteria for PDCA iteration completion:
   1. All backlog items are Done (5ACT_Backlog.md)
@@ -276,7 +276,7 @@ def main():
         udocs_root = os.path.join(os.getcwd(), "u-docs")
 
     print("=" * 60)
-    print("  u-agent-ssot: Exit Criteria Check")
+    print("  u-ssot: Exit Criteria Check")
     print(f"  Path: {udocs_root}")
     print("=" * 60)
     print()

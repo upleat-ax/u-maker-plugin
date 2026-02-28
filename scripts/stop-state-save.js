@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 /**
- * stop-state-save.js — u-agent-ssot Stop Hook
+ * stop-state-save.js — u-ssot Stop Hook
  *
- * Saves current loop status, phase, and iteration to u-agent-ssot.config.json.
+ * Saves current loop status, phase, and iteration to u-ssot.config.json.
  *
  * Output: JSON { result: "success" }
  */
@@ -15,8 +15,8 @@ const path = require('path');
 // ============================================================
 
 const PLUGIN_ROOT = path.resolve(__dirname, '..');
-const CONFIG_PATH = path.join(process.cwd(), 'u-agent-ssot.config.json');
-const FALLBACK_CONFIG_PATH = path.join(PLUGIN_ROOT, 'u-agent-ssot.config.json');
+const CONFIG_PATH = path.join(process.cwd(), 'u-ssot.config.json');
+const FALLBACK_CONFIG_PATH = path.join(PLUGIN_ROOT, 'u-ssot.config.json');
 
 // ============================================================
 // State Management

@@ -4,4 +4,4 @@ description: |
   Triggers: /u-design, design phase, 설계
 ---
 
-Invoke the `u-agent-ssot` skill with argument `/u-design` and pass any user-provided arguments.
+Invoke the `u-ssot` skill with argument `/u-design` and pass any user-provided arguments.

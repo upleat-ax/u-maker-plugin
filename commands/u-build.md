@@ -4,4 +4,4 @@ description: |
   Triggers: /u-build, 빌드, build project
 ---
 
-Invoke the `u-agent-ssot` skill with argument `/u-build`.
+Invoke the `u-ssot` skill with argument `/u-build`.

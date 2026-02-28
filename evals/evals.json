@@ -1,6 +1,6 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-evals.json",
-  "description": "u-agent-ssot Plugin Eval Test Cases v1.0.0",
+  "description": "u-ssot Plugin Eval Test Cases v1.0.0",
   "evals": [
     {
       "id": "eval-001",

@@ -24,14 +24,14 @@ u-Agent SSoT는 9개 전문 에이전트가 PDCA(Plan-Design-Do-Check-Act) 사�
 
 ```bash
 # Claude Code Plugin 디렉토리에 복사
-cp -r u-agent-ssot/ ~/.claude/plugins/u-agent-ssot/
+cp -r u-ssot/ ~/.claude/plugins/u-ssot/
 ```
 
 또는 프로젝트 로컬 플러그인으로 사용:
 
 ```bash
 # 프로젝트 루트에 배치
-cp -r u-agent-ssot/ .claude/plugins/u-agent-ssot/
+cp -r u-ssot/ .claude/plugins/u-ssot/
 ```
 
 ---
@@ -227,10 +227,10 @@ Related Docs:
 ## Plugin Structure
 
 ```
-u-agent-ssot/
+u-ssot/
 ├── .claude-plugin/
 │   └── plugin.json              # Plugin 메타데이터
-├── skills/u-agent-ssot/
+├── skills/u-ssot/
 │   └── SKILL.md                 # 메인 오케스트레이터
 ├── agents/                      # 9 에이전트 정의
 ├── references/                  # 7 참조 문서
@@ -239,7 +239,7 @@ u-agent-ssot/
 ├── hooks/                       # Hook 시스템 (2)
 ├── lib/                         # 유틸리티 라이브러리 (3)
 ├── evals/                       # 테스트 케이스
-└── u-agent-ssot.config.json     # 설정 파일
+└── u-ssot.config.json     # 설정 파일
 ```
 
 **Total: 44 files**
@@ -269,7 +269,7 @@ u-agent-ssot/
 
 ## Configuration
 
-`u-agent-ssot.config.json`에서 다음을 설정할 수 있다:
+`u-ssot.config.json`에서 다음을 설정할 수 있다:
 
 ```jsonc
 {

@@ -1,7 +1,7 @@
 ---
 description: |
-  u-agent-ssot 전체 명령어 도움말 표시.
-  Show all available u-agent-ssot commands and agents.
+  u-ssot 전체 명령어 도움말 표시.
+  Show all available u-ssot commands and agents.
 
   Triggers: /u-help, u-help, u-agent help, 도움말, 명령어 목록, help
 allowed-tools:

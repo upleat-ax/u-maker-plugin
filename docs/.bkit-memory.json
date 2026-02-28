@@ -1,8 +1,15 @@
 {
-  "sessionCount": 4,
+  "sessionCount": 5,
   "lastSession": {
-    "startedAt": "2026-02-28T15:14:10.623Z",
+    "startedAt": "2026-03-01T00:00:00.000Z",
     "platform": "claude",
     "level": "Starter"
+  },
+  "pdca": {
+    "feature": "ssot",
+    "phase": "plan",
+    "matchRate": null,
+    "iterationCount": 0,
+    "startedAt": "2026-03-01T00:00:00.000Z"
   }
 }

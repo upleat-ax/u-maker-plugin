@@ -4,4 +4,4 @@ description: |
   Triggers: /u-screen, 화면 설계, wireframe, screen design
 ---
 
-Invoke the `u-agent-ssot` skill with argument `/u-screen` and pass any user-provided arguments.
+Invoke the `u-ssot` skill with argument `/u-screen` and pass any user-provided arguments.

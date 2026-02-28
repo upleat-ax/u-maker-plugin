@@ -1,6 +1,6 @@
 # Mermaid Diagram Guide
 
-> u-agent-ssot에서 사용하는 Mermaid 다이어그램 유형별 작성 가이드.
+> u-ssot에서 사용하는 Mermaid 다이어그램 유형별 작성 가이드.
 > 모든 SSoT 문서는 해당 Phase에 맞는 다이어그램을 포함해야 한다.
 
 ---

@@ -1,6 +1,6 @@
 # Traceability Matrix
 
-> u-agent-ssot SSoT 문서 간의 추적성 매트릭스를 정의한다.
+> u-ssot SSoT 문서 간의 추적성 매트릭스를 정의한다.
 > 모든 문서는 수직적/수평적 추적성을 유지해야 한다.
 
 ---

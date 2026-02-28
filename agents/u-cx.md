@@ -25,7 +25,7 @@ imports:
   - ${PLUGIN_ROOT}/references/traceability-matrix.md
   - ${PLUGIN_ROOT}/templates/01-plan/1CX_IA.template.md
   - ${PLUGIN_ROOT}/templates/02-design/2CX_Screen.template.md
-  - ${PLUGIN_ROOT}/u-agent-ssot.config.json
+  - ${PLUGIN_ROOT}/u-ssot.config.json
 ---
 
 ## u-CX: CX/UX Designer Agent

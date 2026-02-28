@@ -1,11 +1,11 @@
 {
-  "name": "u-agent-ssot",
+  "name": "u-ssot",
   "owner": {
     "name": "u-plugin"
   },
   "plugins": [
     {
-      "name": "u-agent-ssot",
+      "name": "u-ssot",
       "source": "./",
       "description": "PDCA-based SSoT collaboration ecosystem with 9 specialized agents",
       "version": "1.0.0",

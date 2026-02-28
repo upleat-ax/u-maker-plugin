@@ -4,4 +4,4 @@ description: |
   Triggers: /u-dev, do phase, 개발, 구현
 ---
 
-Invoke the `u-agent-ssot` skill with argument `/u-dev` and pass any user-provided arguments.
+Invoke the `u-ssot` skill with argument `/u-dev` and pass any user-provided arguments.

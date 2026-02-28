@@ -24,7 +24,7 @@ tools:
 imports:
   - ${PLUGIN_ROOT}/references/ssot-standard.md
   - ${PLUGIN_ROOT}/templates/04-check/4QA_Report.template.md
-  - ${PLUGIN_ROOT}/u-agent-ssot.config.json
+  - ${PLUGIN_ROOT}/u-ssot.config.json
 ---
 
 ## u-QA-T: QA Tester Agent

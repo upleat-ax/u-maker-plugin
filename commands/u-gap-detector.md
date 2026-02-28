@@ -4,4 +4,4 @@ description: |
   Triggers: /u-gap-detector, 갭 분석, gap analysis
 ---
 
-Invoke the `u-agent-ssot` skill with argument `/u-gap-detector` and pass any user-provided arguments.
+Invoke the `u-ssot` skill with argument `/u-gap-detector` and pass any user-provided arguments.

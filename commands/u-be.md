@@ -4,4 +4,4 @@ description: |
   Triggers: /u-be, 백엔드, backend, API 구현
 ---
 
-Invoke the `u-agent-ssot` skill with argument `/u-be` and pass any user-provided arguments.
+Invoke the `u-ssot` skill with argument `/u-be` and pass any user-provided arguments.

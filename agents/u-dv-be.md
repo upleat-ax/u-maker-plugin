@@ -25,7 +25,7 @@ imports:
   - ${PLUGIN_ROOT}/references/tech-stack-rules.md
   - ${PLUGIN_ROOT}/references/ssot-standard.md
   - ${PLUGIN_ROOT}/templates/03-dev/3DV_Code.template.md
-  - ${PLUGIN_ROOT}/u-agent-ssot.config.json
+  - ${PLUGIN_ROOT}/u-ssot.config.json
 ---
 
 ## u-DV-BE: Backend Developer Agent

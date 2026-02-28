@@ -4,4 +4,4 @@ description: |
   Triggers: /u-erd, ERD, 데이터 모델
 ---
 
-Invoke the `u-agent-ssot` skill with argument `/u-erd` and pass any user-provided arguments.
+Invoke the `u-ssot` skill with argument `/u-erd` and pass any user-provided arguments.
