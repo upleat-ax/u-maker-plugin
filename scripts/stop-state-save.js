@@ -4,7 +4,7 @@
  *
  * Saves current loop status, phase, and iteration to u-ssot.config.json.
  *
- * Output: JSON { result: "success" }
+ * Output: JSON matching Stop hook schema (top-level fields only, no hookSpecificOutput)
  */
 
 const fs = require('fs');
@@ -97,22 +97,14 @@ try {
 
   const saved = saveConfig(config);
 
-  console.log(JSON.stringify({
-    result: 'success',
-    hookSpecificOutput: {
-      hookEventName: 'Stop',
-      additionalContext: saved
-        ? `State saved: phase=${config.currentPhase}, iteration=${config.currentIteration}, loop=${config.loopStatus}`
-        : 'Warning: Could not save state to config file.',
-    },
-  }));
+  const stopReason = saved
+    ? `State saved: phase=${config.currentPhase}, iteration=${config.currentIteration}, loop=${config.loopStatus}`
+    : 'Warning: Could not save state to config file.';
+
+  console.log(JSON.stringify({ stopReason }));
 } catch (err) {
   console.log(JSON.stringify({
-    result: 'success',
-    hookSpecificOutput: {
-      hookEventName: 'Stop',
-      additionalContext: `Stop hook warning: ${err.message}`,
-    },
+    stopReason: `Stop hook warning: ${err.message}`,
   }));
 }
 
