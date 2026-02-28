@@ -160,6 +160,18 @@ SSoT 문서 상태를 관리하고 검증하는 커맨드.
 | **Prerequisites** | `5ACT_Backlog.md` 존재 |
 | **Output** | 백로그 테이블 (터미널 출력) |
 
+### `/u-backlog-add`
+
+| Field | Value |
+|-------|-------|
+| **Syntax** | `/u-backlog-add [description]` |
+| **Description** | 새로운 백로그 항목을 추가한다. 인자 없이 실행하면 대화형으로 입력받는다 |
+| **Calling Agents** | `u-QA-N` |
+| **Prerequisites** | 프로젝트 생성 완료 (`5ACT_Backlog.md` 없으면 자동 생성) |
+| **Output** | `5ACT_Backlog.md` 업데이트 (Table row + Detail block + Summary 갱신) |
+
+**Input Fields**: Type (Bug/Enhancement/Task), Priority (Critical/Major/Minor/Trivial), Origin (PLAN/DESIGN/DEV/CHECK), Assignee, Related FR, Acceptance Criteria
+
 ### `/u-index`
 
 | Field | Value |
@@ -338,9 +350,37 @@ CHECK Phase에서 설계-구현 일치도를 분석하는 커맨드.
 | **Prerequisites** | 프로젝트 코드 존재 |
 | **Output** | 빌드 결과 (성공/실패 + 로그) |
 
+### `/u-summary`
+
+| Field | Value |
+|-------|-------|
+| **Syntax** | `/u-summary` |
+| **Description** | 프로젝트 개요와 개발 상태를 요약하여 `u-docs/summary.md`에 생성한다 |
+| **Calling Agents** | `u-M` |
+| **Prerequisites** | 프로젝트 생성 완료 |
+| **Output** | `u-docs/summary.md` (프로젝트명, 목표, 기능 목록, Iteration/Phase 상태, 문서 현황, 마일스톤) |
+
+### `/u-git-pr`
+
+| Field | Value |
+|-------|-------|
+| **Syntax** | `/u-git-pr [feat/<feature-name>]` |
+| **Description** | 변경된 파일을 feature 단위로 그룹핑하여 git commit 후 GitHub PR을 생성한다 |
+| **Calling Agents** | Orchestrator (Bash + gh CLI) |
+| **Prerequisites** | git 저장소 초기화 완료, 변경된 파일 존재 |
+| **Output** | feature 브랜치 생성, commit, push, PR URL 출력 |
+
+**Feature Grouping**: 변경 파일을 디렉토리/문서 기준으로 feature 단위로 자동 분류하거나, 사용자가 feature 이름을 직접 지정할 수 있다.
+
+**Rules**:
+- main 브랜치에 직접 commit하지 않음 (항상 feature 브랜치)
+- PR 생성 전 `git diff`로 변경 내용 사용자 확인
+- force push 금지, 민감 파일 commit 차단
+- 하나의 PR에는 하나의 feature만 포함
+
 ---
 
-## 6. Command Summary Table
+## 7. Command Summary Table
 
 | Category | Command | Phase | Agents |
 |----------|---------|-------|--------|
@@ -358,6 +398,7 @@ CHECK Phase에서 설계-구현 일치도를 분석하는 커맨드.
 | Doc Mgmt | `/u-docs` | - | u-M |
 | Doc Mgmt | `/u-validate` | - | u-M + script |
 | Doc Mgmt | `/u-backlog` | - | u-M |
+| Doc Mgmt | `/u-backlog-add` | - | u-QA-N |
 | Doc Mgmt | `/u-index` | - | u-M |
 | Agent | `/u-srs` | PLAN | u-A |
 | Agent | `/u-erd` | DESIGN | u-A |
@@ -373,3 +414,5 @@ CHECK Phase에서 설계-구현 일치도를 분석하는 커맨드.
 | Utility | `/u-archive` | ACT | u-M |
 | Utility | `/u-storybook` | DO | u-DV-FE |
 | Utility | `/u-build` | DO | Orch (Bash) |
+| Utility | `/u-summary` | - | u-M |
+| Utility | `/u-git-pr` | - | Orch (Bash + gh) |
