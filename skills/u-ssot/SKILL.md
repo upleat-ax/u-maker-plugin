@@ -8,8 +8,9 @@ description: |
   /u-loop, /u-loop-from, /u-stop, /u-resume, /u-status, /u-docs, /u-validate,
   /u-backlog, /u-index, /u-srs, /u-erd, /u-api, /u-screen, /u-fe, /u-be,
   /u-test, /u-bug-report, /u-gap-detector,
-  /u-help, /u-history, /u-archive, /u-storybook, /u-build,
-  u-agent, ssot, pdca, 프로젝트 시작, 문서 관리, 에이전트, 협업, gap analysis, 갭분석
+  /u-help, /u-history, /u-archive, /u-storybook, /u-build, /u-summary, /u-git-pr,
+  /u-backlog-add, 백로그 추가, backlog add, new backlog,
+  u-agent, ssot, pdca, 프로젝트 시작, 문서 관리, 에이전트, 협업, gap analysis, 갭분석, git pr, 커밋
 
   Do NOT use for: non-PDCA workflows, standalone code editing without project context.
 model: sonnet
@@ -111,6 +112,7 @@ agents:
 | `/u-docs` | 문서 목록 조회 | `u-m` | u-docs/ 내 전체 문서 트리 표시 |
 | `/u-validate` | SSoT 무결성 검증 | `u-m` | 헤더 누락, 추적성 깨짐, 구조 검증 |
 | `/u-backlog` | 백로그 조회 | `u-qa-n` | 5ACT_Backlog.md 내 Open 항목 표시 |
+| `/u-backlog-add` | 백로그 항목 추가 | `u-qa-n` | 5ACT_Backlog.md에 새 항목 추가 |
 | `/u-index` | 문서 인덱스 갱신 | `u-m` | 1M_Index.md 갱신 |
 
 ### Individual Agent Commands
@@ -141,6 +143,8 @@ agents:
 | `/u-archive` | 현재 Iteration 아카이브 | u-docs/iterations/iter-N/ 으로 복사 |
 | `/u-storybook` | Storybook 실행 | `bun run storybook` 실행 |
 | `/u-build` | 프로젝트 빌드 | `bun run build` 실행 및 결과 보고 |
+| `/u-summary` | 프로젝트 요약 | 프로젝트 개요 + 개발 상태를 `u-docs/summary.md`에 생성 |
+| `/u-git-pr` | Feature별 Git Commit + PR | 변경 파일을 feature 단위로 커밋하고 GitHub PR 생성 |
 
 ---
 
@@ -491,6 +495,249 @@ Iteration 2 이상에서는 전체 재작성이 아닌 증분 갱신만 수행�
   Build: [PASS | FAIL]
 ====================================
 ```
+
+---
+
+## Project Summary (`/u-summary`)
+
+프로젝트 개요와 개발 상태를 요약하여 `u-docs/summary.md`에 생성한다.
+
+### Summary Generation Flow
+
+```
+1. u-ssot.config.json에서 프로젝트 메타정보 수집
+2. 1PM_Roadmap.md에서 프로젝트 목표, 마일스톤 추출
+3. 1A_SRS.md에서 FR 구현 현황 추출
+4. 1M_Index.md에서 문서 상태 수집
+5. 현재 Iteration, Phase, Loop 상태 확인
+6. u-docs/summary.md에 요약 문서 생성
+```
+
+### Output Template (`u-docs/summary.md`)
+
+```markdown
+---
+Owner: u-m
+Status: Draft
+Version: 1.0.0
+Last Updated: [YYYY-MM-DD]
+---
+
+# Project Summary
+
+## 프로젝트 개요
+
+| 항목 | 내용 |
+|------|------|
+| 프로젝트명 | [project-name] |
+| 목표 | [1PM_Roadmap에서 추출] |
+| 기술 스택 | Next.js App Router, react-query, Prisma/Drizzle, Turborepo, bun |
+| 에이전트 | 9개 전문 에이전트 (u-pm, u-m, u-a, u-cx, u-dv-fe, u-dv-be, u-qa-a, u-qa-t, u-qa-n) |
+
+## 주요 기능 (Features)
+
+[1A_SRS.md의 FR 목록 요약]
+
+## 개발 상태
+
+| 항목 | 상태 |
+|------|------|
+| Iteration | [N] / [max] |
+| 현재 Phase | [PLAN / DESIGN / DO / CHECK / ACT] |
+| Loop Status | [RUNNING / PAUSED / STOPPED / -] |
+| FR 진행률 | [N/M] implemented |
+| 빌드 | [PASS / FAIL / -] |
+| Open 결함 | Critical: [X], Major: [Y] |
+| 백로그 | [N] open items |
+
+## 문서 현황
+
+[1M_Index.md 기반 문서 상태 테이블]
+
+## 마일스톤
+
+[1PM_Roadmap.md에서 추출한 마일스톤 목록]
+```
+
+### Rules
+
+- `u-m` 에이전트가 담당
+- 기존 `u-docs/summary.md`가 있으면 덮어쓰기 (최신 상태 반영)
+- 존재하지 않는 문서는 해당 항목을 `-` 또는 `N/A`로 표시
+- `1M_Index.md`에 `summary.md`를 참조로 추가
+
+---
+
+## Backlog Add (`/u-backlog-add`)
+
+새로운 백로그 항목을 `5ACT_Backlog.md`에 추가한다.
+
+### Syntax
+
+```
+/u-backlog-add <description>
+```
+
+- `<description>`: 백로그 항목 설명 (자연어)
+- 설명 없이 실행하면 대화형으로 항목 정보를 입력받는다
+
+### Backlog Add Flow
+
+```
+1. 5ACT_Backlog.md 존재 확인 (없으면 템플릿에서 자동 생성)
+2. 기존 BL-ID 최대값 확인 → 다음 BL-ID 자동 채번 (BL-NNN)
+3. 사용자 입력 또는 인자에서 항목 정보 추출:
+   - Description (필수)
+   - Type (Bug / Enhancement / Task) — 기본값: Task
+   - Priority (Critical / Major / Minor / Trivial) — 기본값: Minor
+   - Origin (PLAN / DESIGN / DEV / CHECK) — 기본값: DEV
+   - Related FR (선택)
+4. Backlog Table (Section 2)에 행 추가
+5. Backlog Details (Section 5)에 상세 블록 추가
+6. Summary (Section 1.2) 카운트 갱신
+7. Backlog by Priority (Section 3) 갱신
+8. Backlog by Origin (Section 4) 갱신
+9. Change Log 갱신
+```
+
+### Input Fields
+
+| Field | Required | Default | Values |
+|-------|----------|---------|--------|
+| Description | Y | - | 자연어 설명 |
+| Type | N | Task | Bug, Enhancement, Task |
+| Priority | N | Minor | Critical, Major, Minor, Trivial |
+| Origin | N | DEV | PLAN, DESIGN, DEV, CHECK |
+| Assignee | N | - | agent-id (u-dv-fe, u-dv-be, etc.) |
+| Related FR | N | - | FR-NNN |
+| Acceptance Criteria | N | - | 완료 조건 |
+
+### Example
+
+```bash
+# 간단 추가 (기본값 적용)
+/u-backlog-add 로그인 페이지 반응형 미적용
+
+# 상세 추가 (대화형)
+/u-backlog-add
+→ Type? Bug
+→ Priority? Major
+→ Origin? CHECK
+→ Description? 로그인 실패 시 에러 메시지 미표시
+→ Related FR? FR-003
+```
+
+### Generated Output (Backlog Table Row)
+
+```markdown
+| BL-004 | Bug | CHECK | 로그인 실패 시 에러 메시지 미표시 | Major | Open | Iter 1 | u-dv-fe |
+```
+
+### Generated Output (Backlog Details Block)
+
+```markdown
+### BL-004: 로그인 실패 시 에러 메시지 미표시
+
+| Field | Value |
+|-------|-------|
+| **BL-ID** | BL-004 |
+| **Type** | Bug |
+| **Origin** | CHECK |
+| **Priority** | Major |
+| **Status** | Open |
+| **Iteration** | Iter 1 |
+| **Assignee** | u-dv-fe |
+| **Related FR** | FR-003 |
+
+**Description**: 로그인 실패 시 에러 메시지 미표시
+
+**Acceptance Criteria**: 잘못된 비밀번호 입력 시 에러 메시지가 화면에 표시되어야 함
+```
+
+### Rules
+
+- `u-qa-n` 에이전트가 담당
+- BL-ID는 기존 최대값 + 1로 자동 채번
+- Status는 항상 `Open`으로 생성
+- Iteration은 현재 Iteration (u-ssot.config.json의 `currentIteration`)
+- 5ACT_Backlog.md가 없으면 템플릿에서 자동 생성 후 항목 추가
+- 항목 추가 후 Summary 카운트, Priority/Origin 통계 자동 갱신
+
+---
+
+## Feature Git Commit & PR (`/u-git-pr`)
+
+feature별로 변경사항을 git commit하고 GitHub PR을 생성한다.
+
+### Git PR Flow
+
+```
+1. git status로 변경된 파일 목록 수집
+2. 변경 파일을 feature 단위로 그룹핑 (디렉토리/문서 기준)
+3. feature별로 브랜치 생성 (feat/<feature-name>)
+4. feature별로 관련 파일만 stage + commit
+5. 원격에 push
+6. gh pr create로 PR 생성 (제목, 요약, 변경 목록 포함)
+7. PR URL 출력
+```
+
+### Feature Grouping Rules
+
+변경 파일을 아래 기준으로 feature 단위로 그룹핑한다:
+
+| 변경 대상 | Feature Name 예시 | 기준 |
+|-----------|-------------------|------|
+| `u-docs/01-plan/*` | `docs-plan` | PLAN Phase 문서 |
+| `u-docs/02-design/*` | `docs-design` | DESIGN Phase 문서 |
+| `u-docs/03-dev/*` | `docs-dev` | DO Phase 문서 |
+| `u-docs/04-check/*` | `docs-check` | CHECK Phase 문서 |
+| `u-docs/05-act/*` | `docs-act` | ACT Phase 문서 |
+| `apps/web/**` | `fe-<page-or-component>` | Frontend 코드 |
+| `packages/**` | `pkg-<package-name>` | 공유 패키지 |
+| `commands/*`, `agents/*`, `skills/*` | `plugin-<description>` | 플러그인 구성 |
+| 기타 | `misc-<description>` | 분류 불가 파일 |
+
+사용자가 feature 이름을 직접 지정할 수도 있다: `/u-git-pr feat/auth-login`
+
+### Commit Message Convention
+
+```
+<type>(<scope>): <subject>
+
+<body>
+
+Co-Authored-By: Claude <noreply@anthropic.com>
+```
+
+- **type**: feat, fix, docs, refactor, test, chore
+- **scope**: feature name 또는 phase name
+- **subject**: 변경 요약 (한글 가능)
+
+### PR Template
+
+```markdown
+## Summary
+- [1-3 bullet points 요약]
+
+## Changes
+- [변경된 파일/기능 목록]
+
+## Related Documents
+- [관련 SSoT 문서 경로]
+
+## Checklist
+- [ ] SSoT 문서 헤더 포함 (Owner, Status, Version)
+- [ ] 기술 스택 규칙 준수
+- [ ] bun run build 성공
+```
+
+### Rules
+
+- main 브랜치에 직접 commit하지 않음 (항상 feature 브랜치 사용)
+- PR 생성 전 `git diff`로 변경 내용 확인 후 사용자에게 보여줌
+- force push 금지
+- 민감 파일 (.env, credentials) commit 차단
+- 하나의 PR에는 하나의 feature만 포함
 
 ---
 
