@@ -1,14 +1,14 @@
 ---
-document: "1_Index_RA"
+document: "1_Index_PM"
 title: "{{PROJECT_NAME}} Document Index"
 owner: "u-RA"
 status: "Draft"
 version: "v0.1.0"
 last_updated: "{{DATE}}"
 related_docs:
-  - "u-docs/01-plan/1_Roadmap_RA.md"
-  - "u-docs/01-plan/1_SRS_SA.md"
-  - "u-docs/01-plan/1_IA_UX.md"
+  - "u-docs/shared/01-plan/1_Roadmap_PM.md"
+  - "u-docs/{{APP_NAME}}/01-plan/1_SRS_RA.md"
+  - "u-docs/{{APP_NAME}}/01-plan/1_IA_RA.md"
 external_links: []
 ---
 
@@ -40,10 +40,10 @@ external_links: []
 
 | Doc ID | Document | Path | Owner | Status | Version | Last Updated |
 |--------|----------|------|-------|--------|---------|-------------|
-| 1_Roadmap_RA | Roadmap | `u-docs/01-plan/1_Roadmap_RA.md` | u-RA | Draft | v0.1.0 | {{DATE}} |
-| 1_SRS_SA | SRS | `u-docs/01-plan/1_SRS_SA.md` | u-SA | - | - | - |
-| 1_IA_UX | IA | `u-docs/01-plan/1_IA_UX.md` | u-UX | - | - | - |
-| 1_Index_RA | Index | `u-docs/01-plan/1_Index_RA.md` | u-RA | Draft | v0.1.0 | {{DATE}} |
+| 1_Roadmap_PM | Roadmap | `u-docs/01-plan/1_Roadmap_PM.md` | u-RA | Draft | v0.1.0 | {{DATE}} |
+| 1_SRS_RA | SRS | `u-docs/01-plan/1_SRS_RA.md` | u-SA | - | - | - |
+| 1_IA_RA | IA | `u-docs/01-plan/1_IA_RA.md` | u-UX | - | - | - |
+| 1_Index_PM | Index | `u-docs/01-plan/1_Index_PM.md` | u-RA | Draft | v0.1.0 | {{DATE}} |
 
 ### 2.2 DESIGN Phase (02-design/)
 
@@ -72,7 +72,7 @@ external_links: []
 |--------|----------|------|-------|--------|---------|-------------|
 | 5_Backlog_RA | Backlog | `u-docs/05-act/5_Backlog_RA.md` | u-RA | - | - | - |
 | 5_IterationLog_RA | Iteration Log | `u-docs/05-act/5_IterationLog_RA.md` | u-RA | - | - | - |
-| 5_Retrospective_RA | Retrospective | `u-docs/05-act/5_Retrospective_RA.md` | u-RA | - | - | - |
+| 5_Retrospective_PM | Retrospective | `u-docs/05-act/5_Retrospective_PM.md` | u-RA | - | - | - |
 
 ---
 
@@ -80,7 +80,7 @@ external_links: []
 
 | Gate | From → To | Conditions | Status |
 |------|-----------|-----------|--------|
-| Gate 1 | PLAN → DESIGN | `1_Roadmap_RA`=Final, `1_SRS_SA`=Final, `1_IA_UX`=Final + US↔FR mapping complete (no TBD) | Not Ready |
+| Gate 1 | PLAN → DESIGN | `1_Roadmap_PM`=Final, `1_SRS_RA`=Final, `1_IA_RA`=Final + US↔FR mapping complete (no TBD) | Not Ready |
 | Gate 2 | DESIGN → DO | `2_ERD_SA`=Final, `2_API_SA`=Final, `2_Screen_UX`=Final + u-RA 검수 | Not Ready |
 | Gate 3 | DO → CHECK | 코드 구현 완료 + `bun run build` 성공 | Not Ready |
 | Gate 4 | CHECK → Complete | Critical/Major 0건 + Backlog 0건 + 전체 FR 구현 | Not Ready |
@@ -90,10 +90,10 @@ external_links: []
 
 ## 4. FR Implementation Tracking
 
-| FR-ID | Feature | SRS | ERD | API | Screen | Code | QA | Status |
-|-------|---------|-----|-----|-----|--------|------|----|--------|
-| FR-001 | {{기능명}} | - | - | - | - | - | - | Planned |
-| FR-002 | {{기능명}} | - | - | - | - | - | - | Planned |
+| FR-ID | Feature | Menu ID | SRS | ERD | API | Screen | Code | QA | Status |
+|-------|---------|---------|-----|-----|-----|--------|------|----|--------|
+| FR-001 | {{기능명}} | MN-XXX-NNN | - | - | - | - | - | - | Planned |
+| FR-002 | {{기능명}} | MN-XXX-NNN | - | - | - | - | - | - | Planned |
 
 ---
 

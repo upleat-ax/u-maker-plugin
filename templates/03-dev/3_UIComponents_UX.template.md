@@ -6,11 +6,11 @@ status: "Draft"
 version: "v0.1.0"
 last_updated: "{{DATE}}"
 related_docs:
-  - "u-docs/02-design/2_DesignSystem_UX.md"
-  - "u-docs/02-design/2_Screen_UX.md"
-  - "u-docs/03-dev/3_DesignToken_UX.md"
-  - "u-docs/03-dev/3_Code_DV.md"
-  - "u-docs/01-plan/1_Index_RA.md"
+  - "u-docs/shared/02-design/2_DesignSystem_UX.md"
+  - "u-docs/{{APP_NAME}}/02-design/2_Screen_UX.md"
+  - "u-docs/shared/03-dev/3_DesignToken_UX.md"
+  - "u-docs/{{APP_NAME}}/03-dev/3_Code_DV.md"
+  - "u-docs/shared/01-plan/1_Index_PM.md"
 external_links: []
 ---
 

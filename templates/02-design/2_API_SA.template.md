@@ -5,13 +5,14 @@ owner: "u-SA"
 status: "Draft"
 version: "v0.1.0"
 last_updated: "{{DATE}}"
+app: "{{APP_NAME}}"
 related_docs:
-  - "u-docs/01-plan/1_SRS_SA.md"
-  - "u-docs/02-design/2_ERD_SA.md"
-  - "u-docs/02-design/2_Screen_UX.md"
-  - "u-docs/03-dev/3_Code_DV.md"
-  - "u-docs/04-check/4_Case_QA.md"
-  - "u-docs/01-plan/1_Index_RA.md"
+  - "u-docs/{{APP_NAME}}/01-plan/1_SRS_RA.md"
+  - "u-docs/shared/02-design/2_ERD_SA.md"
+  - "u-docs/{{APP_NAME}}/02-design/2_Screen_UX.md"
+  - "u-docs/{{APP_NAME}}/03-dev/3_Code_DV.md"
+  - "u-docs/{{APP_NAME}}/04-check/4_Case_QA.md"
+  - "u-docs/shared/01-plan/1_Index_PM.md"
 external_links: []
 ---
 
@@ -36,14 +37,14 @@ external_links: []
 
 ## 2. API Overview
 
-| Method | Path | Description | FR Mapping | Screen Mapping | Auth |
-|--------|------|-------------|------------|---------------|------|
-| POST | `/auth/login` | 로그인 | FR-001 | S-006 | No |
-| POST | `/auth/register` | 회원가입 | FR-001 | S-007 | No |
-| GET | `/{{resource}}` | {{설명}} | FR-002 | S-003 | Yes |
-| POST | `/{{resource}}` | {{설명}} | FR-003 | S-004 | Yes |
-| PUT | `/{{resource}}/:id` | {{설명}} | FR-003 | S-004 | Yes |
-| DELETE | `/{{resource}}/:id` | {{설명}} | FR-003 | S-004 | Yes |
+| Method | Path | Description | FR Mapping | Screen Mapping | Menu Mapping | Auth |
+|--------|------|-------------|------------|---------------|-------------|------|
+| POST | `/auth/login` | 로그인 | FR-001 | S-006 | MN-AUTH-001 | No |
+| POST | `/auth/register` | 회원가입 | FR-001 | S-007 | MN-AUTH-002 | No |
+| GET | `/{{resource}}` | {{설명}} | FR-002 | S-003 | MN-XXX-NNN | Yes |
+| POST | `/{{resource}}` | {{설명}} | FR-003 | S-004 | MN-XXX-NNN | Yes |
+| PUT | `/{{resource}}/:id` | {{설명}} | FR-003 | S-004 | MN-XXX-NNN | Yes |
+| DELETE | `/{{resource}}/:id` | {{설명}} | FR-003 | S-004 | MN-XXX-NNN | Yes |
 
 ---
 

@@ -5,11 +5,12 @@ owner: "u-UX"
 status: "Draft"
 version: "v0.1.0"
 last_updated: "{{DATE}}"
+app: "{{APP_NAME}}"
 related_docs:
-  - "u-docs/02-design/2_Screen_UX.md"
-  - "u-docs/02-design/2_API_SA.md"
-  - "u-docs/03-dev/3_Code_DV.md"
-  - "u-docs/01-plan/1_Index_RA.md"
+  - "u-docs/{{APP_NAME}}/02-design/2_Screen_UX.md"
+  - "u-docs/{{APP_NAME}}/02-design/2_API_SA.md"
+  - "u-docs/{{APP_NAME}}/03-dev/3_Code_DV.md"
+  - "u-docs/shared/01-plan/1_Index_PM.md"
 external_links: []
 ---
 
@@ -77,11 +78,11 @@ app/{{path}}/
 
 ## 3. Routing Map
 
-| Screen ID | Route | Page File | Guard |
-|-----------|-------|-----------|-------|
-| S-001 | `/` | `app/page.tsx` | - |
-| S-002 | `/dashboard` | `app/dashboard/page.tsx` | auth |
-| S-003 | `/{{path}}` | `app/{{path}}/page.tsx` | {{guard}} |
+| Screen ID | Route | Page File | Menu ID | Guard |
+|-----------|-------|-----------|---------|-------|
+| S-001 | `/` | `app/page.tsx` | MN-XXX-NNN | - |
+| S-002 | `/dashboard` | `app/dashboard/page.tsx` | MN-XXX-NNN | auth |
+| S-003 | `/{{path}}` | `app/{{path}}/page.tsx` | MN-XXX-NNN | {{guard}} |
 
 ---
 

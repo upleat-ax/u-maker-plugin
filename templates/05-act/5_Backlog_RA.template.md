@@ -6,9 +6,9 @@ status: "Draft"
 version: "v0.1.0"
 last_updated: "{{DATE}}"
 related_docs:
-  - "u-docs/04-check/4_Report_QA.md"
-  - "u-docs/05-act/5_IterationLog_RA.md"
-  - "u-docs/01-plan/1_Index_RA.md"
+  - "u-docs/{{APP_NAME}}/04-check/4_Report_QA.md"
+  - "u-docs/shared/05-act/5_IterationLog_RA.md"
+  - "u-docs/shared/01-plan/1_Index_PM.md"
 external_links: []
 ---
 

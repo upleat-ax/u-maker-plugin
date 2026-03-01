@@ -5,11 +5,12 @@ owner: "u-UX"
 status: "Draft"
 version: "v0.1.0"
 last_updated: "{{DATE}}"
+app: "{{APP_NAME}}"
 related_docs:
-  - "u-docs/01-plan/1_IA_UX.md"
-  - "u-docs/02-design/2_API_SA.md"
-  - "u-docs/04-check/4_Case_QA.md"
-  - "u-docs/01-plan/1_Index_RA.md"
+  - "u-docs/{{APP_NAME}}/01-plan/1_IA_RA.md"
+  - "u-docs/{{APP_NAME}}/02-design/2_API_SA.md"
+  - "u-docs/{{APP_NAME}}/04-check/4_Case_QA.md"
+  - "u-docs/shared/01-plan/1_Index_PM.md"
 external_links: []
 ---
 
@@ -34,15 +35,15 @@ external_links: []
 
 ## 2. Screen Definition
 
-| Screen ID | Screen Name | Path | FR Mapping | API Endpoints | Priority |
-|-----------|------------|------|------------|--------------|----------|
-| S-001 | Home | `/` | - | - | Must |
-| S-002 | Dashboard | `/dashboard` | FR-001 | GET /dashboard | Must |
-| S-003 | {{화면명}} | `/{{path}}` | FR-002 | GET /{{resource}} | Must |
-| S-004 | {{화면명}} | `/{{path}}` | FR-003 | POST /{{resource}} | Should |
-| S-005 | Settings | `/settings` | - | GET /settings, PUT /settings | Must |
-| S-006 | Login | `/auth/login` | FR-001 | POST /auth/login | Must |
-| S-007 | Register | `/auth/register` | FR-001 | POST /auth/register | Must |
+| Screen ID | Screen Name | Path | Menu ID | FR Mapping | API Endpoints | Priority |
+|-----------|------------|------|---------|------------|--------------|----------|
+| S-001 | Home | `/` | MN-XXX-NNN | - | - | Must |
+| S-002 | Dashboard | `/dashboard` | MN-XXX-NNN | FR-001 | GET /dashboard | Must |
+| S-003 | {{화면명}} | `/{{path}}` | MN-XXX-NNN | FR-002 | GET /{{resource}} | Must |
+| S-004 | {{화면명}} | `/{{path}}` | MN-XXX-NNN | FR-003 | POST /{{resource}} | Should |
+| S-005 | Settings | `/settings` | MN-XXX-NNN | - | GET /settings, PUT /settings | Must |
+| S-006 | Login | `/auth/login` | MN-XXX-NNN | FR-001 | POST /auth/login | Must |
+| S-007 | Register | `/auth/register` | MN-XXX-NNN | FR-001 | POST /auth/register | Must |
 
 ---
 

@@ -1,14 +1,14 @@
 ---
-document: "5_Retrospective_RA"
+document: "5_Retrospective_PM"
 title: "{{PROJECT_NAME}} Retrospective"
 owner: "u-RA"
 status: "Draft"
 version: "v0.1.0"
 last_updated: "{{DATE}}"
 related_docs:
-  - "u-docs/05-act/5_Backlog_RA.md"
-  - "u-docs/05-act/5_IterationLog_RA.md"
-  - "u-docs/01-plan/1_Index_RA.md"
+  - "u-docs/shared/05-act/5_Backlog_RA.md"
+  - "u-docs/shared/05-act/5_IterationLog_RA.md"
+  - "u-docs/shared/01-plan/1_Index_PM.md"
 external_links: []
 ---
 

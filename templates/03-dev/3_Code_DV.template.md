@@ -5,12 +5,13 @@ owner: "u-DV"
 status: "Draft"
 version: "v0.1.0"
 last_updated: "{{DATE}}"
+app: "{{APP_NAME}}"
 related_docs:
-  - "u-docs/02-design/2_ERD_SA.md"
-  - "u-docs/02-design/2_API_SA.md"
-  - "u-docs/02-design/2_Screen_UX.md"
-  - "u-docs/04-check/4_Case_QA.md"
-  - "u-docs/01-plan/1_Index_RA.md"
+  - "u-docs/shared/02-design/2_ERD_SA.md"
+  - "u-docs/{{APP_NAME}}/02-design/2_API_SA.md"
+  - "u-docs/{{APP_NAME}}/02-design/2_Screen_UX.md"
+  - "u-docs/{{APP_NAME}}/04-check/4_Case_QA.md"
+  - "u-docs/shared/01-plan/1_Index_PM.md"
 external_links: []
 ---
 
@@ -114,11 +115,11 @@ external_links: []
 
 ### 3.3 Screen → Page/Component Mapping
 
-| Screen (Design) | Page File | Components | Status |
-|----------------|----------|-----------|--------|
-| S-001 Home | `apps/web/app/page.tsx` | Header, HeroSection, FeatureCard | - |
-| S-002 Dashboard | `apps/web/app/dashboard/page.tsx` | Sidebar, SummaryCard, DataTable | - |
-| S-006 Login | `apps/web/app/auth/login/page.tsx` | LoginForm, EmailInput, PasswordInput | - |
+| Screen (Design) | Page File | Menu ID | Components | Status |
+|----------------|----------|---------|-----------|--------|
+| S-001 Home | `apps/web/app/page.tsx` | MN-XXX-NNN | Header, HeroSection, FeatureCard | - |
+| S-002 Dashboard | `apps/web/app/dashboard/page.tsx` | MN-XXX-NNN | Sidebar, SummaryCard, DataTable | - |
+| S-006 Login | `apps/web/app/auth/login/page.tsx` | MN-XXX-NNN | LoginForm, EmailInput, PasswordInput | - |
 
 ### 3.4 Component → Storybook Mapping
 
