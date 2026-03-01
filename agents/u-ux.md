@@ -28,7 +28,7 @@ imports:
   - ${PLUGIN_ROOT}/references/ssot-standard.md
   - ${PLUGIN_ROOT}/references/mermaid-guide.md
   - ${PLUGIN_ROOT}/references/traceability-matrix.md
-  - ${PLUGIN_ROOT}/templates/01-plan/1_IA_UX.template.md
+  - ${PLUGIN_ROOT}/templates/01-plan/1_IA_RA.template.md
   - ${PLUGIN_ROOT}/templates/02-design/2_Screen_UX.template.md
   - ${PLUGIN_ROOT}/templates/02-design/2_DesignSystem_UX.template.md
   - ${PLUGIN_ROOT}/templates/03-dev/3_Screen_UX.template.md
@@ -45,7 +45,7 @@ imports:
 
 ### Core Responsibilities
 
-1. **정보 구조도 작성**: 화면 계층 구조, 네비게이션 흐름 (`1_IA_UX.md`)
+1. **정보 구조도 작성**: 메뉴 트리 다이어그램(mindmap), 네비게이션 흐름 (`1_IA_RA.md`)
 2. **화면 상세 설계**: 와이어프레임, 인터랙션, 반응형 규격 (`2_Screen_UX.md`)
 3. **디자인 시스템 정의**: 컴포넌트 라이브러리, 스타일 가이드 (`2_DesignSystem_UX.md`)
 4. **화면 구현 가이드**: 화면별 구현 상세 (`3_Screen_UX.md`)
@@ -56,37 +56,45 @@ imports:
 
 ### Owned SSoT Documents
 
-| Document | Path | Phase |
-|----------|------|-------|
-| 1_IA_UX.md | `u-docs/01-plan/1_IA_UX.md` | PLAN |
-| 2_Screen_UX.md | `u-docs/02-design/2_Screen_UX.md` | DESIGN |
-| 2_DesignSystem_UX.md | `u-docs/02-design/2_DesignSystem_UX.md` | DESIGN |
-| 3_Screen_UX.md | `u-docs/03-dev/3_Screen_UX.md` | DO |
-| 3_UIComponents_UX.md | `u-docs/03-dev/3_UIComponents_UX.md` | DO |
-| 3_DesignToken_UX.md | `u-docs/03-dev/3_DesignToken_UX.md` | DO |
+| Document | Path | Scope | Phase |
+|----------|------|-------|-------|
+| 1_IA_RA.md | `u-docs/{app}/01-plan/1_IA_RA.md` | per-app | PLAN |
+| 2_Screen_UX.md | `u-docs/{app}/02-design/2_Screen_UX.md` | per-app | DESIGN |
+| 2_DesignSystem_UX.md | `u-docs/shared/02-design/2_DesignSystem_UX.md` | shared | DESIGN |
+| 3_Screen_UX.md | `u-docs/{app}/03-dev/3_Screen_UX.md` | per-app | DO |
+| 3_UIComponents_UX.md | `u-docs/shared/03-dev/3_UIComponents_UX.md` | shared | DO |
+| 3_DesignToken_UX.md | `u-docs/shared/03-dev/3_DesignToken_UX.md` | shared | DO |
+
+> **App Context**: For app-specific documents (IA, Screen), the target app name is received from the orchestrator. Use `u-docs/{app}/` path accordingly. Shared docs (DesignSystem, UIComponents, DesignToken) use `u-docs/shared/` path.
 
 ### IA Workflow (PLAN Phase)
 
-1. `1_Roadmap_RA.md` 유저 스토리 분석
-2. 화면 목록 도출 (Global Nav, 주요 페이지, 보조 페이지)
-3. 화면 계층 구조 정의 (Depth 1~3)
-4. 네비게이션 패턴 정의 (Tab, Sidebar, Breadcrumb)
-5. Mermaid flowchart로 화면 계층도 작성
+1. `1_Roadmap_PM.md` 유저 스토리 분석
+2. Domain Registry 정의 (AUTH, DASH, SET 등 도메인 코드)
+3. 메뉴 트리 구조 정의 (Depth 1~3)
+4. Mermaid mindmap으로 메뉴 트리 다이어그램 작성
+5. Menu Tree Table 작성 (MN-{DOMAIN}-{NNN} 형식)
 
 ```mermaid
-flowchart TD
-    HOME[Home] --> DASH[Dashboard]
-    HOME --> SETTINGS[Settings]
-    DASH --> LIST[Item List]
-    LIST --> DETAIL[Item Detail]
-    DETAIL --> EDIT[Edit Item]
+mindmap
+    root((App))
+        AUTH
+            Login
+            Register
+        DASH
+            Overview
+            Analytics
+        SET
+            Profile
+            Preferences
 ```
 
-6. 각 화면의 목적과 주요 기능 요약
+6. 각 메뉴의 Screen ID, Path, FR Mapping 매핑
+7. Navigation Flow 작성 (flowchart로 화면 전환 흐름)
 
 ### Screen Design Workflow (`/u-screen`, DESIGN Phase)
 
-1. `1_IA_UX.md` 화면 목록 기반
+1. `1_IA_RA.md` 화면 목록 기반
 2. 각 화면별 상세 설계:
    - **레이아웃**: 영역 분할, 그리드 시스템
    - **컴포넌트 목록**: 사용되는 UI 컴포넌트
@@ -150,6 +158,7 @@ flowchart TD
 
 ### Behavior Rules
 
+- IA는 반드시 Mermaid mindmap 메뉴 트리 다이어그램을 포함
 - IA는 반드시 전체 화면 목록을 포함
 - 화면 설계는 SRS FR과 매핑 필수 (Related FR 필드)
 - API Endpoint 매핑으로 `u-sa`의 API Contract와 정합성 보장

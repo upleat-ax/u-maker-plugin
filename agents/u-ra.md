@@ -31,11 +31,11 @@ imports:
   - ${PLUGIN_ROOT}/references/ssot-standard.md
   - ${PLUGIN_ROOT}/references/iteration-rules.md
   - ${PLUGIN_ROOT}/references/traceability-matrix.md
-  - ${PLUGIN_ROOT}/templates/01-plan/1_Roadmap_RA.template.md
-  - ${PLUGIN_ROOT}/templates/01-plan/1_Index_RA.template.md
+  - ${PLUGIN_ROOT}/templates/01-plan/1_Roadmap_PM.template.md
+  - ${PLUGIN_ROOT}/templates/01-plan/1_Index_PM.template.md
   - ${PLUGIN_ROOT}/templates/05-act/5_Backlog_RA.template.md
   - ${PLUGIN_ROOT}/templates/05-act/5_IterationLog_RA.template.md
-  - ${PLUGIN_ROOT}/templates/05-act/5_Retrospective_RA.template.md
+  - ${PLUGIN_ROOT}/templates/05-act/5_Retrospective_PM.template.md
   - ${PLUGIN_ROOT}/u-ssot.config.json
 ---
 
@@ -48,38 +48,40 @@ imports:
 ### Core Responsibilities
 
 1. **프로젝트 초기화**: `/u-create-project` 시 Turborepo + u-docs 구조 생성
-2. **로드맵 생성**: `1_Roadmap_RA.md` 작성 (목표, 마일스톤, 일정)
+2. **로드맵 생성**: `1_Roadmap_PM.md` 작성 (목표, 마일스톤, 일정)
 3. **유저 스토리 정의**: As a [role], I want [feature], So that [benefit] 형식. FR Mapping은 `TBD` 허용 (SRS 작성 후 갱신)
 4. **마일스톤 관리**: Phase별 완료 기준과 일정 정의
-5. **유저 스토리 추가**: `/u-us-add`로 개별 US 항목을 `1_Roadmap_RA.md`에 추가
-6. **문서 인덱스 관리**: `1_Index_RA.md` 생성 및 갱신
+5. **유저 스토리 추가**: `/u-us-add`로 개별 US 항목을 `1_Roadmap_PM.md`에 추가
+6. **문서 인덱스 관리**: `1_Index_PM.md` 생성 및 갱신
 7. **상태 추적**: 각 문서의 Draft/Review/Final 상태 추적
 8. **모순 검수**: 문서 간 불일치 탐지 및 보고
 9. **Phase 현황 관리**: 현재 Phase, Iteration 상태 기록
 10. **백로그 관리**: `5_Backlog_RA.md` 생성 및 갱신
 11. **Iteration 로그 관리**: `5_IterationLog_RA.md` 갱신
-12. **회고 작성**: ACT Phase에서 `5_Retrospective_RA.md` 작성
+12. **회고 작성**: ACT Phase에서 `5_Retrospective_PM.md` 작성
 
 ### Owned SSoT Documents
 
-| Document | Path | Phase |
-|----------|------|-------|
-| 1_Roadmap_RA.md | `u-docs/01-plan/1_Roadmap_RA.md` | PLAN |
-| 1_Index_RA.md | `u-docs/01-plan/1_Index_RA.md` | ALL |
-| 5_Backlog_RA.md | `u-docs/05-act/5_Backlog_RA.md` | CHECK, ACT |
-| 5_IterationLog_RA.md | `u-docs/05-act/5_IterationLog_RA.md` | ACT |
-| 5_Retrospective_RA.md | `u-docs/05-act/5_Retrospective_RA.md` | ACT |
+| Document | Path | Scope | Phase |
+|----------|------|-------|-------|
+| 1_Roadmap_PM.md | `u-docs/shared/01-plan/1_Roadmap_PM.md` | shared | PLAN |
+| 1_Index_PM.md | `u-docs/shared/01-plan/1_Index_PM.md` | shared | ALL |
+| 5_Backlog_RA.md | `u-docs/shared/05-act/5_Backlog_RA.md` | shared | CHECK, ACT |
+| 5_IterationLog_RA.md | `u-docs/shared/05-act/5_IterationLog_RA.md` | shared | ACT |
+| 5_Retrospective_PM.md | `u-docs/shared/05-act/5_Retrospective_PM.md` | shared | ACT |
+
+> **App Context**: u-ra handles both shared and per-app documents. For shared docs, no app argument needed. When aggregating per-app data (e.g., FR progress across apps), iterate over all apps in `u-ssot.config.json`.
 
 <details><summary>JSON Format (Owned Documents)</summary>
 
 ```json
 {
   "ownedDocuments": [
-    { "document": "1_Roadmap_RA.md", "path": "u-docs/01-plan/1_Roadmap_RA.md", "phase": "PLAN" },
-    { "document": "1_Index_RA.md", "path": "u-docs/01-plan/1_Index_RA.md", "phase": "ALL" },
-    { "document": "5_Backlog_RA.md", "path": "u-docs/05-act/5_Backlog_RA.md", "phase": "CHECK, ACT" },
-    { "document": "5_IterationLog_RA.md", "path": "u-docs/05-act/5_IterationLog_RA.md", "phase": "ACT" },
-    { "document": "5_Retrospective_RA.md", "path": "u-docs/05-act/5_Retrospective_RA.md", "phase": "ACT" }
+    { "document": "1_Roadmap_PM.md", "path": "u-docs/shared/01-plan/1_Roadmap_PM.md", "scope": "shared", "phase": "PLAN" },
+    { "document": "1_Index_PM.md", "path": "u-docs/shared/01-plan/1_Index_PM.md", "scope": "shared", "phase": "ALL" },
+    { "document": "5_Backlog_RA.md", "path": "u-docs/shared/05-act/5_Backlog_RA.md", "scope": "shared", "phase": "CHECK, ACT" },
+    { "document": "5_IterationLog_RA.md", "path": "u-docs/shared/05-act/5_IterationLog_RA.md", "scope": "shared", "phase": "ACT" },
+    { "document": "5_Retrospective_PM.md", "path": "u-docs/shared/05-act/5_Retrospective_PM.md", "scope": "shared", "phase": "ACT" }
   ]
 }
 ```
@@ -93,20 +95,20 @@ imports:
 2. 프로젝트 목표 정의 (OKR 또는 Goal 형식)
 3. 유저 스토리 도출 (MoSCoW 우선순위)
 4. 마일스톤 정의 (Phase 단위)
-5. `1_Roadmap_RA.md` 생성 (템플릿 기반)
+5. `1_Roadmap_PM.md` 생성 (템플릿 기반)
 6. `u-sa`에게 SRS 작성 요청
 7. `u-ux`에게 IA 작성 요청
 
 **Pattern B (FR-First):**
-1. `1_SRS_SA.md` 참조하여 FR 분석
+1. `1_SRS_RA.md` 참조하여 FR 분석
 2. FR 기반 유저 스토리 역도출
 3. 마일스톤 정의 (Phase 단위)
-4. `1_Roadmap_RA.md` 생성
+4. `1_Roadmap_PM.md` 생성
 5. `u-sa`에게 SRS US Mapping 갱신 요청
 
 ### User Story Add Workflow (`/u-us-add`)
 
-1. `1_Roadmap_RA.md` 존재 확인 (없으면 템플릿에서 자동 생성)
+1. `1_Roadmap_PM.md` 존재 확인 (없으면 템플릿에서 자동 생성)
 2. 기존 US-ID 최대값 확인 → 다음 US-ID 자동 채번 (US-NNN, 3자리)
 3. 사용자 입력에서 항목 정보 추출:
    - As a [role] (필수), I want to [feature] (필수), So that [benefit] (필수)
@@ -116,14 +118,14 @@ imports:
 
 ### Index Management (`/u-index`)
 
-`1_Index_RA.md`에 포함할 정보:
+`1_Index_PM.md`에 포함할 정보:
 
 ```markdown
 ## Document Registry
 | # | Document | Owner | Status | Version | Last Updated |
 |---|----------|-------|--------|---------|-------------|
-| 1 | 1_Roadmap_RA.md | u-ra | Final | 1.0.0 | 2026-XX-XX |
-| 2 | 1_SRS_SA.md | u-sa | Draft | 0.1.0 | 2026-XX-XX |
+| 1 | 1_Roadmap_PM.md | u-ra | Final | 1.0.0 | 2026-XX-XX |
+| 2 | 1_SRS_RA.md | u-sa | Draft | 0.1.0 | 2026-XX-XX |
 | ... | ... | ... | ... | ... | ... |
 
 ## Phase Status
@@ -225,7 +227,7 @@ ACT Phase 시작 시 아래 3단계로 DEF를 BL로 변환:
 3. 우선순위 재평가: Priority Re-Evaluation Rules에 따라 재평가
 4. Iteration 아카이브: `u-docs/iterations/iter-N/`에 문서 스냅샷 보관
 5. Iteration 로그 갱신: `5_IterationLog_RA.md` 갱신
-6. 회고 작성: `5_Retrospective_RA.md` 작성 (Good / Improve / Actions)
+6. 회고 작성: `5_Retrospective_PM.md` 작성 (Good / Improve / Actions)
 7. 다음 Iteration 목표 정의
 
 <details><summary>JSON Format (ACT Phase Workflow)</summary>
@@ -238,7 +240,7 @@ ACT Phase 시작 시 아래 3단계로 DEF를 BL로 변환:
     { "step": 3, "name": "priorityReEvaluation", "description": "Priority Re-Evaluation Rules에 따라 재평가" },
     { "step": 4, "name": "iterationArchive", "description": "u-docs/iterations/iter-N/에 문서 스냅샷 보관" },
     { "step": 5, "name": "iterationLogUpdate", "description": "5_IterationLog_RA.md 갱신" },
-    { "step": 6, "name": "retrospective", "description": "5_Retrospective_RA.md 작성 (Good / Improve / Actions)" },
+    { "step": 6, "name": "retrospective", "description": "5_Retrospective_PM.md 작성 (Good / Improve / Actions)" },
     { "step": 7, "name": "nextIterationGoal", "description": "다음 Iteration 목표 정의" }
   ]
 }
@@ -328,11 +330,16 @@ project-root/
 │   ├── tokens/                 # Design Token
 │   └── config/                 # 공유 설정
 ├── u-docs/
-│   ├── 01-plan/
-│   ├── 02-design/
-│   ├── 03-dev/
-│   ├── 04-check/
-│   ├── 05-act/
+│   ├── shared/
+│   │   ├── 01-plan/
+│   │   ├── 02-design/
+│   │   ├── 03-dev/
+│   │   └── 05-act/
+│   ├── web/              # per-app (from config)
+│   │   ├── 01-plan/
+│   │   ├── 02-design/
+│   │   ├── 03-dev/
+│   │   └── 04-check/
 │   ├── assets/
 │   └── iterations/
 ├── turbo.json

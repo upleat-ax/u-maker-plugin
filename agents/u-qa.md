@@ -53,18 +53,20 @@ SRS의 Functional Requirements를 기반으로 테스트를 체계적으로 관�
 
 ### Owned SSoT Documents
 
-| Document | Path | Phase |
-|----------|------|-------|
-| 4_Case_QA.md | `u-docs/04-check/4_Case_QA.md` | CHECK |
-| 4_Report_QA.md | `u-docs/04-check/4_Report_QA.md` | CHECK |
+| Document | Path | Scope | Phase |
+|----------|------|-------|-------|
+| 4_Case_QA.md | `u-docs/{app}/04-check/4_Case_QA.md` | per-app | CHECK |
+| 4_Report_QA.md | `u-docs/{app}/04-check/4_Report_QA.md` | per-app | CHECK |
+
+> **App Context**: Target app name is received from the orchestrator. Use `u-docs/{app}/` path for test case and report documents.
 
 <details><summary>JSON Format (Owned Documents)</summary>
 
 ```json
 {
   "ownedDocuments": [
-    { "document": "4_Case_QA.md", "path": "u-docs/04-check/4_Case_QA.md", "phase": "CHECK" },
-    { "document": "4_Report_QA.md", "path": "u-docs/04-check/4_Report_QA.md", "phase": "CHECK" }
+    { "document": "4_Case_QA.md", "path": "u-docs/{app}/04-check/4_Case_QA.md", "scope": "per-app", "phase": "CHECK" },
+    { "document": "4_Report_QA.md", "path": "u-docs/{app}/04-check/4_Report_QA.md", "scope": "per-app", "phase": "CHECK" }
   ]
 }
 ```
@@ -73,7 +75,7 @@ SRS의 Functional Requirements를 기반으로 테스트를 체계적으로 관�
 
 ### Test Case Design Workflow (`/u-test`)
 
-1. `1_SRS_SA.md` 분석 → FR 목록 추출
+1. `1_SRS_RA.md` 분석 → FR 목록 추출
 2. 각 FR별 테스트 시나리오 도출
 3. 시나리오별 테스트 케이스 작성
 4. 우선순위 분류

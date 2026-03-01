@@ -27,7 +27,7 @@ imports:
   - ${PLUGIN_ROOT}/references/tech-stack-rules.md
   - ${PLUGIN_ROOT}/references/mermaid-guide.md
   - ${PLUGIN_ROOT}/references/traceability-matrix.md
-  - ${PLUGIN_ROOT}/templates/01-plan/1_SRS_SA.template.md
+  - ${PLUGIN_ROOT}/templates/01-plan/1_SRS_RA.template.md
   - ${PLUGIN_ROOT}/templates/02-design/2_ERD_SA.template.md
   - ${PLUGIN_ROOT}/templates/02-design/2_API_SA.template.md
   - ${PLUGIN_ROOT}/u-ssot.config.json
@@ -40,23 +40,25 @@ imports:
 
 ### Core Responsibilities
 
-1. **SRS 작성**: Functional/Non-Functional Requirements 정의 (`1_SRS_SA.md`)
+1. **SRS 작성**: Functional/Non-Functional Requirements 정의 (`1_SRS_RA.md`)
 2. **ERD 작성**: Entity 정의, Relationship 다이어그램 (`2_ERD_SA.md`)
 3. **API Contract 작성**: OpenAPI 3.0 기반 API 명세 (`2_API_SA.md`)
-4. **FR 추가**: `/u-fr-add`로 개별 FR 항목을 `1_SRS_SA.md`에 추가
+4. **FR 추가**: `/u-fr-add`로 개별 FR 항목을 `1_SRS_RA.md`에 추가
 5. **추적성 보장**: SRS FR → ERD Entity → API Endpoint 매핑
 
 ### Owned SSoT Documents
 
-| Document | Path | Phase |
-|----------|------|-------|
-| 1_SRS_SA.md | `u-docs/01-plan/1_SRS_SA.md` | PLAN |
-| 2_ERD_SA.md | `u-docs/02-design/2_ERD_SA.md` | DESIGN |
-| 2_API_SA.md | `u-docs/02-design/2_API_SA.md` | DESIGN |
+| Document | Path | Scope | Phase |
+|----------|------|-------|-------|
+| 1_SRS_RA.md | `u-docs/{app}/01-plan/1_SRS_RA.md` | per-app | PLAN |
+| 2_ERD_SA.md | `u-docs/shared/02-design/2_ERD_SA.md` | shared | DESIGN |
+| 2_API_SA.md | `u-docs/{app}/02-design/2_API_SA.md` | per-app | DESIGN |
+
+> **App Context**: For app-specific documents (SRS, API), the target app name is received from the orchestrator. Use `u-docs/{app}/` path accordingly.
 
 ### SRS Workflow (`/u-srs`)
 
-1. `1_Roadmap_RA.md` 존재 시 US 분석하여 FR 도출. 미존재 시 사용자 요구사항에서 직접 FR 도출 (US Mapping = TBD).
+1. `1_Roadmap_PM.md` 존재 시 US 분석하여 FR 도출. 미존재 시 사용자 요구사항에서 직접 FR 도출 (US Mapping = TBD).
 2. Functional Requirements 도출 (FR-001 ~ FR-NNN)
    - 각 FR에 구현 상태 필드: `[ ] Not Started` / `[~] In Progress` / `[x] Implemented`
 3. Non-Functional Requirements 도출 (NFR-001 ~ NFR-NNN)
@@ -66,7 +68,7 @@ imports:
 
 ### FR Add Workflow (`/u-fr-add`)
 
-1. `1_SRS_SA.md` 존재 확인 (없으면 템플릿에서 자동 생성)
+1. `1_SRS_RA.md` 존재 확인 (없으면 템플릿에서 자동 생성)
 2. 기존 FR-ID 최대값 확인 → 다음 FR-ID 자동 채번 (FR-NNN, 3자리)
 3. 사용자 입력에서 항목 정보 추출:
    - Feature (필수), Description (필수)

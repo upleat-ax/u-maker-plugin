@@ -53,7 +53,9 @@ Next.js 기반 프론트엔드를 구현하는 에이전트.
 ### Output
 
 - 코드 파일: `apps/web/`, `packages/ui/`, `packages/data/`, `packages/tokens/`
-- 문서 갱신: `u-docs/03-dev/3_Code_DV.md` (구현 현황)
+- 문서 갱신: `u-docs/{app}/03-dev/3_Code_DV.md` (구현 현황)
+
+> **App Context**: Target app name is received from the orchestrator. Use `u-docs/{app}/` path for app-specific documents (Code, Screen).
 
 ### Tech Stack Compliance (필수)
 
