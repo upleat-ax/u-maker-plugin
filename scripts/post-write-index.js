@@ -61,7 +61,7 @@ const relPath = path.relative(udocsPath, normalized);
 const basename = path.basename(filePath);
 
 // Detect SSoT document pattern
-const SSOT_DOC_PATTERN = /^\d+[A-Z]+_[A-Za-z]+\.md$/;
+const SSOT_DOC_PATTERN = /^\d+_[A-Za-z]+_[A-Z]+\.md$/;
 const isSsotDoc = SSOT_DOC_PATTERN.test(basename);
 
 let contextMessage = '';
@@ -73,7 +73,7 @@ if (isSsotDoc) {
 
   contextMessage = [
     `SSoT document written: ${relPath}`,
-    `Consider updating 1M_Index.md to reflect this change.`,
+    `Consider updating 1_Index_RA.md to reflect this change.`,
     `Phase: ${phaseDir}`,
   ].join(' | ');
 } else {

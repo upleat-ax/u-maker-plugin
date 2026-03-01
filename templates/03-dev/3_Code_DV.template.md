@@ -1,16 +1,16 @@
 ---
-document: "3DV_Code"
+document: "3_Code_DV"
 title: "{{PROJECT_NAME}} Code Record"
 owner: "u-DV"
 status: "Draft"
 version: "v0.1.0"
 last_updated: "{{DATE}}"
 related_docs:
-  - "u-docs/02-design/2A_ERD.md"
-  - "u-docs/02-design/2A_API.md"
-  - "u-docs/02-design/2CX_Screen.md"
-  - "u-docs/04-check/4QA_Case.md"
-  - "u-docs/01-plan/1M_Index.md"
+  - "u-docs/02-design/2_ERD_SA.md"
+  - "u-docs/02-design/2_API_SA.md"
+  - "u-docs/02-design/2_Screen_UX.md"
+  - "u-docs/04-check/4_Case_QA.md"
+  - "u-docs/01-plan/1_Index_RA.md"
 external_links: []
 ---
 

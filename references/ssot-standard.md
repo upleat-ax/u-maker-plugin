@@ -10,14 +10,14 @@
 
 ```yaml
 ---
-document: "{DOC_ID}"           # 예: 1PM_Roadmap, 2A_ERD
+document: "{DOC_ID}"           # 예: 1_Roadmap_RA, 2_ERD_SA
 title: "{문서 제목}"
-owner: "{담당 에이전트}"        # 예: u-PM, u-A, u-CX
+owner: "{담당 에이전트}"        # 예: u-RA, u-SA, u-UX
 status: "Draft"                # Draft | Review | Final
 version: "v0.1.0"             # vMAJOR.MINOR.PATCH
 last_updated: "YYYY-MM-DD"
 related_docs:
-  - "{관련 문서 경로}"          # 예: u-docs/01-plan/1A_SRS.md
+  - "{관련 문서 경로}"          # 예: u-docs/01-plan/1_SRS_SA.md
 external_links:
   - "{외부 참조 URL}"          # 선택사항
 ---
@@ -48,7 +48,7 @@ stateDiagram-v2
 ```
 
 - **Draft**: 작성 중 (에이전트가 생성/수정 중)
-- **Review**: 검토 대기 (u-M 또는 관련 에이전트 검토)
+- **Review**: 검토 대기 (u-RA 또는 관련 에이전트 검토)
 - **Final**: 확정 (Phase 전환 Gate 통과 가능)
 
 ---
@@ -77,14 +77,13 @@ Semantic Versioning (`vMAJOR.MINOR.PATCH`)을 따른다:
 
 ### 3.1 PLAN Phase Documents
 
-> 대상: `1PM_Roadmap.md`, `1A_SRS.md`, `1CX_IA.md`, `1M_Index.md`
+> 대상: `1_Roadmap_RA.md`, `1_SRS_SA.md`, `1_IA_UX.md`, `1_Index_RA.md`
 
 | Required Section | Description |
 |-----------------|-------------|
 | Background | 프로젝트 배경 및 목적 |
 | Scope | 범위 정의 (In-Scope / Out-of-Scope) |
-| User Stories | 사용자 스토리 목록 (As a... I want... So that...) |
-| Features | 기능 요구사항 테이블 (FR-ID, Description, Priority) |
+| User Stories | 사용자 스토리 목록 (Roadmap에만 정의, SRS는 FR table의 US Mapping 열로 참조) |
 | Gantt Chart | Mermaid `gantt` 다이어그램 (마일스톤, 일정) |
 
 ```mermaid
@@ -101,10 +100,11 @@ gantt
 
 ### 3.2 DESIGN Phase Documents
 
-> 대상: `2CX_Screen.md`, `2A_ERD.md`, `2A_API.md`
+> 대상: `2_DesignSystem_UX.md`, `2_Screen_UX.md`, `2_ERD_SA.md`, `2_API_SA.md`
 
 | Required Section | Description |
 |-----------------|-------------|
+| Design System | 디자인 시스템 정의 (컬러 팔레트, 타이포그래피, 스페이싱, 컴포넌트 규칙) |
 | Screen Definition | 화면 목록 및 상세 설계 (화면ID, 화면명, 주요 컴포넌트) |
 | Data Specification | 데이터 구조 정의 (Entity, Attribute, Type) |
 | State Changes | 상태 전이 다이어그램 (`stateDiagram-v2`) |
@@ -132,10 +132,13 @@ sequenceDiagram
 
 ### 3.3 DEV (DO) Phase Documents
 
-> 대상: `3DV_Code.md`
+> 대상: `3_Screen_UX.md`, `3_UIComponents_UX.md`, `3_DesignToken_UX.md`, `3_Code_DV.md`
 
 | Required Section | Description |
 |-----------------|-------------|
+| Screen Implementation | 화면 구현 명세 (레이아웃, 인터랙션, 반응형 규칙) |
+| UI Components | UI 컴포넌트 명세 (Props, 상태, 변형) |
+| Design Tokens | 디자인 토큰 정의 (색상, 간격, 폰트 변수) |
 | Build Configuration | 빌드 설정 (Turborepo, bun, Next.js) |
 | Deploy Log | 배포/빌드 로그 기록 |
 | API Specification | 구현된 API 엔드포인트 목록 |
@@ -151,7 +154,7 @@ flowchart TD
 
 ### 3.4 CHECK Phase Documents
 
-> 대상: `4QA_Case.md`, `4QA_Report.md`
+> 대상: `4_Case_QA.md`, `4_Report_QA.md`
 
 | Required Section | Description |
 |-----------------|-------------|
@@ -170,7 +173,7 @@ pie title Test Results
 
 ### 3.5 ACT Phase Documents
 
-> 대상: `5ACT_Backlog.md`, `5ACT_Iteration_Log.md`, `5ACT_Retrospective.md`
+> 대상: `5_Backlog_RA.md`, `5_IterationLog_RA.md`, `5_Retrospective_RA.md`
 
 | Required Section | Description |
 |-----------------|-------------|
@@ -194,11 +197,11 @@ xychart-beta
 
 | Phase | Prefix | Example |
 |-------|--------|---------|
-| PLAN | `1{AGENT}_` | `1PM_Roadmap.md`, `1A_SRS.md`, `1CX_IA.md`, `1M_Index.md` |
-| DESIGN | `2{AGENT}_` | `2A_ERD.md`, `2A_API.md`, `2CX_Screen.md` |
-| DEV | `3{AGENT}_` | `3DV_Code.md` |
-| CHECK | `4{AGENT}_` | `4QA_Case.md`, `4QA_Report.md` |
-| ACT | `5{AGENT}_` | `5ACT_Backlog.md`, `5ACT_Iteration_Log.md`, `5ACT_Retrospective.md` |
+| PLAN | `1_` | `1_Roadmap_RA.md`, `1_SRS_SA.md`, `1_IA_UX.md`, `1_Index_RA.md` |
+| DESIGN | `2_` | `2_DesignSystem_UX.md`, `2_ERD_SA.md`, `2_API_SA.md`, `2_Screen_UX.md` |
+| DEV | `3_` | `3_Screen_UX.md`, `3_UIComponents_UX.md`, `3_DesignToken_UX.md`, `3_Code_DV.md` |
+| CHECK | `4_` | `4_Case_QA.md`, `4_Report_QA.md` |
+| ACT | `5_` | `5_Backlog_RA.md`, `5_IterationLog_RA.md`, `5_Retrospective_RA.md` |
 
 ---
 
@@ -209,23 +212,27 @@ xychart-beta
 ```
 u-docs/
 ├── 01-plan/
-│   ├── 1PM_Roadmap.md
-│   ├── 1A_SRS.md
-│   ├── 1CX_IA.md
-│   └── 1M_Index.md
+│   ├── 1_Roadmap_RA.md
+│   ├── 1_SRS_SA.md
+│   ├── 1_IA_UX.md
+│   └── 1_Index_RA.md
 ├── 02-design/
-│   ├── 2A_ERD.md
-│   ├── 2A_API.md
-│   └── 2CX_Screen.md
+│   ├── 2_DesignSystem_UX.md
+│   ├── 2_ERD_SA.md
+│   ├── 2_API_SA.md
+│   └── 2_Screen_UX.md
 ├── 03-dev/
-│   └── 3DV_Code.md
+│   ├── 3_Screen_UX.md
+│   ├── 3_UIComponents_UX.md
+│   ├── 3_DesignToken_UX.md
+│   └── 3_Code_DV.md
 ├── 04-check/
-│   ├── 4QA_Case.md
-│   └── 4QA_Report.md
+│   ├── 4_Case_QA.md
+│   └── 4_Report_QA.md
 ├── 05-act/
-│   ├── 5ACT_Backlog.md
-│   ├── 5ACT_Iteration_Log.md
-│   └── 5ACT_Retrospective.md
+│   ├── 5_Backlog_RA.md
+│   ├── 5_IterationLog_RA.md
+│   └── 5_Retrospective_RA.md
 ├── assets/
 │   └── (다이어그램, 스크린샷)
 └── iterations/
@@ -241,4 +248,4 @@ u-docs/
 2. 문서 내 다른 SSoT 문서 참조 시 `[문서명](상대경로)` 형식을 사용한다
 3. 수직적 추적성: PRD(why) → SRS(what) → ERD(how) → Code(execute)
 4. 수평적 추적성: Screen(UI) ↔ API(data) ↔ QA Case(verify)
-5. 추적성 깨짐 발견 시 `u-M`에게 보고한다
+5. 추적성 깨짐 발견 시 `u-RA`에게 보고한다

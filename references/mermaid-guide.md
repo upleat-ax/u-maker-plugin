@@ -9,14 +9,14 @@
 
 | Diagram Type | Use Case | Phase | Example Document |
 |-------------|----------|-------|-----------------|
-| `flowchart TD` | 로직 흐름, 의사결정 분기 | DEV | `3DV_Code.md` |
-| `erDiagram` | 데이터 모델, Entity 관계 | DESIGN | `2A_ERD.md` |
-| `sequenceDiagram` | API 인터랙션, 메시지 흐름 | DESIGN | `2A_API.md` |
-| `stateDiagram-v2` | 상태 전이, UI 상태 변화 | DESIGN | `2CX_Screen.md` |
-| `gantt` | 프로젝트 일정, 마일스톤 | PLAN | `1PM_Roadmap.md` |
-| `pie` | 비율 통계, 커버리지 | CHECK | `4QA_Report.md` |
-| `mindmap` | 계층 구조, 정보 구조 | PLAN | `1CX_IA.md` |
-| `xychart-beta` | 추이 분석, Iteration 진행률 | ACT | `5ACT_Iteration_Log.md` |
+| `flowchart TD` | 로직 흐름, 의사결정 분기 | DEV | `3_Code_DV.md` |
+| `erDiagram` | 데이터 모델, Entity 관계 | DESIGN | `2_ERD_SA.md` |
+| `sequenceDiagram` | API 인터랙션, 메시지 흐름 | DESIGN | `2_API_SA.md` |
+| `stateDiagram-v2` | 상태 전이, UI 상태 변화 | DESIGN | `2_Screen_UX.md` |
+| `gantt` | 프로젝트 일정, 마일스톤 | PLAN | `1_Roadmap_RA.md` |
+| `pie` | 비율 통계, 커버리지 | CHECK | `4_Report_QA.md` |
+| `mindmap` | 계층 구조, 정보 구조 | PLAN | `1_IA_UX.md` |
+| `xychart-beta` | 추이 분석, Iteration 진행률 | ACT | `5_IterationLog_RA.md` |
 
 ---
 

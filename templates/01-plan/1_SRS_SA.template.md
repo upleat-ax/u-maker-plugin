@@ -1,15 +1,15 @@
 ---
-document: "1A_SRS"
+document: "1_SRS_SA"
 title: "{{PROJECT_NAME}} Software Requirements Specification"
-owner: "u-A"
+owner: "u-SA"
 status: "Draft"
 version: "v0.1.0"
 last_updated: "{{DATE}}"
 related_docs:
-  - "u-docs/01-plan/1PM_Roadmap.md"
-  - "u-docs/02-design/2A_ERD.md"
-  - "u-docs/02-design/2A_API.md"
-  - "u-docs/01-plan/1M_Index.md"
+  - "u-docs/01-plan/1_Roadmap_RA.md"
+  - "u-docs/02-design/2_ERD_SA.md"
+  - "u-docs/02-design/2_API_SA.md"
+  - "u-docs/01-plan/1_Index_RA.md"
 external_links: []
 ---
 
@@ -33,18 +33,20 @@ external_links: []
 
 ### 1.4 References
 
-- `1PM_Roadmap.md` — 프로젝트 로드맵 및 유저 스토리
+- `1_Roadmap_RA.md` — 프로젝트 로드맵 및 유저 스토리
 
 ---
 
 ## 2. Functional Requirements (FR)
 
+> US Mapping은 Roadmap 작성 후 갱신 가능. Technical FR은 `-`로 표시.
+
 | FR-ID | Feature | Description | Priority | US Mapping | Implemented |
 |-------|---------|-------------|----------|------------|-------------|
 | FR-001 | {{기능명}} | {{상세 설명}} | Must | US-001 | No |
 | FR-002 | {{기능명}} | {{상세 설명}} | Must | US-002 | No |
-| FR-003 | {{기능명}} | {{상세 설명}} | Should | US-003 | No |
-| FR-004 | {{기능명}} | {{상세 설명}} | Could | - | No |
+| FR-003 | {{기능명}} | {{상세 설명}} | Should | TBD | No |
+| FR-004 | {{기능명 (Technical)}} | {{상세 설명}} | Could | - | No |
 
 ### FR Details
 
@@ -78,16 +80,7 @@ external_links: []
 
 ---
 
-## 4. User Stories Mapping
-
-| US-ID | User Story | FR Mapping | Priority |
-|-------|-----------|------------|----------|
-| US-001 | As a {{역할}}, I want to {{기능}} so that {{가치}} | FR-001 | Must |
-| US-002 | As a {{역할}}, I want to {{기능}} so that {{가치}} | FR-002 | Should |
-
----
-
-## 5. Feature Dependency
+## 4. Feature Dependency
 
 ```mermaid
 flowchart TD
@@ -98,7 +91,7 @@ flowchart TD
 
 ---
 
-## 6. Gantt (Feature Timeline)
+## 5. Gantt (Feature Timeline)
 
 ```mermaid
 gantt
@@ -116,7 +109,7 @@ gantt
 
 ---
 
-## 7. Acceptance Criteria Summary
+## 6. Acceptance Criteria Summary
 
 | FR-ID | Acceptance Criteria |
 |-------|-------------------|
@@ -129,4 +122,4 @@ gantt
 
 | Version | Date | Author | Description |
 |---------|------|--------|-------------|
-| v0.1.0 | {{DATE}} | u-A | Initial draft |
+| v0.1.0 | {{DATE}} | u-SA | Initial draft |

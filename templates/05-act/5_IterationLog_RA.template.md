@@ -1,14 +1,14 @@
 ---
-document: "5ACT_Iteration_Log"
+document: "5_IterationLog_RA"
 title: "{{PROJECT_NAME}} Iteration Log"
-owner: "u-M"
+owner: "u-RA"
 status: "Draft"
 version: "v0.1.0"
 last_updated: "{{DATE}}"
 related_docs:
-  - "u-docs/05-act/5ACT_Backlog.md"
-  - "u-docs/05-act/5ACT_Retrospective.md"
-  - "u-docs/01-plan/1M_Index.md"
+  - "u-docs/05-act/5_Backlog_RA.md"
+  - "u-docs/05-act/5_Retrospective_RA.md"
+  - "u-docs/01-plan/1_Index_RA.md"
 external_links: []
 ---
 
@@ -144,4 +144,4 @@ xychart-beta
 
 | Version | Date | Author | Description |
 |---------|------|--------|-------------|
-| v0.1.0 | {{DATE}} | u-M | Initial iteration log |
+| v0.1.0 | {{DATE}} | u-RA | Initial iteration log |

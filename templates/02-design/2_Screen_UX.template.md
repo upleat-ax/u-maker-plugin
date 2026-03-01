@@ -1,15 +1,15 @@
 ---
-document: "2CX_Screen"
+document: "2_Screen_UX"
 title: "{{PROJECT_NAME}} Screen Design"
-owner: "u-CX"
+owner: "u-UX"
 status: "Draft"
 version: "v0.1.0"
 last_updated: "{{DATE}}"
 related_docs:
-  - "u-docs/01-plan/1CX_IA.md"
-  - "u-docs/02-design/2A_API.md"
-  - "u-docs/04-check/4QA_Case.md"
-  - "u-docs/01-plan/1M_Index.md"
+  - "u-docs/01-plan/1_IA_UX.md"
+  - "u-docs/02-design/2_API_SA.md"
+  - "u-docs/04-check/4_Case_QA.md"
+  - "u-docs/01-plan/1_Index_RA.md"
 external_links: []
 ---
 
@@ -192,4 +192,4 @@ stateDiagram-v2
 
 | Version | Date | Author | Description |
 |---------|------|--------|-------------|
-| v0.1.0 | {{DATE}} | u-CX | Initial draft |
+| v0.1.0 | {{DATE}} | u-UX | Initial draft |

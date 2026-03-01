@@ -4,9 +4,9 @@ check-exit-criteria.py — Iteration Exit Criteria Checker
 u-ssot plugin
 
 Checks 4 exit criteria for PDCA iteration completion:
-  1. All backlog items are Done (5ACT_Backlog.md)
-  2. No Critical/Major defects (4QA_Report.md)
-  3. All FR items implemented (1A_SRS.md)
+  1. All backlog items are Done (5_Backlog_RA.md)
+  2. No Critical/Major defects (4_Report_QA.md)
+  3. All FR items implemented (1_SRS_SA.md)
   4. Build succeeds (bun run build)
 
 Usage: python3 check-exit-criteria.py [u-docs-path]
@@ -28,9 +28,9 @@ import subprocess
 # ============================================================
 
 DOC_PATHS = {
-    "backlog": "05-act/5ACT_Backlog.md",
-    "qa_report": "04-check/4QA_Report.md",
-    "srs": "01-plan/1A_SRS.md",
+    "backlog": "05-act/5_Backlog_RA.md",
+    "qa_report": "04-check/4_Report_QA.md",
+    "srs": "01-plan/1_SRS_SA.md",
 }
 
 
@@ -42,7 +42,7 @@ DOC_PATHS = {
 def check_backlog(udocs_root):
     """
     Criterion 1: All backlog items must be Done.
-    Parses 5ACT_Backlog.md for items with status != Done.
+    Parses 5_Backlog_RA.md for items with status != Done.
     """
     filepath = os.path.join(udocs_root, DOC_PATHS["backlog"])
     result = {
@@ -54,7 +54,7 @@ def check_backlog(udocs_root):
     }
 
     if not os.path.exists(filepath):
-        result["details"].append("5ACT_Backlog.md not found")
+        result["details"].append("5_Backlog_RA.md not found")
         # No backlog file means no open items
         result["passed"] = True
         return result
@@ -92,7 +92,7 @@ def check_backlog(udocs_root):
 def check_defects(udocs_root):
     """
     Criterion 2: No Critical or Major defects.
-    Parses 4QA_Report.md for defect severity.
+    Parses 4_Report_QA.md for defect severity.
     """
     filepath = os.path.join(udocs_root, DOC_PATHS["qa_report"])
     result = {
@@ -104,7 +104,7 @@ def check_defects(udocs_root):
     }
 
     if not os.path.exists(filepath):
-        result["details"].append("4QA_Report.md not found")
+        result["details"].append("4_Report_QA.md not found")
         # No QA report means no defects recorded
         result["passed"] = True
         return result
@@ -148,7 +148,7 @@ def check_defects(udocs_root):
 def check_fr_completion(udocs_root):
     """
     Criterion 3: All FR (Functional Requirements) implemented.
-    Parses 1A_SRS.md for FR status.
+    Parses 1_SRS_SA.md for FR status.
     """
     filepath = os.path.join(udocs_root, DOC_PATHS["srs"])
     result = {
@@ -161,7 +161,7 @@ def check_fr_completion(udocs_root):
     }
 
     if not os.path.exists(filepath):
-        result["details"].append("1A_SRS.md not found")
+        result["details"].append("1_SRS_SA.md not found")
         return result
 
     try:

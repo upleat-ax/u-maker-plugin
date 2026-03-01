@@ -1,14 +1,14 @@
 ---
-document: "1PM_Roadmap"
+document: "1_Roadmap_RA"
 title: "{{PROJECT_NAME}} Roadmap"
-owner: "u-PM"
+owner: "u-RA"
 status: "Draft"
 version: "v0.1.0"
 last_updated: "{{DATE}}"
 related_docs:
-  - "u-docs/01-plan/1A_SRS.md"
-  - "u-docs/01-plan/1CX_IA.md"
-  - "u-docs/01-plan/1M_Index.md"
+  - "u-docs/01-plan/1_SRS_SA.md"
+  - "u-docs/01-plan/1_IA_UX.md"
+  - "u-docs/01-plan/1_Index_RA.md"
 external_links: []
 ---
 
@@ -49,25 +49,17 @@ external_links: []
 
 ## 3. User Stories
 
+> FR Mapping은 SRS 작성 후 갱신 가능. PLAN Gate 전 모든 US는 FR과 매핑 필수.
+
 | US-ID | As a... | I want to... | So that... | Priority | FR Mapping |
 |-------|---------|-------------|------------|----------|------------|
-| US-001 | {{역할}} | {{기능}} | {{가치}} | Must | FR-001 |
-| US-002 | {{역할}} | {{기능}} | {{가치}} | Should | FR-002 |
-| US-003 | {{역할}} | {{기능}} | {{가치}} | Could | FR-003 |
+| US-001 | {{역할}} | {{기능}} | {{가치}} | Must | TBD |
+| US-002 | {{역할}} | {{기능}} | {{가치}} | Should | TBD |
+| US-003 | {{역할}} | {{기능}} | {{가치}} | Could | TBD |
 
 ---
 
-## 4. Features
-
-| FR-ID | Feature | Description | Priority | Status |
-|-------|---------|-------------|----------|--------|
-| FR-001 | {{기능명}} | {{설명}} | Must | Planned |
-| FR-002 | {{기능명}} | {{설명}} | Should | Planned |
-| FR-003 | {{기능명}} | {{설명}} | Could | Planned |
-
----
-
-## 5. Milestones
+## 4. Milestones
 
 | Milestone | Target Date | Deliverables | Status |
 |-----------|------------|-------------|--------|
@@ -79,7 +71,7 @@ external_links: []
 
 ---
 
-## 6. Gantt Chart
+## 5. Gantt Chart
 
 ```mermaid
 gantt
@@ -115,7 +107,7 @@ gantt
 
 ---
 
-## 7. Stakeholders
+## 6. Stakeholders
 
 | Role | Name | Responsibility |
 |------|------|---------------|
@@ -126,7 +118,7 @@ gantt
 
 ---
 
-## 8. Risks
+## 7. Risks
 
 | Risk | Impact | Probability | Mitigation |
 |------|--------|------------|------------|
@@ -138,4 +130,4 @@ gantt
 
 | Version | Date | Author | Description |
 |---------|------|--------|-------------|
-| v0.1.0 | {{DATE}} | u-PM | Initial draft |
+| v0.1.0 | {{DATE}} | u-RA | Initial draft |

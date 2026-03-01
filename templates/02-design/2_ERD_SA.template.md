@@ -1,15 +1,15 @@
 ---
-document: "2A_ERD"
+document: "2_ERD_SA"
 title: "{{PROJECT_NAME}} Entity Relationship Diagram"
-owner: "u-A"
+owner: "u-SA"
 status: "Draft"
 version: "v0.1.0"
 last_updated: "{{DATE}}"
 related_docs:
-  - "u-docs/01-plan/1A_SRS.md"
-  - "u-docs/02-design/2A_API.md"
-  - "u-docs/03-dev/3DV_Code.md"
-  - "u-docs/01-plan/1M_Index.md"
+  - "u-docs/01-plan/1_SRS_SA.md"
+  - "u-docs/02-design/2_API_SA.md"
+  - "u-docs/03-dev/3_Code_DV.md"
+  - "u-docs/01-plan/1_Index_RA.md"
 external_links: []
 ---
 
@@ -117,4 +117,4 @@ stateDiagram-v2
 
 | Version | Date | Author | Description |
 |---------|------|--------|-------------|
-| v0.1.0 | {{DATE}} | u-A | Initial draft |
+| v0.1.0 | {{DATE}} | u-SA | Initial draft |

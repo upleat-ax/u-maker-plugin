@@ -1,14 +1,14 @@
 ---
-document: "1M_Index"
+document: "1_Index_RA"
 title: "{{PROJECT_NAME}} Document Index"
-owner: "u-M"
+owner: "u-RA"
 status: "Draft"
 version: "v0.1.0"
 last_updated: "{{DATE}}"
 related_docs:
-  - "u-docs/01-plan/1PM_Roadmap.md"
-  - "u-docs/01-plan/1A_SRS.md"
-  - "u-docs/01-plan/1CX_IA.md"
+  - "u-docs/01-plan/1_Roadmap_RA.md"
+  - "u-docs/01-plan/1_SRS_SA.md"
+  - "u-docs/01-plan/1_IA_UX.md"
 external_links: []
 ---
 
@@ -19,7 +19,7 @@ external_links: []
 ### 1.1 Purpose
 
 이 문서는 프로젝트의 모든 SSoT 문서를 중앙에서 추적하고 관리하는 마스터 인덱스이다.
-`u-M` (Master/SSoT Guardian) 에이전트가 유지 관리한다.
+`u-RA` (Requirements Analyst/SSoT Guardian) 에이전트가 유지 관리한다.
 
 ### 1.2 Current State
 
@@ -40,39 +40,39 @@ external_links: []
 
 | Doc ID | Document | Path | Owner | Status | Version | Last Updated |
 |--------|----------|------|-------|--------|---------|-------------|
-| 1PM_Roadmap | Roadmap | `u-docs/01-plan/1PM_Roadmap.md` | u-PM | Draft | v0.1.0 | {{DATE}} |
-| 1A_SRS | SRS | `u-docs/01-plan/1A_SRS.md` | u-A | - | - | - |
-| 1CX_IA | IA | `u-docs/01-plan/1CX_IA.md` | u-CX | - | - | - |
-| 1M_Index | Index | `u-docs/01-plan/1M_Index.md` | u-M | Draft | v0.1.0 | {{DATE}} |
+| 1_Roadmap_RA | Roadmap | `u-docs/01-plan/1_Roadmap_RA.md` | u-RA | Draft | v0.1.0 | {{DATE}} |
+| 1_SRS_SA | SRS | `u-docs/01-plan/1_SRS_SA.md` | u-SA | - | - | - |
+| 1_IA_UX | IA | `u-docs/01-plan/1_IA_UX.md` | u-UX | - | - | - |
+| 1_Index_RA | Index | `u-docs/01-plan/1_Index_RA.md` | u-RA | Draft | v0.1.0 | {{DATE}} |
 
 ### 2.2 DESIGN Phase (02-design/)
 
 | Doc ID | Document | Path | Owner | Status | Version | Last Updated |
 |--------|----------|------|-------|--------|---------|-------------|
-| 2A_ERD | ERD | `u-docs/02-design/2A_ERD.md` | u-A | - | - | - |
-| 2A_API | API Contract | `u-docs/02-design/2A_API.md` | u-A | - | - | - |
-| 2CX_Screen | Screen Design | `u-docs/02-design/2CX_Screen.md` | u-CX | - | - | - |
+| 2_ERD_SA | ERD | `u-docs/02-design/2_ERD_SA.md` | u-SA | - | - | - |
+| 2_API_SA | API Contract | `u-docs/02-design/2_API_SA.md` | u-SA | - | - | - |
+| 2_Screen_UX | Screen Design | `u-docs/02-design/2_Screen_UX.md` | u-UX | - | - | - |
 
 ### 2.3 DEV Phase (03-dev/)
 
 | Doc ID | Document | Path | Owner | Status | Version | Last Updated |
 |--------|----------|------|-------|--------|---------|-------------|
-| 3DV_Code | Code Record | `u-docs/03-dev/3DV_Code.md` | u-DV | - | - | - |
+| 3_Code_DV | Code Record | `u-docs/03-dev/3_Code_DV.md` | u-DV | - | - | - |
 
 ### 2.4 CHECK Phase (04-check/)
 
 | Doc ID | Document | Path | Owner | Status | Version | Last Updated |
 |--------|----------|------|-------|--------|---------|-------------|
-| 4QA_Case | Test Cases | `u-docs/04-check/4QA_Case.md` | u-QA-A | - | - | - |
-| 4QA_Report | QA Report | `u-docs/04-check/4QA_Report.md` | u-QA-T | - | - | - |
+| 4_Case_QA | Test Cases | `u-docs/04-check/4_Case_QA.md` | u-QA | - | - | - |
+| 4_Report_QA | QA Report | `u-docs/04-check/4_Report_QA.md` | u-QA | - | - | - |
 
 ### 2.5 ACT Phase (05-act/)
 
 | Doc ID | Document | Path | Owner | Status | Version | Last Updated |
 |--------|----------|------|-------|--------|---------|-------------|
-| 5ACT_Backlog | Backlog | `u-docs/05-act/5ACT_Backlog.md` | u-M | - | - | - |
-| 5ACT_Iteration_Log | Iteration Log | `u-docs/05-act/5ACT_Iteration_Log.md` | u-PM | - | - | - |
-| 5ACT_Retrospective | Retrospective | `u-docs/05-act/5ACT_Retrospective.md` | Team | - | - | - |
+| 5_Backlog_RA | Backlog | `u-docs/05-act/5_Backlog_RA.md` | u-RA | - | - | - |
+| 5_IterationLog_RA | Iteration Log | `u-docs/05-act/5_IterationLog_RA.md` | u-RA | - | - | - |
+| 5_Retrospective_RA | Retrospective | `u-docs/05-act/5_Retrospective_RA.md` | u-RA | - | - | - |
 
 ---
 
@@ -80,8 +80,8 @@ external_links: []
 
 | Gate | From → To | Conditions | Status |
 |------|-----------|-----------|--------|
-| Gate 1 | PLAN → DESIGN | `1PM_Roadmap`=Final, `1A_SRS`=Final, `1CX_IA`=Final | Not Ready |
-| Gate 2 | DESIGN → DO | `2A_ERD`=Final, `2A_API`=Final, `2CX_Screen`=Final + u-M 검수 | Not Ready |
+| Gate 1 | PLAN → DESIGN | `1_Roadmap_RA`=Final, `1_SRS_SA`=Final, `1_IA_UX`=Final + US↔FR mapping complete (no TBD) | Not Ready |
+| Gate 2 | DESIGN → DO | `2_ERD_SA`=Final, `2_API_SA`=Final, `2_Screen_UX`=Final + u-RA 검수 | Not Ready |
 | Gate 3 | DO → CHECK | 코드 구현 완료 + `bun run build` 성공 | Not Ready |
 | Gate 4 | CHECK → Complete | Critical/Major 0건 + Backlog 0건 + 전체 FR 구현 | Not Ready |
 | Gate 5 | ACT → PLAN(N+1) | Backlog 정리 + 회고 + 아카이브 완료 | Not Ready |
@@ -109,7 +109,7 @@ external_links: []
 
 | Date | Validator | Type | Result | Issues |
 |------|-----------|------|--------|--------|
-| {{DATE}} | u-M | Initial | - | No documents yet |
+| {{DATE}} | u-RA | Initial | - | No documents yet |
 
 ---
 
@@ -117,4 +117,4 @@ external_links: []
 
 | Version | Date | Author | Description |
 |---------|------|--------|-------------|
-| v0.1.0 | {{DATE}} | u-M | Initial index created |
+| v0.1.0 | {{DATE}} | u-RA | Initial index created |

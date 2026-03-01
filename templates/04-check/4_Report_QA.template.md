@@ -1,14 +1,14 @@
 ---
-document: "4QA_Report"
+document: "4_Report_QA"
 title: "{{PROJECT_NAME}} QA Report"
-owner: "u-QA-T"
+owner: "u-QA"
 status: "Draft"
 version: "v0.1.0"
 last_updated: "{{DATE}}"
 related_docs:
-  - "u-docs/04-check/4QA_Case.md"
-  - "u-docs/05-act/5ACT_Backlog.md"
-  - "u-docs/01-plan/1M_Index.md"
+  - "u-docs/04-check/4_Case_QA.md"
+  - "u-docs/05-act/5_Backlog_RA.md"
+  - "u-docs/01-plan/1_Index_RA.md"
 external_links: []
 ---
 
@@ -26,7 +26,7 @@ external_links: []
 |------|-------|
 | Iteration | {{ITERATION}} |
 | Test Date | {{DATE}} |
-| Tester | u-QA-T |
+| Tester | u-QA |
 | Environment | Local / CI |
 | Build Version | {{BUILD_VERSION}} |
 
@@ -103,7 +103,7 @@ pie title Defects by Severity
 | **FR-ID** | FR-001 |
 | **Status** | Open |
 | **Found Date** | {{DATE}} |
-| **Found By** | u-QA-T |
+| **Found By** | u-QA |
 
 **Description**: {{결함 상세 설명}}
 
@@ -117,7 +117,7 @@ pie title Defects by Severity
 
 **Evidence**: [Screenshot](u-docs/assets/def-001.png)
 
-**Root Cause**: {{원인 분석 (u-QA-N이 작성)}}
+**Root Cause**: {{원인 분석 (u-QA이 작성)}}
 
 **Fix Suggestion**: {{수정 제안}}
 
@@ -158,4 +158,4 @@ pie title Defects by Severity
 
 | Version | Date | Author | Description |
 |---------|------|--------|-------------|
-| v0.1.0 | {{DATE}} | u-QA-T | Initial draft |
+| v0.1.0 | {{DATE}} | u-QA | Initial draft |

@@ -24,7 +24,7 @@ flowchart TD
 
 | Step | Name | Description |
 |------|------|-------------|
-| 1 | **Init Check** | 현재 프로젝트 상태 확인. `u-docs/` 구조 검증, `1M_Index.md` 로드, 현재 Phase/Iteration 파악 |
+| 1 | **Init Check** | 현재 프로젝트 상태 확인. `u-docs/` 구조 검증, `1_Index_RA.md` 로드, 현재 Phase/Iteration 파악 |
 | 2 | **Progress Report** | 현재 Iteration 진행률 배너 출력 (Phase, 완료율, 백로그 수, 결함 수) |
 | 3 | **Phase Traverse** | 현재 Phase부터 순서대로 실행: PLAN → DESIGN → DO → CHECK. 각 Phase 완료 시 Gate 검증 |
 | 4 | **Exit Check** | 4가지 종료 조건 판정. 모두 충족 시 Step 6, 미충족 시 Step 5 |
@@ -112,18 +112,18 @@ flowchart TD
 ```python
 def check_exit_criteria():
     # Condition 1: All backlog items Done
-    backlog = parse_backlog("u-docs/05-act/5ACT_Backlog.md")
+    backlog = parse_backlog("u-docs/05-act/5_Backlog_RA.md")
     open_items = [item for item in backlog if item.status != "Done"]
     cond_1 = len(open_items) == 0
 
     # Condition 2: No Critical/Major defects
-    report = parse_report("u-docs/04-check/4QA_Report.md")
+    report = parse_report("u-docs/04-check/4_Report_QA.md")
     critical_major = [d for d in report.defects
                       if d.severity in ("Critical", "Major")]
     cond_2 = len(critical_major) == 0
 
     # Condition 3: All FR implemented
-    srs = parse_srs("u-docs/01-plan/1A_SRS.md")
+    srs = parse_srs("u-docs/01-plan/1_SRS_SA.md")
     unimplemented = [fr for fr in srs.features
                      if not fr.implemented]
     cond_3 = len(unimplemented) == 0
@@ -161,7 +161,7 @@ def check_exit_criteria():
 
 ## 6. Backlog Item Structure
 
-`5ACT_Backlog.md` 내 백로그 항목의 표준 구조:
+`5_Backlog_RA.md` 내 백로그 항목의 표준 구조:
 
 | Field | Description | Example |
 |-------|-------------|---------|
@@ -205,10 +205,10 @@ def check_exit_criteria():
 +--------------------------------------------------+
 | PHASE: DESIGN | Iteration: 2                      |
 |--------------------------------------------------|
-| [DONE] u-CX: Screen Design (2CX_Screen.md)       |
-| [WORK] u-A: ERD (2A_ERD.md)                      |
-| [WAIT] u-A: API Contract (2A_API.md)             |
-| [WAIT] u-M: Validation                           |
+| [DONE] u-UX: Screen Design (2_Screen_UX.md)       |
+| [WORK] u-SA: ERD (2_ERD_SA.md)                    |
+| [WAIT] u-SA: API Contract (2_API_SA.md)           |
+| [WAIT] u-RA: Validation                           |
 |--------------------------------------------------|
 | Progress: 25% | Backlog: 3 open                  |
 +--------------------------------------------------+
@@ -222,7 +222,7 @@ def check_exit_criteria():
 |--------------------------------------------------|
 | Total Iterations: 3                               |
 | Final Status: ALL PASS                            |
-| Documents: 13 Final                               |
+| Documents: 17 Final                               |
 | Build: SUCCESS                                    |
 | Defects Resolved: 5/5                             |
 +==================================================+

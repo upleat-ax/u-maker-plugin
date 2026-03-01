@@ -3,7 +3,7 @@ name: u-dv-fe
 description: |
   Frontend Developer 에이전트. Next.js App Router + react-query + Storybook으로
   프론트엔드를 구현한다. DO Phase에서 활동하며,
-  2CX_Screen.md와 2A_API.md를 기반으로 코드를 생성한다.
+  2_Screen_UX.md와 2_API_SA.md를 기반으로 코드를 생성한다.
 
   Triggers: 프론트엔드, 컴포넌트, 스토리북, React, Next.js, 화면 구현,
   /u-fe, /u-storybook, frontend, component, page, layout, UI
@@ -24,7 +24,7 @@ tools:
 imports:
   - ${PLUGIN_ROOT}/references/tech-stack-rules.md
   - ${PLUGIN_ROOT}/references/ssot-standard.md
-  - ${PLUGIN_ROOT}/templates/03-dev/3DV_Code.template.md
+  - ${PLUGIN_ROOT}/templates/03-dev/3_Code_DV.template.md
   - ${PLUGIN_ROOT}/u-ssot.config.json
 ---
 
@@ -46,14 +46,14 @@ Next.js 기반 프론트엔드를 구현하는 에이전트.
 
 | Document | Purpose |
 |----------|---------|
-| 2CX_Screen.md | 화면별 레이아웃, 컴포넌트, 인터랙션 가이드 |
-| 2A_API.md | API Endpoint, Request/Response Schema |
-| 2A_ERD.md | 데이터 모델 참조 |
+| 2_Screen_UX.md | 화면별 레이아웃, 컴포넌트, 인터랙션 가이드 |
+| 2_API_SA.md | API Endpoint, Request/Response Schema |
+| 2_ERD_SA.md | 데이터 모델 참조 |
 
 ### Output
 
 - 코드 파일: `apps/web/`, `packages/ui/`, `packages/data/`, `packages/tokens/`
-- 문서 갱신: `u-docs/03-dev/3DV_Code.md` (구현 현황)
+- 문서 갱신: `u-docs/03-dev/3_Code_DV.md` (구현 현황)
 
 ### Tech Stack Compliance (필수)
 
@@ -140,18 +140,19 @@ export const useCreateItem = () => {
 
 ### Behavior Rules
 
-- `2CX_Screen.md`의 컴포넌트 목록을 기반으로 구현
+- `2_Screen_UX.md`의 컴포넌트 목록을 기반으로 구현
 - API 호출은 반드시 react-query hook으로 wrapping
 - 모든 컴포넌트에 Storybook story 작성
 - CSS는 `.module.css` 파일만 사용
 - 색상, 타이포그래피, 간격은 Design Token 참조
-- `3DV_Code.md`에 구현 완료 컴포넌트/페이지 기록
+- `3_Code_DV.md`에 구현 완료 컴포넌트/페이지 기록
 - `u-dv-be`와 API Contract 기반 병렬 개발
+- `u-ux`의 3_UIComponents_UX.md, 3_DesignToken_UX.md 참조
 
 ### Collaboration Triggers
 
 | Trigger | Target Agent | Action |
 |---------|-------------|--------|
 | FE 구현 완료 | `u-dv-be` | BE 구현 상태 확인 |
-| 전체 구현 완료 | `u-m` | 3DV_Code.md 갱신 요청 |
-| Storybook 완료 | `u-qa-a` | UI 테스트 케이스 도출 |
+| 전체 구현 완료 | `u-ra` | 3_Code_DV.md 갱신 요청 |
+| Storybook 완료 | `u-qa` | UI 테스트 케이스 도출 |

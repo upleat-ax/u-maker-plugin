@@ -10,18 +10,18 @@
       "expectedBehavior": [
         "init-project.sh should be executed with 'my-shop' argument",
         "u-docs/ folder structure should be created",
-        "PLAN phase should start with u-PM agent",
-        "1PM_Roadmap.md should be created with products, cart, checkout features",
-        "1A_SRS.md should contain FR for each feature",
-        "1CX_IA.md should define information architecture"
+        "PLAN phase should start with u-RA agent",
+        "1_Roadmap_RA.md should be created with products, cart, checkout features",
+        "1_SRS_SA.md should contain FR for each feature",
+        "1_IA_UX.md should define information architecture"
       ],
-      "expectedAgents": ["u-pm", "u-a", "u-cx", "u-m"],
+      "expectedAgents": ["u-ra", "u-sa", "u-ux"],
       "expectedPhase": "plan",
       "expectedDocuments": [
-        "u-docs/01-plan/1PM_Roadmap.md",
-        "u-docs/01-plan/1A_SRS.md",
-        "u-docs/01-plan/1CX_IA.md",
-        "u-docs/01-plan/1M_Index.md"
+        "u-docs/01-plan/1_Roadmap_RA.md",
+        "u-docs/01-plan/1_SRS_SA.md",
+        "u-docs/01-plan/1_IA_UX.md",
+        "u-docs/01-plan/1_Index_RA.md"
       ],
       "tags": ["project-init", "plan", "e2e"]
     },
@@ -31,17 +31,17 @@
       "description": "Generate Entity-Relationship Diagram from existing SRS document",
       "prompt": "SRS 문서를 기반으로 ERD를 작성해줘.",
       "expectedBehavior": [
-        "u-A agent should be invoked",
-        "Should read 1A_SRS.md for FR requirements",
-        "2A_ERD.md should be created in u-docs/02-design/",
+        "u-SA agent should be invoked",
+        "Should read 1_SRS_SA.md for FR requirements",
+        "2_ERD_SA.md should be created in u-docs/02-design/",
         "ERD should include Mermaid erDiagram",
         "Entities should map to FR items from SRS",
-        "Related Docs should reference 1A_SRS.md"
+        "Related Docs should reference 1_SRS_SA.md"
       ],
-      "expectedAgents": ["u-a"],
+      "expectedAgents": ["u-sa"],
       "expectedPhase": "design",
       "expectedDocuments": [
-        "u-docs/02-design/2A_ERD.md"
+        "u-docs/02-design/2_ERD_SA.md"
       ],
       "tags": ["design", "erd", "traceability"]
     },
@@ -51,17 +51,17 @@
       "description": "Generate API Contract (OpenAPI) from screen design document",
       "prompt": "화면 설계를 기반으로 API 계약서를 작성해줘.",
       "expectedBehavior": [
-        "u-A agent should be invoked",
-        "Should read 2CX_Screen.md for screen specifications",
-        "Should read 2A_ERD.md for data model reference",
-        "2A_API.md should be created with OpenAPI 3.0 spec",
+        "u-SA agent should be invoked",
+        "Should read 2_Screen_UX.md for screen specifications",
+        "Should read 2_ERD_SA.md for data model reference",
+        "2_API_SA.md should be created with OpenAPI 3.0 spec",
         "API endpoints should map to screen actions",
-        "Related Docs should reference 2CX_Screen.md and 2A_ERD.md"
+        "Related Docs should reference 2_Screen_UX.md and 2_ERD_SA.md"
       ],
-      "expectedAgents": ["u-a"],
+      "expectedAgents": ["u-sa"],
       "expectedPhase": "design",
       "expectedDocuments": [
-        "u-docs/02-design/2A_API.md"
+        "u-docs/02-design/2_API_SA.md"
       ],
       "tags": ["design", "api", "traceability"]
     },
@@ -73,7 +73,7 @@
       "expectedBehavior": [
         "DESIGN -> DO gate should be checked",
         "u-DV-FE agent should be invoked",
-        "Should read 2CX_Screen.md and 2A_API.md",
+        "Should read 2_Screen_UX.md and 2_API_SA.md",
         "Code should use Next.js App Router",
         "Code should use functional components only",
         "Code should use react-query for data fetching",
@@ -84,7 +84,7 @@
       "expectedAgents": ["u-dv-fe"],
       "expectedPhase": "do",
       "expectedDocuments": [
-        "u-docs/03-dev/3DV_Code.md"
+        "u-docs/03-dev/3_Code_DV.md"
       ],
       "tags": ["do", "frontend", "tech-stack"]
     },
@@ -95,18 +95,18 @@
       "prompt": "테스트 케이스를 설계하고 실행해줘.",
       "expectedBehavior": [
         "DO -> CHECK gate should be checked (build must pass)",
-        "u-QA-A agent designs test cases from SRS and Screen docs",
-        "4QA_Case.md should be created",
-        "u-QA-T agent executes test cases",
-        "4QA_Report.md should record results",
-        "u-QA-N agent analyzes any defects found",
+        "u-QA agent designs test cases from SRS and Screen docs",
+        "4_Case_QA.md should be created",
+        "u-QA agent executes test cases",
+        "4_Report_QA.md should record results",
+        "u-QA agent analyzes any defects found",
         "Critical/Major defects should trigger ACT phase"
       ],
-      "expectedAgents": ["u-qa-a", "u-qa-t", "u-qa-n"],
+      "expectedAgents": ["u-qa"],
       "expectedPhase": "check",
       "expectedDocuments": [
-        "u-docs/04-check/4QA_Case.md",
-        "u-docs/04-check/4QA_Report.md"
+        "u-docs/04-check/4_Case_QA.md",
+        "u-docs/04-check/4_Report_QA.md"
       ],
       "tags": ["check", "qa", "testing"]
     },
@@ -123,14 +123,14 @@
         "Exit criteria should be checked after CHECK phase",
         "If criteria not met, should transition to ACT and start next iteration",
         "Loop should respect max iteration limit (10)",
-        "5ACT_Backlog.md should be updated with open items",
-        "5ACT_Iteration_Log.md should record iteration results"
+        "5_Backlog_RA.md should be updated with open items",
+        "5_IterationLog_RA.md should record iteration results"
       ],
-      "expectedAgents": ["u-pm", "u-a", "u-cx", "u-dv-fe", "u-dv-be", "u-qa-a", "u-qa-t", "u-qa-n", "u-m"],
+      "expectedAgents": ["u-ra", "u-sa", "u-ux", "u-dv-fe", "u-dv-be", "u-qa"],
       "expectedPhase": "act",
       "expectedDocuments": [
-        "u-docs/05-act/5ACT_Backlog.md",
-        "u-docs/05-act/5ACT_Iteration_Log.md"
+        "u-docs/05-act/5_Backlog_RA.md",
+        "u-docs/05-act/5_IterationLog_RA.md"
       ],
       "tags": ["loop", "iteration", "e2e"]
     },
@@ -148,7 +148,7 @@
         "Should show open backlog item count",
         "Should show Critical/Major defect count"
       ],
-      "expectedAgents": ["u-m"],
+      "expectedAgents": ["u-ra"],
       "expectedPhase": null,
       "expectedDocuments": [],
       "tags": ["command", "status", "reporting"]
@@ -159,20 +159,20 @@
       "description": "Test ACT phase execution for iteration wrap-up",
       "prompt": "/u-act",
       "expectedBehavior": [
-        "Should analyze CHECK results from 4QA_Report.md",
-        "Should create/update 5ACT_Backlog.md with unresolved items",
-        "Should create 5ACT_Retrospective.md with lessons learned",
+        "Should analyze CHECK results from 4_Report_QA.md",
+        "Should create/update 5_Backlog_RA.md with unresolved items",
+        "Should create 5_Retrospective_RA.md with lessons learned",
         "Should archive current iteration to u-docs/iterations/iter-N/",
-        "Should update 5ACT_Iteration_Log.md",
+        "Should update 5_IterationLog_RA.md",
         "Should increment iteration counter",
         "Should transition to PLAN phase for next iteration"
       ],
-      "expectedAgents": ["u-m"],
+      "expectedAgents": ["u-ra"],
       "expectedPhase": "act",
       "expectedDocuments": [
-        "u-docs/05-act/5ACT_Backlog.md",
-        "u-docs/05-act/5ACT_Retrospective.md",
-        "u-docs/05-act/5ACT_Iteration_Log.md"
+        "u-docs/05-act/5_Backlog_RA.md",
+        "u-docs/05-act/5_Retrospective_RA.md",
+        "u-docs/05-act/5_IterationLog_RA.md"
       ],
       "tags": ["act", "iteration", "backlog"]
     },
@@ -182,13 +182,13 @@
       "description": "Test backlog command output",
       "prompt": "/u-backlog",
       "expectedBehavior": [
-        "Should read 5ACT_Backlog.md",
+        "Should read 5_Backlog_RA.md",
         "Should display all open backlog items",
         "Should show item ID, title, priority, and status",
         "Should show summary statistics (total, open, done)",
         "Should suggest next actions for open items"
       ],
-      "expectedAgents": ["u-m"],
+      "expectedAgents": ["u-ra"],
       "expectedPhase": null,
       "expectedDocuments": [],
       "tags": ["command", "backlog", "reporting"]

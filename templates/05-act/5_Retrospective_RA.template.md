@@ -1,14 +1,14 @@
 ---
-document: "5ACT_Retrospective"
+document: "5_Retrospective_RA"
 title: "{{PROJECT_NAME}} Retrospective"
-owner: "Team"
+owner: "u-RA"
 status: "Draft"
 version: "v0.1.0"
 last_updated: "{{DATE}}"
 related_docs:
-  - "u-docs/05-act/5ACT_Backlog.md"
-  - "u-docs/05-act/5ACT_Iteration_Log.md"
-  - "u-docs/01-plan/1M_Index.md"
+  - "u-docs/05-act/5_Backlog_RA.md"
+  - "u-docs/05-act/5_IterationLog_RA.md"
+  - "u-docs/01-plan/1_Index_RA.md"
 external_links: []
 ---
 
@@ -120,4 +120,4 @@ external_links: []
 
 | Version | Date | Author | Description |
 |---------|------|--------|-------------|
-| v0.1.0 | {{DATE}} | Team | Iteration {{N}} retrospective |
+| v0.1.0 | {{DATE}} | u-RA | Iteration {{N}} retrospective |

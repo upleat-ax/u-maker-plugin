@@ -1,15 +1,15 @@
 ---
-document: "1CX_IA"
+document: "1_IA_UX"
 title: "{{PROJECT_NAME}} Information Architecture"
-owner: "u-CX"
+owner: "u-UX"
 status: "Draft"
 version: "v0.1.0"
 last_updated: "{{DATE}}"
 related_docs:
-  - "u-docs/01-plan/1PM_Roadmap.md"
-  - "u-docs/01-plan/1A_SRS.md"
-  - "u-docs/02-design/2CX_Screen.md"
-  - "u-docs/01-plan/1M_Index.md"
+  - "u-docs/01-plan/1_Roadmap_RA.md"
+  - "u-docs/01-plan/1_SRS_SA.md"
+  - "u-docs/02-design/2_Screen_UX.md"
+  - "u-docs/01-plan/1_Index_RA.md"
 external_links: []
 ---
 
@@ -152,4 +152,4 @@ flowchart TD
 
 | Version | Date | Author | Description |
 |---------|------|--------|-------------|
-| v0.1.0 | {{DATE}} | u-CX | Initial draft |
+| v0.1.0 | {{DATE}} | u-UX | Initial draft |

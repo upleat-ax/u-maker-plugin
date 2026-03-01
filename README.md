@@ -8,14 +8,14 @@
 
 ## Overview
 
-u-Agent SSoT는 9개 전문 에이전트가 PDCA(Plan-Design-Do-Check-Act) 사이클을 따라 소프트웨어 개발을 자동화하는 Claude Code Plugin이다. 모든 결정과 산출물은 `u-docs/` SSoT 문서 체계에 기록되며, 종료 조건 충족까지 자동 반복한다.
+u-Agent SSoT는 6개 전문 에이전트가 PDCA(Plan-Design-Do-Check-Act) 사이클을 따라 소프트웨어 개발을 자동화하는 Claude Code Plugin이다. 모든 결정과 산출물은 `u-docs/` SSoT 문서 체계에 기록되며, 종료 조건 충족까지 자동 반복한다.
 
 ### 핵심 원칙
 
 - **문서 중심**: 모든 결정과 산출물은 `u-docs/` SSoT 문서에 기록
 - **Phase Gate**: 각 Phase 전환은 Gate 조건 충족 필수
 - **자동 반복**: CHECK 실패 시 ACT → 다음 Iteration 자동 전환
-- **역할 분리**: 9개 전문 에이전트가 명확한 역할 분담
+- **역할 분리**: 6개 전문 에이전트가 명확한 역할 분담
 - **기술 스택 강제**: 10가지 기술 스택 규칙 위반 시 거부
 
 ---
@@ -45,7 +45,7 @@ cp -r u-ssot/ .claude/plugins/u-ssot/
 # 2. PLAN Phase (로드맵 → SRS → IA → 인덱스)
 /u-plan
 
-# 3. DESIGN Phase (화면설계 → ERD → API)
+# 3. DESIGN Phase (화면설계 → 디자인시스템 → ERD → API)
 /u-design
 
 # 4. DO Phase (Frontend + Backend 병렬 개발)
@@ -60,19 +60,16 @@ cp -r u-ssot/ .claude/plugins/u-ssot/
 
 ---
 
-## 9 Agents
+## 6 Agents
 
 | Agent | Role | Phase | 담당 문서 |
 |-------|------|-------|----------|
-| `u-pm` | Project Manager | PLAN, ACT | 1PM_Roadmap, 5ACT_Retrospective |
-| `u-m` | Master (SSoT Guardian) | ALL | 1M_Index, 5ACT_Iteration_Log |
-| `u-a` | Architect | PLAN, DESIGN | 1A_SRS, 2A_ERD, 2A_API |
-| `u-cx` | CX/UX Designer | PLAN, DESIGN | 1CX_IA, 2CX_Screen |
+| `u-ra` | Requirements Analyst | ALL | 1_Roadmap_RA, 1_Index_RA, 5_Backlog_RA, 5_IterationLog_RA, 5_Retrospective_RA |
+| `u-sa` | Software Architect | PLAN, DESIGN | 1_SRS_SA, 2_ERD_SA, 2_API_SA |
+| `u-ux` | UX Designer | PLAN, DESIGN, DO | 1_IA_UX, 2_Screen_UX, 2_DesignSystem_UX, 3_Screen_UX, 3_UIComponents_UX, 3_DesignToken_UX |
 | `u-dv-fe` | Frontend Developer | DO | 코드 생성 (Next.js + react-query) |
 | `u-dv-be` | Backend Developer | DO | 코드 생성 (API Routes + ORM) |
-| `u-qa-a` | QA Analyst | CHECK | 4QA_Case |
-| `u-qa-t` | QA Tester | CHECK | 4QA_Report |
-| `u-qa-n` | QA Defect Analyst | CHECK, ACT | 5ACT_Backlog |
+| `u-qa` | Quality Assurance | CHECK | 4_Case_QA, 4_Report_QA |
 
 ---
 
@@ -80,8 +77,8 @@ cp -r u-ssot/ .claude/plugins/u-ssot/
 
 ```
 PLAN → DESIGN → DO → CHECK → ACT → (다음 Iteration)
-                              ↓
-                          COMPLETE (종료 조건 충족 시)
+                            ↓
+                        COMPLETE (종료 조건 충족 시)
 ```
 
 ### Phase Gate 조건
@@ -89,7 +86,7 @@ PLAN → DESIGN → DO → CHECK → ACT → (다음 Iteration)
 | Transition | 조건 |
 |------------|------|
 | PLAN → DESIGN | Roadmap + SRS + IA 모두 Final |
-| DESIGN → DO | ERD + API + Screen 모두 Final + u-M 검수 |
+| DESIGN → DO | ERD + API + Screen 모두 Final + u-RA 검수 |
 | DO → CHECK | 코드 구현 완료 + `bun run build` 성공 |
 | CHECK → Complete | Critical/Major 0건 + 백로그 0건 + 전체 FR 구현 |
 | CHECK → ACT | 위 조건 미충족 시 자동 전환 |
@@ -98,7 +95,7 @@ PLAN → DESIGN → DO → CHECK → ACT → (다음 Iteration)
 
 4가지 모두 충족 시 루프 종료:
 
-1. `5ACT_Backlog.md`의 모든 항목 Done
+1. `5_Backlog_RA.md`의 모든 항목 Done
 2. Critical/Major 결함 0건
 3. SRS의 모든 FR 구현 완료
 4. `bun run build` 성공
@@ -135,6 +132,9 @@ PLAN → DESIGN → DO → CHECK → ACT → (다음 Iteration)
 | `/u-docs` | 문서 목록 조회 |
 | `/u-validate` | SSoT 무결성 검증 |
 | `/u-backlog` | 백로그 조회 |
+| `/u-backlog-add` | 백로그 항목 추가 |
+| `/u-us-add` | 유저 스토리 추가 |
+| `/u-fr-add` | 기능 요구사항(FR) 추가 |
 | `/u-index` | 문서 인덱스 갱신 |
 
 ### Individual Agent
@@ -160,6 +160,8 @@ PLAN → DESIGN → DO → CHECK → ACT → (다음 Iteration)
 | `/u-archive` | 현재 Iteration 아카이브 |
 | `/u-storybook` | Storybook 실행 |
 | `/u-build` | 프로젝트 빌드 |
+| `/u-summary` | 프로젝트 요약 생성 |
+| `/u-git-pr` | Git commit + PR 생성 |
 
 ---
 
@@ -168,23 +170,27 @@ PLAN → DESIGN → DO → CHECK → ACT → (다음 Iteration)
 ```
 u-docs/
 ├── 01-plan/
-│   ├── 1PM_Roadmap.md          # u-pm
-│   ├── 1A_SRS.md               # u-a
-│   ├── 1CX_IA.md               # u-cx
-│   └── 1M_Index.md             # u-m
+│   ├── 1_Roadmap_RA.md          # u-ra
+│   ├── 1_SRS_SA.md              # u-sa
+│   ├── 1_IA_UX.md               # u-ux
+│   └── 1_Index_RA.md            # u-ra
 ├── 02-design/
-│   ├── 2A_ERD.md               # u-a
-│   ├── 2A_API.md               # u-a
-│   └── 2CX_Screen.md           # u-cx
+│   ├── 2_ERD_SA.md              # u-sa
+│   ├── 2_API_SA.md              # u-sa
+│   ├── 2_Screen_UX.md           # u-ux
+│   └── 2_DesignSystem_UX.md     # u-ux
 ├── 03-dev/
-│   └── 3DV_Code.md             # u-dv-fe / u-dv-be
+│   ├── 3_Code_DV.md             # u-dv-fe / u-dv-be
+│   ├── 3_Screen_UX.md           # u-ux
+│   ├── 3_UIComponents_UX.md     # u-ux
+│   └── 3_DesignToken_UX.md      # u-ux
 ├── 04-check/
-│   ├── 4QA_Case.md             # u-qa-a
-│   └── 4QA_Report.md           # u-qa-t
+│   ├── 4_Case_QA.md             # u-qa
+│   └── 4_Report_QA.md           # u-qa
 ├── 05-act/
-│   ├── 5ACT_Backlog.md         # u-qa-n
-│   ├── 5ACT_Iteration_Log.md   # u-m
-│   └── 5ACT_Retrospective.md   # u-pm
+│   ├── 5_Backlog_RA.md          # u-ra
+│   ├── 5_IterationLog_RA.md     # u-ra
+│   └── 5_Retrospective_RA.md    # u-ra
 ├── assets/
 └── iterations/
     └── iter-N/
@@ -232,17 +238,16 @@ u-ssot/
 │   └── plugin.json              # Plugin 메타데이터
 ├── skills/u-ssot/
 │   └── SKILL.md                 # 메인 오케스트레이터
-├── agents/                      # 9 에이전트 정의
-├── references/                  # 7 참조 문서
-├── templates/                   # 13 SSoT 템플릿
-├── scripts/                     # 자동화 스크립트 (6)
-├── hooks/                       # Hook 시스템 (2)
-├── lib/                         # 유틸리티 라이브러리 (3)
+├── agents/                      # 6 에이전트 정의
+├── references/                  # 8 참조 문서
+├── templates/                   # 17 SSoT 템플릿
+├── commands/                    # 35 슬래시 커맨드
+├── scripts/                     # 자동화 스크립트
+├── hooks/                       # Hook 시스템
+├── lib/                         # 유틸리티 라이브러리
 ├── evals/                       # 테스트 케이스
-└── u-ssot.config.json     # 설정 파일
+└── u-ssot.config.json           # 설정 파일
 ```
-
-**Total: 44 files**
 
 ---
 
@@ -282,7 +287,7 @@ u-ssot/
   },
   "agents": {
     "routing": {            // 에이전트별 Phase/Trigger 설정
-      "u-pm": { "phases": ["plan", "act"], ... }
+      "u-ra": { "phases": ["plan", "design", "do", "check", "act"], ... }
     }
   }
 }

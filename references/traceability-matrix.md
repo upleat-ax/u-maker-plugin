@@ -11,21 +11,21 @@ PRD(why) → SRS(what) → ERD(how) → Code(execute) 순서의 수직적 추적
 
 | Level | Document | Role | Traces From | Traces To |
 |-------|----------|------|-------------|-----------|
-| L1 (Why) | `1PM_Roadmap.md` | 프로젝트 목적, 유저 스토리, 마일스톤 | (최상위) | `1A_SRS.md` |
-| L2 (What) | `1A_SRS.md` | 기능/비기능 요구사항 정의 | `1PM_Roadmap.md` | `2A_ERD.md`, `2A_API.md` |
-| L3 (How) | `2A_ERD.md` | 데이터 모델, Entity 관계 | `1A_SRS.md` | `3DV_Code.md` |
-| L3 (How) | `2A_API.md` | API Contract, 인터페이스 | `1A_SRS.md` | `3DV_Code.md` |
-| L4 (Execute) | `3DV_Code.md` | 구현 기록, 파일 매핑 | `2A_ERD.md`, `2A_API.md` | `4QA_Case.md` |
+| L1 (Why) | `1_Roadmap_RA.md` | 프로젝트 목적, 유저 스토리, 마일스톤 | (최상위) | `1_SRS_SA.md` |
+| L2 (What) | `1_SRS_SA.md` | 기능/비기능 요구사항 정의 | `1_Roadmap_RA.md` | `2_ERD_SA.md`, `2_API_SA.md` |
+| L3 (How) | `2_ERD_SA.md` | 데이터 모델, Entity 관계 | `1_SRS_SA.md` | `3_Code_DV.md` |
+| L3 (How) | `2_API_SA.md` | API Contract, 인터페이스 | `1_SRS_SA.md` | `3_Code_DV.md` |
+| L4 (Execute) | `3_Code_DV.md` | 구현 기록, 파일 매핑 | `2_ERD_SA.md`, `2_API_SA.md` | `4_Case_QA.md` |
 
 ### Vertical Chain Diagram
 
 ```mermaid
 flowchart TD
-    ROADMAP["1PM_Roadmap.md\n(Why)"]
-    SRS["1A_SRS.md\n(What)"]
-    ERD["2A_ERD.md\n(How - Data)"]
-    API["2A_API.md\n(How - Interface)"]
-    CODE["3DV_Code.md\n(Execute)"]
+    ROADMAP["1_Roadmap_RA.md\n(Why)"]
+    SRS["1_SRS_SA.md\n(What)"]
+    ERD["2_ERD_SA.md\n(How - Data)"]
+    API["2_API_SA.md\n(How - Interface)"]
+    CODE["3_Code_DV.md\n(Execute)"]
 
     ROADMAP -->|User Stories → FR| SRS
     SRS -->|FR → Entities| ERD
@@ -36,10 +36,11 @@ flowchart TD
 
 ### Tracing Rules (Vertical)
 
-1. `1PM_Roadmap.md`의 모든 User Story는 `1A_SRS.md`의 FR과 매핑되어야 한다
-2. `1A_SRS.md`의 모든 FR은 `2A_ERD.md` 또는 `2A_API.md`에서 구체화되어야 한다
-3. `2A_ERD.md`의 모든 Entity는 `3DV_Code.md`의 모델 파일과 매핑되어야 한다
-4. `2A_API.md`의 모든 Endpoint는 `3DV_Code.md`의 라우트 파일과 매핑되어야 한다
+1. `1_Roadmap_RA.md`의 모든 User Story는 `1_SRS_SA.md`의 FR과 매핑되어야 한다 (PLAN Gate 검증 시점에 적용. 작성 중 `TBD` 허용)
+2. `1_SRS_SA.md`의 모든 FR은 `2_ERD_SA.md` 또는 `2_API_SA.md`에서 구체화되어야 한다
+3. `2_ERD_SA.md`의 모든 Entity는 `3_Code_DV.md`의 모델 파일과 매핑되어야 한다
+4. `2_API_SA.md`의 모든 Endpoint는 `3_Code_DV.md`의 라우트 파일과 매핑되어야 한다
+5. Technical FR (US 없는 FR)은 US Mapping이 `-`로 표시 가능
 
 ---
 
@@ -49,17 +50,17 @@ Screen(UI) ↔ API(data) ↔ QA Case(verify) 순서의 수평적 추적성.
 
 | Document | Role | Horizontal Links |
 |----------|------|-----------------|
-| `2CX_Screen.md` | UI 화면 설계 | ↔ `2A_API.md` (화면이 호출하는 API) |
-| `2A_API.md` | API 인터페이스 | ↔ `2CX_Screen.md` (API를 사용하는 화면), ↔ `4QA_Case.md` (API 테스트) |
-| `4QA_Case.md` | 테스트 케이스 | ↔ `2A_API.md` (테스트 대상 API), ↔ `2CX_Screen.md` (테스트 대상 화면) |
+| `2_Screen_UX.md` | UI 화면 설계 | ↔ `2_API_SA.md` (화면이 호출하는 API) |
+| `2_API_SA.md` | API 인터페이스 | ↔ `2_Screen_UX.md` (API를 사용하는 화면), ↔ `4_Case_QA.md` (API 테스트) |
+| `4_Case_QA.md` | 테스트 케이스 | ↔ `2_API_SA.md` (테스트 대상 API), ↔ `2_Screen_UX.md` (테스트 대상 화면) |
 
 ### Horizontal Chain Diagram
 
 ```mermaid
 flowchart LR
-    SCREEN["2CX_Screen.md\n(UI)"]
-    API["2A_API.md\n(Data)"]
-    QA["4QA_Case.md\n(Verify)"]
+    SCREEN["2_Screen_UX.md\n(UI)"]
+    API["2_API_SA.md\n(Data)"]
+    QA["4_Case_QA.md\n(Verify)"]
 
     SCREEN <-->|화면 → API 호출| API
     API <-->|API → 테스트 케이스| QA
@@ -68,9 +69,9 @@ flowchart LR
 
 ### Tracing Rules (Horizontal)
 
-1. `2CX_Screen.md`의 모든 화면은 사용하는 API endpoint를 명시해야 한다
-2. `2A_API.md`의 모든 endpoint는 호출하는 화면을 참조해야 한다
-3. `4QA_Case.md`의 테스트 케이스는 대상 API 또는 화면을 명시해야 한다
+1. `2_Screen_UX.md`의 모든 화면은 사용하는 API endpoint를 명시해야 한다
+2. `2_API_SA.md`의 모든 endpoint는 호출하는 화면을 참조해야 한다
+3. `4_Case_QA.md`의 테스트 케이스는 대상 API 또는 화면을 명시해야 한다
 
 ---
 
@@ -79,31 +80,35 @@ flowchart LR
 ```mermaid
 flowchart TD
     subgraph PLAN["01-plan"]
-        ROADMAP[1PM_Roadmap.md]
-        SRS[1A_SRS.md]
-        IA[1CX_IA.md]
-        INDEX[1M_Index.md]
+        ROADMAP[1_Roadmap_RA.md]
+        SRS[1_SRS_SA.md]
+        IA[1_IA_UX.md]
+        INDEX[1_Index_RA.md]
     end
 
     subgraph DESIGN["02-design"]
-        SCREEN[2CX_Screen.md]
-        ERD[2A_ERD.md]
-        API[2A_API.md]
+        SCREEN[2_Screen_UX.md]
+        DSYS[2_DesignSystem_UX.md]
+        ERD[2_ERD_SA.md]
+        API[2_API_SA.md]
     end
 
     subgraph DEV["03-dev"]
-        CODE[3DV_Code.md]
+        SCR_UX[3_Screen_UX.md]
+        UICOMP[3_UIComponents_UX.md]
+        DTOKEN[3_DesignToken_UX.md]
+        CODE[3_Code_DV.md]
     end
 
     subgraph CHECK_PHASE["04-check"]
-        CASE[4QA_Case.md]
-        REPORT[4QA_Report.md]
+        CASE[4_Case_QA.md]
+        REPORT[4_Report_QA.md]
     end
 
     subgraph ACT_PHASE["05-act"]
-        BACKLOG[5ACT_Backlog.md]
-        ITER_LOG[5ACT_Iteration_Log.md]
-        RETRO[5ACT_Retrospective.md]
+        BACKLOG[5_Backlog_RA.md]
+        ITER_LOG[5_IterationLog_RA.md]
+        RETRO[5_Retrospective_RA.md]
     end
 
     %% Vertical dependencies
@@ -112,8 +117,13 @@ flowchart TD
     SRS --> ERD
     SRS --> API
     IA --> SCREEN
+    IA --> DSYS
+    DSYS --> SCR_UX
+    DSYS --> UICOMP
+    DSYS --> DTOKEN
     ERD --> CODE
     API --> CODE
+    SCREEN --> SCR_UX
     CODE --> CASE
 
     %% Horizontal dependencies
@@ -132,8 +142,12 @@ flowchart TD
     INDEX -.->|tracks| SRS
     INDEX -.->|tracks| IA
     INDEX -.->|tracks| SCREEN
+    INDEX -.->|tracks| DSYS
     INDEX -.->|tracks| ERD
     INDEX -.->|tracks| API
+    INDEX -.->|tracks| SCR_UX
+    INDEX -.->|tracks| UICOMP
+    INDEX -.->|tracks| DTOKEN
     INDEX -.->|tracks| CODE
     INDEX -.->|tracks| CASE
     INDEX -.->|tracks| REPORT
@@ -148,16 +162,17 @@ flowchart TD
 
 | # | Validation Rule | Source | Target | Severity |
 |---|----------------|--------|--------|----------|
-| V-001 | 모든 User Story는 FR과 매핑 | `1PM_Roadmap.md` | `1A_SRS.md` | Critical |
-| V-002 | 모든 FR은 ERD 또는 API에서 구체화 | `1A_SRS.md` | `2A_ERD.md`, `2A_API.md` | Critical |
-| V-003 | 모든 IA 항목은 Screen에서 설계 | `1CX_IA.md` | `2CX_Screen.md` | Major |
-| V-004 | 모든 Screen은 사용 API를 명시 | `2CX_Screen.md` | `2A_API.md` | Major |
-| V-005 | 모든 API endpoint는 테스트 케이스 존재 | `2A_API.md` | `4QA_Case.md` | Major |
-| V-006 | 모든 Entity는 코드 모델과 매핑 | `2A_ERD.md` | `3DV_Code.md` | Critical |
-| V-007 | 모든 API endpoint는 코드 라우트와 매핑 | `2A_API.md` | `3DV_Code.md` | Critical |
-| V-008 | Index가 모든 문서를 추적 | `1M_Index.md` | All docs | Major |
-| V-009 | 결함 리포트는 백로그에 등록 | `4QA_Report.md` | `5ACT_Backlog.md` | Major |
+| V-001 | 모든 User Story는 FR과 매핑 (PLAN Gate 검증 시점에 적용. 작성 중 `TBD` 허용) | `1_Roadmap_RA.md` | `1_SRS_SA.md` | Critical |
+| V-002 | 모든 FR은 ERD 또는 API에서 구체화 | `1_SRS_SA.md` | `2_ERD_SA.md`, `2_API_SA.md` | Critical |
+| V-003 | 모든 IA 항목은 Screen에서 설계 | `1_IA_UX.md` | `2_Screen_UX.md` | Major |
+| V-004 | 모든 Screen은 사용 API를 명시 | `2_Screen_UX.md` | `2_API_SA.md` | Major |
+| V-005 | 모든 API endpoint는 테스트 케이스 존재 | `2_API_SA.md` | `4_Case_QA.md` | Major |
+| V-006 | 모든 Entity는 코드 모델과 매핑 | `2_ERD_SA.md` | `3_Code_DV.md` | Critical |
+| V-007 | 모든 API endpoint는 코드 라우트와 매핑 | `2_API_SA.md` | `3_Code_DV.md` | Critical |
+| V-008 | Index가 모든 문서를 추적 | `1_Index_RA.md` | All docs | Major |
+| V-009 | 결함 리포트는 백로그에 등록 | `4_Report_QA.md` | `5_Backlog_RA.md` | Major |
 | V-010 | related_docs에 양방향 참조 존재 | All docs | All docs | Minor |
+| V-011 | Technical FR (US 없는 FR)은 US Mapping이 `-`로 표시 가능 | `1_SRS_SA.md` | - | Minor |
 
 ### 4.2 Traceability Matrix Table
 
@@ -166,22 +181,22 @@ flowchart TD
 ```markdown
 | FR-ID | Description | SRS | ERD | API | Screen | Code | QA Case | Status |
 |-------|-------------|-----|-----|-----|--------|------|---------|--------|
-| FR-001 | 사용자 로그인 | 1A:FR-001 | 2A:USER | 2A:POST /auth | 2CX:S-001 | auth.ts | 4QA:TC-001 | Implemented |
-| FR-002 | 대시보드 조회 | 1A:FR-002 | 2A:DASHBOARD | 2A:GET /dashboard | 2CX:S-002 | dashboard.ts | 4QA:TC-002 | In Progress |
+| FR-001 | 사용자 로그인 | 1SA:FR-001 | 2SA:USER | 2SA:POST /auth | 2UX:S-001 | auth.ts | 4QA:TC-001 | Implemented |
+| FR-002 | 대시보드 조회 | 1SA:FR-002 | 2SA:DASHBOARD | 2SA:GET /dashboard | 2UX:S-002 | dashboard.ts | 4QA:TC-002 | In Progress |
 ```
 
 ### 4.3 Validation Process
 
 1. **자동 검증**: `scripts/validate-ssot.py`가 문서 파싱 후 추적성 검증
-2. **u-M 검수**: Phase 전환 Gate에서 `u-M`이 문서 간 모순 검사
+2. **u-RA 검수**: Phase 전환 Gate에서 `u-RA`가 문서 간 모순 검사
 3. **수동 검토**: `/u-validate` 커맨드로 사용자가 직접 검증 요청 가능
 
 ```mermaid
 flowchart LR
     DOC[SSoT Documents] --> SCRIPT[validate-ssot.py]
-    DOC --> M[u-M Agent]
+    DOC --> RA[u-RA Agent]
     SCRIPT --> RESULT{Validation Result}
-    M --> RESULT
+    RA --> RESULT
     RESULT -->|Pass| GATE[Gate Transition]
     RESULT -->|Fail| FIX[Fix Required]
     FIX --> DOC

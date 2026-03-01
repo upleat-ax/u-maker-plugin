@@ -3,7 +3,7 @@ name: u-dv-be
 description: |
   Backend Developer 에이전트. API Routes + Prisma/Drizzle ORM으로
   백엔드를 구현한다. DO Phase에서 활동하며,
-  2A_API.md와 2A_ERD.md를 기반으로 코드를 생성한다.
+  2_API_SA.md와 2_ERD_SA.md를 기반으로 코드를 생성한다.
 
   Triggers: 백엔드, API 구현, Prisma, Drizzle, 서버, 데이터베이스,
   /u-be, backend, api route, server, database, ORM
@@ -24,7 +24,7 @@ tools:
 imports:
   - ${PLUGIN_ROOT}/references/tech-stack-rules.md
   - ${PLUGIN_ROOT}/references/ssot-standard.md
-  - ${PLUGIN_ROOT}/templates/03-dev/3DV_Code.template.md
+  - ${PLUGIN_ROOT}/templates/03-dev/3_Code_DV.template.md
   - ${PLUGIN_ROOT}/u-ssot.config.json
 ---
 
@@ -45,14 +45,14 @@ Next.js API Routes + Prisma/Drizzle ORM으로 서버 로직을 작성한다.
 
 | Document | Purpose |
 |----------|---------|
-| 2A_API.md | API Endpoint 명세, Request/Response Schema |
-| 2A_ERD.md | Entity 정의, Relationship, 제약조건 |
-| 1A_SRS.md | Functional Requirements 참조 |
+| 2_API_SA.md | API Endpoint 명세, Request/Response Schema |
+| 2_ERD_SA.md | Entity 정의, Relationship, 제약조건 |
+| 1_SRS_SA.md | Functional Requirements 참조 |
 
 ### Output
 
 - 코드 파일: `apps/web/app/api/`, `packages/domain/`, `packages/infrastructure/`
-- 문서 갱신: `u-docs/03-dev/3DV_Code.md` (구현 현황)
+- 문서 갱신: `u-docs/03-dev/3_Code_DV.md` (구현 현황)
 
 ### Tech Stack Compliance (필수)
 
@@ -135,12 +135,12 @@ model User {
 
 ### Behavior Rules
 
-- `2A_API.md`의 모든 Endpoint를 구현
-- `2A_ERD.md`의 Entity → Prisma/Drizzle model 매핑
+- `2_API_SA.md`의 모든 Endpoint를 구현
+- `2_ERD_SA.md`의 Entity → Prisma/Drizzle model 매핑
 - Clean Architecture 의존성 방향 준수 (domain ← infrastructure)
-- API 응답 형식은 `2A_API.md`의 Response Schema와 일치
+- API 응답 형식은 `2_API_SA.md`의 Response Schema와 일치
 - Error 응답은 통일된 형식 사용
-- `3DV_Code.md`에 구현 완료 Endpoint 기록
+- `3_Code_DV.md`에 구현 완료 Endpoint 기록
 - `u-dv-fe`와 API Contract 기반 병렬 개발
 
 ### Collaboration Triggers
@@ -148,5 +148,5 @@ model User {
 | Trigger | Target Agent | Action |
 |---------|-------------|--------|
 | BE 구현 완료 | `u-dv-fe` | FE 구현 상태 확인 |
-| 전체 구현 완료 | `u-m` | 3DV_Code.md 갱신 요청 |
-| API 변경 필요 | `u-a` | API Contract 수정 요청 |
+| 전체 구현 완료 | `u-ra` | 3_Code_DV.md 갱신 요청 |
+| API 변경 필요 | `u-sa` | API Contract 수정 요청 |

@@ -1,5 +1,5 @@
 ---
-Owner: u-m
+Owner: u-ra
 Status: Draft
 Version: 1.0.0
 Last Updated: 2026-03-01
@@ -14,17 +14,17 @@ Last Updated: 2026-03-01
 | 프로젝트명 | u-Agent SSoT |
 | 목표 | PDCA 사이클 기반 SSoT 소프트웨어 개발 협업 자동화 Claude Code Plugin |
 | 기술 스택 | Next.js App Router, react-query, Prisma/Drizzle, Turborepo, bun |
-| 에이전트 | 9개 전문 에이전트 (u-pm, u-m, u-a, u-cx, u-dv-fe, u-dv-be, u-qa-a, u-qa-t, u-qa-n) |
+| 에이전트 | 6개 전문 에이전트 (u-ra, u-sa, u-ux, u-dv-fe, u-dv-be, u-qa) |
 | 리포지토리 | u-ssot (main branch) |
 
 ## 플러그인 구조
 
 | 구성 요소 | 수량 | 설명 |
 |-----------|------|------|
-| Agents | 9 | 전문 역할별 에이전트 (PM, Master, Architect, CX, FE/BE Dev, QA x3) |
-| Slash Commands | 30+ | Lifecycle, Loop, Document, Agent, Utility 명령어 |
-| Templates | 13 | SSoT 문서 템플릿 (01-plan ~ 05-act) |
-| References | 7 | 표준 규격, 기술 스택, PDCA 워크플로우 등 참조 문서 |
+| Agents | 6 | 전문 역할별 에이전트 (RA, SA, UX, FE/BE Dev, QA) |
+| Slash Commands | 35+ | Lifecycle, Loop, Document, Agent, Utility 명령어 |
+| Templates | 17 | SSoT 문서 템플릿 (01-plan ~ 05-act) |
+| References | 8 | 표준 규격, 기술 스택, PDCA 워크플로우 등 참조 문서 |
 | Scripts | 6 | 프로젝트 초기화, SSoT 검증, 종료 조건 확인 자동화 |
 | Hooks | 2 | SessionStart, PreToolUse(Write/Edit) |
 
@@ -33,7 +33,7 @@ Last Updated: 2026-03-01
 - **PDCA 자동화**: Plan-Design-Do-Check-Act 사이클 자동 반복
 - **SSoT 문서 체계**: u-docs/ 기반 단일 진실 원천 문서 관리
 - **Phase Gate**: 각 Phase 전환 시 Gate 조건 자동 검증
-- **9 Agent 협업**: 역할별 전문 에이전트가 문서 생성/검수/개발 수행
+- **6 Agent 협업**: 역할별 전문 에이전트가 문서 생성/검수/개발 수행
 - **기술 스택 강제**: 10가지 코딩 규칙 PreToolUse hook으로 자동 차단
 - **Gap Detector**: 설계-구현 Gap 분석 및 Match Rate 산출
 - **Iteration Loop**: 종료 조건 충족까지 PDCA 사이클 자동 반복 (최대 10회)
@@ -54,19 +54,23 @@ Last Updated: 2026-03-01
 
 | Phase | 문서 | Owner | 상태 |
 |-------|------|-------|------|
-| PLAN | 1PM_Roadmap.md | u-pm | - |
-| PLAN | 1A_SRS.md | u-a | - |
-| PLAN | 1CX_IA.md | u-cx | - |
-| PLAN | 1M_Index.md | u-m | - |
-| DESIGN | 2A_ERD.md | u-a | - |
-| DESIGN | 2A_API.md | u-a | - |
-| DESIGN | 2CX_Screen.md | u-cx | - |
-| DO | 3DV_Code.md | u-dv-fe/be | - |
-| CHECK | 4QA_Case.md | u-qa-a | - |
-| CHECK | 4QA_Report.md | u-qa-t | - |
-| ACT | 5ACT_Backlog.md | u-qa-n | - |
-| ACT | 5ACT_Iteration_Log.md | u-m | - |
-| ACT | 5ACT_Retrospective.md | u-pm | - |
+| PLAN | 1_Roadmap_RA.md | u-ra | - |
+| PLAN | 1_SRS_SA.md | u-sa | - |
+| PLAN | 1_IA_UX.md | u-ux | - |
+| PLAN | 1_Index_RA.md | u-ra | - |
+| DESIGN | 2_ERD_SA.md | u-sa | - |
+| DESIGN | 2_API_SA.md | u-sa | - |
+| DESIGN | 2_Screen_UX.md | u-ux | - |
+| DESIGN | 2_DesignSystem_UX.md | u-ux | - |
+| DO | 3_Code_DV.md | u-dv-fe/be | - |
+| DO | 3_Screen_UX.md | u-ux | - |
+| DO | 3_UIComponents_UX.md | u-ux | - |
+| DO | 3_DesignToken_UX.md | u-ux | - |
+| CHECK | 4_Case_QA.md | u-qa | - |
+| CHECK | 4_Report_QA.md | u-qa | - |
+| ACT | 5_Backlog_RA.md | u-ra | - |
+| ACT | 5_IterationLog_RA.md | u-ra | - |
+| ACT | 5_Retrospective_RA.md | u-ra | - |
 
 ## 마일스톤
 
