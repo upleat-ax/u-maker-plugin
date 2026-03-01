@@ -39,8 +39,12 @@ cp -r u-ssot/ .claude/plugins/u-ssot/
 ## Quick Start
 
 ```bash
-# 1. 새 프로젝트 생성
+# 1-a. 새 프로젝트 생성
 /u-create-project my-app
+
+# 1-b. 기존 프로젝트 분석 → SSoT 문서 자동 생성
+/u-init                     # 기본 한국어
+/u-init --lang en           # 영어로 문서 생성
 
 # 2. PLAN Phase (로드맵 → SRS → IA → 인덱스)
 /u-plan
@@ -64,9 +68,9 @@ cp -r u-ssot/ .claude/plugins/u-ssot/
 
 | Agent | Role | Phase | 담당 문서 |
 |-------|------|-------|----------|
-| `u-ra` | Requirements Analyst | ALL | 1_Roadmap_RA, 1_Index_RA, 5_Backlog_RA, 5_IterationLog_RA, 5_Retrospective_RA |
-| `u-sa` | Software Architect | PLAN, DESIGN | 1_SRS_SA, 2_ERD_SA, 2_API_SA |
-| `u-ux` | UX Designer | PLAN, DESIGN, DO | 1_IA_UX, 2_Screen_UX, 2_DesignSystem_UX, 3_Screen_UX, 3_UIComponents_UX, 3_DesignToken_UX |
+| `u-ra` | Requirements Analyst | ALL | 1_Roadmap_PM, 1_Index_PM, 5_Backlog_RA, 5_IterationLog_RA, 5_Retrospective_PM |
+| `u-sa` | Software Architect | PLAN, DESIGN | 1_SRS_RA, 2_ERD_SA, 2_API_SA |
+| `u-ux` | UX Designer | PLAN, DESIGN, DO | 1_IA_RA, 2_Screen_UX, 2_DesignSystem_UX, 3_Screen_UX, 3_UIComponents_UX, 3_DesignToken_UX |
 | `u-dv-fe` | Frontend Developer | DO | 코드 생성 (Next.js + react-query) |
 | `u-dv-be` | Backend Developer | DO | 코드 생성 (API Routes + ORM) |
 | `u-qa` | Quality Assurance | CHECK | 4_Case_QA, 4_Report_QA |
@@ -109,6 +113,7 @@ PLAN → DESIGN → DO → CHECK → ACT → (다음 Iteration)
 | Command | Description |
 |---------|-------------|
 | `/u-create-project` | 새 프로젝트 초기화 (Turborepo + u-docs) |
+| `/u-init [--lang ko\|en\|ja\|zh]` | 기존 프로젝트 분석 → SSoT 문서 자동 생성 |
 | `/u-plan` | PLAN Phase 실행 |
 | `/u-design` | DESIGN Phase 실행 |
 | `/u-dev` | DO Phase 실행 (FE/BE 병렬) |
@@ -170,10 +175,10 @@ PLAN → DESIGN → DO → CHECK → ACT → (다음 Iteration)
 ```
 u-docs/
 ├── 01-plan/
-│   ├── 1_Roadmap_RA.md          # u-ra
-│   ├── 1_SRS_SA.md              # u-sa
-│   ├── 1_IA_UX.md               # u-ux
-│   └── 1_Index_RA.md            # u-ra
+│   ├── 1_Roadmap_PM.md          # u-ra
+│   ├── 1_SRS_RA.md              # u-sa
+│   ├── 1_IA_RA.md               # u-ux
+│   └── 1_Index_PM.md            # u-ra
 ├── 02-design/
 │   ├── 2_ERD_SA.md              # u-sa
 │   ├── 2_API_SA.md              # u-sa
@@ -190,7 +195,7 @@ u-docs/
 ├── 05-act/
 │   ├── 5_Backlog_RA.md          # u-ra
 │   ├── 5_IterationLog_RA.md     # u-ra
-│   └── 5_Retrospective_RA.md    # u-ra
+│   └── 5_Retrospective_PM.md    # u-ra
 ├── assets/
 └── iterations/
     └── iter-N/
@@ -278,6 +283,7 @@ u-ssot/
 
 ```jsonc
 {
+  "documentLanguage": "ko", // 문서 작성 언어 (ko|en|ja|zh, 기본: ko)
   "pdca": {
     "maxIterations": 10,    // 최대 반복 횟수
     "autoIterate": true     // 자동 반복 여부
