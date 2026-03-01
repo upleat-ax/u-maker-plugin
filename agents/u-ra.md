@@ -70,6 +70,22 @@ imports:
 | 5_IterationLog_RA.md | `u-docs/05-act/5_IterationLog_RA.md` | ACT |
 | 5_Retrospective_RA.md | `u-docs/05-act/5_Retrospective_RA.md` | ACT |
 
+<details><summary>JSON Format (Owned Documents)</summary>
+
+```json
+{
+  "ownedDocuments": [
+    { "document": "1_Roadmap_RA.md", "path": "u-docs/01-plan/1_Roadmap_RA.md", "phase": "PLAN" },
+    { "document": "1_Index_RA.md", "path": "u-docs/01-plan/1_Index_RA.md", "phase": "ALL" },
+    { "document": "5_Backlog_RA.md", "path": "u-docs/05-act/5_Backlog_RA.md", "phase": "CHECK, ACT" },
+    { "document": "5_IterationLog_RA.md", "path": "u-docs/05-act/5_IterationLog_RA.md", "phase": "ACT" },
+    { "document": "5_Retrospective_RA.md", "path": "u-docs/05-act/5_Retrospective_RA.md", "phase": "ACT" }
+  ]
+}
+```
+
+</details>
+
 ### PLAN Phase Workflow
 
 **Pattern A (US-First, 기본):**
@@ -148,18 +164,87 @@ CHECK/ACT Phase에서 미해결 결함을 백로그로 관리:
 ```markdown
 ## Backlog
 
-| # | Item | Source | Severity | Status | Assigned | Iteration |
-|---|------|--------|----------|--------|----------|-----------|
-| BL-001 | [항목명] | DEF-XXX | Major | Open | u-dv-fe | Iter 2 |
+| BL-ID | Type | Origin | Description | Priority | Status | Related DEF | Iteration | Assignee |
+|-------|------|--------|-------------|----------|--------|-------------|-----------|----------|
+| BL-001 | Bug | CHECK | [항목명] | Major | Open | DEF-001 | Iter 2 | u-dv-fe |
+| BL-002 | Enhancement | DESIGN | [항목명] | Minor | Open | - | Iter 2 | u-sa |
 ```
+
+<details><summary>JSON Format (Backlog Item)</summary>
+
+```json
+{
+  "backlogItem": {
+    "blId": "BL-001",
+    "type": "Bug",
+    "origin": "CHECK",
+    "description": "항목명",
+    "priority": "Major",
+    "status": "Open",
+    "relatedDef": "DEF-001",
+    "iteration": "Iter 2",
+    "assignee": "u-dv-fe"
+  }
+}
+```
+
+</details>
+
+#### DEF → BL Conversion Responsibility
+
+ACT Phase 시작 시 아래 3단계로 DEF를 BL로 변환:
+
+1. `4_Report_QA.md`에서 Status가 Open인 DEF 수집
+2. SKILL.md의 DEF→BL Conversion Rules에 따라 BL 생성 (중복 제외)
+3. DEF Status를 `Transferred to BL-XXX`로 갱신
+
+<details><summary>JSON Format (DEF→BL Conversion)</summary>
+
+```json
+{
+  "defToBlConversion": {
+    "steps": [
+      { "step": 1, "action": "collectOpenDef", "source": "4_Report_QA.md", "filter": "status === 'Open'" },
+      { "step": 2, "action": "createBl", "rule": "SKILL.md DEF→BL Conversion Rules", "skipDuplicate": true },
+      { "step": 3, "action": "updateDefStatus", "newStatus": "Transferred to BL-XXX" }
+    ],
+    "traceability": {
+      "blToDef": "Related DEF field in BL detail",
+      "defToBl": "DEF Status updated to 'Transferred to BL-XXX'"
+    }
+  }
+}
+```
+
+</details>
 
 ### ACT Phase Workflow
 
-1. 백로그 정리: `5_Backlog_RA.md` 갱신 (미해결 항목 정리)
-2. Iteration 아카이브: `u-docs/iterations/iter-N/`에 문서 스냅샷 보관
-3. Iteration 로그: `5_IterationLog_RA.md` 갱신
-4. 회고 작성: `5_Retrospective_RA.md` 작성 (Good / Improve / Actions)
-5. 다음 Iteration 목표 정의
+1. DEF→BL 변환: `4_Report_QA.md`의 Open DEF를 BL로 변환
+2. 이월/아카이브/제거 정책 적용: Iteration Carry-Over Policy에 따라 처리
+3. 우선순위 재평가: Priority Re-Evaluation Rules에 따라 재평가
+4. Iteration 아카이브: `u-docs/iterations/iter-N/`에 문서 스냅샷 보관
+5. Iteration 로그 갱신: `5_IterationLog_RA.md` 갱신
+6. 회고 작성: `5_Retrospective_RA.md` 작성 (Good / Improve / Actions)
+7. 다음 Iteration 목표 정의
+
+<details><summary>JSON Format (ACT Phase Workflow)</summary>
+
+```json
+{
+  "actPhaseWorkflow": [
+    { "step": 1, "name": "defToBlConversion", "description": "4_Report_QA.md의 Open DEF를 BL로 변환" },
+    { "step": 2, "name": "carryOverPolicy", "description": "이월/아카이브/제거 정책 적용 (Iteration Carry-Over Policy)" },
+    { "step": 3, "name": "priorityReEvaluation", "description": "Priority Re-Evaluation Rules에 따라 재평가" },
+    { "step": 4, "name": "iterationArchive", "description": "u-docs/iterations/iter-N/에 문서 스냅샷 보관" },
+    { "step": 5, "name": "iterationLogUpdate", "description": "5_IterationLog_RA.md 갱신" },
+    { "step": 6, "name": "retrospective", "description": "5_Retrospective_RA.md 작성 (Good / Improve / Actions)" },
+    { "step": 7, "name": "nextIterationGoal", "description": "다음 Iteration 목표 정의" }
+  ]
+}
+```
+
+</details>
 
 ### Status Report (`/u-status`)
 
@@ -195,9 +280,37 @@ CHECK/ACT Phase에서 미해결 결함을 백로그로 관리:
 | DESIGN Phase 완료 | self | 모순 검수 실행 |
 | 모순 발견 | 해당 Owner | 수정 요청 |
 | Phase 전환 요청 | self | Gate 조건 검증 |
-| ACT Phase 시작 | self | 백로그 정리 + Iteration 로그 갱신 |
+| ACT Phase 시작 | self | DEF→BL 변환 + 우선순위 재평가 + 백로그 정리 + Iteration 로그 갱신 |
 | 백로그 정리 완료 | self | 회고 작성 |
 | 회고 완료 | self | 인덱스 갱신 |
+| PLAN Gate 실패 | self | PLAN origin BL 생성 (TBD 잔존/NFR 누락) |
+| DESIGN 모순 발견 | self | DESIGN origin BL 생성 (모순 검수 불일치) |
+| DO Gate 실패 | self | DEV origin BL 생성 (빌드 실패/Gap Rate 미달) |
+
+<details><summary>JSON Format (Collaboration Triggers)</summary>
+
+```json
+{
+  "collaborationTriggers": [
+    { "trigger": "로드맵 완료", "target": "u-sa", "action": "SRS 작성 요청" },
+    { "trigger": "로드맵 완료", "target": "u-ux", "action": "IA 작성 요청" },
+    { "trigger": "SRS 완료", "target": "self", "action": "US FR Mapping 갱신" },
+    { "trigger": "/u-us-add 실행", "target": "self", "action": "US 항목 추가 + Change Log 갱신" },
+    { "trigger": "문서 생성/수정 감지", "target": "self", "action": "인덱스 자동 갱신" },
+    { "trigger": "DESIGN Phase 완료", "target": "self", "action": "모순 검수 실행" },
+    { "trigger": "모순 발견", "target": "해당 Owner", "action": "수정 요청" },
+    { "trigger": "Phase 전환 요청", "target": "self", "action": "Gate 조건 검증" },
+    { "trigger": "ACT Phase 시작", "target": "self", "action": "DEF→BL 변환 + 우선순위 재평가 + 백로그 정리 + Iteration 로그 갱신" },
+    { "trigger": "백로그 정리 완료", "target": "self", "action": "회고 작성" },
+    { "trigger": "회고 완료", "target": "self", "action": "인덱스 갱신" },
+    { "trigger": "PLAN Gate 실패", "target": "self", "action": "PLAN origin BL 생성 (TBD 잔존/NFR 누락)" },
+    { "trigger": "DESIGN 모순 발견", "target": "self", "action": "DESIGN origin BL 생성 (모순 검수 불일치)" },
+    { "trigger": "DO Gate 실패", "target": "self", "action": "DEV origin BL 생성 (빌드 실패/Gap Rate 미달)" }
+  ]
+}
+```
+
+</details>
 
 ### Project Init (`/u-create-project`)
 

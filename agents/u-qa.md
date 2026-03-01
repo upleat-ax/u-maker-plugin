@@ -58,6 +58,19 @@ SRS의 Functional Requirements를 기반으로 테스트를 체계적으로 관�
 | 4_Case_QA.md | `u-docs/04-check/4_Case_QA.md` | CHECK |
 | 4_Report_QA.md | `u-docs/04-check/4_Report_QA.md` | CHECK |
 
+<details><summary>JSON Format (Owned Documents)</summary>
+
+```json
+{
+  "ownedDocuments": [
+    { "document": "4_Case_QA.md", "path": "u-docs/04-check/4_Case_QA.md", "phase": "CHECK" },
+    { "document": "4_Report_QA.md", "path": "u-docs/04-check/4_Report_QA.md", "phase": "CHECK" }
+  ]
+}
+```
+
+</details>
+
 ### Test Case Design Workflow (`/u-test`)
 
 1. `1_SRS_SA.md` 분석 → FR 목록 추출
@@ -85,6 +98,29 @@ SRS의 Functional Requirements를 기반으로 테스트를 체계적으로 관�
 - **Note**: [비고]
 ```
 
+<details><summary>JSON Format (Test Case)</summary>
+
+```json
+{
+  "testCase": {
+    "tcId": "TC-001",
+    "name": "Test Case Name",
+    "relatedFr": "FR-001",
+    "priority": "Critical",
+    "type": "Positive",
+    "precondition": "사전 조건",
+    "steps": [
+      { "step": 1, "action": "입력/동작", "expectedResult": "기대 결과" },
+      { "step": 2, "action": "입력/동작", "expectedResult": "기대 결과" }
+    ],
+    "result": "Pass | Fail | Skip",
+    "note": "비고"
+  }
+}
+```
+
+</details>
+
 ### Test Execution Workflow
 
 1. `4_Case_QA.md` 읽기 → 전체 테스트 케이스 목록 확인
@@ -102,6 +138,21 @@ SRS의 Functional Requirements를 기반으로 테스트를 체계적으로 관�
 | CLI 실행 | 빌드/테스트 | `bun run build`, `bun run test` |
 | API 테스트 | Endpoint 검증 | curl 또는 코드 분석 |
 | UI 검증 | 화면 확인 | 코드 기반 렌더링 분석 |
+
+<details><summary>JSON Format (Execution Methods)</summary>
+
+```json
+{
+  "executionMethods": [
+    { "method": "코드 검증", "when": "로직 확인", "how": "소스 코드 직접 분석" },
+    { "method": "CLI 실행", "when": "빌드/테스트", "how": "bun run build, bun run test" },
+    { "method": "API 테스트", "when": "Endpoint 검증", "how": "curl 또는 코드 분석" },
+    { "method": "UI 검증", "when": "화면 확인", "how": "코드 기반 렌더링 분석" }
+  ]
+}
+```
+
+</details>
 
 ### Defect Analysis Workflow (`/u-bug-report`)
 
@@ -147,6 +198,41 @@ SRS의 Functional Requirements를 기반으로 테스트를 체계적으로 관�
 - Evidence: [코드 위치 또는 에러 메시지]
 ```
 
+<details><summary>JSON Format (Test Execution Report)</summary>
+
+```json
+{
+  "testExecutionReport": {
+    "executionDate": "YYYY-MM-DD",
+    "iteration": 1,
+    "tester": "u-qa",
+    "totalCases": 0,
+    "pass": 0,
+    "fail": 0,
+    "skip": 0,
+    "summary": [
+      { "priority": "Critical", "total": 0, "pass": 0, "fail": 0, "skip": 0, "rate": "0%" },
+      { "priority": "Major", "total": 0, "pass": 0, "fail": 0, "skip": 0, "rate": "0%" },
+      { "priority": "Minor", "total": 0, "pass": 0, "fail": 0, "skip": 0, "rate": "0%" }
+    ],
+    "detailedResults": [
+      {
+        "tcId": "TC-001",
+        "name": "Test Case Name",
+        "result": "PASS",
+        "failedStep": null,
+        "expected": null,
+        "actual": null,
+        "evidence": null,
+        "note": "-"
+      }
+    ]
+  }
+}
+```
+
+</details>
+
 ### Defect Report Format
 
 ```markdown
@@ -155,7 +241,7 @@ SRS의 Functional Requirements를 기반으로 테스트를 체계적으로 관�
 - **Related TC**: TC-XXX
 - **Related FR**: FR-XXX
 - **Severity**: Critical | Major | Minor | Trivial
-- **Status**: Open | In Progress | Fixed | Verified
+- **Status**: Open | In Progress | Fixed | Verified | Transferred
 - **Found in**: Iteration N
 
 #### Description
@@ -183,6 +269,37 @@ SRS의 Functional Requirements를 기반으로 테스트를 체계적으로 관�
 - [ ] `u-dv-be` (Backend)
 ```
 
+<details><summary>JSON Format (Defect Report)</summary>
+
+```json
+{
+  "defectReport": {
+    "defId": "DEF-001",
+    "title": "Defect Title",
+    "relatedTc": "TC-001",
+    "relatedFr": "FR-001",
+    "severity": "Critical",
+    "status": "Open",
+    "foundIn": "Iteration 1",
+    "description": "결함 상세 설명",
+    "reproductionSteps": [
+      "재현 단계 1",
+      "재현 단계 2"
+    ],
+    "expected": "기대 동작",
+    "actual": "실제 동작",
+    "rootCauseAnalysis": "근본 원인 분석",
+    "affectedFiles": [
+      { "path": "path/to/file.ts", "line": "XX" }
+    ],
+    "fixSuggestion": "수정 제안",
+    "assignedTo": ["u-dv-fe", "u-dv-be"]
+  }
+}
+```
+
+</details>
+
 ### Severity Criteria
 
 | Severity | Criteria | Action |
@@ -192,6 +309,21 @@ SRS의 Functional Requirements를 기반으로 테스트를 체계적으로 관�
 | Minor | 사소한 UI 오류, 사용에 영향 없음 | 다음 Iteration으로 이월 가능 |
 | Trivial | 오타, 스타일 불일치 | 다음 Iteration으로 이월 |
 
+<details><summary>JSON Format (Severity Criteria)</summary>
+
+```json
+{
+  "severityCriteria": [
+    { "severity": "Critical", "criteria": "시스템 장애, 데이터 손실, 보안 취약점", "action": "즉시 수정 필수, 다음 Phase 진행 차단" },
+    { "severity": "Major", "criteria": "주요 기능 오류, 우회 방법 있음", "action": "현재 Iteration 내 수정 필수" },
+    { "severity": "Minor", "criteria": "사소한 UI 오류, 사용에 영향 없음", "action": "다음 Iteration으로 이월 가능" },
+    { "severity": "Trivial", "criteria": "오타, 스타일 불일치", "action": "다음 Iteration으로 이월" }
+  ]
+}
+```
+
+</details>
+
 ### Case Classification
 
 | Type | Description | Example |
@@ -200,6 +332,20 @@ SRS의 Functional Requirements를 기반으로 테스트를 체계적으로 관�
 | Negative | 비정상 입력, 에러 처리 확인 | 빈 이메일로 로그인 시 에러 메시지 |
 | Boundary | 경계값 테스트 | 비밀번호 최소/최대 길이 |
 
+<details><summary>JSON Format (Case Classification)</summary>
+
+```json
+{
+  "caseClassification": [
+    { "type": "Positive", "description": "정상 입력, 기대 동작 확인", "example": "유효한 이메일로 로그인 성공" },
+    { "type": "Negative", "description": "비정상 입력, 에러 처리 확인", "example": "빈 이메일로 로그인 시 에러 메시지" },
+    { "type": "Boundary", "description": "경계값 테스트", "example": "비밀번호 최소/최대 길이" }
+  ]
+}
+```
+
+</details>
+
 ### Priority Matrix
 
 | Priority | Criteria | Coverage Target |
@@ -207,6 +353,20 @@ SRS의 Functional Requirements를 기반으로 테스트를 체계적으로 관�
 | Critical | 핵심 비즈니스 로직 | 100% |
 | Major | 주요 기능 | 80%+ |
 | Minor | 부가 기능, Edge Case | 60%+ |
+
+<details><summary>JSON Format (Priority Matrix)</summary>
+
+```json
+{
+  "priorityMatrix": [
+    { "priority": "Critical", "criteria": "핵심 비즈니스 로직", "coverageTarget": "100%" },
+    { "priority": "Major", "criteria": "주요 기능", "coverageTarget": "80%+" },
+    { "priority": "Minor", "criteria": "부가 기능, Edge Case", "coverageTarget": "60%+" }
+  ]
+}
+```
+
+</details>
 
 ### Behavior Rules
 
@@ -237,3 +397,24 @@ SRS의 Functional Requirements를 기반으로 테스트를 체계적으로 관�
 | Critical 결함 발견 | `u-ra` | 즉시 보고 |
 | FR 추가/변경 | self | 관련 테스트 케이스 갱신 |
 | Screen 변경 | self | UI 테스트 케이스 갱신 |
+| ACT Phase 진입 | `u-ra` | Open DEF 목록 전달 (u-ra가 BL로 변환) |
+
+<details><summary>JSON Format (Collaboration Triggers)</summary>
+
+```json
+{
+  "collaborationTriggers": [
+    { "trigger": "케이스 설계 완료", "target": "self", "action": "테스트 실행" },
+    { "trigger": "테스트 실행 완료", "target": "self", "action": "Fail 케이스 결함 분석" },
+    { "trigger": "전체 Pass", "target": "u-ra", "action": "Phase 전환 보고" },
+    { "trigger": "Fail 발견", "target": "self", "action": "결함 분석 시작" },
+    { "trigger": "결함 분석 완료", "target": "u-dv-fe / u-dv-be", "action": "Fix Request 전달" },
+    { "trigger": "Critical 결함 발견", "target": "u-ra", "action": "즉시 보고" },
+    { "trigger": "FR 추가/변경", "target": "self", "action": "관련 테스트 케이스 갱신" },
+    { "trigger": "Screen 변경", "target": "self", "action": "UI 테스트 케이스 갱신" },
+    { "trigger": "ACT Phase 진입", "target": "u-ra", "action": "Open DEF 목록 전달 (u-ra가 BL로 변환)" }
+  ]
+}
+```
+
+</details>

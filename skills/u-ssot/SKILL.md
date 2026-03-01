@@ -362,13 +362,14 @@ stateDiagram-v2
    - Fail 케이스 분류 (Critical/Major/Minor/Trivial)
    - 재현 시나리오, 원인 분석, 수정 제안
 
-**Gate → COMPLETE**: Critical/Major 0건 + 백로그 0건 + 전체 FR 구현 + 빌드 성공
+**Gate → COMPLETE**: Critical/Major 0건 + 백로그 활성 항목 0건 + 전체 FR 구현 + 빌드 성공
 **Gate → ACT**: 위 조건 미충족 시
 
 #### ACT Phase
-1. `u-ra`: 백로그 정리 (`5_Backlog_RA.md`)
-   - Open 결함 → 백로그 항목 전환
-   - 우선순위 재분류
+1. `u-ra`: DEF → BL 변환 및 백로그 정리 (`5_Backlog_RA.md`)
+   - `4_Report_QA.md`의 Open DEF → BL 자동 변환 (DEF→BL Conversion Rules 참조)
+   - 기존 Open/InProgress 항목 우선순위 재평가
+   - PLAN/DESIGN/DEV 기원 백로그 항목 확인
 2. `u-ra`: 회고 작성 (`5_Retrospective_RA.md`)
    - 잘된 점, 개선할 점, 다음 Iteration 목표
 3. `u-ra`: 아카이브 + 인덱스 갱신
@@ -377,6 +378,66 @@ stateDiagram-v2
 4. 다음 Iteration 전환 (currentIteration + 1)
 
 **Gate → PLAN (Iter N+1)**: 백로그 정리 + 회고 + 아카이브 완료
+
+### DEF → BL Conversion Rules
+
+ACT Phase에서 u-ra가 CHECK Phase의 결함(DEF)을 백로그 항목(BL)으로 변환할 때 적용하는 규칙.
+
+#### Conversion Mapping Table
+
+| DEF Field | BL Field | Rule |
+|-----------|----------|------|
+| Severity | Priority | 1:1 매핑 (Critical→Critical, Major→Major, Minor→Minor, Trivial→Trivial) |
+| DEF-ID | Related DEF | BL 상세에 DEF 참조 기록 |
+| TC-ID → FR-ID | Related FR | 복사 |
+| - | Type | 항상 `Bug` |
+| - | Origin | 항상 `CHECK` |
+| - | Status | 항상 `Open` |
+
+#### Conversion Flow
+
+```
+1. 수집: 4_Report_QA.md에서 Status가 Open인 DEF 목록 추출
+2. 중복 제외: 기존 5_Backlog_RA.md의 Related DEF 필드와 비교, 이미 변환된 DEF 제외
+3. BL 생성: 변환 매핑 테이블에 따라 BL 항목 생성 (BL-ID 자동 채번)
+4. 테이블 추가: Backlog Table (Section 2)에 행 추가 + Details (Section 5)에 상세 블록 추가
+5. 통계 갱신: Summary (1.2), By Priority (3), By Origin (4) 카운트 갱신
+```
+
+#### Traceability Link (양방향)
+
+- **BL → DEF**: BL 상세의 `Related DEF` 필드에 DEF-ID 기록
+- **DEF → BL**: DEF Status를 `Transferred to BL-XXX`로 갱신 (4_Report_QA.md에서)
+
+<details><summary>JSON Format (DEF→BL Conversion)</summary>
+
+```json
+{
+  "conversionMapping": {
+    "severity": { "target": "priority", "rule": "1:1 (Critical→Critical, Major→Major, Minor→Minor, Trivial→Trivial)" },
+    "defId": { "target": "relatedDef", "rule": "DEF-ID를 BL 상세에 기록" },
+    "tcToFr": { "target": "relatedFr", "rule": "TC→FR 참조 복사" },
+    "defaults": {
+      "type": "Bug",
+      "origin": "CHECK",
+      "status": "Open"
+    }
+  },
+  "conversionFlow": [
+    "1. 수집: 4_Report_QA.md에서 Open DEF 추출",
+    "2. 중복 제외: 기존 BL의 Related DEF와 비교",
+    "3. BL 생성: 매핑 테이블에 따라 BL-ID 자동 채번",
+    "4. 테이블 추가: Section 2 행 + Section 5 상세 블록",
+    "5. 통계 갱신: Summary, By Priority, By Origin"
+  ],
+  "traceability": {
+    "blToDef": "BL 상세의 relatedDef 필드",
+    "defToBl": "DEF Status → 'Transferred to BL-XXX'"
+  }
+}
+```
+
+</details>
 
 ---
 
@@ -387,9 +448,44 @@ stateDiagram-v2
 | PLAN → DESIGN | `1_Roadmap_RA.md` Final, `1_SRS_SA.md` Final, `1_IA_UX.md` Final |
 | DESIGN → DO | `2_ERD_SA.md` Final, `2_API_SA.md` Final, `2_Screen_UX.md` Final, `2_DesignSystem_UX.md` Final, u-RA 검수 통과 |
 | DO → CHECK | 코드 구현 완료, `bun run build` 성공 |
-| CHECK → Complete | Critical/Major 0건, 백로그 0건, 전체 FR 구현, 빌드 성공 |
+| CHECK → Complete | Critical/Major 0건, 백로그 활성 항목 0건, 전체 FR 구현, 빌드 성공 |
 | CHECK → ACT | CHECK → Complete 조건 미충족 |
 | ACT → PLAN(N+1) | 백로그 정리 완료, 회고 완료, 아카이브 완료 |
+
+<details><summary>JSON Format (Phase Gate Conditions)</summary>
+
+```json
+{
+  "gateConditions": {
+    "planToDesign": {
+      "documents": ["1_Roadmap_RA.md", "1_SRS_SA.md", "1_IA_UX.md"],
+      "requiredStatus": "Final"
+    },
+    "designToDo": {
+      "documents": ["2_ERD_SA.md", "2_API_SA.md", "2_Screen_UX.md", "2_DesignSystem_UX.md"],
+      "requiredStatus": "Final",
+      "additionalCheck": "u-RA 검수 통과"
+    },
+    "doToCheck": {
+      "codeComplete": true,
+      "buildSuccess": true
+    },
+    "checkToComplete": {
+      "criticalMajorDefects": 0,
+      "activeBacklogItems": 0,
+      "allFrImplemented": true,
+      "buildSuccess": true
+    },
+    "actToPlan": {
+      "backlogOrganized": true,
+      "retrospectiveWritten": true,
+      "archiveComplete": true
+    }
+  }
+}
+```
+
+</details>
 
 ---
 
@@ -397,7 +493,7 @@ stateDiagram-v2
 
 ### Exit Criteria (4가지 모두 충족 시 종료)
 
-1. **백로그 전 항목 Done**: `5_Backlog_RA.md`의 모든 항목 상태가 `Done`
+1. **백로그 활성 항목 없음**: `5_Backlog_RA.md`에서 Done/Cancelled/Deferred 외 활성 항목 0건
 2. **Critical/Major 결함 0건**: `4_Report_QA.md`에서 Critical/Major 0건
 3. **SRS 전체 FR 구현**: `1_SRS_SA.md`의 모든 FR이 `Implemented` 상태
 4. **빌드 성공**: `bun run build` 통과
@@ -762,9 +858,82 @@ Last Updated: [YYYY-MM-DD]
 | Type | N | Task | Bug, Enhancement, Task |
 | Priority | N | Minor | Critical, Major, Minor, Trivial |
 | Origin | N | DEV | PLAN, DESIGN, DEV, CHECK |
-| Assignee | N | - | agent-id (u-dv-fe, u-dv-be, etc.) |
+| Assignee | N | Auto-assign | agent-id (규칙 기반 자동 할당, 사용자 직접 지정 시 무시) |
 | Related FR | N | - | FR-NNN |
-| Acceptance Criteria | N | - | 완료 조건 |
+| Related DEF | N | - | DEF-NNN (CHECK origin만 해당, 그 외 `-`) |
+| Acceptance Criteria | N | - | Given-When-Then 체크리스트 (최소 1개 필수) |
+
+### Auto-Assignment Rules
+
+| Origin | Type / Keyword | Default Assignee |
+|--------|---------------|-----------------|
+| PLAN | - | u-ra |
+| DESIGN | - | u-sa |
+| DEV / CHECK | Bug (frontend 키워드: 화면, 컴포넌트, UI, 페이지, 스타일, 레이아웃) | u-dv-fe |
+| DEV / CHECK | Bug (backend 키워드: API, DB, 서버, 인증, 스키마, 쿼리) | u-dv-be |
+| DEV / CHECK | Bug (기타) | u-dv-be (기본) |
+| - | Enhancement (Screen/화면 관련) | u-ux |
+| - | Enhancement (API/ERD 관련) | u-sa |
+| - | Task | u-ra |
+
+사용자가 Assignee를 직접 지정하면 자동 할당 규칙을 무시한다.
+
+<details><summary>JSON Format (Auto-Assignment Rules)</summary>
+
+```json
+{
+  "autoAssignmentRules": [
+    { "origin": "PLAN", "type": "*", "keyword": null, "assignee": "u-ra" },
+    { "origin": "DESIGN", "type": "*", "keyword": null, "assignee": "u-sa" },
+    { "origin": ["DEV", "CHECK"], "type": "Bug", "keyword": ["화면", "컴포넌트", "UI", "페이지", "스타일", "레이아웃"], "assignee": "u-dv-fe" },
+    { "origin": ["DEV", "CHECK"], "type": "Bug", "keyword": ["API", "DB", "서버", "인증", "스키마", "쿼리"], "assignee": "u-dv-be" },
+    { "origin": ["DEV", "CHECK"], "type": "Bug", "keyword": null, "assignee": "u-dv-be" },
+    { "origin": "*", "type": "Enhancement", "keyword": ["Screen", "화면"], "assignee": "u-ux" },
+    { "origin": "*", "type": "Enhancement", "keyword": ["API", "ERD"], "assignee": "u-sa" },
+    { "origin": "*", "type": "Task", "keyword": null, "assignee": "u-ra" }
+  ],
+  "userOverride": true
+}
+```
+
+</details>
+
+### Acceptance Criteria Format
+
+모든 AC는 **Given-When-Then** 체크리스트 형식으로 작성한다:
+
+```markdown
+**Acceptance Criteria**:
+- [ ] **Given** [precondition], **When** [action], **Then** [expected result]
+- [ ] **Given** [precondition], **When** [action], **Then** [expected result]
+```
+
+- 최소 1개 AC 필수
+- 사용자가 자연어로 입력 시 u-ra가 Given-When-Then 형식으로 변환
+- 모든 체크박스 체크 완료 = Done 전이 조건 충족
+
+<details><summary>JSON Format (Acceptance Criteria)</summary>
+
+```json
+{
+  "acceptanceCriteria": [
+    {
+      "given": "precondition",
+      "when": "action",
+      "then": "expected result",
+      "checked": false
+    }
+  ],
+  "rules": {
+    "minCount": 1,
+    "format": "Given-When-Then",
+    "naturalLanguageConversion": "u-ra가 자동 변환",
+    "doneCondition": "모든 checked === true"
+  }
+}
+```
+
+</details>
 
 ### Example
 
@@ -784,7 +953,7 @@ Last Updated: [YYYY-MM-DD]
 ### Generated Output (Backlog Table Row)
 
 ```markdown
-| BL-004 | Bug | CHECK | 로그인 실패 시 에러 메시지 미표시 | Major | Open | Iter 1 | u-dv-fe |
+| BL-004 | Bug | CHECK | 로그인 실패 시 에러 메시지 미표시 | Major | Open | DEF-003 | Iter 1 | u-dv-fe |
 ```
 
 ### Generated Output (Backlog Details Block)
@@ -796,16 +965,18 @@ Last Updated: [YYYY-MM-DD]
 |-------|-------|
 | **BL-ID** | BL-004 |
 | **Type** | Bug |
-| **Origin** | CHECK |
+| **Origin** | CHECK (DEF-003) |
 | **Priority** | Major |
 | **Status** | Open |
 | **Iteration** | Iter 1 |
 | **Assignee** | u-dv-fe |
 | **Related FR** | FR-003 |
+| **Related DEF** | DEF-003 |
 
 **Description**: 로그인 실패 시 에러 메시지 미표시
 
-**Acceptance Criteria**: 잘못된 비밀번호 입력 시 에러 메시지가 화면에 표시되어야 함
+**Acceptance Criteria**:
+- [ ] **Given** 잘못된 비밀번호를 입력했을 때, **When** 로그인 버튼을 클릭하면, **Then** 에러 메시지가 화면에 표시된다
 ```
 
 ### Rules
@@ -816,6 +987,35 @@ Last Updated: [YYYY-MM-DD]
 - Iteration은 현재 Iteration (u-ssot.config.json의 `currentIteration`)
 - 5_Backlog_RA.md가 없으면 템플릿에서 자동 생성 후 항목 추가
 - 항목 추가 후 Summary 카운트, Priority/Origin 통계 자동 갱신
+
+### Phase-Specific Backlog Triggers
+
+각 Phase에서 백로그 항목이 자동 생성되는 트리거:
+
+| Phase | Trigger | Type | Origin | Action |
+|-------|---------|------|--------|--------|
+| PLAN | TBD 매핑 잔존 / NFR 누락 발견 | Task / Enhancement | PLAN | u-ra가 즉시 BL 생성 (Phase 블로킹하지 않음) |
+| DESIGN | 모순 검수에서 불일치 발견 | Bug | DESIGN | u-ra가 즉시 BL 생성 (Phase 블로킹하지 않음) |
+| DEV | 빌드 실패 / Gap Rate < 90% | Bug / Task | DEV | u-ra가 즉시 BL 생성 (Phase 블로킹하지 않음) |
+| CHECK | DEF 생성 → ACT에서 BL 변환 | Bug | CHECK | ACT Phase에서 u-ra가 DEF→BL 변환 수행 |
+
+**PLAN/DESIGN/DEV** Phase에서는 u-ra가 해당 Phase를 블로킹하지 않고 즉시 BL을 생성한다.
+**CHECK** Phase의 DEF는 ACT Phase에서 일괄 변환한다.
+
+<details><summary>JSON Format (Phase-Specific Backlog Triggers)</summary>
+
+```json
+{
+  "phaseBacklogTriggers": [
+    { "phase": "PLAN", "trigger": "TBD 매핑 잔존 / NFR 누락", "type": ["Task", "Enhancement"], "origin": "PLAN", "blocking": false },
+    { "phase": "DESIGN", "trigger": "모순 검수 불일치", "type": "Bug", "origin": "DESIGN", "blocking": false },
+    { "phase": "DEV", "trigger": "빌드 실패 / Gap Rate < 90%", "type": ["Bug", "Task"], "origin": "DEV", "blocking": false },
+    { "phase": "CHECK", "trigger": "DEF 생성", "type": "Bug", "origin": "CHECK", "blocking": false, "conversionPhase": "ACT" }
+  ]
+}
+```
+
+</details>
 
 ---
 

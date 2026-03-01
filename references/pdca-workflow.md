@@ -105,6 +105,8 @@ flowchart LR
     RA2 -->|Index| GATE{PLAN Gate}
 ```
 
+> **Backlog Trigger**: TBD 매핑 잔존 또는 NFR 누락 발견 시 u-ra가 BL 생성 (Origin: PLAN). Phase를 블로킹하지 않음.
+
 ### 2.2 DESIGN Phase
 
 **목적**: 디자인 시스템, 화면 설계와 데이터/API 구조를 확정한다.
@@ -123,6 +125,8 @@ flowchart LR
     SA -->|ERD + API| RA[u-RA]
     RA -->|검수 결과| GATE{DESIGN Gate}
 ```
+
+> **Backlog Trigger**: 모순 검수에서 불일치 발견 시 u-ra가 BL 생성 (Origin: DESIGN). Phase를 블로킹하지 않음.
 
 ### 2.3 DO Phase
 
@@ -146,6 +150,8 @@ flowchart LR
     CODE --> GATE{DO Gate}
 ```
 
+> **Backlog Trigger**: 빌드 실패 또는 Gap Rate < 90% 시 u-ra가 BL 생성 (Origin: DEV). Phase를 블로킹하지 않음.
+
 ### 2.4 CHECK Phase
 
 **목적**: 테스트를 수행하고 결함을 분석한다.
@@ -154,7 +160,7 @@ flowchart LR
 |------|-------|--------|-------------|
 | 1 | u-QA | `4_Case_QA.md` | 테스트 케이스 설계 |
 | 2 | u-QA | `4_Report_QA.md` | 테스트 실행 및 결과 기록 |
-| 3 | u-QA | Defect Analysis | 결함 분류, 리포트, 수정 요청 |
+| 3 | u-QA | Defect Analysis | 결함 분류 (Critical/Major/Minor/Trivial), 리포트, 수정 요청. DEF→BL 변환은 ACT Phase에서 u-RA가 수행 |
 
 ```mermaid
 flowchart LR
@@ -162,13 +168,15 @@ flowchart LR
     QA -->|Cases + Results + Analysis| GATE{CHECK Gate}
 ```
 
+> **Note**: CHECK Phase에서 생성된 DEF(결함)는 ACT Phase에서 u-RA가 BL(백로그 항목)로 변환한다.
+
 ### 2.5 ACT Phase
 
 **목적**: 실패 항목을 정리하고 다음 Iteration을 준비한다.
 
 | Step | Agent | Output | Description |
 |------|-------|--------|-------------|
-| 1 | u-RA | `5_Backlog_RA.md` | 미해결 항목 정리 (Bug, Enhancement, Task) |
+| 1 | u-RA | `5_Backlog_RA.md` | DEF→BL 변환 + PLAN/DESIGN/DEV 기원 항목 확인 + 미해결 항목 정리 |
 | 2 | u-RA | `iterations/iter-N/` | 현재 Iteration 문서 아카이브 |
 | 3 | u-RA | `5_IterationLog_RA.md` | Iteration 이력 기록 |
 | 4 | Team | `5_Retrospective_RA.md` | 회고 (Good / Improve / Actions) |
@@ -189,9 +197,66 @@ flowchart LR
 | PLAN → DESIGN | `1_Roadmap_RA.md` = Final, `1_SRS_SA.md` = Final, `1_IA_UX.md` = Final | u-RA |
 | DESIGN → DO | `2_ERD_SA.md` = Final, `2_API_SA.md` = Final, `2_Screen_UX.md` = Final, `2_DesignSystem_UX.md` = Final + u-RA 검수 통과 | u-RA |
 | DO → CHECK | 코드 구현 완료 + `bun run build` 성공 | u-RA |
-| CHECK → Complete | Critical/Major 결함 0건 + 백로그 Open 0건 + 전체 FR 구현 완료 | u-RA + scripts |
+| CHECK → Complete | Critical/Major 결함 0건 + 백로그 활성 항목 0건 (Done/Cancelled/Deferred 외) + 전체 FR 구현 완료 | u-RA + scripts |
 | CHECK → ACT | 위 CHECK → Complete 조건 미충족 시 자동 전환 | Orchestrator |
 | ACT → PLAN (Iter N+1) | `5_Backlog_RA.md` 정리 완료 + `5_Retrospective_RA.md` 작성 + 아카이브 완료 | u-RA |
+
+<details><summary>JSON Format (Gate Conditions)</summary>
+
+```json
+{
+  "gateConditions": [
+    {
+      "transition": "PLAN→DESIGN",
+      "conditions": [
+        { "document": "1_Roadmap_RA.md", "status": "Final" },
+        { "document": "1_SRS_SA.md", "status": "Final" },
+        { "document": "1_IA_UX.md", "status": "Final" }
+      ],
+      "validator": "u-RA"
+    },
+    {
+      "transition": "DESIGN→DO",
+      "conditions": [
+        { "document": "2_ERD_SA.md", "status": "Final" },
+        { "document": "2_API_SA.md", "status": "Final" },
+        { "document": "2_Screen_UX.md", "status": "Final" },
+        { "document": "2_DesignSystem_UX.md", "status": "Final" },
+        { "check": "u-RA 검수 통과" }
+      ],
+      "validator": "u-RA"
+    },
+    {
+      "transition": "DO→CHECK",
+      "conditions": [
+        { "check": "코드 구현 완료" },
+        { "check": "bun run build 성공" }
+      ],
+      "validator": "u-RA"
+    },
+    {
+      "transition": "CHECK→Complete",
+      "conditions": [
+        { "check": "Critical/Major 결함 0건" },
+        { "check": "백로그 활성 항목 0건" },
+        { "check": "전체 FR 구현 완료" }
+      ],
+      "validator": "u-RA + scripts"
+    },
+    {
+      "transition": "ACT→PLAN(N+1)",
+      "conditions": [
+        { "check": "5_Backlog_RA.md 정리 완료" },
+        { "check": "5_Retrospective_RA.md 작성" },
+        { "check": "아카이브 완료" }
+      ],
+      "validator": "u-RA"
+    }
+  ]
+}
+```
+
+</details>
 
 ---
 
@@ -212,7 +277,7 @@ PDCA 사이클 종료를 위해 다음 4가지 조건을 **모두** 충족해야
 
 ```
 EXIT =
-  (backlog.filter(status != 'Done').length === 0) AND
+  (backlog.filter(status not in ['Done', 'Cancelled', 'Deferred']).length === 0) AND
   (defects.filter(severity in ['Critical', 'Major']).length === 0) AND
   (srs.features.every(fr => fr.implemented === true)) AND
   (buildResult === 'SUCCESS')
@@ -220,7 +285,26 @@ EXIT =
 
 | # | Condition | Check Method |
 |---|-----------|-------------|
-| 1 | 백로그 전 항목 `Done` | `5_Backlog_RA.md` 파싱 |
+| 1 | 백로그 활성 항목 없음 (Done/Cancelled/Deferred 외 0건) | `5_Backlog_RA.md` 파싱 |
 | 2 | Critical/Major 결함 0건 | `4_Report_QA.md` 파싱 |
 | 3 | SRS의 모든 FR 구현 완료 | `1_SRS_SA.md` 구현 상태 확인 |
 | 4 | 빌드 성공 | `bun run build` 실행 결과 |
+
+<details><summary>JSON Format (Exit Criteria)</summary>
+
+```json
+{
+  "exitCriteria": {
+    "conditions": [
+      { "id": 1, "name": "backlogNoActive", "check": "5_Backlog_RA.md", "rule": "status not in ['Done','Cancelled','Deferred'] === 0" },
+      { "id": 2, "name": "noCriticalMajor", "check": "4_Report_QA.md", "rule": "Critical + Major === 0" },
+      { "id": 3, "name": "allFrImplemented", "check": "1_SRS_SA.md", "rule": "모든 FR implemented === true" },
+      { "id": 4, "name": "buildSuccess", "check": "bun run build", "rule": "returncode === 0" }
+    ],
+    "passCondition": "all",
+    "onFail": "ACT Phase 진입"
+  }
+}
+```
+
+</details>

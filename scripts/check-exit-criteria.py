@@ -41,8 +41,8 @@ DOC_PATHS = {
 
 def check_backlog(udocs_root):
     """
-    Criterion 1: All backlog items must be Done.
-    Parses 5_Backlog_RA.md for items with status != Done.
+    Criterion 1: All backlog items must be Done, Cancelled, or Deferred (no active items).
+    Parses 5_Backlog_RA.md for items with active status.
     """
     filepath = os.path.join(udocs_root, DOC_PATHS["backlog"])
     result = {
@@ -81,9 +81,9 @@ def check_backlog(udocs_root):
         result["total_items"] += 1
         status = cells[2].strip() if len(cells) > 2 else ""
 
-        if status.lower() != "done":
+        if status.lower() not in ("done", "cancelled", "deferred"):
             result["open_items"] += 1
-            result["details"].append(f"Open: {cells[0]} - {cells[1]} ({status})")
+            result["details"].append(f"Active: {cells[0]} - {cells[1]} ({status})")
 
     result["passed"] = result["open_items"] == 0
     return result
