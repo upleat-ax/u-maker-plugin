@@ -209,7 +209,31 @@ flowchart LR
 
 ---
 
-## 5. Reference ID Format
+## 5. Cascading Update Rule (연쇄 문서 갱신)
+
+사용자가 기능/시나리오/요구사항 등을 추가·수정·삭제할 때, 영향받는 하위 문서를 반드시 함께 갱신해야 한다.
+
+### 5.1 Impact Propagation Map
+
+| 변경 대상 | 영향받는 문서 |
+|-----------|-------------|
+| US (1_Roadmap_PM) | → FR (1_SRS_RA) → IA (1_IA_RA) |
+| FR (1_SRS_RA) | → IA → Screen → API → ERD → Code → QA Case |
+| MN/IA (1_IA_RA) | → Screen (2_Screen_UX) |
+| Screen (2_Screen_UX) | → API (2_API_SA) → QA Case (4_Case_QA) |
+| API (2_API_SA) | → Screen → ERD → Code → QA Case |
+| ERD (2_ERD_SA) | → API → Code (3_Code_DV) |
+
+### 5.2 Rules
+
+- 변경 전 영향 범위를 사용자에게 고지 필수
+- 상위 → 하위 순서로 갱신
+- Final 문서 변경 시 Status → Draft
+- 갱신 누락 시 추적성 검증(`/u-validate`)에서 Fail 처리
+
+---
+
+## 6. Reference ID Format
 
 문서 간 상호 참조 시 사용하는 ID 형식:
 

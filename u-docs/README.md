@@ -1,0 +1,11 @@
+# u-docs: SSoT Document Repository
+
+Managed by the u-ssot plugin.
+
+| Directory | Scope | Phase |
+|-----------|-------|-------|
+| `shared/01-plan/` | Shared | PLAN |
+| `shared/02-design/` | Shared | DESIGN |
+| `shared/03-dev/` | Shared | DO |
+| `shared/05-act/` | Shared | ACT |
+| `web/01-plan/` ~ `web/04-check/` | web | PLAN~CHECK |

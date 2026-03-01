@@ -647,16 +647,70 @@ Related Docs:
 - **수평적 추적성**: Screen ↔ API ↔ QA Case
 - 모든 문서 간 참조는 `u-docs/` 내 상대 경로 사용 (shared/ 또는 {app}/ 포함)
 
+### Cascading Document Update Rule (연쇄 문서 갱신 규칙)
+
+사용자가 기능, 시나리오, 요구사항 등을 직접 추가/수정/삭제할 때, **영향받는 하위 문서를 반드시 함께 갱신**해야 한다. 변경 전 사용자에게 영향 범위를 알린다.
+
+#### Impact Propagation Map
+
+| 변경 대상 | 영향받는 문서 (반드시 함께 갱신) |
+|-----------|-------------------------------|
+| **User Story** (1_Roadmap_PM) | → SRS (FR mapping) → IA (메뉴 추가/변경 시) |
+| **FR** (1_SRS_RA) | → IA (새 화면 필요 시) → Screen → API → ERD → Code → QA Case |
+| **Menu/IA** (1_IA_RA) | → Screen (화면 매핑) → Navigation Flow |
+| **Screen** (2_Screen_UX) | → API (호출 endpoint) → QA Case (UI 테스트) |
+| **API** (2_API_SA) | → Screen (호출부) → ERD (스키마) → Code (라우트) → QA Case |
+| **ERD** (2_ERD_SA) | → API (스키마 참조) → Code (모델) |
+| **Backlog** (5_Backlog_RA) | → 대상 문서 (Bug: 해당 문서, Enhancement: 해당 문서) |
+
+#### Update Flow
+
+```
+1. 사용자 변경 요청 수신
+2. 변경 대상 문서 식별
+3. Impact Propagation Map으로 영향받는 문서 목록 산출
+4. 사용자에게 영향 범위 알림:
+   "이 변경은 다음 문서에도 영향을 줍니다: [문서 목록]"
+   "함께 갱신하겠습니다."
+5. 대상 문서 변경 실행
+6. 영향받는 문서 순차 갱신 (상위 → 하위 순서)
+7. 갱신된 문서의 Version + Last Updated 갱신
+8. 변경된 Final 문서는 Status를 Draft로 변경
+9. 결과 리포트 출력 (변경된 문서 목록 + 변경 내용 요약)
+```
+
+#### Rules
+
+- **갱신 누락 금지**: 영향받는 문서를 갱신하지 않고 변경 완료 불가
+- **사용자 알림 필수**: 변경 전 영향 범위를 반드시 사용자에게 고지
+- **상위 우선**: 상위 문서부터 하위 문서 순으로 갱신 (Roadmap → SRS → IA → Screen → ...)
+- **Final 문서 변경 시**: Status를 `Draft`로 변경하여 재검토 필요 표시
+- **증분 갱신**: 변경된 항목만 PATCH 업데이트 (전체 재작성 금지)
+
 ### Mermaid Diagram Requirements
 
-각 문서에 적합한 Mermaid 다이어그램을 포함한다:
-- **Roadmap**: flowchart (마일스톤 흐름)
-- **SRS**: flowchart (기능 관계도)
-- **IA**: mindmap (메뉴 트리 구조)
-- **ERD**: erDiagram (Entity-Relationship)
-- **API**: sequenceDiagram (API 호출 흐름)
-- **Screen**: flowchart (화면 전환 흐름)
-- **QA**: stateDiagram-v2 (테스트 상태 전이)
+모든 SSoT 문서는 최소 1개 이상의 Mermaid 다이어그램을 포함해야 한다.
+에이전트는 문서 생성 시 아래 가이드를 따르되, 내용에 맞는 추가 다이어그램을 적극 활용한다.
+
+| Document | Required Diagrams | Diagram Types |
+|----------|-------------------|---------------|
+| **1_Roadmap_PM** | 프로젝트 타임라인 | `gantt` |
+| **1_SRS_RA** | 기능 관계도 + 구현 타임라인 | `flowchart`, `gantt` |
+| **1_IA_RA** | 메뉴 트리 + 네비게이션 흐름 + 유저 플로우 | `mindmap`, `flowchart` |
+| **1_Index_PM** | 문서 의존성 + Phase Gate 상태 | `flowchart`, `stateDiagram-v2` |
+| **2_ERD_SA** | ER 다이어그램 + Entity 상태 전이 | `erDiagram`, `stateDiagram-v2` |
+| **2_API_SA** | API 호출 시퀀스 (주요 플로우별) | `sequenceDiagram` |
+| **2_Screen_UX** | 화면 상태 전이 + 화면 계층 | `stateDiagram-v2`, `flowchart` |
+| **2_DesignSystem_UX** | 컴포넌트 계층 + 반응형 흐름 | `flowchart` |
+| **3_Code_DV** | Clean Architecture + 로직 플로우 | `flowchart` |
+| **3_Screen_UX** | 컴포넌트 결정 흐름 + 라우트 계층 | `flowchart` |
+| **3_UIComponents_UX** | 컴포넌트 의존성 트리 | `flowchart` |
+| **3_DesignToken_UX** | 토큰 계층 구조 | `mindmap` |
+| **4_Case_QA** | 테스트 실행 시퀀스 + 커버리지 분포 | `sequenceDiagram`, `pie` |
+| **4_Report_QA** | 결과 분포 + 결함 라이프사이클 + 종료 판정 | `pie`, `stateDiagram-v2`, `flowchart` |
+| **5_Backlog_RA** | 상태 머신 + 우선순위/원인 분포 | `stateDiagram-v2`, `pie` |
+| **5_IterationLog_RA** | 진행률 추이 + 결함/FR 트렌드 | `xychart-beta` |
+| **5_Retrospective_PM** | 개선 사이클 + 팀 건강도 추이 | `flowchart`, `xychart-beta` |
 
 ---
 
@@ -694,6 +748,7 @@ DV(Developer) 에이전트 코드 생성 시 아래 10가지 규칙을 강제한
 6. 문서 생성/갱신
 7. u-ra 인덱스 자동 갱신
 8. 결과 보고
+9. Post-Execution Summary Box 출력 (필수)
 ```
 
 ### Agent Routing Rules
@@ -1348,6 +1403,86 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 | 최대 Iteration 초과 | 강제 종료, 최종 상태 보고 |
 | Agent 호출 실패 | 에러 기록, 대체 수동 작업 안내 |
 | 문서 누락 | 템플릿 기반 자동 생성 제안 |
+
+---
+
+## Post-Execution Summary Box
+
+**모든 `/u-*` 명령어 실행 완료 후 반드시 아래 형식의 Summary Box를 출력한다.**
+
+이 규칙은 모든 u-command에 적용된다 (`/u-plan`, `/u-design`, `/u-dev`, `/u-check`, `/u-act`, `/u-srs`, `/u-erd`, `/u-api`, `/u-screen`, `/u-fe`, `/u-be`, `/u-test`, `/u-bug-report`, `/u-status`, `/u-docs`, `/u-validate`, `/u-backlog`, `/u-backlog-add`, `/u-us-add`, `/u-fr-add`, `/u-init`, `/u-create-project`, `/u-loop`, `/u-loop-from`, `/u-stop`, `/u-resume`, `/u-index`, `/u-history`, `/u-archive`, `/u-storybook`, `/u-build`, `/u-summary`, `/u-gap-detector`, `/u-git-pr`, `/u-help`).
+
+### Output Format
+
+```
+┌─────────────────────────────────────────────┐
+│  u-ssot Summary                             │
+├─────────────────────────────────────────────┤
+│                                             │
+│  Command : /u-{command}                     │
+│  Phase   : {currentPhase}                   │
+│  Iter    : {currentIteration}               │
+│                                             │
+│  ── Work Done ──────────────────────────    │
+│  • {작업 내용 1}                             │
+│  • {작업 내용 2}                             │
+│  • ...                                      │
+│                                             │
+│  ── Used ────────────────────────────────   │
+│  Skills : {사용된 skill 목록}                │
+│  Agents : {사용된 agent 목록}                │
+│  Docs   : {생성/수정된 문서 목록}             │
+│                                             │
+│  ── Next Steps ─────────────────────────    │
+│  → {추천 명령어 1} : {설명}                   │
+│  → {추천 명령어 2} : {설명}                   │
+│                                             │
+└─────────────────────────────────────────────┘
+```
+
+### Field Descriptions
+
+| Field | Description | Example |
+|-------|-------------|---------|
+| **Command** | 실행된 slash command | `/u-plan`, `/u-srs web` |
+| **Phase** | 현재 PDCA Phase | `PLAN`, `DESIGN`, `DO`, `CHECK`, `ACT` |
+| **Iter** | 현재 Iteration 번호 | `1 / 10` |
+| **Work Done** | 실행된 작업 내용 요약 (bullet list) | `1_SRS_RA.md 생성 (14 FRs)` |
+| **Skills** | 호출된 skill 이름 목록 | `u-ssot`, `u-plan` |
+| **Agents** | 호출된 agent 이름 목록 | `u-ra`, `u-sa`, `u-ux` |
+| **Docs** | 생성 또는 수정된 SSoT 문서 경로 | `web/01-plan/1_SRS_RA.md` |
+| **Next Steps** | 추천되는 다음 명령어와 설명 (1~3개) | `/u-design : DESIGN Phase 실행` |
+
+### Next Steps Recommendation Rules
+
+현재 상태에 따라 가장 적합한 다음 명령어를 1~3개 추천한다:
+
+| 현재 상태 | 추천 Next Steps |
+|-----------|----------------|
+| PLAN 문서 작성 중 | → 미완성 문서 작성 명령어, → `/u-validate`, → `/u-design` (Gate 충족 시) |
+| PLAN 완료 | → `/u-design` |
+| DESIGN 문서 작성 중 | → 미완성 문서 작성 명령어, → `/u-validate`, → `/u-dev` (Gate 충족 시) |
+| DESIGN 완료 | → `/u-dev` |
+| DO Phase 중 | → `/u-fe`, `/u-be`, → `/u-build`, → `/u-check` (구현 완료 시) |
+| DO 완료 | → `/u-check` |
+| CHECK 완료 (Pass) | → `/u-act` (결함 있을 시), → Complete (결함 없을 시) |
+| CHECK 완료 (Fail) | → `/u-act` |
+| ACT 완료 | → `/u-plan` (다음 Iteration) |
+| 문서 개별 작성 후 | → 다음 문서 작성, → `/u-status`, → Phase 실행 명령어 |
+| 백로그/US/FR 추가 후 | → `/u-status`, → 해당 Phase 실행 명령어 |
+| `/u-status` 후 | → 현재 Phase 실행 명령어, → `/u-validate` |
+| `/u-validate` 후 | → 발견된 문제 수정 명령어, → Phase 실행 명령어 |
+| `/u-loop` 시작 | → `/u-stop` (중단 필요 시) |
+| `/u-stop` 후 | → `/u-resume` |
+
+### Rules
+
+- **필수 출력**: 모든 `/u-*` 명령어 실행 후 반드시 Summary Box를 출력해야 한다
+- **마지막에 출력**: Summary Box는 명령어 실행의 가장 마지막 출력이어야 한다
+- **정확한 정보**: 실제 실행된 내용만 기록한다 (추측이나 계획 X)
+- **문서 경로**: 실제 생성/수정된 문서의 상대 경로를 `u-docs/` 기준으로 표시
+- **Agent 미사용 시**: Agent가 호출되지 않은 단순 조회 명령 (`/u-status`, `/u-docs` 등)은 Agents 항목을 `-`로 표시
+- **Loop 실행 중**: `/u-loop` 실행 중에는 각 Phase 완료 시마다 Summary Box를 출력하고, 루프 종료 시 최종 Summary Box를 출력
 
 ---
 
