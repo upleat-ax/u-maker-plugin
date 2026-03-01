@@ -1,5 +1,12 @@
 {
-  "version": "1.0.0",
+  "version": "2.0.0",
+  "documentLanguage": "ko",
+  "supportedLanguages": {
+    "ko": "한국어",
+    "en": "English",
+    "ja": "日本語",
+    "zh": "中文"
+  },
   "pdca": {
     "phases": [
       "plan",
@@ -21,107 +28,139 @@
   },
   "documentPaths": {
     "root": "u-docs",
-    "plan": "u-docs/01-plan",
-    "design": "u-docs/02-design",
-    "dev": "u-docs/03-dev",
-    "check": "u-docs/04-check",
-    "act": "u-docs/05-act",
-    "assets": "u-docs/assets",
+    "shared": "u-docs/shared",
     "iterations": "u-docs/iterations"
   },
+  "documentScopes": {
+    "shared": [
+      "1_Roadmap_PM.md",
+      "1_Index_PM.md",
+      "2_ERD_SA.md",
+      "2_DesignSystem_UX.md",
+      "3_UIComponents_UX.md",
+      "3_DesignToken_UX.md",
+      "5_Backlog_RA.md",
+      "5_IterationLog_RA.md",
+      "5_Retrospective_PM.md"
+    ],
+    "app": [
+      "1_SRS_RA.md",
+      "1_IA_RA.md",
+      "2_API_SA.md",
+      "2_Screen_UX.md",
+      "3_Code_DV.md",
+      "3_Screen_UX.md",
+      "4_Case_QA.md",
+      "4_Report_QA.md"
+    ]
+  },
   "documents": {
-    "01-plan": {
-      "1_Roadmap_RA.md": {
-        "owner": "u-ra",
-        "required": true
+    "shared": {
+      "01-plan": {
+        "1_Roadmap_PM.md": {
+          "owner": "u-ra",
+          "required": true
+        },
+        "1_Index_PM.md": {
+          "owner": "u-ra",
+          "required": true
+        }
       },
-      "1_SRS_SA.md": {
-        "owner": "u-sa",
-        "required": true
+      "02-design": {
+        "2_ERD_SA.md": {
+          "owner": "u-sa",
+          "required": true
+        },
+        "2_DesignSystem_UX.md": {
+          "owner": "u-ux",
+          "required": false
+        }
       },
-      "1_IA_UX.md": {
-        "owner": "u-ux",
-        "required": true
+      "03-dev": {
+        "3_UIComponents_UX.md": {
+          "owner": "u-ux",
+          "required": false
+        },
+        "3_DesignToken_UX.md": {
+          "owner": "u-ux",
+          "required": false
+        }
       },
-      "1_Index_RA.md": {
-        "owner": "u-ra",
-        "required": true
+      "05-act": {
+        "5_Backlog_RA.md": {
+          "owner": "u-ra",
+          "required": true
+        },
+        "5_IterationLog_RA.md": {
+          "owner": "u-ra",
+          "required": true
+        },
+        "5_Retrospective_PM.md": {
+          "owner": "u-ra",
+          "required": true
+        }
       }
     },
-    "02-design": {
-      "2_ERD_SA.md": {
-        "owner": "u-sa",
-        "required": true
+    "app": {
+      "01-plan": {
+        "1_SRS_RA.md": {
+          "owner": "u-sa",
+          "required": true
+        },
+        "1_IA_RA.md": {
+          "owner": "u-ux",
+          "required": true
+        }
       },
-      "2_API_SA.md": {
-        "owner": "u-sa",
-        "required": true
+      "02-design": {
+        "2_API_SA.md": {
+          "owner": "u-sa",
+          "required": true
+        },
+        "2_Screen_UX.md": {
+          "owner": "u-ux",
+          "required": true
+        }
       },
-      "2_Screen_UX.md": {
-        "owner": "u-ux",
-        "required": true
+      "03-dev": {
+        "3_Code_DV.md": {
+          "owner": "u-dv-fe",
+          "required": true
+        },
+        "3_Screen_UX.md": {
+          "owner": "u-ux",
+          "required": false
+        }
       },
-      "2_DesignSystem_UX.md": {
-        "owner": "u-ux",
-        "required": false
-      }
-    },
-    "03-dev": {
-      "3_Code_DV.md": {
-        "owner": "u-dv-fe",
-        "required": true
-      },
-      "3_Screen_UX.md": {
-        "owner": "u-ux",
-        "required": false
-      },
-      "3_UIComponents_UX.md": {
-        "owner": "u-ux",
-        "required": false
-      },
-      "3_DesignToken_UX.md": {
-        "owner": "u-ux",
-        "required": false
-      }
-    },
-    "04-check": {
-      "4_Case_QA.md": {
-        "owner": "u-qa",
-        "required": true
-      },
-      "4_Report_QA.md": {
-        "owner": "u-qa",
-        "required": true
-      }
-    },
-    "05-act": {
-      "5_Backlog_RA.md": {
-        "owner": "u-ra",
-        "required": true
-      },
-      "5_IterationLog_RA.md": {
-        "owner": "u-ra",
-        "required": true
-      },
-      "5_Retrospective_RA.md": {
-        "owner": "u-ra",
-        "required": true
+      "04-check": {
+        "4_Case_QA.md": {
+          "owner": "u-qa",
+          "required": true
+        },
+        "4_Report_QA.md": {
+          "owner": "u-qa",
+          "required": true
+        }
       }
     }
   },
   "phaseGates": {
     "plan-to-design": {
-      "required": [
-        "1_Roadmap_RA.md",
-        "1_SRS_SA.md",
-        "1_IA_UX.md"
+      "shared": [
+        "1_Roadmap_PM.md"
+      ],
+      "perApp": [
+        "1_SRS_RA.md",
+        "1_IA_RA.md"
       ],
       "status": "Final",
       "validator": "u-ra"
     },
     "design-to-do": {
-      "required": [
-        "2_ERD_SA.md",
+      "shared": [
+        "2_ERD_SA.md"
+      ],
+      "perApp": [
         "2_API_SA.md",
         "2_Screen_UX.md"
       ],
@@ -150,10 +189,10 @@
       "trigger": "check-to-complete-failed"
     },
     "act-to-plan": {
-      "required": [
+      "shared": [
         "5_Backlog_RA.md",
         "5_IterationLog_RA.md",
-        "5_Retrospective_RA.md"
+        "5_Retrospective_PM.md"
       ],
       "conditions": [
         "backlog-organized",
@@ -165,7 +204,7 @@
   "exitCriteria": {
     "allBacklogDone": "All items in 5_Backlog_RA.md have status Done",
     "criticalMajorZero": "Critical/Major defect count is 0 in 4_Report_QA.md",
-    "allFrImplemented": "All FR items in 1_SRS_SA.md have status Implemented",
+    "allFrImplemented": "All FR items in 1_SRS_RA.md have status Implemented",
     "buildSuccess": "bun run build passes without errors"
   },
   "agents": {
@@ -354,5 +393,5 @@
       "Final"
     ]
   },
-  "lastSessionEnd": "2026-03-01T12:38:09.225Z"
+  "lastSessionEnd": "2026-03-01T14:37:57.762Z"
 }
