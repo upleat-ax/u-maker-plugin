@@ -137,19 +137,29 @@ echo "  -> Storybook configured"
 echo ""
 echo "[4/5] Creating u-docs/ SSoT document structure..."
 
-UDOCS_DIRS=(
-  "u-docs/01-plan"
-  "u-docs/02-design"
-  "u-docs/03-dev"
-  "u-docs/04-check"
-  "u-docs/05-act"
-  "u-docs/assets/diagrams"
-  "u-docs/assets/screenshots"
+# Shared directories
+SHARED_DIRS=(
+  "u-docs/shared/01-plan"
+  "u-docs/shared/02-design"
+  "u-docs/shared/03-dev"
+  "u-docs/shared/05-act"
+  "u-docs/shared/assets/diagrams"
+  "u-docs/shared/assets/screenshots"
   "u-docs/iterations"
 )
 
-for dir in "${UDOCS_DIRS[@]}"; do
+for dir in "${SHARED_DIRS[@]}"; do
   mkdir -p "$dir"
+done
+
+# Per-app directories (read from config or default to web)
+APP_NAMES=("web")
+APP_PHASES=("01-plan" "02-design" "03-dev" "04-check")
+
+for app in "${APP_NAMES[@]}"; do
+  for phase in "${APP_PHASES[@]}"; do
+    mkdir -p "u-docs/${app}/${phase}"
+  done
 done
 
 # Create u-docs/README.md
@@ -160,15 +170,18 @@ This directory is the **Single Source of Truth (SSoT)** for all project document
 
 ## Structure
 
-| Directory | Phase | Contents |
-|-----------|-------|----------|
-| `01-plan/` | PLAN | Roadmap, SRS, Information Architecture, Master Index |
-| `02-design/` | DESIGN | ERD, API Contract, Screen Design |
-| `03-dev/` | DO | Code Implementation Log |
-| `04-check/` | CHECK | QA Test Cases, QA Report |
-| `05-act/` | ACT | Backlog, Iteration Log, Retrospective |
-| `assets/` | - | Diagrams, Screenshots |
-| `iterations/` | - | Iteration Archives (iter-1/, iter-2/, ...) |
+| Directory | Scope | Phase | Contents |
+|-----------|-------|-------|----------|
+| `shared/01-plan/` | Shared | PLAN | Roadmap, Master Index |
+| `shared/02-design/` | Shared | DESIGN | ERD, Design System |
+| `shared/03-dev/` | Shared | DO | UI Components, Design Tokens |
+| `shared/05-act/` | Shared | ACT | Backlog, Iteration Log, Retrospective |
+| `{app}/01-plan/` | Per-App | PLAN | SRS, Information Architecture |
+| `{app}/02-design/` | Per-App | DESIGN | API Contract, Screen Design |
+| `{app}/03-dev/` | Per-App | DO | Code Implementation Log |
+| `{app}/04-check/` | Per-App | CHECK | QA Test Cases, QA Report |
+| `shared/assets/` | Shared | - | Diagrams, Screenshots |
+| `iterations/` | - | - | Iteration Archives (iter-1/, iter-2/, ...) |
 
 ## Document Standards
 
@@ -199,10 +212,18 @@ echo ""
 echo "[5/5] Finalizing project structure..."
 
 # Add .gitkeep to empty dirs
-for dir in "${UDOCS_DIRS[@]}"; do
+for dir in "${SHARED_DIRS[@]}"; do
   if [ -z "$(ls -A "$dir" 2>/dev/null)" ]; then
     touch "$dir/.gitkeep"
   fi
+done
+for app in "${APP_NAMES[@]}"; do
+  for phase in "${APP_PHASES[@]}"; do
+    dir="u-docs/${app}/${phase}"
+    if [ -z "$(ls -A "$dir" 2>/dev/null)" ]; then
+      touch "$dir/.gitkeep"
+    fi
+  done
 done
 
 # Add storybook script to root package.json if not already present

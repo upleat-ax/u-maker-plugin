@@ -4,10 +4,12 @@ check-exit-criteria.py — Iteration Exit Criteria Checker
 u-ssot plugin
 
 Checks 4 exit criteria for PDCA iteration completion:
-  1. All backlog items are Done (5ACT_Backlog.md)
-  2. No Critical/Major defects (4QA_Report.md)
-  3. All FR items implemented (1A_SRS.md)
+  1. All backlog items are Done (shared/05-act/5_Backlog_RA.md)
+  2. No Critical/Major defects ({app}/04-check/4_Report_QA.md for all apps)
+  3. All FR items implemented ({app}/01-plan/1_SRS_RA.md for all apps)
   4. Build succeeds (bun run build)
+
+Supports v2 per-app structure (shared/ + {app}/) with v1 fallback.
 
 Usage: python3 check-exit-criteria.py [u-docs-path]
 
@@ -27,11 +29,73 @@ import subprocess
 # Configuration
 # ============================================================
 
-DOC_PATHS = {
-    "backlog": "05-act/5ACT_Backlog.md",
-    "qa_report": "04-check/4QA_Report.md",
-    "srs": "01-plan/1A_SRS.md",
+# v1 fallback paths
+DOC_PATHS_V1 = {
+    "backlog": "05-act/5_Backlog_RA.md",
+    "qa_report": "04-check/4_Report_QA.md",
+    "srs": "01-plan/1_SRS_RA.md",
 }
+
+
+def get_apps(udocs_root):
+    """Read app list from u-ssot.config.json."""
+    config_path = os.path.join(os.path.dirname(udocs_root), "u-ssot.config.json")
+    apps = ["web"]
+    try:
+        if os.path.exists(config_path):
+            with open(config_path, "r", encoding="utf-8") as f:
+                config = json.load(f)
+            apps = (
+                config.get("techStack", {})
+                .get("monorepo", {})
+                .get("structure", {})
+                .get("apps", ["web"])
+            )
+    except (IOError, json.JSONDecodeError):
+        pass
+    return apps
+
+
+def has_v2_structure(udocs_root):
+    """Check if the v2 shared/ directory exists."""
+    return os.path.isdir(os.path.join(udocs_root, "shared"))
+
+
+def get_doc_path(udocs_root, doc_name, app=None):
+    """
+    Resolve document path based on v2 or v1 structure.
+    Shared docs: shared/{phase}/{doc}
+    App docs: {app}/{phase}/{doc}
+    """
+    prefix = doc_name[0]
+    phase_map = {
+        "1": "01-plan",
+        "2": "02-design",
+        "3": "03-dev",
+        "4": "04-check",
+        "5": "05-act",
+    }
+    phase_dir = phase_map.get(prefix, "")
+
+    shared_docs = [
+        "1_Roadmap_PM.md",
+        "1_Index_PM.md",
+        "2_ERD_SA.md",
+        "2_DesignSystem_UX.md",
+        "3_UIComponents_UX.md",
+        "3_DesignToken_UX.md",
+        "5_Backlog_RA.md",
+        "5_IterationLog_RA.md",
+        "5_Retrospective_PM.md",
+    ]
+
+    if has_v2_structure(udocs_root):
+        if doc_name in shared_docs:
+            return os.path.join(udocs_root, "shared", phase_dir, doc_name)
+        return os.path.join(udocs_root, app or "web", phase_dir, doc_name)
+
+    # v1 fallback
+    return os.path.join(udocs_root, phase_dir, doc_name)
 
 
 # ============================================================
@@ -41,10 +105,10 @@ DOC_PATHS = {
 
 def check_backlog(udocs_root):
     """
-    Criterion 1: All backlog items must be Done.
-    Parses 5ACT_Backlog.md for items with status != Done.
+    Criterion 1: All backlog items must be Done, Cancelled, or Deferred (no active items).
+    Parses shared/05-act/5_Backlog_RA.md for items with active status.
     """
-    filepath = os.path.join(udocs_root, DOC_PATHS["backlog"])
+    filepath = get_doc_path(udocs_root, "5_Backlog_RA.md")
     result = {
         "criterion": "Backlog All Done",
         "passed": False,
@@ -54,7 +118,7 @@ def check_backlog(udocs_root):
     }
 
     if not os.path.exists(filepath):
-        result["details"].append("5ACT_Backlog.md not found")
+        result["details"].append("5_Backlog_RA.md not found")
         # No backlog file means no open items
         result["passed"] = True
         return result
@@ -81,9 +145,9 @@ def check_backlog(udocs_root):
         result["total_items"] += 1
         status = cells[2].strip() if len(cells) > 2 else ""
 
-        if status.lower() != "done":
+        if status.lower() not in ("done", "cancelled", "deferred"):
             result["open_items"] += 1
-            result["details"].append(f"Open: {cells[0]} - {cells[1]} ({status})")
+            result["details"].append(f"Active: {cells[0]} - {cells[1]} ({status})")
 
     result["passed"] = result["open_items"] == 0
     return result
@@ -91,10 +155,10 @@ def check_backlog(udocs_root):
 
 def check_defects(udocs_root):
     """
-    Criterion 2: No Critical or Major defects.
-    Parses 4QA_Report.md for defect severity.
+    Criterion 2: No Critical or Major defects across ALL apps.
+    Parses {app}/04-check/4_Report_QA.md for defect severity.
     """
-    filepath = os.path.join(udocs_root, DOC_PATHS["qa_report"])
+    apps = get_apps(udocs_root)
     result = {
         "criterion": "No Critical/Major Defects",
         "passed": False,
@@ -103,43 +167,45 @@ def check_defects(udocs_root):
         "details": [],
     }
 
-    if not os.path.exists(filepath):
-        result["details"].append("4QA_Report.md not found")
-        # No QA report means no defects recorded
-        result["passed"] = True
-        return result
+    for app in apps:
+        filepath = get_doc_path(udocs_root, "4_Report_QA.md", app)
 
-    try:
-        with open(filepath, "r", encoding="utf-8") as f:
-            content = f.read()
-    except (IOError, UnicodeDecodeError) as e:
-        result["details"].append(f"Cannot read file: {e}")
-        return result
-
-    # Count Critical and Major defects (not resolved/closed)
-    # Pattern: | ID | Title | Severity | Status | ...
-    table_rows = re.findall(
-        r"^\|([^|]+)\|([^|]+)\|([^|]+)\|([^|]+)\|", content, re.MULTILINE
-    )
-
-    for row in table_rows:
-        cells = [c.strip() for c in row]
-        if cells[0].startswith("-") or cells[0].lower() in ("id", "#", "no"):
+        if not os.path.exists(filepath):
+            result["details"].append(f"[{app}] 4_Report_QA.md not found")
+            # No QA report means no defects recorded for this app
             continue
 
-        severity = cells[2].strip().lower() if len(cells) > 2 else ""
-        status = cells[3].strip().lower() if len(cells) > 3 else ""
-
-        # Skip resolved/closed defects
-        if status in ("resolved", "closed", "fixed", "done"):
+        try:
+            with open(filepath, "r", encoding="utf-8") as f:
+                content = f.read()
+        except (IOError, UnicodeDecodeError) as e:
+            result["details"].append(f"[{app}] Cannot read file: {e}")
             continue
 
-        if severity == "critical":
-            result["critical_count"] += 1
-            result["details"].append(f"Critical: {cells[0]} - {cells[1]}")
-        elif severity == "major":
-            result["major_count"] += 1
-            result["details"].append(f"Major: {cells[0]} - {cells[1]}")
+        # Count Critical and Major defects (not resolved/closed)
+        # Pattern: | ID | Title | Severity | Status | ...
+        table_rows = re.findall(
+            r"^\|([^|]+)\|([^|]+)\|([^|]+)\|([^|]+)\|", content, re.MULTILINE
+        )
+
+        for row in table_rows:
+            cells = [c.strip() for c in row]
+            if cells[0].startswith("-") or cells[0].lower() in ("id", "#", "no"):
+                continue
+
+            severity = cells[2].strip().lower() if len(cells) > 2 else ""
+            status = cells[3].strip().lower() if len(cells) > 3 else ""
+
+            # Skip resolved/closed defects
+            if status in ("resolved", "closed", "fixed", "done"):
+                continue
+
+            if severity == "critical":
+                result["critical_count"] += 1
+                result["details"].append(f"[{app}] Critical: {cells[0]} - {cells[1]}")
+            elif severity == "major":
+                result["major_count"] += 1
+                result["details"].append(f"[{app}] Major: {cells[0]} - {cells[1]}")
 
     result["passed"] = result["critical_count"] == 0 and result["major_count"] == 0
     return result
@@ -147,10 +213,10 @@ def check_defects(udocs_root):
 
 def check_fr_completion(udocs_root):
     """
-    Criterion 3: All FR (Functional Requirements) implemented.
-    Parses 1A_SRS.md for FR status.
+    Criterion 3: All FR (Functional Requirements) implemented across ALL apps.
+    Parses {app}/01-plan/1_SRS_RA.md for FR status.
     """
-    filepath = os.path.join(udocs_root, DOC_PATHS["srs"])
+    apps = get_apps(udocs_root)
     result = {
         "criterion": "All FR Implemented",
         "passed": False,
@@ -160,66 +226,72 @@ def check_fr_completion(udocs_root):
         "details": [],
     }
 
-    if not os.path.exists(filepath):
-        result["details"].append("1A_SRS.md not found")
-        return result
+    for app in apps:
+        filepath = get_doc_path(udocs_root, "1_SRS_RA.md", app)
 
-    try:
-        with open(filepath, "r", encoding="utf-8") as f:
-            content = f.read()
-    except (IOError, UnicodeDecodeError) as e:
-        result["details"].append(f"Cannot read file: {e}")
-        return result
+        if not os.path.exists(filepath):
+            result["details"].append(f"[{app}] 1_SRS_RA.md not found")
+            result["unimplemented_fr"] += 1  # count as failure
+            continue
 
-    # Find FR entries: #### FR-NNN: Title
-    # And check for implementation status markers
-    fr_pattern = re.compile(r"^####\s+(FR-\d+):\s*(.+)", re.MULTILINE)
-    matches = fr_pattern.findall(content)
+        try:
+            with open(filepath, "r", encoding="utf-8") as f:
+                content = f.read()
+        except (IOError, UnicodeDecodeError) as e:
+            result["details"].append(f"[{app}] Cannot read file: {e}")
+            continue
 
-    # Check status in table format or inline markers
-    # Pattern: | FR-NNN | Title | Status |
-    table_rows = re.findall(
-        r"^\|\s*(FR-\d+)\s*\|([^|]+)\|([^|]+)\|", content, re.MULTILINE
-    )
+        # Find FR entries: #### FR-NNN: Title
+        # And check for implementation status markers
+        fr_pattern = re.compile(r"^####\s+(FR-\d+):\s*(.+)", re.MULTILINE)
+        matches = fr_pattern.findall(content)
 
-    if table_rows:
-        # Table format
-        for row in table_rows:
-            fr_id = row[0].strip()
-            fr_title = row[1].strip()
-            fr_status = row[2].strip().lower()
+        # Check status in table format or inline markers
+        # Pattern: | FR-NNN | Title | Status |
+        table_rows = re.findall(
+            r"^\|\s*(FR-\d+)\s*\|([^|]+)\|([^|]+)\|", content, re.MULTILINE
+        )
 
-            result["total_fr"] += 1
-            if fr_status in ("done", "implemented", "complete", "completed"):
-                result["implemented_fr"] += 1
-            else:
-                result["unimplemented_fr"] += 1
-                result["details"].append(
-                    f"Unimplemented: {fr_id} - {fr_title} ({fr_status})"
+        if table_rows:
+            # Table format
+            for row in table_rows:
+                fr_id = row[0].strip()
+                fr_title = row[1].strip()
+                fr_status = row[2].strip().lower()
+
+                result["total_fr"] += 1
+                if fr_status in ("done", "implemented", "complete", "completed"):
+                    result["implemented_fr"] += 1
+                else:
+                    result["unimplemented_fr"] += 1
+                    result["details"].append(
+                        f"[{app}] Unimplemented: {fr_id} - {fr_title} ({fr_status})"
+                    )
+        elif matches:
+            # Heading format — count headings as total, check for status markers
+            for fr_id, fr_title in matches:
+                result["total_fr"] += 1
+                # Look for status marker after the heading
+                status_pattern = re.compile(
+                    rf"####\s+{re.escape(fr_id)}.*?(?:Status|Implementation):\s*(\w+)",
+                    re.DOTALL,
                 )
-    elif matches:
-        # Heading format — count headings as total, check for status markers
-        for fr_id, fr_title in matches:
-            result["total_fr"] += 1
-            # Look for status marker after the heading
-            status_pattern = re.compile(
-                rf"####\s+{re.escape(fr_id)}.*?(?:Status|Implementation):\s*(\w+)",
-                re.DOTALL,
-            )
-            status_match = status_pattern.search(content)
-            if status_match and status_match.group(1).lower() in (
-                "done",
-                "implemented",
-                "complete",
-                "completed",
-            ):
-                result["implemented_fr"] += 1
-            else:
-                result["unimplemented_fr"] += 1
-                result["details"].append(f"Unimplemented: {fr_id} - {fr_title}")
+                status_match = status_pattern.search(content)
+                if status_match and status_match.group(1).lower() in (
+                    "done",
+                    "implemented",
+                    "complete",
+                    "completed",
+                ):
+                    result["implemented_fr"] += 1
+                else:
+                    result["unimplemented_fr"] += 1
+                    result["details"].append(f"[{app}] Unimplemented: {fr_id} - {fr_title}")
+        else:
+            result["details"].append(f"[{app}] No FR entries found in SRS")
 
-    if result["total_fr"] == 0:
-        result["details"].append("No FR entries found in SRS")
+    if result["total_fr"] == 0 and result["unimplemented_fr"] == 0:
+        result["details"].append("No FR entries found across all apps")
     else:
         result["passed"] = result["unimplemented_fr"] == 0
 
@@ -287,10 +359,10 @@ def main():
     print("[1/4] Checking backlog status...")
     criteria.append(check_backlog(udocs_root))
 
-    print("[2/4] Checking defect status...")
+    print("[2/4] Checking defect status (all apps)...")
     criteria.append(check_defects(udocs_root))
 
-    print("[3/4] Checking FR completion...")
+    print("[3/4] Checking FR completion (all apps)...")
     criteria.append(check_fr_completion(udocs_root))
 
     print("[4/4] Running build check...")

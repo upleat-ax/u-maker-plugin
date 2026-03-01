@@ -1,5 +1,12 @@
 {
-  "version": "1.0.0",
+  "version": "2.0.0",
+  "documentLanguage": "ko",
+  "supportedLanguages": {
+    "ko": "한국어",
+    "en": "English",
+    "ja": "日本語",
+    "zh": "中文"
+  },
   "pdca": {
     "phases": [
       "plan",
@@ -12,105 +19,158 @@
     "currentIteration": 1,
     "maxIterations": 10,
     "autoIterate": true,
-    "loopStatus": "STOPPED"
+    "loopStatus": "STOPPED",
+    "planWorkflow": "us-first",
+    "supportedPlanWorkflows": [
+      "us-first",
+      "fr-first"
+    ]
   },
   "documentPaths": {
     "root": "u-docs",
-    "plan": "u-docs/01-plan",
-    "design": "u-docs/02-design",
-    "dev": "u-docs/03-dev",
-    "check": "u-docs/04-check",
-    "act": "u-docs/05-act",
-    "assets": "u-docs/assets",
+    "shared": "u-docs/shared",
     "iterations": "u-docs/iterations"
   },
+  "documentScopes": {
+    "shared": [
+      "1_Roadmap_PM.md",
+      "1_Index_PM.md",
+      "2_ERD_SA.md",
+      "2_DesignSystem_UX.md",
+      "3_UIComponents_UX.md",
+      "3_DesignToken_UX.md",
+      "5_Backlog_RA.md",
+      "5_IterationLog_RA.md",
+      "5_Retrospective_PM.md"
+    ],
+    "app": [
+      "1_SRS_RA.md",
+      "1_IA_RA.md",
+      "2_API_SA.md",
+      "2_Screen_UX.md",
+      "3_Code_DV.md",
+      "3_Screen_UX.md",
+      "4_Case_QA.md",
+      "4_Report_QA.md"
+    ]
+  },
   "documents": {
-    "01-plan": {
-      "1PM_Roadmap.md": {
-        "owner": "u-pm",
-        "required": true
+    "shared": {
+      "01-plan": {
+        "1_Roadmap_PM.md": {
+          "owner": "u-ra",
+          "required": true
+        },
+        "1_Index_PM.md": {
+          "owner": "u-ra",
+          "required": true
+        }
       },
-      "1A_SRS.md": {
-        "owner": "u-a",
-        "required": true
+      "02-design": {
+        "2_ERD_SA.md": {
+          "owner": "u-sa",
+          "required": true
+        },
+        "2_DesignSystem_UX.md": {
+          "owner": "u-ux",
+          "required": false
+        }
       },
-      "1CX_IA.md": {
-        "owner": "u-cx",
-        "required": true
+      "03-dev": {
+        "3_UIComponents_UX.md": {
+          "owner": "u-ux",
+          "required": false
+        },
+        "3_DesignToken_UX.md": {
+          "owner": "u-ux",
+          "required": false
+        }
       },
-      "1M_Index.md": {
-        "owner": "u-m",
-        "required": true
+      "05-act": {
+        "5_Backlog_RA.md": {
+          "owner": "u-ra",
+          "required": true
+        },
+        "5_IterationLog_RA.md": {
+          "owner": "u-ra",
+          "required": true
+        },
+        "5_Retrospective_PM.md": {
+          "owner": "u-ra",
+          "required": true
+        }
       }
     },
-    "02-design": {
-      "2A_ERD.md": {
-        "owner": "u-a",
-        "required": true
+    "app": {
+      "01-plan": {
+        "1_SRS_RA.md": {
+          "owner": "u-sa",
+          "required": true
+        },
+        "1_IA_RA.md": {
+          "owner": "u-ux",
+          "required": true
+        }
       },
-      "2A_API.md": {
-        "owner": "u-a",
-        "required": true
+      "02-design": {
+        "2_API_SA.md": {
+          "owner": "u-sa",
+          "required": true
+        },
+        "2_Screen_UX.md": {
+          "owner": "u-ux",
+          "required": true
+        }
       },
-      "2CX_Screen.md": {
-        "owner": "u-cx",
-        "required": true
-      }
-    },
-    "03-dev": {
-      "3DV_Code.md": {
-        "owner": "u-dv-fe",
-        "required": true
-      }
-    },
-    "04-check": {
-      "4QA_Case.md": {
-        "owner": "u-qa-a",
-        "required": true
+      "03-dev": {
+        "3_Code_DV.md": {
+          "owner": "u-dv-fe",
+          "required": true
+        },
+        "3_Screen_UX.md": {
+          "owner": "u-ux",
+          "required": false
+        }
       },
-      "4QA_Report.md": {
-        "owner": "u-qa-t",
-        "required": true
-      }
-    },
-    "05-act": {
-      "5ACT_Backlog.md": {
-        "owner": "u-qa-n",
-        "required": true
-      },
-      "5ACT_Iteration_Log.md": {
-        "owner": "u-m",
-        "required": true
-      },
-      "5ACT_Retrospective.md": {
-        "owner": "u-pm",
-        "required": true
+      "04-check": {
+        "4_Case_QA.md": {
+          "owner": "u-qa",
+          "required": true
+        },
+        "4_Report_QA.md": {
+          "owner": "u-qa",
+          "required": true
+        }
       }
     }
   },
   "phaseGates": {
     "plan-to-design": {
-      "required": [
-        "1PM_Roadmap.md",
-        "1A_SRS.md",
-        "1CX_IA.md"
+      "shared": [
+        "1_Roadmap_PM.md"
+      ],
+      "perApp": [
+        "1_SRS_RA.md",
+        "1_IA_RA.md"
       ],
       "status": "Final",
-      "validator": "u-m"
+      "validator": "u-ra"
     },
     "design-to-do": {
-      "required": [
-        "2A_ERD.md",
-        "2A_API.md",
-        "2CX_Screen.md"
+      "shared": [
+        "2_ERD_SA.md"
+      ],
+      "perApp": [
+        "2_API_SA.md",
+        "2_Screen_UX.md"
       ],
       "status": "Final",
-      "validator": "u-m",
-      "additionalCheck": "u-m-consistency-review"
+      "validator": "u-ra",
+      "additionalCheck": "u-ra-consistency-review"
     },
     "do-to-check": {
       "required": [
-        "3DV_Code.md"
+        "3_Code_DV.md"
       ],
       "conditions": [
         "code-implementation-complete",
@@ -129,10 +189,10 @@
       "trigger": "check-to-complete-failed"
     },
     "act-to-plan": {
-      "required": [
-        "5ACT_Backlog.md",
-        "5ACT_Iteration_Log.md",
-        "5ACT_Retrospective.md"
+      "shared": [
+        "5_Backlog_RA.md",
+        "5_IterationLog_RA.md",
+        "5_Retrospective_PM.md"
       ],
       "conditions": [
         "backlog-organized",
@@ -142,16 +202,19 @@
     }
   },
   "exitCriteria": {
-    "allBacklogDone": "All items in 5ACT_Backlog.md have status Done",
-    "criticalMajorZero": "Critical/Major defect count is 0 in 4QA_Report.md",
-    "allFrImplemented": "All FR items in 1A_SRS.md have status Implemented",
+    "allBacklogDone": "All items in 5_Backlog_RA.md have status Done",
+    "criticalMajorZero": "Critical/Major defect count is 0 in 4_Report_QA.md",
+    "allFrImplemented": "All FR items in 1_SRS_RA.md have status Implemented",
     "buildSuccess": "bun run build passes without errors"
   },
   "agents": {
     "routing": {
-      "u-pm": {
+      "u-ra": {
         "phases": [
           "plan",
+          "design",
+          "do",
+          "check",
           "act"
         ],
         "triggers": [
@@ -159,23 +222,18 @@
           "user-story",
           "milestone",
           "project-init",
-          "project-init-existing"
-        ]
-      },
-      "u-m": {
-        "phases": [
-          "plan",
-          "design",
-          "act"
-        ],
-        "triggers": [
+          "project-init-existing",
+          "us-add",
           "index",
           "validate",
           "consistency",
-          "status"
+          "status",
+          "backlog",
+          "backlog-add",
+          "retrospective"
         ]
       },
-      "u-a": {
+      "u-sa": {
         "phases": [
           "plan",
           "design"
@@ -184,19 +242,24 @@
           "srs",
           "erd",
           "api-contract",
-          "architecture"
+          "architecture",
+          "fr-add"
         ]
       },
-      "u-cx": {
+      "u-ux": {
         "phases": [
           "plan",
-          "design"
+          "design",
+          "do"
         ],
         "triggers": [
           "ia",
           "screen",
           "ux",
-          "user-flow"
+          "user-flow",
+          "design-system",
+          "design-token",
+          "ui-components"
         ]
       },
       "u-dv-fe": {
@@ -221,32 +284,17 @@
           "drizzle"
         ]
       },
-      "u-qa-a": {
+      "u-qa": {
         "phases": [
           "check"
         ],
         "triggers": [
           "test-case",
           "test-design",
-          "qa-plan"
-        ]
-      },
-      "u-qa-t": {
-        "phases": [
-          "check"
-        ],
-        "triggers": [
+          "qa-plan",
           "test-run",
           "test-execute",
-          "test-result"
-        ]
-      },
-      "u-qa-n": {
-        "phases": [
-          "check",
-          "act"
-        ],
-        "triggers": [
+          "test-result",
           "defect",
           "bug-report",
           "defect-analysis"
@@ -345,5 +393,5 @@
       "Final"
     ]
   },
-  "lastSessionEnd": "2026-02-28T19:23:51.210Z"
+  "lastSessionEnd": "2026-03-01T15:19:20.897Z"
 }

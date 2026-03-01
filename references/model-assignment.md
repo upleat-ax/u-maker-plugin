@@ -8,7 +8,6 @@
 |------|-------------|----------------|------|
 | **High** | `opus` | `o3` | 깊은 추론, 교차 문서 분석, 아키텍처 설계 |
 | **Mid** | `sonnet` | `o4-mini` | 코드 생성, 기획, 구조화된 분석 |
-| **Low** | `haiku` | `o4-mini` | 반복 실행, 기록, 단순 처리 |
 
 ---
 
@@ -18,25 +17,17 @@
 
 | Agent | Model | 근거 |
 |-------|-------|------|
-| `u-a` (Architect) | **opus** | SRS/ERD/API 설계는 도메인 전체를 이해하고 교차 참조가 필요. 요구사항→데이터 모델→API 스키마 간 일관성 추론이 핵심 |
-| `u-m` (Master) | **opus** | 모든 Phase의 문서 간 모순 탐지. Screen↔API↔ERD 교차 검증은 가장 높은 분석 능력 요구 |
+| `u-ra` (Requirements Analyst) | **opus** | Roadmap/UserStory/Index/Backlog/Retrospective 등 전 Phase 문서를 총괄. 교차 문서 모순 탐지, 추적성 검증, Gate 판정에 가장 높은 분석 능력 요구 |
 
 ### Mid Tier (sonnet / o4-mini)
 
 | Agent | Model | 근거 |
 |-------|-------|------|
-| `u-pm` (Project Manager) | **sonnet** | 로드맵/유저스토리는 구조화된 작업. 깊은 기술 추론보다 조직화 능력 중요 |
-| `u-cx` (CX/UX Designer) | **sonnet** | IA/화면 설계는 창의성 필요하나 명확한 패턴 존재. 템플릿 기반 생성에 충분 |
-| `u-dv-fe` (Frontend Dev) | **sonnet** | Contract 기반 코드 생성. 2CX_Screen + 2A_API 참조하여 구현하므로 설계 문서가 가이드 역할 |
-| `u-dv-be` (Backend Dev) | **sonnet** | 2A_API + 2A_ERD 기반 코드 생성. ORM 모델/라우트는 스키마에서 직접 변환 |
-| `u-qa-a` (QA Analyst) | **sonnet** | SRS FR→테스트 케이스 도출은 체계적 분석. 정상/비정상/경계값 패턴이 정형화됨 |
-| `u-qa-n` (QA Defect Analyst) | **sonnet** | 결함 분류/원인 분석은 분석적 사고 필요하나 패턴화 가능 |
-
-### Low Tier (haiku / o4-mini)
-
-| Agent | Model | 근거 |
-|-------|-------|------|
-| `u-qa-t` (QA Tester) | **haiku** | 케이스 실행→Pass/Fail 기록은 기계적 작업. 설계된 케이스를 따라가며 결과만 기록 |
+| `u-sa` (Software Architect) | **sonnet** | SRS/ERD/API 설계는 도메인 전체를 이해하고 교차 참조가 필요하나, 템플릿 기반 구조화 생성에 충분 |
+| `u-ux` (UX Designer) | **sonnet** | IA/Screen/DesignSystem/UIComponents/DesignToken 설계는 창의성 필요하나 명확한 패턴 존재. 템플릿 기반 생성에 충분 |
+| `u-dv-fe` (Frontend Dev) | **sonnet** | Contract 기반 코드 생성. 2_Screen_UX + 2_API_SA 참조하여 구현하므로 설계 문서가 가이드 역할 |
+| `u-dv-be` (Backend Dev) | **sonnet** | 2_API_SA + 2_ERD_SA 기반 코드 생성. ORM 모델/라우트는 스키마에서 직접 변환 |
+| `u-qa` (QA Engineer) | **sonnet** | SRS FR→테스트 케이스 도출, 테스트 실행, 결함 분석을 통합 수행. 체계적 분석과 패턴화된 작업 |
 
 ---
 
@@ -45,7 +36,6 @@
 | Skill/Command | Model | 근거 |
 |---------------|-------|------|
 | `u-ssot` (Orchestrator) | **sonnet** | 명령어 라우팅, Phase Gate 검증, Agent 체인 호출. 복잡하지만 규칙 기반 |
-| `help` (Command) | **haiku** | 정적 텍스트 출력. 추론 불필요 |
 
 ---
 
@@ -57,32 +47,32 @@
 Full PDCA Cycle 모델 사용 패턴:
 
 PLAN Phase:
-  u-pm (sonnet) → u-a (opus) → u-cx (sonnet) → u-m (opus)
+  u-ra (opus) → u-sa (sonnet) → u-ux (sonnet) → u-ra (opus)
 
 DESIGN Phase:
-  u-cx (sonnet) → u-a (opus) → u-m (opus)
+  u-ux (sonnet) → u-sa (sonnet) → u-ra (opus)
 
 DO Phase:
-  u-dv-fe (sonnet) + u-dv-be (sonnet)  ← 병렬, opus 불필요
+  u-ux (sonnet) + u-dv-fe (sonnet) + u-dv-be (sonnet)  ← 병렬, opus 불필요
 
 CHECK Phase:
-  u-qa-a (sonnet) → u-qa-t (haiku) → u-qa-n (sonnet)
+  u-qa (sonnet)
 
 ACT Phase:
-  u-qa-n (sonnet) → u-pm (sonnet) → u-m (opus)
+  u-ra (opus)
 ```
 
 ### 비용 비중 (예상)
 
-| Phase | opus 호출 | sonnet 호출 | haiku 호출 |
-|-------|-----------|-------------|------------|
-| PLAN | 2 (u-a, u-m) | 2 (u-pm, u-cx) | 0 |
-| DESIGN | 2 (u-a, u-m) | 1 (u-cx) | 0 |
-| DO | 0 | 2 (u-dv-fe, u-dv-be) | 0 |
-| CHECK | 0 | 2 (u-qa-a, u-qa-n) | 1 (u-qa-t) |
-| ACT | 1 (u-m) | 2 (u-qa-n, u-pm) | 0 |
+| Phase | opus 호출 | sonnet 호출 |
+|-------|-----------|-------------|
+| PLAN | 2 (u-ra ×2) | 2 (u-sa, u-ux) |
+| DESIGN | 1 (u-ra) | 2 (u-ux, u-sa) |
+| DO | 0 | 3 (u-ux, u-dv-fe, u-dv-be) |
+| CHECK | 0 | 1 (u-qa) |
+| ACT | 1 (u-ra) | 0 |
 
-**Iteration당**: opus 5회, sonnet 9회, haiku 1회
+**Iteration당**: opus 4회, sonnet 8회
 
 ### Codex (OpenAI) 환경
 
@@ -92,10 +82,9 @@ Codex CLI에서 사용 시 아래 매핑 적용:
 |-------------|------------------|------|
 | `opus` | `o3` | 깊은 추론 필요 시 |
 | `sonnet` | `o4-mini` | 대부분의 작업 |
-| `haiku` | `o4-mini` | 단순 작업 (Codex는 2-tier) |
 
 > Codex CLI는 현재 `o3`와 `o4-mini` 2가지 모델만 지원하므로,
-> Claude의 3-tier 구조에서 sonnet/haiku를 모두 `o4-mini`로 매핑한다.
+> Claude의 2-tier 구조와 자연스럽게 매핑된다.
 
 ---
 
@@ -104,7 +93,7 @@ Codex CLI에서 사용 시 아래 매핑 적용:
 ### 비용 절감이 필요할 때
 
 ```yaml
-# u-a, u-m을 sonnet으로 다운그레이드
+# u-ra를 sonnet으로 다운그레이드
 model: sonnet
 ```
 

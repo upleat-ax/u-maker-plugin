@@ -61,21 +61,35 @@ const relPath = path.relative(udocsPath, normalized);
 const basename = path.basename(filePath);
 
 // Detect SSoT document pattern
-const SSOT_DOC_PATTERN = /^\d+[A-Z]+_[A-Za-z]+\.md$/;
+const SSOT_DOC_PATTERN = /^\d+_[A-Za-z]+_[A-Z]+\.md$/;
 const isSsotDoc = SSOT_DOC_PATTERN.test(basename);
 
 let contextMessage = '';
 
 if (isSsotDoc) {
-  // Determine which phase directory
+  // Determine scope and phase from path
+  // v2: relPath = "shared/01-plan/1_Roadmap_PM.md" or "web/01-plan/1_SRS_RA.md"
+  // v1: relPath = "01-plan/1_SRS_RA.md"
   const parts = relPath.split(path.sep);
-  const phaseDir = parts[0] || '';
+  let scope = '';
+  let phaseDir = '';
 
+  if (parts.length >= 3) {
+    // v2 structure: parts[0] = scope (shared or app name), parts[1] = phaseDir
+    scope = parts[0];
+    phaseDir = parts[1];
+  } else {
+    // v1 flat structure: parts[0] = phaseDir
+    phaseDir = parts[0] || '';
+  }
+
+  const scopeLabel = scope ? `Scope: ${scope}` : '';
   contextMessage = [
     `SSoT document written: ${relPath}`,
-    `Consider updating 1M_Index.md to reflect this change.`,
+    `Consider updating 1_Index_PM.md to reflect this change.`,
     `Phase: ${phaseDir}`,
-  ].join(' | ');
+    scopeLabel,
+  ].filter(Boolean).join(' | ');
 } else {
   contextMessage = `Document written to u-docs/: ${relPath}`;
 }

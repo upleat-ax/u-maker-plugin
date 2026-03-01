@@ -14,9 +14,9 @@
 |-------|-------|
 | **Syntax** | `/u-create-project <project-name>` |
 | **Description** | 새 프로젝트를 생성하고 u-docs/ 구조를 초기화한다 |
-| **Calling Agents** | Orchestrator → `u-PM` → `u-M` |
+| **Calling Agents** | Orchestrator → `u-RA` |
 | **Prerequisites** | None |
-| **Output** | `u-docs/` 디렉토리 구조 생성, `1M_Index.md` 초기화, `u-ssot.config.json` 초기화 |
+| **Output** | `u-docs/` 디렉토리 구조 생성, `1_Index_PM.md` 초기화, `u-ssot.config.json` 초기화 |
 
 ### `/u-init`
 
@@ -24,7 +24,7 @@
 |-------|-------|
 | **Syntax** | `/u-init [project-path]` |
 | **Description** | 기존 프로젝트의 리소스(package.json, 소스코드, DB 스키마, README 등)를 분석하여 SSoT 문서를 역공학으로 자동 생성한다 |
-| **Calling Agents** | Orchestrator → `u-M` → `u-A` → `u-CX` → `u-PM` → `u-M` |
+| **Calling Agents** | Orchestrator → `u-RA` → `u-SA` → `u-UX` → `u-RA` |
 | **Prerequisites** | 프로젝트 파일 존재 (package.json 등) |
 | **Output** | `u-docs/` 구조 생성, 분석 기반 SSoT 문서 자동 생성 (Draft), `u-ssot.config.json` 업데이트 |
 
@@ -36,41 +36,41 @@
 
 | Field | Value |
 |-------|-------|
-| **Syntax** | `/u-plan` |
+| **Syntax** | `/u-plan [app]` |
 | **Description** | PLAN Phase를 실행한다. Roadmap, SRS, IA, Index를 순서대로 생성한다 |
-| **Calling Agents** | Orchestrator → `u-PM` → `u-A` → `u-CX` → `u-M` |
+| **Calling Agents** | Orchestrator → (`u-RA` ↔ `u-SA`) → `u-UX` → `u-RA` |
 | **Prerequisites** | 프로젝트 생성 완료 (`u-docs/` 존재) |
-| **Output** | `1PM_Roadmap.md`, `1A_SRS.md`, `1CX_IA.md`, `1M_Index.md` |
+| **Output** | `1_Roadmap_PM.md`, `1_SRS_RA.md`, `1_IA_RA.md`, `1_Index_PM.md` |
 
 ### `/u-design`
 
 | Field | Value |
 |-------|-------|
-| **Syntax** | `/u-design` |
-| **Description** | DESIGN Phase를 실행한다. Screen, ERD, API Contract를 생성한다 |
-| **Calling Agents** | Orchestrator → `u-CX` → `u-A` → `u-M` |
-| **Prerequisites** | PLAN Gate 통과 (`1PM_Roadmap`, `1A_SRS`, `1CX_IA` 모두 Final) |
-| **Output** | `2CX_Screen.md`, `2A_ERD.md`, `2A_API.md` |
+| **Syntax** | `/u-design [app]` |
+| **Description** | DESIGN Phase를 실행한다. DesignSystem, Screen, ERD, API Contract를 생성한다 |
+| **Calling Agents** | Orchestrator → `u-UX` → `u-SA` → `u-RA` |
+| **Prerequisites** | PLAN Gate 통과 (`1_Roadmap_PM`, `1_SRS_RA`, `1_IA_RA` 모두 Final) |
+| **Output** | `2_DesignSystem_UX.md`, `2_Screen_UX.md`, `2_ERD_SA.md`, `2_API_SA.md` |
 
 ### `/u-dev`
 
 | Field | Value |
 |-------|-------|
-| **Syntax** | `/u-dev` |
-| **Description** | DO Phase를 실행한다. Frontend/Backend 병렬 개발 |
-| **Calling Agents** | Orchestrator → `u-DV-FE` + `u-DV-BE` |
-| **Prerequisites** | DESIGN Gate 통과 (`2A_ERD`, `2A_API`, `2CX_Screen` 모두 Final + u-M 검수) |
-| **Output** | 코드 파일 + `3DV_Code.md` |
+| **Syntax** | `/u-dev [app]` |
+| **Description** | DO Phase를 실행한다. UX/Frontend/Backend 병렬 개발 |
+| **Calling Agents** | Orchestrator → `u-UX` + `u-DV-FE` + `u-DV-BE` |
+| **Prerequisites** | DESIGN Gate 통과 (`2_ERD_SA`, `2_API_SA`, `2_Screen_UX`, `2_DesignSystem_UX` 모두 Final + u-RA 검수) |
+| **Output** | 코드 파일 + `3_Screen_UX.md`, `3_UIComponents_UX.md`, `3_DesignToken_UX.md`, `3_Code_DV.md` |
 
 ### `/u-check`
 
 | Field | Value |
 |-------|-------|
-| **Syntax** | `/u-check` |
+| **Syntax** | `/u-check [app]` |
 | **Description** | CHECK Phase를 실행한다. 테스트 케이스 설계, 실행, 결함 분석 |
-| **Calling Agents** | Orchestrator → `u-QA-A` → `u-QA-T` → `u-QA-N` |
+| **Calling Agents** | Orchestrator → `u-QA` |
 | **Prerequisites** | DO Gate 통과 (코드 구현 완료 + `bun run build` 성공) |
-| **Output** | `4QA_Case.md`, `4QA_Report.md` |
+| **Output** | `4_Case_QA.md`, `4_Report_QA.md` |
 
 ### `/u-act`
 
@@ -78,9 +78,9 @@
 |-------|-------|
 | **Syntax** | `/u-act` |
 | **Description** | ACT Phase를 실행한다. 백로그 정리, 아카이브, 회고 |
-| **Calling Agents** | Orchestrator → `u-M` → `u-PM` |
+| **Calling Agents** | Orchestrator → `u-RA` |
 | **Prerequisites** | CHECK Phase 완료 (종료 조건 미충족) |
-| **Output** | `5ACT_Backlog.md`, `5ACT_Iteration_Log.md`, `5ACT_Retrospective.md` |
+| **Output** | `5_Backlog_RA.md`, `5_IterationLog_RA.md`, `5_Retrospective_PM.md` |
 
 ---
 
@@ -140,7 +140,7 @@ SSoT 문서 상태를 관리하고 검증하는 커맨드.
 |-------|-------|
 | **Syntax** | `/u-status` |
 | **Description** | 현재 Iteration, Phase, 완료율, 문서 상태를 보고한다 |
-| **Calling Agents** | `u-M` |
+| **Calling Agents** | `u-RA` |
 | **Prerequisites** | 프로젝트 생성 완료 |
 | **Output** | 상태 보고 배너 (터미널 출력) |
 
@@ -150,7 +150,7 @@ SSoT 문서 상태를 관리하고 검증하는 커맨드.
 |-------|-------|
 | **Syntax** | `/u-docs` |
 | **Description** | 모든 SSoT 문서 목록과 상태(Draft/Review/Final)를 표시한다 |
-| **Calling Agents** | `u-M` |
+| **Calling Agents** | `u-RA` |
 | **Prerequisites** | 프로젝트 생성 완료 |
 | **Output** | 문서 목록 테이블 (터미널 출력) |
 
@@ -160,7 +160,7 @@ SSoT 문서 상태를 관리하고 검증하는 커맨드.
 |-------|-------|
 | **Syntax** | `/u-validate` |
 | **Description** | SSoT 문서 무결성을 검증한다 (헤더, 추적성, 구조) |
-| **Calling Agents** | `u-M` + `scripts/validate-ssot.py` |
+| **Calling Agents** | `u-RA` + `scripts/validate-ssot.py` |
 | **Prerequisites** | 프로젝트 생성 완료 |
 | **Output** | 검증 결과 보고서 (Pass/Fail 항목별) |
 
@@ -170,8 +170,8 @@ SSoT 문서 상태를 관리하고 검증하는 커맨드.
 |-------|-------|
 | **Syntax** | `/u-backlog` |
 | **Description** | 현재 백로그 항목을 표시한다 |
-| **Calling Agents** | `u-M` |
-| **Prerequisites** | `5ACT_Backlog.md` 존재 |
+| **Calling Agents** | `u-RA` |
+| **Prerequisites** | `5_Backlog_RA.md` 존재 |
 | **Output** | 백로그 테이블 (터미널 출력) |
 
 ### `/u-backlog-add`
@@ -180,21 +180,45 @@ SSoT 문서 상태를 관리하고 검증하는 커맨드.
 |-------|-------|
 | **Syntax** | `/u-backlog-add [description]` |
 | **Description** | 새로운 백로그 항목을 추가한다. 인자 없이 실행하면 대화형으로 입력받는다 |
-| **Calling Agents** | `u-QA-N` |
-| **Prerequisites** | 프로젝트 생성 완료 (`5ACT_Backlog.md` 없으면 자동 생성) |
-| **Output** | `5ACT_Backlog.md` 업데이트 (Table row + Detail block + Summary 갱신) |
+| **Calling Agents** | `u-RA` |
+| **Prerequisites** | 프로젝트 생성 완료 (`5_Backlog_RA.md` 없으면 자동 생성) |
+| **Output** | `5_Backlog_RA.md` 업데이트 (Table row + Detail block + Summary 갱신) |
 
 **Input Fields**: Type (Bug/Enhancement/Task), Priority (Critical/Major/Minor/Trivial), Origin (PLAN/DESIGN/DEV/CHECK), Assignee, Related FR, Acceptance Criteria
+
+### `/u-us-add`
+
+| Field | Value |
+|-------|-------|
+| **Syntax** | `/u-us-add [description]` |
+| **Description** | 새로운 유저 스토리를 추가한다. 인자 없이 실행하면 대화형으로 입력받는다 |
+| **Calling Agents** | `u-RA` |
+| **Prerequisites** | 프로젝트 생성 완료 (`1_Roadmap_PM.md` 없으면 자동 생성) |
+| **Output** | `1_Roadmap_PM.md` 업데이트 (Table row + Change Log 갱신) |
+
+**Input Fields**: As a (역할), I want to (기능), So that (효과), Priority (Must/Should/Could/Won't), FR Mapping
+
+### `/u-fr-add`
+
+| Field | Value |
+|-------|-------|
+| **Syntax** | `/u-fr-add [app] [description]` |
+| **Description** | 새로운 기능 요구사항(FR)을 추가한다. 인자 없이 실행하면 대화형으로 입력받는다 |
+| **Calling Agents** | `u-SA` |
+| **Prerequisites** | 프로젝트 생성 완료 (`1_SRS_RA.md` 없으면 자동 생성) |
+| **Output** | `1_SRS_RA.md` 업데이트 (Table row + FR Detail block + Change Log 갱신) |
+
+**Input Fields**: Feature (기능명), Description (설명), Priority (Must/Should/Could/Won't), US Mapping, Input/Output/Business Rule/Exception (선택)
 
 ### `/u-index`
 
 | Field | Value |
 |-------|-------|
 | **Syntax** | `/u-index` |
-| **Description** | 문서 인덱스(`1M_Index.md`)를 갱신한다 |
-| **Calling Agents** | `u-M` |
+| **Description** | 문서 인덱스(`1_Index_PM.md`)를 갱신한다 |
+| **Calling Agents** | `u-RA` |
 | **Prerequisites** | 프로젝트 생성 완료 |
-| **Output** | `1M_Index.md` 업데이트 |
+| **Output** | `1_Index_PM.md` 업데이트 |
 
 ---
 
@@ -206,11 +230,11 @@ SSoT 문서 상태를 관리하고 검증하는 커맨드.
 
 | Field | Value |
 |-------|-------|
-| **Syntax** | `/u-srs` |
+| **Syntax** | `/u-srs [app]` |
 | **Description** | SRS(Software Requirements Specification)를 생성/수정한다 |
-| **Calling Agents** | `u-A` |
-| **Prerequisites** | `1PM_Roadmap.md` 존재 |
-| **Output** | `1A_SRS.md` |
+| **Calling Agents** | `u-SA` |
+| **Prerequisites** | `1_Roadmap_PM.md` 존재 (optional; FR-First 시 없이도 실행 가능) |
+| **Output** | `{app}/01-plan/1_SRS_RA.md` |
 
 ### `/u-erd`
 
@@ -218,69 +242,69 @@ SSoT 문서 상태를 관리하고 검증하는 커맨드.
 |-------|-------|
 | **Syntax** | `/u-erd` |
 | **Description** | ERD(Entity Relationship Diagram)를 생성/수정한다 |
-| **Calling Agents** | `u-A` |
-| **Prerequisites** | `1A_SRS.md` = Final |
-| **Output** | `2A_ERD.md` |
+| **Calling Agents** | `u-SA` |
+| **Prerequisites** | `1_SRS_RA.md` = Final |
+| **Output** | `shared/02-design/2_ERD_SA.md` |
 
 ### `/u-api`
 
 | Field | Value |
 |-------|-------|
-| **Syntax** | `/u-api` |
+| **Syntax** | `/u-api [app]` |
 | **Description** | API Contract(OpenAPI 3.0)를 생성/수정한다 |
-| **Calling Agents** | `u-A` |
-| **Prerequisites** | `2A_ERD.md` 존재 |
-| **Output** | `2A_API.md` |
+| **Calling Agents** | `u-SA` |
+| **Prerequisites** | `2_ERD_SA.md` 존재 |
+| **Output** | `{app}/02-design/2_API_SA.md` |
 
 ### `/u-screen`
 
 | Field | Value |
 |-------|-------|
-| **Syntax** | `/u-screen` |
+| **Syntax** | `/u-screen [app]` |
 | **Description** | Screen Design(화면 상세 설계)을 생성/수정한다 |
-| **Calling Agents** | `u-CX` |
-| **Prerequisites** | `1CX_IA.md` = Final |
-| **Output** | `2CX_Screen.md` |
+| **Calling Agents** | `u-UX` |
+| **Prerequisites** | `1_IA_RA.md` = Final |
+| **Output** | `{app}/02-design/2_Screen_UX.md` |
 
 ### `/u-fe`
 
 | Field | Value |
 |-------|-------|
-| **Syntax** | `/u-fe` |
+| **Syntax** | `/u-fe [app]` |
 | **Description** | Frontend 코드를 생성한다 |
 | **Calling Agents** | `u-DV-FE` |
-| **Prerequisites** | `2CX_Screen.md` = Final, `2A_API.md` = Final |
-| **Output** | Frontend code files + `3DV_Code.md` 업데이트 |
+| **Prerequisites** | `2_Screen_UX.md` = Final, `2_API_SA.md` = Final |
+| **Output** | Frontend code files + `3_Code_DV.md` 업데이트 |
 
 ### `/u-be`
 
 | Field | Value |
 |-------|-------|
-| **Syntax** | `/u-be` |
+| **Syntax** | `/u-be [app]` |
 | **Description** | Backend 코드를 생성한다 |
 | **Calling Agents** | `u-DV-BE` |
-| **Prerequisites** | `2A_ERD.md` = Final, `2A_API.md` = Final |
-| **Output** | Backend code files + `3DV_Code.md` 업데이트 |
+| **Prerequisites** | `2_ERD_SA.md` = Final, `2_API_SA.md` = Final |
+| **Output** | Backend code files + `3_Code_DV.md` 업데이트 |
 
 ### `/u-test`
 
 | Field | Value |
 |-------|-------|
-| **Syntax** | `/u-test` |
+| **Syntax** | `/u-test [app]` |
 | **Description** | 테스트 케이스를 설계하고 실행한다 |
-| **Calling Agents** | `u-QA-A` → `u-QA-T` |
+| **Calling Agents** | `u-QA` |
 | **Prerequisites** | DO Phase 완료 |
-| **Output** | `4QA_Case.md`, `4QA_Report.md` |
+| **Output** | `4_Case_QA.md`, `4_Report_QA.md` |
 
 ### `/u-bug-report`
 
 | Field | Value |
 |-------|-------|
-| **Syntax** | `/u-bug-report` |
+| **Syntax** | `/u-bug-report [app]` |
 | **Description** | 결함 분석 리포트를 생성한다 |
-| **Calling Agents** | `u-QA-N` |
-| **Prerequisites** | `4QA_Report.md` 존재 |
-| **Output** | 결함 분석 결과, `5ACT_Backlog.md` 업데이트 |
+| **Calling Agents** | `u-QA` |
+| **Prerequisites** | `4_Report_QA.md` 존재 |
+| **Output** | 결함 분석 결과, `5_Backlog_RA.md` 업데이트 |
 
 ---
 
@@ -294,15 +318,15 @@ CHECK Phase에서 설계-구현 일치도를 분석하는 커맨드.
 |-------|-------|
 | **Syntax** | `/u-gap-detector` |
 | **Description** | SSoT 설계 문서(SRS, ERD, API, Screen)와 실제 구현 코드를 비교하여 Gap을 분석한다 |
-| **Calling Agents** | `u-M` (문서 수집) → `u-QA-A` (항목별 매칭 검사) |
+| **Calling Agents** | `u-RA` (문서 수집) → `u-QA` (항목별 매칭 검사) |
 | **Prerequisites** | DO Phase 완료 (코드 구현 존재), 설계 문서(SRS, ERD, API) Final 상태 |
-| **Output** | Gap Analysis Report (`4QA_Report.md`에 추가), Match Rate 산출 |
+| **Output** | Gap Analysis Report (`4_Report_QA.md`에 추가), Match Rate 산출 |
 
 **Analysis Targets**:
-- **SRS FR 검사**: `1A_SRS.md`의 모든 FR 항목이 코드에 구현되었는지 확인
-- **API Endpoint 검사**: `2A_API.md`의 모든 Endpoint가 API Route에 존재하는지 확인
-- **ERD Entity 검사**: `2A_ERD.md`의 모든 Entity가 DB Schema/ORM에 정의되었는지 확인
-- **Screen 검사**: `2CX_Screen.md`의 모든 화면이 페이지/컴포넌트로 구현되었는지 확인
+- **SRS FR 검사**: `1_SRS_RA.md`의 모든 FR 항목이 코드에 구현되었는지 확인
+- **API Endpoint 검사**: `2_API_SA.md`의 모든 Endpoint가 API Route에 존재하는지 확인
+- **ERD Entity 검사**: `2_ERD_SA.md`의 모든 Entity가 DB Schema/ORM에 정의되었는지 확인
+- **Screen 검사**: `2_Screen_UX.md`의 모든 화면이 페이지/컴포넌트로 구현되었는지 확인
 
 **Match Rate 기준**:
 - >= 90%: PASS → CHECK 통과 가능
@@ -330,8 +354,8 @@ CHECK Phase에서 설계-구현 일치도를 분석하는 커맨드.
 |-------|-------|
 | **Syntax** | `/u-history` |
 | **Description** | Iteration 이력을 표시한다 |
-| **Calling Agents** | `u-M` |
-| **Prerequisites** | `5ACT_Iteration_Log.md` 존재 |
+| **Calling Agents** | `u-RA` |
+| **Prerequisites** | `5_IterationLog_RA.md` 존재 |
 | **Output** | Iteration 이력 테이블 (터미널 출력) |
 
 ### `/u-archive`
@@ -340,7 +364,7 @@ CHECK Phase에서 설계-구현 일치도를 분석하는 커맨드.
 |-------|-------|
 | **Syntax** | `/u-archive` |
 | **Description** | 현재 Iteration 문서를 아카이브한다 |
-| **Calling Agents** | `u-M` |
+| **Calling Agents** | `u-RA` |
 | **Prerequisites** | ACT Phase 진행 중 |
 | **Output** | `u-docs/iterations/iter-N/` 디렉토리에 문서 복사 |
 
@@ -370,7 +394,7 @@ CHECK Phase에서 설계-구현 일치도를 분석하는 커맨드.
 |-------|-------|
 | **Syntax** | `/u-summary` |
 | **Description** | 프로젝트 개요와 개발 상태를 요약하여 `u-docs/summary.md`에 생성한다 |
-| **Calling Agents** | `u-M` |
+| **Calling Agents** | `u-RA` |
 | **Prerequisites** | 프로젝트 생성 완료 |
 | **Output** | `u-docs/summary.md` (프로젝트명, 목표, 기능 목록, Iteration/Phase 상태, 문서 현황, 마일스톤) |
 
@@ -398,36 +422,38 @@ CHECK Phase에서 설계-구현 일치도를 분석하는 커맨드.
 
 | Category | Command | Phase | Agents |
 |----------|---------|-------|--------|
-| Lifecycle | `/u-create-project` | - | Orch → u-PM → u-M |
-| Lifecycle | `/u-init` | - | Orch → u-M → u-A → u-CX → u-PM → u-M |
-| Lifecycle | `/u-plan` | PLAN | Orch → u-PM → u-A → u-CX → u-M |
-| Lifecycle | `/u-design` | DESIGN | Orch → u-CX → u-A → u-M |
-| Lifecycle | `/u-dev` | DO | Orch → u-DV-FE + u-DV-BE |
-| Lifecycle | `/u-check` | CHECK | Orch → u-QA-A → u-QA-T → u-QA-N |
-| Lifecycle | `/u-act` | ACT | Orch → u-M → u-PM |
+| Lifecycle | `/u-create-project` | - | Orch → u-RA |
+| Lifecycle | `/u-init` | - | Orch → u-RA → u-SA → u-UX → u-RA |
+| Lifecycle | `/u-plan [app]` | PLAN | Orch → (u-RA ↔ u-SA) → u-UX → u-RA |
+| Lifecycle | `/u-design [app]` | DESIGN | Orch → u-UX → u-SA → u-RA |
+| Lifecycle | `/u-dev [app]` | DO | Orch → u-UX + u-DV-FE + u-DV-BE |
+| Lifecycle | `/u-check [app]` | CHECK | Orch → u-QA |
+| Lifecycle | `/u-act` | ACT | Orch → u-RA |
 | Auto-Loop | `/u-loop` | ALL | Orch → All |
 | Auto-Loop | `/u-loop-from` | Varies | Orch → Varies |
 | Auto-Loop | `/u-stop` | - | Orch |
 | Auto-Loop | `/u-resume` | - | Orch |
-| Doc Mgmt | `/u-status` | - | u-M |
-| Doc Mgmt | `/u-docs` | - | u-M |
-| Doc Mgmt | `/u-validate` | - | u-M + script |
-| Doc Mgmt | `/u-backlog` | - | u-M |
-| Doc Mgmt | `/u-backlog-add` | - | u-QA-N |
-| Doc Mgmt | `/u-index` | - | u-M |
-| Agent | `/u-srs` | PLAN | u-A |
-| Agent | `/u-erd` | DESIGN | u-A |
-| Agent | `/u-api` | DESIGN | u-A |
-| Agent | `/u-screen` | DESIGN | u-CX |
-| Agent | `/u-fe` | DO | u-DV-FE |
-| Agent | `/u-be` | DO | u-DV-BE |
-| Agent | `/u-test` | CHECK | u-QA-A → u-QA-T |
-| Agent | `/u-bug-report` | CHECK | u-QA-N |
-| QA | `/u-gap-detector` | CHECK | u-M → u-QA-A |
+| Doc Mgmt | `/u-status` | - | u-RA |
+| Doc Mgmt | `/u-docs` | - | u-RA |
+| Doc Mgmt | `/u-validate` | - | u-RA + script |
+| Doc Mgmt | `/u-backlog` | - | u-RA |
+| Doc Mgmt | `/u-backlog-add` | - | u-RA |
+| Doc Mgmt | `/u-us-add` | PLAN | u-RA |
+| Doc Mgmt | `/u-fr-add` | PLAN | u-SA |
+| Doc Mgmt | `/u-index` | - | u-RA |
+| Agent | `/u-srs [app]` | PLAN | u-SA |
+| Agent | `/u-erd` | DESIGN | u-SA |
+| Agent | `/u-api [app]` | DESIGN | u-SA |
+| Agent | `/u-screen [app]` | DESIGN | u-UX |
+| Agent | `/u-fe [app]` | DO | u-DV-FE |
+| Agent | `/u-be [app]` | DO | u-DV-BE |
+| Agent | `/u-test [app]` | CHECK | u-QA |
+| Agent | `/u-bug-report [app]` | CHECK | u-QA |
+| QA | `/u-gap-detector` | CHECK | u-RA → u-QA |
 | Utility | `/u-help` | - | Orch |
-| Utility | `/u-history` | - | u-M |
-| Utility | `/u-archive` | ACT | u-M |
+| Utility | `/u-history` | - | u-RA |
+| Utility | `/u-archive` | ACT | u-RA |
 | Utility | `/u-storybook` | DO | u-DV-FE |
 | Utility | `/u-build` | DO | Orch (Bash) |
-| Utility | `/u-summary` | - | u-M |
+| Utility | `/u-summary` | - | u-RA |
 | Utility | `/u-git-pr` | - | Orch (Bash + gh) |
