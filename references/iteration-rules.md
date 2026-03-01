@@ -24,7 +24,7 @@ flowchart TD
 
 | Step | Name | Description |
 |------|------|-------------|
-| 1 | **Init Check** | 현재 프로젝트 상태 확인. `u-docs/` 구조 검증, `1_Index_RA.md` 로드, 현재 Phase/Iteration 파악 |
+| 1 | **Init Check** | 현재 프로젝트 상태 확인. `u-docs/` 구조 검증, `1_Index_PM.md` 로드, 현재 Phase/Iteration 파악 |
 | 2 | **Progress Report** | 현재 Iteration 진행률 배너 출력 (Phase, 완료율, 백로그 수, 결함 수) |
 | 3 | **Phase Traverse** | 현재 Phase부터 순서대로 실행: PLAN → DESIGN → DO → CHECK. 각 Phase 완료 시 Gate 검증 |
 | 4 | **Exit Check** | 4가지 종료 조건 판정. 모두 충족 시 Step 6, 미충족 시 Step 5 |
@@ -112,19 +112,19 @@ flowchart TD
 ```python
 def check_exit_criteria():
     # Condition 1: All backlog items Done
-    backlog = parse_backlog("u-docs/05-act/5_Backlog_RA.md")
+    backlog = parse_backlog("u-docs/shared/05-act/5_Backlog_RA.md")
     active_items = [item for item in backlog
                     if item.status not in ("Done", "Cancelled", "Deferred")]
     cond_1 = len(active_items) == 0
 
     # Condition 2: No Critical/Major defects
-    report = parse_report("u-docs/04-check/4_Report_QA.md")
+    report = parse_report("u-docs/{app}/04-check/4_Report_QA.md")
     critical_major = [d for d in report.defects
                       if d.severity in ("Critical", "Major")]
     cond_2 = len(critical_major) == 0
 
     # Condition 3: All FR implemented
-    srs = parse_srs("u-docs/01-plan/1_SRS_SA.md")
+    srs = parse_srs("u-docs/{app}/01-plan/1_SRS_RA.md")
     unimplemented = [fr for fr in srs.features
                      if not fr.implemented]
     cond_3 = len(unimplemented) == 0

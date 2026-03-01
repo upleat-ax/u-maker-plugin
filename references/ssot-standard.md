@@ -10,14 +10,14 @@
 
 ```yaml
 ---
-document: "{DOC_ID}"           # 예: 1_Roadmap_RA, 2_ERD_SA
+document: "{DOC_ID}"           # 예: 1_Roadmap_PM, 2_ERD_SA
 title: "{문서 제목}"
 owner: "{담당 에이전트}"        # 예: u-RA, u-SA, u-UX
 status: "Draft"                # Draft | Review | Final
 version: "v0.1.0"             # vMAJOR.MINOR.PATCH
 last_updated: "YYYY-MM-DD"
 related_docs:
-  - "{관련 문서 경로}"          # 예: u-docs/01-plan/1_SRS_SA.md
+  - "{관련 문서 경로}"          # 예: u-docs/01-plan/1_SRS_RA.md
 external_links:
   - "{외부 참조 URL}"          # 선택사항
 ---
@@ -77,13 +77,14 @@ Semantic Versioning (`vMAJOR.MINOR.PATCH`)을 따른다:
 
 ### 3.1 PLAN Phase Documents
 
-> 대상: `1_Roadmap_RA.md`, `1_SRS_SA.md`, `1_IA_UX.md`, `1_Index_RA.md`
+> 대상: `1_Roadmap_PM.md` (shared), `1_SRS_RA.md` (per-app), `1_IA_RA.md` (per-app), `1_Index_PM.md` (shared)
 
 | Required Section | Description |
 |-----------------|-------------|
 | Background | 프로젝트 배경 및 목적 |
 | Scope | 범위 정의 (In-Scope / Out-of-Scope) |
 | User Stories | 사용자 스토리 목록 (Roadmap에만 정의, SRS는 FR table의 US Mapping 열로 참조) |
+| Menu Tree | IA 문서에 필수: Domain Registry, Menu Tree Table (MN-{DOMAIN}-{NNN} 형식) |
 | Gantt Chart | Mermaid `gantt` 다이어그램 (마일스톤, 일정) |
 
 ```mermaid
@@ -173,7 +174,7 @@ pie title Test Results
 
 ### 3.5 ACT Phase Documents
 
-> 대상: `5_Backlog_RA.md`, `5_IterationLog_RA.md`, `5_Retrospective_RA.md`
+> 대상: `5_Backlog_RA.md`, `5_IterationLog_RA.md`, `5_Retrospective_PM.md`
 
 | Required Section | Description |
 |-----------------|-------------|
@@ -197,42 +198,47 @@ xychart-beta
 
 | Phase | Prefix | Example |
 |-------|--------|---------|
-| PLAN | `1_` | `1_Roadmap_RA.md`, `1_SRS_SA.md`, `1_IA_UX.md`, `1_Index_RA.md` |
+| PLAN | `1_` | `1_Roadmap_PM.md`, `1_SRS_RA.md`, `1_IA_RA.md`, `1_Index_PM.md` |
 | DESIGN | `2_` | `2_DesignSystem_UX.md`, `2_ERD_SA.md`, `2_API_SA.md`, `2_Screen_UX.md` |
 | DEV | `3_` | `3_Screen_UX.md`, `3_UIComponents_UX.md`, `3_DesignToken_UX.md`, `3_Code_DV.md` |
 | CHECK | `4_` | `4_Case_QA.md`, `4_Report_QA.md` |
-| ACT | `5_` | `5_Backlog_RA.md`, `5_IterationLog_RA.md`, `5_Retrospective_RA.md` |
+| ACT | `5_` | `5_Backlog_RA.md`, `5_IterationLog_RA.md`, `5_Retrospective_PM.md` |
 
 ---
 
 ## 5. Document Storage Path
 
-모든 SSoT 문서는 프로젝트 루트의 `u-docs/` 하위에 저장된다:
+모든 SSoT 문서는 프로젝트 루트의 `u-docs/` 하위에 저장된다. shared 문서와 per-app 문서가 분리된다:
 
 ```
 u-docs/
-├── 01-plan/
-│   ├── 1_Roadmap_RA.md
-│   ├── 1_SRS_SA.md
-│   ├── 1_IA_UX.md
-│   └── 1_Index_RA.md
-├── 02-design/
-│   ├── 2_DesignSystem_UX.md
-│   ├── 2_ERD_SA.md
-│   ├── 2_API_SA.md
-│   └── 2_Screen_UX.md
-├── 03-dev/
-│   ├── 3_Screen_UX.md
-│   ├── 3_UIComponents_UX.md
-│   ├── 3_DesignToken_UX.md
-│   └── 3_Code_DV.md
-├── 04-check/
-│   ├── 4_Case_QA.md
-│   └── 4_Report_QA.md
-├── 05-act/
-│   ├── 5_Backlog_RA.md
-│   ├── 5_IterationLog_RA.md
-│   └── 5_Retrospective_RA.md
+├── shared/                         # Project-level shared docs
+│   ├── 01-plan/
+│   │   ├── 1_Roadmap_PM.md
+│   │   └── 1_Index_PM.md
+│   ├── 02-design/
+│   │   ├── 2_ERD_SA.md
+│   │   └── 2_DesignSystem_UX.md
+│   ├── 03-dev/
+│   │   ├── 3_UIComponents_UX.md
+│   │   └── 3_DesignToken_UX.md
+│   └── 05-act/
+│       ├── 5_Backlog_RA.md
+│       ├── 5_IterationLog_RA.md
+│       └── 5_Retrospective_PM.md
+├── {app}/                          # Per-app docs (e.g., web/, admin/)
+│   ├── 01-plan/
+│   │   ├── 1_SRS_RA.md
+│   │   └── 1_IA_RA.md
+│   ├── 02-design/
+│   │   ├── 2_API_SA.md
+│   │   └── 2_Screen_UX.md
+│   ├── 03-dev/
+│   │   ├── 3_Code_DV.md
+│   │   └── 3_Screen_UX.md
+│   └── 04-check/
+│       ├── 4_Case_QA.md
+│       └── 4_Report_QA.md
 ├── assets/
 │   └── (다이어그램, 스크린샷)
 └── iterations/
@@ -244,8 +250,10 @@ u-docs/
 
 ## 6. Cross-Reference Rules
 
-1. `related_docs`에는 반드시 `u-docs/` 기준 상대 경로를 사용한다
+1. `related_docs`에는 반드시 `u-docs/` 기준 상대 경로를 사용한다 (shared/ 또는 {app}/ 접두사 포함)
 2. 문서 내 다른 SSoT 문서 참조 시 `[문서명](상대경로)` 형식을 사용한다
-3. 수직적 추적성: PRD(why) → SRS(what) → ERD(how) → Code(execute)
-4. 수평적 추적성: Screen(UI) ↔ API(data) ↔ QA Case(verify)
-5. 추적성 깨짐 발견 시 `u-RA`에게 보고한다
+3. shared 문서 참조: `u-docs/shared/{phase}/{doc}` 형식
+4. app-specific 문서 참조: `u-docs/{app}/{phase}/{doc}` 형식
+5. 수직적 추적성: PRD(why) → SRS(what) → MN/IA(navigate) → Screen(design) → ERD(how) → Code(execute)
+6. 수평적 추적성: Screen(UI) ↔ API(data) ↔ QA Case(verify)
+7. 추적성 깨짐 발견 시 `u-RA`에게 보고한다

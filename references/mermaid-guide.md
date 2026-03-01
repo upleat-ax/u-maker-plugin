@@ -13,9 +13,9 @@
 | `erDiagram` | 데이터 모델, Entity 관계 | DESIGN | `2_ERD_SA.md` |
 | `sequenceDiagram` | API 인터랙션, 메시지 흐름 | DESIGN | `2_API_SA.md` |
 | `stateDiagram-v2` | 상태 전이, UI 상태 변화 | DESIGN | `2_Screen_UX.md` |
-| `gantt` | 프로젝트 일정, 마일스톤 | PLAN | `1_Roadmap_RA.md` |
+| `gantt` | 프로젝트 일정, 마일스톤 | PLAN | `1_Roadmap_PM.md` |
 | `pie` | 비율 통계, 커버리지 | CHECK | `4_Report_QA.md` |
-| `mindmap` | 계층 구조, 정보 구조 | PLAN | `1_IA_UX.md` |
+| `mindmap` | 계층 구조, 정보 구조 | PLAN | `1_IA_RA.md` |
 | `xychart-beta` | 추이 분석, Iteration 진행률 | ACT | `5_IterationLog_RA.md` |
 
 ---

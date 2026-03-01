@@ -7,27 +7,32 @@
 
 ## 1. Vertical Traceability Chain
 
-PRD(why) → SRS(what) → ERD(how) → Code(execute) 순서의 수직적 추적성.
+PRD(why) → SRS(what) → MN/IA(navigate) → Screen(design) → ERD(how) → Code(execute) 순서의 수직적 추적성.
 
 | Level | Document | Role | Traces From | Traces To |
 |-------|----------|------|-------------|-----------|
-| L1 (Why) | `1_Roadmap_RA.md` | 프로젝트 목적, 유저 스토리, 마일스톤 | (최상위) | `1_SRS_SA.md` |
-| L2 (What) | `1_SRS_SA.md` | 기능/비기능 요구사항 정의 | `1_Roadmap_RA.md` | `2_ERD_SA.md`, `2_API_SA.md` |
-| L3 (How) | `2_ERD_SA.md` | 데이터 모델, Entity 관계 | `1_SRS_SA.md` | `3_Code_DV.md` |
-| L3 (How) | `2_API_SA.md` | API Contract, 인터페이스 | `1_SRS_SA.md` | `3_Code_DV.md` |
+| L1 (Why) | `1_Roadmap_PM.md` | 프로젝트 목적, 유저 스토리, 마일스톤 | (최상위) | `1_SRS_RA.md` |
+| L2 (What) | `1_SRS_RA.md` | 기능/비기능 요구사항 정의 | `1_Roadmap_PM.md` | `1_IA_RA.md`, `2_ERD_SA.md`, `2_API_SA.md` |
+| L2.5 (Navigate) | `1_IA_RA.md` | 메뉴 구조, 화면 계층 (MN-{DOMAIN}-{NNN}) | `1_SRS_RA.md` | `2_Screen_UX.md` |
+| L3 (How) | `2_ERD_SA.md` | 데이터 모델, Entity 관계 | `1_SRS_RA.md` | `3_Code_DV.md` |
+| L3 (How) | `2_API_SA.md` | API Contract, 인터페이스 | `1_SRS_RA.md` | `3_Code_DV.md` |
 | L4 (Execute) | `3_Code_DV.md` | 구현 기록, 파일 매핑 | `2_ERD_SA.md`, `2_API_SA.md` | `4_Case_QA.md` |
 
 ### Vertical Chain Diagram
 
 ```mermaid
 flowchart TD
-    ROADMAP["1_Roadmap_RA.md\n(Why)"]
-    SRS["1_SRS_SA.md\n(What)"]
+    ROADMAP["1_Roadmap_PM.md\n(Why)"]
+    SRS["1_SRS_RA.md\n(What)"]
+    IA["1_IA_RA.md\n(Navigate - MN IDs)"]
+    SCREEN["2_Screen_UX.md\n(Design)"]
     ERD["2_ERD_SA.md\n(How - Data)"]
     API["2_API_SA.md\n(How - Interface)"]
     CODE["3_Code_DV.md\n(Execute)"]
 
     ROADMAP -->|User Stories → FR| SRS
+    SRS -->|FR → Menu Items| IA
+    IA -->|MN → Screens| SCREEN
     SRS -->|FR → Entities| ERD
     SRS -->|FR → Endpoints| API
     ERD -->|Schema → Models| CODE
@@ -36,8 +41,8 @@ flowchart TD
 
 ### Tracing Rules (Vertical)
 
-1. `1_Roadmap_RA.md`의 모든 User Story는 `1_SRS_SA.md`의 FR과 매핑되어야 한다 (PLAN Gate 검증 시점에 적용. 작성 중 `TBD` 허용)
-2. `1_SRS_SA.md`의 모든 FR은 `2_ERD_SA.md` 또는 `2_API_SA.md`에서 구체화되어야 한다
+1. `1_Roadmap_PM.md`의 모든 User Story는 `1_SRS_RA.md`의 FR과 매핑되어야 한다 (PLAN Gate 검증 시점에 적용. 작성 중 `TBD` 허용)
+2. `1_SRS_RA.md`의 모든 FR은 `2_ERD_SA.md` 또는 `2_API_SA.md`에서 구체화되어야 한다
 3. `2_ERD_SA.md`의 모든 Entity는 `3_Code_DV.md`의 모델 파일과 매핑되어야 한다
 4. `2_API_SA.md`의 모든 Endpoint는 `3_Code_DV.md`의 라우트 파일과 매핑되어야 한다
 5. Technical FR (US 없는 FR)은 US Mapping이 `-`로 표시 가능
@@ -80,10 +85,10 @@ flowchart LR
 ```mermaid
 flowchart TD
     subgraph PLAN["01-plan"]
-        ROADMAP[1_Roadmap_RA.md]
-        SRS[1_SRS_SA.md]
-        IA[1_IA_UX.md]
-        INDEX[1_Index_RA.md]
+        ROADMAP[1_Roadmap_PM.md]
+        SRS[1_SRS_RA.md]
+        IA[1_IA_RA.md]
+        INDEX[1_Index_PM.md]
     end
 
     subgraph DESIGN["02-design"]
@@ -108,15 +113,15 @@ flowchart TD
     subgraph ACT_PHASE["05-act"]
         BACKLOG[5_Backlog_RA.md]
         ITER_LOG[5_IterationLog_RA.md]
-        RETRO[5_Retrospective_RA.md]
+        RETRO[5_Retrospective_PM.md]
     end
 
     %% Vertical dependencies
     ROADMAP --> SRS
-    ROADMAP --> IA
+    SRS --> IA
     SRS --> ERD
     SRS --> API
-    IA --> SCREEN
+    IA -->|MN → S| SCREEN
     IA --> DSYS
     DSYS --> SCR_UX
     DSYS --> UICOMP
@@ -162,27 +167,27 @@ flowchart TD
 
 | # | Validation Rule | Source | Target | Severity |
 |---|----------------|--------|--------|----------|
-| V-001 | 모든 User Story는 FR과 매핑 (PLAN Gate 검증 시점에 적용. 작성 중 `TBD` 허용) | `1_Roadmap_RA.md` | `1_SRS_SA.md` | Critical |
-| V-002 | 모든 FR은 ERD 또는 API에서 구체화 | `1_SRS_SA.md` | `2_ERD_SA.md`, `2_API_SA.md` | Critical |
-| V-003 | 모든 IA 항목은 Screen에서 설계 | `1_IA_UX.md` | `2_Screen_UX.md` | Major |
+| V-001 | 모든 User Story는 FR과 매핑 (PLAN Gate 검증 시점에 적용. 작성 중 `TBD` 허용) | `1_Roadmap_PM.md` | `1_SRS_RA.md` | Critical |
+| V-002 | 모든 FR은 ERD 또는 API에서 구체화 | `1_SRS_RA.md` | `2_ERD_SA.md`, `2_API_SA.md` | Critical |
+| V-003 | 모든 IA 항목은 Screen에서 설계 | `1_IA_RA.md` | `2_Screen_UX.md` | Major |
 | V-004 | 모든 Screen은 사용 API를 명시 | `2_Screen_UX.md` | `2_API_SA.md` | Major |
 | V-005 | 모든 API endpoint는 테스트 케이스 존재 | `2_API_SA.md` | `4_Case_QA.md` | Major |
 | V-006 | 모든 Entity는 코드 모델과 매핑 | `2_ERD_SA.md` | `3_Code_DV.md` | Critical |
 | V-007 | 모든 API endpoint는 코드 라우트와 매핑 | `2_API_SA.md` | `3_Code_DV.md` | Critical |
-| V-008 | Index가 모든 문서를 추적 | `1_Index_RA.md` | All docs | Major |
+| V-008 | Index가 모든 문서를 추적 | `1_Index_PM.md` | All docs | Major |
 | V-009 | 결함 리포트는 백로그에 등록 | `4_Report_QA.md` | `5_Backlog_RA.md` | Major |
 | V-010 | related_docs에 양방향 참조 존재 | All docs | All docs | Minor |
-| V-011 | Technical FR (US 없는 FR)은 US Mapping이 `-`로 표시 가능 | `1_SRS_SA.md` | - | Minor |
+| V-011 | Technical FR (US 없는 FR)은 US Mapping이 `-`로 표시 가능 | `1_SRS_RA.md` | - | Minor |
 
 ### 4.2 Traceability Matrix Table
 
 실제 프로젝트에서 작성되는 추적성 매트릭스 테이블 형식:
 
 ```markdown
-| FR-ID | Description | SRS | ERD | API | Screen | Code | QA Case | Status |
-|-------|-------------|-----|-----|-----|--------|------|---------|--------|
-| FR-001 | 사용자 로그인 | 1SA:FR-001 | 2SA:USER | 2SA:POST /auth | 2UX:S-001 | auth.ts | 4QA:TC-001 | Implemented |
-| FR-002 | 대시보드 조회 | 1SA:FR-002 | 2SA:DASHBOARD | 2SA:GET /dashboard | 2UX:S-002 | dashboard.ts | 4QA:TC-002 | In Progress |
+| FR-ID | Description | SRS | Menu | ERD | API | Screen | Code | QA Case | Status |
+|-------|-------------|-----|------|-----|-----|--------|------|---------|--------|
+| FR-001 | 사용자 로그인 | 1SA:FR-001 | MN-AUTH-001 | 2SA:USER | 2SA:POST /auth | 2UX:S-001 | auth.ts | 4QA:TC-001 | Implemented |
+| FR-002 | 대시보드 조회 | 1SA:FR-002 | MN-DASH-001 | 2SA:DASHBOARD | 2SA:GET /dashboard | 2UX:S-002 | dashboard.ts | 4QA:TC-002 | In Progress |
 ```
 
 ### 4.3 Validation Process
@@ -213,6 +218,7 @@ flowchart LR
 | Roadmap User Story | `US-{NNN}` | US-001 |
 | SRS Feature | `FR-{NNN}` | FR-001 |
 | SRS Non-Functional | `NFR-{NNN}` | NFR-001 |
+| IA Menu Navigation | `MN-{DOMAIN}-{NNN}` | MN-AUTH-001 |
 | ERD Entity | `Entity: {NAME}` | Entity: USER |
 | API Endpoint | `{METHOD} {path}` | POST /auth/login |
 | Screen | `S-{NNN}` | S-001 |
