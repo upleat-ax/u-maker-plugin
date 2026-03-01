@@ -27,7 +27,46 @@ external_links: []
 
 ## 2. Build Configuration
 
-### 2.1 Project Structure
+### 2.1 Clean Architecture Diagram
+
+```mermaid
+flowchart TD
+    subgraph Presentation["apps/web (Presentation)"]
+        PAGES["Pages\n(app/*)"]
+        COMPONENTS["Components"]
+    end
+
+    subgraph Packages["packages/"]
+        subgraph UI["ui (UI Layer)"]
+            UI_COMP["Shared Components"]
+            STORIES["Storybook Stories"]
+        end
+        subgraph DATA["data (Data Layer)"]
+            HOOKS["react-query Hooks"]
+            API_CLIENT["API Client"]
+        end
+        subgraph DOMAIN["domain (Domain Layer)"]
+            TYPES["Types / Interfaces"]
+            VALIDATORS["Validators"]
+        end
+        subgraph INFRA["infrastructure (Infra Layer)"]
+            DB["Prisma/Drizzle ORM"]
+            AUTH["Auth Provider"]
+        end
+        TOKENS["tokens (Design Tokens)"]
+    end
+
+    PAGES --> UI_COMP
+    PAGES --> HOOKS
+    COMPONENTS --> UI_COMP
+    HOOKS --> API_CLIENT
+    HOOKS --> TYPES
+    API_CLIENT --> TYPES
+    DB --> TYPES
+    UI_COMP --> TOKENS
+```
+
+### 2.2 Project Structure
 
 ```
 {{PROJECT_NAME}}/

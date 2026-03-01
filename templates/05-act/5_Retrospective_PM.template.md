@@ -59,7 +59,19 @@ external_links: []
 
 ---
 
-## 3. Retrospective History
+## 3. Improvement Cycle
+
+```mermaid
+flowchart LR
+    IDENTIFY["Identify\nImprove Items"] --> PLAN_ACTION["Plan\nActions"]
+    PLAN_ACTION --> EXECUTE["Execute\nin Next Iter"]
+    EXECUTE --> MEASURE["Measure\nEffect"]
+    MEASURE --> IDENTIFY
+```
+
+---
+
+## 4. Retrospective History
 
 ### 3.1 Iteration 1
 
@@ -85,7 +97,7 @@ external_links: []
 
 ---
 
-## 4. Action Items Tracking
+## 5. Action Items Tracking
 
 | A-ID | Action | Origin Iter | Target Iter | Owner | Status |
 |------|--------|------------|------------|-------|--------|
@@ -95,7 +107,19 @@ external_links: []
 
 ---
 
-## 5. Team Health
+## 6. Team Health
+
+```mermaid
+xychart-beta
+    title "Team Health Trend"
+    x-axis ["Iter 1", "Iter 2", "Iter 3"]
+    y-axis "Score (1-5)" 0 --> 5
+    line "Process" [3, 4, 4]
+    line "Doc Quality" [2, 3, 4]
+    line "Code Quality" [3, 3, 4]
+    line "Test Coverage" [2, 3, 3]
+    line "Collaboration" [4, 4, 5]
+```
 
 | Category | Iter 1 | Iter 2 | Iter 3 | Trend |
 |----------|--------|--------|--------|-------|
@@ -107,7 +131,7 @@ external_links: []
 
 ---
 
-## 6. Lessons Learned
+## 7. Lessons Learned
 
 | # | Lesson | Applied From |
 |---|--------|-------------|

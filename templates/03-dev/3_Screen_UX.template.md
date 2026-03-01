@@ -76,7 +76,24 @@ app/{{path}}/
 
 ---
 
-## 3. Routing Map
+## 3. Component Decision Flow
+
+```mermaid
+flowchart TD
+    START[New Component] --> Q1{Data fetching needed?}
+    Q1 -->|Yes| Q2{User interaction?}
+    Q1 -->|No| SC[Server Component]
+    Q2 -->|Yes| CC["Client Component\n'use client'"]
+    Q2 -->|No| SC
+    SC --> Q3{Dynamic data?}
+    Q3 -->|Yes| SSR["SSR with\nreact-query prefetch"]
+    Q3 -->|No| STATIC["Static Generation"]
+    CC --> RQ["react-query hook\nuse{{Resource}}()"]
+```
+
+---
+
+## 4. Routing Map
 
 | Screen ID | Route | Page File | Menu ID | Guard |
 |-----------|-------|-----------|---------|-------|
@@ -86,7 +103,25 @@ app/{{path}}/
 
 ---
 
-## 4. Shared Layouts
+## 5. Route Hierarchy
+
+```mermaid
+flowchart TD
+    ROOT["/ (Root Layout)"]
+    ROOT --> AUTH["(auth) Group"]
+    ROOT --> DASH["(dashboard) Group"]
+    AUTH --> LOGIN["/auth/login"]
+    AUTH --> REGISTER["/auth/register"]
+    DASH --> HOME["/dashboard"]
+    DASH --> FEAT1["/{{path}}"]
+    FEAT1 --> SUB1["/{{path}}/{{sub}}"]
+    DASH --> SET["/settings"]
+    SET --> PROFILE["/settings/profile"]
+```
+
+---
+
+## 6. Shared Layouts
 
 | Layout | Route Group | Components |
 |--------|-----------|-----------|

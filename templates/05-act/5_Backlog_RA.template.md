@@ -137,7 +137,25 @@ stateDiagram-v2
 
 ---
 
-## 3. Backlog by Priority
+## 3. Backlog Distribution
+
+```mermaid
+pie title Backlog by Priority
+    "Critical" : {{CRITICAL}}
+    "Major" : {{MAJOR}}
+    "Minor" : {{MINOR}}
+    "Trivial" : {{TRIVIAL}}
+```
+
+```mermaid
+pie title Backlog by Origin
+    "CHECK" : {{CHECK}}
+    "DESIGN" : {{DESIGN}}
+    "DEV" : {{DEV}}
+    "PLAN" : {{PLAN}}
+```
+
+## 4. Backlog by Priority
 
 | Priority | Open | InProgress | Blocked | Done | Deferred | Cancelled | Total |
 |----------|------|------------|---------|------|----------|-----------|-------|
@@ -148,7 +166,7 @@ stateDiagram-v2
 
 ---
 
-## 4. Backlog by Origin
+## 5. Backlog by Origin
 
 | Origin | Count | Description |
 |--------|-------|-------------|
@@ -159,7 +177,7 @@ stateDiagram-v2
 
 ---
 
-## 5. Backlog Details
+## 6. Backlog Details
 
 ### BL-001: {{제목}}
 
@@ -230,7 +248,7 @@ stateDiagram-v2
 
 ---
 
-## 6. Next Iteration Focus
+## 7. Next Iteration Focus
 
 다음 Iteration에서 처리할 항목 (Priority 기준 정렬):
 
@@ -242,7 +260,7 @@ stateDiagram-v2
 
 ---
 
-## 7. Iteration Carry-Over Log
+## 8. Iteration Carry-Over Log
 
 | BL-ID | Status at Iter End | Action | New Iteration | Notes |
 |-------|--------------------|--------|---------------|-------|

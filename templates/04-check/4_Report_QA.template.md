@@ -92,7 +92,24 @@ pie title Defects by Severity
     "Trivial" : {{TRIVIAL}}
 ```
 
-### 4.2 Defect Details
+### 4.2 Defect Lifecycle
+
+```mermaid
+stateDiagram-v2
+    [*] --> Open : Defect Found
+    Open --> Confirmed : Triage
+    Confirmed --> InProgress : Fix Started
+    InProgress --> Fixed : Fix Completed
+    Fixed --> Verified : Re-test Pass
+    Fixed --> Reopened : Re-test Fail
+    Reopened --> InProgress : Fix Again
+    Verified --> Closed : Confirmed Fixed
+    Open --> Deferred : Low Priority
+    Deferred --> Open : Priority Changed
+    Closed --> [*]
+```
+
+### 4.3 Defect Details
 
 #### DEF-001: {{결함 제목}}
 
@@ -143,7 +160,22 @@ pie title Defects by Severity
 
 ---
 
-## 7. Exit Criteria Check
+## 7. Exit Criteria Decision Flow
+
+```mermaid
+flowchart TD
+    START[CHECK Phase Complete] --> Q1{Critical/Major = 0?}
+    Q1 -->|No| ACT[→ ACT Phase]
+    Q1 -->|Yes| Q2{All FR Implemented?}
+    Q2 -->|No| ACT
+    Q2 -->|Yes| Q3{Backlog Open = 0?}
+    Q3 -->|No| ACT
+    Q3 -->|Yes| Q4{Build Success?}
+    Q4 -->|No| ACT
+    Q4 -->|Yes| COMPLETE[→ COMPLETE]
+```
+
+## 8. Exit Criteria Check
 
 | # | Criteria | Status | Value |
 |---|---------|--------|-------|

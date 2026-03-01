@@ -76,7 +76,74 @@ external_links: []
 
 ---
 
-## 3. Phase Gate Status
+## 3. Document Dependency Diagram
+
+```mermaid
+flowchart TD
+    subgraph PLAN["01-plan"]
+        ROADMAP[1_Roadmap_PM]
+        SRS[1_SRS_RA]
+        IA[1_IA_RA]
+        INDEX[1_Index_PM]
+    end
+
+    subgraph DESIGN["02-design"]
+        SCREEN[2_Screen_UX]
+        DSYS[2_DesignSystem_UX]
+        ERD[2_ERD_SA]
+        API[2_API_SA]
+    end
+
+    subgraph DEV["03-dev"]
+        CODE[3_Code_DV]
+        SCR_UX[3_Screen_UX]
+        UICOMP[3_UIComponents_UX]
+        DTOKEN[3_DesignToken_UX]
+    end
+
+    subgraph CHECK["04-check"]
+        CASE[4_Case_QA]
+        REPORT[4_Report_QA]
+    end
+
+    subgraph ACT["05-act"]
+        BACKLOG[5_Backlog_RA]
+        ITERLOG[5_IterationLog_RA]
+        RETRO[5_Retrospective_PM]
+    end
+
+    ROADMAP --> SRS
+    SRS --> IA
+    SRS --> ERD
+    SRS --> API
+    IA --> SCREEN
+    DSYS --> SCR_UX
+    DSYS --> UICOMP
+    DSYS --> DTOKEN
+    ERD --> CODE
+    API --> CODE
+    SCREEN --> SCR_UX
+    CODE --> CASE
+    CASE --> REPORT
+    REPORT --> BACKLOG
+    INDEX -.->|tracks all| ROADMAP
+```
+
+---
+
+## 4. Phase Gate Status
+
+```mermaid
+stateDiagram-v2
+    [*] --> PLAN
+    PLAN --> DESIGN : Gate 1 (Roadmap+SRS+IA Final)
+    DESIGN --> DO : Gate 2 (ERD+API+Screen Final)
+    DO --> CHECK : Gate 3 (Build Success)
+    CHECK --> COMPLETE : Gate 4 (Exit Criteria Met)
+    CHECK --> ACT : Gate 4 Failed
+    ACT --> PLAN : Next Iteration
+    COMPLETE --> [*]
+```
 
 | Gate | From → To | Conditions | Status |
 |------|-----------|-----------|--------|
@@ -88,7 +155,7 @@ external_links: []
 
 ---
 
-## 4. FR Implementation Tracking
+## 5. FR Implementation Tracking
 
 | FR-ID | Feature | Menu ID | SRS | ERD | API | Screen | Code | QA | Status |
 |-------|---------|---------|-----|-----|-----|--------|------|----|--------|
@@ -97,7 +164,7 @@ external_links: []
 
 ---
 
-## 5. Iteration History
+## 6. Iteration History
 
 | Iteration | Start Date | End Date | Phase Reached | Result | Backlog Items |
 |-----------|-----------|---------|---------------|--------|--------------|
@@ -105,7 +172,7 @@ external_links: []
 
 ---
 
-## 6. Validation Log
+## 7. Validation Log
 
 | Date | Validator | Type | Result | Issues |
 |------|-----------|------|--------|--------|

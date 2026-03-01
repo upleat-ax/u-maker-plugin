@@ -182,7 +182,45 @@ packages/tokens/src/
 
 ---
 
-## 8. Theme Support
+## 8. Token Hierarchy
+
+```mermaid
+mindmap
+    root((Design Tokens))
+        Colors
+            Brand
+                primary
+                secondary
+                accent
+            Semantic
+                success
+                warning
+                error
+                info
+            Neutral
+                bg
+                text
+                border
+        Typography
+            Font Family
+            Font Size
+            Font Weight
+            Line Height
+        Spacing
+            space-1 to space-16
+        Borders
+            Radius
+            Width
+        Shadows
+            sm / md / lg / xl
+        Motion
+            Duration
+            Easing
+```
+
+---
+
+## 9. Theme Support
 
 ### 8.1 Dark Theme (Optional)
 

@@ -92,7 +92,52 @@ packages/ui/src/
 
 ---
 
-## 3. Component Status
+## 3. Component Dependency Tree
+
+```mermaid
+flowchart TD
+    subgraph Pages["Page Components"]
+        P1["Login Page"]
+        P2["Dashboard Page"]
+    end
+
+    subgraph Organisms
+        O1[Form]
+        O2[DataTable]
+        O3[Header]
+    end
+
+    subgraph Molecules
+        M1[FormField]
+        M2[SearchBar]
+        M3[Card]
+    end
+
+    subgraph Atoms
+        A1[Button]
+        A2[Input]
+        A3[Label]
+        A4[Icon]
+    end
+
+    P1 --> O1
+    P1 --> A1
+    P2 --> O2
+    P2 --> O3
+    P2 --> M3
+    O1 --> M1
+    O2 --> A1
+    O3 --> M2
+    O3 --> A4
+    M1 --> A2
+    M1 --> A3
+    M2 --> A2
+    M2 --> A4
+```
+
+---
+
+## 4. Component Status
 
 | Component | Design | Implementation | Storybook | Tests |
 |-----------|--------|---------------|-----------|-------|
@@ -103,7 +148,7 @@ packages/ui/src/
 
 ---
 
-## 4. Storybook Configuration
+## 5. Storybook Configuration
 
 ### 4.1 Story Template
 

@@ -167,7 +167,25 @@ stateDiagram-v2
 
 ---
 
-## 5. Exception Handling
+## 5. Screen Hierarchy
+
+```mermaid
+flowchart TD
+    ROOT[App Root] --> AUTH_GROUP["(auth) Group"]
+    ROOT --> MAIN_GROUP["(main) Group"]
+    AUTH_GROUP --> S001["S-001 Login"]
+    AUTH_GROUP --> S002["S-002 Register"]
+    MAIN_GROUP --> S003["S-003 Dashboard"]
+    MAIN_GROUP --> S004["S-004 {{화면명}}"]
+    S004 --> S005["S-005 {{하위 화면}}"]
+    MAIN_GROUP --> S006["S-006 Settings"]
+    S006 --> S007["S-007 Profile"]
+    S004 -.->|modal| S008["S-008 {{모달}}"]
+```
+
+---
+
+## 6. Exception Handling
 
 | # | Screen | Exception Case | UI Handling |
 |---|--------|---------------|------------|

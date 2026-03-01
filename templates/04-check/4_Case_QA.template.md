@@ -123,7 +123,32 @@ external_links: []
 
 ---
 
-## 5. Coverage Matrix
+## 5. Test Execution Flow
+
+```mermaid
+sequenceDiagram
+    participant QA as u-QA
+    participant APP as Application
+    participant API as API Server
+    participant DB as Database
+
+    QA->>APP: Execute TC (UI Action)
+    APP->>API: API Request
+    API->>DB: Query/Mutation
+    DB-->>API: Result
+    API-->>APP: Response
+    APP-->>QA: UI Result
+    QA->>QA: Compare Expected vs Actual
+    alt Pass
+        QA->>QA: Record Pass + Evidence
+    else Fail
+        QA->>QA: Record Fail + DEF Report
+    end
+```
+
+---
+
+## 6. Coverage Matrix
 
 | FR-ID | Feature | Test Cases | Coverage |
 |-------|---------|-----------|----------|
@@ -139,7 +164,7 @@ pie title Test Coverage by FR
 
 ---
 
-## 6. Evidence Requirements
+## 7. Evidence Requirements
 
 | TC-ID | Evidence Type | Location |
 |-------|-------------|----------|

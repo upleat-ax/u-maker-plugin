@@ -103,6 +103,50 @@ external_links: []
 
 ### 5.1 Component Hierarchy (Atomic Design)
 
+```mermaid
+flowchart BT
+    subgraph Atoms
+        A1[Button]
+        A2[Input]
+        A3[Label]
+        A4[Icon]
+        A5[Badge]
+        A6[Chip]
+    end
+
+    subgraph Molecules
+        M1[FormField]
+        M2[SearchBar]
+        M3[Card]
+        M4[MenuItem]
+    end
+
+    subgraph Organisms
+        O1[Header]
+        O2[Sidebar]
+        O3[DataTable]
+        O4[Form]
+        O5[Modal]
+    end
+
+    subgraph Templates
+        T1[PageLayout]
+        T2[AuthLayout]
+        T3[DashboardLayout]
+    end
+
+    A1 & A2 & A3 --> M1
+    A2 & A4 --> M2
+    A1 & A3 & A4 --> M3
+    A4 & A3 --> M4
+    M4 --> O2
+    M1 --> O4
+    M3 --> O3
+    O1 & O2 --> T3
+    O1 --> T2
+    O1 --> T1
+```
+
 | Level | Components |
 |-------|-----------|
 | Atoms | Button, Input, Label, Icon, Badge, Chip |
@@ -154,7 +198,17 @@ external_links: []
 
 ---
 
-## 8. Motion & Animation
+## 8. Responsive Breakpoint Flow
+
+```mermaid
+flowchart LR
+    Mobile["Mobile\n375px+\nSingle Column"] -->|768px| Tablet["Tablet\n768px+\n2-Column"]
+    Tablet -->|1280px| Desktop["Desktop\n1280px+\nFull Layout"]
+```
+
+---
+
+## 9. Motion & Animation
 
 | Token | Value | Usage |
 |-------|-------|-------|
