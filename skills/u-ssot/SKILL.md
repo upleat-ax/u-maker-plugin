@@ -85,7 +85,7 @@ agents:
 
 | Command | Description | Agent | Action |
 |---------|-------------|-------|--------|
-| `/u-create-project` | 새 프로젝트 초기화 | `u-ra` | Turborepo + u-docs 구조 생성, 1_Index_RA 초기화 |
+| `/u-create-project` | 새 프로젝트 초기화 | `u-ra` | Turborepo + u-docs 구조 생성, 1_Index_PM 초기화 |
 | `/u-init` | 기존 프로젝트 분석 → SSoT 문서 자동 생성 | `u-ra` → `u-sa` → `u-ux` → `u-ra` | 리소스 스캔 → 문서 역공학 생성 |
 | `/u-plan` | PLAN Phase 실행 (양방향 워크플로우) | `(u-RA ↔ u-SA)` → `u-UX` → `u-RA` | US-First 또는 FR-First 패턴으로 로드맵/SRS → IA → 인덱스 생성 |
 | `/u-design` | DESIGN Phase 실행 | `u-ux` → `u-sa` → `u-ra` | 화면설계 + DesignSystem → ERD + API → 모순검수 |
@@ -111,28 +111,47 @@ agents:
 | `/u-validate` | SSoT 무결성 검증 | `u-ra` | 헤더 누락, 추적성 깨짐, 구조 검증 |
 | `/u-backlog` | 백로그 조회 | `u-ra` | 5_Backlog_RA.md 내 Open 항목 표시 |
 | `/u-backlog-add` | 백로그 항목 추가 | `u-ra` | 5_Backlog_RA.md에 새 항목 추가 |
-| `/u-us-add` | 유저 스토리 추가 | `u-ra` | 1_Roadmap_RA.md에 새 US 항목 추가 |
-| `/u-fr-add` | 기능 요구사항 추가 | `u-sa` | 1_SRS_SA.md에 새 FR 항목 + Detail 블록 추가 |
-| `/u-index` | 문서 인덱스 갱신 | `u-ra` | 1_Index_RA.md 갱신 |
+| `/u-us-add` | 유저 스토리 추가 | `u-ra` | 1_Roadmap_PM.md에 새 US 항목 추가 |
+| `/u-fr-add [app]` | 기능 요구사항 추가 | `u-sa` | {app}/01-plan/1_SRS_RA.md에 새 FR 항목 + Detail 블록 추가 |
+| `/u-index` | 문서 인덱스 갱신 | `u-ra` | 1_Index_PM.md 갱신 |
 
 ### Individual Agent Commands
 
 | Command | Description | Agent | Output |
 |---------|-------------|-------|--------|
-| `/u-srs` | SRS 문서 생성/갱신 (Prerequisites: `1_Roadmap_RA.md` 존재 optional; FR-First 시 없이도 실행 가능) | `u-sa` | u-docs/01-plan/1_SRS_SA.md |
-| `/u-erd` | ERD 문서 생성/갱신 | `u-sa` | u-docs/02-design/2_ERD_SA.md |
-| `/u-api` | API Contract 생성/갱신 | `u-sa` | u-docs/02-design/2_API_SA.md |
-| `/u-screen` | 화면 설계 생성/갱신 | `u-ux` | u-docs/02-design/2_Screen_UX.md |
-| `/u-fe` | Frontend 개발 실행 | `u-dv-fe` | 코드 생성 + u-docs/03-dev/3_Code_DV.md 갱신 |
-| `/u-be` | Backend 개발 실행 | `u-dv-be` | 코드 생성 + u-docs/03-dev/3_Code_DV.md 갱신 |
-| `/u-test` | 테스트 케이스 설계 | `u-qa` | u-docs/04-check/4_Case_QA.md |
-| `/u-bug-report` | 결함 분석 리포트 | `u-qa` | u-docs/04-check/4_Report_QA.md |
+| `/u-srs [app]` | SRS 문서 생성/갱신 (Prerequisites: `1_Roadmap_PM.md` 존재 optional; FR-First 시 없이도 실행 가능) | `u-sa` | u-docs/{app}/01-plan/1_SRS_RA.md |
+| `/u-erd` | ERD 문서 생성/갱신 | `u-sa` | u-docs/shared/02-design/2_ERD_SA.md |
+| `/u-api [app]` | API Contract 생성/갱신 | `u-sa` | u-docs/{app}/02-design/2_API_SA.md |
+| `/u-screen [app]` | 화면 설계 생성/갱신 | `u-ux` | u-docs/{app}/02-design/2_Screen_UX.md |
+| `/u-fe [app]` | Frontend 개발 실행 | `u-dv-fe` | 코드 생성 + u-docs/{app}/03-dev/3_Code_DV.md 갱신 |
+| `/u-be [app]` | Backend 개발 실행 | `u-dv-be` | 코드 생성 + u-docs/{app}/03-dev/3_Code_DV.md 갱신 |
+| `/u-test [app]` | 테스트 케이스 설계 | `u-qa` | u-docs/{app}/04-check/4_Case_QA.md |
+| `/u-bug-report [app]` | 결함 분석 리포트 | `u-qa` | u-docs/{app}/04-check/4_Report_QA.md |
 
 ### Quality Assurance Commands
 
 | Command | Description | Agent | Action |
 |---------|-------------|-------|--------|
-| `/u-gap-detector` | 설계-구현 Gap 분석 | `u-ra` + `u-qa` | SRS/ERD/API 설계 문서 vs 실제 구현 코드 비교, Match Rate 산출, Gap 리포트 생성 |
+| `/u-gap-detector` | 설계-구현 Gap 분석 (모든 앱 집계) | `u-ra` + `u-qa` | SRS/ERD/API 설계 문서 vs 실제 구현 코드 비교, Match Rate 산출, Gap 리포트 생성 |
+
+---
+
+## App Context
+
+### App Selection Rules
+
+| Condition | Behavior |
+|-----------|----------|
+| Single app in config | Auto-select, no argument needed |
+| Multiple apps + argument given | Use specified app (e.g., `/u-srs web`) |
+| Multiple apps + no argument | Prompt user via AskUserQuestion |
+
+### Shared vs App-Specific Documents
+
+| Scope | Documents | Path Pattern |
+|-------|-----------|-------------|
+| shared | Roadmap, Index, ERD, DesignSystem, UIComponents, DesignToken, Backlog, IterationLog, Retrospective | `u-docs/shared/{phase}/{doc}` |
+| app | SRS, IA, API, Screen(design+dev), Code, Case, Report | `u-docs/{app}/{phase}/{doc}` |
 
 ### Utility Commands
 
@@ -156,14 +175,23 @@ agents:
 ### Syntax
 
 ```
-/u-init [project-path]
+/u-init [project-path] [--lang ko|en|ja|zh]
 ```
 
 - `[project-path]`: 분석할 프로젝트 경로 (기본값: 현재 작업 디렉토리)
+- `--lang`: 문서 작성 언어 (기본값: `ko`)
+  - `ko`: 한국어, `en`: English, `ja`: 日本語, `zh`: 中文
+  - 설정값은 `u-ssot.config.json`의 `documentLanguage`에 저장
+  - 이후 모든 SSoT 문서 생성 시 해당 언어로 작성
 
 ### Init Flow
 
 ```
+0. 문서 언어 설정
+   ├── --lang 옵션이 있으면 해당 언어 사용
+   ├── 옵션 없으면 사용자에게 AskUserQuestion으로 언어 선택 요청
+   └── u-ssot.config.json의 documentLanguage에 저장
+
 1. 프로젝트 루트 탐색 및 기본 정보 수집
    ├── package.json → 프로젝트명, 의존성, 스크립트
    ├── README.md → 프로젝트 설명, 기능 목록
@@ -185,20 +213,20 @@ agents:
 
 5. SSoT 문서 생성 (분석 결과 기반)
    ├── Phase 1 - PLAN 문서
-   │   ├── 1_Roadmap_RA.md ← README + package.json에서 추출
-   │   ├── 1_SRS_SA.md ← 소스코드 분석에서 FR/NFR 도출
-   │   ├── 1_IA_UX.md ← 페이지/라우트 구조에서 도출
-   │   └── 1_Index_RA.md ← 생성된 문서 종합
+   │   ├── shared/01-plan/1_Roadmap_PM.md ← README + package.json에서 추출
+   │   ├── shared/01-plan/1_Index_PM.md ← 생성된 문서 종합
+   │   ├── {app}/01-plan/1_SRS_RA.md ← 소스코드 분석에서 FR/NFR 도출
+   │   └── {app}/01-plan/1_IA_RA.md ← 페이지/라우트 구조에서 도출
    ├── Phase 2 - DESIGN 문서 (해당 리소스 존재 시)
-   │   ├── 2_ERD_SA.md ← DB 스키마에서 도출
-   │   ├── 2_API_SA.md ← API 라우트에서 도출
-   │   ├── 2_Screen_UX.md ← 페이지/컴포넌트에서 도출
-   │   └── 2_DesignSystem_UX.md ← UI 패턴/스타일에서 도출
+   │   ├── shared/02-design/2_ERD_SA.md ← DB 스키마에서 도출
+   │   ├── shared/02-design/2_DesignSystem_UX.md ← UI 패턴/스타일에서 도출
+   │   ├── {app}/02-design/2_API_SA.md ← API 라우트에서 도출
+   │   └── {app}/02-design/2_Screen_UX.md ← 페이지/컴포넌트에서 도출
    └── Phase 3 - DEV 문서 (코드 존재 시)
-       ├── 3_Code_DV.md ← 구현 현황 기록
-       ├── 3_Screen_UX.md ← 화면 구현 기록
-       ├── 3_UIComponents_UX.md ← UI 컴포넌트 기록
-       └── 3_DesignToken_UX.md ← Design Token 기록
+       ├── shared/03-dev/3_UIComponents_UX.md ← UI 컴포넌트 기록
+       ├── shared/03-dev/3_DesignToken_UX.md ← Design Token 기록
+       ├── {app}/03-dev/3_Code_DV.md ← 구현 현황 기록
+       └── {app}/03-dev/3_Screen_UX.md ← 화면 구현 기록
 
 6. Phase 상태 결정
    ├── PLAN 문서만 생성됨 → currentPhase = "plan"
@@ -214,9 +242,9 @@ agents:
 
 | Scan Target | File Patterns | Output Document | Extraction |
 |-------------|---------------|-----------------|------------|
-| 프로젝트 메타 | `package.json`, `README.md` | 1_Roadmap_RA | 프로젝트명, 목표, 기능 목록, 스택 |
-| 소스코드 기능 | `src/**/*.{ts,tsx}`, `app/**` | 1_SRS_SA | FR 목록, 비즈니스 로직 |
-| 페이지/라우트 | `app/**/page.tsx`, `pages/**` | 1_IA_UX | 화면 계층, 네비게이션, Screen ID |
+| 프로젝트 메타 | `package.json`, `README.md` | 1_Roadmap_PM | 프로젝트명, 목표, 기능 목록, 스택 |
+| 소스코드 기능 | `src/**/*.{ts,tsx}`, `app/**` | 1_SRS_RA | FR 목록, 비즈니스 로직 |
+| 페이지/라우트 | `app/**/page.tsx`, `pages/**` | 1_IA_RA | 화면 계층, 네비게이션, Screen ID |
 | DB 스키마 | `prisma/schema.prisma`, `drizzle/**` | 2_ERD_SA | Entity, Relationship, Attribute |
 | API 라우트 | `app/api/**/route.ts`, `pages/api/**` | 2_API_SA | Endpoint, Method, Request/Response |
 | UI 컴포넌트 | `components/**`, `app/**/page.tsx` | 2_Screen_UX | 화면 목록, 컴포넌트 구성 |
@@ -233,7 +261,7 @@ u-ux (UX Designer): 페이지/컴포넌트 구조 분석 → IA, Screen, DesignS
   ↓
 u-ra (Requirements & Admin): README + 분석 결과 → Roadmap 문서 생성
   ↓
-u-ra (Requirements & Admin): 1_Index_RA 생성, u-ssot.config.json 업데이트, 결과 리포트 출력
+u-ra (Requirements & Admin): 1_Index_PM 생성, u-ssot.config.json 업데이트, 결과 리포트 출력
 ```
 
 ### Output Report Format
@@ -255,10 +283,10 @@ u-ra (Requirements & Admin): 1_Index_RA 생성, u-ssot.config.json 업데이트,
     [ ] drizzle/ (not found)
 ------------------------------------------
   Generated Documents:
-    [V] 1_Roadmap_RA.md     Draft  (from README + package.json)
-    [V] 1_SRS_SA.md         Draft  (14 FRs extracted)
-    [V] 1_IA_UX.md          Draft  (12 screens mapped)
-    [V] 1_Index_RA.md       Draft
+    [V] 1_Roadmap_PM.md     Draft  (from README + package.json)
+    [V] 1_SRS_RA.md         Draft  (14 FRs extracted)
+    [V] 1_IA_RA.md          Draft  (12 screens mapped)
+    [V] 1_Index_PM.md       Draft
     [V] 2_ERD_SA.md         Draft  (8 entities from Prisma)
     [V] 2_API_SA.md         Draft  (8 endpoints from routes)
     [V] 2_Screen_UX.md      Draft  (12 screens mapped)
@@ -281,6 +309,8 @@ u-ra (Requirements & Admin): 1_Index_RA 생성, u-ssot.config.json 업데이트,
 - 기존 `u-docs/` 문서가 있으면 덮어쓰지 않음 (사용자 확인 후 진행)
 - 스캔 결과가 없는 문서는 빈 템플릿으로 생성하지 않음 (정보가 있는 문서만 생성)
 - `u-ssot.config.json`이 이미 존재하면 기존 설정 유지하되 문서 상태만 업데이트
+- 문서는 `u-ssot.config.json`의 `documentLanguage` 설정 언어로 작성 (기본값: `ko`)
+- 문서 헤더(Owner, Status, Version 등)는 언어와 무관하게 영문 유지, 본문 내용만 해당 언어로 작성
 
 ### Difference from `/u-create-project`
 
@@ -299,8 +329,8 @@ u-ra (Requirements & Admin): 1_Index_RA 생성, u-ssot.config.json 업데이트,
 ```mermaid
 stateDiagram-v2
     [*] --> PLAN
-    PLAN --> DESIGN : Gate: Roadmap + SRS + IA = Final
-    DESIGN --> DO : Gate: ERD + API + Screen + DesignSystem = Final + u-RA 검수 통과
+    PLAN --> DESIGN : Gate: shared/Roadmap Final + ALL apps SRS,IA Final
+    DESIGN --> DO : Gate: shared/ERD Final + ALL apps API,Screen Final + DesignSystem Final + u-RA 검수
     DO --> CHECK : Gate: 코드 구현 완료 + 빌드 성공
     CHECK --> COMPLETE : Gate: Critical/Major 0 + 백로그 0 + 전체 FR 구현
     CHECK --> ACT : Gate 미충족
@@ -312,34 +342,34 @@ stateDiagram-v2
 
 #### PLAN Phase
 1. `u-ra` OR `u-sa`: 첫 번째 문서 생성
-   - Pattern A (US-First): `u-ra`가 로드맵 생성 (`1_Roadmap_RA.md`)
-   - Pattern B (FR-First): `u-sa`가 SRS 작성 (`1_SRS_SA.md`)
+   - Pattern A (US-First): `u-ra`가 로드맵 생성 (`shared/01-plan/1_Roadmap_PM.md`)
+   - Pattern B (FR-First): `u-sa`가 SRS 작성 (`{app}/01-plan/1_SRS_RA.md`)
 2. 나머지 문서 작성 (Pattern A: `u-sa` SRS, Pattern B: `u-ra` Roadmap)
 3. Cross-mapping 갱신: TBD 매핑을 실제 ID로 갱신
-4. `u-ux`: 정보 구조도 작성 (`1_IA_UX.md`)
-5. `u-ra`: 인덱스 생성 (`1_Index_RA.md`)
+4. `u-ux`: 정보 구조도 작성 (`{app}/01-plan/1_IA_RA.md`) — IA에 Menu Tree 포함
+5. `u-ra`: 인덱스 생성 (`shared/01-plan/1_Index_PM.md`)
 
-**Gate → DESIGN**: `1_Roadmap_RA`, `1_SRS_SA`, `1_IA_UX` 모두 Status: Final + US↔FR mapping complete (no TBD)
+**Gate → DESIGN**: `shared/1_Roadmap_PM` Final + 모든 앱의 `1_SRS_RA`, `1_IA_RA` Final + US↔FR mapping complete (no TBD)
 
 #### DESIGN Phase
-1. `u-ux`: 화면 상세 설계 (`2_Screen_UX.md`)
+1. `u-ux`: 화면 상세 설계 (`{app}/02-design/2_Screen_UX.md`)
    - 와이어프레임, 인터랙션 설계, 반응형 규격
-2. `u-ux`: Design System 설계 (`2_DesignSystem_UX.md`)
+2. `u-ux`: Design System 설계 (`shared/02-design/2_DesignSystem_UX.md`)
    - 디자인 시스템, 컴포넌트 가이드
-3. `u-sa`: ERD 작성 (`2_ERD_SA.md`)
+3. `u-sa`: ERD 작성 (`shared/02-design/2_ERD_SA.md`)
    - Entity 정의, Relationship 다이어그램 (Mermaid erDiagram)
-4. `u-sa`: API Contract 작성 (`2_API_SA.md`)
+4. `u-sa`: API Contract 작성 (`{app}/02-design/2_API_SA.md`)
    - OpenAPI 3.0 스펙, Endpoint 목록, Request/Response Schema
 5. `u-ra`: 모순 검수
    - Screen ↔ API ↔ ERD 간 불일치 탐지
 
-**Gate → DO**: `2_ERD_SA`, `2_API_SA`, `2_Screen_UX`, `2_DesignSystem_UX` 모두 Status: Final + u-RA 검수 통과
+**Gate → DO**: `shared/2_ERD_SA`, `shared/2_DesignSystem_UX` Final + 모든 앱의 `2_API_SA`, `2_Screen_UX` Final + u-RA 검수 통과
 
 #### DO Phase
 1. `u-ux`: Screen/UI 구현
-   - Screen 구현 (`3_Screen_UX.md`)
-   - UI Components 구현 (`3_UIComponents_UX.md`)
-   - Design Token 정의 (`3_DesignToken_UX.md`)
+   - Screen 구현 (`{app}/03-dev/3_Screen_UX.md`)
+   - UI Components 구현 (`shared/03-dev/3_UIComponents_UX.md`)
+   - Design Token 정의 (`shared/03-dev/3_DesignToken_UX.md`)
 2. `u-dv-fe`: Frontend 개발
    - Next.js App Router + react-query
    - Storybook 컴포넌트 문서화
@@ -347,17 +377,17 @@ stateDiagram-v2
    - API Routes 구현 (2_API_SA Contract 기반)
    - Prisma/Drizzle ORM
 4. 병렬 개발: UX/FE/BE는 API Contract를 기준으로 독립 개발
-5. `3_Code_DV.md` 갱신: 구현 현황 기록
+5. `{app}/03-dev/3_Code_DV.md` 갱신: 구현 현황 기록
 
 **Gate → CHECK**: 코드 구현 완료 + `bun run build` 성공
 
 #### CHECK Phase
-1. `u-qa`: 테스트 케이스 설계 (`4_Case_QA.md`)
+1. `u-qa`: 테스트 케이스 설계 (`{app}/04-check/4_Case_QA.md`)
    - SRS FR 기반 케이스 도출
    - 정상/비정상/경계값 시나리오
 2. `u-qa`: 테스트 실행 및 결과 기록
    - 각 케이스 Pass/Fail 판정
-   - 4_Report_QA.md에 실행 결과 기록
+   - `{app}/04-check/4_Report_QA.md`에 실행 결과 기록
 3. `u-qa`: 결함 분석
    - Fail 케이스 분류 (Critical/Major/Minor/Trivial)
    - 재현 시나리오, 원인 분석, 수정 제안
@@ -366,15 +396,15 @@ stateDiagram-v2
 **Gate → ACT**: 위 조건 미충족 시
 
 #### ACT Phase
-1. `u-ra`: DEF → BL 변환 및 백로그 정리 (`5_Backlog_RA.md`)
-   - `4_Report_QA.md`의 Open DEF → BL 자동 변환 (DEF→BL Conversion Rules 참조)
+1. `u-ra`: DEF → BL 변환 및 백로그 정리 (`shared/05-act/5_Backlog_RA.md`)
+   - 모든 앱의 `4_Report_QA.md` Open DEF → BL 자동 변환 (DEF→BL Conversion Rules 참조)
    - 기존 Open/InProgress 항목 우선순위 재평가
    - PLAN/DESIGN/DEV 기원 백로그 항목 확인
-2. `u-ra`: 회고 작성 (`5_Retrospective_RA.md`)
+2. `u-ra`: 회고 작성 (`shared/05-act/5_Retrospective_PM.md`)
    - 잘된 점, 개선할 점, 다음 Iteration 목표
 3. `u-ra`: 아카이브 + 인덱스 갱신
    - 현재 Iteration 문서 → `u-docs/iterations/iter-N/` 복사
-   - `5_IterationLog_RA.md` 갱신
+   - `shared/05-act/5_IterationLog_RA.md` 갱신
 4. 다음 Iteration 전환 (currentIteration + 1)
 
 **Gate → PLAN (Iter N+1)**: 백로그 정리 + 회고 + 아카이브 완료
@@ -443,12 +473,14 @@ ACT Phase에서 u-ra가 CHECK Phase의 결함(DEF)을 백로그 항목(BL)으로
 
 ## Phase Gate Conditions
 
+shared 문서는 1회 검증. perApp 문서는 모든 앱이 Final이어야 통과.
+
 | Transition | Gate Conditions |
 |------------|----------------|
-| PLAN → DESIGN | `1_Roadmap_RA.md` Final, `1_SRS_SA.md` Final, `1_IA_UX.md` Final |
-| DESIGN → DO | `2_ERD_SA.md` Final, `2_API_SA.md` Final, `2_Screen_UX.md` Final, `2_DesignSystem_UX.md` Final, u-RA 검수 통과 |
+| PLAN → DESIGN | `shared/1_Roadmap_PM.md` Final + 모든 앱의 `1_SRS_RA.md`, `1_IA_RA.md` Final |
+| DESIGN → DO | `shared/2_ERD_SA.md`, `shared/2_DesignSystem_UX.md` Final + 모든 앱의 `2_API_SA.md`, `2_Screen_UX.md` Final + u-RA 검수 통과 |
 | DO → CHECK | 코드 구현 완료, `bun run build` 성공 |
-| CHECK → Complete | Critical/Major 0건, 백로그 활성 항목 0건, 전체 FR 구현, 빌드 성공 |
+| CHECK → Complete | Critical/Major 0건, 백로그 활성 항목 0건, 모든 앱의 전체 FR 구현, 빌드 성공 |
 | CHECK → ACT | CHECK → Complete 조건 미충족 |
 | ACT → PLAN(N+1) | 백로그 정리 완료, 회고 완료, 아카이브 완료 |
 
@@ -458,13 +490,24 @@ ACT Phase에서 u-ra가 CHECK Phase의 결함(DEF)을 백로그 항목(BL)으로
 {
   "gateConditions": {
     "planToDesign": {
-      "documents": ["1_Roadmap_RA.md", "1_SRS_SA.md", "1_IA_UX.md"],
-      "requiredStatus": "Final"
+      "shared": [{ "document": "1_Roadmap_PM.md", "status": "Final" }],
+      "perApp": [
+        { "document": "1_SRS_RA.md", "status": "Final" },
+        { "document": "1_IA_RA.md", "status": "Final" }
+      ],
+      "rule": "shared 문서 1회 검증 + 모든 앱의 perApp 문서 Final"
     },
     "designToDo": {
-      "documents": ["2_ERD_SA.md", "2_API_SA.md", "2_Screen_UX.md", "2_DesignSystem_UX.md"],
-      "requiredStatus": "Final",
-      "additionalCheck": "u-RA 검수 통과"
+      "shared": [
+        { "document": "2_ERD_SA.md", "status": "Final" },
+        { "document": "2_DesignSystem_UX.md", "status": "Final" }
+      ],
+      "perApp": [
+        { "document": "2_API_SA.md", "status": "Final" },
+        { "document": "2_Screen_UX.md", "status": "Final" }
+      ],
+      "additionalCheck": "u-RA 검수 통과",
+      "rule": "shared 문서 1회 검증 + 모든 앱의 perApp 문서 Final"
     },
     "doToCheck": {
       "codeComplete": true,
@@ -495,7 +538,7 @@ ACT Phase에서 u-ra가 CHECK Phase의 결함(DEF)을 백로그 항목(BL)으로
 
 1. **백로그 활성 항목 없음**: `5_Backlog_RA.md`에서 Done/Cancelled/Deferred 외 활성 항목 0건
 2. **Critical/Major 결함 0건**: `4_Report_QA.md`에서 Critical/Major 0건
-3. **SRS 전체 FR 구현**: `1_SRS_SA.md`의 모든 FR이 `Implemented` 상태
+3. **SRS 전체 FR 구현**: `1_SRS_RA.md`의 모든 FR이 `Implemented` 상태
 4. **빌드 성공**: `bun run build` 통과
 
 ### Loop Flow
@@ -540,36 +583,43 @@ flowchart TD
 
 ```
 u-docs/
-├── 01-plan/
-│   ├── 1_Roadmap_RA.md          # u-ra 소유
-│   ├── 1_SRS_SA.md              # u-sa 소유
-│   ├── 1_IA_UX.md               # u-ux 소유
-│   └── 1_Index_RA.md            # u-ra 소유
-├── 02-design/
-│   ├── 2_ERD_SA.md              # u-sa 소유
-│   ├── 2_API_SA.md              # u-sa 소유
-│   ├── 2_Screen_UX.md           # u-ux 소유
-│   └── 2_DesignSystem_UX.md     # u-ux 소유
-├── 03-dev/
-│   ├── 3_Code_DV.md             # u-dv-fe/u-dv-be 소유
-│   ├── 3_Screen_UX.md           # u-ux 소유
-│   ├── 3_UIComponents_UX.md     # u-ux 소유
-│   └── 3_DesignToken_UX.md      # u-ux 소유
-├── 04-check/
-│   ├── 4_Case_QA.md             # u-qa 소유
-│   └── 4_Report_QA.md           # u-qa 소유
-├── 05-act/
-│   ├── 5_Backlog_RA.md          # u-ra 소유
-│   ├── 5_IterationLog_RA.md     # u-ra 소유
-│   └── 5_Retrospective_RA.md    # u-ra 소유
-├── assets/                      # 다이어그램, 스크린샷
+├── shared/                          # Project-level shared docs
+│   ├── 01-plan/
+│   │   ├── 1_Roadmap_PM.md          # u-ra 소유
+│   │   └── 1_Index_PM.md            # u-ra 소유
+│   ├── 02-design/
+│   │   ├── 2_ERD_SA.md              # u-sa 소유
+│   │   └── 2_DesignSystem_UX.md     # u-ux 소유
+│   ├── 03-dev/
+│   │   ├── 3_UIComponents_UX.md     # u-ux 소유
+│   │   └── 3_DesignToken_UX.md      # u-ux 소유
+│   └── 05-act/
+│       ├── 5_Backlog_RA.md          # u-ra 소유
+│       ├── 5_IterationLog_RA.md     # u-ra 소유
+│       └── 5_Retrospective_PM.md    # u-ra 소유
+├── {app}/                           # Per-app docs (e.g., web/, admin/)
+│   ├── 01-plan/
+│   │   ├── 1_SRS_RA.md              # u-sa 소유
+│   │   └── 1_IA_RA.md               # u-ux 소유
+│   ├── 02-design/
+│   │   ├── 2_API_SA.md              # u-sa 소유
+│   │   └── 2_Screen_UX.md           # u-ux 소유
+│   ├── 03-dev/
+│   │   ├── 3_Code_DV.md             # u-dv-fe/u-dv-be 소유
+│   │   └── 3_Screen_UX.md           # u-ux 소유
+│   └── 04-check/
+│       ├── 4_Case_QA.md             # u-qa 소유
+│       └── 4_Report_QA.md           # u-qa 소유
+├── assets/                          # 다이어그램, 스크린샷
 └── iterations/
-    └── iter-N/                  # Iteration 아카이브
+    └── iter-N/                      # Iteration 아카이브
 ```
 
 ### Path Enforcement Rules
 
 - SSoT 문서는 `u-docs/` 외부에 생성 불가
+- shared 문서는 `u-docs/shared/` 하위에만 생성
+- app-specific 문서는 `u-docs/{app}/` 하위에만 생성 (app name = u-ssot.config.json의 apps 배열)
 - 각 문서는 지정된 Owner 에이전트만 생성/수정 가능
 - 코드 파일은 프로젝트 루트 하위 (apps/, packages/)에 생성
 - `PreToolUse(Write|Edit)` hook이 경로 규칙 강제
@@ -593,16 +643,16 @@ Related Docs:
 
 ### Traceability Rules
 
-- **수직적 추적성**: PRD(Roadmap) → SRS → ERD → Code
+- **수직적 추적성**: PRD(Roadmap) → SRS → MN(Menu) → Screen → ERD → Code
 - **수평적 추적성**: Screen ↔ API ↔ QA Case
-- 모든 문서 간 참조는 `u-docs/` 내 상대 경로 사용
+- 모든 문서 간 참조는 `u-docs/` 내 상대 경로 사용 (shared/ 또는 {app}/ 포함)
 
 ### Mermaid Diagram Requirements
 
 각 문서에 적합한 Mermaid 다이어그램을 포함한다:
 - **Roadmap**: flowchart (마일스톤 흐름)
 - **SRS**: flowchart (기능 관계도)
-- **IA**: flowchart (화면 계층 구조)
+- **IA**: mindmap (메뉴 트리 구조)
 - **ERD**: erDiagram (Entity-Relationship)
 - **API**: sequenceDiagram (API 호출 흐름)
 - **Screen**: flowchart (화면 전환 흐름)
@@ -675,19 +725,19 @@ Iteration 2 이상에서는 전체 재작성이 아닌 증분 갱신만 수행�
 
 | Design Document | Comparison Target | Check Items |
 |----------------|-------------------|-------------|
-| `1_SRS_SA.md` | 구현 코드 파일 | 모든 FR의 구현 여부, 누락 기능 |
-| `2_ERD_SA.md` | DB Schema / ORM 모델 | Entity 정의 일치, Relationship 누락 |
-| `2_API_SA.md` | API Route 파일 | Endpoint 존재, Request/Response 스키마 일치 |
-| `2_Screen_UX.md` | 페이지/컴포넌트 파일 | 화면 구현 여부, 인터랙션 누락 |
+| `{app}/1_SRS_RA.md` | 구현 코드 파일 | 모든 FR의 구현 여부, 누락 기능 |
+| `shared/2_ERD_SA.md` | DB Schema / ORM 모델 | Entity 정의 일치, Relationship 누락 |
+| `{app}/2_API_SA.md` | API Route 파일 | Endpoint 존재, Request/Response 스키마 일치 |
+| `{app}/2_Screen_UX.md` | 페이지/컴포넌트 파일 | 화면 구현 여부, 인터랙션 누락 |
 
 ### Analysis Flow
 
 ```
-1. u-ra: SSoT 설계 문서 수집 (1_SRS_SA, 2_ERD_SA, 2_API_SA, 2_Screen_UX)
+1. u-ra: 모든 앱의 SSoT 설계 문서 수집 ({app}/1_SRS_RA, shared/2_ERD_SA, {app}/2_API_SA, {app}/2_Screen_UX)
 2. u-ra: 구현 코드 파일 스캔 (apps/, packages/)
-3. u-qa: 설계 항목별 구현 매칭 검사
+3. u-qa: 설계 항목별 구현 매칭 검사 (앱별 집계)
 4. Match Rate 산출: (구현된 항목 / 전체 설계 항목) × 100
-5. Gap 리포트 생성 → u-docs/04-check/ 에 저장
+5. Gap 리포트 생성 → u-docs/{app}/04-check/ 에 저장
 ```
 
 ### Output Format
@@ -715,7 +765,7 @@ Iteration 2 이상에서는 전체 재작성이 아닌 증분 갱신만 수행�
 
 - Match Rate >= 90%: **PASS** → CHECK 통과 가능
 - Match Rate < 90%: **FAIL** → ACT Phase에서 Gap 항목을 백로그로 전환
-- 결과는 `4_Report_QA.md`에 Gap Analysis 섹션으로 추가
+- 결과는 `{app}/04-check/4_Report_QA.md`에 Gap Analysis 섹션으로 추가
 
 ---
 
@@ -729,17 +779,27 @@ Iteration 2 이상에서는 전체 재작성이 아닌 증분 갱신만 수행�
   Iteration: [N] / [maxIterations]
   Phase: [PLAN | DESIGN | DO | CHECK | ACT]
   Loop Status: [RUNNING | PAUSED | STOPPED]
+  Apps: [web, admin, ...]
 ------------------------------------
-  Documents:
-    [V] 1_Roadmap_RA.md    Final
-    [V] 1_SRS_SA.md        Final
-    [V] 1_IA_UX.md         Final
-    [ ] 2_ERD_SA.md         Draft
-    [ ] 2_API_SA.md         -
-    [ ] 2_Screen_UX.md      -
-    [ ] 2_DesignSystem_UX.md -
+  Shared Documents:
+    [V] 1_Roadmap_PM.md        Final
+    [V] 1_Index_PM.md          Final
+    [ ] 2_ERD_SA.md             Draft
+    [ ] 2_DesignSystem_UX.md    -
 ------------------------------------
-  FR Progress: [N/M] implemented
+  App: web
+    [V] 1_SRS_RA.md            Final
+    [V] 1_IA_RA.md             Final
+    [ ] 2_API_SA.md             -
+    [ ] 2_Screen_UX.md          -
+------------------------------------
+  App: admin
+    [V] 1_SRS_RA.md            Final
+    [ ] 1_IA_RA.md              Draft
+    [ ] 2_API_SA.md             -
+    [ ] 2_Screen_UX.md          -
+------------------------------------
+  FR Progress: [N/M] implemented (all apps)
   Open Defects: [Critical: X, Major: Y]
   Backlog: [N] open items
   Build: [PASS | FAIL]
@@ -756,9 +816,9 @@ Iteration 2 이상에서는 전체 재작성이 아닌 증분 갱신만 수행�
 
 ```
 1. u-ssot.config.json에서 프로젝트 메타정보 수집
-2. 1_Roadmap_RA.md에서 프로젝트 목표, 마일스톤 추출
-3. 1_SRS_SA.md에서 FR 구현 현황 추출
-4. 1_Index_RA.md에서 문서 상태 수집
+2. 1_Roadmap_PM.md에서 프로젝트 목표, 마일스톤 추출
+3. 1_SRS_RA.md에서 FR 구현 현황 추출
+4. 1_Index_PM.md에서 문서 상태 수집
 5. 현재 Iteration, Phase, Loop 상태 확인
 6. u-docs/summary.md에 요약 문서 생성
 ```
@@ -780,13 +840,13 @@ Last Updated: [YYYY-MM-DD]
 | 항목 | 내용 |
 |------|------|
 | 프로젝트명 | [project-name] |
-| 목표 | [1_Roadmap_RA에서 추출] |
+| 목표 | [1_Roadmap_PM에서 추출] |
 | 기술 스택 | Next.js App Router, react-query, Prisma/Drizzle, Turborepo, bun |
 | 에이전트 | 6개 전문 에이전트 (u-ra, u-sa, u-ux, u-dv-fe, u-dv-be, u-qa) |
 
 ## 주요 기능 (Features)
 
-[1_SRS_SA.md의 FR 목록 요약]
+[1_SRS_RA.md의 FR 목록 요약]
 
 ## 개발 상태
 
@@ -802,11 +862,11 @@ Last Updated: [YYYY-MM-DD]
 
 ## 문서 현황
 
-[1_Index_RA.md 기반 문서 상태 테이블]
+[1_Index_PM.md 기반 문서 상태 테이블]
 
 ## 마일스톤
 
-[1_Roadmap_RA.md에서 추출한 마일스톤 목록]
+[1_Roadmap_PM.md에서 추출한 마일스톤 목록]
 ```
 
 ### Rules
@@ -814,13 +874,13 @@ Last Updated: [YYYY-MM-DD]
 - `u-ra` 에이전트가 담당
 - 기존 `u-docs/summary.md`가 있으면 덮어쓰기 (최신 상태 반영)
 - 존재하지 않는 문서는 해당 항목을 `-` 또는 `N/A`로 표시
-- `1_Index_RA.md`에 `summary.md`를 참조로 추가
+- `1_Index_PM.md`에 `summary.md`를 참조로 추가
 
 ---
 
 ## Backlog Add (`/u-backlog-add`)
 
-새로운 백로그 항목을 `5_Backlog_RA.md`에 추가한다.
+새로운 백로그 항목을 `shared/05-act/5_Backlog_RA.md`에 추가한다.
 
 ### Syntax
 
@@ -1021,7 +1081,7 @@ Last Updated: [YYYY-MM-DD]
 
 ## User Story Add (`/u-us-add`)
 
-새로운 유저 스토리를 `1_Roadmap_RA.md`의 Section 3 (User Stories) 테이블에 추가한다.
+새로운 유저 스토리를 `shared/01-plan/1_Roadmap_PM.md`의 Section 3 (User Stories) 테이블에 추가한다.
 
 ### Syntax
 
@@ -1035,7 +1095,7 @@ Last Updated: [YYYY-MM-DD]
 ### US Add Flow
 
 ```
-1. 1_Roadmap_RA.md 존재 확인 (없으면 템플릿에서 자동 생성)
+1. 1_Roadmap_PM.md 존재 확인 (없으면 템플릿에서 자동 생성)
 2. 기존 US-ID 최대값 확인 → 다음 US-ID 자동 채번 (US-NNN)
 3. 사용자 입력 또는 인자에서 항목 정보 추출:
    - As a [role] (필수)
@@ -1089,19 +1149,19 @@ Last Updated: [YYYY-MM-DD]
 - `u-ra` 에이전트가 담당
 - US-ID는 3자리 숫자로 자동 채번 (US-001, US-002, ...)
 - FR Mapping 기본값은 `TBD` (SRS 작성 후 `/u-plan`에서 자동 갱신)
-- 1_Roadmap_RA.md가 없으면 템플릿에서 자동 생성 후 항목 추가
+- 1_Roadmap_PM.md가 없으면 템플릿에서 자동 생성 후 항목 추가
 - Version은 Minor 버전 증가 (예: 1.0.0 → 1.1.0)
 
 ---
 
 ## Functional Requirement Add (`/u-fr-add`)
 
-새로운 기능 요구사항(FR)을 `1_SRS_SA.md`의 Section 2 (Functional Requirements) 테이블과 FR Details 블록에 추가한다.
+새로운 기능 요구사항(FR)을 `{app}/01-plan/1_SRS_RA.md`의 Section 2 (Functional Requirements) 테이블과 FR Details 블록에 추가한다.
 
 ### Syntax
 
 ```
-/u-fr-add <description>
+/u-fr-add [app] <description>
 ```
 
 - `<description>`: FR 설명 (자연어)
@@ -1110,7 +1170,7 @@ Last Updated: [YYYY-MM-DD]
 ### FR Add Flow
 
 ```
-1. 1_SRS_SA.md 존재 확인 (없으면 템플릿에서 자동 생성)
+1. 1_SRS_RA.md 존재 확인 (없으면 템플릿에서 자동 생성)
 2. 기존 FR-ID 최대값 확인 → 다음 FR-ID 자동 채번 (FR-NNN)
 3. 사용자 입력 또는 인자에서 항목 정보 추출:
    - Feature (필수)
@@ -1197,7 +1257,7 @@ Last Updated: [YYYY-MM-DD]
 - Implemented 상태는 항상 `[ ] Not Started`로 생성
 - US Mapping 기본값은 `TBD`, Technical FR은 `-`
 - 선택 필드 미입력 시 `{{TODO}}` 플레이스홀더 삽입
-- 1_SRS_SA.md가 없으면 템플릿에서 자동 생성 후 항목 추가
+- 1_SRS_RA.md가 없으면 템플릿에서 자동 생성 후 항목 추가
 - Version은 Minor 버전 증가 (예: 1.0.0 → 1.1.0)
 
 ---
@@ -1224,11 +1284,11 @@ feature별로 변경사항을 git commit하고 GitHub PR을 생성한다.
 
 | 변경 대상 | Feature Name 예시 | 기준 |
 |-----------|-------------------|------|
-| `u-docs/01-plan/*` | `docs-plan` | PLAN Phase 문서 |
-| `u-docs/02-design/*` | `docs-design` | DESIGN Phase 문서 |
-| `u-docs/03-dev/*` | `docs-dev` | DO Phase 문서 |
-| `u-docs/04-check/*` | `docs-check` | CHECK Phase 문서 |
-| `u-docs/05-act/*` | `docs-act` | ACT Phase 문서 |
+| `u-docs/shared/01-plan/*`, `u-docs/{app}/01-plan/*` | `docs-plan` | PLAN Phase 문서 |
+| `u-docs/shared/02-design/*`, `u-docs/{app}/02-design/*` | `docs-design` | DESIGN Phase 문서 |
+| `u-docs/shared/03-dev/*`, `u-docs/{app}/03-dev/*` | `docs-dev` | DO Phase 문서 |
+| `u-docs/{app}/04-check/*` | `docs-check` | CHECK Phase 문서 |
+| `u-docs/shared/05-act/*` | `docs-act` | ACT Phase 문서 |
 | `apps/web/**` | `fe-<page-or-component>` | Frontend 코드 |
 | `packages/**` | `pkg-<package-name>` | 공유 패키지 |
 | `commands/*`, `agents/*`, `skills/*` | `plugin-<description>` | 플러그인 구성 |
