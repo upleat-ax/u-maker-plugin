@@ -3,7 +3,7 @@
  * session-start.js — u-ssot SessionStart Hook
  *
  * Checks if u-docs/ exists in the current working directory.
- * If not, creates the full SSoT folder structure.
+ * If not, creates the full SSoT folder structure (v2: shared/ + per-app).
  *
  * Output: JSON { result: "success" }
  */
@@ -14,29 +14,60 @@ const path = require('path');
 const cwd = process.cwd();
 const udocsRoot = path.join(cwd, 'u-docs');
 
-// Required directory structure
+// Required shared directory structure
 const UDOCS_DIRS = [
-  '01-plan',
-  '02-design',
-  '03-dev',
-  '04-check',
-  '05-act',
-  'assets/diagrams',
-  'assets/screenshots',
+  'shared/01-plan',
+  'shared/02-design',
+  'shared/03-dev',
+  'shared/05-act',
+  'shared/assets/diagrams',
+  'shared/assets/screenshots',
   'iterations',
 ];
+
+// Per-app phase directories
+const APP_PHASE_DIRS = ['01-plan', '02-design', '03-dev', '04-check'];
+
+/**
+ * Read app list from config.
+ * @returns {string[]}
+ */
+function getAppsFromConfig() {
+  const configPath = path.join(cwd, 'u-ssot.config.json');
+  let apps = ['web'];
+  try {
+    if (fs.existsSync(configPath)) {
+      const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+      apps = (config.techStack && config.techStack.monorepo && config.techStack.monorepo.structure && config.techStack.monorepo.structure.apps) || ['web'];
+    }
+  } catch {}
+  return apps;
+}
 
 /**
  * Create u-docs/ directory structure if it doesn't exist.
  */
 function ensureUdocsStructure() {
   const created = [];
+  const apps = getAppsFromConfig();
 
+  // Create shared directories
   for (const dir of UDOCS_DIRS) {
     const fullPath = path.join(udocsRoot, dir);
     if (!fs.existsSync(fullPath)) {
       fs.mkdirSync(fullPath, { recursive: true });
       created.push(dir);
+    }
+  }
+
+  // Create per-app directories
+  for (const app of apps) {
+    for (const dir of APP_PHASE_DIRS) {
+      const fullPath = path.join(udocsRoot, app, dir);
+      if (!fs.existsSync(fullPath)) {
+        fs.mkdirSync(fullPath, { recursive: true });
+        created.push(`${app}/${dir}`);
+      }
     }
   }
 
@@ -48,13 +79,13 @@ function ensureUdocsStructure() {
       '',
       'Managed by the u-ssot plugin.',
       '',
-      '| Directory | Phase |',
-      '|-----------|-------|',
-      '| `01-plan/` | PLAN |',
-      '| `02-design/` | DESIGN |',
-      '| `03-dev/` | DO |',
-      '| `04-check/` | CHECK |',
-      '| `05-act/` | ACT |',
+      '| Directory | Scope | Phase |',
+      '|-----------|-------|-------|',
+      '| `shared/01-plan/` | Shared | PLAN |',
+      '| `shared/02-design/` | Shared | DESIGN |',
+      '| `shared/03-dev/` | Shared | DO |',
+      '| `shared/05-act/` | Shared | ACT |',
+      ...apps.map(app => `| \`${app}/01-plan/\` ~ \`${app}/04-check/\` | ${app} | PLAN~CHECK |`),
       '',
     ].join('\n'), 'utf8');
     created.push('README.md');

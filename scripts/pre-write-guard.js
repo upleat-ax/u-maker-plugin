@@ -53,7 +53,7 @@ if (!filePath) {
 // Check 1: SSoT Document Path Enforcement
 // ============================================================
 
-// SSoT document pattern: files like 1_Roadmap_RA.md, 2_ERD_SA.md, etc.
+// SSoT document pattern: files like 1_Roadmap_PM.md, 2_ERD_SA.md, etc.
 const SSOT_DOC_PATTERN = /\d+_[A-Za-z]+_[A-Z]+\.md$/;
 const basename = path.basename(filePath);
 
