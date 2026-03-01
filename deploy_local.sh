@@ -265,6 +265,51 @@ setup_codex() {
 }
 
 # ============================================================
+# 6b. Register skill symlinks in ~/.claude/skills/
+# ============================================================
+
+register_skill_symlinks() {
+  local skills_root="$CLAUDE_HOME/skills"
+  local cache_skills="$CACHE_DIR/$PLUGIN_NAME/$PLUGIN_NAME/$PLUGIN_VERSION/skills"
+
+  mkdir -p "$skills_root"
+
+  if [[ ! -d "$cache_skills" ]]; then
+    warn "No skills directory in cache, skipping skill symlinks"
+    return 0
+  fi
+
+  local count=0
+  for skill_dir in "$cache_skills"/*/; do
+    [[ -d "$skill_dir" ]] || continue
+    local skill_name
+    skill_name="$(basename "$skill_dir")"
+    local link_name="${PLUGIN_NAME}__${skill_name}"
+    local link_path="${skills_root}/${link_name}"
+
+    if [[ -L "$link_path" ]]; then
+      local current
+      current="$(readlink "$link_path")"
+      if [[ "$current" == "$skill_dir" ]]; then
+        continue
+      fi
+      rm "$link_path"
+    elif [[ -e "$link_path" ]]; then
+      rm -rf "$link_path"
+    fi
+
+    ln -s "$skill_dir" "$link_path"
+    count=$((count + 1))
+  done
+
+  if [[ $count -gt 0 ]]; then
+    ok "Registered $count skill symlinks in ~/.claude/skills/"
+  else
+    ok "All skill symlinks up to date"
+  fi
+}
+
+# ============================================================
 # 7. Deploy
 # ============================================================
 
@@ -285,23 +330,27 @@ deploy() {
   mkdir -p "$MARKETPLACES_DIR" "$CACHE_DIR"
 
   # Step 1: Marketplace symlink
-  log "1/5  Marketplace symlink"
+  log "1/6  Marketplace symlink"
   make_link "$SCRIPT_DIR" "$MARKETPLACES_DIR/$MARKETPLACE_NAME"
 
   # Step 2: Cache sync
-  log "2/5  Cache sync"
+  log "2/6  Cache sync"
   sync_to_cache
 
   # Step 3: known_marketplaces.json
-  log "3/5  known_marketplaces.json"
+  log "3/6  known_marketplaces.json"
   update_known_marketplaces
 
   # Step 4: installed_plugins.json
-  log "4/5  installed_plugins.json"
+  log "4/6  installed_plugins.json"
   update_installed_plugins
 
-  # Step 5: Codex
-  log "5/5  Codex integration"
+  # Step 5: Skill symlinks (for Codex compatibility)
+  log "5/6  Skill symlinks"
+  register_skill_symlinks
+
+  # Step 6: Codex
+  log "6/6  Codex integration"
   setup_codex
 
   echo ""
@@ -359,6 +408,19 @@ with open('$INSTALLED_PL', 'w') as f:
     f.write('\n')
 "
     ok "installed_plugins.json cleaned"
+  fi
+
+  # Remove skill symlinks
+  local skills_root="$CLAUDE_HOME/skills"
+  local count=0
+  for link in "$skills_root"/${PLUGIN_NAME}__*; do
+    if [[ -L "$link" ]]; then
+      rm "$link"
+      count=$((count + 1))
+    fi
+  done
+  if [[ $count -gt 0 ]]; then
+    ok "Removed $count skill symlinks"
   fi
 
   echo ""

@@ -11,17 +11,17 @@
         "init-project.sh should be executed with 'my-shop' argument",
         "u-docs/ folder structure should be created",
         "PLAN phase should start with u-RA agent",
-        "1_Roadmap_RA.md should be created with products, cart, checkout features",
-        "1_SRS_SA.md should contain FR for each feature",
-        "1_IA_UX.md should define information architecture"
+        "1_Roadmap_PM.md should be created with products, cart, checkout features",
+        "1_SRS_RA.md should contain FR for each feature",
+        "1_IA_RA.md should define information architecture"
       ],
       "expectedAgents": ["u-ra", "u-sa", "u-ux"],
       "expectedPhase": "plan",
       "expectedDocuments": [
-        "u-docs/01-plan/1_Roadmap_RA.md",
-        "u-docs/01-plan/1_SRS_SA.md",
-        "u-docs/01-plan/1_IA_UX.md",
-        "u-docs/01-plan/1_Index_RA.md"
+        "u-docs/shared/01-plan/1_Roadmap_PM.md",
+        "u-docs/web/01-plan/1_SRS_RA.md",
+        "u-docs/web/01-plan/1_IA_RA.md",
+        "u-docs/shared/01-plan/1_Index_PM.md"
       ],
       "tags": ["project-init", "plan", "e2e"]
     },
@@ -32,16 +32,16 @@
       "prompt": "SRS 문서를 기반으로 ERD를 작성해줘.",
       "expectedBehavior": [
         "u-SA agent should be invoked",
-        "Should read 1_SRS_SA.md for FR requirements",
+        "Should read 1_SRS_RA.md for FR requirements",
         "2_ERD_SA.md should be created in u-docs/02-design/",
         "ERD should include Mermaid erDiagram",
         "Entities should map to FR items from SRS",
-        "Related Docs should reference 1_SRS_SA.md"
+        "Related Docs should reference 1_SRS_RA.md"
       ],
       "expectedAgents": ["u-sa"],
       "expectedPhase": "design",
       "expectedDocuments": [
-        "u-docs/02-design/2_ERD_SA.md"
+        "u-docs/shared/02-design/2_ERD_SA.md"
       ],
       "tags": ["design", "erd", "traceability"]
     },
@@ -61,7 +61,7 @@
       "expectedAgents": ["u-sa"],
       "expectedPhase": "design",
       "expectedDocuments": [
-        "u-docs/02-design/2_API_SA.md"
+        "u-docs/web/02-design/2_API_SA.md"
       ],
       "tags": ["design", "api", "traceability"]
     },
@@ -84,7 +84,7 @@
       "expectedAgents": ["u-dv-fe"],
       "expectedPhase": "do",
       "expectedDocuments": [
-        "u-docs/03-dev/3_Code_DV.md"
+        "u-docs/web/03-dev/3_Code_DV.md"
       ],
       "tags": ["do", "frontend", "tech-stack"]
     },
@@ -105,8 +105,8 @@
       "expectedAgents": ["u-qa"],
       "expectedPhase": "check",
       "expectedDocuments": [
-        "u-docs/04-check/4_Case_QA.md",
-        "u-docs/04-check/4_Report_QA.md"
+        "u-docs/web/04-check/4_Case_QA.md",
+        "u-docs/web/04-check/4_Report_QA.md"
       ],
       "tags": ["check", "qa", "testing"]
     },
@@ -129,8 +129,8 @@
       "expectedAgents": ["u-ra", "u-sa", "u-ux", "u-dv-fe", "u-dv-be", "u-qa"],
       "expectedPhase": "act",
       "expectedDocuments": [
-        "u-docs/05-act/5_Backlog_RA.md",
-        "u-docs/05-act/5_IterationLog_RA.md"
+        "u-docs/shared/05-act/5_Backlog_RA.md",
+        "u-docs/shared/05-act/5_IterationLog_RA.md"
       ],
       "tags": ["loop", "iteration", "e2e"]
     },
@@ -161,7 +161,7 @@
       "expectedBehavior": [
         "Should analyze CHECK results from 4_Report_QA.md",
         "Should create/update 5_Backlog_RA.md with unresolved items",
-        "Should create 5_Retrospective_RA.md with lessons learned",
+        "Should create 5_Retrospective_PM.md with lessons learned",
         "Should archive current iteration to u-docs/iterations/iter-N/",
         "Should update 5_IterationLog_RA.md",
         "Should increment iteration counter",
@@ -170,9 +170,9 @@
       "expectedAgents": ["u-ra"],
       "expectedPhase": "act",
       "expectedDocuments": [
-        "u-docs/05-act/5_Backlog_RA.md",
-        "u-docs/05-act/5_Retrospective_RA.md",
-        "u-docs/05-act/5_IterationLog_RA.md"
+        "u-docs/shared/05-act/5_Backlog_RA.md",
+        "u-docs/shared/05-act/5_Retrospective_PM.md",
+        "u-docs/shared/05-act/5_IterationLog_RA.md"
       ],
       "tags": ["act", "iteration", "backlog"]
     },
