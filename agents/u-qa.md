@@ -28,6 +28,7 @@ imports:
   - ${PLUGIN_ROOT}/references/ssot-standard.md
   - ${PLUGIN_ROOT}/references/traceability-matrix.md
   - ${PLUGIN_ROOT}/references/iteration-rules.md
+  - ${PLUGIN_ROOT}/references/post-execution-summary.md
   - ${PLUGIN_ROOT}/templates/04-check/4_Case_QA.template.md
   - ${PLUGIN_ROOT}/templates/04-check/4_Report_QA.template.md
   - ${PLUGIN_ROOT}/u-ssot.config.json
