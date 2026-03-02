@@ -34,6 +34,30 @@ packages/tokens/src/
 └── index.css           # 전체 import
 ```
 
+### 1.3 Implementation Status Legend
+
+| Symbol | Status | Description |
+|--------|--------|-------------|
+| ✅ | Done | 토큰 정의 및 코드 적용 완료 |
+| ⏳ | In Progress | 정의 완료, 코드 적용 중 |
+| ❌ | Not Started | 미정의 |
+
+---
+
+## 1.4 Token Implementation Summary
+
+| Category | Total Tokens | Implemented | Progress |
+|----------|-------------|-------------|----------|
+| Colors — Brand | {{N}} | {{N}} | {{N}}% |
+| Colors — Semantic | {{N}} | {{N}} | {{N}}% |
+| Colors — Neutral | {{N}} | {{N}} | {{N}}% |
+| Typography | {{N}} | {{N}} | {{N}}% |
+| Spacing | {{N}} | {{N}} | {{N}}% |
+| Borders | {{N}} | {{N}} | {{N}}% |
+| Shadows | {{N}} | {{N}} | {{N}}% |
+| Motion | {{N}} | {{N}} | {{N}}% |
+| **합계** | **{{TOTAL}}** | **{{IMPL}}** | **{{PERCENT}}%** |
+
 ---
 
 ## 2. Color Tokens
@@ -66,6 +90,28 @@ packages/tokens/src/
   --color-border-focus: {{VALUE}};
 }
 ```
+
+### 2.2 Color Token Status
+
+| Token | CSS Variable | Value | Status | Used In |
+|-------|-------------|-------|--------|---------|
+| Primary | `--color-primary` | `{{VALUE}}` | ✅ Done | Button, Link |
+| Primary Hover | `--color-primary-hover` | `{{VALUE}}` | ✅ Done | Button:hover |
+| Primary Active | `--color-primary-active` | `{{VALUE}}` | ❌ Not Started | Button:active |
+| Secondary | `--color-secondary` | `{{VALUE}}` | ❌ Not Started | |
+| Accent | `--color-accent` | `{{VALUE}}` | ❌ Not Started | |
+| Success | `--color-success` | `{{VALUE}}` | ✅ Done | Alert, Badge |
+| Warning | `--color-warning` | `{{VALUE}}` | ✅ Done | Alert |
+| Error | `--color-error` | `{{VALUE}}` | ✅ Done | Input error, Alert |
+| Info | `--color-info` | `{{VALUE}}` | ❌ Not Started | |
+| BG Primary | `--color-bg-primary` | `{{VALUE}}` | ✅ Done | 전체 배경 |
+| BG Secondary | `--color-bg-secondary` | `{{VALUE}}` | ⏳ In Progress | Card, Panel |
+| BG Tertiary | `--color-bg-tertiary` | `{{VALUE}}` | ❌ Not Started | |
+| Text Primary | `--color-text-primary` | `{{VALUE}}` | ✅ Done | 본문 텍스트 |
+| Text Secondary | `--color-text-secondary` | `{{VALUE}}` | ✅ Done | 보조 텍스트 |
+| Text Disabled | `--color-text-disabled` | `{{VALUE}}` | ❌ Not Started | |
+| Border | `--color-border` | `{{VALUE}}` | ✅ Done | Input, Card |
+| Border Focus | `--color-border-focus` | `{{VALUE}}` | ✅ Done | Input:focus |
 
 ---
 
@@ -102,6 +148,25 @@ packages/tokens/src/
 }
 ```
 
+### 3.2 Typography Token Status
+
+| Token | CSS Variable | Value | Status |
+|-------|-------------|-------|--------|
+| Font Sans | `--font-sans` | `{{VALUE}}` | ❌ Not Started |
+| Font Mono | `--font-mono` | `{{VALUE}}` | ❌ Not Started |
+| Text XS | `--text-xs` | `0.75rem` | ✅ Done |
+| Text SM | `--text-sm` | `0.875rem` | ✅ Done |
+| Text Base | `--text-base` | `1rem` | ✅ Done |
+| Text LG | `--text-lg` | `1.125rem` | ✅ Done |
+| Text XL | `--text-xl` | `1.25rem` | ✅ Done |
+| Text 2XL | `--text-2xl` | `1.5rem` | ❌ Not Started |
+| Text 3XL | `--text-3xl` | `1.875rem` | ❌ Not Started |
+| Text 4XL | `--text-4xl` | `2.25rem` | ❌ Not Started |
+| Font Normal | `--font-normal` | `400` | ✅ Done |
+| Font Medium | `--font-medium` | `500` | ✅ Done |
+| Font Semibold | `--font-semibold` | `600` | ✅ Done |
+| Font Bold | `--font-bold` | `700` | ✅ Done |
+
 ---
 
 ## 4. Spacing Tokens
@@ -124,6 +189,21 @@ packages/tokens/src/
   --space-16: 4rem;     /* 64px */
 }
 ```
+
+### 4.2 Spacing Token Status
+
+| Token | CSS Variable | Value | Status |
+|-------|-------------|-------|--------|
+| Space 1 | `--space-1` | `0.25rem (4px)` | ✅ Done |
+| Space 2 | `--space-2` | `0.5rem (8px)` | ✅ Done |
+| Space 3 | `--space-3` | `0.75rem (12px)` | ✅ Done |
+| Space 4 | `--space-4` | `1rem (16px)` | ✅ Done |
+| Space 5 | `--space-5` | `1.25rem (20px)` | ✅ Done |
+| Space 6 | `--space-6` | `1.5rem (24px)` | ✅ Done |
+| Space 8 | `--space-8` | `2rem (32px)` | ✅ Done |
+| Space 10 | `--space-10` | `2.5rem (40px)` | ❌ Not Started |
+| Space 12 | `--space-12` | `3rem (48px)` | ❌ Not Started |
+| Space 16 | `--space-16` | `4rem (64px)` | ❌ Not Started |
 
 ---
 

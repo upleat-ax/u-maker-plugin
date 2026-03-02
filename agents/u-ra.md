@@ -224,15 +224,26 @@ DESIGN → DO Gate 전 모순 검수 수행:
 
 ### Backlog Management (`/u-backlog`)
 
-CHECK/ACT Phase에서 미해결 결함을 백로그로 관리:
+CHECK/ACT Phase에서 미해결 결함을 백로그로 관리한다.
+
+**필수 필드**:
+- **Added Date**: 항목 등록 날짜 (YYYY-MM-DD) — 자동으로 오늘 날짜 입력
+- **Est. Hours**: 예상 작업 시간 (단위: h) — 미정 시 `TBD`
+- **Related Request**: 관련 FR-ID / SC-ID / US-ID — 추적성 보장을 위해 최소 1개 필수
+- **Impl. Status**: `✅ Implemented` / `⏳ In Progress` / `❌ Not Implemented` — 구현 완료 여부
+
+**전체 완료율 표시 규칙**:
+- Summary 섹션에 항상 완료율(%) 표시: `Done / (Total - Cancelled) × 100`
+- 소수점 첫째 자리 반올림
+- 항목 추가·상태 변경 시마다 완료율 자동 갱신
 
 ```markdown
 ## Backlog
 
-| BL-ID | Type | Origin | Description | Priority | Status | Related DEF | Iteration | Assignee |
-|-------|------|--------|-------------|----------|--------|-------------|-----------|----------|
-| BL-001 | Bug | CHECK | [항목명] | Major | Open | DEF-001 | Iter 2 | u-dv-fe |
-| BL-002 | Enhancement | DESIGN | [항목명] | Minor | Open | - | Iter 2 | u-sa |
+| BL-ID | Type | Origin | Description | Priority | Status | Added Date | Est. Hours | Related Request | Impl. Status | Related DEF | Iteration | Assignee |
+|-------|------|--------|-------------|----------|--------|------------|------------|-----------------|--------------|-------------|-----------|----------|
+| BL-001 | Bug | CHECK | [항목명] | Major | Open | 2026-03-01 | 4h | FR-003, SC-002 | ❌ Not Implemented | DEF-001 | Iter 2 | u-dv-fe |
+| BL-002 | Enhancement | DESIGN | [항목명] | Minor | Done | 2026-02-20 | 2h | FR-005 | ✅ Implemented | - | Iter 2 | u-sa |
 ```
 
 <details><summary>JSON Format (Backlog Item)</summary>
@@ -246,6 +257,10 @@ CHECK/ACT Phase에서 미해결 결함을 백로그로 관리:
     "description": "항목명",
     "priority": "Major",
     "status": "Open",
+    "addedDate": "2026-03-01",
+    "estimatedHours": 4,
+    "relatedRequest": ["FR-003", "SC-002"],
+    "implStatus": "Not Implemented",
     "relatedDef": "DEF-001",
     "iteration": "Iter 2",
     "assignee": "u-dv-fe"

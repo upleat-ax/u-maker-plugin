@@ -133,6 +133,17 @@ erDiagram
 
 ### API Contract Format
 
+각 Endpoint는 **Swagger(OpenAPI) 스타일**로 아래 항목을 완전히 기술한다. 누락 없이 실제 값으로 작성해야 하며 `{{TODO}}` 플레이스홀더는 허용하지 않는다.
+
+**Endpoint 필수 기술 항목**:
+- **Summary/Tags**: 기능 요약 및 태그 분류
+- **Auth Required**: 인증 필요 여부 및 방식
+- **Related FR / Screen / Menu**: 추적성 링크
+- **Parameters** (Path / Query / Header): 파라미터명, 타입, Required, Default, Constraints, Description
+- **Request Body**: JSON 스키마 (각 필드의 타입, Required, Constraints, Description, 예시값 포함 주석)
+- **Response**: 각 상태코드별 JSON 스키마 (필드명, 타입, Description 포함)
+- **Error Responses Table**: 모든 에러 상태코드, 에러코드, 설명, 발생 조건
+
 ```yaml
 openapi: 3.0.0
 info:
@@ -140,16 +151,55 @@ info:
   version: 1.0.0
 paths:
   /api/[resource]:
-    get:
-      summary: ...
+    post:
+      summary: "[기능 요약]"
+      tags: ["[Tag]"]
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [field1, field2]
+              properties:
+                field1:
+                  type: string
+                  description: "[설명]. 예: [예시값]"
+                  maxLength: 100
+                field2:
+                  type: integer
+                  description: "[설명]"
+                  minimum: 1
       responses:
-        '200':
-          description: ...
+        "201":
+          description: "생성 성공"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/[Resource]'
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/[Resource]'
+                  message:
+                    type: string
+        "400":
+          description: "입력값 검증 실패"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "401":
+          description: "인증 실패"
 ```
+
+**Section 3 (API Details) 작성 형식**: 각 Endpoint마다 아래 순서로 작성한다.
+1. **Summary / Tags / Auth Required / Related FR·Screen·Menu**
+2. **Parameters 표** (Path / Query / Header — 파라미터명·타입·Required·Default·Constraints·Description)
+3. **Request Body** (JSON 블록 + 필드별 인라인 주석 + 필드 상세 표)
+4. **Response (N OK)** (JSON 블록 — 필드명·타입·Description 인라인 주석 포함)
+5. **Error Responses 표** (Status·Code·Description·발생조건)
 
 ### Behavior Rules
 

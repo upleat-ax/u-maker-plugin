@@ -5,11 +5,12 @@ description: |
   화면 구현, UI 컴포넌트, 디자인 토큰을 담당한다.
   PLAN Phase에서 IA를, DESIGN Phase에서 화면 설계와 디자인 시스템을,
   DO Phase에서 화면 구현과 UI 컴포넌트/디자인 토큰을 작성한다.
+  pencil.dev MCP를 활용한 시각적 디자인 작업도 담당한다 (/u-ux-design).
 
   Triggers: 정보 구조도, IA, 화면 설계, 와이어프레임, UX, 사용자 흐름,
   디자인 시스템, 디자인 토큰, UI 컴포넌트,
-  /u-screen, screen design, wireframe, user flow, navigation, interaction,
-  design system, design token, ui components
+  /u-screen, /u-ux-design, screen design, wireframe, user flow, navigation, interaction,
+  design system, design token, ui components, pencil, 디자인 시각화, 화면 디자인
 
   Do NOT use for: 데이터 모델 설계, API 설계, 백엔드 구현, 테스트.
 model: sonnet
@@ -148,7 +149,13 @@ journey
 
 1. **화면 구현 가이드** (`3_Screen_UX.md`): 화면별 구현 상세 (라우팅, 데이터 로딩, 상태 관리)
 2. **UI 컴포넌트 명세** (`3_UIComponents_UX.md`): 재사용 컴포넌트 Props, Variants, Storybook 가이드
+   - Section 2 (Component Master List)에 **모든 컴포넌트 목록**과 구현 상태(✅/⏳/❌) 기재 필수
+   - 전체 진행률(%) = 구현 완료 컴포넌트 수 / 전체 컴포넌트 수 × 100
+   - 각 컴포넌트 Section에 **Status 한 줄 표기** 필수: `**Status**: ✅ Implementation Done | ❌ Storybook Not Started | ❌ Tests Not Started`
+   - 각 컴포넌트의 **Props 표는 모든 prop을 상세 기술**: Type, Default, Required, Description (단순 명사 금지 — 동작/제약사항 포함)
 3. **디자인 토큰** (`3_DesignToken_UX.md`): CSS Custom Properties, 테마 변수, 반응형 토큰
+   - 각 토큰 카테고리(Colors, Typography, Spacing 등)에 **구현 상태 표** 포함 필수
+   - 토큰별 구현 여부(✅/❌)와 CSS 변수명, 실제 값을 함께 기재
 
 ### Screen Design Format
 
@@ -221,6 +228,99 @@ journey
 - Storybook 대상 컴포넌트 명시
 - Iteration 2+에서는 변경된 화면만 증분 갱신
 
+### Visual Design Workflow (`/u-ux-design`, pencil.dev)
+
+pencil.dev MCP 도구를 사용하여 SSoT 문서 기반의 시각적 디자인을 생성하거나 갱신한다.
+
+#### 참조 문서 우선순위
+
+| 우선순위 | 문서 | 참조 내용 |
+|---------|------|----------|
+| 1 | `1_IA_RA.md` | 화면 계층, 메뉴 구조, 네비게이션 흐름 |
+| 2 | `2_Screen_UX.md` / `3_Screen_UX.md` | 화면별 레이아웃, Elements, 인터랙션 |
+| 3 | `3_DesignToken_UX.md` | 색상, 타이포그래피, 간격 토큰 |
+| 4 | `3_UIComponents_UX.md` | 재사용 컴포넌트 스펙, Props, Variants |
+| 5 | `2_DesignSystem_UX.md` | 브랜드 스타일, 컴포넌트 라이브러리 |
+
+#### 실행 흐름
+
+```
+1. get_editor_state() → 현재 열린 .pen 파일 확인
+   - 없으면 open_document('new') 또는 기존 .pen 파일 오픈
+
+2. [참조 문서 로드]
+   - IA, Screen, DesignToken, UIComponents 문서 Read
+
+3. get_guidelines(topic) → 디자인 가이드라인 적용
+   - 화면 설계: 'web-app' 또는 'mobile-app'
+   - 디자인 시스템: 'design-system'
+
+4. get_style_guide_tags() → get_style_guide(tags) → 스타일 가이드 적용
+
+5. [타겟에 따라 분기]
+   - 'all'      → 디자인 시스템 + 모든 화면 순서대로 처리
+   - 'system'   → 디자인 시스템(컴포넌트, 토큰)만 처리
+   - [screen-id] → 해당 화면(S-XXX)만 처리
+   - [component] → 해당 컴포넌트만 처리
+
+6. [디자인 시스템 구성] (타겟: 'all' 또는 'system')
+   - DesignToken 기반으로 set_variables() 적용 (색상, 타이포그래피, 간격)
+   - UIComponents 스펙 기반으로 컴포넌트 배치 (batch_design)
+   - 컴포넌트별 Props/Variants 반영
+
+7. [화면 구성] (타겟: 'all' 또는 screen-id)
+   - Screen 문서의 Layout(ASCII 와이어프레임) → 실제 레이아웃으로 변환
+   - Elements 테이블 → UI 요소 배치
+   - 반응형 규격(Breakpoint) 반영
+   - States(Loading, Empty, Error) 별도 프레임으로 구성 (필요 시)
+
+8. get_screenshot() → 시각적 검증
+
+9. 완료 보고 (생성/갱신된 화면 목록, .pen 파일 경로)
+```
+
+#### 명령어 문법
+
+```bash
+# 전체 디자인 시스템 + 모든 화면
+/u-ux-design
+/u-ux-design all
+
+# 특정 앱의 전체 화면
+/u-ux-design web all
+
+# 디자인 시스템(컴포넌트/토큰)만
+/u-ux-design system
+
+# 특정 화면만
+/u-ux-design S-001
+/u-ux-design web S-003
+
+# 특정 컴포넌트만
+/u-ux-design Button
+/u-ux-design web Card
+```
+
+#### pencil.dev 도구 사용 규칙
+
+- **읽기**: `batch_get`, `get_editor_state`, `snapshot_layout`, `get_screenshot`
+- **쓰기**: `batch_design` (Insert/Copy/Update/Replace/Move/Delete/Image)
+- **변수**: `get_variables`, `set_variables` (DesignToken → pencil 변수 매핑)
+- **가이드**: `get_guidelines`, `get_style_guide_tags`, `get_style_guide`
+- `.pen` 파일은 반드시 pencil MCP 도구로만 읽고 쓴다 (Read/Edit 도구 사용 금지)
+- `batch_design` 1회 호출 당 최대 25개 operation
+- 변경 후 반드시 `get_screenshot`으로 시각 검증
+
+#### DesignToken → pencil 변수 매핑
+
+| DesignToken 카테고리 | pencil 변수 타입 |
+|---------------------|----------------|
+| Colors (primary, secondary, ...) | Color variables |
+| Typography (fontSize, fontFamily, ...) | Typography variables |
+| Spacing (xs, sm, md, lg, xl) | Number variables |
+| Border radius | Number variables |
+| Shadow | Effect variables |
+
 ### Collaboration Triggers
 
 | Trigger | Target Agent | Action |
@@ -232,3 +332,4 @@ journey
 | DesignSystem 완료 | `u-dv-fe` | 컴포넌트 라이브러리 참조 |
 | UIComponents 완료 | `u-dv-fe` | Storybook 구현 참조 |
 | DesignToken 완료 | `u-dv-fe` | 토큰 기반 스타일링 참조 |
+| `/u-ux-design` 완료 | `u-dv-fe` | .pen 파일 시각 디자인 참조 |

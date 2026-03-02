@@ -12,6 +12,7 @@ description: |
   /u-backlog-add, 백로그 추가, backlog add, new backlog,
   /u-us-add, 유저스토리 추가, user story add, US 추가, new user story,
   /u-fr-add, 기능요구사항 추가, FR 추가, functional requirement add, new FR,
+  /u-ux-design, pencil, 디자인 시각화, 화면 디자인, 컴포넌트 디자인, design system visual,
   u-agent, ssot, pdca, 프로젝트 시작, 프로젝트 초기화, 기존 프로젝트 분석, init project, reverse engineer,
   문서 관리, 에이전트, 협업, gap analysis, 갭분석, git pr, 커밋
 
@@ -73,7 +74,7 @@ agents:
 |-------|------|-------|----------|
 | `u-ra` | Requirements & Admin (PM + Master) | PLAN, ACT, ALL | 로드맵, 유저 스토리, 마일스톤, 프로젝트 시작, 문서 인덱스, 상태 추적, 모순 검수, 백로그 관리, /u-plan, /u-create-project, /u-us-add, /u-index, /u-validate, /u-status, /u-backlog, /u-backlog-add |
 | `u-sa` | Solution Architect | PLAN, DESIGN | SRS, ERD, API Contract, /u-srs, /u-erd, /u-api, /u-fr-add |
-| `u-ux` | UX Designer | PLAN, DESIGN, DO | 정보 구조도(IA), 화면 설계, Design System, Screen 구현, UI Components, Design Token, /u-screen |
+| `u-ux` | UX Designer | PLAN, DESIGN, DO | 정보 구조도(IA), 화면 설계, Design System, Screen 구현, UI Components, Design Token, /u-screen, /u-ux-design |
 | `u-dv-fe` | Frontend Developer | DO | Next.js, react-query, Storybook, /u-fe, /u-storybook |
 | `u-dv-be` | Backend Developer | DO | API Routes, Prisma/Drizzle, /u-be |
 | `u-qa` | QA Engineer | CHECK | 테스트 케이스 설계, 테스트 실행, 결함 분석, /u-test, /u-bug-report |
@@ -126,6 +127,7 @@ agents:
 | `/u-erd` | ERD 문서 생성/갱신 | `u-sa` | u-docs/shared/02-design/2_ERD_SA.md |
 | `/u-api [app]` | API Contract 생성/갱신 | `u-sa` | u-docs/{app}/02-design/2_API_SA.md |
 | `/u-screen [app]` | 화면 설계 생성/갱신 | `u-ux` | u-docs/{app}/02-design/2_Screen_UX.md |
+| `/u-ux-design [app] [target]` | pencil.dev로 컴포넌트/디자인시스템/화면 시각화 | `u-ux` | .pen 파일에 디자인 반영 (IA·Screen·DesignToken 문서 참조) |
 | `/u-fe [app]` | Frontend 개발 실행 | `u-dv-fe` | 코드 생성 + u-docs/{app}/03-dev/3_Code_DV.md 갱신 |
 | `/u-be [app]` | Backend 개발 실행 | `u-dv-be` | 코드 생성 + u-docs/{app}/03-dev/3_Code_DV.md 갱신 |
 | `/u-test [app]` | 테스트 케이스 설계 | `u-qa` | u-docs/{app}/04-check/4_Case_QA.md |
@@ -1200,12 +1202,16 @@ Last Updated: [YYYY-MM-DD]
    - Type (Bug / Enhancement / Task) — 기본값: Task
    - Priority (Critical / Major / Minor / Trivial) — 기본값: Minor
    - Origin (PLAN / DESIGN / DEV / CHECK) — 기본값: DEV
+   - Added Date — 자동: 오늘 날짜 (YYYY-MM-DD)
+   - Est. Hours (선택) — 기본값: TBD
+   - Related Request (선택) — FR-ID, SC-ID, US-ID 목록
+   - Impl. Status — 자동: Not Implemented
    - Related FR (선택)
 4. Backlog Table (Section 2)에 행 추가
-5. Backlog Details (Section 5)에 상세 블록 추가
-6. Summary (Section 1.2) 카운트 갱신
-7. Backlog by Priority (Section 3) 갱신
-8. Backlog by Origin (Section 4) 갱신
+5. Backlog Details (Section 6)에 상세 블록 추가
+6. Summary (Section 1.2) 카운트 갱신 + 전체 완료율(%) 재계산
+7. Backlog by Priority (Section 4) 갱신
+8. Backlog by Origin (Section 5) 갱신
 9. Change Log 갱신
 ```
 
@@ -1217,10 +1223,16 @@ Last Updated: [YYYY-MM-DD]
 | Type | N | Task | Bug, Enhancement, Task |
 | Priority | N | Minor | Critical, Major, Minor, Trivial |
 | Origin | N | DEV | PLAN, DESIGN, DEV, CHECK |
+| Added Date | N | 오늘 날짜 | YYYY-MM-DD (자동 입력) |
+| Est. Hours | N | TBD | 숫자 + h (예: 4h). 미정 시 TBD |
+| Related Request | N | - | FR-NNN, SC-NNN, US-NNN 목록 (추적성) |
+| Impl. Status | N | Not Implemented | Not Implemented / In Progress / Implemented |
 | Assignee | N | Auto-assign | agent-id (규칙 기반 자동 할당, 사용자 직접 지정 시 무시) |
 | Related FR | N | - | FR-NNN |
 | Related DEF | N | - | DEF-NNN (CHECK origin만 해당, 그 외 `-`) |
 | Acceptance Criteria | N | - | Given-When-Then 체크리스트 (최소 1개 필수) |
+
+**완료율 자동 갱신**: 항목 추가 또는 Status 변경 시마다 `Done / (Total - Cancelled) × 100`으로 완료율 재계산 후 Summary에 반영한다.
 
 ### Auto-Assignment Rules
 
@@ -1312,7 +1324,7 @@ Last Updated: [YYYY-MM-DD]
 ### Generated Output (Backlog Table Row)
 
 ```markdown
-| BL-004 | Bug | CHECK | 로그인 실패 시 에러 메시지 미표시 | Major | Open | DEF-003 | Iter 1 | u-dv-fe |
+| BL-004 | Bug | CHECK | 로그인 실패 시 에러 메시지 미표시 | Major | Open | 2026-03-02 | 3h | FR-003, SC-002 | ❌ Not Implemented | DEF-003 | Iter 1 | u-dv-fe |
 ```
 
 ### Generated Output (Backlog Details Block)
@@ -1327,9 +1339,13 @@ Last Updated: [YYYY-MM-DD]
 | **Origin** | CHECK (DEF-003) |
 | **Priority** | Major |
 | **Status** | Open |
+| **Added Date** | 2026-03-02 |
+| **Est. Hours** | 3h |
+| **Impl. Status** | ❌ Not Implemented |
 | **Iteration** | Iter 1 |
 | **Assignee** | u-dv-fe |
 | **Related FR** | FR-003 |
+| **Related Request** | FR-003, SC-002 |
 | **Related DEF** | DEF-003 |
 
 **Description**: 로그인 실패 시 에러 메시지 미표시
@@ -1343,9 +1359,12 @@ Last Updated: [YYYY-MM-DD]
 - `u-ra` 에이전트가 담당
 - BL-ID는 기존 최대값 + 1로 자동 채번
 - Status는 항상 `Open`으로 생성
+- **Added Date**: 항목 생성 시 오늘 날짜 자동 입력 (YYYY-MM-DD)
+- **Impl. Status**: 항목 생성 시 항상 `❌ Not Implemented`로 설정. Done 상태 전환 시 `✅ Implemented`로 갱신
+- **Related Request**: 관련 FR-ID / SC-ID / US-ID 목록을 추적성 보장을 위해 기재
 - Iteration은 현재 Iteration (u-ssot.config.json의 `currentIteration`)
 - 5_Backlog_RA.md가 없으면 템플릿에서 자동 생성 후 항목 추가
-- 항목 추가 후 Summary 카운트, Priority/Origin 통계 자동 갱신
+- 항목 추가 후 Summary 카운트, 완료율(%), Priority/Origin 통계 자동 갱신
 
 ### Phase-Specific Backlog Triggers
 
@@ -1637,6 +1656,74 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 
 ---
 
+## Visual UX Design (`/u-ux-design`)
+
+pencil.dev MCP 도구를 사용하여 SSoT 문서(IA, Screen, DesignToken, UIComponents) 기반의 시각적 디자인을 생성하거나 갱신한다. `u-ux` 에이전트가 담당한다.
+
+### Syntax
+
+```
+/u-ux-design [app] [target]
+```
+
+- `[app]`: 앱 이름 (생략 시 단일 앱 자동 선택 또는 AskUserQuestion)
+- `[target]`: 처리 대상
+  - `all` (기본값): 디자인 시스템 + 모든 화면
+  - `system`: 디자인 시스템(컴포넌트/토큰)만
+  - `S-NNN`: 특정 화면 ID
+  - `<ComponentName>`: 특정 컴포넌트 이름
+
+### Routing
+
+```
+/u-ux-design → u-ux 에이전트 → pencil.dev MCP 도구 활용
+```
+
+### Reference Documents (우선순위 순)
+
+| 문서 | 경로 | 참조 내용 |
+|------|------|----------|
+| IA | `u-docs/{app}/01-plan/1_IA_RA.md` | 화면 계층, 메뉴 구조 |
+| Screen Design | `u-docs/{app}/02-design/2_Screen_UX.md` | 레이아웃, Elements, 인터랙션 |
+| Screen Dev | `u-docs/{app}/03-dev/3_Screen_UX.md` | 구현 상세 |
+| DesignToken | `u-docs/shared/03-dev/3_DesignToken_UX.md` | 색상, 타이포, 간격 |
+| UIComponents | `u-docs/shared/03-dev/3_UIComponents_UX.md` | 컴포넌트 Props, Variants |
+| DesignSystem | `u-docs/shared/02-design/2_DesignSystem_UX.md` | 브랜드 스타일 |
+
+### Execution Flow
+
+```
+1. App context 결정 (단일/다중 앱 처리)
+2. target 파싱 (all / system / S-NNN / ComponentName)
+3. u-ux 에이전트 spawn → pencil.dev MCP 활용하여 디자인 작업 수행
+4. 완료 후 Summary Box 출력 (.pen 파일 경로, 처리된 화면/컴포넌트 목록)
+```
+
+### Examples
+
+```bash
+# 전체 디자인 시스템 + 모든 화면
+/u-ux-design
+/u-ux-design all
+
+# 특정 앱 전체
+/u-ux-design web all
+
+# 디자인 시스템만
+/u-ux-design system
+/u-ux-design web system
+
+# 특정 화면만
+/u-ux-design S-001
+/u-ux-design web S-003
+
+# 특정 컴포넌트만
+/u-ux-design Button
+/u-ux-design web Card
+```
+
+---
+
 ## Error Handling
 
 | Situation | Action |
@@ -1699,4 +1786,13 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 
 # 빌드 실행
 /u-build
+
+# pencil.dev로 전체 화면 시각화
+/u-ux-design all
+
+# 특정 화면만 pencil.dev로 시각화
+/u-ux-design S-001
+
+# 디자인 시스템(컴포넌트/토큰)만 시각화
+/u-ux-design system
 ```

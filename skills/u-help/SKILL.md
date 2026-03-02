@@ -47,6 +47,7 @@ INDIVIDUAL AGENT COMMANDS
   /u-erd                     ERD 문서 생성/갱신 (u-sa)
   /u-api                     API Contract 생성/갱신 (u-sa)
   /u-screen                  화면 설계 생성/갱신 (u-ux)
+  /u-ux-design [app] [target] pencil.dev로 컴포넌트/디자인시스템/화면 시각화 (u-ux)
   /u-fe                      Frontend 개발 실행 (u-dv-fe)
   /u-be                      Backend 개발 실행 (u-dv-be)
   /u-test                    테스트 케이스 설계 (u-qa)

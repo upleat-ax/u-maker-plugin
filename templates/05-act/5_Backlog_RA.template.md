@@ -32,6 +32,9 @@ external_links: []
 | Deferred | {{DEFERRED}} |
 | Cancelled | {{CANCELLED}} |
 | Current Iteration | {{ITERATION}} |
+| **전체 완료율** | **{{PERCENT}}%** (Done / (Total - Cancelled)) |
+
+**완료율 계산식**: `Done / (Total - Cancelled) × 100` (소수점 첫째 자리 반올림)
 
 <details><summary>JSON Format</summary>
 
@@ -56,11 +59,17 @@ external_links: []
 
 ## 2. Backlog Table
 
-| BL-ID | Type | Origin | Description | Priority | Status | Related DEF | Iteration | Assignee |
-|-------|------|--------|-------------|----------|--------|-------------|-----------|----------|
-| BL-001 | Bug | CHECK | {{설명}} | Critical | Open | DEF-001 | Iter {{N}} | {{agent}} |
-| BL-002 | Enhancement | DESIGN | {{설명}} | Major | Open | - | Iter {{N}} | {{agent}} |
-| BL-003 | Task | DEV | {{설명}} | Minor | Open | - | Iter {{N}} | {{agent}} |
+| BL-ID | Type | Origin | Description | Priority | Status | Added Date | Est. Hours | Related Request | Impl. Status | Related DEF | Iteration | Assignee |
+|-------|------|--------|-------------|----------|--------|------------|------------|-----------------|--------------|-------------|-----------|----------|
+| BL-001 | Bug | CHECK | {{설명}} | Critical | Open | {{YYYY-MM-DD}} | {{N}}h | FR-001, SC-001 | ❌ Not Implemented | DEF-001 | Iter {{N}} | {{agent}} |
+| BL-002 | Enhancement | DESIGN | {{설명}} | Major | Open | {{YYYY-MM-DD}} | {{N}}h | FR-002 | ❌ Not Implemented | - | Iter {{N}} | {{agent}} |
+| BL-003 | Task | DEV | {{설명}} | Minor | Done | {{YYYY-MM-DD}} | {{N}}h | - | ✅ Implemented | - | Iter {{N}} | {{agent}} |
+
+**컬럼 설명**:
+- **Added Date**: 백로그 항목 등록 날짜 (YYYY-MM-DD)
+- **Est. Hours**: 예상 작업 시간 (단위: h)
+- **Related Request**: 관련 FR-ID, SC-ID, US-ID 목록
+- **Impl. Status**: ✅ Implemented (구현 완료) / ⏳ In Progress (구현 중) / ❌ Not Implemented (미구현)
 
 <details><summary>JSON Format (Backlog Item)</summary>
 
@@ -72,6 +81,10 @@ external_links: []
   "description": "설명",
   "priority": "Critical",
   "status": "Open",
+  "addedDate": "2026-03-01",
+  "estimatedHours": 4,
+  "relatedRequest": ["FR-001", "SC-001"],
+  "implStatus": "Not Implemented",
   "relatedDef": "DEF-001",
   "iteration": "Iter 1",
   "assignee": "u-dv-be"
@@ -188,9 +201,13 @@ pie title Backlog by Origin
 | **Origin** | CHECK (DEF-001) |
 | **Priority** | Critical |
 | **Status** | Open |
+| **Added Date** | {{YYYY-MM-DD}} |
+| **Est. Hours** | {{N}}h |
+| **Impl. Status** | ❌ Not Implemented |
 | **Iteration** | Iter {{N}} |
 | **Assignee** | {{agent}} |
 | **Related FR** | FR-001 |
+| **Related Request** | FR-001, SC-001 |
 | **Related DEF** | DEF-001 |
 
 **Description**: {{상세 설명}}
@@ -209,9 +226,13 @@ pie title Backlog by Origin
   "originRef": "DEF-001",
   "priority": "Critical",
   "status": "Open",
+  "addedDate": "2026-03-01",
+  "estimatedHours": 4,
+  "implStatus": "Not Implemented",
   "iteration": "Iter 1",
   "assignee": "u-dv-be",
   "relatedFr": "FR-001",
+  "relatedRequest": ["FR-001", "SC-001"],
   "relatedDef": "DEF-001",
   "description": "상세 설명",
   "acceptanceCriteria": [
@@ -236,9 +257,13 @@ pie title Backlog by Origin
 | **Origin** | DESIGN |
 | **Priority** | Major |
 | **Status** | Open |
+| **Added Date** | {{YYYY-MM-DD}} |
+| **Est. Hours** | {{N}}h |
+| **Impl. Status** | ❌ Not Implemented |
 | **Iteration** | Iter {{N}} |
 | **Assignee** | {{agent}} |
 | **Related FR** | FR-002 |
+| **Related Request** | FR-002 |
 | **Related DEF** | - |
 
 **Description**: {{상세 설명}}

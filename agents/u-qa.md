@@ -84,22 +84,39 @@ SRS의 Functional Requirements를 기반으로 테스트를 체계적으로 관�
 
 ### Test Case Format
 
+> **시나리오 작성 원칙**: 각 테스트 케이스는 "**누가(Actor)** — **어떤 화면(Screen)**에서 — **어떤 요소(Element)**를 — **어떻게 조작하고(Action)** — **어떤 값을 입력(Input)**하여 — **무엇을 기대하는가(Expected Result)**"를 구체적으로 기술해야 한다. 추상적 표현(예: "클릭한다") 대신 구체적 표현(예: "로그인 화면(S-001)의 '로그인' 버튼을 클릭한다")을 사용한다.
+
 ```markdown
 ### TC-[NNN]: [Test Case Name]
 
-- **Related FR**: FR-XXX
-- **Priority**: Critical | Major | Minor
-- **Type**: Positive | Negative | Boundary
-- **Precondition**: [사전 조건]
+| Field | Value |
+|-------|-------|
+| **TC-ID** | TC-NNN |
+| **Related FR** | FR-XXX |
+| **SC Mapping** | SC-NNN |
+| **Type** | Positive \| Negative \| Boundary |
+| **Priority** | Critical \| Major \| Minor |
+| **Actor** | [사용자 유형 — 예: 일반 사용자, 관리자, 비로그인 사용자] |
+| **Precondition** | [사전 조건 — 예: PRE-001, user@test.com 계정 존재] |
 
-| Step | Action | Expected Result |
-|------|--------|-----------------|
-| 1 | [입력/동작] | [기대 결과] |
-| 2 | [입력/동작] | [기대 결과] |
+**Test Steps**:
 
-- **Result**: [ ] Pass / [ ] Fail / [ ] Skip
-- **Note**: [비고]
+| Step | Screen | Element | Action | Input Value | Expected Result |
+|------|--------|---------|--------|-------------|----------------|
+| 1 | [화면명 (Screen-ID)] | [UI 요소명] | [동작 — 클릭/입력/선택/스크롤] | [입력값 또는 -] | [기대 결과] |
+| 2 | [화면명 (Screen-ID)] | [UI 요소명] | [동작] | [입력값 또는 -] | [기대 결과] |
+
+**Result**: [ ] Pass / [ ] Fail / [ ] Skip
+**Note**: [비고]
 ```
+
+**Step 작성 예시**:
+
+| Step | Screen | Element | Action | Input Value | Expected Result |
+|------|--------|---------|--------|-------------|----------------|
+| 1 | 로그인 화면 (S-001) | 이메일 입력 필드 | 클릭 후 입력 | user@test.com | 이메일 필드에 값이 입력됨 |
+| 2 | 로그인 화면 (S-001) | 비밀번호 입력 필드 | 클릭 후 입력 | Password123! | 비밀번호가 *** 마스킹 처리로 표시됨 |
+| 3 | 로그인 화면 (S-001) | 로그인 버튼 | 클릭 | - | 대시보드 화면(S-002)으로 이동 |
 
 <details><summary>JSON Format (Test Case)</summary>
 
@@ -109,12 +126,28 @@ SRS의 Functional Requirements를 기반으로 테스트를 체계적으로 관�
     "tcId": "TC-001",
     "name": "Test Case Name",
     "relatedFr": "FR-001",
+    "scMapping": "SC-001",
     "priority": "Critical",
     "type": "Positive",
-    "precondition": "사전 조건",
+    "actor": "일반 사용자",
+    "precondition": "PRE-001, PRE-002",
     "steps": [
-      { "step": 1, "action": "입력/동작", "expectedResult": "기대 결과" },
-      { "step": 2, "action": "입력/동작", "expectedResult": "기대 결과" }
+      {
+        "step": 1,
+        "screen": "로그인 화면 (S-001)",
+        "element": "이메일 입력 필드",
+        "action": "클릭 후 입력",
+        "inputValue": "user@test.com",
+        "expectedResult": "이메일 필드에 값이 입력됨"
+      },
+      {
+        "step": 2,
+        "screen": "로그인 화면 (S-001)",
+        "element": "로그인 버튼",
+        "action": "클릭",
+        "inputValue": "-",
+        "expectedResult": "대시보드 화면(S-002)으로 이동"
+      }
     ],
     "result": "Pass | Fail | Skip",
     "note": "비고"
@@ -376,6 +409,10 @@ SRS의 Functional Requirements를 기반으로 테스트를 체계적으로 관�
 - 모든 FR에 대해 최소 1개의 Positive 케이스 필수
 - Critical Path는 Positive + Negative + Boundary 모두 작성
 - 테스트 케이스 ID는 TC-001부터 순차 부여
+- **시나리오 구체성 필수**: 각 Step은 Screen(화면명+ID), Element(UI 요소명), Action(동작), Input Value(입력값), Expected Result(기대 결과)를 모두 기술한다
+- **Actor 명시 필수**: 각 TC에 테스트를 수행하는 사용자 유형(일반 사용자, 관리자 등)을 명시한다
+- **SC Mapping 필수**: 각 TC는 해당 User Scenario(SC-NNN)와 매핑한다
+- **추상적 표현 금지**: "버튼을 클릭한다" ✗ → "로그인 화면(S-001)의 '로그인' 버튼을 클릭한다" ✓
 - FR과의 매핑 테이블 포함 (추적성)
 - API Endpoint 테스트와 UI 테스트 구분
 - 모든 케이스를 누락 없이 실행
