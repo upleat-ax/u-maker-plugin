@@ -32,6 +32,10 @@
     "iterations": "u-docs/iterations"
   },
   "documentScopes": {
+    "root": [
+      "backlog.md",
+      "summary.md"
+    ],
     "shared": [
       "1_Roadmap_PM.md",
       "1_Index_PM.md",
@@ -39,7 +43,6 @@
       "2_DesignSystem_UX.md",
       "3_UIComponents_UX.md",
       "3_DesignToken_UX.md",
-      "5_Backlog_RA.md",
       "5_IterationLog_RA.md",
       "5_Retrospective_PM.md"
     ],
@@ -55,6 +58,16 @@
     ]
   },
   "documents": {
+    "root": {
+      "backlog.md": {
+        "owner": "u-ra",
+        "required": true
+      },
+      "summary.md": {
+        "owner": "u-ra",
+        "required": false
+      }
+    },
     "shared": {
       "01-plan": {
         "1_Roadmap_PM.md": {
@@ -87,10 +100,6 @@
         }
       },
       "05-act": {
-        "5_Backlog_RA.md": {
-          "owner": "u-ra",
-          "required": true
-        },
         "5_IterationLog_RA.md": {
           "owner": "u-ra",
           "required": true
@@ -189,8 +198,10 @@
       "trigger": "check-to-complete-failed"
     },
     "act-to-plan": {
+      "root": [
+        "backlog.md"
+      ],
       "shared": [
-        "5_Backlog_RA.md",
         "5_IterationLog_RA.md",
         "5_Retrospective_PM.md"
       ],
@@ -202,7 +213,7 @@
     }
   },
   "exitCriteria": {
-    "allBacklogDone": "All items in 5_Backlog_RA.md have status Done",
+    "allBacklogDone": "All items in backlog.md have status Done",
     "criticalMajorZero": "Critical/Major defect count is 0 in 4_Report_QA.md",
     "allFrImplemented": "All FR items in 1_SRS_RA.md have status Implemented",
     "buildSuccess": "bun run build passes without errors"
@@ -393,5 +404,5 @@
       "Final"
     ]
   },
-  "lastSessionEnd": "2026-03-02T02:57:22.888Z"
+  "lastSessionEnd": "2026-03-02T04:03:39.183Z"
 }

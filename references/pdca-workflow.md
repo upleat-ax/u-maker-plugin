@@ -176,7 +176,7 @@ flowchart LR
 
 | Step | Agent | Output | Description |
 |------|-------|--------|-------------|
-| 1 | u-RA | `shared/5_Backlog_RA.md` | DEF→BL 변환 + PLAN/DESIGN/DEV 기원 항목 확인 + 미해결 항목 정리 |
+| 1 | u-RA | `u-docs/backlog.md` | DEF→BL 변환 + PLAN/DESIGN/DEV 기원 항목 확인 + 미해결 항목 정리 |
 | 2 | u-RA | `iterations/iter-N/` | 현재 Iteration 문서 아카이브 |
 | 3 | u-RA | `shared/5_IterationLog_RA.md` | Iteration 이력 기록 |
 | 4 | Team | `shared/5_Retrospective_PM.md` | 회고 (Good / Improve / Actions) |
@@ -199,7 +199,7 @@ flowchart LR
 | DO → CHECK | 코드 구현 완료 + `bun run build` 성공 | u-RA |
 | CHECK → Complete | Critical/Major 결함 0건 + 백로그 활성 항목 0건 (Done/Cancelled/Deferred 외) + 모든 앱의 전체 FR 구현 완료 | u-RA + scripts |
 | CHECK → ACT | 위 CHECK → Complete 조건 미충족 시 자동 전환 | Orchestrator |
-| ACT → PLAN (Iter N+1) | `shared/5_Backlog_RA.md` 정리 완료 + `shared/5_Retrospective_PM.md` 작성 + 아카이브 완료 | u-RA |
+| ACT → PLAN (Iter N+1) | `u-docs/backlog.md` 정리 완료 + `shared/5_Retrospective_PM.md` 작성 + 아카이브 완료 | u-RA |
 
 > **Note**: shared 문서는 1회 검증. perApp 문서는 모든 앱이 Final이어야 Gate 통과.
 
@@ -254,7 +254,7 @@ flowchart LR
     {
       "transition": "ACT→PLAN(N+1)",
       "conditions": [
-        { "check": "5_Backlog_RA.md 정리 완료" },
+        { "check": "backlog.md 정리 완료" },
         { "check": "5_Retrospective_PM.md 작성" },
         { "check": "아카이브 완료" }
       ],
@@ -271,7 +271,7 @@ flowchart LR
 ## 4. Iteration Rules
 
 1. **자동 반복**: CHECK Gate 실패 시 자동으로 ACT Phase 진입, ACT 완료 후 다음 Iteration의 PLAN으로 전환
-2. **증분 작업**: Iteration 2+ 에서는 `5_Backlog_RA.md`의 Open 항목만 대상으로 변경분만 갱신
+2. **증분 작업**: Iteration 2+ 에서는 `backlog.md`의 Open 항목만 대상으로 변경분만 갱신
 3. **최대 반복**: 기본 10회 제한 (설정 변경 가능)
 4. **중단/재개**: `/u-stop`으로 루프 중단, `/u-resume`으로 재개 가능
 5. **Final 유지**: 기존 Final 문서는 유지하되, 해당 항목만 PATCH 업데이트
@@ -293,7 +293,7 @@ EXIT =
 
 | # | Condition | Check Method |
 |---|-----------|-------------|
-| 1 | 백로그 활성 항목 없음 (Done/Cancelled/Deferred 외 0건) | `5_Backlog_RA.md` 파싱 |
+| 1 | 백로그 활성 항목 없음 (Done/Cancelled/Deferred 외 0건) | `backlog.md` 파싱 |
 | 2 | Critical/Major 결함 0건 | `4_Report_QA.md` 파싱 |
 | 3 | SRS의 모든 FR 구현 완료 | `1_SRS_RA.md` 구현 상태 확인 |
 | 4 | 빌드 성공 | `bun run build` 실행 결과 |
@@ -304,7 +304,7 @@ EXIT =
 {
   "exitCriteria": {
     "conditions": [
-      { "id": 1, "name": "backlogNoActive", "check": "5_Backlog_RA.md", "rule": "status not in ['Done','Cancelled','Deferred'] === 0" },
+      { "id": 1, "name": "backlogNoActive", "check": "backlog.md", "rule": "status not in ['Done','Cancelled','Deferred'] === 0" },
       { "id": 2, "name": "noCriticalMajor", "check": "4_Report_QA.md", "rule": "Critical + Major === 0" },
       { "id": 3, "name": "allFrImplemented", "check": "1_SRS_RA.md", "rule": "모든 FR implemented === true" },
       { "id": 4, "name": "buildSuccess", "check": "bun run build", "rule": "returncode === 0" }

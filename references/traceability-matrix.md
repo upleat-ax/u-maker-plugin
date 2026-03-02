@@ -111,9 +111,13 @@ flowchart TD
     end
 
     subgraph ACT_PHASE["05-act"]
-        BACKLOG[5_Backlog_RA.md]
         ITER_LOG[5_IterationLog_RA.md]
         RETRO[5_Retrospective_PM.md]
+    end
+
+    subgraph ROOT_DOCS["u-docs/ root (PM)"]
+        BACKLOG[backlog.md]
+        SUMMARY[summary.md]
     end
 
     %% Vertical dependencies
@@ -175,7 +179,7 @@ flowchart TD
 | V-006 | 모든 Entity는 코드 모델과 매핑 | `2_ERD_SA.md` | `3_Code_DV.md` | Critical |
 | V-007 | 모든 API endpoint는 코드 라우트와 매핑 | `2_API_SA.md` | `3_Code_DV.md` | Critical |
 | V-008 | Index가 모든 문서를 추적 | `1_Index_PM.md` | All docs | Major |
-| V-009 | 결함 리포트는 백로그에 등록 | `4_Report_QA.md` | `5_Backlog_RA.md` | Major |
+| V-009 | 결함 리포트는 백로그에 등록 | `4_Report_QA.md` | `backlog.md` | Major |
 | V-010 | related_docs에 양방향 참조 존재 | All docs | All docs | Minor |
 | V-011 | Technical FR (US 없는 FR)은 US Mapping이 `-`로 표시 가능 | `1_SRS_RA.md` | - | Minor |
 

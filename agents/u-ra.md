@@ -57,7 +57,8 @@ imports:
 7. **상태 추적**: 각 문서의 Draft/Review/Final 상태 추적
 8. **모순 검수**: 문서 간 불일치 탐지 및 보고
 9. **Phase 현황 관리**: 현재 Phase, Iteration 상태 기록
-10. **백로그 관리**: `5_Backlog_RA.md` 생성 및 갱신
+10. **백로그 관리**: `backlog.md` 생성 및 갱신 (u-docs 루트)
+10.5. **프로젝트 요약 관리**: `summary.md` 생성 및 갱신 (u-docs 루트)
 11. **Iteration 로그 관리**: `5_IterationLog_RA.md` 갱신
 12. **회고 작성**: ACT Phase에서 `5_Retrospective_PM.md` 작성
 13. **유저 시나리오 작성**: 구체적 페르소나·상황·단계별 행동 + journey 다이어그램 (`1_Roadmap_PM.md`)
@@ -68,10 +69,13 @@ imports:
 |----------|------|-------|-------|
 | 1_Roadmap_PM.md | `u-docs/shared/01-plan/1_Roadmap_PM.md` | shared | PLAN |
 | 1_Index_PM.md | `u-docs/shared/01-plan/1_Index_PM.md` | shared | ALL |
-| 5_Backlog_RA.md | `u-docs/shared/05-act/5_Backlog_RA.md` | shared | CHECK, ACT |
+| backlog.md | `u-docs/backlog.md` | root | CHECK, ACT, ALL |
+| summary.md | `u-docs/summary.md` | root | ALL |
 | 5_IterationLog_RA.md | `u-docs/shared/05-act/5_IterationLog_RA.md` | shared | ACT |
 | 5_Retrospective_PM.md | `u-docs/shared/05-act/5_Retrospective_PM.md` | shared | ACT |
 
+> **Root Documents**: `backlog.md`와 `summary.md`는 `u-docs/` 루트에 위치한다. PM(u-ra)이 단독 소유하며, 모든 Phase에서 최신 상태를 유지한다.
+>
 > **App Context**: u-ra handles both shared and per-app documents. For shared docs, no app argument needed. When aggregating per-app data (e.g., FR progress across apps), iterate over all apps in `u-ssot.config.json`.
 
 <details><summary>JSON Format (Owned Documents)</summary>
@@ -81,7 +85,8 @@ imports:
   "ownedDocuments": [
     { "document": "1_Roadmap_PM.md", "path": "u-docs/shared/01-plan/1_Roadmap_PM.md", "scope": "shared", "phase": "PLAN" },
     { "document": "1_Index_PM.md", "path": "u-docs/shared/01-plan/1_Index_PM.md", "scope": "shared", "phase": "ALL" },
-    { "document": "5_Backlog_RA.md", "path": "u-docs/shared/05-act/5_Backlog_RA.md", "scope": "shared", "phase": "CHECK, ACT" },
+    { "document": "backlog.md", "path": "u-docs/backlog.md", "scope": "root", "phase": "CHECK, ACT, ALL" },
+    { "document": "summary.md", "path": "u-docs/summary.md", "scope": "root", "phase": "ALL" },
     { "document": "5_IterationLog_RA.md", "path": "u-docs/shared/05-act/5_IterationLog_RA.md", "scope": "shared", "phase": "ACT" },
     { "document": "5_Retrospective_PM.md", "path": "u-docs/shared/05-act/5_Retrospective_PM.md", "scope": "shared", "phase": "ACT" }
   ]
@@ -148,6 +153,7 @@ journey
 - **journey 만족도**: 1(매우 불편) ~ 5(매우 만족), 마찰 포인트는 1-2, 완료 단계는 4-5
 - **Derived Features 최소 3개**: 각 SC에서 최소 3개 기능 도출, FR-ID는 SRS 작성 후 갱신
 - **SC → FR 추적성**: FR Details에 SC Mapping 필드 포함 필수
+- **PLAN Gate 전 FR-ID 역매핑 필수**: 모든 Derived Features의 FR Mapping 컬럼에 실제 FR-ID 기입 (TBD 불허)
 
 ### PLAN Phase Workflow
 
@@ -157,17 +163,23 @@ journey
 3. 유저 스토리 도출 (MoSCoW 우선순위)
 4. 마일스톤 정의 (Phase 단위)
 5. `1_Roadmap_PM.md` 생성 (템플릿 기반)
-5.5. User Scenario 작성 (`SC-001` ~ `SC-NNN`) — journey 다이어그램 포함, Derived Features 목록 작성
-5.6. `u-sa`에게 Scenario → FR 매핑 기반 SRS 작성 요청
-6. `u-sa`에게 SRS 작성 요청
-7. `u-ux`에게 IA 작성 요청
+5.5. **UserScenario → Derived Features 도출** (PLAN Phase 핵심):
+   - 각 US를 SC(User Scenario)로 발전 (`SC-001` ~ `SC-NNN`)
+   - 각 SC에 journey 다이어그램 포함 (페르소나, 단계, 만족도)
+   - 각 SC의 **Derived Features 테이블** 작성 (Feature, Description, Priority, FR Mapping)
+   - FR Mapping은 `TBD`로 시작 (SRS 작성 후 실제 FR-ID로 갱신 필수)
+   - 최소 요건: SC 최소 3개, SC당 Derived Features 최소 3개
+5.6. `u-sa`에게 SC Derived Features → FR 전환 기반 SRS 작성 요청
+6. SRS 완료 후 Roadmap으로 돌아와 **SC Derived Features의 FR-ID 역매핑**: TBD → FR-NNN 갱신
+7. `u-ux`에게 IA 작성 요청 (SC 기반 User Flows 포함)
+8. **PLAN Gate 검증**: 모든 SC Derived Features의 FR-ID 매핑 완료 확인 (TBD 잔존 시 Gate 차단)
 
 **Pattern B (FR-First):**
 1. `1_SRS_RA.md` 참조하여 FR 분석
-2. FR 기반 유저 스토리 역도출
+2. FR 기반 유저 스토리 역도출 + SC 작성 (Derived Features에 FR-ID 매핑)
 3. 마일스톤 정의 (Phase 단위)
 4. `1_Roadmap_PM.md` 생성
-5. `u-sa`에게 SRS US Mapping 갱신 요청
+5. `u-sa`에게 SRS US Mapping + SC Mapping 갱신 요청
 
 ### User Story Add Workflow (`/u-us-add`)
 

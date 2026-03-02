@@ -123,13 +123,13 @@
         "Exit criteria should be checked after CHECK phase",
         "If criteria not met, should transition to ACT and start next iteration",
         "Loop should respect max iteration limit (10)",
-        "5_Backlog_RA.md should be updated with open items",
+        "backlog.md should be updated with open items",
         "5_IterationLog_RA.md should record iteration results"
       ],
       "expectedAgents": ["u-ra", "u-sa", "u-ux", "u-dv-fe", "u-dv-be", "u-qa"],
       "expectedPhase": "act",
       "expectedDocuments": [
-        "u-docs/shared/05-act/5_Backlog_RA.md",
+        "u-docs/backlog.md",
         "u-docs/shared/05-act/5_IterationLog_RA.md"
       ],
       "tags": ["loop", "iteration", "e2e"]
@@ -160,7 +160,7 @@
       "prompt": "/u-act",
       "expectedBehavior": [
         "Should analyze CHECK results from 4_Report_QA.md",
-        "Should create/update 5_Backlog_RA.md with unresolved items",
+        "Should create/update backlog.md with unresolved items",
         "Should create 5_Retrospective_PM.md with lessons learned",
         "Should archive current iteration to u-docs/iterations/iter-N/",
         "Should update 5_IterationLog_RA.md",
@@ -170,7 +170,7 @@
       "expectedAgents": ["u-ra"],
       "expectedPhase": "act",
       "expectedDocuments": [
-        "u-docs/shared/05-act/5_Backlog_RA.md",
+        "u-docs/backlog.md",
         "u-docs/shared/05-act/5_Retrospective_PM.md",
         "u-docs/shared/05-act/5_IterationLog_RA.md"
       ],
@@ -182,7 +182,7 @@
       "description": "Test backlog command output",
       "prompt": "/u-backlog",
       "expectedBehavior": [
-        "Should read 5_Backlog_RA.md",
+        "Should read backlog.md",
         "Should display all open backlog items",
         "Should show item ID, title, priority, and status",
         "Should show summary statistics (total, open, done)",

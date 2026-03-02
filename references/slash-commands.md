@@ -80,7 +80,7 @@
 | **Description** | ACT Phase를 실행한다. 백로그 정리, 아카이브, 회고 |
 | **Calling Agents** | Orchestrator → `u-RA` |
 | **Prerequisites** | CHECK Phase 완료 (종료 조건 미충족) |
-| **Output** | `5_Backlog_RA.md`, `5_IterationLog_RA.md`, `5_Retrospective_PM.md` |
+| **Output** | `backlog.md`, `5_IterationLog_RA.md`, `5_Retrospective_PM.md` |
 
 ---
 
@@ -171,7 +171,7 @@ SSoT 문서 상태를 관리하고 검증하는 커맨드.
 | **Syntax** | `/u-backlog` |
 | **Description** | 현재 백로그 항목을 표시한다 |
 | **Calling Agents** | `u-RA` |
-| **Prerequisites** | `5_Backlog_RA.md` 존재 |
+| **Prerequisites** | `backlog.md` 존재 |
 | **Output** | 백로그 테이블 (터미널 출력) |
 
 ### `/u-backlog-add`
@@ -181,8 +181,8 @@ SSoT 문서 상태를 관리하고 검증하는 커맨드.
 | **Syntax** | `/u-backlog-add [description]` |
 | **Description** | 새로운 백로그 항목을 추가한다. 인자 없이 실행하면 대화형으로 입력받는다 |
 | **Calling Agents** | `u-RA` |
-| **Prerequisites** | 프로젝트 생성 완료 (`5_Backlog_RA.md` 없으면 자동 생성) |
-| **Output** | `5_Backlog_RA.md` 업데이트 (Table row + Detail block + Summary 갱신) |
+| **Prerequisites** | 프로젝트 생성 완료 (`backlog.md` 없으면 자동 생성) |
+| **Output** | `backlog.md` 업데이트 (Table row + Detail block + Summary 갱신) |
 
 **Input Fields**: Type (Bug/Enhancement/Task), Priority (Critical/Major/Minor/Trivial), Origin (PLAN/DESIGN/DEV/CHECK), Assignee, Related FR, Acceptance Criteria
 
@@ -304,7 +304,7 @@ SSoT 문서 상태를 관리하고 검증하는 커맨드.
 | **Description** | 결함 분석 리포트를 생성한다 |
 | **Calling Agents** | `u-QA` |
 | **Prerequisites** | `4_Report_QA.md` 존재 |
-| **Output** | 결함 분석 결과, `5_Backlog_RA.md` 업데이트 |
+| **Output** | 결함 분석 결과, `backlog.md` 업데이트 |
 
 ---
 

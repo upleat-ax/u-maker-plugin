@@ -70,7 +70,7 @@ cp -r u-ssot/ .claude/plugins/u-ssot/
 
 | Agent | Role | Phase | 담당 문서 |
 |-------|------|-------|----------|
-| `u-ra` | Requirements Analyst | ALL | 1_Roadmap_PM, 1_Index_PM, 5_Backlog_RA, 5_IterationLog_RA, 5_Retrospective_PM |
+| `u-ra` | Requirements Analyst | ALL | 1_Roadmap_PM, 1_Index_PM, backlog.md, summary.md, 5_IterationLog_RA, 5_Retrospective_PM |
 | `u-sa` | Software Architect | PLAN, DESIGN | 1_SRS_RA, 2_ERD_SA, 2_API_SA |
 | `u-ux` | UX Designer | PLAN, DESIGN, DO | 1_IA_RA, 2_Screen_UX, 2_DesignSystem_UX, 3_Screen_UX, 3_UIComponents_UX, 3_DesignToken_UX |
 | `u-dv-fe` | Frontend Developer | DO | 코드 생성 (Next.js + react-query) |
@@ -107,7 +107,7 @@ stateDiagram-v2
 
 4가지 모두 충족 시 루프 종료:
 
-1. `5_Backlog_RA.md`의 모든 항목 Done
+1. `backlog.md`의 모든 항목 Done
 2. Critical/Major 결함 0건
 3. SRS의 모든 FR 구현 완료
 4. `bun run build` 성공
@@ -209,9 +209,13 @@ flowchart TD
     end
 
     subgraph ACT["05-act"]
-        BACKLOG["5_Backlog_RA\n(u-ra)"]
         ITERLOG["5_IterationLog_RA\n(u-ra)"]
         RETRO["5_Retrospective_PM\n(u-ra)"]
+    end
+
+    subgraph ROOT["root"]
+        BACKLOG["backlog.md\n(u-ra)"]
+        SUMMARY["summary.md\n(u-ra)"]
     end
 
     ROADMAP --> SRS

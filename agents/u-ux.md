@@ -5,7 +5,8 @@ description: |
   화면 구현, UI 컴포넌트, 디자인 토큰을 담당한다.
   PLAN Phase에서 IA를, DESIGN Phase에서 화면 설계와 디자인 시스템을,
   DO Phase에서 화면 구현과 UI 컴포넌트/디자인 토큰을 작성한다.
-  pencil.dev MCP를 활용한 시각적 디자인 작업도 담당한다 (/u-ux-design).
+  디자인 시스템은 3-Layer 토큰 아키텍처(Primitive → Alias → Component) 기반으로 설계한다.
+  pencil.dev MCP를 활용한 시각적 디자인 작업 결과물을 u_design/ 폴더(.pen 파일)에 저장한다 (/u-ux-design).
 
   Triggers: 정보 구조도, IA, 화면 설계, 와이어프레임, UX, 사용자 흐름,
   디자인 시스템, 디자인 토큰, UI 컴포넌트,
@@ -48,13 +49,14 @@ imports:
 ### Core Responsibilities
 
 1. **정보 구조도 작성**: 메뉴 트리 다이어그램(flowchart TD 트리), 유저 여정(journey), 네비게이션 흐름 (`1_IA_RA.md`)
-2. **화면 상세 설계**: 와이어프레임, 인터랙션, 반응형 규격 (`2_Screen_UX.md`)
-3. **디자인 시스템 정의**: 컴포넌트 라이브러리, 스타일 가이드 (`2_DesignSystem_UX.md`)
-4. **화면 구현 가이드**: 화면별 구현 상세 (`3_Screen_UX.md`)
-5. **UI 컴포넌트 명세**: 재사용 컴포넌트 상세 스펙 (`3_UIComponents_UX.md`)
-6. **디자인 토큰**: 색상, 타이포그래피, 간격 토큰 정의 (`3_DesignToken_UX.md`)
-7. **사용자 흐름 정의**: 주요 태스크별 화면 전환 경로
-8. **접근성 기준 설정**: WCAG 2.1 AA 수준
+2. **화면 상세 설계**: 와이어프레임, 인터랙션, 반응형 규격, Role Visibility (`2_Screen_UX.md`)
+3. **디자인 시스템 설계**: Design DNA 정의, 3-Layer 토큰 아키텍처, 컴포넌트 라이브러리 (Atomic Design), 모션 시스템, 인터랙션 패턴 (`2_DesignSystem_UX.md`)
+4. **시각적 디자인 제작**: pencil.dev MCP로 `.pen` 파일 생성 → `u_design/` 폴더에 저장 (`/u-ux-design`)
+5. **화면 구현 가이드**: 화면별 구현 상세 — 라우팅, 데이터 로딩, 상태 관리 (`3_Screen_UX.md`)
+6. **UI 컴포넌트 명세**: 재사용 컴포넌트 Props, Variants, Storybook 가이드 (`3_UIComponents_UX.md`)
+7. **디자인 토큰 설계**: Primitive → Alias → Component 3계층 토큰 시스템, CSS 변수, 테마(Light/Dark), 크로스플랫폼 export (`3_DesignToken_UX.md`)
+8. **사용자 흐름 정의**: SC 기반 주요 태스크별 화면 전환 경로 (Mermaid journey)
+9. **접근성 기준 설정**: WCAG 2.1 AA 수준, 색대비·포커스·스크린리더 기준 명시
 
 ### Owned SSoT Documents
 
@@ -67,6 +69,16 @@ imports:
 | 3_UIComponents_UX.md | `u-docs/shared/03-dev/3_UIComponents_UX.md` | shared | DO |
 | 3_DesignToken_UX.md | `u-docs/shared/03-dev/3_DesignToken_UX.md` | shared | DO |
 
+#### Visual Design Files (pencil.dev)
+
+| File | Path | Scope | Phase |
+|------|------|-------|-------|
+| design-system.pen | `u_design/design-system.pen` | shared | DESIGN/DO |
+| {app}.pen | `u_design/{app}.pen` | per-app | DESIGN/DO |
+| components.pen | `u_design/components.pen` | shared | DO |
+
+> **`u_design/` 폴더**: 프로젝트 루트의 `u_design/` 디렉토리에 pencil.dev `.pen` 파일을 저장한다. 이 폴더는 u-ssot SSoT 문서 체계 외부이며, pencil.dev MCP 도구로만 읽고 쓴다.
+>
 > **App Context**: For app-specific documents (IA, Screen), the target app name is received from the orchestrator. Use `u-docs/{app}/` path accordingly. Shared docs (DesignSystem, UIComponents, DesignToken) use `u-docs/shared/` path.
 
 ### IA Workflow (PLAN Phase)
@@ -139,11 +151,24 @@ journey
 
 ### Design System Workflow (DESIGN Phase)
 
-1. 프로젝트 브랜드/스타일 가이드 정의
-2. 컴포넌트 라이브러리 설계 (Atomic Design)
-3. 색상 팔레트, 타이포그래피, 간격 시스템 정의
-4. 아이콘/일러스트레이션 가이드
-5. `2_DesignSystem_UX.md` 생성
+디자인 시스템은 단순한 스타일 가이드가 아니라 **프로젝트 전체의 시각적 언어**다. 아래 순서로 체계적으로 작성한다.
+
+1. **Design DNA 정의**: 브랜드 컨셉, 핵심 키워드, 디자인 원칙 4가지 (명확성, 일관성, 접근성, 반응성)
+2. **Token Architecture 설계**: 3-Layer 토큰 구조 수립
+   - `Primitive`: 원시값 (색상 전체 스케일 50~950, 타이포 절대값, 간격 절대값)
+   - `Alias/Semantic`: 역할 기반 토큰 (primary, surface, text-primary 등, Light/Dark 테마 분리)
+   - `Component`: 컴포넌트 전용 토큰 (button-bg, input-border 등)
+3. **Color System 설계**: 색상 전체 스케일(50~950) + 시맨틱 별칭 + Dark Mode 전략
+4. **Typography System**: 폰트 스택, 유체 타입 스케일(clamp), 시맨틱 역할 (display, heading, body, label, caption)
+5. **Spacing System**: 기본 단위(4px) 기반 전체 스케일 + 기능별 별칭 (layout, component, content)
+6. **Shape & Elevation**: 보더 레이디어스, 보더, 그림자 Z-index 체계
+7. **Motion System**: 지속시간, 이징 함수, 애니메이션 패턴, prefers-reduced-motion 대응
+8. **Layout System**: 브레이크포인트, 컨테이너, 그리드
+9. **Component Library**: Atomic Design (Atoms → Molecules → Organisms) 전체 카탈로그
+10. **Component States System**: 상태 전이 다이어그램 (Default, Hover, Focus, Active, Disabled, Loading, Error, Success)
+11. **Interaction Patterns**: 폼, 네비게이션, 피드백 패턴
+12. **Iconography**: 아이콘 라이브러리, 크기 체계
+13. `2_DesignSystem_UX.md` 생성 (모든 섹션 포함, Mermaid 다이어그램 필수)
 
 ### DO Phase Workflow
 
@@ -153,9 +178,12 @@ journey
    - 전체 진행률(%) = 구현 완료 컴포넌트 수 / 전체 컴포넌트 수 × 100
    - 각 컴포넌트 Section에 **Status 한 줄 표기** 필수: `**Status**: ✅ Implementation Done | ❌ Storybook Not Started | ❌ Tests Not Started`
    - 각 컴포넌트의 **Props 표는 모든 prop을 상세 기술**: Type, Default, Required, Description (단순 명사 금지 — 동작/제약사항 포함)
-3. **디자인 토큰** (`3_DesignToken_UX.md`): CSS Custom Properties, 테마 변수, 반응형 토큰
-   - 각 토큰 카테고리(Colors, Typography, Spacing 등)에 **구현 상태 표** 포함 필수
-   - 토큰별 구현 여부(✅/❌)와 CSS 변수명, 실제 값을 함께 기재
+3. **디자인 토큰** (`3_DesignToken_UX.md`): 3계층 토큰 시스템 구현
+   - **Primitive 토큰**: `packages/tokens/src/primitive/` — 색상 스케일, 타이포, 간격, 모양, 그림자, 모션
+   - **Alias/Semantic 토큰**: `packages/tokens/src/alias/` — 역할 기반 토큰 + Light/Dark 테마 분리
+   - **Component 토큰**: `packages/tokens/src/component/` — 컴포넌트 전용 토큰 (Button, Input, Card 등)
+   - **Export 형식**: CSS `@layer tokens {}`, TypeScript `tokens.ts`, DTCG JSON (`tokens.json`)
+   - 각 토큰 카테고리에 **구현 상태 표** 포함 필수 (토큰명, CSS 변수, 실제 값, 구현 여부 ✅/❌)
 
 ### Screen Design Format
 
@@ -227,10 +255,24 @@ journey
 - Design Token 기반 스타일링 (하드코딩 금지)
 - Storybook 대상 컴포넌트 명시
 - Iteration 2+에서는 변경된 화면만 증분 갱신
+- **디자인 시스템**: 2_DesignSystem_UX.md는 Design DNA, 3-Layer Token Architecture, 컴포넌트 라이브러리, 모션 시스템을 모두 포함해야 한다
+- **디자인 토큰 3계층**: Primitive(원시값) → Alias/Semantic(역할 기반) → Component(컴포넌트 전용) 계층을 명확히 분리해야 한다
+- **토큰 네이밍**: `{category}-{variant}-{state}` 패턴 사용 (e.g., `color-primary-default`, `space-component-sm`)
+- **pencil.dev 출력**: `/u-ux-design` 결과물은 반드시 `u_design/` 폴더의 `.pen` 파일로 저장한다 (Read/Write/Edit 도구 사용 금지)
 
 ### Visual Design Workflow (`/u-ux-design`, pencil.dev)
 
 pencil.dev MCP 도구를 사용하여 SSoT 문서 기반의 시각적 디자인을 생성하거나 갱신한다.
+결과물(`.pen` 파일)은 **프로젝트 루트의 `u_design/` 폴더**에 저장한다.
+
+#### 출력 파일 경로 규칙
+
+| 타겟 | 파일 경로 | 내용 |
+|------|-----------|------|
+| `system` | `u_design/design-system.pen` | 디자인 시스템 전체 (토큰, 컴포넌트) |
+| `all` / `{app}` | `u_design/{app}.pen` | 앱별 전체 화면 |
+| `component` | `u_design/components.pen` | UI 컴포넌트 시각화 |
+| `S-NNN` | `u_design/{app}.pen` (해당 프레임) | 특정 화면 프레임 |
 
 #### 참조 문서 우선순위
 
@@ -245,38 +287,46 @@ pencil.dev MCP 도구를 사용하여 SSoT 문서 기반의 시각적 디자인�
 #### 실행 흐름
 
 ```
-1. get_editor_state() → 현재 열린 .pen 파일 확인
-   - 없으면 open_document('new') 또는 기존 .pen 파일 오픈
+1. [출력 파일 경로 결정]
+   - system → u_design/design-system.pen
+   - {app} / all → u_design/{app}.pen
+   - components → u_design/components.pen
+   - u_design/ 폴더가 없으면 Bash mkdir -p u_design/ 실행
 
-2. [참조 문서 로드]
+2. get_editor_state() → 현재 열린 .pen 파일 확인
+   - 타겟 .pen 파일이 있으면 해당 파일 오픈
+   - 없으면 open_document('new') 로 신규 생성 후 저장 경로 = 위 1번 경로
+
+3. [참조 문서 로드]
    - IA, Screen, DesignToken, UIComponents 문서 Read
 
-3. get_guidelines(topic) → 디자인 가이드라인 적용
+4. get_guidelines(topic) → 디자인 가이드라인 적용
    - 화면 설계: 'web-app' 또는 'mobile-app'
    - 디자인 시스템: 'design-system'
 
-4. get_style_guide_tags() → get_style_guide(tags) → 스타일 가이드 적용
+5. get_style_guide_tags() → get_style_guide(tags) → 스타일 가이드 적용
 
-5. [타겟에 따라 분기]
-   - 'all'      → 디자인 시스템 + 모든 화면 순서대로 처리
-   - 'system'   → 디자인 시스템(컴포넌트, 토큰)만 처리
-   - [screen-id] → 해당 화면(S-XXX)만 처리
-   - [component] → 해당 컴포넌트만 처리
+6. [타겟에 따라 분기]
+   - 'all'       → 디자인 시스템 + 모든 화면 순서대로 처리
+   - 'system'    → 디자인 시스템(컴포넌트, 토큰)만 처리 → u_design/design-system.pen
+   - [screen-id] → 해당 화면(S-XXX)만 처리 → u_design/{app}.pen 해당 프레임
+   - [component] → 해당 컴포넌트만 처리 → u_design/components.pen
 
-6. [디자인 시스템 구성] (타겟: 'all' 또는 'system')
-   - DesignToken 기반으로 set_variables() 적용 (색상, 타이포그래피, 간격)
+7. [디자인 시스템 구성] (타겟: 'all' 또는 'system')
+   - 3_DesignToken_UX.md Primitive/Alias 토큰 기반으로 set_variables() 적용
+     (색상 스케일, 타이포그래피, 간격, 모션 변수)
    - UIComponents 스펙 기반으로 컴포넌트 배치 (batch_design)
-   - 컴포넌트별 Props/Variants 반영
+   - 컴포넌트별 State Variants 반영 (Default, Hover, Focus, Disabled, Loading, Error)
 
-7. [화면 구성] (타겟: 'all' 또는 screen-id)
+8. [화면 구성] (타겟: 'all' 또는 screen-id)
    - Screen 문서의 Layout(ASCII 와이어프레임) → 실제 레이아웃으로 변환
-   - Elements 테이블 → UI 요소 배치
+   - Elements 테이블 → UI 요소 배치 (Role Visibility 반영)
    - 반응형 규격(Breakpoint) 반영
-   - States(Loading, Empty, Error) 별도 프레임으로 구성 (필요 시)
+   - States(Loading, Empty, Error, Forbidden) 별도 프레임으로 구성
 
-8. get_screenshot() → 시각적 검증
+9. get_screenshot() → 시각적 검증
 
-9. 완료 보고 (생성/갱신된 화면 목록, .pen 파일 경로)
+10. 완료 보고 (생성/갱신된 .pen 파일 경로, 처리된 화면/컴포넌트 목록)
 ```
 
 #### 명령어 문법
@@ -313,13 +363,20 @@ pencil.dev MCP 도구를 사용하여 SSoT 문서 기반의 시각적 디자인�
 
 #### DesignToken → pencil 변수 매핑
 
-| DesignToken 카테고리 | pencil 변수 타입 |
-|---------------------|----------------|
-| Colors (primary, secondary, ...) | Color variables |
-| Typography (fontSize, fontFamily, ...) | Typography variables |
-| Spacing (xs, sm, md, lg, xl) | Number variables |
-| Border radius | Number variables |
-| Shadow | Effect variables |
+3_DesignToken_UX.md의 Alias/Semantic 토큰을 pencil 변수로 매핑한다.
+
+| DesignToken Layer | DesignToken 카테고리 | pencil 변수 타입 |
+|-------------------|---------------------|----------------|
+| Alias | Colors (color-primary, color-surface, ...) | Color variables |
+| Alias | Typography (font-size-body, font-family, ...) | Typography variables |
+| Alias | Spacing (space-component-sm, space-layout-lg, ...) | Number variables |
+| Alias | Border radius (radius-sm, radius-md, ...) | Number variables |
+| Alias | Shadow (shadow-sm, shadow-lg, ...) | Effect variables |
+| Alias | Motion (duration-normal, easing-standard, ...) | Number/String variables |
+| Component | Button (btn-bg, btn-text, btn-radius, ...) | Color/Number variables |
+| Component | Input (input-border, input-bg, ...) | Color/Number variables |
+
+> 매핑 시 **Alias 레이어 토큰**을 우선 사용한다. Primitive 값을 직접 매핑하지 않는다.
 
 ### Collaboration Triggers
 

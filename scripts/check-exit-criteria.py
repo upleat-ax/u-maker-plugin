@@ -4,7 +4,7 @@ check-exit-criteria.py — Iteration Exit Criteria Checker
 u-ssot plugin
 
 Checks 4 exit criteria for PDCA iteration completion:
-  1. All backlog items are Done (shared/05-act/5_Backlog_RA.md)
+  1. All backlog items are Done (u-docs/backlog.md)
   2. No Critical/Major defects ({app}/04-check/4_Report_QA.md for all apps)
   3. All FR items implemented ({app}/01-plan/1_SRS_RA.md for all apps)
   4. Build succeeds (bun run build)
@@ -31,7 +31,7 @@ import subprocess
 
 # v1 fallback paths
 DOC_PATHS_V1 = {
-    "backlog": "05-act/5_Backlog_RA.md",
+    "backlog": "backlog.md",
     "qa_report": "04-check/4_Report_QA.md",
     "srs": "01-plan/1_SRS_RA.md",
 }
@@ -64,6 +64,7 @@ def has_v2_structure(udocs_root):
 def get_doc_path(udocs_root, doc_name, app=None):
     """
     Resolve document path based on v2 or v1 structure.
+    Root docs: {udocs_root}/{doc}
     Shared docs: shared/{phase}/{doc}
     App docs: {app}/{phase}/{doc}
     """
@@ -77,6 +78,8 @@ def get_doc_path(udocs_root, doc_name, app=None):
     }
     phase_dir = phase_map.get(prefix, "")
 
+    root_docs = ["backlog.md", "summary.md"]
+
     shared_docs = [
         "1_Roadmap_PM.md",
         "1_Index_PM.md",
@@ -84,12 +87,13 @@ def get_doc_path(udocs_root, doc_name, app=None):
         "2_DesignSystem_UX.md",
         "3_UIComponents_UX.md",
         "3_DesignToken_UX.md",
-        "5_Backlog_RA.md",
         "5_IterationLog_RA.md",
         "5_Retrospective_PM.md",
     ]
 
     if has_v2_structure(udocs_root):
+        if doc_name in root_docs:
+            return os.path.join(udocs_root, doc_name)
         if doc_name in shared_docs:
             return os.path.join(udocs_root, "shared", phase_dir, doc_name)
         return os.path.join(udocs_root, app or "web", phase_dir, doc_name)
@@ -106,9 +110,9 @@ def get_doc_path(udocs_root, doc_name, app=None):
 def check_backlog(udocs_root):
     """
     Criterion 1: All backlog items must be Done, Cancelled, or Deferred (no active items).
-    Parses shared/05-act/5_Backlog_RA.md for items with active status.
+    Parses u-docs/backlog.md for items with active status.
     """
-    filepath = get_doc_path(udocs_root, "5_Backlog_RA.md")
+    filepath = get_doc_path(udocs_root, "backlog.md")
     result = {
         "criterion": "Backlog All Done",
         "passed": False,
@@ -118,7 +122,7 @@ def check_backlog(udocs_root):
     }
 
     if not os.path.exists(filepath):
-        result["details"].append("5_Backlog_RA.md not found")
+        result["details"].append("backlog.md not found")
         # No backlog file means no open items
         result["passed"] = True
         return result

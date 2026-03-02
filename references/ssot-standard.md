@@ -174,7 +174,7 @@ pie title Test Results
 
 ### 3.5 ACT Phase Documents
 
-> 대상: `5_Backlog_RA.md`, `5_IterationLog_RA.md`, `5_Retrospective_PM.md`
+> 대상: `backlog.md` (u-docs/ 루트), `5_IterationLog_RA.md`, `5_Retrospective_PM.md`
 
 | Required Section | Description |
 |-----------------|-------------|
@@ -202,7 +202,8 @@ xychart-beta
 | DESIGN | `2_` | `2_DesignSystem_UX.md`, `2_ERD_SA.md`, `2_API_SA.md`, `2_Screen_UX.md` |
 | DEV | `3_` | `3_Screen_UX.md`, `3_UIComponents_UX.md`, `3_DesignToken_UX.md`, `3_Code_DV.md` |
 | CHECK | `4_` | `4_Case_QA.md`, `4_Report_QA.md` |
-| ACT | `5_` | `5_Backlog_RA.md`, `5_IterationLog_RA.md`, `5_Retrospective_PM.md` |
+| ACT | `5_` | `5_IterationLog_RA.md`, `5_Retrospective_PM.md` |
+| ALL (root) | — | `backlog.md`, `summary.md` (u-docs/ 루트, PM 관리) |
 
 ---
 
@@ -223,9 +224,10 @@ u-docs/
 │   │   ├── 3_UIComponents_UX.md
 │   │   └── 3_DesignToken_UX.md
 │   └── 05-act/
-│       ├── 5_Backlog_RA.md
 │       ├── 5_IterationLog_RA.md
 │       └── 5_Retrospective_PM.md
+├── backlog.md                      # PM(u-ra) 소유, 루트 관리 문서
+├── summary.md                      # PM(u-ra) 소유, 루트 관리 문서
 ├── {app}/                          # Per-app docs (e.g., web/, admin/)
 │   ├── 01-plan/
 │   │   ├── 1_SRS_RA.md

@@ -113,8 +113,8 @@ agents:
 | `/u-docs list` | 문서 트리 + 상태 조회 | `u-ra` | u-docs/ 스캔 → Owner·Status·Version 테이블. 필터: `--phase`, `--status`, `--app` |
 | `/u-docs update` | 문서 메타데이터 갱신 | `u-ra` | 인수 없음: 1_Index_PM.md 재동기화. `<doc\|all> [--status] [--version]`: YAML 헤더 수정 + 인덱스 재동기화 |
 | `/u-validate` | SSoT 무결성 검증 | `u-ra` | 헤더 누락, 추적성 깨짐, 구조 검증 |
-| `/u-backlog` | 백로그 조회 | `u-ra` | 5_Backlog_RA.md 내 Open 항목 표시 |
-| `/u-backlog-add` | 백로그 항목 추가 | `u-ra` | 5_Backlog_RA.md에 새 항목 추가 |
+| `/u-backlog` | 백로그 조회 | `u-ra` | backlog.md 내 Open 항목 표시 |
+| `/u-backlog-add` | 백로그 항목 추가 | `u-ra` | backlog.md에 새 항목 추가 |
 | `/u-us-add` | 유저 스토리 추가 | `u-ra` | 1_Roadmap_PM.md에 새 US 항목 추가 |
 | `/u-fr-add [app]` | 기능 요구사항 추가 | `u-sa` | {app}/01-plan/1_SRS_RA.md에 새 FR 항목 + Detail 블록 추가 |
 | `/u-index` | 문서 인덱스 갱신 | `u-ra` | 1_Index_PM.md 갱신 |
@@ -155,7 +155,8 @@ agents:
 
 | Scope | Documents | Path Pattern |
 |-------|-----------|-------------|
-| shared | Roadmap, Index, ERD, DesignSystem, UIComponents, DesignToken, Backlog, IterationLog, Retrospective | `u-docs/shared/{phase}/{doc}` |
+| root | Backlog, Summary | `u-docs/{doc}` |
+| shared | Roadmap, Index, ERD, DesignSystem, UIComponents, DesignToken, IterationLog, Retrospective | `u-docs/shared/{phase}/{doc}` |
 | app | SRS, IA, API, Screen(design+dev), Code, Case, Report | `u-docs/{app}/{phase}/{doc}` |
 
 ### Utility Commands
@@ -350,11 +351,16 @@ stateDiagram-v2
    - Pattern A (US-First): `u-ra`가 로드맵 생성 (`shared/01-plan/1_Roadmap_PM.md`)
    - Pattern B (FR-First): `u-sa`가 SRS 작성 (`{app}/01-plan/1_SRS_RA.md`)
 2. 나머지 문서 작성 (Pattern A: `u-sa` SRS, Pattern B: `u-ra` Roadmap)
-3. Cross-mapping 갱신: TBD 매핑을 실제 ID로 갱신
-4. `u-ux`: 정보 구조도 작성 (`{app}/01-plan/1_IA_RA.md`) — IA에 Menu Tree 포함
+2.5. **UserScenario → Derived Features → FR 도출** (PLAN Phase 필수 체인):
+   - `u-ra`: 각 US를 SC(User Scenario)로 발전 → Derived Features 테이블 작성 (각 SC당 최소 3개)
+   - `u-sa`: SC Derived Features를 SRS FR로 전환 → SC Mapping 필드 포함 (1차 FR 소스)
+   - `u-sa`: 암묵적(Implicit) FR 추가 도출 (유효성 검증, 에러 처리, 권한 등) (2차 FR 소스)
+   - 모든 FR에 `SC Mapping` 필드 필수 (기술적 FR은 `-`)
+3. Cross-mapping 완료: US↔SC↔Feature↔FR TBD → 실제 ID 매핑 전체 갱신 (TBD 불허)
+4. `u-ux`: 정보 구조도 작성 (`{app}/01-plan/1_IA_RA.md`) — SC 기반 User Flows 포함
 5. `u-ra`: 인덱스 생성 (`shared/01-plan/1_Index_PM.md`)
 
-**Gate → DESIGN**: `shared/1_Roadmap_PM` Final + 모든 앱의 `1_SRS_RA`, `1_IA_RA` Final + US↔FR mapping complete (no TBD)
+**Gate → DESIGN**: `shared/1_Roadmap_PM` Final + 모든 앱의 `1_SRS_RA`, `1_IA_RA` Final + **SC→Feature→FR chain complete** (모든 SC Derived Features에 FR-ID 매핑 완료, TBD 잔존 불허)
 
 #### DESIGN Phase
 1. `u-ux`: 화면 상세 설계 (`{app}/02-design/2_Screen_UX.md`)
@@ -401,7 +407,7 @@ stateDiagram-v2
 **Gate → ACT**: 위 조건 미충족 시
 
 #### ACT Phase
-1. `u-ra`: DEF → BL 변환 및 백로그 정리 (`shared/05-act/5_Backlog_RA.md`)
+1. `u-ra`: DEF → BL 변환 및 백로그 정리 (`u-docs/backlog.md`)
    - 모든 앱의 `4_Report_QA.md` Open DEF → BL 자동 변환 (DEF→BL Conversion Rules 참조)
    - 기존 Open/InProgress 항목 우선순위 재평가
    - PLAN/DESIGN/DEV 기원 백로그 항목 확인
@@ -433,7 +439,7 @@ ACT Phase에서 u-ra가 CHECK Phase의 결함(DEF)을 백로그 항목(BL)으로
 
 ```
 1. 수집: 4_Report_QA.md에서 Status가 Open인 DEF 목록 추출
-2. 중복 제외: 기존 5_Backlog_RA.md의 Related DEF 필드와 비교, 이미 변환된 DEF 제외
+2. 중복 제외: 기존 backlog.md의 Related DEF 필드와 비교, 이미 변환된 DEF 제외
 3. BL 생성: 변환 매핑 테이블에 따라 BL 항목 생성 (BL-ID 자동 채번)
 4. 테이블 추가: Backlog Table (Section 2)에 행 추가 + Details (Section 5)에 상세 블록 추가
 5. 통계 갱신: Summary (1.2), By Priority (3), By Origin (4) 카운트 갱신
@@ -541,7 +547,7 @@ shared 문서는 1회 검증. perApp 문서는 모든 앱이 Final이어야 통�
 
 ### Exit Criteria (4가지 모두 충족 시 종료)
 
-1. **백로그 활성 항목 없음**: `5_Backlog_RA.md`에서 Done/Cancelled/Deferred 외 활성 항목 0건
+1. **백로그 활성 항목 없음**: `backlog.md`에서 Done/Cancelled/Deferred 외 활성 항목 0건
 2. **Critical/Major 결함 0건**: `4_Report_QA.md`에서 Critical/Major 0건
 3. **SRS 전체 FR 구현**: `1_SRS_RA.md`의 모든 FR이 `Implemented` 상태
 4. **빌드 성공**: `bun run build` 통과
@@ -599,9 +605,10 @@ u-docs/
 │   │   ├── 3_UIComponents_UX.md     # u-ux 소유
 │   │   └── 3_DesignToken_UX.md      # u-ux 소유
 │   └── 05-act/
-│       ├── 5_Backlog_RA.md          # u-ra 소유
 │       ├── 5_IterationLog_RA.md     # u-ra 소유
 │       └── 5_Retrospective_PM.md    # u-ra 소유
+├── backlog.md                       # u-ra 소유 (PM 관리 루트 문서)
+├── summary.md                       # u-ra 소유 (PM 관리 루트 문서)
 ├── {app}/                           # Per-app docs (e.g., web/, admin/)
 │   ├── 01-plan/
 │   │   ├── 1_SRS_RA.md              # u-sa 소유
@@ -618,6 +625,15 @@ u-docs/
 ├── assets/                          # 다이어그램, 스크린샷
 └── iterations/
     └── iter-N/                      # Iteration 아카이브
+```
+
+> **`u_design/` 폴더**: SSoT 문서(`u-docs/`) 외부의 별도 폴더. pencil.dev MCP가 생성하는 `.pen` 시각 디자인 파일을 저장한다.
+
+```
+u_design/                            # pencil.dev 시각 디자인 파일
+├── design-system.pen                # 디자인 시스템 전체 (토큰, 컴포넌트)
+├── components.pen                   # UI 컴포넌트 시각화
+└── {app}.pen                        # 앱별 전체 화면 (e.g., web.pen)
 ```
 
 ### Path Enforcement Rules
@@ -666,7 +682,7 @@ Related Docs:
 | **Screen** (2_Screen_UX) | → API (호출 endpoint) → QA Case (UI 테스트) |
 | **API** (2_API_SA) | → Screen (호출부) → ERD (스키마) → Code (라우트) → QA Case |
 | **ERD** (2_ERD_SA) | → API (스키마 참조) → Code (모델) |
-| **Backlog** (5_Backlog_RA) | → 대상 문서 (Bug: 해당 문서, Enhancement: 해당 문서) |
+| **Backlog** (backlog.md) | → 대상 문서 (Bug: 해당 문서, Enhancement: 해당 문서) |
 
 #### Update Flow
 
@@ -757,7 +773,7 @@ User Scenario는 User Story를 구체적인 페르소나·상황·단계별 행�
 | **3_DesignToken_UX** | 토큰 계층 구조 | `mindmap` |
 | **4_Case_QA** | 테스트 실행 시퀀스 + 커버리지 분포 | `sequenceDiagram`, `pie` |
 | **4_Report_QA** | 결과 분포 + 결함 라이프사이클 + 종료 판정 | `pie`, `stateDiagram-v2`, `flowchart` |
-| **5_Backlog_RA** | 상태 머신 + 우선순위/원인 분포 | `stateDiagram-v2`, `pie` |
+| **backlog.md** | 상태 머신 + 우선순위/원인 분포 | `stateDiagram-v2`, `pie` |
 | **5_IterationLog_RA** | 진행률 추이 + 결함/FR 트렌드 | `xychart-beta` |
 | **5_Retrospective_PM** | 개선 사이클 + 팀 건강도 추이 | `flowchart`, `xychart-beta` |
 
@@ -815,7 +831,7 @@ DV(Developer) 에이전트 코드 생성 시 아래 10가지 규칙을 강제한
 ### Iteration 2+ Incremental Strategy
 
 Iteration 2 이상에서는 전체 재작성이 아닌 증분 갱신만 수행한다:
-- ACT에서 생성된 `5_Backlog_RA.md`의 Open 항목만 대상
+- ACT에서 생성된 `backlog.md`의 Open 항목만 대상
 - 기존 Final 문서는 유지하되, 해당 항목만 PATCH 업데이트
 - 변경된 문서만 Status를 `Draft`로 변경 후 검수 재진행
 
@@ -922,7 +938,8 @@ u-docs/ 디렉토리를 스캔하여 모든 SSoT 문서의 존재 여부·상태
 | DO | 3_Screen_UX.md | per-app | `u-docs/{app}/03-dev/` |
 | CHECK | 4_Case_QA.md | per-app | `u-docs/{app}/04-check/` |
 | CHECK | 4_Report_QA.md | per-app | `u-docs/{app}/04-check/` |
-| ACT | 5_Backlog_RA.md | shared | `u-docs/shared/05-act/` |
+| ALL | backlog.md | root | `u-docs/` |
+| ALL | summary.md | root | `u-docs/` |
 | ACT | 5_IterationLog_RA.md | shared | `u-docs/shared/05-act/` |
 | ACT | 5_Retrospective_PM.md | shared | `u-docs/shared/05-act/` |
 
@@ -947,9 +964,11 @@ u-docs/ 디렉토리를 스캔하여 모든 SSoT 문서의 존재 여부·상태
       ✗ 3_UIComponents_UX.md        —       —        (missing)
       ✗ 3_DesignToken_UX.md         —       —        (missing)
     05-act/     [ACT]
-      ✗ 5_Backlog_RA.md             —       —        (missing)
       ✗ 5_IterationLog_RA.md        —       —        (missing)
       ✗ 5_Retrospective_PM.md       —       —        (missing)
+  [root]
+    ✗ backlog.md                    —       —        (missing)
+    ✗ summary.md                    —       —        (missing)
   web/  (app)
     01-plan/   [PLAN]
       ✓ 1_SRS_RA.md        u-sa    Final   v1.0.0   2026-02-25
@@ -1181,7 +1200,7 @@ Last Updated: [YYYY-MM-DD]
 
 ## Backlog Add (`/u-backlog-add`)
 
-새로운 백로그 항목을 `shared/05-act/5_Backlog_RA.md`에 추가한다.
+새로운 백로그 항목을 `u-docs/backlog.md`에 추가한다.
 
 ### Syntax
 
@@ -1195,7 +1214,7 @@ Last Updated: [YYYY-MM-DD]
 ### Backlog Add Flow
 
 ```
-1. 5_Backlog_RA.md 존재 확인 (없으면 템플릿에서 자동 생성)
+1. backlog.md 존재 확인 (`u-docs/backlog.md`) (없으면 템플릿에서 자동 생성)
 2. 기존 BL-ID 최대값 확인 → 다음 BL-ID 자동 채번 (BL-NNN)
 3. 사용자 입력 또는 인자에서 항목 정보 추출:
    - Description (필수)
@@ -1363,7 +1382,7 @@ Last Updated: [YYYY-MM-DD]
 - **Impl. Status**: 항목 생성 시 항상 `❌ Not Implemented`로 설정. Done 상태 전환 시 `✅ Implemented`로 갱신
 - **Related Request**: 관련 FR-ID / SC-ID / US-ID 목록을 추적성 보장을 위해 기재
 - Iteration은 현재 Iteration (u-ssot.config.json의 `currentIteration`)
-- 5_Backlog_RA.md가 없으면 템플릿에서 자동 생성 후 항목 추가
+- backlog.md (`u-docs/backlog.md`)가 없으면 템플릿에서 자동 생성 후 항목 추가
 - 항목 추가 후 Summary 카운트, 완료율(%), Priority/Origin 통계 자동 갱신
 
 ### Phase-Specific Backlog Triggers
@@ -1658,7 +1677,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 
 ## Visual UX Design (`/u-ux-design`)
 
-pencil.dev MCP 도구를 사용하여 SSoT 문서(IA, Screen, DesignToken, UIComponents) 기반의 시각적 디자인을 생성하거나 갱신한다. `u-ux` 에이전트가 담당한다.
+pencil.dev MCP 도구를 사용하여 SSoT 문서(IA, Screen, DesignToken, UIComponents) 기반의 시각적 디자인을 생성하거나 갱신한다. `u-ux` 에이전트가 담당하며, 결과물은 **`u_design/` 폴더**에 `.pen` 파일로 저장된다.
 
 ### Syntax
 
@@ -1668,16 +1687,24 @@ pencil.dev MCP 도구를 사용하여 SSoT 문서(IA, Screen, DesignToken, UICom
 
 - `[app]`: 앱 이름 (생략 시 단일 앱 자동 선택 또는 AskUserQuestion)
 - `[target]`: 처리 대상
-  - `all` (기본값): 디자인 시스템 + 모든 화면
-  - `system`: 디자인 시스템(컴포넌트/토큰)만
-  - `S-NNN`: 특정 화면 ID
-  - `<ComponentName>`: 특정 컴포넌트 이름
+  - `all` (기본값): 디자인 시스템 + 모든 화면 → `u_design/{app}.pen`
+  - `system`: 디자인 시스템(컴포넌트/토큰)만 → `u_design/design-system.pen`
+  - `S-NNN`: 특정 화면 ID → `u_design/{app}.pen` (해당 프레임)
+  - `<ComponentName>`: 특정 컴포넌트 → `u_design/components.pen`
 
 ### Routing
 
 ```
-/u-ux-design → u-ux 에이전트 → pencil.dev MCP 도구 활용
+/u-ux-design → u-ux 에이전트 → pencil.dev MCP 도구 활용 → u_design/*.pen 저장
 ```
+
+### Output Files
+
+| 타겟 | 출력 파일 | 내용 |
+|------|-----------|------|
+| `system` | `u_design/design-system.pen` | 디자인 시스템 전체 (토큰, 컴포넌트) |
+| `all` / `{app}` | `u_design/{app}.pen` | 앱별 전체 화면 |
+| component | `u_design/components.pen` | UI 컴포넌트 시각화 |
 
 ### Reference Documents (우선순위 순)
 
@@ -1686,17 +1713,18 @@ pencil.dev MCP 도구를 사용하여 SSoT 문서(IA, Screen, DesignToken, UICom
 | IA | `u-docs/{app}/01-plan/1_IA_RA.md` | 화면 계층, 메뉴 구조 |
 | Screen Design | `u-docs/{app}/02-design/2_Screen_UX.md` | 레이아웃, Elements, 인터랙션 |
 | Screen Dev | `u-docs/{app}/03-dev/3_Screen_UX.md` | 구현 상세 |
-| DesignToken | `u-docs/shared/03-dev/3_DesignToken_UX.md` | 색상, 타이포, 간격 |
+| DesignToken | `u-docs/shared/03-dev/3_DesignToken_UX.md` | 색상, 타이포, 간격 (3계층 토큰) |
 | UIComponents | `u-docs/shared/03-dev/3_UIComponents_UX.md` | 컴포넌트 Props, Variants |
-| DesignSystem | `u-docs/shared/02-design/2_DesignSystem_UX.md` | 브랜드 스타일 |
+| DesignSystem | `u-docs/shared/02-design/2_DesignSystem_UX.md` | 브랜드 스타일, 모션, 인터랙션 |
 
 ### Execution Flow
 
 ```
-1. App context 결정 (단일/다중 앱 처리)
-2. target 파싱 (all / system / S-NNN / ComponentName)
-3. u-ux 에이전트 spawn → pencil.dev MCP 활용하여 디자인 작업 수행
-4. 완료 후 Summary Box 출력 (.pen 파일 경로, 처리된 화면/컴포넌트 목록)
+1. 출력 경로 결정 (u_design/ 폴더 없으면 생성)
+2. App context 결정 (단일/다중 앱 처리)
+3. target 파싱 (all / system / S-NNN / ComponentName)
+4. u-ux 에이전트 spawn → pencil.dev MCP 활용하여 디자인 작업 수행
+5. 완료 후 Summary Box 출력 (저장된 .pen 파일 경로, 처리된 화면/컴포넌트 목록)
 ```
 
 ### Examples

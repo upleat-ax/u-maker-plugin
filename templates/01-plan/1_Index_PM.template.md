@@ -70,7 +70,7 @@ external_links: []
 
 | Doc ID | Document | Path | Owner | Status | Version | Last Updated |
 |--------|----------|------|-------|--------|---------|-------------|
-| 5_Backlog_RA | Backlog | `u-docs/05-act/5_Backlog_RA.md` | u-RA | - | - | - |
+| backlog | Backlog | `u-docs/backlog.md` | u-RA | - | - | - |
 | 5_IterationLog_RA | Iteration Log | `u-docs/05-act/5_IterationLog_RA.md` | u-RA | - | - | - |
 | 5_Retrospective_PM | Retrospective | `u-docs/05-act/5_Retrospective_PM.md` | u-RA | - | - | - |
 
@@ -107,9 +107,13 @@ flowchart TD
     end
 
     subgraph ACT["05-act"]
-        BACKLOG[5_Backlog_RA]
         ITERLOG[5_IterationLog_RA]
         RETRO[5_Retrospective_PM]
+    end
+
+    subgraph ROOT["root"]
+        BACKLOG[backlog.md]
+        SUMMARY[summary.md]
     end
 
     ROADMAP --> SRS

@@ -137,7 +137,7 @@ const reminder = [
   '1. **New User Story** → Suggest `/u-us-add` to add to `1_Roadmap_PM.md`',
   '2. **New Functional Requirement** → Suggest `/u-fr-add` to add to `1_SRS_RA.md`',
   '3. **Multiple changes** → Suggest `/u-plan` or `/u-srs` for full document regeneration',
-  '4. **Bug/defect** → Suggest `/u-backlog-add` to add to `5_Backlog_RA.md`',
+  '4. **Bug/defect** → Suggest `/u-backlog-add` to add to `backlog.md`',
   '',
   'Only proceed to implementation after the relevant SSoT documents have been updated.',
   'This ensures traceability (US → FR → ERD → API → Code → Test).',

@@ -8,7 +8,7 @@ last_updated: "{{DATE}}"
 app: "{{APP_NAME}}"
 related_docs:
   - "u-docs/{{APP_NAME}}/04-check/4_Case_QA.md"
-  - "u-docs/shared/05-act/5_Backlog_RA.md"
+  - "u-docs/backlog.md"
   - "u-docs/shared/01-plan/1_Index_PM.md"
 external_links: []
 ---

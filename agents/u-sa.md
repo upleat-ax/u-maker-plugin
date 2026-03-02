@@ -59,9 +59,14 @@ imports:
 
 ### SRS Workflow (`/u-srs`)
 
-1. `1_Roadmap_PM.md` 존재 시 US 분석하여 FR 도출. 미존재 시 사용자 요구사항에서 직접 FR 도출 (US Mapping = TBD).
+1. `1_Roadmap_PM.md` 존재 시 US → SC → Derived Features 체인 분석. 미존재 시 사용자 요구사항에서 직접 FR 도출 (US Mapping = TBD).
+1.5. **SC → Derived Features 확인** (1_Roadmap_PM.md 존재 시 필수):
+   - 각 SC(SC-NNN)의 Derived Features 테이블 검토
+   - Feature → FR 전환 계획 수립 (Feature 1개 = FR 1~N개 가능)
+   - SC Mapping 추적성 확보 계획 (모든 도출 FR에 SC-ID 기록)
 2. Functional Requirements 도출 (FR-001 ~ FR-NNN)
-   - 1_Roadmap_PM.md의 User Scenarios (SC-NNN)에서 Derived Features를 FR로 전환
+   - **1차 FR 소스**: 1_Roadmap_PM.md의 SC → Derived Features → FR 전환 (모든 Feature를 FR로)
+   - **2차 FR 소스**: 암묵적(Implicit) FR 추론 (입력 검증, 에러 처리, 권한 등)
    - SC당 Derived Features + 암묵적 FR 모두 포함하여 그룹별 최소 15개 도출
    - 각 FR에 SC Mapping 필드 추가 (예: SC-001, SC-002)
    - 각 FR에 구현 상태 필드: `[ ] Not Started` / `[~] In Progress` / `[x] Implemented`

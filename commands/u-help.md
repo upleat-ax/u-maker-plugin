@@ -83,7 +83,8 @@ DOCUMENTS BY PHASE
   02-design  2_ERD_SA, 2_API_SA, 2_Screen_UX, 2_DesignSystem_UX
   03-dev     3_Code_DV, 3_Screen_UX, 3_UIComponents_UX, 3_DesignToken_UX
   04-check   4_Case_QA, 4_Report_QA
-  05-act     5_Backlog_RA, 5_IterationLog_RA, 5_Retrospective_PM
+  05-act     5_IterationLog_RA, 5_Retrospective_PM
+  root       backlog.md, summary.md
 
 --------------------------------------------------------------------
 

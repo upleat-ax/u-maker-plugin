@@ -112,7 +112,7 @@ flowchart TD
 ```python
 def check_exit_criteria():
     # Condition 1: All backlog items Done
-    backlog = parse_backlog("u-docs/shared/05-act/5_Backlog_RA.md")
+    backlog = parse_backlog("u-docs/backlog.md")
     active_items = [item for item in backlog
                     if item.status not in ("Done", "Cancelled", "Deferred")]
     cond_1 = len(active_items) == 0
@@ -162,7 +162,7 @@ def check_exit_criteria():
 
 ## 6. Backlog Item Structure
 
-`5_Backlog_RA.md` 내 백로그 항목의 표준 구조:
+`backlog.md` 내 백로그 항목의 표준 구조:
 
 | Field | Description | Example |
 |-------|-------------|---------|
