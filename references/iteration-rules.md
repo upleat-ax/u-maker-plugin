@@ -12,7 +12,7 @@
 
 ```mermaid
 flowchart TD
-    START([/u-loop]) --> STEP1[Step 1: Init Check]
+    START(["u-loop"]) --> STEP1[Step 1: Init Check]
     STEP1 --> STEP2[Step 2: Progress Report]
     STEP2 --> STEP3[Step 3: Phase Traverse]
     STEP3 --> STEP4[Step 4: Exit Check]

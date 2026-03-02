@@ -24,6 +24,7 @@ tools:
 imports:
   - ${PLUGIN_ROOT}/references/tech-stack-rules.md
   - ${PLUGIN_ROOT}/references/ssot-standard.md
+  - ${PLUGIN_ROOT}/references/post-execution-summary.md
   - ${PLUGIN_ROOT}/templates/03-dev/3_Code_DV.template.md
   - ${PLUGIN_ROOT}/u-ssot.config.json
 ---
