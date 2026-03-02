@@ -129,6 +129,25 @@ external_links: []
 
 ---
 
+## 3.5 System Context
+
+```mermaid
+C4Context
+    title System Context — {{PROJECT_NAME}}
+    Person(user, "User", "서비스 사용자")
+    System(app, "{{PROJECT_NAME}}", "메인 애플리케이션")
+    System_Ext(auth, "OAuth Provider", "Google / GitHub 인증")
+    System_Ext(email, "Email Service", "알림 이메일 발송")
+    System_Ext(storage, "Cloud Storage", "파일 업로드/다운로드")
+
+    Rel(user, app, "사용", "HTTPS")
+    Rel(app, auth, "OAuth 인증", "HTTPS")
+    Rel(app, email, "이메일 발송", "SMTP/API")
+    Rel(app, storage, "파일 저장", "S3 API")
+```
+
+---
+
 ## 4. Sequence Diagrams
 
 ### 4.1 Login Flow
@@ -169,6 +188,63 @@ sequenceDiagram
     DB-->>API: Result
     API-->>Client: {{Response}}
     Client-->>User: {{UI Update}}
+```
+
+### 4.3 Token Lifecycle
+
+```mermaid
+stateDiagram-v2
+    [*] --> Valid : Login success
+    Valid --> Expiring : TTL < 5min
+    Expiring --> Valid : Token refresh
+    Expiring --> Expired : No refresh
+    Valid --> Revoked : Logout
+    Expired --> [*]
+    Revoked --> [*]
+```
+
+### 4.4 Complex Auth Flow (zenuml)
+
+> 3단계 이상 중첩 조건이 있는 복잡한 인증·트랜잭션 플로우에 사용한다.
+
+```zenuml
+@Actor User
+@Boundary Client
+@Control API
+@Database DB
+
+// Login with token refresh
+User -> Client.submitLogin(email, password) {
+  Client -> API.POST_auth_login(credentials) {
+    API -> DB.findUserByEmail(email) {
+      return userRecord
+    }
+    if (passwordValid) {
+      API -> DB.createSession(userId) {
+        return sessionId
+      }
+      return {token, refreshToken, user}
+    } else {
+      throw INVALID_CREDENTIALS
+    }
+  }
+}
+
+// Token refresh flow
+User -> Client.makeAuthenticatedRequest() {
+  if (tokenExpiring) {
+    Client -> API.POST_auth_refresh(refreshToken) {
+      if (refreshTokenValid) {
+        return {newToken}
+      } else {
+        throw REFRESH_TOKEN_EXPIRED
+      }
+    }
+  }
+  Client -> API.resource(newToken) {
+    return data
+  }
+}
 ```
 
 ---

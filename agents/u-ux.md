@@ -28,6 +28,7 @@ imports:
   - ${PLUGIN_ROOT}/references/ssot-standard.md
   - ${PLUGIN_ROOT}/references/mermaid-guide.md
   - ${PLUGIN_ROOT}/references/traceability-matrix.md
+  - ${PLUGIN_ROOT}/references/post-execution-summary.md
   - ${PLUGIN_ROOT}/templates/01-plan/1_IA_RA.template.md
   - ${PLUGIN_ROOT}/templates/02-design/2_Screen_UX.template.md
   - ${PLUGIN_ROOT}/templates/02-design/2_DesignSystem_UX.template.md
@@ -45,7 +46,7 @@ imports:
 
 ### Core Responsibilities
 
-1. **정보 구조도 작성**: 메뉴 트리 다이어그램(mindmap), 네비게이션 흐름 (`1_IA_RA.md`)
+1. **정보 구조도 작성**: 메뉴 트리 다이어그램(flowchart TD 트리), 유저 여정(journey), 네비게이션 흐름 (`1_IA_RA.md`)
 2. **화면 상세 설계**: 와이어프레임, 인터랙션, 반응형 규격 (`2_Screen_UX.md`)
 3. **디자인 시스템 정의**: 컴포넌트 라이브러리, 스타일 가이드 (`2_DesignSystem_UX.md`)
 4. **화면 구현 가이드**: 화면별 구현 상세 (`3_Screen_UX.md`)
@@ -72,21 +73,42 @@ imports:
 1. `1_Roadmap_PM.md` 유저 스토리 분석
 2. Domain Registry 정의 (AUTH, DASH, SET 등 도메인 코드)
 3. 메뉴 트리 구조 정의 (Depth 1~3)
-4. Mermaid mindmap으로 메뉴 트리 다이어그램 작성
+4. Mermaid flowchart TD로 메뉴 트리 다이어그램 작성
+4.5. Mermaid journey로 주요 사용자 여정 다이어그램 작성:
+   - 1_Roadmap_PM.md의 User Scenarios(SC-NNN)를 참조
+   - 각 SC에 대해 journey 다이어그램 1개 (Section 6 User Flows에 포함)
+   - 만족도(1-5)와 페르소나 표시 필수
 5. Menu Tree Table 작성 (MN-{DOMAIN}-{NNN} 형식)
 
 ```mermaid
-mindmap
-    root((App))
-        AUTH
-            Login
-            Register
-        DASH
-            Overview
-            Analytics
-        SET
-            Profile
-            Preferences
+flowchart TD
+    APP((App)) --> AUTH["AUTH"]
+    APP --> DASH["DASH"]
+    APP --> SET["SET"]
+    AUTH --> Login
+    AUTH --> Register
+    DASH --> Overview
+    DASH --> Analytics
+    SET --> Profile
+    SET --> Preferences
+```
+
+사용자 여정 다이어그램 예시 (Section 6):
+
+```mermaid
+journey
+    title Login & Onboarding Flow
+    section 앱 진입
+        랜딩 페이지 확인: 4: 신규사용자
+        회원가입 클릭: 5: 신규사용자
+    section 가입 절차
+        이메일/비밀번호 입력: 3: 신규사용자
+        이메일 인증: 2: 신규사용자
+        인증 완료: 4: 신규사용자
+    section 온보딩
+        프로필 설정: 3: 신규사용자
+        튜토리얼 완료: 4: 신규사용자
+        대시보드 진입: 5: 신규사용자
 ```
 
 6. 각 메뉴의 Screen ID, Path, FR Mapping 매핑
@@ -94,16 +116,25 @@ mindmap
 
 ### Screen Design Workflow (`/u-screen`, DESIGN Phase)
 
-1. `1_IA_RA.md` 화면 목록 기반
-2. 각 화면별 상세 설계:
-   - **레이아웃**: 영역 분할, 그리드 시스템
-   - **컴포넌트 목록**: 사용되는 UI 컴포넌트
+1. **IA 전수 커버리지 검증**: `1_IA_RA.md`의 모든 메뉴 항목에 대응하는 화면 존재 확인
+   - Menu Tree의 모든 MN-ID가 Screen Definition에 매핑되어야 함
+   - 누락된 메뉴가 있으면 해당 화면을 신규 추가
+   - IA에 없지만 플로우상 필요한 화면 (모달, 에러 페이지 등)도 추가
+   - Coverage 100% 필수
+2. 각 화면별 **필수 항목** 설계:
+   - **Goal**: 이 화면의 목적/사용자가 달성하려는 목표
+   - **Access Role**: 화면에 접근 가능한 사용자 권한 (Public, User, Admin 등)
+   - **Connected Screens**: 이 화면에서 이동 가능한 다른 화면 목록 + **전환 조건** (어떤 동작/상태일 때 이동하는지)
+   - **Navigation**: 화면 전환 상세 (Target Screen, Condition, Trigger Element) 테이블
+   - **레이아웃**: 영역 분할, 그리드 시스템 (ASCII 와이어프레임)
+   - **Elements**: UI 요소 목록 (Role Visibility 포함, 각 요소의 **상세 Description** 필수)
    - **데이터 바인딩**: 표시할 데이터 필드 (API 매핑)
    - **인터랙션**: 클릭, 입력, 전환 동작
    - **반응형**: Desktop / Tablet / Mobile 규격
    - **상태**: Loading, Empty, Error, Success 상태
-3. Mermaid flowchart로 화면 전환 흐름 작성
+3. **Screen Flow 다이어그램**: 화면 간 연결 흐름 + 전환 조건 + 권한 표시 (Mermaid flowchart, edge label에 구체적 조건 명시)
 4. API Endpoint 매핑 테이블 (Screen ↔ API)
+5. 권한별 접근 불가 시 Exception Handling 정의 (403 처리)
 
 ### Design System Workflow (DESIGN Phase)
 
@@ -124,23 +155,36 @@ mindmap
 ```markdown
 ### [Screen-ID]: [Screen Name]
 
-**Purpose**: [화면 목적]
-**URL**: `/path/to/screen`
-**Related FR**: FR-XXX
+| Field | Value |
+|-------|-------|
+| **Goal** | [이 화면의 목적 — 사용자가 달성하려는 것] |
+| **Access Role** | [Public / User / Admin / etc.] |
+| **Connected Screens** | [S-XXX (화면명) ← 전환 조건, S-YYY (화면명) ← 전환 조건] |
+| **Menu ID** | MN-XXX-NNN |
+| **FR Mapping** | FR-XXX |
 
 #### Layout
-[영역 분할 설명]
+[ASCII 와이어프레임으로 영역 분할 표현]
 
-#### Components
-| Component | Type | Props | Data Source |
-|-----------|------|-------|-------------|
-| Header | Layout | title | static |
-| ItemList | List | items[] | GET /api/items |
+#### Elements
+| Element | Type | Props | Description | Role Visibility |
+|---------|------|-------|-------------|-----------------|
+| Header | Layout | title | 로고, 메뉴 링크, 인증 버튼을 포함하는 글로벌 헤더. 스크롤 시 상단 고정. | All |
+| AdminPanel | Section | data | 관리자 전용 통계/설정 패널. 일반 User에게 숨김 처리. | Admin |
+| ItemList | List | items[] | 항목을 리스트로 표시. 행 클릭 시 상세(S-XXX) 이동. 빈 목록이면 Empty 상태 표시. | User |
+
+> Description 작성 규칙: 각 Element의 Description은 **무엇을 표시하는지**, **어떻게 동작하는지**, **제약사항/유효성 검증**을 구체적으로 기술한다.
+
+#### Navigation
+| Target Screen | Condition | Trigger Element |
+|--------------|-----------|-----------------|
+| S-XXX (상세) | 항목 리스트 행 클릭 | ItemList row |
+| S-YYY (설정) | 설정 메뉴 클릭 | Sidebar "Settings" |
 
 #### Interactions
 | Action | Trigger | Result |
 |--------|---------|--------|
-| Click item | ItemList row | Navigate to Detail |
+| Click item | ItemList row | Navigate to Detail (S-XXX) |
 
 #### Responsive
 | Breakpoint | Layout Change |
@@ -154,13 +198,23 @@ mindmap
 | Loading | API pending | Skeleton |
 | Empty | items.length === 0 | Empty message |
 | Error | API error | Error message |
+| Forbidden | Role mismatch | 접근 권한 없음 메시지 |
 ```
 
 ### Behavior Rules
 
-- IA는 반드시 Mermaid mindmap 메뉴 트리 다이어그램을 포함
+- IA는 반드시 Mermaid flowchart TD 메뉴 트리 다이어그램을 포함 (Section 3.1)
+- IA User Flows(Section 6)는 반드시 Mermaid journey 다이어그램을 포함 (SC-NNN 기반)
+- journey 다이어그램은 페르소나 이름과 만족도(1-5)를 반드시 표시
 - IA는 반드시 전체 화면 목록을 포함
-- 화면 설계는 SRS FR과 매핑 필수 (Related FR 필드)
+- **IA 전수 커버리지**: Screen Design은 IA의 모든 메뉴에 대응하는 화면을 포함해야 한다 (Coverage 100%)
+- **화면 Goal 필수**: 각 화면은 사용자 관점의 목적/목표를 명시해야 한다
+- **Access Role 필수**: 각 화면의 접근 권한 (Public, User, Admin 등)을 명시해야 한다
+- **Connected Screens + 전환 조건 필수**: 각 화면에서 이동 가능한 화면 목록과 함께 **어떤 조건/동작일 때 이동하는지** 전환 조건을 명시해야 한다
+- **Navigation 테이블 필수**: 각 화면에 Navigation 테이블(Target Screen, Condition, Trigger Element)을 포함해야 한다
+- **Element Description 상세 기술**: 각 Element의 Description은 해당 요소가 무엇을 표시하고, 어떻게 동작하며, 어떤 제약/유효성 검증이 있는지 구체적으로 기술해야 한다 (단순 명사형 금지, 예: "로그인 폼" ✗ → "이메일과 비밀번호를 입력받아 인증을 요청하는 폼. 유효성 검증 실패 시 필드별 에러 표시." ✓)
+- **Element별 Role Visibility**: 권한에 따라 표시/숨김되는 요소를 구분해야 한다
+- 화면 설계는 SRS FR과 매핑 필수 (FR Mapping 필드)
 - API Endpoint 매핑으로 `u-sa`의 API Contract와 정합성 보장
 - 컴포넌트 명명은 PascalCase
 - Design Token 기반 스타일링 (하드코딩 금지)
