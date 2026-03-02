@@ -43,14 +43,15 @@ SRS의 Functional Requirements를 기반으로 테스트를 체계적으로 관�
 
 1. **테스트 케이스 설계**: SRS FR 기반 테스트 시나리오 도출
 2. **케이스 분류**: 정상(Positive), 비정상(Negative), 경계값(Boundary)
-3. **우선순위 설정**: Critical Path → Core Feature → Edge Case
-4. **추적성 보장**: FR → Test Case 매핑
-5. **테스트 실행**: `4_Case_QA.md`의 테스트 케이스 실행
-6. **결과 기록**: Pass/Fail/Skip 판정 및 상세 기록
-7. **리포트 생성**: `4_Report_QA.md` 작성
-8. **결함 분류**: Critical/Major/Minor/Trivial 심각도 분류
-9. **원인 분석**: Fail 케이스의 근본 원인 분석
-10. **수정 요청 생성**: 개발자에게 전달할 Fix Request 작성
+3. **테스트 레벨 강제**: 각 FR마다 Unit Test + E2E Test 케이스를 모두 작성
+4. **우선순위 설정**: Critical Path → Core Feature → Edge Case
+5. **추적성 보장**: FR → Test Case 매핑
+6. **테스트 실행**: `4_Case_QA.md`의 테스트 케이스 실행
+7. **결과 기록**: Pass/Fail/Skip 판정 및 상세 기록
+8. **리포트 생성**: `4_Report_QA.md` 작성
+9. **결함 분류**: Critical/Major/Minor/Trivial 심각도 분류
+10. **원인 분석**: Fail 케이스의 근본 원인 분석
+11. **수정 요청 생성**: 개발자에게 전달할 Fix Request 작성
 
 ### Owned SSoT Documents
 
@@ -77,14 +78,22 @@ SRS의 Functional Requirements를 기반으로 테스트를 체계적으로 관�
 ### Test Case Design Workflow (`/u-test`)
 
 1. `1_SRS_RA.md` 분석 → FR 목록 추출
-2. 각 FR별 테스트 시나리오 도출
-3. 시나리오별 테스트 케이스 작성
-4. 우선순위 분류
-5. `4_Case_QA.md` 생성/갱신
+2. 각 FR별로 Unit 시나리오와 E2E 시나리오를 각각 도출
+3. 각 FR별 최소 케이스 작성:
+   - Unit: Positive 1개 + Negative/Boundary 중 1개 이상
+   - E2E: 핵심 사용자 여정(성공 경로) 1개 + 실패/예외 경로 1개 이상
+4. 시나리오별 테스트 케이스를 재현 가능한 상세 스텝으로 작성
+5. 우선순위 분류
+6. `4_Case_QA.md` 생성/갱신
 
 ### Test Case Format
 
 > **시나리오 작성 원칙**: 각 테스트 케이스는 "**누가(Actor)** — **어떤 화면(Screen)**에서 — **어떤 요소(Element)**를 — **어떻게 조작하고(Action)** — **어떤 값을 입력(Input)**하여 — **무엇을 기대하는가(Expected Result)**"를 구체적으로 기술해야 한다. 추상적 표현(예: "클릭한다") 대신 구체적 표현(예: "로그인 화면(S-001)의 '로그인' 버튼을 클릭한다")을 사용한다.
+>
+> **필수 규칙**:
+> - 모든 FR은 Unit + E2E 케이스를 모두 가져야 한다.
+> - Step은 생략 없이 재현 가능해야 한다.
+> - Expected Result는 UI/API/DB 관측 포인트 중 최소 1개 이상 포함해야 한다.
 
 ```markdown
 ### TC-[NNN]: [Test Case Name]
@@ -94,10 +103,12 @@ SRS의 Functional Requirements를 기반으로 테스트를 체계적으로 관�
 | **TC-ID** | TC-NNN |
 | **Related FR** | FR-XXX |
 | **SC Mapping** | SC-NNN |
+| **Level** | Unit \| E2E |
 | **Type** | Positive \| Negative \| Boundary |
 | **Priority** | Critical \| Major \| Minor |
 | **Actor** | [사용자 유형 — 예: 일반 사용자, 관리자, 비로그인 사용자] |
 | **Precondition** | [사전 조건 — 예: PRE-001, user@test.com 계정 존재] |
+| **Automation Target** | Vitest \| Playwright |
 
 **Test Steps**:
 
@@ -160,11 +171,12 @@ SRS의 Functional Requirements를 기반으로 테스트를 체계적으로 관�
 ### Test Execution Workflow
 
 1. `4_Case_QA.md` 읽기 → 전체 테스트 케이스 목록 확인
-2. Priority 순서대로 실행 (Critical → Major → Minor)
-3. 각 케이스의 Step 순차 실행
-4. 기대 결과 vs 실제 결과 비교
-5. Pass/Fail/Skip 판정
-6. `4_Report_QA.md` 갱신
+2. FR별 Unit/E2E 커버리지 누락 여부 점검 (누락 시 먼저 케이스 보강)
+3. Priority 순서대로 실행 (Critical → Major → Minor)
+4. 각 케이스의 Step 순차 실행
+5. 기대 결과 vs 실제 결과 비교 (필요 시 로그/스크린샷/쿼리 결과 수집)
+6. Pass/Fail/Skip 판정
+7. `4_Report_QA.md` 갱신
 
 ### Execution Methods
 

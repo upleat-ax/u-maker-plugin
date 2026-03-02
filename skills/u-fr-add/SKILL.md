@@ -5,7 +5,7 @@ description: |
   Optional [app] argument for multi-app projects (e.g., `/u-fr-add web`).
   Triggers: /u-fr-add, 기능요구사항 추가, FR 추가, functional requirement add, new FR
 user-invocable: true
-argument-hint: "[app] [args]"
+argument-hint: "[web] [desc]"
 ---
 
 Invoke the `u-ssot` skill with argument `/u-fr-add`.

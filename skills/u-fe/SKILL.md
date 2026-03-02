@@ -5,7 +5,7 @@ description: |
   Optional [app] argument for multi-app projects (e.g., `/u-fe web`).
   Triggers: /u-fe, 프론트엔드, frontend, 화면 구현
 user-invocable: true
-argument-hint: "[app] [args]"
+argument-hint: "[web]"
 ---
 
 Invoke the `u-ssot` skill with argument `/u-fe` and pass any user-provided arguments.

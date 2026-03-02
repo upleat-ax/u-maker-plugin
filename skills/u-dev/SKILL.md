@@ -5,7 +5,7 @@ description: |
   Optional [app] argument for multi-app projects (e.g., `/u-dev web`).
   Triggers: /u-dev, do phase, 개발, 구현
 user-invocable: true
-argument-hint: "[app] [args]"
+argument-hint: "[web]"
 ---
 
 Invoke the `u-ssot` skill with argument `/u-dev` and pass any user-provided arguments.
