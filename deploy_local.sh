@@ -2,7 +2,7 @@
 # ============================================================
 # deploy_local.sh — u-ssot local plugin deployment
 #
-# Deploys the u-ssot plugin to Claude Code and Codex CLI.
+# Deploys the u-ssot plugin to Claude Code, Codex CLI, and Gemini CLI.
 #   - macOS:   ~/.claude/plugins/...
 #   - Windows: %USERPROFILE%\.claude\plugins\... (Git Bash / WSL)
 #
@@ -48,35 +48,41 @@ detect_os() {
       OS="macos"
       CLAUDE_HOME="$HOME/.claude"
       CODEX_HOME="$HOME/.codex"
+      GEMINI_HOME="$HOME/.gemini"
       ;;
     Linux)
       # Could be native Linux or WSL
       if grep -qi microsoft /proc/version 2>/dev/null; then
         OS="wsl"
-        # WSL: use Windows user home for Claude/Codex
+        # WSL: use Windows user home for Claude/Codex/Gemini
         WIN_HOME="$(wslpath "$(cmd.exe /C 'echo %USERPROFILE%' 2>/dev/null | tr -d '\r')" 2>/dev/null || echo "")"
         if [[ -n "$WIN_HOME" && -d "$WIN_HOME/.claude" ]]; then
           CLAUDE_HOME="$WIN_HOME/.claude"
           CODEX_HOME="$WIN_HOME/.codex"
+          GEMINI_HOME="$WIN_HOME/.gemini"
         else
           CLAUDE_HOME="$HOME/.claude"
           CODEX_HOME="$HOME/.codex"
+          GEMINI_HOME="$HOME/.gemini"
         fi
       else
         OS="linux"
         CLAUDE_HOME="$HOME/.claude"
         CODEX_HOME="$HOME/.codex"
+        GEMINI_HOME="$HOME/.gemini"
       fi
       ;;
     MINGW*|MSYS*|CYGWIN*)
       OS="windows"
       CLAUDE_HOME="$USERPROFILE/.claude"
       CODEX_HOME="$USERPROFILE/.codex"
+      GEMINI_HOME="$USERPROFILE/.gemini"
       ;;
     *)
       OS="unknown"
       CLAUDE_HOME="$HOME/.claude"
       CODEX_HOME="$HOME/.codex"
+      GEMINI_HOME="$HOME/.gemini"
       ;;
   esac
 
@@ -265,7 +271,35 @@ setup_codex() {
 }
 
 # ============================================================
-# 6b. Register skill symlinks in ~/.claude/skills/
+# 6b. Setup Gemini symlinks
+# ============================================================
+
+setup_gemini() {
+  if [[ ! -d "$GEMINI_HOME" ]]; then
+    warn "Gemini home not found ($GEMINI_HOME), skipping Gemini setup"
+    return 0
+  fi
+
+  log "Setting up Gemini symlinks..."
+
+  # plugins -> Claude plugins
+  make_link "$PLUGINS_DIR" "$GEMINI_HOME/plugins"
+
+  # agents -> Claude agents (if Claude agents dir exists)
+  if [[ -d "$CLAUDE_HOME/agents" ]]; then
+    make_link "$CLAUDE_HOME/agents" "$GEMINI_HOME/agents"
+  fi
+
+  # skills -> Claude skills (if Claude skills dir exists)
+  if [[ -d "$CLAUDE_HOME/skills" ]]; then
+    make_link "$CLAUDE_HOME/skills" "$GEMINI_HOME/skills"
+  fi
+
+  ok "Gemini shares Claude plugin directories"
+}
+
+# ============================================================
+# 6c. Register skill symlinks in ~/.claude/skills/
 # ============================================================
 
 register_skill_symlinks() {
@@ -323,6 +357,7 @@ deploy() {
   echo -e "  OS:      $OS"
   echo -e "  Claude:  $CLAUDE_HOME"
   echo -e "  Codex:   $CODEX_HOME"
+  echo -e "  Gemini:  $GEMINI_HOME"
   echo -e "${BOLD}----------------------------------------${NC}"
   echo ""
 
@@ -330,35 +365,39 @@ deploy() {
   mkdir -p "$MARKETPLACES_DIR" "$CACHE_DIR"
 
   # Step 1: Marketplace symlink
-  log "1/6  Marketplace symlink"
+  log "1/7  Marketplace symlink"
   make_link "$SCRIPT_DIR" "$MARKETPLACES_DIR/$MARKETPLACE_NAME"
 
   # Step 2: Cache sync
-  log "2/6  Cache sync"
+  log "2/7  Cache sync"
   sync_to_cache
 
   # Step 3: known_marketplaces.json
-  log "3/6  known_marketplaces.json"
+  log "3/7  known_marketplaces.json"
   update_known_marketplaces
 
   # Step 4: installed_plugins.json
-  log "4/6  installed_plugins.json"
+  log "4/7  installed_plugins.json"
   update_installed_plugins
 
-  # Step 5: Skill symlinks (for Codex compatibility)
-  log "5/6  Skill symlinks"
+  # Step 5: Skill symlinks
+  log "5/7  Skill symlinks"
   register_skill_symlinks
 
   # Step 6: Codex
-  log "6/6  Codex integration"
+  log "6/7  Codex integration"
   setup_codex
+
+  # Step 7: Gemini
+  log "7/7  Gemini integration"
+  setup_gemini
 
   echo ""
   echo -e "${BOLD}========================================${NC}"
   echo -e "${GREEN}${BOLD}  Deploy complete!${NC}"
   echo -e "${BOLD}========================================${NC}"
   echo ""
-  echo -e "  Restart Claude Code / Codex to pick up changes."
+  echo -e "  Restart Claude Code / Codex / Gemini CLI to pick up changes."
   echo ""
 }
 
@@ -423,8 +462,18 @@ with open('$INSTALLED_PL', 'w') as f:
     ok "Removed $count skill symlinks"
   fi
 
+  # Remove Gemini symlinks
+  if [[ -d "$GEMINI_HOME" ]]; then
+    for link in plugins agents skills; do
+      if [[ -L "$GEMINI_HOME/$link" ]]; then
+        rm "$GEMINI_HOME/$link"
+        ok "Gemini $link symlink removed"
+      fi
+    done
+  fi
+
   echo ""
-  ok "Clean complete. Restart Claude Code / Codex."
+  ok "Clean complete. Restart Claude Code / Codex / Gemini CLI."
   echo ""
 }
 
@@ -513,6 +562,23 @@ check() {
     fi
   else
     warn "Codex not installed (skipped)"
+  fi
+
+  # Gemini
+  if [[ -d "$GEMINI_HOME" ]]; then
+    if [[ -L "$GEMINI_HOME/plugins" ]]; then
+      local gemini_target
+      gemini_target="$(readlink "$GEMINI_HOME/plugins")"
+      if [[ "$gemini_target" == "$PLUGINS_DIR" ]]; then
+        ok "Gemini plugins → Claude plugins"
+      else
+        warn "Gemini plugins → $gemini_target (expected $PLUGINS_DIR)"
+      fi
+    else
+      warn "Gemini plugins symlink missing"
+    fi
+  else
+    warn "Gemini not installed (skipped)"
   fi
 
   echo ""
