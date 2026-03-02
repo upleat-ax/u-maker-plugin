@@ -28,7 +28,7 @@ external_links: []
 
 | Item | Value |
 |------|-------|
-| Test Types | Unit, Integration, E2E |
+| Test Types | Unit, E2E |
 | Coverage Target | 80%+ |
 | Tools | Vitest (Unit), Playwright (E2E) |
 | Environment | Local + CI |
@@ -58,6 +58,11 @@ external_links: []
 ## 3. Test Cases
 
 > **시나리오 작성 규칙**: 각 테스트 스텝은 "누가(Actor) — 어떤 화면(Screen)에서 — 어떤 요소(Element)를 — 어떻게 조작하고(Action) — 어떤 값을 입력(Input)하여 — 무엇을 기대하는가(Expected)"를 구체적으로 기술한다.
+>
+> **필수 규칙**:
+> - 모든 FR은 반드시 Unit Test 케이스와 E2E Test 케이스를 모두 포함한다.
+> - 각 FR의 Unit 케이스는 최소 2개(정상 1 + 비정상/경계 1 이상), E2E 케이스는 최소 2개(성공 여정 1 + 실패/예외 1 이상) 작성한다.
+> - Expected Result는 UI/API/DB 중 최소 1개 이상의 검증 포인트를 포함한다.
 
 ### 3.1 FR-001: {{기능명}}
 
@@ -68,10 +73,12 @@ external_links: []
 | **TC-ID** | TC-001 |
 | **FR Mapping** | FR-001 |
 | **SC Mapping** | SC-001 |
-| **Type** | Positive \| Integration |
+| **Level** | Unit |
+| **Type** | Positive |
 | **Priority** | Critical |
 | **Actor** | {{사용자 유형 — 예: 일반 사용자, 관리자}} |
 | **Precondition** | PRE-001, PRE-002 |
+| **Automation Target** | Vitest |
 
 **Test Steps**:
 
@@ -91,10 +98,12 @@ external_links: []
 | **TC-ID** | TC-002 |
 | **FR Mapping** | FR-001 |
 | **SC Mapping** | SC-001 |
-| **Type** | Negative \| Integration |
+| **Level** | Unit |
+| **Type** | Negative \| Boundary |
 | **Priority** | Major |
 | **Actor** | {{사용자 유형}} |
 | **Precondition** | PRE-001 |
+| **Automation Target** | Vitest |
 
 **Test Steps**:
 
@@ -115,10 +124,12 @@ external_links: []
 | **TC-ID** | TC-003 |
 | **FR Mapping** | FR-002 |
 | **SC Mapping** | SC-002 |
-| **Type** | Positive \| E2E |
+| **Level** | E2E |
+| **Type** | Positive |
 | **Priority** | Major |
 | **Actor** | {{사용자 유형}} |
 | **Precondition** | PRE-001, PRE-002, PRE-003 |
+| **Automation Target** | Playwright |
 
 **Test Steps**:
 
@@ -130,15 +141,40 @@ external_links: []
 **Result**: [ ] Pass / [ ] Fail / [ ] Skip
 **Note**: -
 
+#### TC-004: {{테스트명 - E2E 실패/예외 시나리오}}
+
+| Field | Value |
+|-------|-------|
+| **TC-ID** | TC-004 |
+| **FR Mapping** | FR-002 |
+| **SC Mapping** | SC-002 |
+| **Level** | E2E |
+| **Type** | Negative \| Boundary |
+| **Priority** | Major |
+| **Actor** | {{사용자 유형}} |
+| **Precondition** | PRE-001, PRE-002, PRE-003 |
+| **Automation Target** | Playwright |
+
+**Test Steps**:
+
+| Step | Screen | Element | Action | Input Value | Expected Result |
+|------|--------|---------|--------|-------------|----------------|
+| 1 | {{화면명}} | {{요소명}} | {{동작}} | {{비정상/경계 입력값}} | {{검증 포인트: 에러 메시지/차단 동작/API 에러 코드}} |
+| 2 | {{화면명}} | {{요소명}} | {{동작}} | - | {{검증 포인트: 화면 상태 유지, 잘못된 데이터 미저장, 로깅 기록}} |
+
+**Result**: [ ] Pass / [ ] Fail / [ ] Skip
+**Note**: -
+
 ---
 
 ## 4. Test Case Summary
 
-| TC-ID | FR | SC | Type | Priority | Actor | Description | Result |
-|-------|-----|-----|------|----------|-------|-------------|--------|
-| TC-001 | FR-001 | SC-001 | Positive/Integration | Critical | {{Actor}} | {{설명}} | [ ] |
-| TC-002 | FR-001 | SC-001 | Negative/Integration | Major | {{Actor}} | {{설명}} | [ ] |
-| TC-003 | FR-002 | SC-002 | Positive/E2E | Major | {{Actor}} | {{설명}} | [ ] |
+| TC-ID | FR | SC | Level | Type | Priority | Actor | Description | Result |
+|-------|----|----|-------|------|----------|-------|-------------|--------|
+| TC-001 | FR-001 | SC-001 | Unit | Positive | Critical | {{Actor}} | {{설명}} | [ ] |
+| TC-002 | FR-001 | SC-001 | Unit | Negative/Boundary | Major | {{Actor}} | {{설명}} | [ ] |
+| TC-003 | FR-002 | SC-002 | E2E | Positive | Major | {{Actor}} | {{설명}} | [ ] |
+| TC-004 | FR-002 | SC-002 | E2E | Negative/Boundary | Major | {{Actor}} | {{설명}} | [ ] |
 
 ---
 
@@ -169,11 +205,11 @@ sequenceDiagram
 
 ## 6. Coverage Matrix
 
-| FR-ID | Feature | Test Cases | Coverage |
-|-------|---------|-----------|----------|
-| FR-001 | {{기능명}} | TC-001, TC-002 | Covered |
-| FR-002 | {{기능명}} | TC-003 | Covered |
-| FR-003 | {{기능명}} | - | Not Covered |
+| FR-ID | Feature | Unit Cases | E2E Cases | Coverage |
+|-------|---------|------------|-----------|----------|
+| FR-001 | {{기능명}} | TC-001, TC-002 | TC-003, TC-004 | Covered |
+| FR-002 | {{기능명}} | TC-005, TC-006 | TC-007, TC-008 | Covered |
+| FR-003 | {{기능명}} | - | - | Not Covered |
 
 ```mermaid
 pie title Test Coverage by FR

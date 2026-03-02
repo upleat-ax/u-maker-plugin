@@ -77,7 +77,7 @@ agents:
 | `u-ux` | UX Designer | PLAN, DESIGN, DO | 정보 구조도(IA), 화면 설계, Design System, Screen 구현, UI Components, Design Token, /u-screen, /u-ux-design |
 | `u-dv-fe` | Frontend Developer | DO | Next.js, react-query, Storybook, /u-fe, /u-storybook |
 | `u-dv-be` | Backend Developer | DO | API Routes, Prisma/Drizzle, /u-be |
-| `u-qa` | QA Engineer | CHECK | 테스트 케이스 설계, 테스트 실행, 결함 분석, /u-test, /u-bug-report |
+| `u-qa` | QA Engineer | CHECK | Unit+E2E 테스트 케이스 설계(상세 스텝), 테스트 실행, 결함 분석, /u-test, /u-bug-report |
 
 ---
 
@@ -92,7 +92,7 @@ agents:
 | `/u-plan` | PLAN Phase 실행 (양방향 워크플로우) | `(u-RA ↔ u-SA)` → `u-UX` → `u-RA` | US-First 또는 FR-First 패턴으로 로드맵/SRS → **User Scenarios(SC)** → IA → 인덱스 생성 |
 | `/u-design` | DESIGN Phase 실행 | `u-ux` → `u-sa` → `u-ra` | 화면설계 + DesignSystem → ERD + API → 모순검수 |
 | `/u-dev` | DO Phase 실행 | `u-ux` + `u-dv-fe` + `u-dv-be` | Screen/UIComponents/DesignToken + Contract 기반 병렬 개발 |
-| `/u-check` | CHECK Phase 실행 | `u-qa` | 케이스설계 → 실행 → 결함분석 |
+| `/u-check` | CHECK Phase 실행 | `u-qa` | Unit+E2E 케이스설계 → 실행 → 결함분석 |
 | `/u-act` | ACT Phase 실행 | `u-ra` | 백로그 정리 → 회고 → 아카이브 → 다음 Iteration |
 
 ### Loop Commands
@@ -127,10 +127,11 @@ agents:
 | `/u-erd` | ERD 문서 생성/갱신 | `u-sa` | u-docs/shared/02-design/2_ERD_SA.md |
 | `/u-api [app]` | API Contract 생성/갱신 | `u-sa` | u-docs/{app}/02-design/2_API_SA.md |
 | `/u-screen [app]` | 화면 설계 생성/갱신 | `u-ux` | u-docs/{app}/02-design/2_Screen_UX.md |
-| `/u-ux-design [app] [target]` | pencil.dev로 컴포넌트/디자인시스템/화면 시각화 | `u-ux` | .pen 파일에 디자인 반영 (IA·Screen·DesignToken 문서 참조) |
+| `/u-wireframe [app]` | 화면 와이어프레임 생성 (HTML) | `u-ux` | u-docs/{app}/02-design/2_Screen_Wireframes/{ScreenID}.html |
+| `/u-ux-design [app] [target]` | pencil.dev로 컴포넌트/디자인시스템/화면 시각화 | `u-ux` | .pen 파일에 디자인 반영 (IA·Screen·DesignToken 문서 참조). `u-docs/{app}/02-design/`에 저장 |
 | `/u-fe [app]` | Frontend 개발 실행 | `u-dv-fe` | 코드 생성 + u-docs/{app}/03-dev/3_Code_DV.md 갱신 |
 | `/u-be [app]` | Backend 개발 실행 | `u-dv-be` | 코드 생성 + u-docs/{app}/03-dev/3_Code_DV.md 갱신 |
-| `/u-test [app]` | 테스트 케이스 설계 | `u-qa` | u-docs/{app}/04-check/4_Case_QA.md |
+| `/u-test [app]` | Unit+E2E 테스트 케이스 설계 | `u-qa` | u-docs/{app}/04-check/4_Case_QA.md |
 | `/u-bug-report [app]` | 결함 분석 리포트 | `u-qa` | u-docs/{app}/04-check/4_Report_QA.md |
 
 ### Quality Assurance Commands
@@ -627,14 +628,7 @@ u-docs/
     └── iter-N/                      # Iteration 아카이브
 ```
 
-> **`u_design/` 폴더**: SSoT 문서(`u-docs/`) 외부의 별도 폴더. pencil.dev MCP가 생성하는 `.pen` 시각 디자인 파일을 저장한다.
-
-```
-u_design/                            # pencil.dev 시각 디자인 파일
-├── design-system.pen                # 디자인 시스템 전체 (토큰, 컴포넌트)
-├── components.pen                   # UI 컴포넌트 시각화
-└── {app}.pen                        # 앱별 전체 화면 (e.g., web.pen)
-```
+> **디자인 파일 저장**: pencil.dev MCP가 생성하는 `.pen` 시각 디자인 파일은 `u-docs/{app}/02-design/` (shared는 `shared/02-design/`)에 저장한다.
 
 ### Path Enforcement Rules
 
@@ -761,7 +755,7 @@ User Scenario는 User Story를 구체적인 페르소나·상황·단계별 행�
 |----------|-------------------|---------------|
 | **1_Roadmap_PM** | 프로젝트 타임라인 + 마일스톤 + 유저 시나리오 여정 | `gantt`, `timeline`, `journey` |
 | **1_SRS_RA** | 기능 관계도 + 구현 타임라인 + 우선순위 분포 + 시나리오 흐름 | `flowchart`, `gantt`, `pie`, `journey` |
-| **1_IA_RA** | 메뉴 트리 + 네비게이션 흐름 + 유저 플로우 여정 | `flowchart TD`, `flowchart`, `journey` |
+| **1_IA_RA** | 메뉴 트리(Tree 구조) + 네비게이션 흐름 + 유저 플로우 여정 | `flowchart TD` (Tree), `flowchart`, `journey` |
 | **1_Index_PM** | 문서 의존성 + Phase Gate 상태 | `flowchart`, `stateDiagram-v2` |
 | **2_ERD_SA** | ER 다이어그램 + 도메인 클래스 모델 + Entity 상태 전이 + 데이터 흐름 | `erDiagram`, `classDiagram`, `stateDiagram-v2`, `flowchart` |
 | **2_API_SA** | 시스템 컨텍스트 + API 호출 시퀀스 + 토큰 라이프사이클 + 복잡 플로우 | `C4Context`, `sequenceDiagram`, `stateDiagram-v2`, `zenuml` |
@@ -1677,7 +1671,8 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 
 ## Visual UX Design (`/u-ux-design`)
 
-pencil.dev MCP 도구를 사용하여 SSoT 문서(IA, Screen, DesignToken, UIComponents) 기반의 시각적 디자인을 생성하거나 갱신한다. `u-ux` 에이전트가 담당하며, 결과물은 **`u_design/` 폴더**에 `.pen` 파일로 저장된다.
+pencil.dev MCP 도구를 사용하여 SSoT 문서(IA, Screen, DesignToken, UIComponents) 기반의 시각적 디자인을 생성하거나 갱신한다. 모든 디자인 요소와 텍스트는 `u-ssot.config.json`의 `documentLanguage` 설정을 따른다.
+결과물은 **`u-docs/{app}/02-design/` 폴더**에 **앱당 1개의 `.pen` 파일**로 저장된다. `u_design` 또는 `u-design` 폴더는 절대 사용하지 않는다.
 
 ### Syntax
 
@@ -1687,24 +1682,24 @@ pencil.dev MCP 도구를 사용하여 SSoT 문서(IA, Screen, DesignToken, UICom
 
 - `[app]`: 앱 이름 (생략 시 단일 앱 자동 선택 또는 AskUserQuestion)
 - `[target]`: 처리 대상
-  - `all` (기본값): 디자인 시스템 + 모든 화면 → `u_design/{app}.pen`
-  - `system`: 디자인 시스템(컴포넌트/토큰)만 → `u_design/design-system.pen`
-  - `S-NNN`: 특정 화면 ID → `u_design/{app}.pen` (해당 프레임)
-  - `<ComponentName>`: 특정 컴포넌트 → `u_design/components.pen`
+  - `all` (기본값): 디자인 시스템 + 모든 화면 → `u-docs/{app}/02-design/{app}.pen`
+  - `system`: 디자인 시스템(컴포넌트/토큰)만 → `u-docs/shared/02-design/design-system.pen`
+  - `S-NNN`: 특정 화면 ID → `u-docs/{app}/02-design/{app}.pen` (해당 프레임)
+  - `<ComponentName>`: 특정 컴포넌트 → `u-docs/shared/02-design/components.pen`
 
 ### Routing
 
 ```
-/u-ux-design → u-ux 에이전트 → pencil.dev MCP 도구 활용 → u_design/*.pen 저장
+/u-ux-design → u-ux 에이전트 → pencil.dev MCP 도구 활용 → u-docs/{app}/02-design/{app}.pen 저장
 ```
 
 ### Output Files
 
 | 타겟 | 출력 파일 | 내용 |
 |------|-----------|------|
-| `system` | `u_design/design-system.pen` | 디자인 시스템 전체 (토큰, 컴포넌트) |
-| `all` / `{app}` | `u_design/{app}.pen` | 앱별 전체 화면 |
-| component | `u_design/components.pen` | UI 컴포넌트 시각화 |
+| `system` | `u-docs/shared/02-design/design-system.pen` | 디자인 시스템 전체 (토큰, 컴포넌트) |
+| `all` / `{app}` | `u-docs/{app}/02-design/{app}.pen` | 앱별 전체 화면 (단일 파일) |
+| component | `u-docs/shared/02-design/components.pen` | UI 컴포넌트 시각화 |
 
 ### Reference Documents (우선순위 순)
 
@@ -1720,7 +1715,7 @@ pencil.dev MCP 도구를 사용하여 SSoT 문서(IA, Screen, DesignToken, UICom
 ### Execution Flow
 
 ```
-1. 출력 경로 결정 (u_design/ 폴더 없으면 생성)
+1. 출력 경로 결정 (u-docs/{app}/02-design/ 폴더 없으면 생성)
 2. App context 결정 (단일/다중 앱 처리)
 3. target 파싱 (all / system / S-NNN / ComponentName)
 4. u-ux 에이전트 spawn → pencil.dev MCP 활용하여 디자인 작업 수행

@@ -458,7 +458,7 @@ flowchart TD
 
 ## 4. Syntax Pitfalls (필수 준수)
 
-### 4.1 노드 라벨에 `/` 사용 금지
+### 4.1 노드 라벨에 `/` 직접 사용 금지
 
 Mermaid는 `[/text/]`를 trapezoid(사다리꼴) 노드로 해석한다. URL 경로를 노드 라벨에 넣으면 lexical error가 발생한다.
 
@@ -470,18 +470,19 @@ CONTENT[/content/list]
 START[/u-loop 시작/]
 ```
 
-**올바른 패턴:**
+**올바른 패턴 (권장: 경로 세그먼트 줄바꿈 스택):**
 ```mermaid
 flowchart TD
-    HOME["Home (/)"]
-    LOGIN["Login (/login)"]
-    CONTENT["Content List (/content/list)"]
+    HOME["home"]
+    LOGIN["login"]
+    CONTENT["content<br/>list"]
     START["u-loop 시작"]
 ```
 
 **규칙:**
-- 노드 라벨에 `/`가 포함되면 반드시 `["..."]` (큰따옴표 래핑) 사용
-- URL 경로는 괄호 안에 표시: `["페이지명 (/path)"]`
+- 노드 라벨에는 `/`를 직접 넣지 않는다
+- 경로는 세그먼트 단위로 나눠 `<br/>`로 쌓아 표현한다 (예: `/services/protocol` → `"services<br/>protocol"`)
+- 노드 라벨은 반드시 `["..."]` (큰따옴표 래핑) 사용
 - trapezoid 노드 `[/text/]` 문법은 사용하지 않는다
 
 ### 4.2 특수문자 이스케이프
@@ -490,7 +491,7 @@ flowchart TD
 
 | 특수문자 | 금지 패턴 | 올바른 패턴 |
 |----------|-----------|-------------|
-| `/` | `A[/path]` | `A["/path"]` |
+| `/` | `A[/path]` | `A["path"]` 또는 `A["a<br/>b"]` |
 | `(`, `)` | `A[func()]` | `A["func()"]` |
 | `{`, `}` | `A[{obj}]` | `A["{obj}"]` |
 | `>`, `<` | `A[a>b]` | `A["a>b"]` |
@@ -503,7 +504,7 @@ flowchart TD
 ```mermaid
 flowchart TD
     A[로그인] --> B{"인증 성공?"}
-    B -->|Yes| C["홈 (/)"]
+    B -->|Yes| C["홈"]
     B -->|No| D["에러 메시지"]
 ```
 

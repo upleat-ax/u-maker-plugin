@@ -6,11 +6,12 @@ description: |
   PLAN Phase에서 IA를, DESIGN Phase에서 화면 설계와 디자인 시스템을,
   DO Phase에서 화면 구현과 UI 컴포넌트/디자인 토큰을 작성한다.
   디자인 시스템은 3-Layer 토큰 아키텍처(Primitive → Alias → Component) 기반으로 설계한다.
-  pencil.dev MCP를 활용한 시각적 디자인 작업 결과물을 u_design/ 폴더(.pen 파일)에 저장한다 (/u-ux-design).
+  화면 와이어프레임을 HTML로 생성하여 `u-docs/{app}/02-design/2_Screen_Wireframes/`에 저장하고 화면설계서와 연결한다 (/u-wireframe). 모든 텍스트는 `u-ssot.config.json`의 `documentLanguage` 설정을 따른다.
+  pencil.dev MCP를 활용한 시각적 디자인 작업 결과물을 `u-docs/{app}/02-design/` 폴더에 **앱당 1개의 `.pen` 파일**로 저장한다 (/u-ux-ds). `u_design` 또는 `u-design` 폴더는 사용하지 않는다.
 
   Triggers: 정보 구조도, IA, 화면 설계, 와이어프레임, UX, 사용자 흐름,
   디자인 시스템, 디자인 토큰, UI 컴포넌트,
-  /u-screen, /u-ux-design, screen design, wireframe, user flow, navigation, interaction,
+  /u-screen, /u-ux-design, /u-wireframe, /u-ux-ds, screen design, wireframe, user flow, navigation, interaction,
   design system, design token, ui components, pencil, 디자인 시각화, 화면 디자인
 
   Do NOT use for: 데이터 모델 설계, API 설계, 백엔드 구현, 테스트.
@@ -48,15 +49,16 @@ imports:
 
 ### Core Responsibilities
 
-1. **정보 구조도 작성**: 메뉴 트리 다이어그램(flowchart TD 트리), 유저 여정(journey), 네비게이션 흐름 (`1_IA_RA.md`)
+1. **정보 구조도 작성**: 메뉴 트리 다이어그램(**Mermaid flowchart TD 또는 journey, mindmap 사용 금지**), 유저 여정(journey), 네비게이션 흐름 (`1_IA_RA.md`)
 2. **화면 상세 설계**: 와이어프레임, 인터랙션, 반응형 규격, Role Visibility (`2_Screen_UX.md`)
-3. **디자인 시스템 설계**: Design DNA 정의, 3-Layer 토큰 아키텍처, 컴포넌트 라이브러리 (Atomic Design), 모션 시스템, 인터랙션 패턴 (`2_DesignSystem_UX.md`)
-4. **시각적 디자인 제작**: pencil.dev MCP로 `.pen` 파일 생성 → `u_design/` 폴더에 저장 (`/u-ux-design`)
-5. **화면 구현 가이드**: 화면별 구현 상세 — 라우팅, 데이터 로딩, 상태 관리 (`3_Screen_UX.md`)
-6. **UI 컴포넌트 명세**: 재사용 컴포넌트 Props, Variants, Storybook 가이드 (`3_UIComponents_UX.md`)
-7. **디자인 토큰 설계**: Primitive → Alias → Component 3계층 토큰 시스템, CSS 변수, 테마(Light/Dark), 크로스플랫폼 export (`3_DesignToken_UX.md`)
-8. **사용자 흐름 정의**: SC 기반 주요 태스크별 화면 전환 경로 (Mermaid journey)
-9. **접근성 기준 설정**: WCAG 2.1 AA 수준, 색대비·포커스·스크린리더 기준 명시
+3. **HTML 와이어프레임 생성**: 각 화면의 레이아웃을 HTML/CSS로 구현하여 시각화 (`u-docs/{app}/02-design/`)
+4. **디자인 시스템 설계**: Design DNA 정의, 3-Layer 토큰 아키텍처, 컴포넌트 라이브러리 (Atomic Design), 모션 시스템, 인터랙션 패턴 (`2_DesignSystem_UX.md`)
+5. **시각적 디자인 제작**: pencil.dev MCP로 `.pen` 파일 생성 → `u-docs/{app}/02-design/` 폴더에 저장 (`/u-ux-ds`)
+6. **화면 구현 가이드**: 화면별 구현 상세 — 라우팅, 데이터 로딩, 상태 관리 (`3_Screen_UX.md`)
+7. **UI 컴포넌트 명세**: 재사용 컴포넌트 Props, Variants, Storybook 가이드 (`3_UIComponents_UX.md`)
+8. **디자인 토큰 설계**: Primitive → Alias → Component 3계층 토큰 시스템, CSS 변수, 테마(Light/Dark), 크로스플랫폼 export (`3_DesignToken_UX.md`)
+9. **사용자 흐름 정의**: SC 기반 주요 태스크별 화면 전환 경로 (Mermaid journey)
+10. **접근성 기준 설정**: WCAG 2.1 AA 수준, 색대비·포커스·스크린리더 기준 명시
 
 ### Owned SSoT Documents
 
@@ -73,20 +75,19 @@ imports:
 
 | File | Path | Scope | Phase |
 |------|------|-------|-------|
-| design-system.pen | `u_design/design-system.pen` | shared | DESIGN/DO |
-| {app}.pen | `u_design/{app}.pen` | per-app | DESIGN/DO |
-| components.pen | `u_design/components.pen` | shared | DO |
+| design-system.pen | `u-docs/shared/02-design/design-system.pen` | shared | DESIGN/DO |
+| {app}.pen | `u-docs/{app}/02-design/{app}.pen` | per-app | DESIGN/DO |
+| components.pen | `u-docs/shared/02-design/components.pen` | shared | DO |
 
-> **`u_design/` 폴더**: 프로젝트 루트의 `u_design/` 디렉토리에 pencil.dev `.pen` 파일을 저장한다. 이 폴더는 u-ssot SSoT 문서 체계 외부이며, pencil.dev MCP 도구로만 읽고 쓴다.
->
-> **App Context**: For app-specific documents (IA, Screen), the target app name is received from the orchestrator. Use `u-docs/{app}/` path accordingly. Shared docs (DesignSystem, UIComponents, DesignToken) use `u-docs/shared/` path.
+> **디자인 파일 저장**: HTML 와이어프레임과 pencil.dev `.pen` 파일은 `u-docs/{app}/02-design/`에 저장한다.
 
 ### IA Workflow (PLAN Phase)
 
 1. `1_Roadmap_PM.md` 유저 스토리 분석
 2. Domain Registry 정의 (AUTH, DASH, SET 등 도메인 코드)
 3. 메뉴 트리 구조 정의 (Depth 1~3)
-4. Mermaid flowchart TD로 메뉴 트리 다이어그램 작성
+4. **Mermaid flowchart TD로 메뉴 트리 다이어그램 작성 (Tree 구조 강제)**
+   - 경로 기반 노드 라벨은 `/`를 직접 쓰지 말고 세그먼트를 `<br/>`로 쌓아 표기 (예: `/admin/users` → `"admin<br/>users"`)
 4.5. Mermaid journey로 주요 사용자 여정 다이어그램 작성:
    - 1_Roadmap_PM.md의 User Scenarios(SC-NNN)를 참조
    - 각 SC에 대해 journey 다이어그램 1개 (Section 6 User Flows에 포함)
@@ -149,6 +150,13 @@ journey
 4. API Endpoint 매핑 테이블 (Screen ↔ API)
 5. 권한별 접근 불가 시 Exception Handling 정의 (403 처리)
 
+### HTML Wireframe Workflow (`/u-wireframe`, DESIGN Phase)
+
+1. `2_Screen_UX.md`의 화면 설계를 바탕으로 HTML/CSS 와이어프레임 생성
+2. `u-docs/{app}/02-design/2_Screen_Wireframes/{ScreenID}.html` 경로에 저장
+3. Vanilla HTML/CSS를 사용하여 레이아웃과 기본 UI 요소를 시각화
+4. `2_Screen_UX.md`의 각 화면 섹션에 해당 와이어프레임 링크 추가
+
 ### Design System Workflow (DESIGN Phase)
 
 디자인 시스템은 단순한 스타일 가이드가 아니라 **프로젝트 전체의 시각적 언어**다. 아래 순서로 체계적으로 작성한다.
@@ -197,6 +205,8 @@ journey
 | **Connected Screens** | [S-XXX (화면명) ← 전환 조건, S-YYY (화면명) ← 전환 조건] |
 | **Menu ID** | MN-XXX-NNN |
 | **FR Mapping** | FR-XXX |
+| **Wireframe** | [HTML Wireframe](2_Screen_Wireframes/S-NNN.html) |
+| **Design** | [Pencil Design](S-NNN.pen) |
 
 #### Layout
 [ASCII 와이어프레임으로 영역 분할 표현]
@@ -238,7 +248,7 @@ journey
 
 ### Behavior Rules
 
-- IA는 반드시 Mermaid flowchart TD 메뉴 트리 다이어그램을 포함 (Section 3.1)
+- IA는 반드시 **Mermaid flowchart TD 또는 journey 메뉴 트리 다이어그램**을 포함 (Section 3.1). **mindmap 형식은 사용을 엄격히 금지한다.**
 - IA User Flows(Section 6)는 반드시 Mermaid journey 다이어그램을 포함 (SC-NNN 기반)
 - journey 다이어그램은 페르소나 이름과 만족도(1-5)를 반드시 표시
 - IA는 반드시 전체 화면 목록을 포함
@@ -258,21 +268,21 @@ journey
 - **디자인 시스템**: 2_DesignSystem_UX.md는 Design DNA, 3-Layer Token Architecture, 컴포넌트 라이브러리, 모션 시스템을 모두 포함해야 한다
 - **디자인 토큰 3계층**: Primitive(원시값) → Alias/Semantic(역할 기반) → Component(컴포넌트 전용) 계층을 명확히 분리해야 한다
 - **토큰 네이밍**: `{category}-{variant}-{state}` 패턴 사용 (e.g., `color-primary-default`, `space-component-sm`)
-- **pencil.dev 출력**: `/u-ux-design` 결과물은 반드시 `u_design/` 폴더의 `.pen` 파일로 저장한다 (Read/Write/Edit 도구 사용 금지)
+- **pencil.dev 출력**: `/u-ux-ds` 결과물은 반드시 `u-docs/{app}/02-design/` 폴더의 `.pen` 파일로 저장한다 (Read/Write/Edit 도구 사용 금지)
 
-### Visual Design Workflow (`/u-ux-design`, pencil.dev)
+### Visual Design Workflow (`/u-ux-ds`, pencil.dev)
 
-pencil.dev MCP 도구를 사용하여 SSoT 문서 기반의 시각적 디자인을 생성하거나 갱신한다.
-결과물(`.pen` 파일)은 **프로젝트 루트의 `u_design/` 폴더**에 저장한다.
+pencil.dev MCP 도구를 사용하여 SSoT 문서 기반의 시각적 디자인을 생성하거나 갱신한다. 모든 디자인 텍스트는 `u-ssot.config.json`의 `documentLanguage` 설정을 준수한다.
+결과물(`.pen` 파일)은 **`u-docs/{app}/02-design/` 폴더**에 **앱당 1개의 `.pen` 파일**로 저장한다. `u_design` 또는 `u-design` 폴더는 사용하지 않는다.
 
 #### 출력 파일 경로 규칙
 
 | 타겟 | 파일 경로 | 내용 |
 |------|-----------|------|
-| `system` | `u_design/design-system.pen` | 디자인 시스템 전체 (토큰, 컴포넌트) |
-| `all` / `{app}` | `u_design/{app}.pen` | 앱별 전체 화면 |
-| `component` | `u_design/components.pen` | UI 컴포넌트 시각화 |
-| `S-NNN` | `u_design/{app}.pen` (해당 프레임) | 특정 화면 프레임 |
+| `system` | `u-docs/shared/02-design/design-system.pen` | 디자인 시스템 전체 (토큰, 컴포넌트) |
+| `all` / `{app}` | `u-docs/{app}/02-design/{app}.pen` | 앱별 전체 화면 (단일 파일) |
+| `component` | `u-docs/shared/02-design/components.pen` | UI 컴포넌트 시각화 |
+| `S-NNN` | `u-docs/{app}/02-design/{app}.pen` (해당 프레임) | 특정 화면 프레임 (기존 앱 파일 내 갱신) |
 
 #### 참조 문서 우선순위
 
@@ -288,10 +298,10 @@ pencil.dev MCP 도구를 사용하여 SSoT 문서 기반의 시각적 디자인�
 
 ```
 1. [출력 파일 경로 결정]
-   - system → u_design/design-system.pen
-   - {app} / all → u_design/{app}.pen
-   - components → u_design/components.pen
-   - u_design/ 폴더가 없으면 Bash mkdir -p u_design/ 실행
+   - system → u-docs/shared/02-design/design-system.pen
+   - {app} / all → u-docs/{app}/02-design/{app}.pen
+   - components → u-docs/shared/02-design/components.pen
+   - u-docs/{app}/02-design/ 폴더가 없으면 Bash mkdir -p 실행
 
 2. get_editor_state() → 현재 열린 .pen 파일 확인
    - 타겟 .pen 파일이 있으면 해당 파일 오픈
@@ -308,21 +318,20 @@ pencil.dev MCP 도구를 사용하여 SSoT 문서 기반의 시각적 디자인�
 
 6. [타겟에 따라 분기]
    - 'all'       → 디자인 시스템 + 모든 화면 순서대로 처리
-   - 'system'    → 디자인 시스템(컴포넌트, 토큰)만 처리 → u_design/design-system.pen
-   - [screen-id] → 해당 화면(S-XXX)만 처리 → u_design/{app}.pen 해당 프레임
-   - [component] → 해당 컴포넌트만 처리 → u_design/components.pen
+   - 'system'    → 디자인 시스템(컴포넌트, 토큰)만 처리
+   - [screen-id] → 해당 화면(S-XXX)만 처리
+   - [component] → 해당 컴포넌트만 처리
 
 7. [디자인 시스템 구성] (타겟: 'all' 또는 'system')
    - 3_DesignToken_UX.md Primitive/Alias 토큰 기반으로 set_variables() 적용
-     (색상 스케일, 타이포그래피, 간격, 모션 변수)
    - UIComponents 스펙 기반으로 컴포넌트 배치 (batch_design)
-   - 컴포넌트별 State Variants 반영 (Default, Hover, Focus, Disabled, Loading, Error)
+   - 컴포넌트별 State Variants 반영
 
 8. [화면 구성] (타겟: 'all' 또는 screen-id)
    - Screen 문서의 Layout(ASCII 와이어프레임) → 실제 레이아웃으로 변환
    - Elements 테이블 → UI 요소 배치 (Role Visibility 반영)
    - 반응형 규격(Breakpoint) 반영
-   - States(Loading, Empty, Error, Forbidden) 별도 프레임으로 구성
+   - States 별도 프레임으로 구성
 
 9. get_screenshot() → 시각적 검증
 
@@ -333,50 +342,23 @@ pencil.dev MCP 도구를 사용하여 SSoT 문서 기반의 시각적 디자인�
 
 ```bash
 # 전체 디자인 시스템 + 모든 화면
-/u-ux-design
-/u-ux-design all
+/u-ux-ds
+/u-ux-ds all
 
 # 특정 앱의 전체 화면
-/u-ux-design web all
+/u-ux-ds web all
 
 # 디자인 시스템(컴포넌트/토큰)만
-/u-ux-design system
+/u-ux-ds system
 
 # 특정 화면만
-/u-ux-design S-001
-/u-ux-design web S-003
+/u-ux-ds S-001
+/u-ux-ds web S-003
 
 # 특정 컴포넌트만
-/u-ux-design Button
-/u-ux-design web Card
+/u-ux-ds Button
+/u-ux-ds web Card
 ```
-
-#### pencil.dev 도구 사용 규칙
-
-- **읽기**: `batch_get`, `get_editor_state`, `snapshot_layout`, `get_screenshot`
-- **쓰기**: `batch_design` (Insert/Copy/Update/Replace/Move/Delete/Image)
-- **변수**: `get_variables`, `set_variables` (DesignToken → pencil 변수 매핑)
-- **가이드**: `get_guidelines`, `get_style_guide_tags`, `get_style_guide`
-- `.pen` 파일은 반드시 pencil MCP 도구로만 읽고 쓴다 (Read/Edit 도구 사용 금지)
-- `batch_design` 1회 호출 당 최대 25개 operation
-- 변경 후 반드시 `get_screenshot`으로 시각 검증
-
-#### DesignToken → pencil 변수 매핑
-
-3_DesignToken_UX.md의 Alias/Semantic 토큰을 pencil 변수로 매핑한다.
-
-| DesignToken Layer | DesignToken 카테고리 | pencil 변수 타입 |
-|-------------------|---------------------|----------------|
-| Alias | Colors (color-primary, color-surface, ...) | Color variables |
-| Alias | Typography (font-size-body, font-family, ...) | Typography variables |
-| Alias | Spacing (space-component-sm, space-layout-lg, ...) | Number variables |
-| Alias | Border radius (radius-sm, radius-md, ...) | Number variables |
-| Alias | Shadow (shadow-sm, shadow-lg, ...) | Effect variables |
-| Alias | Motion (duration-normal, easing-standard, ...) | Number/String variables |
-| Component | Button (btn-bg, btn-text, btn-radius, ...) | Color/Number variables |
-| Component | Input (input-border, input-bg, ...) | Color/Number variables |
-
-> 매핑 시 **Alias 레이어 토큰**을 우선 사용한다. Primitive 값을 직접 매핑하지 않는다.
 
 ### Collaboration Triggers
 
@@ -389,4 +371,4 @@ pencil.dev MCP 도구를 사용하여 SSoT 문서 기반의 시각적 디자인�
 | DesignSystem 완료 | `u-dv-fe` | 컴포넌트 라이브러리 참조 |
 | UIComponents 완료 | `u-dv-fe` | Storybook 구현 참조 |
 | DesignToken 완료 | `u-dv-fe` | 토큰 기반 스타일링 참조 |
-| `/u-ux-design` 완료 | `u-dv-fe` | .pen 파일 시각 디자인 참조 |
+| `/u-ux-ds` 완료 | `u-dv-fe` | .pen 파일 시각 디자인 참조 |

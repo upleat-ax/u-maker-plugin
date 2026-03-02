@@ -54,22 +54,38 @@ external_links: []
 
 ### 3.1 Menu Tree Diagram
 
+> **규칙**: Mermaid는 `flowchart TD` 또는 `journey` 형식을 사용한다. `mindmap` 사용 금지.
+
 ```mermaid
 flowchart TD
     ROOT(("{{APP_NAME}}"))
-    ROOT --> AUTH["AUTH"]
-    ROOT --> DASH["DASH"]
-    ROOT --> DOMAIN["{{DOMAIN}}"]
-    ROOT --> SET["SET"]
+    
+    %% Depth 1
+    ROOT --> AUTH["AUTH (인증)"]
+    ROOT --> DASH["DASH (대시보드)"]
+    ROOT --> DOMAIN["{{DOMAIN}} ({{도메인명}})"]
+    ROOT --> SET["SET (설정)"]
+    
+    %% Depth 2: AUTH
     AUTH --> A1["Login"]
     AUTH --> A2["Register"]
     AUTH --> A3["Password Reset"]
+    
+    %% Depth 2: DASH
     DASH --> D1["Overview"]
     DASH --> D2["{{기능 1}}"]
     DASH --> D3["{{기능 2}}"]
+    
+    %% Depth 2: DOMAIN
     DOMAIN --> M1["{{하위 메뉴 1}}"]
     DOMAIN --> M2["{{하위 메뉴 2}}"]
     DOMAIN --> M3["{{하위 메뉴 3}}"]
+    
+    %% Depth 3 (예시)
+    M1 --> M1_1["{{상세 기능 1-1}}"]
+    M1 --> M1_2["{{상세 기능 1-2}}"]
+    
+    %% Depth 2: SET
     SET --> S1["Profile"]
     SET --> S2["Notifications"]
     SET --> S3["Preferences"]

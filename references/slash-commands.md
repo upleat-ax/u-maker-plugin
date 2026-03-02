@@ -67,7 +67,7 @@
 | Field | Value |
 |-------|-------|
 | **Syntax** | `/u-check [app]` |
-| **Description** | CHECK Phase를 실행한다. 테스트 케이스 설계, 실행, 결함 분석 |
+| **Description** | CHECK Phase를 실행한다. Unit+E2E 테스트 케이스 설계(상세 스텝), 실행, 결함 분석 |
 | **Calling Agents** | Orchestrator → `u-QA` |
 | **Prerequisites** | DO Gate 통과 (코드 구현 완료 + `bun run build` 성공) |
 | **Output** | `4_Case_QA.md`, `4_Report_QA.md` |
@@ -291,7 +291,7 @@ SSoT 문서 상태를 관리하고 검증하는 커맨드.
 | Field | Value |
 |-------|-------|
 | **Syntax** | `/u-test [app]` |
-| **Description** | 테스트 케이스를 설계하고 실행한다 |
+| **Description** | Unit+E2E 테스트 케이스를 상세 설계하고 실행한다 |
 | **Calling Agents** | `u-QA` |
 | **Prerequisites** | DO Phase 완료 |
 | **Output** | `4_Case_QA.md`, `4_Report_QA.md` |
