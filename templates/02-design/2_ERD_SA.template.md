@@ -44,8 +44,76 @@ erDiagram
         datetime created_at
         datetime updated_at
     }
+    {{ENTITY}} {
+        int id PK
+        int user_id FK
+        string title
+        string status
+        datetime created_at
+        datetime updated_at
+    }
+    {{CHILD_ENTITY}} {
+        int id PK
+        int parent_id FK
+        string content
+        datetime created_at
+    }
 
-    %% {{추가 Entity를 여기에 정의한다}}
+    USER ||--o{ {{ENTITY}} : "creates"
+    {{ENTITY}} ||--|{ {{CHILD_ENTITY}} : "contains"
+```
+
+---
+
+## 2.5 Domain Class Model
+
+```mermaid
+classDiagram
+    class USER {
+        +int id
+        +string email
+        +string passwordHash
+        +string name
+        +Role role
+        +datetime createdAt
+        +datetime updatedAt
+        +login() bool
+        +updateProfile() void
+    }
+    class {{ENTITY}} {
+        +int id
+        +int userId
+        +string title
+        +{{ENTITY_STATUS}} status
+        +datetime createdAt
+        +datetime updatedAt
+        +create() {{ENTITY}}
+        +update() void
+        +delete() void
+    }
+    class {{CHILD_ENTITY}} {
+        +int id
+        +int parentId
+        +string content
+        +datetime createdAt
+        +create() {{CHILD_ENTITY}}
+    }
+    class Role {
+        <<enumeration>>
+        ADMIN
+        USER
+    }
+    class {{ENTITY_STATUS}} {
+        <<enumeration>>
+        ACTIVE
+        INACTIVE
+        DELETED
+    }
+
+    USER "1" --> "0..*" {{ENTITY}} : creates
+    {{ENTITY}} "1" --> "1..*" {{CHILD_ENTITY}} : contains
+    USER --> Role : has
+    {{ENTITY}} --> {{ENTITY_STATUS}} : has
 ```
 
 ---
@@ -78,6 +146,23 @@ erDiagram
 | From | To | Cardinality | Description |
 |------|-----|------------|-------------|
 | USER | {{ENTITY}} | 1:N | {{관계 설명}} |
+| {{ENTITY}} | {{CHILD_ENTITY}} | 1:N | {{관계 설명}} |
+
+---
+
+## 4.5 Data Flow
+
+```mermaid
+flowchart LR
+    DB[(Database)] --> USER_E["USER Entity"]
+    DB --> ENTITY["{{ENTITY}}"]
+    DB --> CHILD["{{CHILD_ENTITY}}"]
+    USER_E --> AuthAPI["Auth API"]
+    ENTITY --> ResourceAPI["Resource API"]
+    CHILD --> ResourceAPI
+    AuthAPI --> FE["Frontend"]
+    ResourceAPI --> FE
+```
 
 ---
 

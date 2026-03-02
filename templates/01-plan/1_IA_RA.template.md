@@ -55,24 +55,24 @@ external_links: []
 ### 3.1 Menu Tree Diagram
 
 ```mermaid
-mindmap
-    root(({{APP_NAME}}))
-        AUTH
-            Login
-            Register
-            Password Reset
-        DASH
-            Overview
-            {{기능 1}}
-            {{기능 2}}
-        {{DOMAIN}}
-            {{하위 메뉴 1}}
-            {{하위 메뉴 2}}
-            {{하위 메뉴 3}}
-        SET
-            Profile
-            Notifications
-            Preferences
+flowchart TD
+    ROOT(("{{APP_NAME}}"))
+    ROOT --> AUTH["AUTH"]
+    ROOT --> DASH["DASH"]
+    ROOT --> DOMAIN["{{DOMAIN}}"]
+    ROOT --> SET["SET"]
+    AUTH --> A1["Login"]
+    AUTH --> A2["Register"]
+    AUTH --> A3["Password Reset"]
+    DASH --> D1["Overview"]
+    DASH --> D2["{{기능 1}}"]
+    DASH --> D3["{{기능 2}}"]
+    DOMAIN --> M1["{{하위 메뉴 1}}"]
+    DOMAIN --> M2["{{하위 메뉴 2}}"]
+    DOMAIN --> M3["{{하위 메뉴 3}}"]
+    SET --> S1["Profile"]
+    SET --> S2["Notifications"]
+    SET --> S3["Preferences"]
 ```
 
 ### 3.2 Menu Tree Table
@@ -143,26 +143,54 @@ flowchart LR
 
 ## 6. User Flows
 
-### 6.1 {{주요 플로우 1}}
+> User Scenario(SC-NNN) 기반으로 작성한다. 각 플로우는 journey(감정 흐름) + flowchart(분기 로직) 두 가지로 표현한다.
+
+### 6.1 {{SC-001: 주요 플로우 1}}
+
+**Persona**: {{페르소나이름}} — {{역할/배경}}
+
+```mermaid
+journey
+    title SC-001: {{시나리오 제목}}
+    section {{단계 1}}
+        {{행동 1}}: {{만족도 1-5}}: {{페르소나이름}}
+        {{행동 2}}: {{만족도}}: {{페르소나이름}}
+    section {{단계 2}}
+        {{행동 3}}: {{만족도}}: {{페르소나이름}}
+        {{행동 4}}: {{만족도}}: {{페르소나이름}}
+    section {{완료}}
+        {{완료 행동}}: 5: {{페르소나이름}}
+```
 
 ```mermaid
 flowchart TD
-    START([User]) --> A[{{단계 1}}]
-    A --> B[{{단계 2}}]
-    B --> C{{{조건}}}
-    C -->|Success| D[{{성공 화면}}]
-    C -->|Fail| E[{{에러 처리}}]
+    START([{{페르소나이름}}]) --> A["{{단계 1}}"]
+    A --> B["{{단계 2}}"]
+    B --> C{"{{조건}}"}
+    C -->|Success| D["{{성공 화면}}"]
+    C -->|Fail| E["{{에러 처리}}"]
     E --> B
     D --> END([Complete])
 ```
 
-### 6.2 {{주요 플로우 2}}
+### 6.2 {{SC-002: 주요 플로우 2}}
+
+**Persona**: {{페르소나이름}} — {{역할/배경}}
+
+```mermaid
+journey
+    title SC-002: {{시나리오 제목}}
+    section {{단계}}
+        {{행동}}: {{만족도}}: {{페르소나이름}}
+    section {{완료}}
+        {{완료}}: 5: {{페르소나이름}}
+```
 
 ```mermaid
 flowchart TD
-    START([User]) --> A[{{단계 1}}]
-    A --> B[{{단계 2}}]
-    B --> C[{{단계 3}}]
+    START([{{페르소나이름}}]) --> A["{{단계 1}}"]
+    A --> B["{{단계 2}}"]
+    B --> C["{{단계 3}}"]
     C --> END([Complete])
 ```
 
