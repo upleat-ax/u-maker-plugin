@@ -270,7 +270,20 @@
           "user-flow",
           "design-system",
           "design-token",
-          "ui-components"
+          "ui-components",
+          "wireframe"
+        ]
+      },
+      "u-ux-ds": {
+        "phases": [
+          "design",
+          "do"
+        ],
+        "triggers": [
+          "pencil",
+          "design-visual",
+          "pen-file",
+          "ux-ds"
         ]
       },
       "u-dv-fe": {
@@ -404,5 +417,5 @@
       "Final"
     ]
   },
-  "lastSessionEnd": "2026-03-02T04:03:39.183Z"
+  "lastSessionEnd": "2026-03-02T08:17:49.247Z"
 }
