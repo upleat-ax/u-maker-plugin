@@ -5,7 +5,7 @@ description: |
   Optional [app] argument for multi-app projects (e.g., `/u-bug-report web`).
   Triggers: /u-bug-report, 버그 리포트, 결함 분석, defect report
 user-invocable: true
-argument-hint: "[app] [args]"
+argument-hint: "[web]"
 ---
 
 Invoke the `u-ssot` skill with argument `/u-bug-report` and pass any user-provided arguments.

@@ -89,6 +89,8 @@ external_links: []
 | **Connected Screens** | S-006 (Login) ← 로그인 버튼 클릭, S-007 (Register) ← 회원가입 CTA 버튼 클릭 |
 | **Menu ID** | MN-XXX-NNN |
 | **FR Mapping** | - |
+| **Wireframe** | [HTML Wireframe](2_Screen_Wireframes/S-001.html) |
+| **Design** | [Pencil Design]({{APP_NAME}}.pen) |
 
 **Layout**:
 ```
@@ -134,6 +136,8 @@ external_links: []
 | **Connected Screens** | S-001 (Home) ← 로고 클릭, S-002 (Dashboard) ← 로그인 성공 시, S-007 (Register) ← 회원가입 링크 클릭 |
 | **Menu ID** | MN-XXX-NNN |
 | **FR Mapping** | FR-001 |
+| **Wireframe** | [HTML Wireframe](2_Screen_Wireframes/S-006.html) |
+| **Design** | [Pencil Design]({{APP_NAME}}.pen) |
 
 **Layout**:
 ```
@@ -181,6 +185,8 @@ external_links: []
 | **Connected Screens** | S-003 ({{화면명}}) ← 데이터 행 클릭, S-005 (Settings) ← 사이드바 설정 메뉴 클릭 |
 | **Menu ID** | MN-XXX-NNN |
 | **FR Mapping** | FR-001 |
+| **Wireframe** | [HTML Wireframe](2_Screen_Wireframes/S-002.html) |
+| **Design** | [Pencil Design]({{APP_NAME}}.pen) |
 
 **Layout**:
 ```

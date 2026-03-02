@@ -5,7 +5,7 @@ description: |
   Optional [app] argument for multi-app projects (e.g., `/u-srs web`).
   Triggers: /u-srs, SRS, 요구사항 명세
 user-invocable: true
-argument-hint: "[app] [args]"
+argument-hint: "[web]"
 ---
 
 Invoke the `u-ssot` skill with argument `/u-srs` and pass any user-provided arguments.

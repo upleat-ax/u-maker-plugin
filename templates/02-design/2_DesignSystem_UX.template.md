@@ -571,22 +571,24 @@ stateDiagram-v2
 
 ## 13. Design Files (pencil.dev)
 
-디자인 시스템의 시각적 구현체는 `u_design/` 폴더의 `.pen` 파일에 저장된다.
+디자인 시스템의 시각적 구현체는 `u-docs/` 폴더 내 지정된 경로의 `.pen` 파일에 저장된다.
 
 | File | 내용 | 담당 |
 |------|------|------|
-| `u_design/design-system.pen` | 디자인 시스템 전체 (색상, 타이포, 컴포넌트) | u-ux |
-| `u_design/{{app}}.pen` | {{app}} 화면 전체 | u-ux |
-| `u_design/components.pen` | UI 컴포넌트 Storybook 시각화 | u-ux |
+| `u-docs/shared/02-design/design-system.pen` | 디자인 시스템 전체 (색상, 타이포, 컴포넌트) | u-ux |
+| `u-docs/{{app}}/02-design/{{app}}.pen` | {{app}} 화면 전체 | u-ux |
+| `u-docs/shared/02-design/components.pen` | UI 컴포넌트 Storybook 시각화 | u-ux |
 
 > **참고**: `.pen` 파일은 반드시 pencil.dev MCP 도구(`batch_get`, `batch_design`)로만 접근한다.
 > `Read` / `Edit` 도구 사용 금지.
 
 ```
-u_design/                         # pencil.dev 디자인 파일
-├── design-system.pen             # 디자인 시스템 (토큰, 컴포넌트)
-├── {app-name}.pen                # 앱별 화면 (예: web.pen, admin.pen)
-└── components.pen                # 재사용 컴포넌트 시각화
+u-docs/
+├── shared/02-design/
+│   ├── design-system.pen         # 디자인 시스템 (토큰, 컴포넌트)
+│   └── components.pen            # 재사용 컴포넌트 시각화
+└── {{app}}/02-design/
+    └── {{app}}.pen               # 앱별 화면 (예: web.pen, admin.pen)
 ```
 
 ---
