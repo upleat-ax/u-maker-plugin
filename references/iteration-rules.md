@@ -1,12 +1,12 @@
 # Iteration Rules
 
-> u-ssot의 Iteration 반복 시스템과 `/u-loop` 관련 규칙을 정의한다.
+> u-maker의 Iteration 반복 시스템과 `/uc-loop` 관련 규칙을 정의한다.
 
 ---
 
-## 1. `/u-loop` Behavior
+## 1. `/uc-loop` Behavior
 
-`/u-loop` 커맨드는 PDCA 사이클을 종료 조건 충족까지 자동 반복한다.
+`/uc-loop` 커맨드는 PDCA 사이클을 종료 조건 충족까지 자동 반복한다.
 
 ### 6-Step Loop Process
 
@@ -33,13 +33,13 @@ flowchart TD
 
 ---
 
-## 2. `/u-loop-from [phase]` Behavior
+## 2. `/uc-loop-from [phase]` Behavior
 
 특정 Phase부터 루프를 시작한다.
 
 ```
-/u-loop-from design   # DESIGN Phase부터 시작
-/u-loop-from check    # CHECK Phase부터 시작
+/uc-loop-from design   # DESIGN Phase부터 시작
+/uc-loop-from check    # CHECK Phase부터 시작
 ```
 
 | Phase Argument | Starting Point | Skipped Phases |
@@ -57,12 +57,12 @@ flowchart TD
 
 ---
 
-## 3. `/u-stop` Behavior
+## 3. `/uc-stop` Behavior
 
 실행 중인 루프를 즉시 중단한다.
 
 ```
-/u-stop
+/uc-stop
 ```
 
 동작:
@@ -75,18 +75,18 @@ flowchart TD
 +--------------------------------------------------+
 | LOOP PAUSED                                       |
 | Iteration: 2 | Phase: DO | Progress: 45%         |
-| Resume: /u-resume | Status: /u-status             |
+| Resume: /uc-resume | Status: /uc-status             |
 +--------------------------------------------------+
 ```
 
 ---
 
-## 4. `/u-resume` Behavior
+## 4. `/uc-resume` Behavior
 
 중단된 루프를 재개한다.
 
 ```
-/u-resume
+/uc-resume
 ```
 
 동작:
@@ -112,7 +112,7 @@ flowchart TD
 ```python
 def check_exit_criteria():
     # Condition 1: All backlog items Done
-    backlog = parse_backlog("u-docs/backlog.md")
+    backlog = parse_backlog("u-docs/shared/05-act/5_IterationLog_RA.md")
     active_items = [item for item in backlog
                     if item.status not in ("Done", "Cancelled", "Deferred")]
     cond_1 = len(active_items) == 0
@@ -162,33 +162,33 @@ def check_exit_criteria():
 
 ## 6. Backlog Item Structure
 
-`backlog.md` 내 백로그 항목의 표준 구조:
+`5_IterationLog_RA.md` 내 백로그 항목의 표준 구조:
 
 | Field | Description | Example |
 |-------|-------------|---------|
-| `BL-ID` | 백로그 고유 ID | BL-001, BL-002 |
+| `BL-ID` | 백로그 고유 ID | BL-0010, BL-0020 |
 | `Type` | 항목 유형 | Bug, Enhancement, Task |
 | `Origin` | 발생 출처 | CHECK (QA 발견), DESIGN (설계 누락), DEV (구현 이슈), PLAN (요구사항 변경/추가) |
 | `Description` | 항목 설명 | "로그인 API 에러 핸들링 누락" |
 | `Priority` | 우선순위 | Critical, Major, Minor, Trivial |
 | `Status` | 처리 상태 | Open, InProgress, Blocked, Done, Deferred, Cancelled |
-| `Related DEF` | 연관 결함 ID (CHECK origin만 해당) | DEF-001, - |
+| `Related DEF` | 연관 결함 ID (CHECK origin만 해당) | DEF-0010, - |
 | `Iteration` | 등록된 Iteration | Iter 1, Iter 2 |
-| `Assignee` | 담당 에이전트 | u-dv-fe, u-dv-be, u-ra 등 |
+| `Assignee` | 담당 에이전트 | ua-dv-fe, ua-dv-be, ua-ra 등 |
 
 <details><summary>JSON Format (Backlog Item)</summary>
 
 ```json
 {
-  "blId": "BL-001",
+  "blId": "BL-0010",
   "type": "Bug",
   "origin": "CHECK",
   "description": "로그인 API 500 에러",
   "priority": "Critical",
   "status": "Open",
-  "relatedDef": "DEF-001",
+  "relatedDef": "DEF-0010",
   "iteration": "Iter 1",
-  "assignee": "u-dv-be"
+  "assignee": "ua-dv-be"
 }
 ```
 
@@ -199,9 +199,9 @@ def check_exit_criteria():
 ```markdown
 | BL-ID | Type | Origin | Description | Priority | Status | Related DEF | Iteration | Assignee |
 |-------|------|--------|-------------|----------|--------|-------------|-----------|----------|
-| BL-001 | Bug | CHECK | 로그인 API 500 에러 | Critical | Open | DEF-001 | Iter 1 | u-dv-be |
-| BL-002 | Enhancement | DESIGN | 비밀번호 규칙 강화 | Minor | Open | - | Iter 1 | u-sa |
-| BL-003 | Task | DEV | 에러 바운더리 추가 | Major | Open | - | Iter 1 | u-dv-fe |
+| BL-0010 | Bug | CHECK | 로그인 API 500 에러 | Critical | Open | DEF-0010 | Iter 1 | ua-dv-be |
+| BL-0020 | Enhancement | DESIGN | 비밀번호 규칙 강화 | Minor | Open | - | Iter 1 | ua-sa |
+| BL-0030 | Task | DEV | 에러 바운더리 추가 | Major | Open | - | Iter 1 | ua-dv-fe |
 ```
 
 ---
@@ -215,7 +215,7 @@ def check_exit_criteria():
 | ITERATION 2 STARTED                               |
 |--------------------------------------------------|
 | Previous: Iter 1 (FAIL - 3 open backlog items)   |
-| Focus: BL-001 (Critical), BL-003 (Major)         |
+| Focus: BL-0010 (Critical), BL-0030 (Major)       |
 | Target Phase: PLAN → CHECK                        |
 +==================================================+
 ```
@@ -258,7 +258,7 @@ def check_exit_criteria():
 | 1 | 자동 반복 | CHECK Gate 실패 시 자동으로 ACT → 다음 PLAN 전환 |
 | 2 | 증분 작업 | Iteration 2+ 에서는 Backlog Open 항목만 대상으로 변경분만 갱신 |
 | 3 | 최대 반복 | 기본 10회 제한 (`maxIterations` 설정으로 변경 가능) |
-| 4 | 중단/재개 | `/u-stop`으로 루프 중단, `/u-resume`으로 재개 |
+| 4 | 중단/재개 | `/uc-stop`으로 루프 중단, `/uc-resume`으로 재개 |
 | 5 | Final 유지 | 기존 Final 문서는 유지, 해당 항목만 PATCH 업데이트 |
 | 6 | 아카이브 | 매 Iteration 완료 시 `u-docs/iterations/iter-N/`에 스냅샷 보관 |
 
@@ -328,7 +328,7 @@ Iteration 종료 시 백로그 항목의 상태에 따라 다음과 같이 처�
 
 ### De-escalation Rules
 
-- **권한**: u-ra만 Priority 하향 가능
+- **권한**: ua-ra만 Priority 하향 가능
 - **사유 기록**: 하향 시 반드시 사유를 Change Log에 기록
 - **Critical → Major 이하**: 사용자 확인 필요 (자동 하향 불가)
 
@@ -344,7 +344,7 @@ Iteration 종료 시 백로그 항목의 상태에 따라 다음과 같이 처�
     { "ruleId": "RE-05", "trigger": "userManualRequest", "action": "setUserPriority", "detail": "사용자 지정 Priority로 변경" }
   ],
   "deEscalation": {
-    "authority": "u-ra",
+    "authority": "ua-ra",
     "reasonRequired": true,
     "criticalToMajorRequiresUserConfirm": true
   }

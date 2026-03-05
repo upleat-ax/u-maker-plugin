@@ -6,7 +6,7 @@ status: "Draft"
 version: "v0.1.0"
 last_updated: "{{DATE}}"
 related_docs:
-  - "u-docs/shared/02-design/2_DesignSystem_UX.md"
+  - "u-docs/shared/02-design/2_UXGuide_UX.md"
   - "u-docs/shared/03-dev/3_UIComponents_UX.md"
   - "u-docs/{{APP_NAME}}/03-dev/3_Code_DV.md"
   - "u-docs/shared/01-plan/1_Index_PM.md"

@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # ============================================================
-# deploy_local.sh — u-ssot local plugin deployment
+# deploy_local.sh — u-maker local plugin deployment
 #
-# Deploys the u-ssot plugin to Claude Code, Codex CLI, and Gemini CLI.
+# Deploys the u-maker plugin to Claude Code, Codex CLI, and Gemini CLI.
 #   - macOS:   ~/.claude/plugins/...
 #   - Windows: %USERPROFILE%\.claude\plugins\... (Git Bash / WSL)
 #
@@ -33,7 +33,7 @@ CYAN='\033[0;36m'
 BOLD='\033[1m'
 NC='\033[0m'
 
-log()  { echo -e "${CYAN}[u-ssot]${NC} $*"; }
+log()  { echo -e "${CYAN}[u-maker]${NC} $*"; }
 ok()   { echo -e "${GREEN}  [OK]${NC} $*"; }
 warn() { echo -e "${YELLOW}  [WARN]${NC} $*"; }
 err()  { echo -e "${RED}  [ERR]${NC} $*"; }
@@ -344,13 +344,42 @@ register_skill_symlinks() {
 }
 
 # ============================================================
+# 6d. Clean stale skill symlinks (prefix rename: u-* → us-*)
+# ============================================================
+
+clean_stale_skill_symlinks() {
+  local skills_root="$CLAUDE_HOME/skills"
+  local cache_skills="$CACHE_DIR/$PLUGIN_NAME/$PLUGIN_NAME/$PLUGIN_VERSION/skills"
+  local count=0
+
+  for link in "$skills_root"/${PLUGIN_NAME}__*; do
+    [[ -L "$link" ]] || continue
+    local link_name
+    link_name="$(basename "$link")"
+    # Extract skill name after plugin prefix
+    local skill_name="${link_name#${PLUGIN_NAME}__}"
+    # If this skill dir no longer exists in cache, remove the stale symlink
+    if [[ ! -d "$cache_skills/$skill_name" ]]; then
+      rm "$link"
+      count=$((count + 1))
+    fi
+  done
+
+  if [[ $count -gt 0 ]]; then
+    ok "Removed $count stale skill symlinks"
+  else
+    ok "No stale skill symlinks found"
+  fi
+}
+
+# ============================================================
 # 7. Deploy
 # ============================================================
 
 deploy() {
   echo ""
   echo -e "${BOLD}========================================${NC}"
-  echo -e "${BOLD}  u-ssot Local Deploy${NC}"
+  echo -e "${BOLD}  u-maker Local Deploy${NC}"
   echo -e "${BOLD}========================================${NC}"
   echo -e "  Plugin:  ${CYAN}$PLUGIN_NAME${NC} v$PLUGIN_VERSION"
   echo -e "  Source:  $SCRIPT_DIR"
@@ -380,16 +409,20 @@ deploy() {
   log "4/7  installed_plugins.json"
   update_installed_plugins
 
-  # Step 5: Skill symlinks
-  log "5/7  Skill symlinks"
+  # Step 5a: Clean stale skill symlinks (from prefix rename)
+  log "5/8  Clean stale skill symlinks"
+  clean_stale_skill_symlinks
+
+  # Step 5b: Skill symlinks
+  log "6/8  Skill symlinks"
   register_skill_symlinks
 
-  # Step 6: Codex
-  log "6/7  Codex integration"
+  # Step 7: Codex
+  log "7/8  Codex integration"
   setup_codex
 
-  # Step 7: Gemini
-  log "7/7  Gemini integration"
+  # Step 8: Gemini
+  log "8/8  Gemini integration"
   setup_gemini
 
   echo ""
@@ -407,7 +440,7 @@ deploy() {
 
 clean() {
   echo ""
-  log "Cleaning u-ssot deployment..."
+  log "Cleaning u-maker deployment..."
 
   # Remove marketplace symlink
   if [[ -L "$MARKETPLACES_DIR/$MARKETPLACE_NAME" ]]; then
@@ -484,7 +517,7 @@ with open('$INSTALLED_PL', 'w') as f:
 check() {
   echo ""
   echo -e "${BOLD}========================================${NC}"
-  echo -e "${BOLD}  u-ssot Deployment Status${NC}"
+  echo -e "${BOLD}  u-maker Deployment Status${NC}"
   echo -e "${BOLD}========================================${NC}"
   echo ""
 

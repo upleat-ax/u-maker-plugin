@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * post-write-index.js — u-ssot PostToolUse Hook (Write)
+ * post-write-index.js — u-maker PostToolUse Hook (Write)
  *
  * After writing to u-docs/, logs that index update may be needed.
  * Detects new document creation vs updates.

@@ -1,6 +1,6 @@
 # u-docs: SSoT Document Repository
 
-Managed by the u-ssot plugin.
+Managed by the u-maker plugin.
 
 | Directory | Scope | Phase |
 |-----------|-------|-------|

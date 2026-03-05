@@ -6,7 +6,6 @@ status: "Draft"
 version: "v0.1.0"
 last_updated: "{{DATE}}"
 related_docs:
-  - "u-docs/backlog.md"
   - "u-docs/shared/05-act/5_Retrospective_PM.md"
   - "u-docs/shared/01-plan/1_Index_PM.md"
 external_links: []
@@ -87,9 +86,9 @@ xychart-beta
 - {{변경 사항 2}}
 
 **Backlog Generated**:
-- BL-001: {{설명}} (Critical)
-- BL-002: {{설명}} (Major)
-- BL-003: {{설명}} (Minor)
+- BL-0010: {{설명}} (Critical)
+- BL-0020: {{설명}} (Major)
+- BL-0030: {{설명}} (Minor)
 
 ### 4.2 Iteration 2
 
@@ -99,7 +98,7 @@ xychart-beta
 | **End Date** | - |
 | **Phase Reached** | - |
 | **Result** | In Progress |
-| **Focus** | BL-001 (Critical), BL-002 (Major) |
+| **Focus** | BL-0010 (Critical), BL-0020 (Major) |
 
 **Changes Made**:
 - {{변경 사항}}

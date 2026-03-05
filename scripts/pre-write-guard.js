@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * pre-write-guard.js — u-ssot PreToolUse Guard (Write|Edit)
+ * pre-write-guard.js — u-maker PreToolUse Guard (Write|Edit)
  *
  * Validates:
  * 1. SSoT documents (pattern: *_*.md) must be under u-docs/
@@ -124,7 +124,7 @@ if (CODE_EXTENSIONS.includes(ext) && content) {
         '',
         ...violations.map((v, i) => `  ${i + 1}. ${v}`),
         '',
-        'Refer to references/tech-stack-rules.md for the complete ruleset.',
+        'Refer to u-docs/db/tech-stack-rules.md for the complete ruleset.',
       ].join('\n'),
     }));
     process.exit(2);

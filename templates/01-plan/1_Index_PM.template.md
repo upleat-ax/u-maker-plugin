@@ -70,7 +70,6 @@ external_links: []
 
 | Doc ID | Document | Path | Owner | Status | Version | Last Updated |
 |--------|----------|------|-------|--------|---------|-------------|
-| backlog | Backlog | `u-docs/backlog.md` | u-RA | - | - | - |
 | 5_IterationLog_RA | Iteration Log | `u-docs/05-act/5_IterationLog_RA.md` | u-RA | - | - | - |
 | 5_Retrospective_PM | Retrospective | `u-docs/05-act/5_Retrospective_PM.md` | u-RA | - | - | - |
 
@@ -89,7 +88,7 @@ flowchart TD
 
     subgraph DESIGN["02-design"]
         SCREEN[2_Screen_UX]
-        DSYS[2_DesignSystem_UX]
+        DSYS[2_UXGuide_UX]
         ERD[2_ERD_SA]
         API[2_API_SA]
     end
@@ -111,11 +110,6 @@ flowchart TD
         RETRO[5_Retrospective_PM]
     end
 
-    subgraph ROOT["root"]
-        BACKLOG[backlog.md]
-        SUMMARY[summary.md]
-    end
-
     ROADMAP --> SRS
     SRS --> IA
     SRS --> ERD
@@ -129,7 +123,7 @@ flowchart TD
     SCREEN --> SCR_UX
     CODE --> CASE
     CASE --> REPORT
-    REPORT --> BACKLOG
+    REPORT --> ITERLOG
     INDEX -.->|tracks all| ROADMAP
 ```
 
@@ -163,8 +157,8 @@ stateDiagram-v2
 
 | FR-ID | Feature | Menu ID | SRS | ERD | API | Screen | Code | QA | Status |
 |-------|---------|---------|-----|-----|-----|--------|------|----|--------|
-| FR-001 | {{기능명}} | MN-XXX-NNN | - | - | - | - | - | - | Planned |
-| FR-002 | {{기능명}} | MN-XXX-NNN | - | - | - | - | - | - | Planned |
+| FR-0010 | {{기능명}} | MN-XXX-NNNN | - | - | - | - | - | - | Planned |
+| FR-0020 | {{기능명}} | MN-XXX-NNNN | - | - | - | - | - | - | Planned |
 
 ---
 

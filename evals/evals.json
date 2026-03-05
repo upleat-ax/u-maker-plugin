@@ -1,6 +1,6 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-evals.json",
-  "description": "u-ssot Plugin Eval Test Cases v1.0.0",
+  "description": "u-maker Plugin Eval Test Cases v1.0.0",
   "evals": [
     {
       "id": "eval-001",
@@ -15,7 +15,7 @@
         "1_SRS_RA.md should contain FR for each feature",
         "1_IA_RA.md should define information architecture"
       ],
-      "expectedAgents": ["u-ra", "u-sa", "u-ux"],
+      "expectedAgents": ["ua-ra", "ua-sa", "ua-ux"],
       "expectedPhase": "plan",
       "expectedDocuments": [
         "u-docs/shared/01-plan/1_Roadmap_PM.md",
@@ -38,7 +38,7 @@
         "Entities should map to FR items from SRS",
         "Related Docs should reference 1_SRS_RA.md"
       ],
-      "expectedAgents": ["u-sa"],
+      "expectedAgents": ["ua-sa"],
       "expectedPhase": "design",
       "expectedDocuments": [
         "u-docs/shared/02-design/2_ERD_SA.md"
@@ -58,7 +58,7 @@
         "API endpoints should map to screen actions",
         "Related Docs should reference 2_Screen_UX.md and 2_ERD_SA.md"
       ],
-      "expectedAgents": ["u-sa"],
+      "expectedAgents": ["ua-sa"],
       "expectedPhase": "design",
       "expectedDocuments": [
         "u-docs/web/02-design/2_API_SA.md"
@@ -81,7 +81,7 @@
         "Storybook stories should be created",
         "Tech stack rules should be enforced by pre-write-guard"
       ],
-      "expectedAgents": ["u-dv-fe"],
+      "expectedAgents": ["ua-dv-fe"],
       "expectedPhase": "do",
       "expectedDocuments": [
         "u-docs/web/03-dev/3_Code_DV.md"
@@ -102,7 +102,7 @@
         "u-QA agent analyzes any defects found",
         "Critical/Major defects should trigger ACT phase"
       ],
-      "expectedAgents": ["u-qa"],
+      "expectedAgents": ["ua-qa"],
       "expectedPhase": "check",
       "expectedDocuments": [
         "u-docs/web/04-check/4_Case_QA.md",
@@ -112,9 +112,9 @@
     },
     {
       "id": "eval-006",
-      "name": "/u-loop auto iteration",
+      "name": "/uc-loop auto iteration",
       "description": "Test automatic PDCA iteration loop",
-      "prompt": "/u-loop",
+      "prompt": "/uc-loop",
       "expectedBehavior": [
         "Loop status should be set to RUNNING",
         "Should report current iteration number and progress",
@@ -123,22 +123,20 @@
         "Exit criteria should be checked after CHECK phase",
         "If criteria not met, should transition to ACT and start next iteration",
         "Loop should respect max iteration limit (10)",
-        "backlog.md should be updated with open items",
-        "5_IterationLog_RA.md should record iteration results"
+        "5_IterationLog_RA.md should be updated with open items and iteration results"
       ],
-      "expectedAgents": ["u-ra", "u-sa", "u-ux", "u-dv-fe", "u-dv-be", "u-qa"],
+      "expectedAgents": ["ua-ra", "ua-sa", "ua-ux", "ua-dv-fe", "ua-dv-be", "ua-qa"],
       "expectedPhase": "act",
       "expectedDocuments": [
-        "u-docs/backlog.md",
         "u-docs/shared/05-act/5_IterationLog_RA.md"
       ],
       "tags": ["loop", "iteration", "e2e"]
     },
     {
       "id": "eval-007",
-      "name": "/u-status output",
+      "name": "/uc-status output",
       "description": "Test status command output format and accuracy",
-      "prompt": "/u-status",
+      "prompt": "/uc-status",
       "expectedBehavior": [
         "Should display current PDCA phase",
         "Should display current iteration number",
@@ -148,65 +146,64 @@
         "Should show open backlog item count",
         "Should show Critical/Major defect count"
       ],
-      "expectedAgents": ["u-ra"],
+      "expectedAgents": ["ua-ra"],
       "expectedPhase": null,
       "expectedDocuments": [],
       "tags": ["command", "status", "reporting"]
     },
     {
       "id": "eval-008",
-      "name": "/u-act execution",
+      "name": "/uc-act execution",
       "description": "Test ACT phase execution for iteration wrap-up",
-      "prompt": "/u-act",
+      "prompt": "/uc-act",
       "expectedBehavior": [
         "Should analyze CHECK results from 4_Report_QA.md",
-        "Should create/update backlog.md with unresolved items",
+        "Should update 5_IterationLog_RA.md with unresolved backlog items",
         "Should create 5_Retrospective_PM.md with lessons learned",
         "Should archive current iteration to u-docs/iterations/iter-N/",
         "Should update 5_IterationLog_RA.md",
         "Should increment iteration counter",
         "Should transition to PLAN phase for next iteration"
       ],
-      "expectedAgents": ["u-ra"],
+      "expectedAgents": ["ua-ra"],
       "expectedPhase": "act",
       "expectedDocuments": [
-        "u-docs/backlog.md",
-        "u-docs/shared/05-act/5_Retrospective_PM.md",
-        "u-docs/shared/05-act/5_IterationLog_RA.md"
+        "u-docs/shared/05-act/5_IterationLog_RA.md",
+        "u-docs/shared/05-act/5_Retrospective_PM.md"
       ],
       "tags": ["act", "iteration", "backlog"]
     },
     {
       "id": "eval-009",
-      "name": "/u-backlog output",
+      "name": "/uc-backlog output",
       "description": "Test backlog command output",
-      "prompt": "/u-backlog",
+      "prompt": "/uc-backlog",
       "expectedBehavior": [
-        "Should read backlog.md",
+        "Should read 5_IterationLog_RA.md",
         "Should display all open backlog items",
         "Should show item ID, title, priority, and status",
         "Should show summary statistics (total, open, done)",
         "Should suggest next actions for open items"
       ],
-      "expectedAgents": ["u-ra"],
+      "expectedAgents": ["ua-ra"],
       "expectedPhase": null,
       "expectedDocuments": [],
       "tags": ["command", "backlog", "reporting"]
     },
     {
       "id": "eval-010",
-      "name": "/u-help output",
+      "name": "/uc-help output",
       "description": "Test help command lists all available commands",
-      "prompt": "/u-help",
+      "prompt": "/uc-help",
       "expectedBehavior": [
-        "Should list all /u-* slash commands",
+        "Should list all /uc-* slash commands",
         "Should organize commands by category (lifecycle, docs, agents, utility)",
         "Should show brief description for each command",
         "Should show current phase and suggest relevant commands",
-        "Should include: /u-create-project, /u-plan, /u-design, /u-dev, /u-check, /u-act",
-        "Should include: /u-loop, /u-stop, /u-resume",
-        "Should include: /u-status, /u-docs, /u-validate, /u-backlog",
-        "Should include: /u-srs, /u-erd, /u-api, /u-screen, /u-fe, /u-be, /u-test"
+        "Should include: /uc-create-project, /uc-plan, /uc-design, /uc-dev, /uc-check, /uc-act",
+        "Should include: /uc-loop, /uc-stop, /uc-resume",
+        "Should include: /uc-status, /uc-docs, /uc-validate, /uc-backlog",
+        "Should include: /uc-srs, /uc-erd, /uc-api, /uc-screen, /uc-fe, /uc-be, /uc-test"
       ],
       "expectedAgents": [],
       "expectedPhase": null,

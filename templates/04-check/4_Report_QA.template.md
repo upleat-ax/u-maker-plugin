@@ -8,7 +8,7 @@ last_updated: "{{DATE}}"
 app: "{{APP_NAME}}"
 related_docs:
   - "u-docs/{{APP_NAME}}/04-check/4_Case_QA.md"
-  - "u-docs/backlog.md"
+  - "u-docs/shared/05-act/5_IterationLog_RA.md"
   - "u-docs/shared/01-plan/1_Index_PM.md"
 external_links: []
 ---
@@ -56,9 +56,9 @@ pie title Test Results
 
 | FR-ID | Feature | Total | Pass | Fail | Skip | Status |
 |-------|---------|-------|------|------|------|--------|
-| FR-001 | {{기능명}} | 2 | 1 | 1 | 0 | Partial |
-| FR-002 | {{기능명}} | 1 | 1 | 0 | 0 | Pass |
-| FR-003 | {{기능명}} | 1 | 0 | 0 | 1 | Skip |
+| FR-0010 | {{기능명}} | 2 | 1 | 1 | 0 | Partial |
+| FR-0020 | {{기능명}} | 1 | 1 | 0 | 0 | Pass |
+| FR-0030 | {{기능명}} | 1 | 0 | 0 | 1 | Skip |
 
 ---
 
@@ -66,9 +66,9 @@ pie title Test Results
 
 | TC-ID | FR | Expected | Actual | Result | Evidence |
 |-------|-----|----------|--------|--------|----------|
-| TC-001 | FR-001 | {{기대 결과}} | {{실제 결과}} | Pass | [Log](u-docs/assets/tc-001.log) |
-| TC-002 | FR-001 | {{기대 결과}} | {{실제 결과}} | Fail | [Screenshot](u-docs/assets/tc-002.png) |
-| TC-003 | FR-002 | {{기대 결과}} | {{실제 결과}} | Pass | [Log](u-docs/assets/tc-003.log) |
+| TC-0010 | FR-0010 | {{기대 결과}} | {{실제 결과}} | Pass | [Log](u-docs/assets/tc-0010.log) |
+| TC-0020 | FR-0010 | {{기대 결과}} | {{실제 결과}} | Fail | [Screenshot](u-docs/assets/tc-0020.png) |
+| TC-0030 | FR-0020 | {{기대 결과}} | {{실제 결과}} | Pass | [Log](u-docs/assets/tc-0030.log) |
 
 ---
 
@@ -111,14 +111,14 @@ stateDiagram-v2
 
 ### 4.3 Defect Details
 
-#### DEF-001: {{결함 제목}}
+#### DEF-0010: {{결함 제목}}
 
 | Field | Value |
 |-------|-------|
-| **DEF-ID** | DEF-001 |
+| **DEF-ID** | DEF-0010 |
 | **Severity** | Critical / Major / Minor / Trivial |
-| **TC-ID** | TC-002 |
-| **FR-ID** | FR-001 |
+| **TC-ID** | TC-0020 |
+| **FR-ID** | FR-0010 |
 | **Status** | Open |
 | **Found Date** | {{DATE}} |
 | **Found By** | u-QA |
@@ -133,7 +133,7 @@ stateDiagram-v2
 
 **Actual**: {{실제 결과}}
 
-**Evidence**: [Screenshot](u-docs/assets/def-001.png)
+**Evidence**: [Screenshot](u-docs/assets/def-0010.png)
 
 **Root Cause**: {{원인 분석 (u-QA이 작성)}}
 
@@ -145,8 +145,8 @@ stateDiagram-v2
 
 | TC-ID | Evidence Type | Path | Status |
 |-------|-------------|------|--------|
-| TC-001 | API Response Log | `u-docs/assets/tc-001.log` | Collected |
-| TC-002 | Error Screenshot | `u-docs/assets/tc-002.png` | Collected |
+| TC-0010 | API Response Log | `u-docs/assets/tc-0010.log` | Collected |
+| TC-0020 | Error Screenshot | `u-docs/assets/tc-0020.png` | Collected |
 
 ---
 
@@ -154,9 +154,9 @@ stateDiagram-v2
 
 | # | Condition | Status | Notes |
 |---|-----------|--------|-------|
-| PRE-001 | 빌드 성공 | Pass | `bun run build` OK |
-| PRE-002 | DB 초기화 | Pass | Seed data loaded |
-| PRE-003 | 환경 변수 | Pass | `.env.test` configured |
+| PRE-0010 | 빌드 성공 | Pass | `bun run build` OK |
+| PRE-0020 | DB 초기화 | Pass | Seed data loaded |
+| PRE-0030 | 환경 변수 | Pass | `.env.test` configured |
 
 ---
 

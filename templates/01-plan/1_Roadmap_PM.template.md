@@ -28,8 +28,8 @@ external_links: []
 
 | # | Goal | Success Metric |
 |---|------|---------------|
-| G-001 | {{목표}} | {{측정 기준}} |
-| G-002 | {{목표}} | {{측정 기준}} |
+| G-0010 | {{목표}} | {{측정 기준}} |
+| G-0020 | {{목표}} | {{측정 기준}} |
 
 ---
 
@@ -47,96 +47,7 @@ external_links: []
 
 ---
 
-## 3. User Stories
-
-> FR Mapping은 SRS 작성 후 갱신 가능. PLAN Gate 전 모든 US는 FR과 매핑 필수.
-
-| US-ID | As a... | I want to... | So that... | Priority | FR Mapping |
-|-------|---------|-------------|------------|----------|------------|
-| US-001 | {{역할}} | {{기능}} | {{가치}} | Must | TBD |
-| US-002 | {{역할}} | {{기능}} | {{가치}} | Should | TBD |
-| US-003 | {{역할}} | {{기능}} | {{가치}} | Could | TBD |
-
----
-
-## 4. User Scenarios
-
-> User Story를 구체적인 페르소나·상황·단계별 행동으로 발전시킨 시나리오.
-> 각 SC에서 Derived Features를 도출하여 SRS FR 작성의 기반으로 사용한다.
-
-### SC-001: {{시나리오 제목}}
-
-| Field | Value |
-|-------|-------|
-| **Persona** | {{이름}}, {{나이}}세, {{역할}}, {{배경: 기술 수준/사용 환경}} |
-| **Situation** | {{현재 처한 구체적 상황 — 어떤 문제/필요가 있는지}} |
-| **Goal** | {{이 시나리오에서 달성하려는 구체적 목표}} |
-| **Trigger** | {{시나리오를 시작하는 계기/진입점}} |
-| **Related US** | US-001 |
-
-**Scenario Steps**:
-1. {{구체적 행동 1 — 어떤 화면에서 무엇을 클릭/입력하는지}}
-2. {{구체적 행동 2 — 시스템 반응 포함}}
-3. {{구체적 행동 3}}
-4. {{구체적 행동 4}}
-5. {{완료 상태 — 사용자가 목표를 달성한 상태}}
-
-```mermaid
-journey
-    title SC-001: {{시나리오 제목}}
-    section {{단계 1}}
-        {{행동 1}}: {{만족도 1-5}}: {{페르소나이름}}
-        {{행동 2}}: {{만족도}}: {{페르소나이름}}
-    section {{단계 2}}
-        {{행동 3}}: {{만족도}}: {{페르소나이름}}
-        {{행동 4}}: {{만족도}}: {{페르소나이름}}
-    section {{완료}}
-        {{완료 행동}}: 5: {{페르소나이름}}
-```
-
-**Derived Features**:
-| Feature | Description | Priority | FR Mapping |
-|---------|-------------|----------|------------|
-| {{기능명}} | {{이 시나리오에서 필요한 기능 — 구체적으로}} | Must | TBD |
-| {{기능명}} | {{설명}} | Must | TBD |
-| {{기능명}} | {{설명}} | Should | TBD |
-
----
-
-### SC-002: {{시나리오 제목}}
-
-| Field | Value |
-|-------|-------|
-| **Persona** | {{이름}}, {{나이}}세, {{역할}}, {{배경}} |
-| **Situation** | {{상황}} |
-| **Goal** | {{목표}} |
-| **Trigger** | {{계기}} |
-| **Related US** | US-002 |
-
-**Scenario Steps**:
-1. {{단계 1}}
-2. {{단계 2}}
-3. {{단계 3}}
-4. {{단계 4}}
-
-```mermaid
-journey
-    title SC-002: {{시나리오 제목}}
-    section {{단계}}
-        {{행동}}: {{만족도}}: {{페르소나이름}}
-    section {{단계}}
-        {{행동}}: {{만족도}}: {{페르소나이름}}
-```
-
-**Derived Features**:
-| Feature | Description | Priority | FR Mapping |
-|---------|-------------|----------|------------|
-| {{기능명}} | {{설명}} | Must | TBD |
-| {{기능명}} | {{설명}} | Should | TBD |
-
----
-
-## 5. Milestones
+## 3. Milestones
 
 | Milestone | Target Date | Deliverables | Status |
 |-----------|------------|-------------|--------|
@@ -148,7 +59,7 @@ journey
 
 ---
 
-## 6. Gantt Chart
+## 4. Gantt Chart
 
 ```mermaid
 gantt
@@ -182,7 +93,7 @@ gantt
         Retrospective       :a2, after a1, 1d
 ```
 
-### 6.1 Milestone Timeline
+### 4.1 Milestone Timeline
 
 ```mermaid
 timeline
@@ -205,7 +116,7 @@ timeline
 
 ---
 
-## 6.2 Feature Priority Distribution
+## 4.2 Feature Priority Distribution
 
 ```mermaid
 pie title Feature Priority Distribution
@@ -216,7 +127,7 @@ pie title Feature Priority Distribution
 
 ---
 
-## 7. Stakeholders
+## 5. Stakeholders
 
 | Role | Name | Responsibility |
 |------|------|---------------|
@@ -227,7 +138,7 @@ pie title Feature Priority Distribution
 
 ---
 
-## 8. Risks
+## 6. Risks
 
 | Risk | Impact | Probability | Mitigation |
 |------|--------|------------|------------|

@@ -35,7 +35,7 @@ external_links: []
 
 ## 2. Screen Implementation
 
-### 2.1 S-001: {{Screen Name}}
+### 2.1 S-0010: {{Screen Name}}
 
 **Route**: `app/{{path}}/page.tsx`
 **Type**: Server Component | Client Component
@@ -97,9 +97,9 @@ flowchart TD
 
 | Screen ID | Route | Page File | Menu ID | Guard |
 |-----------|-------|-----------|---------|-------|
-| S-001 | `/` | `app/page.tsx` | MN-XXX-NNN | - |
-| S-002 | `/dashboard` | `app/dashboard/page.tsx` | MN-XXX-NNN | auth |
-| S-003 | `/{{path}}` | `app/{{path}}/page.tsx` | MN-XXX-NNN | {{guard}} |
+| S-0010 | `/` | `app/page.tsx` | MN-XXX-NNNN | - |
+| S-0020 | `/dashboard` | `app/dashboard/page.tsx` | MN-XXX-NNNN | auth |
+| S-0030 | `/{{path}}` | `app/{{path}}/page.tsx` | MN-XXX-NNNN | {{guard}} |
 
 ---
 

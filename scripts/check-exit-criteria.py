@@ -1,13 +1,12 @@
 #!/usr/bin/env python3
 """
 check-exit-criteria.py — Iteration Exit Criteria Checker
-u-ssot plugin
+u-maker plugin
 
-Checks 4 exit criteria for PDCA iteration completion:
-  1. All backlog items are Done (u-docs/backlog.md)
-  2. No Critical/Major defects ({app}/04-check/4_Report_QA.md for all apps)
-  3. All FR items implemented ({app}/01-plan/1_SRS_RA.md for all apps)
-  4. Build succeeds (bun run build)
+Checks 3 exit criteria for PDCA iteration completion:
+  1. No Critical/Major defects ({app}/04-check/4_Report_QA.md for all apps)
+  2. All FR items implemented ({app}/01-plan/1_SRS_RA.md for all apps)
+  3. Build succeeds (bun run build)
 
 Supports v2 per-app structure (shared/ + {app}/) with v1 fallback.
 
@@ -31,15 +30,14 @@ import subprocess
 
 # v1 fallback paths
 DOC_PATHS_V1 = {
-    "backlog": "backlog.md",
     "qa_report": "04-check/4_Report_QA.md",
     "srs": "01-plan/1_SRS_RA.md",
 }
 
 
 def get_apps(udocs_root):
-    """Read app list from u-ssot.config.json."""
-    config_path = os.path.join(os.path.dirname(udocs_root), "u-ssot.config.json")
+    """Read app list from u-maker.config.json."""
+    config_path = os.path.join(os.path.dirname(udocs_root), "u-maker.config.json")
     apps = ["web"]
     try:
         if os.path.exists(config_path):
@@ -78,13 +76,11 @@ def get_doc_path(udocs_root, doc_name, app=None):
     }
     phase_dir = phase_map.get(prefix, "")
 
-    root_docs = ["backlog.md", "summary.md"]
-
     shared_docs = [
         "1_Roadmap_PM.md",
         "1_Index_PM.md",
         "2_ERD_SA.md",
-        "2_DesignSystem_UX.md",
+        "2_UXGuide_UX.md",
         "3_UIComponents_UX.md",
         "3_DesignToken_UX.md",
         "5_IterationLog_RA.md",
@@ -92,8 +88,6 @@ def get_doc_path(udocs_root, doc_name, app=None):
     ]
 
     if has_v2_structure(udocs_root):
-        if doc_name in root_docs:
-            return os.path.join(udocs_root, doc_name)
         if doc_name in shared_docs:
             return os.path.join(udocs_root, "shared", phase_dir, doc_name)
         return os.path.join(udocs_root, app or "web", phase_dir, doc_name)
@@ -105,56 +99,6 @@ def get_doc_path(udocs_root, doc_name, app=None):
 # ============================================================
 # Criteria Check Functions
 # ============================================================
-
-
-def check_backlog(udocs_root):
-    """
-    Criterion 1: All backlog items must be Done, Cancelled, or Deferred (no active items).
-    Parses u-docs/backlog.md for items with active status.
-    """
-    filepath = get_doc_path(udocs_root, "backlog.md")
-    result = {
-        "criterion": "Backlog All Done",
-        "passed": False,
-        "total_items": 0,
-        "open_items": 0,
-        "details": [],
-    }
-
-    if not os.path.exists(filepath):
-        result["details"].append("backlog.md not found")
-        # No backlog file means no open items
-        result["passed"] = True
-        return result
-
-    try:
-        with open(filepath, "r", encoding="utf-8") as f:
-            content = f.read()
-    except (IOError, UnicodeDecodeError) as e:
-        result["details"].append(f"Cannot read file: {e}")
-        return result
-
-    # Parse table rows for status column
-    # Expected format: | ID | Title | Status | ... |
-    table_rows = re.findall(
-        r"^\|([^|]+)\|([^|]+)\|([^|]+)\|", content, re.MULTILINE
-    )
-
-    for row in table_rows:
-        cells = [c.strip() for c in row]
-        # Skip header and separator rows
-        if cells[0].startswith("-") or cells[0].lower() in ("id", "#", "no"):
-            continue
-
-        result["total_items"] += 1
-        status = cells[2].strip() if len(cells) > 2 else ""
-
-        if status.lower() not in ("done", "cancelled", "deferred"):
-            result["open_items"] += 1
-            result["details"].append(f"Active: {cells[0]} - {cells[1]} ({status})")
-
-    result["passed"] = result["open_items"] == 0
-    return result
 
 
 def check_defects(udocs_root):
@@ -352,24 +296,21 @@ def main():
         udocs_root = os.path.join(os.getcwd(), "u-docs")
 
     print("=" * 60)
-    print("  u-ssot: Exit Criteria Check")
+    print("  u-maker: Exit Criteria Check")
     print(f"  Path: {udocs_root}")
     print("=" * 60)
     print()
 
-    # Run all 4 criteria checks
+    # Run all 3 criteria checks
     criteria = []
 
-    print("[1/4] Checking backlog status...")
-    criteria.append(check_backlog(udocs_root))
-
-    print("[2/4] Checking defect status (all apps)...")
+    print("[1/3] Checking defect status (all apps)...")
     criteria.append(check_defects(udocs_root))
 
-    print("[3/4] Checking FR completion (all apps)...")
+    print("[2/3] Checking FR completion (all apps)...")
     criteria.append(check_fr_completion(udocs_root))
 
-    print("[4/4] Running build check...")
+    print("[3/3] Running build check...")
     criteria.append(check_build())
 
     # Display results
@@ -395,7 +336,7 @@ def main():
     else:
         passed_count = sum(1 for c in criteria if c["passed"])
         print(
-            f"  RESULT: {passed_count}/4 criteria met. Iteration continues."
+            f"  RESULT: {passed_count}/3 criteria met. Iteration continues."
         )
     print()
 

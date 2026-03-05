@@ -61,21 +61,21 @@ external_links: []
 
 | BL-ID | Type | Origin | Description | Priority | Status | Added Date | Est. Hours | Related Request | Impl. Status | Related DEF | Iteration | Assignee |
 |-------|------|--------|-------------|----------|--------|------------|------------|-----------------|--------------|-------------|-----------|----------|
-| BL-001 | Bug | CHECK | {{설명}} | Critical | Open | {{YYYY-MM-DD}} | {{N}}h | FR-001, SC-001 | ❌ Not Implemented | DEF-001 | Iter {{N}} | {{agent}} |
-| BL-002 | Enhancement | DESIGN | {{설명}} | Major | Open | {{YYYY-MM-DD}} | {{N}}h | FR-002 | ❌ Not Implemented | - | Iter {{N}} | {{agent}} |
-| BL-003 | Task | DEV | {{설명}} | Minor | Done | {{YYYY-MM-DD}} | {{N}}h | - | ✅ Implemented | - | Iter {{N}} | {{agent}} |
+| BL-0010 | Bug | CHECK | {{설명}} | Critical | Open | {{YYYY-MM-DD}} | {{N}}h | FR-0010, US-0010 | ❌ Not Implemented | DEF-0010 | Iter {{N}} | {{agent}} |
+| BL-0020 | Enhancement | DESIGN | {{설명}} | Major | Open | {{YYYY-MM-DD}} | {{N}}h | FR-0020 | ❌ Not Implemented | - | Iter {{N}} | {{agent}} |
+| BL-0030 | Task | DEV | {{설명}} | Minor | Done | {{YYYY-MM-DD}} | {{N}}h | - | ✅ Implemented | - | Iter {{N}} | {{agent}} |
 
 **컬럼 설명**:
 - **Added Date**: 백로그 항목 등록 날짜 (YYYY-MM-DD)
 - **Est. Hours**: 예상 작업 시간 (단위: h)
-- **Related Request**: 관련 FR-ID, SC-ID, US-ID 목록
+- **Related Request**: 관련 FR-ID, US-ID 목록
 - **Impl. Status**: ✅ Implemented (구현 완료) / ⏳ In Progress (구현 중) / ❌ Not Implemented (미구현)
 
 <details><summary>JSON Format (Backlog Item)</summary>
 
 ```json
 {
-  "blId": "BL-001",
+  "blId": "BL-0010",
   "type": "Bug",
   "origin": "CHECK",
   "description": "설명",
@@ -83,11 +83,11 @@ external_links: []
   "status": "Open",
   "addedDate": "2026-03-01",
   "estimatedHours": 4,
-  "relatedRequest": ["FR-001", "SC-001"],
+  "relatedRequest": ["FR-0010", "US-0010"],
   "implStatus": "Not Implemented",
-  "relatedDef": "DEF-001",
+  "relatedDef": "DEF-0010",
   "iteration": "Iter 1",
-  "assignee": "u-dv-be"
+  "assignee": "ua-dv-be"
 }
 ```
 
@@ -192,13 +192,13 @@ pie title Backlog by Origin
 
 ## 6. Backlog Details
 
-### BL-001: {{제목}}
+### BL-0010: {{제목}}
 
 | Field | Value |
 |-------|-------|
-| **BL-ID** | BL-001 |
+| **BL-ID** | BL-0010 |
 | **Type** | Bug |
-| **Origin** | CHECK (DEF-001) |
+| **Origin** | CHECK (DEF-0010) |
 | **Priority** | Critical |
 | **Status** | Open |
 | **Added Date** | {{YYYY-MM-DD}} |
@@ -206,9 +206,9 @@ pie title Backlog by Origin
 | **Impl. Status** | ❌ Not Implemented |
 | **Iteration** | Iter {{N}} |
 | **Assignee** | {{agent}} |
-| **Related FR** | FR-001 |
-| **Related Request** | FR-001, SC-001 |
-| **Related DEF** | DEF-001 |
+| **Related FR** | FR-0010 |
+| **Related Request** | FR-0010, US-0010 |
+| **Related DEF** | DEF-0010 |
 
 **Description**: {{상세 설명}}
 
@@ -219,21 +219,21 @@ pie title Backlog by Origin
 
 ```json
 {
-  "blId": "BL-001",
+  "blId": "BL-0010",
   "title": "제목",
   "type": "Bug",
   "origin": "CHECK",
-  "originRef": "DEF-001",
+  "originRef": "DEF-0010",
   "priority": "Critical",
   "status": "Open",
   "addedDate": "2026-03-01",
   "estimatedHours": 4,
   "implStatus": "Not Implemented",
   "iteration": "Iter 1",
-  "assignee": "u-dv-be",
-  "relatedFr": "FR-001",
-  "relatedRequest": ["FR-001", "SC-001"],
-  "relatedDef": "DEF-001",
+  "assignee": "ua-dv-be",
+  "relatedFr": "FR-0010",
+  "relatedRequest": ["FR-0010", "US-0010"],
+  "relatedDef": "DEF-0010",
   "description": "상세 설명",
   "acceptanceCriteria": [
     {
@@ -248,11 +248,11 @@ pie title Backlog by Origin
 
 </details>
 
-### BL-002: {{제목}}
+### BL-0020: {{제목}}
 
 | Field | Value |
 |-------|-------|
-| **BL-ID** | BL-002 |
+| **BL-ID** | BL-0020 |
 | **Type** | Enhancement |
 | **Origin** | DESIGN |
 | **Priority** | Major |
@@ -262,8 +262,8 @@ pie title Backlog by Origin
 | **Impl. Status** | ❌ Not Implemented |
 | **Iteration** | Iter {{N}} |
 | **Assignee** | {{agent}} |
-| **Related FR** | FR-002 |
-| **Related Request** | FR-002 |
+| **Related FR** | FR-0020 |
+| **Related Request** | FR-0020 |
 | **Related DEF** | - |
 
 **Description**: {{상세 설명}}
@@ -279,9 +279,9 @@ pie title Backlog by Origin
 
 | Order | BL-ID | Priority | Type | Description |
 |-------|-------|----------|------|-------------|
-| 1 | BL-001 | Critical | Bug | {{설명}} |
-| 2 | BL-002 | Major | Enhancement | {{설명}} |
-| 3 | BL-003 | Minor | Task | {{설명}} |
+| 1 | BL-0010 | Critical | Bug | {{설명}} |
+| 2 | BL-0020 | Major | Enhancement | {{설명}} |
+| 3 | BL-0030 | Minor | Task | {{설명}} |
 
 ---
 
@@ -289,12 +289,12 @@ pie title Backlog by Origin
 
 | BL-ID | Status at Iter End | Action | New Iteration | Notes |
 |-------|--------------------|--------|---------------|-------|
-| BL-001 | Done | Archive | - | 완료, 활성 백로그에서 제거 |
-| BL-002 | Open | Carry-Over | Iter {{N+1}} | 우선순위 유지 |
-| BL-003 | InProgress | Carry-Over | Iter {{N+1}} | Status를 Open으로 리셋 |
-| BL-004 | Blocked | Carry-Over | Iter {{N+1}} | 차단 사유 지속 |
-| BL-005 | Deferred | Carry-Over | Iter {{N+1}} | 연기 상태 유지 |
-| BL-006 | Cancelled | Purge | - | 취소 사유 기록 후 제거 |
+| BL-0010 | Done | Archive | - | 완료, 활성 백로그에서 제거 |
+| BL-0020 | Open | Carry-Over | Iter {{N+1}} | 우선순위 유지 |
+| BL-0030 | InProgress | Carry-Over | Iter {{N+1}} | Status를 Open으로 리셋 |
+| BL-0040 | Blocked | Carry-Over | Iter {{N+1}} | 차단 사유 지속 |
+| BL-0050 | Deferred | Carry-Over | Iter {{N+1}} | 연기 상태 유지 |
+| BL-0060 | Cancelled | Purge | - | 취소 사유 기록 후 제거 |
 
 **Carry-Over Rules:**
 - **Done** → Archive (활성 백로그에서 제거, IterationLog에 기록)
@@ -308,28 +308,28 @@ pie title Backlog by Origin
 {
   "carryOverLog": [
     {
-      "blId": "BL-001",
+      "blId": "BL-0010",
       "statusAtIterEnd": "Done",
       "action": "Archive",
       "newIteration": null,
       "notes": "완료, 활성 백로그에서 제거"
     },
     {
-      "blId": "BL-002",
+      "blId": "BL-0020",
       "statusAtIterEnd": "Open",
       "action": "Carry-Over",
       "newIteration": "Iter 2",
       "notes": "우선순위 유지"
     },
     {
-      "blId": "BL-003",
+      "blId": "BL-0030",
       "statusAtIterEnd": "InProgress",
       "action": "Carry-Over",
       "newIteration": "Iter 2",
       "notes": "Status를 Open으로 리셋"
     },
     {
-      "blId": "BL-006",
+      "blId": "BL-0060",
       "statusAtIterEnd": "Cancelled",
       "action": "Purge",
       "newIteration": null,

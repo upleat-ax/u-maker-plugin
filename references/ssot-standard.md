@@ -1,6 +1,6 @@
 # SSoT Document Standard
 
-> u-ssot 플러그인의 모든 SSoT 문서가 준수해야 하는 표준 양식을 정의한다.
+> u-maker 플러그인의 모든 SSoT 문서가 준수해야 하는 표준 양식을 정의한다.
 
 ---
 
@@ -83,8 +83,8 @@ Semantic Versioning (`vMAJOR.MINOR.PATCH`)을 따른다:
 |-----------------|-------------|
 | Background | 프로젝트 배경 및 목적 |
 | Scope | 범위 정의 (In-Scope / Out-of-Scope) |
-| User Stories | 사용자 스토리 목록 (Roadmap에만 정의, SRS는 FR table의 US Mapping 열로 참조) |
-| Menu Tree | IA 문서에 필수: Domain Registry, Menu Tree Table (MN-{DOMAIN}-{NNN} 형식) |
+| User Stories | 사용자 스토리 목록 (SRS Section 2에 정의, FR table의 US Mapping 열로 참조) |
+| Menu Tree | IA 문서에 필수: Domain Registry, Menu Tree Table (MN-{DOMAIN}-{NNNN} 형식) |
 | Gantt Chart | Mermaid `gantt` 다이어그램 (마일스톤, 일정) |
 
 ```mermaid
@@ -101,7 +101,7 @@ gantt
 
 ### 3.2 DESIGN Phase Documents
 
-> 대상: `2_DesignSystem_UX.md`, `2_Screen_UX.md`, `2_ERD_SA.md`, `2_API_SA.md`
+> 대상: `2_UXGuide_UX.md`, `2_Screen_UX.md`, `2_ERD_SA.md`, `2_API_SA.md`
 
 | Required Section | Description |
 |-----------------|-------------|
@@ -174,11 +174,10 @@ pie title Test Results
 
 ### 3.5 ACT Phase Documents
 
-> 대상: `backlog.md` (u-docs/ 루트), `5_IterationLog_RA.md`, `5_Retrospective_PM.md`
+> 대상: `5_IterationLog_RA.md`, `5_Retrospective_PM.md`
 
 | Required Section | Description |
 |-----------------|-------------|
-| Backlog | 미해결 항목 테이블 (BL-ID, Type, Priority, Status) |
 | Iteration History | Iteration별 변경 이력 (날짜, Phase, 변경 내용) |
 | Retrospective | 회고 (Good / Improve / Actions) |
 | XY Chart | Mermaid `xychart-beta` (Iteration별 진행률 추이) |
@@ -199,11 +198,11 @@ xychart-beta
 | Phase | Prefix | Example |
 |-------|--------|---------|
 | PLAN | `1_` | `1_Roadmap_PM.md`, `1_SRS_RA.md`, `1_IA_RA.md`, `1_Index_PM.md` |
-| DESIGN | `2_` | `2_DesignSystem_UX.md`, `2_ERD_SA.md`, `2_API_SA.md`, `2_Screen_UX.md` |
+| DESIGN | `2_` | `2_UXGuide_UX.md`, `2_ERD_SA.md`, `2_API_SA.md`, `2_Screen_UX.md` |
 | DEV | `3_` | `3_Screen_UX.md`, `3_UIComponents_UX.md`, `3_DesignToken_UX.md`, `3_Code_DV.md` |
 | CHECK | `4_` | `4_Case_QA.md`, `4_Report_QA.md` |
 | ACT | `5_` | `5_IterationLog_RA.md`, `5_Retrospective_PM.md` |
-| ALL (root) | — | `backlog.md`, `summary.md` (u-docs/ 루트, PM 관리) |
+| ALL (root) | — | `_links.json` (u-docs/ 루트, 문서 간 매핑) |
 
 ---
 
@@ -219,15 +218,14 @@ u-docs/
 │   │   └── 1_Index_PM.md
 │   ├── 02-design/
 │   │   ├── 2_ERD_SA.md
-│   │   └── 2_DesignSystem_UX.md
+│   │   └── 2_UXGuide_UX.md
 │   ├── 03-dev/
 │   │   ├── 3_UIComponents_UX.md
 │   │   └── 3_DesignToken_UX.md
 │   └── 05-act/
 │       ├── 5_IterationLog_RA.md
 │       └── 5_Retrospective_PM.md
-├── backlog.md                      # PM(u-ra) 소유, 루트 관리 문서
-├── summary.md                      # PM(u-ra) 소유, 루트 관리 문서
+├── _links.json                     # ua-ra 소유 (문서 간 매핑 단일 진실 공급원)
 ├── {app}/                          # Per-app docs (e.g., web/, admin/)
 │   ├── 01-plan/
 │   │   ├── 1_SRS_RA.md
@@ -256,6 +254,102 @@ u-docs/
 2. 문서 내 다른 SSoT 문서 참조 시 `[문서명](상대경로)` 형식을 사용한다
 3. shared 문서 참조: `u-docs/shared/{phase}/{doc}` 형식
 4. app-specific 문서 참조: `u-docs/{app}/{phase}/{doc}` 형식
-5. 수직적 추적성: PRD(why) → SRS(what) → MN/IA(navigate) → Screen(design) → ERD(how) → Code(execute)
+5. 수직적 추적성: Roadmap(why) → SRS(US+what) → MN/IA(navigate) → Screen(design) → ERD(how) → Code(execute)
 6. 수평적 추적성: Screen(UI) ↔ API(data) ↔ QA Case(verify)
 7. 추적성 깨짐 발견 시 `u-RA`에게 보고한다
+
+---
+
+## 7. ID 넘버링 규칙
+
+- **기본 증분**: 10 단위 (0010, 0020, 0030, ...)
+- **삽입 규칙**: 기존 ID 사이에 연관 서브 항목이 필요하면 중간 번호 사용
+  - 예: FR-0010, FR-0020 사이 → FR-0011 (서브/관련 FR)
+  - 판단 기준: 기존 항목의 하위/파생이면 바로 다음 번호(0011), 독립적이면 다음 10단위(0030)
+- **자동 채번**: 기존 최대값의 10단위 올림 (예: 최대 FR-0023 → 다음 FR-0030)
+- **4자리 포맷 유지**: 0010~9990 (최대 999개 기본 항목 + 중간 삽입)
+- **FR 도메인 그룹**: 도메인별 1000단위 범위 할당
+  - AUTH Group: FR-0010~0099
+  - CORE Group: FR-0110~0199
+  - ADMIN Group: FR-0210~0299
+  - 각 그룹 내에서 10단위 증가
+
+---
+
+## 8. Collaboration Rules (협업 규칙)
+
+### 8.1 Reference-Only Principle (참조 전용 원칙)
+
+문서 간 상호 참조 시 **ID만 기재**하고 타 문서의 상세 내용을 복사하지 않는다.
+
+| 항목 | 허용 | 금지 |
+|------|------|------|
+| FR 참조 | `FR-0010` | `FR-0010 사용자 로그인 (이메일+비밀번호로 인증)` |
+| Screen 참조 | `S-0010` | `S-0010 로그인 화면 — 이메일/비밀번호 입력 폼` |
+| API 참조 | `POST /auth/login` | `POST /auth/login — 이메일/비밀번호 검증 후 토큰 반환` |
+| Entity 참조 | `Entity: USER` | `Entity: USER (id, email, password_hash, name, role)` |
+
+**원칙**: 상세 내용은 원본 문서에만 존재한다. 변경 시 원본 1개만 수정하면 된다.
+
+### 8.2 `_links.json` — 문서 간 매핑 단일 진실 공급원
+
+문서 간의 추적성 매핑을 `u-docs/_links.json` 단일 파일에서 관리한다.
+
+```json
+{
+  "mappings": [
+    {
+      "fr": "FR-0010",
+      "us": ["US-0010"],
+      "mn": "MN-AUTH-0010",
+      "screen": "S-0010",
+      "api": "POST /auth/login",
+      "erd": ["USER"],
+      "qa": "TC-0010"
+    }
+  ]
+}
+```
+
+| 필드 | 설명 | 원본 문서 |
+|------|------|-----------|
+| `fr` | 기능 요구사항 ID | `1_SRS_RA.md` |
+| `us` | 유저 스토리 ID 목록 | `1_SRS_RA.md` |
+| `mn` | 메뉴 네비게이션 ID | `1_IA_RA.md` |
+| `screen` | 화면 ID | `2_Screen_UX.md` |
+| `api` | API Endpoint | `2_API_SA.md` |
+| `erd` | Entity 이름 목록 | `2_ERD_SA.md` |
+| `qa` | 테스트 케이스 ID | `4_Case_QA.md` |
+
+**규칙**:
+1. 문서에 항목을 추가/삭제할 때 `_links.json`의 해당 매핑도 함께 갱신한다
+2. 매핑 필드가 아직 미정이면 `null`로 기입한다 (예: Screen 미설계 시 `"screen": null`)
+3. `/uc-validate` 검증 시 `_links.json` 기준으로 누락을 탐지한다
+4. Technical FR (US 없는 FR)은 `"us": ["-"]`로 표기한다
+
+### 8.3 Deferred Cascading Update (지연 연쇄 갱신)
+
+문서 변경 시 관련 문서를 **즉시 갱신하지 않는다**. 대신 아래 절차를 따른다:
+
+```
+1. 원본 문서 수정 (예: SRS에 FR-0030 추가)
+2. _links.json에 매핑 행 추가 (미정 필드는 null)
+3. 각 문서 담당자가 자기 문서를 비동기로 갱신
+4. /uc-validate로 누락 항목 탐지
+```
+
+**즉시 갱신이 필요한 예외**:
+- 항목 삭제 시: 삭제된 ID를 참조하는 모든 문서에서 해당 ID 제거
+- 구조 변경 시: Phase Gate 전환 전 반드시 모든 관련 문서 동기화
+
+### 8.4 분업 단위
+
+| 협업 규모 | 권장 분업 단위 |
+|-----------|---------------|
+| 1인 | 제약 없음 |
+| 2~3인 (역할 분리) | 문서 소유권(owner) 기준 분업 |
+| 4인+ | 문서 + 도메인 그룹 기준 분업. shared 문서는 순차 PR |
+
+- 같은 문서를 동시에 편집하지 않는다
+- shared 문서(`2_ERD_SA`, `1_Roadmap_PM`, `1_Index_PM` 등)는 동시 편집 금지, PR 기반 순차 merge
+- ID 채번 충돌 방지: 도메인 그룹 범위를 작업자별로 할당

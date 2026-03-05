@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * prompt-docs-first-guard.js — u-ssot UserPromptSubmit Hook
+ * prompt-docs-first-guard.js — u-maker UserPromptSubmit Hook
  *
  * Detects prompts that imply new requirements, features, or user stories,
  * and injects a reminder to update SSoT documents BEFORE implementing.
@@ -43,14 +43,14 @@ if (!prompt) {
 // ============================================================
 
 const DOC_COMMANDS = [
-  '/u-us-add', '/u-fr-add', '/u-srs', '/u-plan', '/u-design',
-  '/u-backlog-add', '/u-erd', '/u-api', '/u-screen', '/u-index',
-  '/u-create-project', '/u-init', '/u-check', '/u-act',
-  '/u-loop', '/u-loop-from', '/u-dev', '/u-fe', '/u-be',
-  '/u-test', '/u-bug-report', '/u-gap-detector',
-  '/u-validate', '/u-status', '/u-docs', '/u-backlog',
-  '/u-help', '/u-history', '/u-archive', '/u-storybook',
-  '/u-build', '/u-summary', '/u-git-pr', '/u-stop', '/u-resume',
+  '/uc-us-add', '/uc-fr-add', '/uc-srs', '/uc-plan', '/uc-design',
+  '/uc-backlog-add', '/uc-erd', '/uc-api', '/uc-screen', '/uc-index',
+  '/uc-create-project', '/uc-init', '/uc-check', '/uc-act',
+  '/uc-loop', '/uc-loop-from', '/uc-dev', '/uc-fe', '/uc-be',
+  '/uc-test', '/uc-bug-report', '/uc-gap-detector',
+  '/uc-validate', '/uc-status', '/uc-docs', '/uc-backlog',
+  '/uc-help', '/uc-history', '/uc-archive', '/uc-storybook',
+  '/uc-build', '/uc-git-pr', '/uc-stop', '/uc-resume',
 ];
 
 const promptLower = prompt.toLowerCase();
@@ -134,10 +134,10 @@ const reminder = [
   '',
   '**Before implementing code, guide the user to update SSoT documents first:**',
   '',
-  '1. **New User Story** → Suggest `/u-us-add` to add to `1_Roadmap_PM.md`',
-  '2. **New Functional Requirement** → Suggest `/u-fr-add` to add to `1_SRS_RA.md`',
-  '3. **Multiple changes** → Suggest `/u-plan` or `/u-srs` for full document regeneration',
-  '4. **Bug/defect** → Suggest `/u-backlog-add` to add to `backlog.md`',
+  '1. **New User Story** → Suggest `/uc-us-add` to add to `1_Roadmap_PM.md`',
+  '2. **New Functional Requirement** → Suggest `/uc-fr-add` to add to `1_SRS_RA.md`',
+  '3. **Multiple changes** → Suggest `/uc-plan` or `/uc-srs` for full document regeneration',
+  '4. **Bug/defect** → Suggest `/uc-backlog-add` to add to `5_IterationLog_RA.md`',
   '',
   'Only proceed to implementation after the relevant SSoT documents have been updated.',
   'This ensures traceability (US → FR → ERD → API → Code → Test).',

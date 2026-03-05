@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# init-project.sh — u-ssot Project Initialization Script
+# init-project.sh — u-maker Project Initialization Script
 # Creates Turborepo + bun + Next.js + Storybook + u-docs structure
 #
 # Usage: ./init-project.sh <project-name>
@@ -24,7 +24,7 @@ if [[ ! "$PROJECT_NAME" =~ ^[a-z][a-z0-9-]*$ ]]; then
 fi
 
 echo "============================================================"
-echo "  u-ssot: Project Initialization"
+echo "  u-maker: Project Initialization"
 echo "  Project: $PROJECT_NAME"
 echo "============================================================"
 echo ""
@@ -166,7 +166,7 @@ done
 cat > u-docs/README.md <<'UDOCSREADME'
 # u-docs: SSoT Document Repository
 
-This directory is the **Single Source of Truth (SSoT)** for all project documentation, managed by the u-ssot plugin.
+This directory is the **Single Source of Truth (SSoT)** for all project documentation, managed by the u-maker plugin.
 
 ## Structure
 
@@ -242,7 +242,7 @@ echo "    bun install"
 echo "    bun run dev          # Start development"
 echo "    bun run storybook    # Start Storybook"
 echo ""
-echo "  u-ssot commands:"
+echo "  u-maker commands:"
 echo "    /u-plan              # Start PLAN phase"
 echo "    /u-status            # Check project status"
 echo "    /u-help              # Show all commands"

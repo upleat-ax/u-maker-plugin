@@ -156,9 +156,9 @@ flowchart TD
 
 | Screen (Design) | Page File | Menu ID | Components | Status |
 |----------------|----------|---------|-----------|--------|
-| S-001 Home | `apps/web/app/page.tsx` | MN-XXX-NNN | Header, HeroSection, FeatureCard | - |
-| S-002 Dashboard | `apps/web/app/dashboard/page.tsx` | MN-XXX-NNN | Sidebar, SummaryCard, DataTable | - |
-| S-006 Login | `apps/web/app/auth/login/page.tsx` | MN-XXX-NNN | LoginForm, EmailInput, PasswordInput | - |
+| S-0010 Home | `apps/web/app/page.tsx` | MN-XXX-NNNN | Header, HeroSection, FeatureCard | - |
+| S-0020 Dashboard | `apps/web/app/dashboard/page.tsx` | MN-XXX-NNNN | Sidebar, SummaryCard, DataTable | - |
+| S-0060 Login | `apps/web/app/auth/login/page.tsx` | MN-XXX-NNNN | LoginForm, EmailInput, PasswordInput | - |
 
 ### 3.4 Component → Storybook Mapping
 
@@ -222,8 +222,8 @@ flowchart TD
 
 | FR-ID | Feature | Code Files | Build | Test | Status |
 |-------|---------|-----------|-------|------|--------|
-| FR-001 | {{기능명}} | - | - | - | Not Started |
-| FR-002 | {{기능명}} | - | - | - | Not Started |
+| FR-0010 | {{기능명}} | - | - | - | Not Started |
+| FR-0020 | {{기능명}} | - | - | - | Not Started |
 
 ---
 

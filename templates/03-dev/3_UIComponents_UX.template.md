@@ -6,7 +6,7 @@ status: "Draft"
 version: "v0.1.0"
 last_updated: "{{DATE}}"
 related_docs:
-  - "u-docs/shared/02-design/2_DesignSystem_UX.md"
+  - "u-docs/shared/02-design/2_UXGuide_UX.md"
   - "u-docs/{{APP_NAME}}/02-design/2_Screen_UX.md"
   - "u-docs/shared/03-dev/3_DesignToken_UX.md"
   - "u-docs/{{APP_NAME}}/03-dev/3_Code_DV.md"
@@ -50,8 +50,8 @@ packages/ui/src/
 | Component | Category | Impl. | Storybook | Tests | Related Screen |
 |-----------|----------|-------|-----------|-------|----------------|
 | Button | Atom | ✅ Done | ✅ Done | ✅ Done | 전체 |
-| Input | Atom | ✅ Done | ✅ Done | ❌ Not Started | S-001, S-007 |
-| Card | Molecule | ⏳ In Progress | ❌ Not Started | ❌ Not Started | S-002, S-003 |
+| Input | Atom | ✅ Done | ✅ Done | ❌ Not Started | S-0010, S-0070 |
+| Card | Molecule | ⏳ In Progress | ❌ Not Started | ❌ Not Started | S-0020, S-0030 |
 | {{Component}} | {{Category}} | ❌ Not Started | ❌ Not Started | ❌ Not Started | {{Screens}} |
 
 **전체 진행률**: {{N}}/{{TOTAL}} 구현 완료 ({{PERCENT}}%)
@@ -98,7 +98,7 @@ packages/ui/src/
 
 **Package**: `packages/ui/src/Input`
 **Status**: ✅ Implementation Done | ✅ Storybook Done | ❌ Tests Not Started
-**Related Screens**: S-001 (로그인), S-007 (회원가입)
+**Related Screens**: S-0010 (로그인), S-0070 (회원가입)
 
 #### Props
 

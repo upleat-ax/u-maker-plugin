@@ -1,6 +1,6 @@
 # Mermaid Diagram Guide
 
-> u-ssot에서 사용하는 Mermaid 다이어그램 유형별 작성 가이드.
+> u-maker에서 사용하는 Mermaid 다이어그램 유형별 작성 가이드.
 > 모든 SSoT 문서는 해당 Phase에 맞는 다이어그램을 포함해야 한다.
 
 ---
@@ -467,7 +467,7 @@ Mermaid는 `[/text/]`를 trapezoid(사다리꼴) 노드로 해석한다. URL 경
 HOME[/]
 LOGIN[/login]
 CONTENT[/content/list]
-START[/u-loop 시작/]
+START[/uc-loop 시작/]
 ```
 
 **올바른 패턴 (권장: 경로 세그먼트 줄바꿈 스택):**

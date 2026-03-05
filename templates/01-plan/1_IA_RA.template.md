@@ -95,19 +95,19 @@ flowchart TD
 
 | Menu ID | Menu Name | Path | Depth | Parent MN-ID | Screen ID | Icon | Auth | Order | Visible | FR Mapping |
 |---------|-----------|------|-------|-------------|-----------|------|------|-------|---------|------------|
-| MN-AUTH-001 | Login | `/auth/login` | 1 | - | S-001 | LogIn | No | 1 | Conditional | - |
-| MN-AUTH-002 | Register | `/auth/register` | 1 | - | S-002 | UserPlus | No | 2 | Conditional | - |
-| MN-DASH-001 | Dashboard | `/dashboard` | 1 | - | S-003 | LayoutDashboard | Yes | 1 | Always | FR-001 |
-| MN-{{DOMAIN}}-001 | {{메뉴명}} | `/{{path}}` | 1 | - | S-004 | {{아이콘}} | Yes | 2 | Always | FR-002 |
-| MN-{{DOMAIN}}-002 | {{하위 메뉴}} | `/{{path}}/{{sub}}` | 2 | MN-{{DOMAIN}}-001 | S-005 | {{아이콘}} | Yes | 1 | Always | FR-003 |
-| MN-SET-001 | Settings | `/settings` | 1 | - | S-006 | Settings | Yes | 99 | Always | - |
-| MN-SET-002 | Profile | `/settings/profile` | 2 | MN-SET-001 | S-007 | User | Yes | 1 | Always | - |
+| MN-AUTH-0010 | Login | `/auth/login` | 1 | - | S-0010 | LogIn | No | 1 | Conditional | - |
+| MN-AUTH-0020 | Register | `/auth/register` | 1 | - | S-0020 | UserPlus | No | 2 | Conditional | - |
+| MN-DASH-0010 | Dashboard | `/dashboard` | 1 | - | S-0030 | LayoutDashboard | Yes | 1 | Always | FR-0010 |
+| MN-{{DOMAIN}}-0010 | {{메뉴명}} | `/{{path}}` | 1 | - | S-0040 | {{아이콘}} | Yes | 2 | Always | FR-0020 |
+| MN-{{DOMAIN}}-0020 | {{하위 메뉴}} | `/{{path}}/{{sub}}` | 2 | MN-{{DOMAIN}}-0010 | S-0050 | {{아이콘}} | Yes | 1 | Always | FR-0030 |
+| MN-SET-0010 | Settings | `/settings` | 1 | - | S-0060 | Settings | Yes | 99 | Always | - |
+| MN-SET-0020 | Profile | `/settings/profile` | 2 | MN-SET-0010 | S-0070 | User | Yes | 1 | Always | - |
 
 ### 3.3 Menu ID Rules
 
-- **Format**: `MN-{DOMAIN}-{NNN}`
+- **Format**: `MN-{DOMAIN}-{NNNN}`
 - **DOMAIN**: Domain Registry(§2)에 등록된 코드 (대문자 2-5자)
-- **NNN**: 도메인 내 순번 (3자리, 001부터)
+- **NNNN**: 도메인 내 순번 (4자리, 0010부터, 10단위 증가)
 - **Menu → Screen**: 1:1 관계. 모든 메뉴는 정확히 하나의 Screen에 매핑
 - **비메뉴 화면**: Modal, Drawer, Error 등은 Menu ID 없이 Screen ID만 부여
 
@@ -134,21 +134,21 @@ flowchart LR
 
 | Screen ID | Screen Name | Path | Access Type | Menu ID | Parent Screen | FR Mapping | Priority |
 |-----------|------------|------|-------------|---------|---------------|------------|----------|
-| S-001 | Login | `/auth/login` | Menu | MN-AUTH-001 | - | - | Must |
-| S-002 | Register | `/auth/register` | Menu | MN-AUTH-002 | - | - | Must |
-| S-003 | Dashboard | `/dashboard` | Menu | MN-DASH-001 | - | FR-001 | Must |
-| S-004 | {{화면명}} | `/{{path}}` | Menu | MN-{{DOMAIN}}-001 | Dashboard | FR-002 | Must |
-| S-005 | {{화면명}} | `/{{path}}/{{sub}}` | Menu | MN-{{DOMAIN}}-002 | S-004 | FR-003 | Should |
-| S-006 | Settings | `/settings` | Menu | MN-SET-001 | - | - | Must |
-| S-007 | Profile | `/settings/profile` | Menu | MN-SET-002 | Settings | - | Must |
-| S-008 | {{모달/Drawer}} | - | Modal | - | S-004 | FR-004 | Should |
-| S-009 | Error 404 | `/404` | Error | - | - | - | Must |
+| S-0010 | Login | `/auth/login` | Menu | MN-AUTH-0010 | - | - | Must |
+| S-0020 | Register | `/auth/register` | Menu | MN-AUTH-0020 | - | - | Must |
+| S-0030 | Dashboard | `/dashboard` | Menu | MN-DASH-0010 | - | FR-0010 | Must |
+| S-0040 | {{화면명}} | `/{{path}}` | Menu | MN-{{DOMAIN}}-0010 | Dashboard | FR-0020 | Must |
+| S-0050 | {{화면명}} | `/{{path}}/{{sub}}` | Menu | MN-{{DOMAIN}}-0020 | S-0040 | FR-0030 | Should |
+| S-0060 | Settings | `/settings` | Menu | MN-SET-0010 | - | - | Must |
+| S-0070 | Profile | `/settings/profile` | Menu | MN-SET-0020 | Settings | - | Must |
+| S-0080 | {{모달/Drawer}} | - | Modal | - | S-0040 | FR-0040 | Should |
+| S-0090 | Error 404 | `/404` | Error | - | - | - | Must |
 
 ### 5.1 Access Type Guide
 
 | Access Type | Description | Menu ID |
 |-------------|-------------|---------|
-| Menu | 네비게이션 메뉴로 접근 가능 | 필수 (MN-XXX-NNN) |
+| Menu | 네비게이션 메뉴로 접근 가능 | 필수 (MN-XXX-NNNN) |
 | Direct | URL 직접 접근만 가능 | 선택 |
 | Modal | 모달 다이얼로그 | - (없음) |
 | Drawer | 사이드 드로어 | - (없음) |
@@ -159,28 +159,13 @@ flowchart LR
 
 ## 6. User Flows
 
-> User Scenario(SC-NNN) 기반으로 작성한다. 각 플로우는 journey(감정 흐름) + flowchart(분기 로직) 두 가지로 표현한다.
+> User Story(US-NNNN) 기반으로 작성한다. 각 플로우는 flowchart(분기 로직)로 표현한다.
 
-### 6.1 {{SC-001: 주요 플로우 1}}
-
-**Persona**: {{페르소나이름}} — {{역할/배경}}
-
-```mermaid
-journey
-    title SC-001: {{시나리오 제목}}
-    section {{단계 1}}
-        {{행동 1}}: {{만족도 1-5}}: {{페르소나이름}}
-        {{행동 2}}: {{만족도}}: {{페르소나이름}}
-    section {{단계 2}}
-        {{행동 3}}: {{만족도}}: {{페르소나이름}}
-        {{행동 4}}: {{만족도}}: {{페르소나이름}}
-    section {{완료}}
-        {{완료 행동}}: 5: {{페르소나이름}}
-```
+### 6.1 {{US-0010: 주요 플로우 1}}
 
 ```mermaid
 flowchart TD
-    START([{{페르소나이름}}]) --> A["{{단계 1}}"]
+    START([시작]) --> A["{{단계 1}}"]
     A --> B["{{단계 2}}"]
     B --> C{"{{조건}}"}
     C -->|Success| D["{{성공 화면}}"]
@@ -189,22 +174,11 @@ flowchart TD
     D --> END([Complete])
 ```
 
-### 6.2 {{SC-002: 주요 플로우 2}}
-
-**Persona**: {{페르소나이름}} — {{역할/배경}}
-
-```mermaid
-journey
-    title SC-002: {{시나리오 제목}}
-    section {{단계}}
-        {{행동}}: {{만족도}}: {{페르소나이름}}
-    section {{완료}}
-        {{완료}}: 5: {{페르소나이름}}
-```
+### 6.2 {{US-0020: 주요 플로우 2}}
 
 ```mermaid
 flowchart TD
-    START([{{페르소나이름}}]) --> A["{{단계 1}}"]
+    START([시작]) --> A["{{단계 1}}"]
     A --> B["{{단계 2}}"]
     B --> C["{{단계 3}}"]
     C --> END([Complete])
@@ -216,8 +190,8 @@ flowchart TD
 
 | Content Type | Fields | Source | Display Screen |
 |-------------|--------|--------|---------------|
-| {{컨텐츠 유형 1}} | {{필드 목록}} | {{데이터 소스}} | S-003, S-004 |
-| {{컨텐츠 유형 2}} | {{필드 목록}} | {{데이터 소스}} | S-004, S-005 |
+| {{컨텐츠 유형 1}} | {{필드 목록}} | {{데이터 소스}} | S-0030, S-0040 |
+| {{컨텐츠 유형 2}} | {{필드 목록}} | {{데이터 소스}} | S-0040, S-0050 |
 
 ---
 

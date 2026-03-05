@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * session-start.js — u-ssot SessionStart Hook
+ * session-start.js — u-maker SessionStart Hook
  *
  * Checks if u-docs/ exists in the current working directory.
  * If not, creates the full SSoT folder structure (v2: shared/ + per-app).
@@ -33,7 +33,7 @@ const APP_PHASE_DIRS = ['01-plan', '02-design', '03-dev', '04-check'];
  * @returns {string[]}
  */
 function getAppsFromConfig() {
-  const configPath = path.join(cwd, 'u-ssot.config.json');
+  const configPath = path.join(cwd, 'u-maker.config.json');
   let apps = ['web'];
   try {
     if (fs.existsSync(configPath)) {
@@ -77,7 +77,7 @@ function ensureUdocsStructure() {
     fs.writeFileSync(readmePath, [
       '# u-docs: SSoT Document Repository',
       '',
-      'Managed by the u-ssot plugin.',
+      'Managed by the u-maker plugin.',
       '',
       '| Directory | Scope | Phase |',
       '|-----------|-------|-------|',
@@ -106,12 +106,12 @@ try {
       hookSpecificOutput: {
         hookEventName: 'SessionStart',
         additionalContext: [
-          '# u-ssot: Session Start',
+          '# u-maker: Session Start',
           '',
           `u-docs/ structure created at ${udocsRoot}`,
           `Created directories: ${created.join(', ')}`,
           '',
-          'Ready for PDCA workflow. Use /u-plan to start.',
+          'Ready for PDCA workflow. Use /uc-plan to start.',
         ].join('\n'),
       },
     };
@@ -124,7 +124,7 @@ try {
       hookSpecificOutput: {
         hookEventName: 'SessionStart',
         additionalContext: [
-          '# u-ssot: Session Start',
+          '# u-maker: Session Start',
           '',
           `u-docs/ found at ${udocsRoot}`,
           created.length > 0
@@ -142,7 +142,7 @@ try {
     result: 'success',
     hookSpecificOutput: {
       hookEventName: 'SessionStart',
-      additionalContext: `u-ssot session start warning: ${err.message}`,
+      additionalContext: `u-maker session start warning: ${err.message}`,
     },
   }));
 }

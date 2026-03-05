@@ -1,6 +1,6 @@
 # PDCA Workflow
 
-> u-ssot의 PDCA(Plan-Design-Do-Check-Act) 5-Phase 워크플로우를 정의한다.
+> u-maker의 PDCA(Plan-Design-Do-Check-Act) 5-Phase 워크플로우를 정의한다.
 > 모든 에이전트는 이 워크플로우를 기반으로 협업한다.
 
 ---
@@ -93,7 +93,7 @@ flowchart TD
 | 1 | u-RA or u-SA | `shared/1_Roadmap_PM.md` or `{app}/1_SRS_RA.md` | US-First: Roadmap 먼저, FR-First: SRS 먼저 |
 | 2 | u-SA or u-RA | `{app}/1_SRS_RA.md` or `shared/1_Roadmap_PM.md` | 나머지 문서 작성 |
 | 2.5 | u-RA + u-SA | Cross-mapping 갱신 | TBD 매핑을 실제 ID로 갱신 |
-| 3 | u-UX | `{app}/1_IA_RA.md` | 정보 구조도 + Menu Tree (MN-{DOMAIN}-{NNN}) |
+| 3 | u-UX | `{app}/1_IA_RA.md` | 정보 구조도 + Menu Tree (MN-{DOMAIN}-{NNNN}) |
 | 4 | u-RA | `shared/1_Index_PM.md` | 문서 인덱스 생성, 상태 추적 시작 |
 
 ```mermaid
@@ -105,28 +105,31 @@ flowchart LR
     RA2 -->|Index| GATE{PLAN Gate}
 ```
 
-> **Backlog Trigger**: TBD 매핑 잔존 또는 NFR 누락 발견 시 u-ra가 BL 생성 (Origin: PLAN). Phase를 블로킹하지 않음.
+> **Backlog Trigger**: TBD 매핑 잔존 또는 NFR 누락 발견 시 ua-ra가 BL 생성 (Origin: PLAN). Phase를 블로킹하지 않음.
 
 ### 2.2 DESIGN Phase
 
-**목적**: 디자인 시스템, 화면 설계와 데이터/API 구조를 확정한다.
+**목적**: UX 가이드, 화면 설계, 흐름도, 와이어프레임, 화면 디자인과 데이터/API 구조를 확정한다.
 
 | Step | Agent | Output | Description |
 |------|-------|--------|-------------|
-| 1 | u-UX | `shared/2_DesignSystem_UX.md` | 디자인 시스템 정의 (컬러, 타이포, 스페이싱) |
+| 1 | u-UX | `shared/2_UXGuide_UX.md` | UX 표준가이드 + 디자인 시스템 (컬러, 타이포, 스페이싱, 컴포넌트) |
 | 2 | u-UX | `{app}/2_Screen_UX.md` | 화면 상세 설계 (UI 컴포넌트, 상태 전이) |
-| 3 | u-SA | `shared/2_ERD_SA.md` | Entity Relationship Diagram |
-| 4 | u-SA | `{app}/2_API_SA.md` | API Contract (OpenAPI 3.0) |
-| 5 | u-RA | 검수 결과 | 문서 간 모순 검수, 추적성 검증 |
+| 3 | u-UX | `{app}/2_ScreenFlow_UX.md` | 화면 간의 흐름도 (네비게이션 플로우, 딥링크) |
+| 4 | u-UX | `{app}/2_Screen_Wireframes/` | 와이어프레임 HTML |
+| 5 | u-UX | `.pen` 파일 | 화면 디자인 (pencil.dev MCP) |
+| 6 | u-SA | `shared/2_ERD_SA.md` | Entity Relationship Diagram |
+| 7 | u-SA | `{app}/2_API_SA.md` | API Contract (OpenAPI 3.0) |
+| 8 | u-RA | 검수 결과 | 문서 간 모순 검수, 추적성 검증 |
 
 ```mermaid
 flowchart LR
-    UX[u-UX] -->|DesignSystem + Screen| SA[u-SA]
+    UX1[u-UX] -->|UXGuide + Screen + ScreenFlow + Wireframe + Design| SA[u-SA]
     SA -->|ERD + API| RA[u-RA]
     RA -->|검수 결과| GATE{DESIGN Gate}
 ```
 
-> **Backlog Trigger**: 모순 검수에서 불일치 발견 시 u-ra가 BL 생성 (Origin: DESIGN). Phase를 블로킹하지 않음.
+> **Backlog Trigger**: 모순 검수에서 불일치 발견 시 ua-ra가 BL 생성 (Origin: DESIGN). Phase를 블로킹하지 않음.
 
 ### 2.3 DO Phase
 
@@ -150,7 +153,7 @@ flowchart LR
     CODE --> GATE{DO Gate}
 ```
 
-> **Backlog Trigger**: 빌드 실패 또는 Gap Rate < 90% 시 u-ra가 BL 생성 (Origin: DEV). Phase를 블로킹하지 않음.
+> **Backlog Trigger**: 빌드 실패 또는 Gap Rate < 90% 시 ua-ra가 BL 생성 (Origin: DEV). Phase를 블로킹하지 않음.
 
 ### 2.4 CHECK Phase
 
@@ -176,7 +179,7 @@ flowchart LR
 
 | Step | Agent | Output | Description |
 |------|-------|--------|-------------|
-| 1 | u-RA | `u-docs/backlog.md` | DEF→BL 변환 + PLAN/DESIGN/DEV 기원 항목 확인 + 미해결 항목 정리 |
+| 1 | u-RA | `shared/5_IterationLog_RA.md` | DEF→BL 변환 + PLAN/DESIGN/DEV 기원 항목 확인 + 미해결 항목 정리 |
 | 2 | u-RA | `iterations/iter-N/` | 현재 Iteration 문서 아카이브 |
 | 3 | u-RA | `shared/5_IterationLog_RA.md` | Iteration 이력 기록 |
 | 4 | Team | `shared/5_Retrospective_PM.md` | 회고 (Good / Improve / Actions) |
@@ -184,7 +187,7 @@ flowchart LR
 ```mermaid
 flowchart LR
     QA[u-QA] -->|결함 보고| RA[u-RA]
-    RA -->|Backlog + Iteration Log| RETRO[Retrospective]
+    RA -->|Iteration Log| RETRO[Retrospective]
     RETRO --> NEXT[다음 Iteration]
 ```
 
@@ -195,11 +198,11 @@ flowchart LR
 | Transition | Gate Conditions | Validator |
 |-----------|----------------|-----------|
 | PLAN → DESIGN | `shared/1_Roadmap_PM.md` = Final + 모든 앱의 `1_SRS_RA.md`, `1_IA_RA.md` = Final | u-RA |
-| DESIGN → DO | `shared/2_ERD_SA.md`, `shared/2_DesignSystem_UX.md` = Final + 모든 앱의 `2_API_SA.md`, `2_Screen_UX.md` = Final + u-RA 검수 통과 | u-RA |
+| DESIGN → DO | `shared/2_ERD_SA.md`, `shared/2_UXGuide_UX.md` = Final + 모든 앱의 `2_API_SA.md`, `2_Screen_UX.md`, `2_ScreenFlow_UX.md` = Final + u-RA 검수 통과 | u-RA |
 | DO → CHECK | 코드 구현 완료 + `bun run build` 성공 | u-RA |
 | CHECK → Complete | Critical/Major 결함 0건 + 백로그 활성 항목 0건 (Done/Cancelled/Deferred 외) + 모든 앱의 전체 FR 구현 완료 | u-RA + scripts |
 | CHECK → ACT | 위 CHECK → Complete 조건 미충족 시 자동 전환 | Orchestrator |
-| ACT → PLAN (Iter N+1) | `u-docs/backlog.md` 정리 완료 + `shared/5_Retrospective_PM.md` 작성 + 아카이브 완료 | u-RA |
+| ACT → PLAN (Iter N+1) | `shared/5_IterationLog_RA.md` 정리 완료 + `shared/5_Retrospective_PM.md` 작성 + 아카이브 완료 | u-RA |
 
 > **Note**: shared 문서는 1회 검증. perApp 문서는 모든 앱이 Final이어야 Gate 통과.
 
@@ -224,11 +227,12 @@ flowchart LR
       "transition": "DESIGN→DO",
       "shared": [
         { "document": "2_ERD_SA.md", "status": "Final" },
-        { "document": "2_DesignSystem_UX.md", "status": "Final" }
+        { "document": "2_UXGuide_UX.md", "status": "Final" }
       ],
       "perApp": [
         { "document": "2_API_SA.md", "status": "Final" },
-        { "document": "2_Screen_UX.md", "status": "Final" }
+        { "document": "2_Screen_UX.md", "status": "Final" },
+        { "document": "2_ScreenFlow_UX.md", "status": "Final" }
       ],
       "additionalCheck": "u-RA 검수 통과",
       "rule": "shared 1회 검증 + 모든 앱 perApp Final",
@@ -254,7 +258,7 @@ flowchart LR
     {
       "transition": "ACT→PLAN(N+1)",
       "conditions": [
-        { "check": "backlog.md 정리 완료" },
+        { "check": "5_IterationLog_RA.md 정리 완료" },
         { "check": "5_Retrospective_PM.md 작성" },
         { "check": "아카이브 완료" }
       ],
@@ -271,9 +275,9 @@ flowchart LR
 ## 4. Iteration Rules
 
 1. **자동 반복**: CHECK Gate 실패 시 자동으로 ACT Phase 진입, ACT 완료 후 다음 Iteration의 PLAN으로 전환
-2. **증분 작업**: Iteration 2+ 에서는 `backlog.md`의 Open 항목만 대상으로 변경분만 갱신
+2. **증분 작업**: Iteration 2+ 에서는 `5_IterationLog_RA.md`의 Open 항목만 대상으로 변경분만 갱신
 3. **최대 반복**: 기본 10회 제한 (설정 변경 가능)
-4. **중단/재개**: `/u-stop`으로 루프 중단, `/u-resume`으로 재개 가능
+4. **중단/재개**: `/uc-stop`으로 루프 중단, `/uc-resume`으로 재개 가능
 5. **Final 유지**: 기존 Final 문서는 유지하되, 해당 항목만 PATCH 업데이트
 6. **아카이브**: 매 Iteration 완료 시 `u-docs/iterations/iter-N/`에 문서 스냅샷 보관
 
@@ -293,7 +297,7 @@ EXIT =
 
 | # | Condition | Check Method |
 |---|-----------|-------------|
-| 1 | 백로그 활성 항목 없음 (Done/Cancelled/Deferred 외 0건) | `backlog.md` 파싱 |
+| 1 | 백로그 활성 항목 없음 (Done/Cancelled/Deferred 외 0건) | `5_IterationLog_RA.md` 파싱 |
 | 2 | Critical/Major 결함 0건 | `4_Report_QA.md` 파싱 |
 | 3 | SRS의 모든 FR 구현 완료 | `1_SRS_RA.md` 구현 상태 확인 |
 | 4 | 빌드 성공 | `bun run build` 실행 결과 |
@@ -304,7 +308,7 @@ EXIT =
 {
   "exitCriteria": {
     "conditions": [
-      { "id": 1, "name": "backlogNoActive", "check": "backlog.md", "rule": "status not in ['Done','Cancelled','Deferred'] === 0" },
+      { "id": 1, "name": "backlogNoActive", "check": "5_IterationLog_RA.md", "rule": "status not in ['Done','Cancelled','Deferred'] === 0" },
       { "id": 2, "name": "noCriticalMajor", "check": "4_Report_QA.md", "rule": "Critical + Major === 0" },
       { "id": 3, "name": "allFrImplemented", "check": "1_SRS_RA.md", "rule": "모든 FR implemented === true" },
       { "id": 4, "name": "buildSuccess", "check": "bun run build", "rule": "returncode === 0" }

@@ -39,12 +39,12 @@ external_links: []
 
 | Method | Path | Description | FR Mapping | Screen Mapping | Menu Mapping | Auth |
 |--------|------|-------------|------------|---------------|-------------|------|
-| POST | `/auth/login` | 로그인 | FR-001 | S-006 | MN-AUTH-001 | No |
-| POST | `/auth/register` | 회원가입 | FR-001 | S-007 | MN-AUTH-002 | No |
-| GET | `/{{resource}}` | {{설명}} | FR-002 | S-003 | MN-XXX-NNN | Yes |
-| POST | `/{{resource}}` | {{설명}} | FR-003 | S-004 | MN-XXX-NNN | Yes |
-| PUT | `/{{resource}}/:id` | {{설명}} | FR-003 | S-004 | MN-XXX-NNN | Yes |
-| DELETE | `/{{resource}}/:id` | {{설명}} | FR-003 | S-004 | MN-XXX-NNN | Yes |
+| POST | `/auth/login` | 로그인 | FR-0010 | S-0060 | MN-AUTH-0010 | No |
+| POST | `/auth/register` | 회원가입 | FR-0010 | S-0070 | MN-AUTH-0020 | No |
+| GET | `/{{resource}}` | {{설명}} | FR-0020 | S-0030 | MN-XXX-NNNN | Yes |
+| POST | `/{{resource}}` | {{설명}} | FR-0030 | S-0040 | MN-XXX-NNNN | Yes |
+| PUT | `/{{resource}}/:id` | {{설명}} | FR-0030 | S-0040 | MN-XXX-NNNN | Yes |
+| DELETE | `/{{resource}}/:id` | {{설명}} | FR-0030 | S-0040 | MN-XXX-NNNN | Yes |
 
 ---
 
@@ -57,7 +57,7 @@ external_links: []
 **Summary**: 사용자 로그인
 **Tags**: Auth
 **Auth Required**: No
-**Related FR**: FR-001 | **Screen**: S-006 | **Menu**: MN-AUTH-001
+**Related FR**: FR-0010 | **Screen**: S-0060 | **Menu**: MN-AUTH-0010
 
 #### Parameters
 
@@ -112,7 +112,7 @@ external_links: []
 **Summary**: {{리소스 목록 조회}}
 **Tags**: {{Tag}}
 **Auth Required**: Yes (Bearer Token)
-**Related FR**: FR-002 | **Screen**: S-003 | **Menu**: MN-XXX-NNN
+**Related FR**: FR-0020 | **Screen**: S-0030 | **Menu**: MN-XXX-NNNN
 
 #### Parameters
 
@@ -171,7 +171,7 @@ external_links: []
 **Summary**: {{리소스 생성}}
 **Tags**: {{Tag}}
 **Auth Required**: Yes (Bearer Token)
-**Related FR**: FR-003 | **Screen**: S-004 | **Menu**: MN-XXX-NNN
+**Related FR**: FR-0030 | **Screen**: S-0040 | **Menu**: MN-XXX-NNNN
 
 #### Parameters
 
@@ -227,7 +227,7 @@ external_links: []
 **Summary**: {{리소스 수정}}
 **Tags**: {{Tag}}
 **Auth Required**: Yes (Bearer Token)
-**Related FR**: FR-003 | **Screen**: S-004
+**Related FR**: FR-0030 | **Screen**: S-0040
 
 #### Parameters
 
@@ -275,7 +275,7 @@ external_links: []
 **Summary**: {{리소스 삭제}}
 **Tags**: {{Tag}}
 **Auth Required**: Yes (Bearer Token)
-**Related FR**: FR-003
+**Related FR**: FR-0030
 
 #### Parameters
 
@@ -465,10 +465,10 @@ paths:
 
 | # | Endpoint | Exception | Status | Response |
 |---|----------|-----------|--------|----------|
-| E-001 | POST /auth/login | 잘못된 인증 정보 | 401 | `{error: "INVALID_CREDENTIALS"}` |
-| E-002 | ALL | 인증 토큰 만료 | 401 | `{error: "TOKEN_EXPIRED"}` |
-| E-003 | ALL | 서버 내부 오류 | 500 | `{error: "INTERNAL_SERVER_ERROR"}` |
-| E-004 | {{endpoint}} | {{예외}} | {{status}} | {{response}} |
+| E-0010 | POST /auth/login | 잘못된 인증 정보 | 401 | `{error: "INVALID_CREDENTIALS"}` |
+| E-0020 | ALL | 인증 토큰 만료 | 401 | `{error: "TOKEN_EXPIRED"}` |
+| E-0030 | ALL | 서버 내부 오류 | 500 | `{error: "INTERNAL_SERVER_ERROR"}` |
+| E-0040 | {{endpoint}} | {{예외}} | {{status}} | {{response}} |
 
 ---
 

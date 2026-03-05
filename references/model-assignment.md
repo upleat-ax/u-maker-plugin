@@ -17,17 +17,17 @@
 
 | Agent | Model | 근거 |
 |-------|-------|------|
-| `u-ra` (Requirements Analyst) | **opus** | Roadmap/UserStory/Index/Backlog/Retrospective 등 전 Phase 문서를 총괄. 교차 문서 모순 탐지, 추적성 검증, Gate 판정에 가장 높은 분석 능력 요구 |
+| `ua-ra` (Requirements Analyst) | **opus** | Roadmap/UserStory/Index/Backlog/Retrospective 등 전 Phase 문서를 총괄. 교차 문서 모순 탐지, 추적성 검증, Gate 판정에 가장 높은 분석 능력 요구 |
 
 ### Mid Tier (sonnet / o4-mini)
 
 | Agent | Model | 근거 |
 |-------|-------|------|
-| `u-sa` (Software Architect) | **sonnet** | SRS/ERD/API 설계는 도메인 전체를 이해하고 교차 참조가 필요하나, 템플릿 기반 구조화 생성에 충분 |
-| `u-ux` (UX Designer) | **sonnet** | IA/Screen/DesignSystem/UIComponents/DesignToken 설계는 창의성 필요하나 명확한 패턴 존재. 템플릿 기반 생성에 충분 |
-| `u-dv-fe` (Frontend Dev) | **sonnet** | Contract 기반 코드 생성. 2_Screen_UX + 2_API_SA 참조하여 구현하므로 설계 문서가 가이드 역할 |
-| `u-dv-be` (Backend Dev) | **sonnet** | 2_API_SA + 2_ERD_SA 기반 코드 생성. ORM 모델/라우트는 스키마에서 직접 변환 |
-| `u-qa` (QA Engineer) | **sonnet** | SRS FR→테스트 케이스 도출, 테스트 실행, 결함 분석을 통합 수행. 체계적 분석과 패턴화된 작업 |
+| `ua-sa` (Software Architect) | **sonnet** | SRS/ERD/API 설계는 도메인 전체를 이해하고 교차 참조가 필요하나, 템플릿 기반 구조화 생성에 충분 |
+| `ua-ux` (UX Designer) | **sonnet** | IA/Screen/DesignSystem/UIComponents/DesignToken 설계는 창의성 필요하나 명확한 패턴 존재. 템플릿 기반 생성에 충분 |
+| `ua-dv-fe` (Frontend Dev) | **sonnet** | Contract 기반 코드 생성. 2_Screen_UX + 2_API_SA 참조하여 구현하므로 설계 문서가 가이드 역할 |
+| `ua-dv-be` (Backend Dev) | **sonnet** | 2_API_SA + 2_ERD_SA 기반 코드 생성. ORM 모델/라우트는 스키마에서 직접 변환 |
+| `ua-qa` (QA Engineer) | **sonnet** | SRS FR→테스트 케이스 도출, 테스트 실행, 결함 분석을 통합 수행. 체계적 분석과 패턴화된 작업 |
 
 ---
 
@@ -35,7 +35,7 @@
 
 | Skill/Command | Model | 근거 |
 |---------------|-------|------|
-| `u-ssot` (Orchestrator) | **sonnet** | 명령어 라우팅, Phase Gate 검증, Agent 체인 호출. 복잡하지만 규칙 기반 |
+| `u-maker` (Orchestrator) | **sonnet** | 명령어 라우팅, Phase Gate 검증, Agent 체인 호출. 복잡하지만 규칙 기반 |
 
 ---
 
@@ -47,30 +47,30 @@
 Full PDCA Cycle 모델 사용 패턴:
 
 PLAN Phase:
-  u-ra (opus) → u-sa (sonnet) → u-ux (sonnet) → u-ra (opus)
+  ua-ra (opus) → ua-sa (sonnet) → ua-ux (sonnet) → ua-ra (opus)
 
 DESIGN Phase:
-  u-ux (sonnet) → u-sa (sonnet) → u-ra (opus)
+  ua-ux (sonnet) → ua-sa (sonnet) → ua-ra (opus)
 
 DO Phase:
-  u-ux (sonnet) + u-dv-fe (sonnet) + u-dv-be (sonnet)  ← 병렬, opus 불필요
+  ua-ux (sonnet) + ua-dv-fe (sonnet) + ua-dv-be (sonnet)  ← 병렬, opus 불필요
 
 CHECK Phase:
-  u-qa (sonnet)
+  ua-qa (sonnet)
 
 ACT Phase:
-  u-ra (opus)
+  ua-ra (opus)
 ```
 
 ### 비용 비중 (예상)
 
 | Phase | opus 호출 | sonnet 호출 |
 |-------|-----------|-------------|
-| PLAN | 2 (u-ra ×2) | 2 (u-sa, u-ux) |
-| DESIGN | 1 (u-ra) | 2 (u-ux, u-sa) |
-| DO | 0 | 3 (u-ux, u-dv-fe, u-dv-be) |
-| CHECK | 0 | 1 (u-qa) |
-| ACT | 1 (u-ra) | 0 |
+| PLAN | 2 (ua-ra ×2) | 2 (ua-sa, ua-ux) |
+| DESIGN | 1 (ua-ra) | 2 (ua-ux, ua-sa) |
+| DO | 0 | 3 (ua-ux, ua-dv-fe, ua-dv-be) |
+| CHECK | 0 | 1 (ua-qa) |
+| ACT | 1 (ua-ra) | 0 |
 
 **Iteration당**: opus 4회, sonnet 8회
 
@@ -93,7 +93,7 @@ Codex CLI에서 사용 시 아래 매핑 적용:
 ### 비용 절감이 필요할 때
 
 ```yaml
-# u-ra를 sonnet으로 다운그레이드
+# ua-ra를 sonnet으로 다운그레이드
 model: sonnet
 ```
 
@@ -103,7 +103,7 @@ model: sonnet
 ### 품질 극대화가 필요할 때
 
 ```yaml
-# u-dv-fe, u-dv-be를 opus로 업그레이드
+# ua-dv-fe, ua-dv-be를 opus로 업그레이드
 model: opus
 ```
 

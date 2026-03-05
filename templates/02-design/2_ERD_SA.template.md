@@ -44,7 +44,7 @@ erDiagram
         datetime created_at
         datetime updated_at
     }
-    {{ENTITY}} {
+    ENTITY_NAME {
         int id PK
         int user_id FK
         string title
@@ -52,15 +52,15 @@ erDiagram
         datetime created_at
         datetime updated_at
     }
-    {{CHILD_ENTITY}} {
+    CHILD_ENTITY {
         int id PK
         int parent_id FK
         string content
         datetime created_at
     }
 
-    USER ||--o{ {{ENTITY}} : "creates"
-    {{ENTITY}} ||--|{ {{CHILD_ENTITY}} : "contains"
+    USER ||--o{ ENTITY_NAME : "creates"
+    ENTITY_NAME ||--|{ CHILD_ENTITY : "contains"
 ```
 
 ---
@@ -80,40 +80,40 @@ classDiagram
         +login() bool
         +updateProfile() void
     }
-    class {{ENTITY}} {
+    class ENTITY_NAME {
         +int id
         +int userId
         +string title
-        +{{ENTITY_STATUS}} status
+        +EntityStatus status
         +datetime createdAt
         +datetime updatedAt
-        +create() {{ENTITY}}
+        +create() ENTITY_NAME
         +update() void
         +delete() void
     }
-    class {{CHILD_ENTITY}} {
+    class CHILD_ENTITY {
         +int id
         +int parentId
         +string content
         +datetime createdAt
-        +create() {{CHILD_ENTITY}}
+        +create() CHILD_ENTITY
     }
     class Role {
         <<enumeration>>
         ADMIN
         USER
     }
-    class {{ENTITY_STATUS}} {
+    class EntityStatus {
         <<enumeration>>
         ACTIVE
         INACTIVE
         DELETED
     }
 
-    USER "1" --> "0..*" {{ENTITY}} : creates
-    {{ENTITY}} "1" --> "1..*" {{CHILD_ENTITY}} : contains
+    USER "1" --> "0..*" ENTITY_NAME : creates
+    ENTITY_NAME "1" --> "1..*" CHILD_ENTITY : contains
     USER --> Role : has
-    {{ENTITY}} --> {{ENTITY_STATUS}} : has
+    ENTITY_NAME --> EntityStatus : has
 ```
 
 ---
@@ -184,8 +184,8 @@ stateDiagram-v2
 
 | # | Exception Case | Entity | Handling |
 |---|---------------|--------|----------|
-| E-001 | 중복 이메일 가입 시도 | USER | 409 Conflict 반환 |
-| E-002 | {{예외 케이스}} | {{Entity}} | {{처리 방법}} |
+| E-0010 | 중복 이메일 가입 시도 | USER | 409 Conflict 반환 |
+| E-0020 | {{예외 케이스}} | {{Entity}} | {{처리 방법}} |
 
 ---
 
@@ -193,8 +193,8 @@ stateDiagram-v2
 
 | FR-ID | Feature | Related Entities |
 |-------|---------|-----------------|
-| FR-001 | {{기능명}} | USER |
-| FR-002 | {{기능명}} | {{Entity 목록}} |
+| FR-0010 | {{기능명}} | USER |
+| FR-0020 | {{기능명}} | {{Entity 목록}} |
 
 ---
 

@@ -41,10 +41,10 @@ external_links: []
 
 | # | Condition | Description |
 |---|-----------|-------------|
-| PRE-001 | 빌드 성공 | `bun run build` 성공 상태 |
-| PRE-002 | DB 초기화 | 테스트 DB 시딩 완료 |
-| PRE-003 | 환경 변수 | `.env.test` 설정 완료 |
-| PRE-004 | {{조건}} | {{설명}} |
+| PRE-0010 | 빌드 성공 | `bun run build` 성공 상태 |
+| PRE-0020 | DB 초기화 | 테스트 DB 시딩 완료 |
+| PRE-0030 | 환경 변수 | `.env.test` 설정 완료 |
+| PRE-0040 | {{조건}} | {{설명}} |
 
 ### 2.2 Test Data
 
@@ -64,71 +64,71 @@ external_links: []
 > - 각 FR의 Unit 케이스는 최소 2개(정상 1 + 비정상/경계 1 이상), E2E 케이스는 최소 2개(성공 여정 1 + 실패/예외 1 이상) 작성한다.
 > - Expected Result는 UI/API/DB 중 최소 1개 이상의 검증 포인트를 포함한다.
 
-### 3.1 FR-001: {{기능명}}
+### 3.1 FR-0010: {{기능명}}
 
-#### TC-001: {{테스트명 - 정상 케이스}}
+#### TC-0010: {{테스트명 - 정상 케이스}}
 
 | Field | Value |
 |-------|-------|
-| **TC-ID** | TC-001 |
-| **FR Mapping** | FR-001 |
-| **SC Mapping** | SC-001 |
+| **TC-ID** | TC-0010 |
+| **FR Mapping** | FR-0010 |
+| **US Mapping** | US-0010 |
 | **Level** | Unit |
 | **Type** | Positive |
 | **Priority** | Critical |
 | **Actor** | {{사용자 유형 — 예: 일반 사용자, 관리자}} |
-| **Precondition** | PRE-001, PRE-002 |
+| **Precondition** | PRE-0010, PRE-0020 |
 | **Automation Target** | Vitest |
 
 **Test Steps**:
 
 | Step | Screen | Element | Action | Input Value | Expected Result |
 |------|--------|---------|--------|-------------|----------------|
-| 1 | {{화면명 예: 로그인 화면 (S-001)}} | {{요소명 예: 이메일 입력 필드}} | {{동작 예: 클릭 후 입력}} | {{입력값 예: user@test.com}} | {{기대 결과 예: 커서가 이메일 필드로 이동}} |
+| 1 | {{화면명 예: 로그인 화면 (S-0010)}} | {{요소명 예: 이메일 입력 필드}} | {{동작 예: 클릭 후 입력}} | {{입력값 예: user@test.com}} | {{기대 결과 예: 커서가 이메일 필드로 이동}} |
 | 2 | {{화면명}} | {{요소명 예: 비밀번호 입력 필드}} | {{동작}} | {{입력값 예: Password123!}} | {{기대 결과}} |
-| 3 | {{화면명}} | {{요소명 예: 로그인 버튼}} | {{동작 예: 클릭}} | - | {{기대 결과 예: 대시보드(S-002)로 이동}} |
+| 3 | {{화면명}} | {{요소명 예: 로그인 버튼}} | {{동작 예: 클릭}} | - | {{기대 결과 예: 대시보드(S-0020)로 이동}} |
 
 **Result**: [ ] Pass / [ ] Fail / [ ] Skip
 **Note**: -
 
-#### TC-002: {{테스트명 - 에러 케이스}}
+#### TC-0020: {{테스트명 - 에러 케이스}}
 
 | Field | Value |
 |-------|-------|
-| **TC-ID** | TC-002 |
-| **FR Mapping** | FR-001 |
-| **SC Mapping** | SC-001 |
+| **TC-ID** | TC-0020 |
+| **FR Mapping** | FR-0010 |
+| **US Mapping** | US-0010 |
 | **Level** | Unit |
 | **Type** | Negative \| Boundary |
 | **Priority** | Major |
 | **Actor** | {{사용자 유형}} |
-| **Precondition** | PRE-001 |
+| **Precondition** | PRE-0010 |
 | **Automation Target** | Vitest |
 
 **Test Steps**:
 
 | Step | Screen | Element | Action | Input Value | Expected Result |
 |------|--------|---------|--------|-------------|----------------|
-| 1 | {{화면명 예: 로그인 화면 (S-001)}} | {{요소명 예: 이메일 입력 필드}} | {{동작 예: 클릭 후 입력}} | {{잘못된 값 예: invalid-email}} | {{기대 결과 예: 필드 테두리가 빨간색으로 변경}} |
+| 1 | {{화면명 예: 로그인 화면 (S-0010)}} | {{요소명 예: 이메일 입력 필드}} | {{동작 예: 클릭 후 입력}} | {{잘못된 값 예: invalid-email}} | {{기대 결과 예: 필드 테두리가 빨간색으로 변경}} |
 | 2 | {{화면명}} | {{요소명 예: 로그인 버튼}} | 클릭 | - | {{기대 결과 예: "올바른 이메일 형식을 입력하세요" 에러 메시지 표시}} |
 
 **Result**: [ ] Pass / [ ] Fail / [ ] Skip
 **Note**: -
 
-### 3.2 FR-002: {{기능명}}
+### 3.2 FR-0020: {{기능명}}
 
-#### TC-003: {{테스트명 - E2E 시나리오}}
+#### TC-0030: {{테스트명 - E2E 시나리오}}
 
 | Field | Value |
 |-------|-------|
-| **TC-ID** | TC-003 |
-| **FR Mapping** | FR-002 |
-| **SC Mapping** | SC-002 |
+| **TC-ID** | TC-0030 |
+| **FR Mapping** | FR-0020 |
+| **US Mapping** | US-0020 |
 | **Level** | E2E |
 | **Type** | Positive |
 | **Priority** | Major |
 | **Actor** | {{사용자 유형}} |
-| **Precondition** | PRE-001, PRE-002, PRE-003 |
+| **Precondition** | PRE-0010, PRE-0020, PRE-0030 |
 | **Automation Target** | Playwright |
 
 **Test Steps**:
@@ -141,18 +141,18 @@ external_links: []
 **Result**: [ ] Pass / [ ] Fail / [ ] Skip
 **Note**: -
 
-#### TC-004: {{테스트명 - E2E 실패/예외 시나리오}}
+#### TC-0040: {{테스트명 - E2E 실패/예외 시나리오}}
 
 | Field | Value |
 |-------|-------|
-| **TC-ID** | TC-004 |
-| **FR Mapping** | FR-002 |
-| **SC Mapping** | SC-002 |
+| **TC-ID** | TC-0040 |
+| **FR Mapping** | FR-0020 |
+| **US Mapping** | US-0020 |
 | **Level** | E2E |
 | **Type** | Negative \| Boundary |
 | **Priority** | Major |
 | **Actor** | {{사용자 유형}} |
-| **Precondition** | PRE-001, PRE-002, PRE-003 |
+| **Precondition** | PRE-0010, PRE-0020, PRE-0030 |
 | **Automation Target** | Playwright |
 
 **Test Steps**:
@@ -169,12 +169,12 @@ external_links: []
 
 ## 4. Test Case Summary
 
-| TC-ID | FR | SC | Level | Type | Priority | Actor | Description | Result |
+| TC-ID | FR | US | Level | Type | Priority | Actor | Description | Result |
 |-------|----|----|-------|------|----------|-------|-------------|--------|
-| TC-001 | FR-001 | SC-001 | Unit | Positive | Critical | {{Actor}} | {{설명}} | [ ] |
-| TC-002 | FR-001 | SC-001 | Unit | Negative/Boundary | Major | {{Actor}} | {{설명}} | [ ] |
-| TC-003 | FR-002 | SC-002 | E2E | Positive | Major | {{Actor}} | {{설명}} | [ ] |
-| TC-004 | FR-002 | SC-002 | E2E | Negative/Boundary | Major | {{Actor}} | {{설명}} | [ ] |
+| TC-0010 | FR-0010 | US-0010 | Unit | Positive | Critical | {{Actor}} | {{설명}} | [ ] |
+| TC-0020 | FR-0010 | US-0010 | Unit | Negative/Boundary | Major | {{Actor}} | {{설명}} | [ ] |
+| TC-0030 | FR-0020 | US-0020 | E2E | Positive | Major | {{Actor}} | {{설명}} | [ ] |
+| TC-0040 | FR-0020 | US-0020 | E2E | Negative/Boundary | Major | {{Actor}} | {{설명}} | [ ] |
 
 ---
 
@@ -207,9 +207,9 @@ sequenceDiagram
 
 | FR-ID | Feature | Unit Cases | E2E Cases | Coverage |
 |-------|---------|------------|-----------|----------|
-| FR-001 | {{기능명}} | TC-001, TC-002 | TC-003, TC-004 | Covered |
-| FR-002 | {{기능명}} | TC-005, TC-006 | TC-007, TC-008 | Covered |
-| FR-003 | {{기능명}} | - | - | Not Covered |
+| FR-0010 | {{기능명}} | TC-0010, TC-0020 | TC-0030, TC-0040 | Covered |
+| FR-0020 | {{기능명}} | TC-0050, TC-0060 | TC-0070, TC-0080 | Covered |
+| FR-0030 | {{기능명}} | - | - | Not Covered |
 
 ```mermaid
 pie title Test Coverage by FR
@@ -223,9 +223,9 @@ pie title Test Coverage by FR
 
 | TC-ID | Evidence Type | Location |
 |-------|-------------|----------|
-| TC-001 | API Response Log | `u-docs/assets/tc-001-response.log` |
-| TC-002 | Error Screenshot | `u-docs/assets/tc-002-error.png` |
-| TC-003 | E2E Recording | `u-docs/assets/tc-003-recording.mp4` |
+| TC-0010 | API Response Log | `u-docs/assets/tc-0010-response.log` |
+| TC-0020 | Error Screenshot | `u-docs/assets/tc-0020-error.png` |
+| TC-0030 | E2E Recording | `u-docs/assets/tc-0030-recording.mp4` |
 
 ---
 
