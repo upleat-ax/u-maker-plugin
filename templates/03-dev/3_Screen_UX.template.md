@@ -7,10 +7,10 @@ version: "v0.1.0"
 last_updated: "{{DATE}}"
 app: "{{APP_NAME}}"
 related_docs:
-  - "u-docs/{{APP_NAME}}/02-design/2_Screen_UX.md"
-  - "u-docs/{{APP_NAME}}/02-design/2_API_SA.md"
-  - "u-docs/{{APP_NAME}}/03-dev/3_Code_DV.md"
-  - "u-docs/shared/01-plan/1_Index_PM.md"
+  - ".u-maker/docs/{{APP_NAME}}/02-design/2_Screen_UX.md"
+  - ".u-maker/docs/{{APP_NAME}}/02-design/2_API_SA.md"
+  - ".u-maker/docs/{{APP_NAME}}/03-dev/3_Code_DV.md"
+  - ".u-maker/docs/shared/01-plan/1_Index_PM.md"
 external_links: []
 ---
 

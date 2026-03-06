@@ -6,10 +6,10 @@ status: "Draft"
 version: "v0.1.0"
 last_updated: "{{DATE}}"
 related_docs:
-  - "u-docs/shared/02-design/2_UXGuide_UX.md"
-  - "u-docs/shared/03-dev/3_UIComponents_UX.md"
-  - "u-docs/{{APP_NAME}}/03-dev/3_Code_DV.md"
-  - "u-docs/shared/01-plan/1_Index_PM.md"
+  - ".u-maker/docs/shared/02-design/2_UXGuide_UX.md"
+  - ".u-maker/docs/shared/03-dev/3_UIComponents_UX.md"
+  - ".u-maker/docs/{{APP_NAME}}/03-dev/3_Code_DV.md"
+  - ".u-maker/docs/shared/01-plan/1_Index_PM.md"
 external_links: []
 ---
 
@@ -289,15 +289,15 @@ packages/tokens/src/
 /* primitive/shape.css */
 :root {
   /* Border Radius */
-  --radius-none: 0;
-  --radius-xs:   2px;
-  --radius-sm:   4px;
-  --radius-md:   6px;
-  --radius-lg:   8px;
-  --radius-xl:   12px;
-  --radius-2xl:  16px;
-  --radius-3xl:  24px;
-  --radius-full: 9999px;
+  --radiu-skill-none: 0;
+  --radiu-skill-xs:   2px;
+  --radiu-skill-sm:   4px;
+  --radiu-skill-md:   6px;
+  --radiu-skill-lg:   8px;
+  --radiu-skill-xl:   12px;
+  --radiu-skill-2xl:  16px;
+  --radiu-skill-3xl:  24px;
+  --radiu-skill-full: 9999px;
 
   /* Border Width */
   --border-0: 0;
@@ -370,14 +370,14 @@ Primitive 토큰에 의미론적 역할을 부여한다. 테마 전환 시 이 �
   --color-action-secondary-hover: var(--color-secondary-600);
 
   /* Status */
-  --color-status-success:         var(--color-green-600);
-  --color-status-success-subtle:  var(--color-green-100);
-  --color-status-warning:         var(--color-amber-500);
-  --color-status-warning-subtle:  var(--color-amber-100);
-  --color-status-error:           var(--color-red-600);
-  --color-status-error-subtle:    var(--color-red-100);
-  --color-status-info:            var(--color-blue-600);
-  --color-status-info-subtle:     var(--color-blue-100);
+  --color-statu-skill-success:         var(--color-green-600);
+  --color-statu-skill-success-subtle:  var(--color-green-100);
+  --color-statu-skill-warning:         var(--color-amber-500);
+  --color-statu-skill-warning-subtle:  var(--color-amber-100);
+  --color-statu-skill-error:           var(--color-red-600);
+  --color-statu-skill-error-subtle:    var(--color-red-100);
+  --color-statu-skill-info:            var(--color-blue-600);
+  --color-statu-skill-info-subtle:     var(--color-blue-100);
 
   /* Surface */
   --color-surface-primary:        var(--color-neutral-0);
@@ -414,10 +414,10 @@ Primitive 토큰에 의미론적 역할을 부여한다. 테마 전환 시 이 �
 | `--color-action-primary-hover` | `primary-700` | `primary-300` | 호버 상태 | ❌ |
 | `--color-action-primary-active` | `primary-800` | `primary-200` | 클릭 상태 | ❌ |
 | `--color-action-primary-subtle` | `primary-50` | `primary-950` | 배경 강조 | ❌ |
-| `--color-status-success` | `green-600` | `green-400` | 성공 메시지 | ❌ |
-| `--color-status-success-subtle` | `green-100` | `green-950` | 성공 배경 | ❌ |
-| `--color-status-error` | `red-600` | `red-400` | 에러 메시지 | ❌ |
-| `--color-status-error-subtle` | `red-100` | `red-950` | 에러 배경 | ❌ |
+| `--color-statu-skill-success` | `green-600` | `green-400` | 성공 메시지 | ❌ |
+| `--color-statu-skill-success-subtle` | `green-100` | `green-950` | 성공 배경 | ❌ |
+| `--color-statu-skill-error` | `red-600` | `red-400` | 에러 메시지 | ❌ |
+| `--color-statu-skill-error-subtle` | `red-100` | `red-950` | 에러 배경 | ❌ |
 | `--color-surface-primary` | `neutral-0` | `neutral-950` | 메인 배경 | ❌ |
 | `--color-surface-secondary` | `neutral-50` | `neutral-900` | 카드 배경 | ❌ |
 | `--color-text-primary` | `neutral-900` | `neutral-50` | 본문 텍스트 | ❌ |
@@ -515,7 +515,7 @@ Primitive 토큰에 의미론적 역할을 부여한다. 테마 전환 시 이 �
   --button-secondary-border:       var(--color-border-default);
 
   /* Danger Button */
-  --button-danger-bg:              var(--color-status-error);
+  --button-danger-bg:              var(--color-statu-skill-error);
   --button-danger-bg-hover:        var(--color-red-700);
   --button-danger-color:           var(--color-neutral-0);
 
@@ -532,24 +532,24 @@ Primitive 토큰에 의미론적 역할을 부여한다. 테마 전환 시 이 �
   --button-sm-height:              var(--space-8);    /* 32px */
   --button-sm-padding-x:           var(--space-3);    /* 12px */
   --button-sm-font-size:           var(--text-body-sm);
-  --button-sm-radius:              var(--radius-sm);
+  --button-sm-radius:              var(--radiu-skill-sm);
 
   /* Size — MD (default) */
   --button-md-height:              var(--space-10);   /* 40px */
   --button-md-padding-x:           var(--space-4);    /* 16px */
   --button-md-font-size:           var(--text-body);
-  --button-md-radius:              var(--radius-md);
+  --button-md-radius:              var(--radiu-skill-md);
 
   /* Size — LG */
   --button-lg-height:              var(--space-12);   /* 48px */
   --button-lg-padding-x:           var(--space-6);    /* 24px */
   --button-lg-font-size:           var(--text-body-lg);
-  --button-lg-radius:              var(--radius-md);
+  --button-lg-radius:              var(--radiu-skill-md);
 
   /* Focus */
-  --button-focus-ring:             var(--color-border-focus);
-  --button-focus-ring-offset:      2px;
-  --button-focus-ring-width:       2px;
+  --button-focu-skill-ring:             var(--color-border-focus);
+  --button-focu-skill-ring-offset:      2px;
+  --button-focu-skill-ring-width:       2px;
 }
 ```
 
@@ -566,7 +566,7 @@ Primitive 토큰에 의미론적 역할을 부여한다. 테마 전환 시 이 �
   --input-border-focus:    var(--color-border-focus);
   --input-border-error:    var(--color-border-error);
   --input-border-success:  var(--color-border-success);
-  --input-border-radius:   var(--radius-md);
+  --input-border-radius:   var(--radiu-skill-md);
   --input-border-width:    var(--border-1);
 
   /* Size */
@@ -588,7 +588,7 @@ Primitive 토큰에 의미론적 역할을 부여한다. 테마 전환 시 이 �
   --card-bg:               var(--color-surface-secondary);
   --card-bg-hover:         var(--color-surface-tertiary);
   --card-border:           var(--color-border-default);
-  --card-border-radius:    var(--radius-lg);
+  --card-border-radius:    var(--radiu-skill-lg);
   --card-shadow:           var(--shadow-sm);
   --card-shadow-hover:     var(--shadow-md);
   --card-padding:          var(--space-inset-md);

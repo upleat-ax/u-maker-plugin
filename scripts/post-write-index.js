@@ -2,7 +2,7 @@
 /**
  * post-write-index.js — u-maker PostToolUse Hook (Write)
  *
- * After writing to u-docs/, logs that index update may be needed.
+ * After writing to .u-maker/docs/, logs that index update may be needed.
  * Detects new document creation vs updates.
  *
  * Input: JSON from stdin with tool_input.file_path
@@ -36,7 +36,7 @@ const toolInput = input.tool_input || {};
 const filePath = toolInput.file_path || '';
 
 // ============================================================
-// Check if file is under u-docs/
+// Check if file is under .u-maker/docs/
 // ============================================================
 
 if (!filePath) {
@@ -45,10 +45,10 @@ if (!filePath) {
 }
 
 const normalized = path.resolve(filePath);
-const udocsPath = path.resolve(path.join(process.cwd(), 'u-docs'));
+const udocsPath = path.resolve(path.join(process.cwd(), '.u-maker', 'docs'));
 
 if (!normalized.startsWith(udocsPath)) {
-  // Not a u-docs file, skip
+  // Not a .u-maker/docs file, skip
   console.log(JSON.stringify({ result: 'success' }));
   process.exit(0);
 }
@@ -91,7 +91,7 @@ if (isSsotDoc) {
     scopeLabel,
   ].filter(Boolean).join(' | ');
 } else {
-  contextMessage = `Document written to u-docs/: ${relPath}`;
+  contextMessage = `Document written to .u-maker/docs/: ${relPath}`;
 }
 
 console.log(JSON.stringify({

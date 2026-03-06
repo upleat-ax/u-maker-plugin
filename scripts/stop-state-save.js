@@ -2,7 +2,7 @@
 /**
  * stop-state-save.js — u-maker Stop Hook
  *
- * Saves current loop status, phase, and iteration to u-maker.config.json.
+ * Saves current loop status, phase, and iteration to .u-maker/u-ssot.config.json.
  *
  * Output: JSON matching Stop hook schema (top-level fields only, no hookSpecificOutput)
  */
@@ -15,8 +15,8 @@ const path = require('path');
 // ============================================================
 
 const PLUGIN_ROOT = path.resolve(__dirname, '..');
-const CONFIG_PATH = path.join(process.cwd(), 'u-maker.config.json');
-const FALLBACK_CONFIG_PATH = path.join(PLUGIN_ROOT, 'u-maker.config.json');
+const CONFIG_PATH = path.join(process.cwd(), '.u-maker/u-ssot.config.json');
+const FALLBACK_CONFIG_PATH = path.join(PLUGIN_ROOT, '.u-maker/u-ssot.config.json');
 
 // ============================================================
 // State Management

@@ -6,10 +6,10 @@ status: "Draft"
 version: "v0.1.0"
 last_updated: "{{DATE}}"
 related_docs:
-  - "u-docs/{{APP_NAME}}/01-plan/1_IA_RA.md"
-  - "u-docs/{{APP_NAME}}/02-design/2_Screen_UX.md"
-  - "u-docs/shared/02-design/2_UXGuide_UX.md"
-  - "u-docs/shared/01-plan/1_Index_PM.md"
+  - ".u-maker/docs/{{APP_NAME}}/01-plan/1_IA_RA.md"
+  - ".u-maker/docs/{{APP_NAME}}/02-design/2_Screen_UX.md"
+  - ".u-maker/docs/shared/02-design/2_UXGuide_UX.md"
+  - ".u-maker/docs/shared/01-plan/1_Index_PM.md"
 external_links: []
 ---
 

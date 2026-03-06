@@ -6,11 +6,11 @@ status: "Draft"
 version: "v0.1.0"
 last_updated: "{{DATE}}"
 related_docs:
-  - "u-docs/{{APP_NAME}}/02-design/2_Screen_UX.md"
-  - "u-docs/{{APP_NAME}}/02-design/2_ScreenFlow_UX.md"
-  - "u-docs/shared/03-dev/3_UIComponents_UX.md"
-  - "u-docs/shared/03-dev/3_DesignToken_UX.md"
-  - "u-docs/shared/01-plan/1_Index_PM.md"
+  - ".u-maker/docs/{{APP_NAME}}/02-design/2_Screen_UX.md"
+  - ".u-maker/docs/{{APP_NAME}}/02-design/2_ScreenFlow_UX.md"
+  - ".u-maker/docs/shared/03-dev/3_UIComponents_UX.md"
+  - ".u-maker/docs/shared/03-dev/3_DesignToken_UX.md"
+  - ".u-maker/docs/shared/01-plan/1_Index_PM.md"
 external_links: []
 ---
 
@@ -118,10 +118,10 @@ flowchart TD
 | `--color-action-primary-hover` | `--color-primary-700` | `#{{HEX}}` | `#{{HEX}}` | 호버 상태 |
 | `--color-action-primary-active` | `--color-primary-800` | `#{{HEX}}` | `#{{HEX}}` | 클릭 상태 |
 | `--color-action-secondary` | `--color-secondary-500` | `#{{HEX}}` | `#{{HEX}}` | 보조 액션 |
-| `--color-status-success` | `--color-green-600` | `#{{HEX}}` | `#{{HEX}}` | 성공, 완료 |
-| `--color-status-warning` | `--color-amber-500` | `#{{HEX}}` | `#{{HEX}}` | 경고 |
-| `--color-status-error` | `--color-red-600` | `#{{HEX}}` | `#{{HEX}}` | 에러, 실패 |
-| `--color-status-info` | `--color-blue-500` | `#{{HEX}}` | `#{{HEX}}` | 정보 |
+| `--color-statu-skill-success` | `--color-green-600` | `#{{HEX}}` | `#{{HEX}}` | 성공, 완료 |
+| `--color-statu-skill-warning` | `--color-amber-500` | `#{{HEX}}` | `#{{HEX}}` | 경고 |
+| `--color-statu-skill-error` | `--color-red-600` | `#{{HEX}}` | `#{{HEX}}` | 에러, 실패 |
+| `--color-statu-skill-info` | `--color-blue-500` | `#{{HEX}}` | `#{{HEX}}` | 정보 |
 | `--color-surface-primary` | `--color-neutral-0` | `#FFFFFF` | `#{{HEX}}` | 메인 배경 |
 | `--color-surface-secondary` | `--color-neutral-50` | `#{{HEX}}` | `#{{HEX}}` | 카드, 패널 |
 | `--color-surface-tertiary` | `--color-neutral-100` | `#{{HEX}}` | `#{{HEX}}` | 비활성 영역 |
@@ -232,14 +232,14 @@ flowchart TD
 
 | Token | Value | Usage |
 |-------|-------|-------|
-| `--radius-none` | 0 | 테이블, 구분선 |
-| `--radius-xs` | 2px | 소형 Badge, 태그 |
-| `--radius-sm` | 4px | 버튼(sm), 칩 |
-| `--radius-md` | 6px | 기본 버튼, 입력 필드 |
-| `--radius-lg` | 8px | 카드, 패널 |
-| `--radius-xl` | 12px | 모달, 드로어 |
-| `--radius-2xl` | 16px | 대형 카드, 이미지 |
-| `--radius-full` | 9999px | 아바타, 토글, 알약형 |
+| `--radiu-skill-none` | 0 | 테이블, 구분선 |
+| `--radiu-skill-xs` | 2px | 소형 Badge, 태그 |
+| `--radiu-skill-sm` | 4px | 버튼(sm), 칩 |
+| `--radiu-skill-md` | 6px | 기본 버튼, 입력 필드 |
+| `--radiu-skill-lg` | 8px | 카드, 패널 |
+| `--radiu-skill-xl` | 12px | 모달, 드로어 |
+| `--radiu-skill-2xl` | 16px | 대형 카드, 이미지 |
+| `--radiu-skill-full` | 9999px | 아바타, 토글, 알약형 |
 
 ### 6.2 Border Width
 
@@ -479,8 +479,8 @@ flowchart BT
 | **Active** | 클릭/탭 중 | 눌린 효과 (scale, 색 강화) | `--{component}-bg-active` |
 | **Disabled** | `disabled` prop | 불투명도 0.4, 커서 not-allowed | `--color-text-disabled` |
 | **Loading** | 비동기 처리 중 | Spinner 또는 skeleton | `--duration-normal` |
-| **Error** | 검증 실패 | 빨간 테두리/텍스트 | `--color-border-error`, `--color-status-error` |
-| **Success** | 검증 성공 | 초록 테두리/아이콘 | `--color-status-success` |
+| **Error** | 검증 실패 | 빨간 테두리/텍스트 | `--color-border-error`, `--color-statu-skill-error` |
+| **Success** | 검증 성공 | 초록 테두리/아이콘 | `--color-statu-skill-success` |
 | **Selected** | 선택됨 | Primary 색 강조 | `--color-action-primary` |
 | **Indeterminate** | 부분 선택 (Checkbox) | 대시 아이콘 | `--color-action-primary` |
 
@@ -517,7 +517,7 @@ stateDiagram-v2
 |---------|------|
 | Inline Validation | 포커스 이탈(blur) 시 즉시 검증 |
 | Submit Validation | 폼 전체 검증 후 첫 번째 에러 필드로 포커스 이동 |
-| Error Message | 필드 하단 `--text-caption` 크기, `--color-status-error` 색상 |
+| Error Message | 필드 하단 `--text-caption` 크기, `--color-statu-skill-error` 색상 |
 | Loading State | Submit 버튼 → Spinner + "처리 중..." 텍스트 |
 | Success Feedback | Toast 또는 인라인 성공 메시지 |
 
@@ -572,19 +572,19 @@ stateDiagram-v2
 
 ## 13. Design Files (pencil.dev)
 
-디자인 시스템의 시각적 구현체는 `u-docs/` 폴더 내 지정된 경로의 `.pen` 파일에 저장된다.
+디자인 시스템의 시각적 구현체는 `.u-maker/docs/` 폴더 내 지정된 경로의 `.pen` 파일에 저장된다.
 
 | File | 내용 | 담당 |
 |------|------|------|
-| `u-docs/shared/02-design/design-system.pen` | 디자인 시스템 전체 (색상, 타이포, 컴포넌트) | ua-ux |
-| `u-docs/{{app}}/02-design/{{app}}.pen` | {{app}} 화면 전체 | ua-ux |
-| `u-docs/shared/02-design/components.pen` | UI 컴포넌트 Storybook 시각화 | ua-ux |
+| `.u-maker/docs/shared/02-design/design-system.pen` | 디자인 시스템 전체 (색상, 타이포, 컴포넌트) | u-agent-ux |
+| `.u-maker/docs/{{app}}/02-design/{{app}}.pen` | {{app}} 화면 전체 | u-agent-ux |
+| `.u-maker/docs/shared/02-design/components.pen` | UI 컴포넌트 Storybook 시각화 | u-agent-ux |
 
 > **참고**: `.pen` 파일은 반드시 pencil.dev MCP 도구(`batch_get`, `batch_design`)로만 접근한다.
 > `Read` / `Edit` 도구 사용 금지.
 
 ```
-u-docs/
+.u-maker/docs/
 ├── shared/02-design/
 │   ├── design-system.pen         # 디자인 시스템 (토큰, 컴포넌트)
 │   └── components.pen            # 재사용 컴포넌트 시각화

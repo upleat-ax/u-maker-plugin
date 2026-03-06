@@ -8,7 +8,7 @@ Validates:
   2. Folder structure (all 5 phase dirs exist)
   3. Related Docs links exist
 
-Usage: python3 validate-ssot.py [u-docs-path]
+Usage: python3 validate-ssot.py [.u-maker/docs-path]
 
 Exit codes:
   0 — All validations passed
@@ -121,14 +121,14 @@ def validate_folder_structure(udocs_root):
 
 
 def main():
-    # Determine u-docs path
+    # Determine .u-maker/docs path
     if len(sys.argv) > 1:
         udocs_root = sys.argv[1]
     else:
-        udocs_root = os.path.join(os.getcwd(), "u-docs")
+        udocs_root = os.path.join(os.getcwd(), ".u-maker/docs")
 
     if not os.path.isdir(udocs_root):
-        print(f"Error: u-docs directory not found at {udocs_root}")
+        print(f"Error: .u-maker/docs directory not found at {udocs_root}")
         sys.exit(1)
 
     print("=" * 60)
@@ -157,7 +157,7 @@ def main():
     md_files = find_md_files(udocs_root)
 
     if not md_files:
-        print("  No .md files found in u-docs/")
+        print("  No .md files found in .u-maker/docs/")
         print()
     else:
         for filepath in md_files:

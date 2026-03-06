@@ -3,7 +3,7 @@
  * pre-write-guard.js — u-maker PreToolUse Guard (Write|Edit)
  *
  * Validates:
- * 1. SSoT documents (pattern: *_*.md) must be under u-docs/
+ * 1. SSoT documents (pattern: *_*.md) must be under .u-maker/docs/
  * 2. Code files must not contain tech stack violations:
  *    - styled-components, @emotion, CSS-in-JS imports
  *    - class extends Component (class components)
@@ -58,20 +58,20 @@ const SSOT_DOC_PATTERN = /\d+_[A-Za-z]+_[A-Z]+\.md$/;
 const basename = path.basename(filePath);
 
 if (SSOT_DOC_PATTERN.test(basename)) {
-  // Must be under u-docs/
+  // Must be under .u-maker/docs/
   const normalized = path.resolve(filePath);
-  const udocsPath = path.resolve(path.join(process.cwd(), 'u-docs'));
+  const udocsPath = path.resolve(path.join(process.cwd(), '.u-maker', 'docs'));
 
   if (!normalized.startsWith(udocsPath)) {
     console.log(JSON.stringify({
       result: 'block',
       message: [
-        `SSoT document "${basename}" must be placed under u-docs/.`,
+        `SSoT document "${basename}" must be placed under .u-maker/docs/.`,
         `Attempted path: ${filePath}`,
-        `Expected under: u-docs/`,
+        `Expected under: .u-maker/docs/`,
         '',
         'SSoT documents follow the naming pattern: [PhaseNum][Agent]_[Name].md',
-        'and must be stored in the appropriate u-docs/ subdirectory.',
+        'and must be stored in the appropriate .u-maker/docs/ subdirectory.',
       ].join('\n'),
     }));
     process.exit(2);
@@ -124,7 +124,7 @@ if (CODE_EXTENSIONS.includes(ext) && content) {
         '',
         ...violations.map((v, i) => `  ${i + 1}. ${v}`),
         '',
-        'Refer to u-docs/db/tech-stack-rules.md for the complete ruleset.',
+        'Refer to .u-maker/docs/db/tech-stack-rules.md for the complete ruleset.',
       ].join('\n'),
     }));
     process.exit(2);

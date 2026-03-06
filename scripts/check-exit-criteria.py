@@ -10,7 +10,7 @@ Checks 3 exit criteria for PDCA iteration completion:
 
 Supports v2 per-app structure (shared/ + {app}/) with v1 fallback.
 
-Usage: python3 check-exit-criteria.py [u-docs-path]
+Usage: python3 check-exit-criteria.py [.u-maker/docs-path]
 
 Exit codes:
   0 — All criteria met (iteration can end)
@@ -36,8 +36,8 @@ DOC_PATHS_V1 = {
 
 
 def get_apps(udocs_root):
-    """Read app list from u-maker.config.json."""
-    config_path = os.path.join(os.path.dirname(udocs_root), "u-maker.config.json")
+    """Read app list from .u-maker/u-ssot.config.json."""
+    config_path = os.path.join(os.path.dirname(udocs_root), ".u-maker/u-ssot.config.json")
     apps = ["web"]
     try:
         if os.path.exists(config_path):
@@ -289,11 +289,11 @@ def check_build():
 
 
 def main():
-    # Determine u-docs path
+    # Determine .u-maker/docs path
     if len(sys.argv) > 1:
         udocs_root = sys.argv[1]
     else:
-        udocs_root = os.path.join(os.getcwd(), "u-docs")
+        udocs_root = os.path.join(os.getcwd(), ".u-maker/docs")
 
     print("=" * 60)
     print("  u-maker: Exit Criteria Check")

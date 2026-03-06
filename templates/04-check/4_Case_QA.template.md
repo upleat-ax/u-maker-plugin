@@ -7,12 +7,12 @@ version: "v0.1.0"
 last_updated: "{{DATE}}"
 app: "{{APP_NAME}}"
 related_docs:
-  - "u-docs/{{APP_NAME}}/01-plan/1_SRS_RA.md"
-  - "u-docs/{{APP_NAME}}/02-design/2_API_SA.md"
-  - "u-docs/{{APP_NAME}}/02-design/2_Screen_UX.md"
-  - "u-docs/{{APP_NAME}}/03-dev/3_Code_DV.md"
-  - "u-docs/{{APP_NAME}}/04-check/4_Report_QA.md"
-  - "u-docs/shared/01-plan/1_Index_PM.md"
+  - ".u-maker/docs/{{APP_NAME}}/01-plan/1_SRS_RA.md"
+  - ".u-maker/docs/{{APP_NAME}}/02-design/2_API_SA.md"
+  - ".u-maker/docs/{{APP_NAME}}/02-design/2_Screen_UX.md"
+  - ".u-maker/docs/{{APP_NAME}}/03-dev/3_Code_DV.md"
+  - ".u-maker/docs/{{APP_NAME}}/04-check/4_Report_QA.md"
+  - ".u-maker/docs/shared/01-plan/1_Index_PM.md"
 external_links: []
 ---
 
@@ -223,9 +223,9 @@ pie title Test Coverage by FR
 
 | TC-ID | Evidence Type | Location |
 |-------|-------------|----------|
-| TC-0010 | API Response Log | `u-docs/assets/tc-0010-response.log` |
-| TC-0020 | Error Screenshot | `u-docs/assets/tc-0020-error.png` |
-| TC-0030 | E2E Recording | `u-docs/assets/tc-0030-recording.mp4` |
+| TC-0010 | API Response Log | `.u-maker/docs/assets/tc-0010-response.log` |
+| TC-0020 | Error Screenshot | `.u-maker/docs/assets/tc-0020-error.png` |
+| TC-0030 | E2E Recording | `.u-maker/docs/assets/tc-0030-recording.mp4` |
 
 ---
 

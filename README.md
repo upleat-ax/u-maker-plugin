@@ -1,7 +1,7 @@
 # u-maker v2.0.0
 
 > PDCA 사이클 기반의 SSoT(Single Source of Truth) 소프트웨어 개발 협업 자동화 AI 에이전트 생태계
-> (Claude Code / Gemini CLI 전용 플러그인)
+> (Claude Code / Codex CLI / Gemini CLI 플러그인)
 
 **문서가 프로세스를 강제하고, 에이전트가 이를 실행한다.**
 
@@ -9,42 +9,113 @@
 
 ## Overview
 
-u-maker는 7개 전문 에이전트가 PDCA(Plan-Design-Do-Check-Act) 사이클을 따라 소프트웨어 개발 전 과정을 자동화하는 시스템입니다. 모든 결정과 산출물은 `u-docs/` SSoT 문서 체계에 기록되며, 종료 조건(Exit Criteria)을 충족할 때까지 이터레이션을 반복합니다.
+u-maker는 7개 전문 에이전트가 PDCA(Plan-Design-Do-Check-Act) 사이클을 따라 소프트웨어 개발 전 과정을 자동화하는 시스템입니다. 모든 결정과 산출물은 `.u-maker/docs/` SSoT 문서 체계에 기록되며, 종료 조건(Exit Criteria)을 충족할 때까지 이터레이션을 반복합니다.
 
 ### 핵심 원칙
 
-- **문서 중심 (SSoT)**: 모든 결정과 산출물은 `u-docs/` 내 지정된 SSoT 문서에만 기록
-- **Phase Gate**: 각 단계 전환 시 Gate 조건(Final 상태, 모순 검수 등) 충족 필수
-- **추적성 (Traceability)**: 요구사항(US/FR)부터 설계(API/ERD/Screen/ScreenFlow), 코드, 테스트까지 연쇄 추적
-- **유저 스토리 기반 (User Story)**: 추상적 요구사항을 유저 스토리로 구체화하여 기능 요구사항(FR)으로 도출
-- **자동 반복 (PDCA Loop)**: CHECK 단계 실패 시 ACT를 거쳐 다음 Iteration으로 자동 전환
-- **기술 스택 강제**: 10가지 핵심 기술 스택 규칙 위반 시 도구 실행 차단
-- **다이어그램 필수**: 모든 SSoT 문서에 최소 1개 이상의 Mermaid 다이어그램 포함
-- **JSON 내보내기**: 마크다운 문서 생성/갱신 시 동명의 `.json` 파일을 동일 경로에 함께 생성
+| 원칙 | 설명 |
+|------|------|
+| **문서 중심 (SSoT)** | 모든 결정과 산출물은 `.u-maker/docs/` 내 지정된 문서에만 기록 |
+| **Phase Gate** | 각 단계 전환 시 Gate 조건(Final 상태, 모순 검수 등) 충족 필수 |
+| **추적성 (Traceability)** | US/FR → 설계(API/ERD/Screen) → 코드 → 테스트까지 연쇄 추적 |
+| **유저 스토리 기반** | 추상적 요구사항을 유저 스토리로 구체화 → 기능 요구사항(FR) 도출 |
+| **자동 반복 (PDCA Loop)** | CHECK 단계 실패 시 ACT를 거쳐 다음 Iteration으로 자동 전환 |
+| **기술 스택 강제** | 10가지 핵심 기술 스택 규칙 위반 시 도구 실행 차단 |
+| **JSON 내보내기** | 마크다운 문서 생성/갱신 시 동명의 `.json` 파일을 동일 경로에 함께 생성 |
+| **Docs-First Guard** | 새 기능/요구사항 감지 시 문서 수정을 먼저 요구 (UserPromptSubmit Hook) |
 
 ---
 
 ## Quick Start
 
 ```bash
-# 1. 새 프로젝트 초기화 (Turborepo + u-docs 구조)
-/uc-create-project my-app
+# 1. 새 프로젝트 초기화 (Turborepo + .u-maker/docs 구조)
+/u-skill-create-project my-app
 
 # 2. PLAN Phase (로드맵 → SRS(US+FR) → IA → 인덱스)
-/uc-plan
+/u-skill-plan
 
 # 3. DESIGN Phase (UXGuide → Screen → ScreenFlow → Wireframe → Design → ERD + API → 모순검수)
-/uc-design
+/u-skill-design
 
 # 4. DO Phase (Frontend + Backend 병렬 구현)
-/uc-dev
+/u-skill-dev
 
 # 5. CHECK Phase (테스트 케이스 설계 → 실행 → 결함 분석)
-/uc-check
+/u-skill-check
 
 # 6. 종료 조건 충족까지 PDCA 자동 반복
-/uc-loop
+/u-skill-loop
 ```
+
+---
+
+## Plugin Structure
+
+```
+u-maker-plugin/
+├── .u-maker/                          # 프로젝트 설정 및 SSoT 문서
+│   ├── u-ssot.config.json             # 프로젝트 설정 (단일 진실 공급원)
+│   └── docs/                          # SSoT 문서 루트
+│       ├── shared/                    # 공유 문서 (Roadmap, ERD 등)
+│       ├── {app}/                     # 앱별 문서 (SRS, API 등)
+│       └── iterations/                # 이터레이션 아카이브
+│
+├── skills/u-skill-*/SKILL.md          # 39개 스킬 (user-invocable)
+├── agents/u-agent-*.md                # 7개 전문 에이전트
+├── _refer/                            # 참고용 표준 문서
+│   ├── ssot-standard.md               # SSoT 문서 작성 규격
+│   ├── json-export.md                 # 15개 문서별 JSON 스키마
+│   ├── pdca-workflow.md               # PDCA 워크플로우 규칙
+│   ├── tech-stack-rules.md            # 기술 스택 10가지 규칙
+│   ├── traceability-matrix.md         # 추적성 매트릭스
+│   ├── iteration-rules.md             # 이터레이션 규칙
+│   ├── post-execution-summary.md      # 실행 후 요약 박스
+│   ├── mermaid-guide.md               # Mermaid 다이어그램 가이드
+│   ├── slash-commands.md              # 스킬 명령어 목록
+│   └── model-assignment.md            # 에이전트별 모델 배정
+│
+├── templates/                         # SSoT 문서 템플릿
+│   ├── 01-plan/                       # PLAN Phase 템플릿
+│   ├── 02-design/                     # DESIGN Phase 템플릿
+│   ├── 03-dev/                        # DO Phase 템플릿
+│   ├── 04-check/                      # CHECK Phase 템플릿
+│   └── 05-act/                        # ACT Phase 템플릿
+│
+├── hooks/                             # Claude Code 이벤트 훅
+│   ├── hooks.json                     # 훅 설정
+│   └── session-start.js               # 세션 시작 시 .u-maker/docs/ 구조 생성
+│
+├── scripts/                           # 훅 스크립트
+│   ├── prompt-docs-first-guard.js     # UserPromptSubmit: 문서 우선 가드
+│   ├── pre-write-guard.js             # PreToolUse: SSoT 경로 + 기술스택 검증
+│   ├── post-write-index.js            # PostToolUse: 인덱스 갱신 알림
+│   ├── stop-state-save.js             # Stop: 세션 상태 저장
+│   └── render-json-report.js          # JSON → HTML 보고서 렌더러
+│
+├── lib/                               # 공유 라이브러리
+│   ├── state.js                       # PDCA 상태 관리
+│   ├── doc-tracker.js                 # 문서 추적
+│   └── gate.js                        # Phase Gate 검증
+│
+├── evals/                             # 평가 테스트
+├── deploy_local.sh                    # 로컬 배포 스크립트
+└── README.md
+```
+
+---
+
+## 7 Specialized Agents
+
+| Agent | Role | Phase | 주요 담당 범위 |
+|-------|------|-------|--------------|
+| `u-agent-ra` | Requirements Analyst | ALL | 로드맵, 인덱스, 이터레이션 로그(백로그 포함), 회고, SSoT 검증 |
+| `u-agent-sa` | Solution Architect | PLAN, DESIGN | SRS(요구사항 명세), ERD(데이터 모델), API Contract(OpenAPI) |
+| `u-agent-ux` | UX Designer | PLAN, DESIGN, DO | IA(메뉴구조), UXGuide(UX표준가이드+디자인시스템), 화면 설계, 화면 흐름도, HTML 와이어프레임, UI 컴포넌트, 디자인 토큰 |
+| `u-agent-ux-ds` | Pencil Designer | DESIGN, DO | pencil.dev MCP 기반 시각적 디자인 (.pen 파일) 생성 및 업데이트 |
+| `u-agent-dv-fe` | Frontend Developer | DO | Next.js App Router + react-query 기반 프론트엔드 코드 구현 |
+| `u-agent-dv-be` | Backend Developer | DO | API Routes + Prisma/Drizzle ORM 기반 백엔드 로직 구현 |
+| `u-agent-qa` | QA Engineer | CHECK | 테스트 케이스 설계 및 실행, 결함 분석 리포트, 설계-구현 Gap 분석 |
 
 ---
 
@@ -66,71 +137,29 @@ flowchart LR
     DEV --> TEST[Test\n테스트케이스]
 ```
 
-| # | 산출문서 | 파일명 | 담당 에이전트 |
-|---|---------|--------|-------------|
-| 1 | 요구사항명세서 | `1_SRS_RA.md` | ua-sa |
-| 2 | 정보구조도 (IA) | `1_IA_RA.md` | ua-ux |
-| 3 | UX표준가이드 (디자인시스템 포함) | `2_UXGuide_UX.md` | ua-ux |
-| 4 | 화면설계서 | `2_Screen_UX.md` | ua-ux |
-| 5 | 화면간의 흐름도 | `2_ScreenFlow_UX.md` | ua-ux |
-| 6 | 와이어프레임 | `2_Screen_Wireframes/*.html` | ua-ux |
-| 7 | 화면디자인 | `.pen` 파일 (pencil.dev) | ua-ux-ds |
-| 8 | ERD | `2_ERD_SA.md` | ua-sa |
-| 9 | API Contract | `2_API_SA.md` | ua-sa |
-| 10 | 개발 | `3_Code_DV.md` + 코드 | ua-dv-fe, ua-dv-be |
-| 11 | 테스트케이스 | `4_Case_QA.md` | ua-qa |
-
----
-
-## Command Workflows by Scenario
-
-사용자 시나리오별 권장 명령어 흐름입니다.
-
-### 시나리오 1: 신규 프로젝트 시작 (Zero to One)
-1. `/uc-create-project <name>` : 프로젝트 구조 생성
-2. `/uc-us-add "핵심 아이디어"` : 유저 스토리 등록
-3. `/uc-loop` : 요구사항 상세화(PLAN)부터 코드 구현, 테스트까지 자동 실행
-
-### 시나리오 2: 기존 프로젝트 분석 및 SSoT 도입
-1. `/uc-init` : 기존 코드를 분석하여 설계 문서(SSoT) 역공학 생성
-2. `/uc-status` : 생성된 문서 상태 확인 및 미비점 파악
-3. `/uc-loop` : 부족한 설계를 보완하고 다음 개발 사이클 진행
-
-### 시나리오 3: 새로운 기능 추가 (Feature Addition)
-1. `/uc-us-add` : 유저 스토리(사용자 요구사항) 추가
-2. `/uc-fr-add` : 기능 요구사항(시스템 상세 명세) 추가
-3. `/uc-loop` : 추가된 요구사항에 맞춰 설계 변경 및 코드 구현 자동화
-
-### 시나리오 4: 유지보수 및 버그 수정 (Maintenance)
-1. `/uc-backlog-add` : 개선 항목이나 발견된 이슈 등록
-2. `/uc-loop-from design` : 설계 변경이 필요한 경우 DESIGN 단계부터 루프 실행
-3. `/uc-bug-report` : 테스트 중 발견된 결함에 대한 상세 분석 및 수정 가이드 생성
-
-### 시나리오 5: 품질 검증 및 협업 (Quality & Collaboration)
-1. `/uc-validate` : 모든 SSoT 문서의 무결성과 추적성 검증
-2. `/uc-gap-detector` : 설계(SSoT)와 실제 구현 코드 간의 불일치 분석
-3. `/uc-build` : 최종 빌드 성공 여부 확인
-4. `/uc-git-pr` : 변경 사항을 그룹핑하여 커밋하고 GitHub PR 생성
-
----
-
-## 7 Specialized Agents
-
-| Agent | Role | Phase | 주요 담당 범위 |
-|-------|------|-------|--------------|
-| `ua-ra` | Requirements Analyst | ALL | 로드맵, 인덱스, 이터레이션 로그(백로그 포함), 회고, SSoT 검증 |
-| `ua-sa` | Solution Architect | PLAN, DESIGN | SRS(요구사항 명세), ERD(데이터 모델), API Contract(OpenAPI) |
-| `ua-ux` | UX Designer | PLAN, DESIGN, DO | IA(메뉴구조), UXGuide(UX표준가이드+디자인시스템), 화면 설계, 화면 흐름도, HTML 와이어프레임, UI 컴포넌트, 디자인 토큰 |
-| `ua-ux-ds` | Pencil Designer | DESIGN, DO | pencil.dev MCP 기반 시각적 디자인 (.pen 파일) 생성 및 업데이트 |
-| `ua-dv-fe` | Frontend Developer | DO | Next.js App Router + react-query 기반 프론트엔드 코드 구현 |
-| `ua-dv-be` | Backend Developer | DO | API Routes + Prisma/Drizzle ORM 기반 백엔드 로직 구현 |
-| `ua-qa` | QA Engineer | CHECK | 테스트 케이스 설계 및 실행, 결함 분석 리포트, 설계-구현 Gap 분석 |
+| # | 산출문서 | 파일명 | 담당 에이전트 | Scope |
+|---|---------|--------|-------------|-------|
+| 1 | 로드맵 | `1_Roadmap_PM.md` | u-agent-ra | shared |
+| 2 | 요구사항명세서 | `1_SRS_RA.md` | u-agent-sa | app |
+| 3 | 정보구조도 (IA) | `1_IA_RA.md` | u-agent-ux | app |
+| 4 | 문서인덱스 | `1_Index_PM.md` | u-agent-ra | shared |
+| 5 | UX표준가이드 (디자인시스템 포함) | `2_UXGuide_UX.md` | u-agent-ux | shared |
+| 6 | 화면설계서 | `2_Screen_UX.md` | u-agent-ux | app |
+| 7 | 화면흐름도 | `2_ScreenFlow_UX.md` | u-agent-ux | app |
+| 8 | 와이어프레임 | `2_Screen_Wireframes/*.html` | u-agent-ux | app |
+| 9 | 화면디자인 | `.pen` 파일 (pencil.dev) | u-agent-ux-ds | app |
+| 10 | ERD | `2_ERD_SA.md` | u-agent-sa | shared |
+| 11 | API Contract | `2_API_SA.md` | u-agent-sa | app |
+| 12 | 개발현황 | `3_Code_DV.md` + 코드 | u-agent-dv-fe/be | app |
+| 13 | 테스트케이스 | `4_Case_QA.md` | u-agent-qa | app |
+| 14 | 테스트보고서 | `4_Report_QA.md` | u-agent-qa | app |
 
 ---
 
 ## PDCA Workflow & Gates
 
 ### Workflow
+
 ```mermaid
 stateDiagram-v2
     [*] --> PLAN
@@ -147,138 +176,225 @@ stateDiagram-v2
 
 | Transition | 조건 (Gate Criteria) | 검수자 |
 |------------|---------------------|-------|
-| PLAN → DESIGN | Roadmap + SRS + IA 상태가 'Final'이며 모든 US→FR 매핑 완료 | `ua-ra` |
-| DESIGN → DO | ERD + UXGuide + API + Screen + ScreenFlow 상태가 'Final'이며 모순 검수 통과 | `ua-ra` |
+| PLAN → DESIGN | Roadmap + SRS + IA 상태가 'Final'이며 모든 US→FR 매핑 완료 | `u-agent-ra` |
+| DESIGN → DO | ERD + UXGuide + API + Screen + ScreenFlow 상태가 'Final'이며 모순 검수 통과 | `u-agent-ra` |
 | DO → CHECK | 모든 코드 구현 완료 및 `bun run build` 성공 | 시스템 |
-| CHECK → COMPLETE | Critical/Major 결함 0건 + 모든 FR 구현 완료 + 백로그 0건 | `ua-qa` |
+| CHECK → COMPLETE | Critical/Major 결함 0건 + 모든 FR 구현 완료 + 백로그 0건 | `u-agent-qa` |
 | CHECK → ACT | 위 조건 미충족 시 자동으로 ACT 단계로 진입 | 시스템 |
+
+### Exit Criteria
+
+루프가 종료되려면 아래 조건을 모두 충족해야 합니다:
+
+1. `4_Report_QA.md`에서 Critical/Major 결함 수 = 0
+2. `1_SRS_RA.md`의 모든 FR 항목 상태가 Implemented
+3. `bun run build` 통과
 
 ---
 
 ## SSoT Document Structure
 
-`u-docs/` 폴더 내의 문서는 **Shared(공유)**와 **App-Specific(앱 전용)**으로 구분됩니다.
+`.u-maker/docs/` 폴더 내의 문서는 **Shared(공유)**와 **App-Specific(앱 전용)**으로 구분됩니다.
 
-### Shared Documents (공유 영역)
-- `u-docs/shared/01-plan/`: 1_Roadmap_PM, 1_Index_PM
-- `u-docs/shared/02-design/`: 2_ERD_SA, 2_UXGuide_UX
-- `u-docs/shared/03-dev/`: 3_UIComponents_UX, 3_DesignToken_UX
-- `u-docs/shared/05-act/`: 5_IterationLog_RA, 5_Retrospective_PM
+```
+.u-maker/docs/
+├── shared/
+│   ├── 01-plan/          1_Roadmap_PM, 1_Index_PM
+│   ├── 02-design/        2_ERD_SA, 2_UXGuide_UX
+│   ├── 03-dev/           3_UIComponents_UX, 3_DesignToken_UX
+│   └── 05-act/           5_IterationLog_RA, 5_Retrospective_PM
+├── {app}/
+│   ├── 01-plan/          1_SRS_RA, 1_IA_RA
+│   ├── 02-design/        2_API_SA, 2_Screen_UX, 2_ScreenFlow_UX, 2_Screen_Wireframes/
+│   ├── 03-dev/           3_Code_DV, 3_Screen_UX (Dev ver.)
+│   └── 04-check/         4_Case_QA, 4_Report_QA
+└── iterations/           아카이브된 이전 이터레이션
+```
 
-### App-Specific Documents (앱 개별 영역)
-- `u-docs/{app}/01-plan/`: 1_SRS_RA, 1_IA_RA
-- `u-docs/{app}/02-design/`: 2_API_SA, 2_Screen_UX, 2_ScreenFlow_UX, 2_Screen_Wireframes/
-- `u-docs/{app}/03-dev/`: 3_Code_DV, 3_Screen_UX (Dev ver.)
-- `u-docs/{app}/04-check/`: 4_Case_QA, 4_Report_QA
+---
 
-### Plugin Reference Documents (플러그인 표준 문서)
-- `u-docs/db/`: ssot-standard, json-export, pdca-workflow, tech-stack-rules, traceability-matrix, mermaid-guide 등
+## Skills Reference
+
+모든 스킬은 `user-invocable`로 슬래시(`/u-skill-*`)로 직접 호출 가능합니다.
+
+### Lifecycle & Auto-Loop
+
+| Skill | Syntax | Description |
+|-------|--------|-------------|
+| `u-skill-create-project` | `/u-skill-create-project <name>` | 새 프로젝트 생성 및 .u-maker/docs 구조 초기화 |
+| `u-skill-init` | `/u-skill-init [path]` | 기존 프로젝트 분석 및 SSoT 역공학 생성 |
+| `u-skill-plan` | `/u-skill-plan [app]` | PLAN 단계 실행 (Roadmap, SRS, IA 생성) |
+| `u-skill-design` | `/u-skill-design [app]` | DESIGN 단계 실행 (UXGuide ~ API, 모순검수) |
+| `u-skill-dev` | `/u-skill-dev [app]` | DO 단계 실행 (FE/BE 병렬 구현) |
+| `u-skill-check` | `/u-skill-check [app]` | CHECK 단계 실행 (테스트 및 결함 분석) |
+| `u-skill-act` | `/u-skill-act` | ACT 단계 실행 (백로그 정리, 회고) |
+| `u-skill-loop` | `/u-skill-loop` | 종료 조건 충족까지 PDCA 전체 자동 반복 |
+| `u-skill-loop-from` | `/u-skill-loop-from <phase>` | 특정 단계부터 루프 시작 |
+| `u-skill-stop` | `/u-skill-stop` | 실행 중인 루프 중단 |
+| `u-skill-resume` | `/u-skill-resume` | 중단된 루프 재개 |
+
+### Document & Requirements Management
+
+| Skill | Description |
+|-------|-------------|
+| `u-skill-us-add` | 새로운 유저 스토리 추가 → `1_SRS_RA.md` |
+| `u-skill-fr-add` | 새로운 기능 요구사항(FR) 추가 → `1_SRS_RA.md` |
+| `u-skill-backlog-add` | 새로운 백로그(버그/개선) 항목 추가 → `5_IterationLog_RA.md` |
+| `u-skill-status` | 현재 Iteration/Phase 진행률 및 상태 보고 |
+| `u-skill-docs` | 전체 SSoT 문서 목록 및 상태 조회 |
+| `u-skill-validate` | SSoT 문서 무결성 및 추적성 검증 |
+| `u-skill-gap-detector` | 설계 문서 vs 실제 구현 코드 일치도 분석 |
+| `u-skill-summary` | 프로젝트 개요 및 현재 상태 요약 출력 |
+
+### Individual Agent Skills
+
+| Category | Skills |
+|----------|--------|
+| **Design** | `u-skill-srs` (요구사항 명세), `u-skill-erd` (ERD), `u-skill-api` (API Contract), `u-skill-screen` (화면 설계), `u-skill-wireframe` (HTML 와이어프레임) |
+| **Visual Design** | `u-skill-ux-design` (pencil.dev 기반 시각 디자인), `u-skill-ux-ds` (디자인 시스템) |
+| **Implementation** | `u-skill-fe` (Frontend), `u-skill-be` (Backend), `u-skill-storybook` (Storybook) |
+| **Quality** | `u-skill-test` (테스트 케이스), `u-skill-bug-report` (결함 분석) |
+
+### Utility
+
+| Skill | Description |
+|-------|-------------|
+| `u-skill-build` | 프로젝트 빌드 실행 (`bun run build`) |
+| `u-skill-git-pr` | 변경 파일을 feature 단위로 커밋 및 GitHub PR 생성 |
+| `u-skill-history` | 전체 Iteration 수행 이력 조회 |
+| `u-skill-archive` | 현재 Iteration 문서를 `iterations/`로 아카이브 |
+| `u-skill-index` | 문서 인덱스 갱신 |
+| `u-skill-help` | 모든 스킬 상세 설명 및 사용법 표시 |
+| `u-skill-json-report` | JSON Export 파일을 HTML 보고서로 렌더링 |
+| `u-skill-json-report-render` | 지정 template + json으로 HTML 보고서 렌더링 |
+
+---
+
+## Command Workflows by Scenario
+
+### 1. 신규 프로젝트 시작 (Zero to One)
+```bash
+/u-skill-create-project my-app    # 프로젝트 구조 생성
+/u-skill-us-add "핵심 아이디어"     # 유저 스토리 등록
+/u-skill-loop                      # 전체 PDCA 자동 실행
+```
+
+### 2. 기존 프로젝트 분석 및 SSoT 도입
+```bash
+/u-skill-init                      # 기존 코드 → SSoT 역공학
+/u-skill-status                    # 생성된 문서 상태 확인
+/u-skill-loop                      # 부족한 설계 보완 후 개발 사이클
+```
+
+### 3. 새로운 기능 추가 (Feature Addition)
+```bash
+/u-skill-us-add                    # 유저 스토리(사용자 요구사항) 추가
+/u-skill-fr-add                    # 기능 요구사항(시스템 상세 명세) 추가
+/u-skill-loop                      # 설계 변경 및 코드 구현 자동화
+```
+
+### 4. 유지보수 및 버그 수정 (Maintenance)
+```bash
+/u-skill-backlog-add               # 이슈 등록
+/u-skill-loop-from design          # DESIGN 단계부터 루프
+/u-skill-bug-report                # 결함 분석 및 수정 가이드
+```
+
+### 5. 품질 검증 및 배포 (Quality & Deploy)
+```bash
+/u-skill-validate                  # SSoT 문서 무결성 검증
+/u-skill-gap-detector              # 설계-구현 일치도 분석
+/u-skill-build                     # 최종 빌드 확인
+/u-skill-git-pr                    # feature별 커밋 + PR 생성
+```
+
+---
+
+## Hooks (이벤트 자동화)
+
+u-maker는 5개의 이벤트 훅으로 개발 품질을 자동 강제합니다.
+
+| Event | Script | 동작 |
+|-------|--------|------|
+| `SessionStart` | `session-start.js` | `.u-maker/docs/` 폴더 구조 자동 생성/복구 |
+| `UserPromptSubmit` | `prompt-docs-first-guard.js` | 새 기능/요구사항 감지 시 문서 수정 먼저 요구 |
+| `PreToolUse(Write\|Edit)` | `pre-write-guard.js` | SSoT 문서 경로 검증 + 기술 스택 위반 차단 |
+| `PostToolUse(Write)` | `post-write-index.js` | `.u-maker/docs/` 문서 쓰기 후 인덱스 갱신 알림 |
+| `Stop` | `stop-state-save.js` | 세션 종료 시 PDCA 상태 저장 |
 
 ---
 
 ## Tech Stack Rules (TS-01 ~ TS-10)
 
-코드 생성 시 아래 10가지 규칙이 엄격히 강제됩니다. 위반 시 실행이 차단될 수 있습니다.
+코드 생성 시 아래 10가지 규칙이 엄격히 강제됩니다. 위반 시 `PreToolUse` 훅에 의해 차단됩니다.
 
-1. **Clean Architecture**: 명확한 관심사 분리(Domain, Infrastructure, Data 등) 폴더 구조
-2. **React Query**: 데이터 페칭은 반드시 `react-query` 사용 (Usecase 패턴 금지)
-3. **Plain CSS**: CSS-in-JS(Styled-components 등) 대신 `.css` 파일 직접 사용
-4. **Next.js App Router**: Pages Router 사용 금지
-5. **No Header Plugin**: `eslint-plugin-header` 등 자동 헤더 삽입 플러그인 금지
-6. **Turborepo**: 반드시 Monorepo 구조로 프로젝트 관리
-7. **Functional Components**: Class 컴포넌트 사용 금지
-8. **Storybook**: 모든 UI 컴포넌트는 Storybook 문서화 필수
-9. **Design Tokens**: 색상, 폰트 등은 하드코딩 대신 디자인 토큰 기반 스타일링
-10. **Bun PM**: 패키지 매니저는 반드시 `bun` 사용 (`npm`/`yarn`/`pnpm` 금지)
-
----
-
-## Slash Commands (상세 가이드)
-
-모든 커맨드는 슬래시(`/`)로 시작하며, 각 단계별 자동화 및 문서 관리를 담당합니다.
-
-### 1. Lifecycle & Auto-Loop (라이프사이클 및 자동화)
-
-| Command | Syntax | Description | Prerequisites |
-|---------|--------|-------------|---------------|
-| `/uc-create-project` | `/uc-create-project <name>` | 새 프로젝트 생성 및 u-docs 구조 초기화 | 없음 |
-| `/uc-init` | `/uc-init [path]` | 기존 프로젝트 분석 및 SSoT 역공학 생성 | 프로젝트 파일 존재 |
-| `/uc-plan` | `/uc-plan [app]` | PLAN 단계 실행 (Roadmap, SRS, IA 생성) | u-docs 존재 |
-| `/uc-design` | `/uc-design [app]` | DESIGN 단계 실행 (UXGuide, Screen, ScreenFlow, Wireframe, Design, ERD, API) | PLAN Gate 통과 |
-| `/uc-dev` | `/uc-dev [app]` | DO 단계 실행 (FE/BE 병렬 구현) | DESIGN Gate 통과 |
-| `/uc-check` | `/uc-check [app]` | CHECK 단계 실행 (테스트 및 결함 분석) | DO Gate 통과 |
-| `/uc-act` | `/uc-act` | ACT 단계 실행 (백로그 정리, 회고) | CHECK 완료 |
-| `/uc-loop` | `/uc-loop` | 종료 조건 충족까지 PDCA 전체 자동 반복 | 프로젝트 초기화 완료 |
-| `/uc-loop-from` | `/uc-loop-from <phase>` | 특정 단계(plan/design 등)부터 루프 시작 | 선행 문서 Final 상태 |
-| `/uc-stop` / `/uc-resume` | - | 실행 중인 루프 중단 또는 재개 | 루프 실행/중단 중 |
-
-### 2. Document & Requirements Management (문서 및 요구사항 관리)
-
-| Command | Syntax | Description | Output |
-|---------|--------|-------------|--------|
-| `/uc-status` | `/uc-status` | 현재 Iteration/Phase 진행률 및 상태 보고 | 상태 요약 배너 |
-| `/uc-docs` | `/uc-docs` | 전체 SSoT 문서 목록 및 상태 조회 | 문서 현황 테이블 |
-| `/uc-validate` | `/uc-validate` | SSoT 문서 무결성 및 추적성 검증 | 검증 결과 보고서 |
-| `/uc-us-add` | `/uc-us-add [desc]` | 새로운 유저 스토리 추가 | `1_SRS_RA.md` |
-| `/uc-fr-add` | `/uc-fr-add [app] [desc]` | 새로운 기능 요구사항(FR) 추가 | `1_SRS_RA.md` |
-| `/uc-backlog-add` | `/uc-backlog-add [desc]` | 새로운 백로그(버그/개선) 항목 추가 | `5_IterationLog_RA.md` |
-| `/uc-gap-detector` | `/uc-gap-detector` | 설계 문서와 실제 구현 코드 간 일치도 분석 | Match Rate 보고서 |
-| `/uc-summary` | `/uc-summary` | 프로젝트 개요 및 현재 상태 요약 출력 | 콘솔 출력 |
-
-### 3. Individual Agent Call (에이전트 개별 호출)
-
-- **Design**: `/uc-srs [app]` (요구사항 명세), `/uc-erd` (데이터 모델), `/uc-api [app]` (API 설계), `/uc-screen [app]` (화면 설계), `/uc-wireframe [app]` (HTML 와이어프레임)
-- **Visual Design**: `/us-ux-design` (Pencil.dev 기반 시각 디자인 생성 및 업데이트)
-- **Implementation**: `/uc-fe [app]` (프론트엔드), `/uc-be [app]` (백엔드), `/uc-storybook` (Storybook 생성)
-- **Quality**: `/uc-test [app]` (테스트 케이스), `/uc-bug-report [app]` (결함 분석)
-
-### 4. Utility (유틸리티)
-- `/uc-build`: 프로젝트 빌드 실행 (`bun run build`) 및 결과 확인
-- `/uc-git-pr`: 변경된 파일을 feature 단위로 그룹핑하여 커밋 및 GitHub PR 생성
-- `/uc-history`: 전체 Iteration 수행 이력 조회
-- `/uc-archive`: 현재 Iteration 문서를 `iterations/` 폴더로 아카이브
-- `/uc-help`: 모든 커맨드 상세 설명 및 사용법 표시
-
----
-
-## Plugin Structure
-
-```
-u-maker-plugin/
-├── skills/us-*/SKILL.md      # 스킬 정의 (us- prefix)
-├── agents/ua-*.md             # 에이전트 정의 (ua- prefix)
-├── commands/uc-*.md           # 슬래시 명령어 (uc- prefix)
-├── templates/                 # SSoT 문서 템플릿
-│   ├── 01-plan/
-│   ├── 02-design/
-│   ├── 03-dev/
-│   ├── 04-check/
-│   └── 05-act/
-├── u-docs/
-│   ├── db/                    # 플러그인 표준 문서 (구 references/)
-│   └── README.md
-├── lib/                       # 공유 라이브러리 (state, doc-tracker, gate)
-├── scripts/                   # 자동화 스크립트
-├── hooks/                     # Claude Code hooks
-├── evals/                     # 평가 테스트
-└── u-maker.config.json        # 프로젝트 설정 (단일 진실 공급원)
-```
+| ID | Rule | Enforce |
+|----|------|---------|
+| TS-01 | Clean Architecture 폴더 구조 | Hook |
+| TS-02 | `react-query` 데이터 페칭 (Usecase 패턴 금지) | Agent |
+| TS-03 | Plain `.css` 파일 (CSS-in-JS 금지) | Hook |
+| TS-04 | Next.js App Router (Pages Router 금지) | Agent |
+| TS-05 | `eslint-plugin-header` 금지 | Agent |
+| TS-06 | Turborepo Monorepo 구조 | Agent |
+| TS-07 | Functional Components Only (Class 금지) | Hook |
+| TS-08 | Storybook 컴포넌트 문서화 | Agent |
+| TS-09 | Design Token 기반 스타일링 | Agent |
+| TS-10 | `bun` 패키지 매니저 (npm/yarn/pnpm 금지) | Hook |
 
 ---
 
 ## Mermaid Diagram Requirements
 
-모든 문서는 정보의 가시성을 위해 아래와 같은 다이어그램을 포함해야 합니다.
+모든 SSoT 문서는 정보의 가시성을 위해 다이어그램을 포함해야 합니다.
 
 | Diagram Type | 주요 용도 |
 |-------------|----------|
-| `flowchart` | IA 메뉴 트리 구조, 로직 흐름, 문서 의존성, 네비게이션 플로우 |
-| `journey` | 사용자 경험 흐름 |
-| `mindmap` | 일반 계층 구조 시각화 (IA 메뉴 트리에는 사용하지 않음) |
+| `flowchart` | IA 메뉴 트리, 로직 흐름, 문서 의존성, 네비게이션 플로우 |
 | `erDiagram` | DB 엔티티 관계 (ERD) |
 | `sequenceDiagram` | API 호출 흐름, 인증 흐름, 테스트 시나리오 |
 | `stateDiagram-v2` | 상태 전이 (결함 상태, 문서 상태 등) |
+| `journey` | 사용자 경험 흐름 |
 | `xychart-beta` | 이터레이션별 진척도 및 품질 추이 |
+
+---
+
+## JSON Report Rendering
+
+SSoT JSON 파일을 시각적 HTML 보고서로 렌더링합니다.
+
+```bash
+# 단건 템플릿 생성 + HTML 렌더링
+node scripts/render-json-report.js --json <path/to/doc.json> --init-template
+
+# 지정 템플릿으로 HTML 생성
+node scripts/render-json-report.js \
+  --json <path/to/doc.json> \
+  --template templates/report/json-report.template.html \
+  --output <path/to/doc.report.html>
+
+# 전체 JSON 일괄 렌더링
+node scripts/render-json-report.js --all --root .u-maker/docs --init-template
+```
+
+---
+
+## Deployment
+
+```bash
+# 로컬 배포 (Claude Code + Codex + Gemini)
+./deploy_local.sh
+
+# 배포 상태 확인
+./deploy_local.sh --check
+
+# 배포 제거
+./deploy_local.sh --clean
+```
+
+배포 스크립트는 자동으로:
+1. `~/.claude/plugins/cache/`에 플러그인 파일을 동기화
+2. `~/.claude/skills/`에 스킬 심볼릭 링크 등록
+3. Codex/Gemini CLI와 플러그인 디렉토리를 공유
 
 ---
 

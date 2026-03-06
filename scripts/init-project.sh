@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # init-project.sh — u-maker Project Initialization Script
-# Creates Turborepo + bun + Next.js + Storybook + u-docs structure
+# Creates Turborepo + bun + Next.js + Storybook + .u-maker/docs structure
 #
 # Usage: ./init-project.sh <project-name>
 
@@ -132,20 +132,20 @@ SBPREVIEW
 echo "  -> Storybook configured"
 
 # ============================================================
-# 4. Create u-docs/ full structure
+# 4. Create .u-maker/docs/ full structure
 # ============================================================
 echo ""
-echo "[4/5] Creating u-docs/ SSoT document structure..."
+echo "[4/5] Creating .u-maker/docs/ SSoT document structure..."
 
 # Shared directories
 SHARED_DIRS=(
-  "u-docs/shared/01-plan"
-  "u-docs/shared/02-design"
-  "u-docs/shared/03-dev"
-  "u-docs/shared/05-act"
-  "u-docs/shared/assets/diagrams"
-  "u-docs/shared/assets/screenshots"
-  "u-docs/iterations"
+  ".u-maker/docs/shared/01-plan"
+  ".u-maker/docs/shared/02-design"
+  ".u-maker/docs/shared/03-dev"
+  ".u-maker/docs/shared/05-act"
+  ".u-maker/docs/shared/assets/diagrams"
+  ".u-maker/docs/shared/assets/screenshots"
+  ".u-maker/docs/iterations"
 )
 
 for dir in "${SHARED_DIRS[@]}"; do
@@ -158,13 +158,13 @@ APP_PHASES=("01-plan" "02-design" "03-dev" "04-check")
 
 for app in "${APP_NAMES[@]}"; do
   for phase in "${APP_PHASES[@]}"; do
-    mkdir -p "u-docs/${app}/${phase}"
+    mkdir -p ".u-maker/docs/${app}/${phase}"
   done
 done
 
-# Create u-docs/README.md
-cat > u-docs/README.md <<'UDOCSREADME'
-# u-docs: SSoT Document Repository
+# Create .u-maker/docs/README.md
+cat > .u-maker/docs/README.md <<'UDOCSREADME'
+# .u-maker/docs: SSoT Document Repository
 
 This directory is the **Single Source of Truth (SSoT)** for all project documentation, managed by the u-maker plugin.
 
@@ -197,13 +197,13 @@ All SSoT documents must include the standard header:
 
 ## Commands
 
-- `/u-status` — View current project status
-- `/u-docs` — List all documents
-- `/u-validate` — Validate document integrity
-- `/u-backlog` — View open backlog items
+- `/u-skill-status` — View current project status
+- `/u-skill-docs` — List all documents in .u-maker/docs
+- `/u-skill-validate` — Validate document integrity
+- `/u-skill-backlog` — View open backlog items
 UDOCSREADME
 
-echo "  -> u-docs/ structure created with README.md"
+echo "  -> .u-maker/docs/ structure created with README.md"
 
 # ============================================================
 # 5. Create .gitkeep files for empty directories
@@ -219,7 +219,7 @@ for dir in "${SHARED_DIRS[@]}"; do
 done
 for app in "${APP_NAMES[@]}"; do
   for phase in "${APP_PHASES[@]}"; do
-    dir="u-docs/${app}/${phase}"
+    dir=".u-maker/docs/${app}/${phase}"
     if [ -z "$(ls -A "$dir" 2>/dev/null)" ]; then
       touch "$dir/.gitkeep"
     fi

@@ -2,7 +2,7 @@
 /**
  * session-start.js — u-maker SessionStart Hook
  *
- * Checks if u-docs/ exists in the current working directory.
+ * Checks if .u-maker/docs/ exists in the current working directory.
  * If not, creates the full SSoT folder structure (v2: shared/ + per-app).
  *
  * Output: JSON { result: "success" }
@@ -12,7 +12,7 @@ const fs = require('fs');
 const path = require('path');
 
 const cwd = process.cwd();
-const udocsRoot = path.join(cwd, 'u-docs');
+const udocsRoot = path.join(cwd, '.u-maker', 'docs');
 
 // Required shared directory structure
 const UDOCS_DIRS = [
@@ -33,7 +33,7 @@ const APP_PHASE_DIRS = ['01-plan', '02-design', '03-dev', '04-check'];
  * @returns {string[]}
  */
 function getAppsFromConfig() {
-  const configPath = path.join(cwd, 'u-maker.config.json');
+  const configPath = path.join(cwd, '.u-maker/u-ssot.config.json');
   let apps = ['web'];
   try {
     if (fs.existsSync(configPath)) {
@@ -45,7 +45,7 @@ function getAppsFromConfig() {
 }
 
 /**
- * Create u-docs/ directory structure if it doesn't exist.
+ * Create .u-maker/docs/ directory structure if it doesn't exist.
  */
 function ensureUdocsStructure() {
   const created = [];
@@ -75,7 +75,7 @@ function ensureUdocsStructure() {
   const readmePath = path.join(udocsRoot, 'README.md');
   if (!fs.existsSync(readmePath)) {
     fs.writeFileSync(readmePath, [
-      '# u-docs: SSoT Document Repository',
+      '# .u-maker/docs: SSoT Document Repository',
       '',
       'Managed by the u-maker plugin.',
       '',
@@ -108,16 +108,16 @@ try {
         additionalContext: [
           '# u-maker: Session Start',
           '',
-          `u-docs/ structure created at ${udocsRoot}`,
+          `.u-maker/docs/ structure created at ${udocsRoot}`,
           `Created directories: ${created.join(', ')}`,
           '',
-          'Ready for PDCA workflow. Use /uc-plan to start.',
+          'Ready for PDCA workflow. Use /u-skill-plan to start.',
         ].join('\n'),
       },
     };
     console.log(JSON.stringify(response));
   } else {
-    // u-docs/ exists, verify structure completeness
+    // .u-maker/docs/ exists, verify structure completeness
     const created = ensureUdocsStructure();
     const response = {
       result: 'success',
@@ -126,7 +126,7 @@ try {
         additionalContext: [
           '# u-maker: Session Start',
           '',
-          `u-docs/ found at ${udocsRoot}`,
+          `.u-maker/docs/ found at ${udocsRoot}`,
           created.length > 0
             ? `Repaired missing directories: ${created.join(', ')}`
             : 'All directories intact.',

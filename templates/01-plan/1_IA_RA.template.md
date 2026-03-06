@@ -7,10 +7,10 @@ version: "v0.1.0"
 last_updated: "{{DATE}}"
 app: "{{APP_NAME}}"
 related_docs:
-  - "u-docs/shared/01-plan/1_Roadmap_PM.md"
-  - "u-docs/{{APP_NAME}}/01-plan/1_SRS_RA.md"
-  - "u-docs/{{APP_NAME}}/02-design/2_Screen_UX.md"
-  - "u-docs/shared/01-plan/1_Index_PM.md"
+  - ".u-maker/docs/shared/01-plan/1_Roadmap_PM.md"
+  - ".u-maker/docs/{{APP_NAME}}/01-plan/1_SRS_RA.md"
+  - ".u-maker/docs/{{APP_NAME}}/02-design/2_Screen_UX.md"
+  - ".u-maker/docs/shared/01-plan/1_Index_PM.md"
 external_links: []
 ---
 

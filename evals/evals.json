@@ -9,19 +9,19 @@
       "prompt": "새 이커머스 프로젝트를 만들어줘. 상품 목록, 장바구니, 결제 기능이 필요해. 프로젝트 이름은 my-shop으로 해줘.",
       "expectedBehavior": [
         "init-project.sh should be executed with 'my-shop' argument",
-        "u-docs/ folder structure should be created",
+        ".u-maker/docs/ folder structure should be created",
         "PLAN phase should start with u-RA agent",
         "1_Roadmap_PM.md should be created with products, cart, checkout features",
         "1_SRS_RA.md should contain FR for each feature",
         "1_IA_RA.md should define information architecture"
       ],
-      "expectedAgents": ["ua-ra", "ua-sa", "ua-ux"],
+      "expectedAgents": ["u-agent-ra", "u-agent-sa", "u-agent-ux"],
       "expectedPhase": "plan",
       "expectedDocuments": [
-        "u-docs/shared/01-plan/1_Roadmap_PM.md",
-        "u-docs/web/01-plan/1_SRS_RA.md",
-        "u-docs/web/01-plan/1_IA_RA.md",
-        "u-docs/shared/01-plan/1_Index_PM.md"
+        ".u-maker/docs/shared/01-plan/1_Roadmap_PM.md",
+        ".u-maker/docs/web/01-plan/1_SRS_RA.md",
+        ".u-maker/docs/web/01-plan/1_IA_RA.md",
+        ".u-maker/docs/shared/01-plan/1_Index_PM.md"
       ],
       "tags": ["project-init", "plan", "e2e"]
     },
@@ -33,15 +33,15 @@
       "expectedBehavior": [
         "u-SA agent should be invoked",
         "Should read 1_SRS_RA.md for FR requirements",
-        "2_ERD_SA.md should be created in u-docs/02-design/",
+        "2_ERD_SA.md should be created in .u-maker/docs/02-design/",
         "ERD should include Mermaid erDiagram",
         "Entities should map to FR items from SRS",
         "Related Docs should reference 1_SRS_RA.md"
       ],
-      "expectedAgents": ["ua-sa"],
+      "expectedAgents": ["u-agent-sa"],
       "expectedPhase": "design",
       "expectedDocuments": [
-        "u-docs/shared/02-design/2_ERD_SA.md"
+        ".u-maker/docs/shared/02-design/2_ERD_SA.md"
       ],
       "tags": ["design", "erd", "traceability"]
     },
@@ -58,10 +58,10 @@
         "API endpoints should map to screen actions",
         "Related Docs should reference 2_Screen_UX.md and 2_ERD_SA.md"
       ],
-      "expectedAgents": ["ua-sa"],
+      "expectedAgents": ["u-agent-sa"],
       "expectedPhase": "design",
       "expectedDocuments": [
-        "u-docs/web/02-design/2_API_SA.md"
+        ".u-maker/docs/web/02-design/2_API_SA.md"
       ],
       "tags": ["design", "api", "traceability"]
     },
@@ -81,10 +81,10 @@
         "Storybook stories should be created",
         "Tech stack rules should be enforced by pre-write-guard"
       ],
-      "expectedAgents": ["ua-dv-fe"],
+      "expectedAgents": ["u-agent-dv-fe"],
       "expectedPhase": "do",
       "expectedDocuments": [
-        "u-docs/web/03-dev/3_Code_DV.md"
+        ".u-maker/docs/web/03-dev/3_Code_DV.md"
       ],
       "tags": ["do", "frontend", "tech-stack"]
     },
@@ -102,19 +102,19 @@
         "u-QA agent analyzes any defects found",
         "Critical/Major defects should trigger ACT phase"
       ],
-      "expectedAgents": ["ua-qa"],
+      "expectedAgents": ["u-agent-qa"],
       "expectedPhase": "check",
       "expectedDocuments": [
-        "u-docs/web/04-check/4_Case_QA.md",
-        "u-docs/web/04-check/4_Report_QA.md"
+        ".u-maker/docs/web/04-check/4_Case_QA.md",
+        ".u-maker/docs/web/04-check/4_Report_QA.md"
       ],
       "tags": ["check", "qa", "testing"]
     },
     {
       "id": "eval-006",
-      "name": "/uc-loop auto iteration",
+      "name": "/u-skill-loop auto iteration",
       "description": "Test automatic PDCA iteration loop",
-      "prompt": "/uc-loop",
+      "prompt": "/u-skill-loop",
       "expectedBehavior": [
         "Loop status should be set to RUNNING",
         "Should report current iteration number and progress",
@@ -125,18 +125,18 @@
         "Loop should respect max iteration limit (10)",
         "5_IterationLog_RA.md should be updated with open items and iteration results"
       ],
-      "expectedAgents": ["ua-ra", "ua-sa", "ua-ux", "ua-dv-fe", "ua-dv-be", "ua-qa"],
+      "expectedAgents": ["u-agent-ra", "u-agent-sa", "u-agent-ux", "u-agent-dv-fe", "u-agent-dv-be", "u-agent-qa"],
       "expectedPhase": "act",
       "expectedDocuments": [
-        "u-docs/shared/05-act/5_IterationLog_RA.md"
+        ".u-maker/docs/shared/05-act/5_IterationLog_RA.md"
       ],
       "tags": ["loop", "iteration", "e2e"]
     },
     {
       "id": "eval-007",
-      "name": "/uc-status output",
+      "name": "/u-skill-status output",
       "description": "Test status command output format and accuracy",
-      "prompt": "/uc-status",
+      "prompt": "/u-skill-status",
       "expectedBehavior": [
         "Should display current PDCA phase",
         "Should display current iteration number",
@@ -146,38 +146,38 @@
         "Should show open backlog item count",
         "Should show Critical/Major defect count"
       ],
-      "expectedAgents": ["ua-ra"],
+      "expectedAgents": ["u-agent-ra"],
       "expectedPhase": null,
       "expectedDocuments": [],
       "tags": ["command", "status", "reporting"]
     },
     {
       "id": "eval-008",
-      "name": "/uc-act execution",
+      "name": "/u-skill-act execution",
       "description": "Test ACT phase execution for iteration wrap-up",
-      "prompt": "/uc-act",
+      "prompt": "/u-skill-act",
       "expectedBehavior": [
         "Should analyze CHECK results from 4_Report_QA.md",
         "Should update 5_IterationLog_RA.md with unresolved backlog items",
         "Should create 5_Retrospective_PM.md with lessons learned",
-        "Should archive current iteration to u-docs/iterations/iter-N/",
+        "Should archive current iteration to .u-maker/docs/iterations/iter-N/",
         "Should update 5_IterationLog_RA.md",
         "Should increment iteration counter",
         "Should transition to PLAN phase for next iteration"
       ],
-      "expectedAgents": ["ua-ra"],
+      "expectedAgents": ["u-agent-ra"],
       "expectedPhase": "act",
       "expectedDocuments": [
-        "u-docs/shared/05-act/5_IterationLog_RA.md",
-        "u-docs/shared/05-act/5_Retrospective_PM.md"
+        ".u-maker/docs/shared/05-act/5_IterationLog_RA.md",
+        ".u-maker/docs/shared/05-act/5_Retrospective_PM.md"
       ],
       "tags": ["act", "iteration", "backlog"]
     },
     {
       "id": "eval-009",
-      "name": "/uc-backlog output",
+      "name": "/u-skill-backlog output",
       "description": "Test backlog command output",
-      "prompt": "/uc-backlog",
+      "prompt": "/u-skill-backlog",
       "expectedBehavior": [
         "Should read 5_IterationLog_RA.md",
         "Should display all open backlog items",
@@ -185,25 +185,25 @@
         "Should show summary statistics (total, open, done)",
         "Should suggest next actions for open items"
       ],
-      "expectedAgents": ["ua-ra"],
+      "expectedAgents": ["u-agent-ra"],
       "expectedPhase": null,
       "expectedDocuments": [],
       "tags": ["command", "backlog", "reporting"]
     },
     {
       "id": "eval-010",
-      "name": "/uc-help output",
+      "name": "/u-skill-help output",
       "description": "Test help command lists all available commands",
-      "prompt": "/uc-help",
+      "prompt": "/u-skill-help",
       "expectedBehavior": [
-        "Should list all /uc-* slash commands",
+        "Should list all /u-skill-* slash commands",
         "Should organize commands by category (lifecycle, docs, agents, utility)",
         "Should show brief description for each command",
         "Should show current phase and suggest relevant commands",
-        "Should include: /uc-create-project, /uc-plan, /uc-design, /uc-dev, /uc-check, /uc-act",
-        "Should include: /uc-loop, /uc-stop, /uc-resume",
-        "Should include: /uc-status, /uc-docs, /uc-validate, /uc-backlog",
-        "Should include: /uc-srs, /uc-erd, /uc-api, /uc-screen, /uc-fe, /uc-be, /uc-test"
+        "Should include: /u-skill-create-project, /u-skill-plan, /u-skill-design, /u-skill-dev, /u-skill-check, /u-skill-act",
+        "Should include: /u-skill-loop, /u-skill-stop, /u-skill-resume",
+        "Should include: /u-skill-status, /u-skill-docs, /u-skill-validate, /u-skill-backlog",
+        "Should include: /u-skill-srs, /u-skill-erd, /u-skill-api, /u-skill-screen, /u-skill-fe, /u-skill-be, /u-skill-test"
       ],
       "expectedAgents": [],
       "expectedPhase": null,

@@ -344,7 +344,79 @@ register_skill_symlinks() {
 }
 
 # ============================================================
-# 6d. Clean stale skill symlinks (prefix rename: u-* → us-*)
+# 6d. Register agent symlinks in ~/.claude/agents/
+# ============================================================
+
+register_agent_symlinks() {
+  local agents_root="$CLAUDE_HOME/agents"
+  local cache_agents="$CACHE_DIR/$PLUGIN_NAME/$PLUGIN_NAME/$PLUGIN_VERSION/agents"
+
+  mkdir -p "$agents_root"
+
+  if [[ ! -d "$cache_agents" ]]; then
+    warn "No agents directory in cache, skipping agent symlinks"
+    return 0
+  fi
+
+  local count=0
+  for agent_file in "$cache_agents"/*.md; do
+    [[ -f "$agent_file" ]] || continue
+    local agent_name
+    agent_name="$(basename "$agent_file")"
+    local link_name="${PLUGIN_NAME}__${agent_name}"
+    local link_path="${agents_root}/${link_name}"
+
+    if [[ -L "$link_path" ]]; then
+      local current
+      current="$(readlink "$link_path")"
+      if [[ "$current" == "$agent_file" ]]; then
+        continue
+      fi
+      rm "$link_path"
+    elif [[ -e "$link_path" ]]; then
+      rm -rf "$link_path"
+    fi
+
+    ln -s "$agent_file" "$link_path"
+    count=$((count + 1))
+  done
+
+  if [[ $count -gt 0 ]]; then
+    ok "Registered $count agent symlinks in ~/.claude/agents/"
+  else
+    ok "All agent symlinks up to date"
+  fi
+}
+
+# ============================================================
+# 6e. Clean stale agent symlinks
+# ============================================================
+
+clean_stale_agent_symlinks() {
+  local agents_root="$CLAUDE_HOME/agents"
+  local cache_agents="$CACHE_DIR/$PLUGIN_NAME/$PLUGIN_NAME/$PLUGIN_VERSION/agents"
+  local count=0
+
+  for link in "$agents_root"/${PLUGIN_NAME}__*; do
+    [[ -L "$link" ]] || continue
+    local link_name
+    link_name="$(basename "$link")"
+    local agent_name="${link_name#${PLUGIN_NAME}__}"
+    if [[ ! -f "$cache_agents/$agent_name" ]]; then
+      rm "$link"
+      count=$((count + 1))
+    fi
+  done
+
+  if [[ $count -gt 0 ]]; then
+    ok "Removed $count stale agent symlinks"
+  else
+    ok "No stale agent symlinks found"
+  fi
+}
+
+# ============================================================
+# 6f. Clean stale skill symlinks
 # ============================================================
 
 clean_stale_skill_symlinks() {
@@ -409,20 +481,27 @@ deploy() {
   log "4/7  installed_plugins.json"
   update_installed_plugins
 
-  # Step 5a: Clean stale skill symlinks (from prefix rename)
-  log "5/8  Clean stale skill symlinks"
+  # Step 5: Clean stale symlinks
+  log "5/10 Clean stale skill symlinks"
   clean_stale_skill_symlinks
 
-  # Step 5b: Skill symlinks
-  log "6/8  Skill symlinks"
+  log "6/10 Clean stale agent symlinks"
+  clean_stale_agent_symlinks
+
+  # Step 7: Skill symlinks
+  log "7/10 Skill symlinks"
   register_skill_symlinks
 
-  # Step 7: Codex
-  log "7/8  Codex integration"
+  # Step 8: Agent symlinks
+  log "8/10 Agent symlinks"
+  register_agent_symlinks
+
+  # Step 9: Codex
+  log "9/10 Codex integration"
   setup_codex
 
-  # Step 8: Gemini
-  log "8/8  Gemini integration"
+  # Step 10: Gemini
+  log "10/10 Gemini integration"
   setup_gemini
 
   echo ""
@@ -493,6 +572,19 @@ with open('$INSTALLED_PL', 'w') as f:
   done
   if [[ $count -gt 0 ]]; then
     ok "Removed $count skill symlinks"
+  fi
+
+  # Remove agent symlinks
+  local agents_root="$CLAUDE_HOME/agents"
+  local acount=0
+  for link in "$agents_root"/${PLUGIN_NAME}__*; do
+    if [[ -L "$link" ]]; then
+      rm "$link"
+      acount=$((acount + 1))
+    fi
+  done
+  if [[ $acount -gt 0 ]]; then
+    ok "Removed $acount agent symlinks"
   fi
 
   # Remove Gemini symlinks

@@ -7,9 +7,9 @@ version: "v0.1.0"
 last_updated: "{{DATE}}"
 app: "{{APP_NAME}}"
 related_docs:
-  - "u-docs/{{APP_NAME}}/04-check/4_Case_QA.md"
-  - "u-docs/shared/05-act/5_IterationLog_RA.md"
-  - "u-docs/shared/01-plan/1_Index_PM.md"
+  - ".u-maker/docs/{{APP_NAME}}/04-check/4_Case_QA.md"
+  - ".u-maker/docs/shared/05-act/5_IterationLog_RA.md"
+  - ".u-maker/docs/shared/01-plan/1_Index_PM.md"
 external_links: []
 ---
 
@@ -66,9 +66,9 @@ pie title Test Results
 
 | TC-ID | FR | Expected | Actual | Result | Evidence |
 |-------|-----|----------|--------|--------|----------|
-| TC-0010 | FR-0010 | {{기대 결과}} | {{실제 결과}} | Pass | [Log](u-docs/assets/tc-0010.log) |
-| TC-0020 | FR-0010 | {{기대 결과}} | {{실제 결과}} | Fail | [Screenshot](u-docs/assets/tc-0020.png) |
-| TC-0030 | FR-0020 | {{기대 결과}} | {{실제 결과}} | Pass | [Log](u-docs/assets/tc-0030.log) |
+| TC-0010 | FR-0010 | {{기대 결과}} | {{실제 결과}} | Pass | [Log](.u-maker/docs/assets/tc-0010.log) |
+| TC-0020 | FR-0010 | {{기대 결과}} | {{실제 결과}} | Fail | [Screenshot](.u-maker/docs/assets/tc-0020.png) |
+| TC-0030 | FR-0020 | {{기대 결과}} | {{실제 결과}} | Pass | [Log](.u-maker/docs/assets/tc-0030.log) |
 
 ---
 
@@ -133,7 +133,7 @@ stateDiagram-v2
 
 **Actual**: {{실제 결과}}
 
-**Evidence**: [Screenshot](u-docs/assets/def-0010.png)
+**Evidence**: [Screenshot](.u-maker/docs/assets/def-0010.png)
 
 **Root Cause**: {{원인 분석 (u-QA이 작성)}}
 
@@ -145,8 +145,8 @@ stateDiagram-v2
 
 | TC-ID | Evidence Type | Path | Status |
 |-------|-------------|------|--------|
-| TC-0010 | API Response Log | `u-docs/assets/tc-0010.log` | Collected |
-| TC-0020 | Error Screenshot | `u-docs/assets/tc-0020.png` | Collected |
+| TC-0010 | API Response Log | `.u-maker/docs/assets/tc-0010.log` | Collected |
+| TC-0020 | Error Screenshot | `.u-maker/docs/assets/tc-0020.png` | Collected |
 
 ---
 

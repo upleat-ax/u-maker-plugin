@@ -6,9 +6,9 @@ status: "Draft"
 version: "v0.1.0"
 last_updated: "{{DATE}}"
 related_docs:
-  - "u-docs/shared/01-plan/1_Roadmap_PM.md"
-  - "u-docs/{{APP_NAME}}/01-plan/1_SRS_RA.md"
-  - "u-docs/{{APP_NAME}}/01-plan/1_IA_RA.md"
+  - ".u-maker/docs/shared/01-plan/1_Roadmap_PM.md"
+  - ".u-maker/docs/{{APP_NAME}}/01-plan/1_SRS_RA.md"
+  - ".u-maker/docs/{{APP_NAME}}/01-plan/1_IA_RA.md"
 external_links: []
 ---
 
@@ -40,38 +40,38 @@ external_links: []
 
 | Doc ID | Document | Path | Owner | Status | Version | Last Updated |
 |--------|----------|------|-------|--------|---------|-------------|
-| 1_Roadmap_PM | Roadmap | `u-docs/01-plan/1_Roadmap_PM.md` | u-RA | Draft | v0.1.0 | {{DATE}} |
-| 1_SRS_RA | SRS | `u-docs/01-plan/1_SRS_RA.md` | u-SA | - | - | - |
-| 1_IA_RA | IA | `u-docs/01-plan/1_IA_RA.md` | u-UX | - | - | - |
-| 1_Index_PM | Index | `u-docs/01-plan/1_Index_PM.md` | u-RA | Draft | v0.1.0 | {{DATE}} |
+| 1_Roadmap_PM | Roadmap | `.u-maker/docs/01-plan/1_Roadmap_PM.md` | u-RA | Draft | v0.1.0 | {{DATE}} |
+| 1_SRS_RA | SRS | `.u-maker/docs/01-plan/1_SRS_RA.md` | u-SA | - | - | - |
+| 1_IA_RA | IA | `.u-maker/docs/01-plan/1_IA_RA.md` | u-UX | - | - | - |
+| 1_Index_PM | Index | `.u-maker/docs/01-plan/1_Index_PM.md` | u-RA | Draft | v0.1.0 | {{DATE}} |
 
 ### 2.2 DESIGN Phase (02-design/)
 
 | Doc ID | Document | Path | Owner | Status | Version | Last Updated |
 |--------|----------|------|-------|--------|---------|-------------|
-| 2_ERD_SA | ERD | `u-docs/02-design/2_ERD_SA.md` | u-SA | - | - | - |
-| 2_API_SA | API Contract | `u-docs/02-design/2_API_SA.md` | u-SA | - | - | - |
-| 2_Screen_UX | Screen Design | `u-docs/02-design/2_Screen_UX.md` | u-UX | - | - | - |
+| 2_ERD_SA | ERD | `.u-maker/docs/02-design/2_ERD_SA.md` | u-SA | - | - | - |
+| 2_API_SA | API Contract | `.u-maker/docs/02-design/2_API_SA.md` | u-SA | - | - | - |
+| 2_Screen_UX | Screen Design | `.u-maker/docs/02-design/2_Screen_UX.md` | u-UX | - | - | - |
 
 ### 2.3 DEV Phase (03-dev/)
 
 | Doc ID | Document | Path | Owner | Status | Version | Last Updated |
 |--------|----------|------|-------|--------|---------|-------------|
-| 3_Code_DV | Code Record | `u-docs/03-dev/3_Code_DV.md` | u-DV | - | - | - |
+| 3_Code_DV | Code Record | `.u-maker/docs/03-dev/3_Code_DV.md` | u-DV | - | - | - |
 
 ### 2.4 CHECK Phase (04-check/)
 
 | Doc ID | Document | Path | Owner | Status | Version | Last Updated |
 |--------|----------|------|-------|--------|---------|-------------|
-| 4_Case_QA | Test Cases | `u-docs/04-check/4_Case_QA.md` | u-QA | - | - | - |
-| 4_Report_QA | QA Report | `u-docs/04-check/4_Report_QA.md` | u-QA | - | - | - |
+| 4_Case_QA | Test Cases | `.u-maker/docs/04-check/4_Case_QA.md` | u-QA | - | - | - |
+| 4_Report_QA | QA Report | `.u-maker/docs/04-check/4_Report_QA.md` | u-QA | - | - | - |
 
 ### 2.5 ACT Phase (05-act/)
 
 | Doc ID | Document | Path | Owner | Status | Version | Last Updated |
 |--------|----------|------|-------|--------|---------|-------------|
-| 5_IterationLog_RA | Iteration Log | `u-docs/05-act/5_IterationLog_RA.md` | u-RA | - | - | - |
-| 5_Retrospective_PM | Retrospective | `u-docs/05-act/5_Retrospective_PM.md` | u-RA | - | - | - |
+| 5_IterationLog_RA | Iteration Log | `.u-maker/docs/05-act/5_IterationLog_RA.md` | u-RA | - | - | - |
+| 5_Retrospective_PM | Retrospective | `.u-maker/docs/05-act/5_Retrospective_PM.md` | u-RA | - | - | - |
 
 ---
 
