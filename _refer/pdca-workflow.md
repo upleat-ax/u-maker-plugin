@@ -12,10 +12,10 @@ flowchart TD
     START([Project Start]) --> PLAN
 
     subgraph PLAN["PLAN Phase"]
-        P1[u-RA: Roadmap 작성]
+        P1[u-PM: Roadmap 작성]
         P2[u-SA: SRS 작성]
         P3[u-UX: IA 작성]
-        P4[u-RA: Index 생성]
+        P4[u-PM: Index 생성]
         P1 <--> P2
         P1 --> P3
         P2 --> P4
@@ -70,11 +70,13 @@ flowchart TD
     subgraph ACT["ACT Phase"]
         A1[Backlog 정리]
         A2[Iteration 아카이브]
-        A3[Retrospective 작성]
+        A3[u-PM: Retrospective 작성]
+        A35[u-PM: Daily Report 작성]
         A4[다음 Iteration 전환]
         A1 --> A2
         A2 --> A3
-        A3 --> A4
+        A3 --> A35
+        A35 --> A4
     end
 
     ACT --> PLAN
@@ -90,26 +92,26 @@ flowchart TD
 
 | Step | Agent | Output | Description |
 |------|-------|--------|-------------|
-| 1 | u-RA or u-SA | `shared/1_Roadmap_PM.md` or `{app}/1_SRS_RA.md` | US-First: Roadmap 먼저, FR-First: SRS 먼저 |
-| 2 | u-SA or u-RA | `{app}/1_SRS_RA.md` or `shared/1_Roadmap_PM.md` | 나머지 문서 작성 |
+| 1 | u-PM | `shared/1_Roadmap_PM.md` | 로드맵 작성 |
+| 2 | u-SA | `{app}/1_SRS_RA.md` | SRS 작성 (`FR → US → FT` 순서 고정) |
 | 2.5 | u-RA + u-SA | Cross-mapping 갱신 | TBD 매핑을 실제 ID로 갱신 |
 | 3 | u-UX | `{app}/1_IA_RA.md` | 정보 구조도 + Menu Tree (MN-{DOMAIN}-{NNNN}) |
-| 4 | u-RA | `shared/1_Index_PM.md` | 문서 인덱스 생성, 상태 추적 시작 |
+| 4 | u-PM | `shared/1_Index_PM.md` | 문서 인덱스 생성, 상태 추적 시작 |
 
 ```mermaid
 flowchart LR
-    RA[u-RA] <-->|Roadmap ↔ SRS| SA[u-SA]
-    RA -->|User Stories| UX[u-UX]
-    SA -->|SRS| RA2[u-RA]
-    UX -->|IA| RA2
-    RA2 -->|Index| GATE{PLAN Gate}
+    PM[u-PM] <-->|Roadmap ↔ SRS| SA[u-SA]
+    PM -->|User Stories| UX[u-UX]
+    SA -->|SRS| PM2[u-PM]
+    UX -->|IA| PM2
+    PM2 -->|Index| GATE{PLAN Gate}
 ```
 
 > **Backlog Trigger**: TBD 매핑 잔존 또는 NFR 누락 발견 시 u-agent-ra가 BL 생성 (Origin: PLAN). Phase를 블로킹하지 않음.
 
 ### 2.2 DESIGN Phase
 
-**목적**: UX 가이드, 화면 설계, 흐름도, 와이어프레임, 화면 디자인과 데이터/API 구조를 확정한다.
+**목적**: UX 가이드, 화면 설계, 흐름도, 와이어프레임, 화면 디자인과 데이터/API 구조를 확정하고 RTM으로 추적성을 잠근다.
 
 | Step | Agent | Output | Description |
 |------|-------|--------|-------------|
@@ -120,7 +122,8 @@ flowchart LR
 | 5 | u-UX | `.pen` 파일 | 화면 디자인 (pencil.dev MCP) |
 | 6 | u-SA | `shared/2_ERD_SA.md` | Entity Relationship Diagram |
 | 7 | u-SA | `{app}/2_API_SA.md` | API Contract (OpenAPI 3.0) |
-| 8 | u-RA | 검수 결과 | 문서 간 모순 검수, 추적성 검증 |
+| 8 | u-RA | `shared/2_RTM_RA.md` | 요구사항 추적표(RTM) 작성: `FR→US→FT→IA/Screen/API/ERD/QA` |
+| 9 | u-RA | 검수 결과 | 문서 간 모순 검수, 추적성 검증 |
 
 ```mermaid
 flowchart LR
@@ -182,7 +185,8 @@ flowchart LR
 | 1 | u-RA | `shared/5_IterationLog_RA.md` | DEF→BL 변환 + PLAN/DESIGN/DEV 기원 항목 확인 + 미해결 항목 정리 |
 | 2 | u-RA | `iterations/iter-N/` | 현재 Iteration 문서 아카이브 |
 | 3 | u-RA | `shared/5_IterationLog_RA.md` | Iteration 이력 기록 |
-| 4 | Team | `shared/5_Retrospective_PM.md` | 회고 (Good / Improve / Actions) |
+| 4 | u-PM | `shared/5_Retrospective_PM.md` | 회고 (Good / Improve / Actions) |
+| 5 | u-PM | `shared/5_DailyReport_PM_YYYYMMDDHHMM.md` | 일일 보고서 (진행/이슈/다음 액션) |
 
 ```mermaid
 flowchart LR
@@ -198,7 +202,7 @@ flowchart LR
 | Transition | Gate Conditions | Validator |
 |-----------|----------------|-----------|
 | PLAN → DESIGN | `shared/1_Roadmap_PM.md` = Final + 모든 앱의 `1_SRS_RA.md`, `1_IA_RA.md` = Final | u-RA |
-| DESIGN → DO | `shared/2_ERD_SA.md`, `shared/2_UXGuide_UX.md` = Final + 모든 앱의 `2_API_SA.md`, `2_Screen_UX.md`, `2_ScreenFlow_UX.md` = Final + u-RA 검수 통과 | u-RA |
+| DESIGN → DO | `shared/2_ERD_SA.md`, `shared/2_RTM_RA.md`, `shared/2_UXGuide_UX.md` = Final + 모든 앱의 `2_API_SA.md`, `2_Screen_UX.md`, `2_ScreenFlow_UX.md` = Final + u-RA 검수 통과 | u-RA |
 | DO → CHECK | 코드 구현 완료 + `bun run build` 성공 | u-RA |
 | CHECK → Complete | Critical/Major 결함 0건 + 백로그 활성 항목 0건 (Done/Cancelled/Deferred 외) + 모든 앱의 전체 FR 구현 완료 | u-RA + scripts |
 | CHECK → ACT | 위 CHECK → Complete 조건 미충족 시 자동 전환 | Orchestrator |
@@ -227,6 +231,7 @@ flowchart LR
       "transition": "DESIGN→DO",
       "shared": [
         { "document": "2_ERD_SA.md", "status": "Final" },
+        { "document": "2_RTM_RA.md", "status": "Final" },
         { "document": "2_UXGuide_UX.md", "status": "Final" }
       ],
       "perApp": [

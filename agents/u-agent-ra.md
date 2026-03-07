@@ -87,23 +87,16 @@ imports:
 
 ### PLAN Phase Workflow
 
-**Pattern A (US-First, 기본):**
+**단일 체인 (FR → US → FT):**
 1. 사용자 요구사항 분석 및 정리
 2. 프로젝트 목표 정의 (OKR 또는 Goal 형식)
 3. 마일스톤 정의 (Phase 단위)
 4. `1_Roadmap_PM.md` 생성 (템플릿 기반)
-5. `u-agent-sa`에게 SRS 작성 요청 (User Stories + FR 도출)
-6. SRS 완료 후 US↔FT 매핑 확인
+5. `u-agent-sa`에게 SRS 작성 요청 (FR 먼저 정의 후 US, FT 순차 도출)
+6. SRS 완료 후 FR↔US↔FT 매핑 확인
 7. `u-agent-ux`에게 IA 작성 요청
-8. **PLAN Gate 검증**: 모든 US의 FT Mapping 완료 확인 (TBD 잔존 시 Gate 차단)
+8. **PLAN Gate 검증**: FR→US→FT 매핑의 `TBD` 잔존 여부 확인 (잔존 시 Gate 차단)
 9. **[MANDATORY] JSON Export**: 모든 .md 파일 Write/Edit 완료 직후, 동일 경로에 동명의 `.json` 파일을 Write한다. ID가 부여된 모든 항목을 `json-export.md` 스키마에 따라 추출한다. **이 단계를 건너뛰면 안 된다.**
-
-**Pattern B (FT-First):**
-1. `1_SRS_RA.md` 참조하여 FT 분석
-2. FT 기반 유저 스토리 역도출 (SRS의 User Stories 섹션에 추가)
-3. 마일스톤 정의 (Phase 단위)
-4. `1_Roadmap_PM.md` 생성
-5. `u-agent-sa`에게 SRS US Mapping 갱신 요청
 
 ### User Story Add Workflow (`/u-agent-us-add`)
 
