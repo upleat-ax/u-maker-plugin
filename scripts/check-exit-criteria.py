@@ -36,8 +36,8 @@ DOC_PATHS_V1 = {
 
 
 def get_apps(udocs_root):
-    """Read app list from .u-maker/u-ssot.config.json."""
-    config_path = os.path.join(os.path.dirname(udocs_root), ".u-maker/u-ssot.config.json")
+    """Read app list from .u-maker/u-maker.config.json."""
+    config_path = os.path.join(os.path.dirname(udocs_root), ".u-maker/u-maker.config.json")
     apps = ["web"]
     try:
         if os.path.exists(config_path):

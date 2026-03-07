@@ -33,7 +33,7 @@ const APP_PHASE_DIRS = ['01-plan', '02-design', '03-dev', '04-check'];
  * @returns {string[]}
  */
 function getAppsFromConfig() {
-  const configPath = path.join(cwd, '.u-maker/u-ssot.config.json');
+  const configPath = path.join(cwd, '.u-maker/u-maker.config.json');
   let apps = ['web'];
   try {
     if (fs.existsSync(configPath)) {

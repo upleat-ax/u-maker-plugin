@@ -74,14 +74,25 @@
       "priority": "Must"
     }
   ],
+  "functionalRequirements": [
+    {
+      "id": "FR-0010",
+      "requirement": "...",
+      "description": "...",
+      "priority": "Must",
+      "us": [{ "id": "US-0010" }],
+      "status": "Not Started"
+    }
+  ],
   "userStories": [
     {
       "id": "US-0010",
       "usr": { "id": "USR-0010" },
       "role": "사용자",
-      "feature": "...",
+      "need": "...",
       "benefit": "...",
       "priority": "Must",
+      "fr": [{ "id": "FR-0010" }],
       "ft": [{ "id": "FT-0010" }]
     }
   ],
@@ -91,17 +102,7 @@
       "feature": "...",
       "description": "...",
       "priority": "Must",
-      "us": { "id": "US-0010" },
-      "status": "Not Started"
-    }
-  ],
-  "functionalRequirements": [
-    {
-      "id": "FR-0010",
-      "requirement": "...",
-      "description": "...",
-      "priority": "Must",
-      "ft": { "id": "FT-0010" },
+      "us": [{ "id": "US-0010" }],
       "status": "Not Started"
     }
   ],
@@ -118,9 +119,9 @@
 
 `1_SRS_RA.json` 필드 완전성 규칙:
 - `users[]`: `id`, `role`, `description`, `priority`를 모두 포함한다.
-- `userStories[]`: `id`, `usr`, `role`, `feature`, `benefit`, `priority`, `ft`를 모두 포함한다.
+- `functionalRequirements[]`: `id`, `requirement`, `description`, `priority`, `us`, `status`를 모두 포함한다.
+- `userStories[]`: `id`, `usr`, `role`, `need`, `benefit`, `priority`, `fr`, `ft`를 모두 포함한다.
 - `features[]`: `id`, `feature`, `description`, `priority`, `us`, `status`를 모두 포함한다.
-- `functionalRequirements[]`: `id`, `requirement`, `description`, `priority`, `ft`, `status`를 모두 포함한다.
 - `nonFunctionalRequirements[]`: `id`, `category`, `requirement`, `metric`를 모두 포함한다.
 - `id`만 남기는 축약 출력은 금지한다. 값 미확정 시 키를 생략하지 말고 `null`로 기록한다.
 
@@ -348,6 +349,54 @@
     { "name": "mobile", "maxWidth": 767 },
     { "name": "tablet", "minWidth": 768, "maxWidth": 1023 },
     { "name": "desktop", "minWidth": 1024 }
+  ]
+}
+```
+
+### 2.10a `2_RTM_RA.json`
+
+```json
+{
+  "document": "2_RTM_RA",
+  "meta": { "owner": "u-agent-ra", "status": "Draft", "version": "v0.1.0", "lastUpdated": "YYYY-MM-DD" },
+  "coverageSummary": [
+    {
+      "app": "web",
+      "frTotal": 0,
+      "frLinked": 0,
+      "usTotal": 0,
+      "usLinked": 0,
+      "ftTotal": 0,
+      "ftLinked": 0,
+      "coverage": "0%"
+    }
+  ],
+  "matrix": [
+    {
+      "fr": { "id": "FR-0010" },
+      "us": { "id": "US-0010" },
+      "ft": { "id": "FT-0010" },
+      "app": "web",
+      "mn": { "id": "MN-AUTH-0010" },
+      "screen": { "id": "S-0060" },
+      "api": "POST /auth/login",
+      "erd": ["USER"],
+      "qa": { "id": "TC-0010" },
+      "status": "Covered",
+      "note": null
+    }
+  ],
+  "gaps": [
+    {
+      "id": "GAP-0010",
+      "scope": "FT-0130",
+      "missingLink": "QA Case",
+      "impact": "...",
+      "action": "...",
+      "owner": "u-agent-qa",
+      "dueDate": "YYYY-MM-DD",
+      "status": "Open"
+    }
   ]
 }
 ```

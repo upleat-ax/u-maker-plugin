@@ -84,9 +84,10 @@ Semantic Versioning (`vMAJOR.MINOR.PATCH`)을 따른다:
 | Background | 프로젝트 배경 및 목적 |
 | Scope | 범위 정의 (In-Scope / Out-of-Scope) |
 | Functional Requirements | 기능 요구사항 목록 (SRS Section 2, US Mapping 포함) |
-| Users | 사용자 역할 목록 (SRS Section 3, USR 정의) |
-| User Stories | 사용자 스토리 목록 (SRS Section 4, FR/FT 매핑 포함) |
-| Features | 기능 구현 단위 목록 (SRS Section 5, US Mapping 포함) |
+| Non-Functional Requirements | 비기능 요구사항 목록 (SRS Section 3, 성능/보안/신뢰성 등) |
+| Users | 사용자 역할 목록 (SRS Section 4, USR 정의) |
+| User Stories | 사용자 스토리 목록 (SRS Section 5, FR/FT 매핑 포함) |
+| Features | 기능 구현 단위 목록 (SRS Section 6, US Mapping 포함) |
 | Menu Tree | IA 문서에 필수: Domain Registry, Menu Tree Table (MN-{DOMAIN}-{NNNN} 형식) |
 | Gantt Chart | Mermaid `gantt` 다이어그램 (마일스톤, 일정) |
 
@@ -111,7 +112,7 @@ gantt
 | Design System | 디자인 시스템 정의 (컬러 팔레트, 타이포그래피, 스페이싱, 컴포넌트 규칙) |
 | Screen Definition | 화면 목록 및 상세 설계 (화면ID, 화면명, 주요 컴포넌트) |
 | Data Specification | 데이터 구조 정의 (Entity, Attribute, Type) |
-| Requirements Traceability Matrix | `FR→US→FT→IA/Screen/API/ERD/QA` 매핑 테이블 |
+| Requirements Traceability Matrix | `FR+NFR→US→FT→IA/Screen/API/ERD/QA` 매핑 테이블 |
 | State Changes | 상태 전이 다이어그램 (`stateDiagram-v2`) |
 | Exception Handling | 예외 케이스 정의 테이블 |
 | ER Diagram | Mermaid `erDiagram` (Entity 관계도) |
@@ -263,7 +264,7 @@ xychart-beta
 2. 문서 내 다른 SSoT 문서 참조 시 `[문서명](상대경로)` 형식을 사용한다
 3. shared 문서 참조: `.u-maker/docs/common/{phase}/{doc}` 형식
 4. app-specific 문서 참조: `.u-maker/docs/{app}/{phase}/{doc}` 형식
-5. 수직적 추적성: Roadmap(why) → SRS(FR→US→FT+what) → MN/IA(navigate) → Screen(design) → ERD(how) → Code(execute)
+5. 수직적 추적성: Roadmap(why) → SRS(FR+NFR→US→FT+what) → MN/IA(navigate) → Screen(design) → ERD(how) → Code(execute)
 6. 수평적 추적성: Screen(UI) ↔ API(data) ↔ QA Case(verify)
 7. 추적성 깨짐 발견 시 `u-RA`에게 보고한다
 

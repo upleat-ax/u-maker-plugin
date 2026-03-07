@@ -429,13 +429,14 @@ zenuml
 | Document | Required Diagrams | Optional Diagrams |
 |----------|-------------------|-------------------|
 | `1_Roadmap_PM` | gantt, timeline | pie (우선순위 분포) |
-| `1_SRS_RA` | flowchart (US→FR 매핑), pie (FR 우선순위 분포) | classDiagram (도메인 개념 모델) |
+| `1_SRS_RA` | flowchart (FR+NFR→US→FT 매핑), pie (FR 우선순위 분포) | classDiagram (도메인 개념 모델) |
 | `1_IA_RA` | **flowchart TD** (메뉴 트리), journey (유저 여정), flowchart (유저 플로우) | stateDiagram-v2 (네비게이션 상태) |
 | `2_UXGuide_UX` | flowchart (디자인 시스템 구조) | classDiagram (컴포넌트 계층) |
 | `2_Screen_UX` | stateDiagram-v2 (화면 상태 전이), flowchart (화면 간 전환 플로우) | sequenceDiagram (인터랙션 흐름) |
 | `2_ScreenFlow_UX` | flowchart LR (스크린 플로우), stateDiagram-v2 (조건부 네비게이션) | journey (핵심 태스크 플로우) |
 | `2_ERD_SA` | erDiagram (엔티티 관계), classDiagram (도메인 모델) | flowchart (데이터 흐름) |
 | `2_API_SA` | C4Context (시스템 아키텍처), sequenceDiagram (API 인터랙션), flowchart (인증 플로우) | zenuml (복잡한 조건 분기) |
+| `2_RTM_RA` | flowchart LR (FR+NFR→US→FT→설계/테스트 추적 흐름) | pie (Coverage 분포), xychart-beta (Coverage 추이) |
 | `3_Code_DV` | flowchart (프로세스 플로우, 조건 분기), classDiagram (모듈 구조), C4Context (시스템 아키텍처) | sequenceDiagram (데이터 흐름) |
 | `3_DesignToken_UX` | flowchart TD (토큰 계층 구조) | classDiagram (토큰 타입 관계) |
 | `3_UIComponents_UX` | classDiagram (컴포넌트 계층, Atomic Design), stateDiagram-v2 (컴포넌트 상태) | flowchart (컴포넌트 합성 흐름) |
@@ -454,7 +455,7 @@ zenuml
 | **Process Flow** | `flowchart TD/LR`, `sequenceDiagram` | 순차적 처리 단계, 비즈니스 프로세스 |
 | **System Architecture** | `C4Context`, `flowchart TD` (subgraph) | 시스템 구성 요소와 외부 의존성 |
 | **Screen Flow** | `flowchart LR`, `stateDiagram-v2` | 화면 간 전환, 네비게이션 경로 |
-| **UserStory → Features** | `flowchart TD`, `pie` | US에서 FR로의 매핑, 기능 분류 |
+| **FR → UserStories → Features** | `flowchart TD`, `pie` | FR-User Story-Feature 체인 매핑, 기능 분류 |
 | **Entity / ERD** | `erDiagram`, `classDiagram` | 데이터 모델, 엔티티 관계, 속성 정의 |
 | **Class Diagram** | `classDiagram` | 도메인 모델, 타입 관계, 컴포넌트 계층 |
 | **Activity Diagram** | `flowchart TD` (start/end nodes), `stateDiagram-v2` | 사용자 활동 흐름, 상태 전이 |

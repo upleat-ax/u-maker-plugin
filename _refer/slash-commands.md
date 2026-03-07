@@ -289,7 +289,7 @@ SSoT 문서 상태를 관리하고 검증하는 커맨드.
 | **Syntax** | `/u-skill-srs [app]` |
 | **Description** | SRS(Software Requirements Specification)를 생성/수정한다 |
 | **Calling Agents** | `u-SA` |
-| **Prerequisites** | `1_Roadmap_PM.md` 존재 (optional; SRS 내부 체인은 항상 FR→US→FT) |
+| **Prerequisites** | `1_Roadmap_PM.md` 존재 (optional; SRS 내부 체인은 항상 FR+NFR→US→FT) |
 | **Output** | `{app}/01-plan/1_SRS_RA.md` |
 
 ### `/u-skill-erd`

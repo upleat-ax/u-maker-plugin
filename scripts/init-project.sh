@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # init-project.sh — u-maker Project Initialization Script
-# Creates Turborepo + bun + Next.js + Storybook + .u-maker/docs structure
+# Creates Turborepo + bun + Next.js + Storybook + Tabler Icons + .u-maker/docs structure
 #
 # Usage: ./init-project.sh <project-name>
 
@@ -80,12 +80,13 @@ done
 echo "  -> Created packages: ${PACKAGES[*]}"
 
 # ============================================================
-# 3. Install Storybook dev dependencies
+# 3. Install Storybook + Tabler Icons dependencies
 # ============================================================
 echo ""
-echo "[3/5] Installing Storybook dev dependencies..."
+echo "[3/5] Installing Storybook + Tabler Icons dependencies..."
 
 bun add -d @storybook/react @storybook/react-vite @storybook/addon-essentials @storybook/addon-interactions @storybook/addon-links storybook
+bun add @tabler/icons-react
 
 # Create basic Storybook config
 mkdir -p .storybook
@@ -129,7 +130,7 @@ const preview: Preview = {
 export default preview;
 SBPREVIEW
 
-echo "  -> Storybook configured"
+echo "  -> Storybook + @tabler/icons-react configured"
 
 # ============================================================
 # 4. Create .u-maker/docs/ full structure
@@ -173,9 +174,9 @@ This directory is the **Single Source of Truth (SSoT)** for all project document
 | Directory | Scope | Phase | Contents |
 |-----------|-------|-------|----------|
 | `common/01-plan/` | Common | PLAN | Roadmap, Master Index |
-| `common/02-design/` | Common | DESIGN | ERD, Design System |
+| `common/02-design/` | Common | DESIGN | ERD, RTM, Design System |
 | `common/03-dev/` | Common | DO | UI Components, Design Tokens |
-| `common/05-act/` | Common | ACT | Backlog, Iteration Log, Retrospective |
+| `common/05-act/` | Common | ACT | Backlog, Iteration Log, Retrospective, Daily Reports |
 | `{app}/01-plan/` | Per-App | PLAN | SRS, Information Architecture |
 | `{app}/02-design/` | Per-App | DESIGN | API Contract, Screen Design |
 | `{app}/03-dev/` | Per-App | DO | Code Implementation Log |

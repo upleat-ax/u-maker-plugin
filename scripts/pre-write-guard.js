@@ -54,7 +54,7 @@ if (!filePath) {
 // ============================================================
 
 // SSoT document pattern: files like 1_Roadmap_PM.md, 2_ERD_SA.md, etc.
-const SSOT_DOC_PATTERN = /\d+_[A-Za-z]+_[A-Z]+\.md$/;
+const SSOT_DOC_PATTERN = /^\d+_[A-Za-z]+_[A-Z]+(?:_\d{12})?\.md$/;
 const basename = path.basename(filePath);
 
 if (SSOT_DOC_PATTERN.test(basename)) {

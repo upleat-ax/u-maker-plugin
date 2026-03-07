@@ -7,13 +7,14 @@
 
 ## 1. Vertical Traceability Chain
 
-Roadmap(why) → SRS(US+what) → MN/IA(navigate) → Screen(design) → ERD(how) → Code(execute) 순서의 수직적 추적성.
+Roadmap(why) → SRS(FR+NFR→US→FT+what) → MN/IA(navigate) → Screen(design) → ERD(how) → Code(execute) 순서의 수직적 추적성.
 
 | Level | Document | Role | Traces From | Traces To |
 |-------|----------|------|-------------|-----------|
 | L1 (Why) | `1_Roadmap_PM.md` | 프로젝트 목적, 마일스톤 | (최상위) | `1_SRS_RA.md` |
-| L2 (What) | `1_SRS_RA.md` | 유저 스토리, 기능/비기능 요구사항 정의 | `1_Roadmap_PM.md` | `1_IA_RA.md`, `2_ERD_SA.md`, `2_API_SA.md` |
+| L2 (What) | `1_SRS_RA.md` | FR+NFR→US→FT 체인 및 비기능 요구사항 정의 | `1_Roadmap_PM.md` | `1_IA_RA.md`, `2_ERD_SA.md`, `2_API_SA.md` |
 | L2.5 (Navigate) | `1_IA_RA.md` | 메뉴 구조, 화면 계층 (MN-{DOMAIN}-{NNNN}) | `1_SRS_RA.md` | `2_Screen_UX.md`, `2_ScreenFlow_UX.md` |
+| L2.8 (Trace) | `2_RTM_RA.md` | 요구사항 추적표(RTM), FR+NFR→US→FT→설계/테스트 연결 검증 | `1_SRS_RA.md`, `1_IA_RA.md`, `2_Screen_UX.md`, `2_API_SA.md`, `2_ERD_SA.md` | `3_Code_DV.md`, `4_Case_QA.md` |
 | L3 (Flow) | `2_ScreenFlow_UX.md` | 화면 간 전환 흐름, 딥링크 | `2_Screen_UX.md`, `1_IA_RA.md` | `2_API_SA.md`, `4_Case_QA.md` |
 | L3 (How) | `2_ERD_SA.md` | 데이터 모델, Entity 관계 | `1_SRS_RA.md` | `3_Code_DV.md` |
 | L3 (How) | `2_API_SA.md` | API Contract, 인터페이스 | `1_SRS_RA.md` | `3_Code_DV.md` |
@@ -29,24 +30,32 @@ flowchart TD
     SCREEN["2_Screen_UX.md\n(Design)"]
     ERD["2_ERD_SA.md\n(How - Data)"]
     API["2_API_SA.md\n(How - Interface)"]
+    RTM["2_RTM_RA.md\n(Trace)"]
     CODE["3_Code_DV.md\n(Execute)"]
 
-    ROADMAP -->|Goals → US+FR| SRS
-    SRS -->|FR → Menu Items| IA
+    ROADMAP -->|Goals → FR| SRS
+    SRS -->|FT → Menu Items| IA
     IA -->|MN → Screens| SCREEN
-    SRS -->|FR → Entities| ERD
-    SRS -->|FR → Endpoints| API
+    SRS -->|FT/FR → Entities| ERD
+    SRS -->|FT/FR → Endpoints| API
+    SRS -->|FR+NFR→US→FT 체인| RTM
+    IA --> RTM
+    SCREEN --> RTM
+    API --> RTM
+    ERD --> RTM
+    RTM -->|Traceability Baseline| CODE
     ERD -->|Schema → Models| CODE
     API -->|Contract → Routes| CODE
 ```
 
 ### Tracing Rules (Vertical)
 
-1. `1_SRS_RA.md`의 모든 User Story(Section 2)는 FT(Section 3)와 매핑되어야 한다 (PLAN Gate 검증 시점에 적용. 작성 중 `TBD` 허용)
-2. `1_SRS_RA.md`의 모든 FT는 `2_ERD_SA.md` 또는 `2_API_SA.md`에서 구체화되어야 한다
-3. `2_ERD_SA.md`의 모든 Entity는 `3_Code_DV.md`의 모델 파일과 매핑되어야 한다
-4. `2_API_SA.md`의 모든 Endpoint는 `3_Code_DV.md`의 라우트 파일과 매핑되어야 한다
-5. Technical FR (US 없는 FR)은 US Mapping이 `-`로 표시 가능
+1. `1_SRS_RA.md`의 모든 FR(Section 2)은 US(Section 5)와 매핑되어야 한다 (PLAN Gate 검증 시점에 적용. 작성 중 `TBD` 허용)
+2. `1_SRS_RA.md`의 모든 US(Section 5)는 FT(Section 6)와 매핑되어야 한다 (PLAN Gate 검증 시점에 적용. 작성 중 `TBD` 허용)
+3. `1_SRS_RA.md`의 모든 FT는 `2_ERD_SA.md` 또는 `2_API_SA.md`에서 구체화되어야 한다
+4. `2_ERD_SA.md`의 모든 Entity는 `3_Code_DV.md`의 모델 파일과 매핑되어야 한다
+5. `2_API_SA.md`의 모든 Endpoint는 `3_Code_DV.md`의 라우트 파일과 매핑되어야 한다
+6. Technical FR (US 없는 FR)은 US Mapping이 `-`로 표시 가능
 
 ---
 
@@ -98,6 +107,7 @@ flowchart TD
         DSYS[2_UXGuide_UX.md]
         ERD[2_ERD_SA.md]
         API[2_API_SA.md]
+        RTM[2_RTM_RA.md]
     end
 
     subgraph DEV["03-dev"]
@@ -126,8 +136,13 @@ flowchart TD
     SRS --> IA
     SRS --> ERD
     SRS --> API
+    SRS --> RTM
     IA -->|MN → S| SCREEN
     SCREEN --> SFLOW
+    IA --> RTM
+    SCREEN --> RTM
+    API --> RTM
+    ERD --> RTM
     IA --> DSYS
     DSYS --> SCR_UX
     DSYS --> UICOMP
@@ -172,18 +187,20 @@ flowchart TD
 
 | # | Validation Rule | Source | Target | Severity |
 |---|----------------|--------|--------|----------|
-| V-001 | 모든 User Story(SRS Section 2)는 FR과 매핑 (PLAN Gate 검증 시점에 적용. 작성 중 `TBD` 허용) | `1_SRS_RA.md` | `1_SRS_RA.md` | Critical |
-| V-002 | 모든 FT는 ERD 또는 API에서 구체화 | `1_SRS_RA.md` | `2_ERD_SA.md`, `2_API_SA.md` | Critical |
-| V-003 | 모든 IA 항목은 Screen에서 설계 | `1_IA_RA.md` | `2_Screen_UX.md` | Major |
-| V-004 | 모든 Screen은 사용 API를 명시 | `2_Screen_UX.md` | `2_API_SA.md` | Major |
-| V-004a | 모든 Screen은 ScreenFlow에서 전환 흐름이 정의 | `2_Screen_UX.md` | `2_ScreenFlow_UX.md` | Major |
-| V-005 | 모든 API endpoint는 테스트 케이스 존재 | `2_API_SA.md` | `4_Case_QA.md` | Major |
-| V-006 | 모든 Entity는 코드 모델과 매핑 | `2_ERD_SA.md` | `3_Code_DV.md` | Critical |
-| V-007 | 모든 API endpoint는 코드 라우트와 매핑 | `2_API_SA.md` | `3_Code_DV.md` | Critical |
-| V-008 | Index가 모든 문서를 추적 | `1_Index_PM.md` | All docs | Major |
-| V-009 | 결함 리포트는 Iteration Log에 기록 | `4_Report_QA.md` | `5_IterationLog_RA.md` | Major |
-| V-010 | related_docs에 양방향 참조 존재 | All docs | All docs | Minor |
-| V-011 | Technical FR (US 없는 FR)은 US Mapping이 `-`로 표시 가능 | `1_SRS_RA.md` | - | Minor |
+| V-001 | 모든 FR(SRS Section 2)은 US와 매핑 (PLAN Gate 검증 시점에 적용. 작성 중 `TBD` 허용) | `1_SRS_RA.md` | `1_SRS_RA.md` | Critical |
+| V-002 | 모든 US(SRS Section 5)는 FT와 매핑 (PLAN Gate 검증 시점에 적용. 작성 중 `TBD` 허용) | `1_SRS_RA.md` | `1_SRS_RA.md` | Critical |
+| V-003 | 모든 FT는 ERD 또는 API에서 구체화 | `1_SRS_RA.md` | `2_ERD_SA.md`, `2_API_SA.md` | Critical |
+| V-004 | 모든 IA 항목은 Screen에서 설계 | `1_IA_RA.md` | `2_Screen_UX.md` | Major |
+| V-005 | 모든 Screen은 사용 API를 명시 | `2_Screen_UX.md` | `2_API_SA.md` | Major |
+| V-005a | 모든 Screen은 ScreenFlow에서 전환 흐름이 정의 | `2_Screen_UX.md` | `2_ScreenFlow_UX.md` | Major |
+| V-006 | 모든 API endpoint는 테스트 케이스 존재 | `2_API_SA.md` | `4_Case_QA.md` | Major |
+| V-007 | 모든 Entity는 코드 모델과 매핑 | `2_ERD_SA.md` | `3_Code_DV.md` | Critical |
+| V-008 | 모든 API endpoint는 코드 라우트와 매핑 | `2_API_SA.md` | `3_Code_DV.md` | Critical |
+| V-009 | Index가 모든 문서를 추적 | `1_Index_PM.md` | All docs | Major |
+| V-010 | 결함 리포트는 Iteration Log에 기록 | `4_Report_QA.md` | `5_IterationLog_RA.md` | Major |
+| V-011 | related_docs에 양방향 참조 존재 | All docs | All docs | Minor |
+| V-012 | Technical FR (US 없는 FR)은 US Mapping이 `-`로 표시 가능 | `1_SRS_RA.md` | - | Minor |
+| V-013 | DESIGN Gate 전 `2_RTM_RA.md`가 최신 추적 상태로 Final이어야 함 | `2_RTM_RA.md` | Gate | Critical |
 
 ### 4.2 Traceability Matrix Table
 
@@ -224,8 +241,9 @@ flowchart LR
 
 | 변경 대상 | 영향받는 문서 |
 |-----------|-------------|
-| US (1_SRS_RA) | → FR (1_SRS_RA, 같은 문서 내) → IA (1_IA_RA) |
-| FR (1_SRS_RA) | → IA → Screen → API → ERD → Code → QA Case |
+| FR (1_SRS_RA) | → US (1_SRS_RA, 같은 문서 내) → FT (1_SRS_RA, 같은 문서 내) → IA (1_IA_RA) |
+| US (1_SRS_RA) | → FT (1_SRS_RA, 같은 문서 내) → IA → Screen → API → ERD → Code → QA Case |
+| FT (1_SRS_RA) | → IA → Screen → API → ERD → Code → QA Case |
 | MN/IA (1_IA_RA) | → Screen (2_Screen_UX) → ScreenFlow (2_ScreenFlow_UX) |
 | Screen (2_Screen_UX) | → ScreenFlow (2_ScreenFlow_UX) → API (2_API_SA) → QA Case (4_Case_QA) |
 | ScreenFlow (2_ScreenFlow_UX) | → API (2_API_SA) → QA Case (4_Case_QA) |

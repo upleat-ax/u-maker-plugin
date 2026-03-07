@@ -1,7 +1,7 @@
 ---
 document: "1_Roadmap_PM"
 title: "{{PROJECT_NAME}} Roadmap"
-owner: "u-RA"
+owner: "u-PM"
 status: "Draft"
 version: "v0.1.0"
 last_updated: "{{DATE}}"
@@ -52,7 +52,7 @@ external_links: []
 | Milestone | Target Date | Deliverables | Status |
 |-----------|------------|-------------|--------|
 | M1: PLAN Complete | {{날짜}} | Roadmap, SRS, IA, Index | Pending |
-| M2: DESIGN Complete | {{날짜}} | Screen, ERD, API | Pending |
+| M2: DESIGN Complete | {{날짜}} | Screen, ERD, API, RTM | Pending |
 | M3: DEV Complete | {{날짜}} | Frontend, Backend, Code Record | Pending |
 | M4: CHECK Complete | {{날짜}} | Test Cases, QA Report | Pending |
 | M5: Release | {{날짜}} | Final Build | Pending |
@@ -77,11 +77,12 @@ gantt
         Screen Design       :d1, after p4, 5d
         ERD                 :d2, after d1, 3d
         API Contract        :d3, after d1, 3d
-        Validation          :d4, after d2, 2d
+        RTM                 :d4, after d2, 2d
+        Validation          :d5, after d4, 1d
 
     section DEV
-        Frontend            :dev1, after d4, 10d
-        Backend             :dev2, after d4, 10d
+        Frontend            :dev1, after d5, 10d
+        Backend             :dev2, after d5, 10d
 
     section CHECK
         Test Case Design    :t1, after dev1, 3d
@@ -150,4 +151,4 @@ pie title Feature Priority Distribution
 
 | Version | Date | Author | Description |
 |---------|------|--------|-------------|
-| v0.1.0 | {{DATE}} | u-RA | Initial draft |
+| v0.1.0 | {{DATE}} | u-PM | Initial draft |

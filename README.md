@@ -3,7 +3,7 @@
 PDCA(Plan-Design-Do-Check-Act) 기반 SSoT(Single Source of Truth) 협업 워크플로우를 Claude Code/Codex/Gemini 환경에서 실행하기 위한 로컬 플러그인입니다.
 
 - Plugin package version: `1.0.0` (`.claude-plugin/plugin.json`)
-- SSoT spec/config version: `2.0.0` (`.u-maker/u-ssot.config.json`)
+- SSoT spec/config version: `2.0.0` (`.u-maker/u-maker.config.json`)
 
 ## TL;DR
 
@@ -11,6 +11,19 @@ PDCA(Plan-Design-Do-Check-Act) 기반 SSoT(Single Source of Truth) 협업 워크
 2. Claude Code/Codex/Gemini 재시작
 3. 프로젝트에서 `/u-skill-create-project <name>` 또는 `/u-skill-init [path]` 실행
 4. `/u-skill-loop`로 PDCA 자동 반복
+
+## Breaking Change (Config Rename)
+
+설정 파일명이 아래와 같이 변경되었습니다.
+
+- 이전: `.u-maker/u-ssot.config.json`
+- 현재: `.u-maker/u-maker.config.json`
+
+기존 프로젝트를 사용하는 경우 1회 마이그레이션이 필요합니다.
+
+```bash
+mv .u-maker/u-ssot.config.json .u-maker/u-maker.config.json
+```
 
 ---
 
@@ -20,12 +33,12 @@ u-maker는 문서와 코드를 분리하지 않고, **문서 중심 개발(SSoT)
 
 핵심 목표:
 
-- 요구사항부터 테스트까지 추적 가능한 체계 유지 (`FR → US → FT → 설계 → 코드 → QA`)
+- 요구사항부터 테스트까지 추적 가능한 체계 유지 (`FR+NFR → US → FT → 설계 → 코드 → QA`)
 - Phase Gate 기반으로 무분별한 단계 전환 방지
 - 문서/코드/테스트의 반복 개선(PDCA Loop) 자동화
 - 기술 스택 규칙 위반을 Hook으로 사전 차단
 
-SRS(`1_SRS_RA.md`) 작성 규칙은 항상 **Requirements(FR) 먼저, User Stories(US) 다음, Features(FT) 마지막**입니다.
+SRS(`1_SRS_RA.md`) 작성 규칙은 항상 **FR+NFR 먼저, User Stories(US) 다음, Features(FT) 마지막**입니다.
 
 ---
 
@@ -99,9 +112,14 @@ u-maker-plugin/
 ├── lib/                         # 상태/게이트/문서추적 라이브러리
 ├── templates/                   # SSoT 문서 템플릿
 ├── _refer/                      # 표준/정책/명령어 레퍼런스
-├── .u-maker/u-ssot.config.json  # SSoT 규칙 및 게이트/스코프 설정
+├── .u-maker/u-maker.config.json  # SSoT 규칙 및 게이트/스코프 설정
 └── deploy_local.sh              # 로컬 배포/검증/정리
 ```
+
+현재 기준 구성 수량:
+
+- Skills: `46`
+- Agents: `8`
 
 ---
 
@@ -349,6 +367,8 @@ python3 scripts/check-exit-criteria.py .u-maker/docs
 ./scripts/init-project.sh my-new-app
 ```
 
+이 스캐폴드에는 기본적으로 `Storybook`과 `@tabler/icons-react`가 포함됩니다.
+
 ---
 
 ## 13) Troubleshooting
@@ -372,7 +392,7 @@ python3 scripts/check-exit-criteria.py .u-maker/docs
 
 ### 다중 앱 문서 경로가 꼬일 때
 
-- `.u-maker/u-ssot.config.json`의 `techStack.monorepo.structure.apps` 값을 확인
+- `.u-maker/u-maker.config.json`의 `techStack.monorepo.structure.apps` 값을 확인
 - app 인자가 필요한 스킬은 명시적으로 `/u-skill-xxx <app>` 형태로 호출
 
 ---
@@ -384,7 +404,7 @@ python3 scripts/check-exit-criteria.py .u-maker/docs
   - 필요 시 `agents/`와 `_refer/slash-commands.md` 동기화
   - `./deploy_local.sh` 재실행으로 링크 갱신
 - 정책 변경 시:
-  - `_refer/*.md`와 `.u-maker/u-ssot.config.json`을 함께 업데이트
+  - `_refer/*.md`와 `.u-maker/u-maker.config.json`을 함께 업데이트
   - Gate/Validation 코드(`lib/`, `scripts/`)와 문서 기준을 일치시킬 것
 
 ---

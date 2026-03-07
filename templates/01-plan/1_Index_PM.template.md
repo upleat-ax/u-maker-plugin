@@ -1,7 +1,7 @@
 ---
 document: "1_Index_PM"
 title: "{{PROJECT_NAME}} Document Index"
-owner: "u-RA"
+owner: "u-PM"
 status: "Draft"
 version: "v0.1.0"
 last_updated: "{{DATE}}"
@@ -19,7 +19,7 @@ external_links: []
 ### 1.1 Purpose
 
 이 문서는 프로젝트의 모든 SSoT 문서를 중앙에서 추적하고 관리하는 마스터 인덱스이다.
-`u-RA` (Requirements Analyst/SSoT Guardian) 에이전트가 유지 관리한다.
+`u-PM` (Product Manager) 에이전트가 유지 관리한다.
 
 ### 1.2 Current State
 
@@ -29,8 +29,8 @@ external_links: []
 | Current Phase | PLAN |
 | Current Iteration | 1 |
 | Loop Status | STOPPED |
-| Total Documents | 0 / 13 |
-| Final Documents | 0 / 13 |
+| Total Documents | 0 / 14 |
+| Final Documents | 0 / 14 |
 
 ---
 
@@ -40,16 +40,17 @@ external_links: []
 
 | Doc ID | Document | Path | Owner | Status | Version | Last Updated |
 |--------|----------|------|-------|--------|---------|-------------|
-| 1_Roadmap_PM | Roadmap | `.u-maker/docs/01-plan/1_Roadmap_PM.md` | u-RA | Draft | v0.1.0 | {{DATE}} |
+| 1_Roadmap_PM | Roadmap | `.u-maker/docs/01-plan/1_Roadmap_PM.md` | u-PM | Draft | v0.1.0 | {{DATE}} |
 | 1_SRS_RA | SRS | `.u-maker/docs/01-plan/1_SRS_RA.md` | u-SA | - | - | - |
 | 1_IA_RA | IA | `.u-maker/docs/01-plan/1_IA_RA.md` | u-UX | - | - | - |
-| 1_Index_PM | Index | `.u-maker/docs/01-plan/1_Index_PM.md` | u-RA | Draft | v0.1.0 | {{DATE}} |
+| 1_Index_PM | Index | `.u-maker/docs/01-plan/1_Index_PM.md` | u-PM | Draft | v0.1.0 | {{DATE}} |
 
 ### 2.2 DESIGN Phase (02-design/)
 
 | Doc ID | Document | Path | Owner | Status | Version | Last Updated |
 |--------|----------|------|-------|--------|---------|-------------|
 | 2_ERD_SA | ERD | `.u-maker/docs/02-design/2_ERD_SA.md` | u-SA | - | - | - |
+| 2_RTM_RA | Requirements Traceability Matrix | `.u-maker/docs/02-design/2_RTM_RA.md` | u-RA | - | - | - |
 | 2_API_SA | API Contract | `.u-maker/docs/02-design/2_API_SA.md` | u-SA | - | - | - |
 | 2_Screen_UX | Screen Design | `.u-maker/docs/02-design/2_Screen_UX.md` | u-UX | - | - | - |
 
@@ -71,7 +72,8 @@ external_links: []
 | Doc ID | Document | Path | Owner | Status | Version | Last Updated |
 |--------|----------|------|-------|--------|---------|-------------|
 | 5_IterationLog_RA | Iteration Log | `.u-maker/docs/05-act/5_IterationLog_RA.md` | u-RA | - | - | - |
-| 5_Retrospective_PM | Retrospective | `.u-maker/docs/05-act/5_Retrospective_PM.md` | u-RA | - | - | - |
+| 5_Retrospective_PM | Retrospective | `.u-maker/docs/05-act/5_Retrospective_PM.md` | u-PM | - | - | - |
+| 5_DailyReport_PM_* | Daily Report | `.u-maker/docs/05-act/5_DailyReport_PM_yyyymmddhhmm.md` | u-PM | - | - | - |
 
 ---
 
@@ -90,6 +92,7 @@ flowchart TD
         SCREEN[2_Screen_UX]
         DSYS[2_UXGuide_UX]
         ERD[2_ERD_SA]
+        RTM[2_RTM_RA]
         API[2_API_SA]
     end
 
@@ -118,6 +121,10 @@ flowchart TD
     DSYS --> SCR_UX
     DSYS --> UICOMP
     DSYS --> DTOKEN
+    ERD --> RTM
+    SCREEN --> RTM
+    API --> RTM
+    RTM --> CODE
     ERD --> CODE
     API --> CODE
     SCREEN --> SCR_UX
@@ -135,7 +142,7 @@ flowchart TD
 stateDiagram-v2
     [*] --> PLAN
     PLAN --> DESIGN : Gate 1 (Roadmap+SRS+IA Final)
-    DESIGN --> DO : Gate 2 (ERD+API+Screen Final)
+    DESIGN --> DO : Gate 2 (ERD+RTM+UXGuide+API+Screen+Flow Final)
     DO --> CHECK : Gate 3 (Build Success)
     CHECK --> COMPLETE : Gate 4 (Exit Criteria Met)
     CHECK --> ACT : Gate 4 Failed
@@ -145,8 +152,8 @@ stateDiagram-v2
 
 | Gate | From → To | Conditions | Status |
 |------|-----------|-----------|--------|
-| Gate 1 | PLAN → DESIGN | `1_Roadmap_PM`=Final, `1_SRS_RA`=Final, `1_IA_RA`=Final + US↔FT mapping complete (no TBD) | Not Ready |
-| Gate 2 | DESIGN → DO | `2_ERD_SA`=Final, `2_API_SA`=Final, `2_Screen_UX`=Final + u-RA 검수 | Not Ready |
+| Gate 1 | PLAN → DESIGN | `1_Roadmap_PM`=Final, `1_SRS_RA`=Final, `1_IA_RA`=Final + FR+NFR→US→FT mapping complete (no TBD) | Not Ready |
+| Gate 2 | DESIGN → DO | `2_ERD_SA`=Final, `2_RTM_RA`=Final, `2_UXGuide_UX`=Final, `2_API_SA`=Final, `2_Screen_UX`=Final, `2_ScreenFlow_UX`=Final + u-RA 검수 | Not Ready |
 | Gate 3 | DO → CHECK | 코드 구현 완료 + `bun run build` 성공 | Not Ready |
 | Gate 4 | CHECK → Complete | Critical/Major 0건 + Backlog 0건 + 전체 FT 구현 | Not Ready |
 | Gate 5 | ACT → PLAN(N+1) | Backlog 정리 + 회고 + 아카이브 완료 | Not Ready |
@@ -174,7 +181,7 @@ stateDiagram-v2
 
 | Date | Validator | Type | Result | Issues |
 |------|-----------|------|--------|--------|
-| {{DATE}} | u-RA | Initial | - | No documents yet |
+| {{DATE}} | u-PM | Initial | - | No documents yet |
 
 ---
 
@@ -182,4 +189,4 @@ stateDiagram-v2
 
 | Version | Date | Author | Description |
 |---------|------|--------|-------------|
-| v0.1.0 | {{DATE}} | u-RA | Initial index created |
+| v0.1.0 | {{DATE}} | u-PM | Initial index created |

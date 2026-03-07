@@ -52,6 +52,7 @@ const DOC_COMMANDS = [
   '/u-skill-help', '/u-agent-history', '/u-agent-archive', '/u-skill-storybook',
   '/u-skill-build', '/u-skill-git-pr', '/u-skill-stop', '/u-skill-resume',
   '/u-agent-summary', '/u-agent-wireframe', '/u-agent-ux-design', '/u-agent-ux-ds',
+  '/u-agent-pm', '/u-skill-daily-report',
 ];
 
 const promptLower = prompt.toLowerCase();
@@ -157,6 +158,9 @@ function suggestCommand(text) {
   if (/(?:페이지|화면|스크린|page|screen)/.test(t)) {
     return '`/u-agent-screen` — 화면 설계 문서 갱신';
   }
+  if (/(?:daily report|daily|데일리\s*리포트|일일\s*리포트|daily\s*status)/.test(t)) {
+    return '`/u-skill-daily-report` — PM 데일리 리포트 생성';
+  }
   if (/(?:erd|데이터|db|database|테이블|table|모델|model)/.test(t)) {
     return '`/u-skill-erd` — ERD 문서 갱신';
   }
@@ -189,7 +193,7 @@ const systemMessage = [
   '3. 문서가 갱신된 후에만 구현을 진행하십시오.',
   '4. 사용자가 이미 문서를 갱신했다고 확인해 주면 그때 구현을 시작하십시오.',
   '',
-  'SSoT 추적 체계: Roadmap → SRS(US→FR) → ERD → API → Code → Test',
+  'SSoT 추적 체계: Roadmap → SRS(FR+NFR→US→FT) → ERD → API → Code → Test',
 ].join('\n');
 
 console.log(JSON.stringify({

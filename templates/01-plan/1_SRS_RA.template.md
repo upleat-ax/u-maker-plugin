@@ -16,7 +16,7 @@ external_links: []
 
 # {{PROJECT_NAME}} SRS
 
-> 작성 순서 규칙: **Requirements(FR) → User Stories(US) → Features(FT)**.
+> 작성 순서 규칙: **Requirements(FR)+Non-Functional Requirements(NFR) → User Stories(US) → Features(FT)**.
 
 ## 1. Background
 
@@ -42,7 +42,7 @@ external_links: []
 
 ## 2. Functional Requirements (FR)
 
-> SRS의 기준 체인은 `Requirements(FR) → User Stories(US) → Features(FT)`를 따른다.
+> SRS의 기준 체인은 `Requirements(FR)+Non-Functional Requirements(NFR) → User Stories(US) → Features(FT)`를 따른다.
 > PLAN Gate 전 모든 FR은 US와 매핑 필수. Technical FR은 US Mapping을 `-`로 표시 가능.
 
 | FR-ID | Requirement | Description | Priority | US Mapping | Implemented |
@@ -151,7 +151,24 @@ external_links: []
 
 ---
 
-## 3. Users (USR)
+## 3. Non-Functional Requirements (NFR)
+
+| NFR-ID | Category | Requirement | Target | Priority |
+|--------|----------|-------------|--------|----------|
+| NFR-0010 | Performance | API 응답 시간 | P95 < 300ms | Must |
+| NFR-0020 | Performance | 페이지 초기 로딩 시간 | LCP < 2.5s | Must |
+| NFR-0030 | Security | 비밀번호 암호화 | bcrypt rounds ≥ 10 | Must |
+| NFR-0040 | Security | HTTPS 강제 적용 | 모든 엔드포인트 TLS 1.2+ | Must |
+| NFR-0050 | Security | JWT 토큰 만료 | Access 1h, Refresh 7d | Must |
+| NFR-0060 | Usability | 반응형 지원 | Mobile (360px) ~ Desktop (1920px) | Should |
+| NFR-0070 | Usability | 접근성 | WCAG 2.1 AA 수준 | Should |
+| NFR-0080 | Reliability | 서비스 가용성 | 99.9% Uptime | Should |
+| NFR-0090 | Reliability | 에러 복구 | 자동 재시도 3회, Fallback UI 표시 | Should |
+| NFR-0100 | Scalability | 동시 접속자 | 최소 1,000 동시 사용자 지원 | Could |
+
+---
+
+## 4. Users (USR)
 
 > 시스템을 사용하는 사용자 유형(역할)을 정의한다.
 
@@ -163,7 +180,7 @@ external_links: []
 
 ---
 
-## 4. User Stories (US)
+## 5. User Stories (US)
 
 > 모든 US는 USR 및 FR과 매핑 필수. FT Mapping은 Feature 도출 후 갱신 가능.
 
@@ -175,10 +192,10 @@ external_links: []
 
 ---
 
-## 5. Features (FT)
+## 6. Features (FT)
 
 > Feature는 User Story를 구현 단위로 분해한 결과물이다.
-> US Mapping은 필수이며, FR은 `FR → US → FT` 체인으로 추적한다.
+> US Mapping은 필수이며, FR/NFR을 반영한 `FR+NFR → US → FT` 체인으로 추적한다.
 
 | FT-ID | Feature | Description | Priority | US Mapping | Implemented |
 |-------|---------|-------------|----------|------------|-------------|
@@ -195,25 +212,6 @@ external_links: []
 | **ADMIN Group** | | | | | |
 | FT-0210 | {{관리 기능명}} | {{상세 설명}} | Should | US-0030 | No |
 | FT-0220 | Audit Log | 주요 데이터 생성/수정/삭제 이력 추적 | Could | US-0030 | No |
-
----
-
-## 6. Non-Functional Requirements (NFR)
-
-| NFR-ID | Category | Requirement | Target | Priority |
-|--------|----------|-------------|--------|----------|
-| NFR-0010 | Performance | API 응답 시간 | P95 < 300ms | Must |
-| NFR-0020 | Performance | 페이지 초기 로딩 시간 | LCP < 2.5s | Must |
-| NFR-0030 | Security | 비밀번호 암호화 | bcrypt rounds ≥ 10 | Must |
-| NFR-0040 | Security | HTTPS 강제 적용 | 모든 엔드포인트 TLS 1.2+ | Must |
-| NFR-0050 | Security | JWT 토큰 만료 | Access 1h, Refresh 7d | Must |
-| NFR-0060 | Usability | 반응형 지원 | Mobile (360px) ~ Desktop (1920px) | Should |
-| NFR-0070 | Usability | 접근성 | WCAG 2.1 AA 수준 | Should |
-| NFR-0080 | Reliability | 서비스 가용성 | 99.9% Uptime | Should |
-| NFR-0090 | Reliability | 에러 복구 | 자동 재시도 3회, Fallback UI 표시 | Should |
-| NFR-0100 | Scalability | 동시 접속자 | 최소 1,000 동시 사용자 지원 | Could |
-
----
 
 ## 7. Feature Dependency
 

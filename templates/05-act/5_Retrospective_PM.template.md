@@ -1,7 +1,7 @@
 ---
 document: "5_Retrospective_PM"
 title: "{{PROJECT_NAME}} Retrospective"
-owner: "u-RA"
+owner: "u-PM"
 status: "Draft"
 version: "v0.1.0"
 last_updated: "{{DATE}}"
@@ -143,4 +143,4 @@ xychart-beta
 
 | Version | Date | Author | Description |
 |---------|------|--------|-------------|
-| v0.1.0 | {{DATE}} | u-RA | Iteration {{N}} retrospective |
+| v0.1.0 | {{DATE}} | u-PM | Iteration {{N}} retrospective |

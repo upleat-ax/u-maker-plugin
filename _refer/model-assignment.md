@@ -24,6 +24,7 @@
 | Agent | Model | 근거 |
 |-------|-------|------|
 | `u-agent-sa` (Software Architect) | **sonnet** | SRS/ERD/API 설계는 도메인 전체를 이해하고 교차 참조가 필요하나, 템플릿 기반 구조화 생성에 충분 |
+| `u-agent-pm` (Product Manager) | **sonnet** | Roadmap/Index/Retrospective/Daily Report는 문서 중심 구조화 작업이며 템플릿 기반 생성에 충분 |
 | `u-agent-ux` (UX Designer) | **sonnet** | IA/Screen/DesignSystem/UIComponents/DesignToken 설계는 창의성 필요하나 명확한 패턴 존재. 템플릿 기반 생성에 충분 |
 | `u-agent-dv-fe` (Frontend Dev) | **sonnet** | Contract 기반 코드 생성. 2_Screen_UX + 2_API_SA 참조하여 구현하므로 설계 문서가 가이드 역할 |
 | `u-agent-dv-be` (Backend Dev) | **sonnet** | 2_API_SA + 2_ERD_SA 기반 코드 생성. ORM 모델/라우트는 스키마에서 직접 변환 |
