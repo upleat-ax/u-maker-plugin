@@ -1,0 +1,36 @@
+{
+  "project": "u-maker-plugin",
+  "generated_at": "2026-03-07",
+  "mode": "reverse-engineered-from-existing-codebase",
+  "apps": ["web"],
+  "documents": {
+    "common": [
+      "common/01-plan/1_Roadmap_PM.md",
+      "common/01-plan/1_Index_PM.md",
+      "common/01-plan/1_Common_RA.md",
+      "common/02-design/2_ERD_SA.md",
+      "common/02-design/2_RTM_RA.md",
+      "common/02-design/2_UXGuide_UX.md",
+      "common/03-dev/3_UIComponents_UX.md",
+      "common/03-dev/3_DesignToken_UX.md",
+      "common/05-act/5_IterationLog_RA.md",
+      "common/05-act/5_Retrospective_PM.md"
+    ],
+    "web": [
+      "web/01-plan/1_SRS_RA.md",
+      "web/01-plan/1_IA_RA.md",
+      "web/02-design/2_API_SA.md",
+      "web/02-design/2_Screen_UX.md",
+      "web/02-design/2_ScreenFlow_UX.md",
+      "web/03-dev/3_Code_DV.md",
+      "web/03-dev/3_Screen_UX.md",
+      "web/04-check/4_Case_QA.md",
+      "web/04-check/4_Report_QA.md"
+    ]
+  },
+  "notes": [
+    "The 'web' app scope is a logical interaction surface for slash commands and terminal-based flows.",
+    "This repository has no standalone package.json, database schema, or HTTP API routes at the root.",
+    "Documents were prefilled from README, hooks, scripts, templates, lib, skills, and agents."
+  ]
+}
