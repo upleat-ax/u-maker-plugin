@@ -20,9 +20,8 @@
     "maxIterations": 10,
     "autoIterate": true,
     "loopStatus": "STOPPED",
-    "planWorkflow": "us-first",
+    "planWorkflow": "fr-first",
     "supportedPlanWorkflows": [
-      "us-first",
       "fr-first"
     ]
   },
@@ -40,11 +39,13 @@
       "1_Index_PM.md",
       "1_Common_RA.md",
       "2_ERD_SA.md",
+      "2_RTM_RA.md",
       "2_UXGuide_UX.md",
       "3_UIComponents_UX.md",
       "3_DesignToken_UX.md",
       "5_IterationLog_RA.md",
-      "5_Retrospective_PM.md"
+      "5_Retrospective_PM.md",
+      "5_DailyReport_PM_yyyymmddhhmm.md"
     ],
     "app": [
       "1_SRS_RA.md",
@@ -68,11 +69,11 @@
     "common": {
       "01-plan": {
         "1_Roadmap_PM.md": {
-          "owner": "u-agent-ra",
+          "owner": "u-agent-pm",
           "required": true
         },
         "1_Index_PM.md": {
-          "owner": "u-agent-ra",
+          "owner": "u-agent-pm",
           "required": true
         },
         "1_Common_RA.md": {
@@ -85,9 +86,13 @@
           "owner": "u-agent-sa",
           "required": true
         },
+        "2_RTM_RA.md": {
+          "owner": "u-agent-ra",
+          "required": true
+        },
         "2_UXGuide_UX.md": {
           "owner": "u-agent-ux",
-          "required": false
+          "required": true
         }
       },
       "03-dev": {
@@ -106,8 +111,12 @@
           "required": true
         },
         "5_Retrospective_PM.md": {
-          "owner": "u-agent-ra",
+          "owner": "u-agent-pm",
           "required": true
+        },
+        "5_DailyReport_PM_yyyymmddhhmm.md": {
+          "owner": "u-agent-pm",
+          "required": false
         }
       }
     },
@@ -172,7 +181,9 @@
     },
     "design-to-do": {
       "common": [
-        "2_ERD_SA.md"
+        "2_ERD_SA.md",
+        "2_RTM_RA.md",
+        "2_UXGuide_UX.md"
       ],
       "perApp": [
         "2_API_SA.md",
@@ -221,6 +232,19 @@
   },
   "agents": {
     "routing": {
+      "u-agent-pm": {
+        "phases": [
+          "plan",
+          "act"
+        ],
+        "triggers": [
+          "roadmap",
+          "index",
+          "retrospective",
+          "daily-report",
+          "daily"
+        ]
+      },
       "u-agent-ra": {
         "phases": [
           "plan",
@@ -230,19 +254,19 @@
           "act"
         ],
         "triggers": [
-          "roadmap",
           "user-story",
           "milestone",
           "project-init",
           "project-init-existing",
           "us-add",
-          "index",
           "validate",
+          "rtm",
+          "traceability-matrix",
           "consistency",
           "status",
           "backlog",
           "backlog-add",
-          "retrospective"
+          "iteration-log"
         ]
       },
       "u-agent-sa": {
@@ -430,6 +454,7 @@
       "1_Index_PM",
       "1_Common_RA",
       "2_ERD_SA",
+      "2_RTM_RA",
       "2_API_SA",
       "2_Screen_UX",
       "2_ScreenFlow_UX",
@@ -438,7 +463,9 @@
       "3_DesignToken_UX",
       "3_Code_DV",
       "4_Case_QA",
-      "4_Report_QA"
+      "4_Report_QA",
+      "5_Retrospective_PM",
+      "5_DailyReport_PM"
     ],
     "schema": "${PLUGIN_ROOT}/_refer/json-export.md"
   },

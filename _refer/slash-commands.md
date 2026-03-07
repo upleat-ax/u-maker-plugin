@@ -24,7 +24,7 @@
 |-------|-------|
 | **Syntax** | `/u-skill-init [project-path]` |
 | **Description** | 기존 프로젝트의 리소스(package.json, 소스코드, DB 스키마, README 등)를 분석하여 SSoT 문서를 역공학으로 자동 생성한다 |
-| **Calling Agents** | Orchestrator → `u-RA` → `u-SA` → `u-UX` → `u-RA` |
+| **Calling Agents** | Orchestrator → `u-RA` → `u-SA` → `u-UX` → `u-PM` |
 | **Prerequisites** | 프로젝트 파일 존재 (package.json 등) |
 | **Output** | `.u-maker/docs/` 구조 생성, 분석 기반 SSoT 문서 자동 생성 (Draft), `.u-maker/u-ssot.config.json` 업데이트 |
 
@@ -38,7 +38,7 @@
 |-------|-------|
 | **Syntax** | `/u-skill-plan [app]` |
 | **Description** | PLAN Phase를 실행한다. Roadmap, SRS, IA, Index를 순서대로 생성한다 |
-| **Calling Agents** | Orchestrator → (`u-RA` ↔ `u-SA`) → `u-UX` → `u-RA` |
+| **Calling Agents** | Orchestrator → (`u-PM` ↔ `u-SA`) → `u-UX` → `u-PM` |
 | **Prerequisites** | 프로젝트 생성 완료 (`.u-maker/docs/` 존재) |
 | **Output** | `1_Roadmap_PM.md`, `1_SRS_RA.md`, `1_IA_RA.md`, `1_Index_PM.md` |
 
@@ -47,10 +47,10 @@
 | Field | Value |
 |-------|-------|
 | **Syntax** | `/u-skill-design [app]` |
-| **Description** | DESIGN Phase를 실행한다. UXGuide, Screen, ERD, API Contract를 생성한다 |
+| **Description** | DESIGN Phase를 실행한다. UXGuide, Screen, ScreenFlow, ERD, API Contract, RTM을 생성한다 |
 | **Calling Agents** | Orchestrator → `u-UX` → `u-SA` → `u-RA` |
 | **Prerequisites** | PLAN Gate 통과 (`1_Roadmap_PM`, `1_SRS_RA`, `1_IA_RA` 모두 Final) |
-| **Output** | `2_UXGuide_UX.md`, `2_Screen_UX.md`, `2_ERD_SA.md`, `2_API_SA.md` |
+| **Output** | `2_UXGuide_UX.md`, `2_Screen_UX.md`, `2_ScreenFlow_UX.md`, `2_ERD_SA.md`, `2_API_SA.md`, `2_RTM_RA.md` |
 
 ### `/u-skill-dev`
 
@@ -59,7 +59,7 @@
 | **Syntax** | `/u-skill-dev [app]` |
 | **Description** | DO Phase를 실행한다. UX/Frontend/Backend 병렬 개발 |
 | **Calling Agents** | Orchestrator → `u-UX` + `u-DV-FE` + `u-DV-BE` |
-| **Prerequisites** | DESIGN Gate 통과 (`2_ERD_SA`, `2_API_SA`, `2_Screen_UX`, `2_UXGuide_UX` 모두 Final + u-RA 검수) |
+| **Prerequisites** | DESIGN Gate 통과 (`2_ERD_SA`, `2_RTM_RA`, `2_API_SA`, `2_Screen_UX`, `2_ScreenFlow_UX`, `2_UXGuide_UX` 모두 Final + u-RA 검수) |
 | **Output** | 코드 파일 + `3_Screen_UX.md`, `3_UIComponents_UX.md`, `3_DesignToken_UX.md`, `3_Code_DV.md` |
 
 ### `/u-skill-check`
@@ -77,10 +77,10 @@
 | Field | Value |
 |-------|-------|
 | **Syntax** | `/u-skill-act` |
-| **Description** | ACT Phase를 실행한다. 백로그 정리, 아카이브, 회고 |
-| **Calling Agents** | Orchestrator → `u-RA` |
+| **Description** | ACT Phase를 실행한다. 백로그 정리, 회고, 데일리 리포트, 아카이브 |
+| **Calling Agents** | Orchestrator → `u-RA` + `u-PM` |
 | **Prerequisites** | CHECK Phase 완료 (종료 조건 미충족) |
-| **Output** | `5_IterationLog_RA.md`, `5_Retrospective_PM.md` |
+| **Output** | `5_IterationLog_RA.md`, `5_Retrospective_PM.md`, `5_DailyReport_PM_yyyymmddhhmm.md` |
 
 ---
 
@@ -133,6 +133,16 @@ PDCA 사이클 자동 반복을 제어하는 커맨드.
 ## 3. Agent Direct Commands
 
 특정 에이전트를 직접 호출하여 자유 형식 작업을 요청하는 커맨드.
+
+### `/u-agent-pm`
+
+| Field | Value |
+|-------|-------|
+| **Syntax** | `/u-agent-pm [task description]` |
+| **Description** | Agent PM(Product Manager)에게 직접 작업을 요청한다 |
+| **Calling Agents** | `u-PM` |
+| **Prerequisites** | None |
+| **Output** | 요청에 따라 다름 |
 
 ### `/u-agent-ra`
 
@@ -242,7 +252,7 @@ SSoT 문서 상태를 관리하고 검증하는 커맨드.
 | **Prerequisites** | 프로젝트 생성 완료 (`1_Roadmap_PM.md` 없으면 자동 생성) |
 | **Output** | `1_Roadmap_PM.md` 업데이트 (Table row + Change Log 갱신) |
 
-**Input Fields**: As a (역할), I want to (기능), So that (효과), Priority (Must/Should/Could/Won't), FT Mapping
+**Input Fields**: As a (역할), I want to (필요/의도), So that (효과), Priority (Must/Should/Could/Won't), FR Mapping, FT Mapping(선택)
 
 ### `/u-skill-fr-add`
 
@@ -254,7 +264,7 @@ SSoT 문서 상태를 관리하고 검증하는 커맨드.
 | **Prerequisites** | 프로젝트 생성 완료 (`1_SRS_RA.md` 없으면 자동 생성) |
 | **Output** | `1_SRS_RA.md` 업데이트 (Table row + FR Detail block + Change Log 갱신) |
 
-**Input Fields**: Feature (기능명), Description (설명), Priority (Must/Should/Could/Won't), US Mapping, Input/Output/Business Rule/Exception (선택)
+**Input Fields**: Requirement (요구사항명), Description (설명), Priority (Must/Should/Could/Won't), US Mapping, Input/Output/Business Rule/Exception (선택)
 
 ### `/u-skill-index`
 
@@ -262,7 +272,7 @@ SSoT 문서 상태를 관리하고 검증하는 커맨드.
 |-------|-------|
 | **Syntax** | `/u-skill-index` |
 | **Description** | 문서 인덱스(`1_Index_PM.md`)를 갱신한다 |
-| **Calling Agents** | `u-RA` |
+| **Calling Agents** | `u-PM` |
 | **Prerequisites** | 프로젝트 생성 완료 |
 | **Output** | `1_Index_PM.md` 업데이트 |
 
@@ -279,7 +289,7 @@ SSoT 문서 상태를 관리하고 검증하는 커맨드.
 | **Syntax** | `/u-skill-srs [app]` |
 | **Description** | SRS(Software Requirements Specification)를 생성/수정한다 |
 | **Calling Agents** | `u-SA` |
-| **Prerequisites** | `1_Roadmap_PM.md` 존재 (optional; FT-First 시 없이도 실행 가능) |
+| **Prerequisites** | `1_Roadmap_PM.md` 존재 (optional; SRS 내부 체인은 항상 FR→US→FT) |
 | **Output** | `{app}/01-plan/1_SRS_RA.md` |
 
 ### `/u-skill-erd`
@@ -371,6 +381,16 @@ SSoT 문서 상태를 관리하고 검증하는 커맨드.
 | **Calling Agents** | `u-QA` |
 | **Prerequisites** | `4_Report_QA.md` 존재 |
 | **Output** | 결함 분석 결과, `5_IterationLog_RA.md` 업데이트 |
+
+### `/u-skill-daily-report`
+
+| Field | Value |
+|-------|-------|
+| **Syntax** | `/u-skill-daily-report [yyyymmddhhmm]` |
+| **Description** | PM 데일리 리포트를 생성한다 (파일명 타임스탬프 포함) |
+| **Calling Agents** | `u-PM` |
+| **Prerequisites** | 프로젝트 생성 완료 |
+| **Output** | `common/05-act/5_DailyReport_PM_yyyymmddhhmm.md` |
 
 ---
 
@@ -489,16 +509,17 @@ CHECK Phase에서 설계-구현 일치도를 분석하는 커맨드.
 | Category | Command | Phase | Agents |
 |----------|---------|-------|--------|
 | Lifecycle | `/u-skill-create-project` | - | Orch → u-RA |
-| Lifecycle | `/u-skill-init` | - | Orch → u-RA → u-SA → u-UX → u-RA |
-| Lifecycle | `/u-skill-plan [app]` | PLAN | Orch → (u-RA ↔ u-SA) → u-UX → u-RA |
+| Lifecycle | `/u-skill-init` | - | Orch → u-RA → u-SA → u-UX → u-PM |
+| Lifecycle | `/u-skill-plan [app]` | PLAN | Orch → (u-PM ↔ u-SA) → u-UX → u-PM |
 | Lifecycle | `/u-skill-design [app]` | DESIGN | Orch → u-UX → u-SA → u-RA |
 | Lifecycle | `/u-skill-dev [app]` | DO | Orch → u-UX + u-DV-FE + u-DV-BE |
 | Lifecycle | `/u-skill-check [app]` | CHECK | Orch → u-QA |
-| Lifecycle | `/u-skill-act` | ACT | Orch → u-RA |
+| Lifecycle | `/u-skill-act` | ACT | Orch → u-RA + u-PM |
 | Auto-Loop | `/u-skill-loop` | ALL | Orch → All |
 | Auto-Loop | `/u-skill-loop-from` | Varies | Orch → Varies |
 | Auto-Loop | `/u-skill-stop` | - | Orch |
 | Auto-Loop | `/u-skill-resume` | - | Orch |
+| Agent Direct | `/u-agent-pm` | - | u-PM |
 | Agent Direct | `/u-agent-ra` | - | u-RA |
 | Agent Direct | `/u-agent-sa` | - | u-SA |
 | Agent Direct | `/u-agent-ux` | - | u-UX |
@@ -510,7 +531,7 @@ CHECK Phase에서 설계-구현 일치도를 분석하는 커맨드.
 | Doc Mgmt | `/u-skill-backlog-add` | - | u-RA |
 | Doc Mgmt | `/u-skill-us-add` | PLAN | u-RA |
 | Doc Mgmt | `/u-skill-fr-add` | PLAN | u-SA |
-| Doc Mgmt | `/u-skill-index` | - | u-RA |
+| Doc Mgmt | `/u-skill-index` | - | u-PM |
 | Task | `/u-skill-srs [app]` | PLAN | u-SA |
 | Task | `/u-skill-erd` | DESIGN | u-SA |
 | Task | `/u-skill-api [app]` | DESIGN | u-SA |
@@ -521,6 +542,7 @@ CHECK Phase에서 설계-구현 일치도를 분석하는 커맨드.
 | Task | `/u-skill-testcase [app]` | CHECK | u-QA |
 | Task | `/u-skill-qa [app]` | CHECK | u-QA |
 | Task | `/u-skill-bug-report [app]` | CHECK | u-QA |
+| Task | `/u-skill-daily-report [yyyymmddhhmm]` | ACT | u-PM |
 | QA | `/u-skill-gap-detector` | CHECK | u-RA → u-QA |
 | Utility | `/u-skill-help` | - | Orch |
 | Utility | `/u-skill-history` | - | u-RA |

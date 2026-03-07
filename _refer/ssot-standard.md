@@ -12,7 +12,7 @@
 ---
 document: "{DOC_ID}"           # 예: 1_Roadmap_PM, 2_ERD_SA
 title: "{문서 제목}"
-owner: "{담당 에이전트}"        # 예: u-RA, u-SA, u-UX
+owner: "{담당 에이전트}"        # 예: u-PM, u-RA, u-SA, u-UX
 status: "Draft"                # Draft | Review | Final
 version: "v0.1.0"             # vMAJOR.MINOR.PATCH
 last_updated: "YYYY-MM-DD"
@@ -83,7 +83,10 @@ Semantic Versioning (`vMAJOR.MINOR.PATCH`)을 따른다:
 |-----------------|-------------|
 | Background | 프로젝트 배경 및 목적 |
 | Scope | 범위 정의 (In-Scope / Out-of-Scope) |
-| User Stories | 사용자 스토리 목록 (SRS Section 2에 정의, FR table의 US Mapping 열로 참조) |
+| Functional Requirements | 기능 요구사항 목록 (SRS Section 2, US Mapping 포함) |
+| Users | 사용자 역할 목록 (SRS Section 3, USR 정의) |
+| User Stories | 사용자 스토리 목록 (SRS Section 4, FR/FT 매핑 포함) |
+| Features | 기능 구현 단위 목록 (SRS Section 5, US Mapping 포함) |
 | Menu Tree | IA 문서에 필수: Domain Registry, Menu Tree Table (MN-{DOMAIN}-{NNNN} 형식) |
 | Gantt Chart | Mermaid `gantt` 다이어그램 (마일스톤, 일정) |
 
@@ -101,13 +104,14 @@ gantt
 
 ### 3.2 DESIGN Phase Documents
 
-> 대상: `2_UXGuide_UX.md`, `2_Screen_UX.md`, `2_ERD_SA.md`, `2_API_SA.md`
+> 대상: `2_UXGuide_UX.md`, `2_Screen_UX.md`, `2_ERD_SA.md`, `2_API_SA.md`, `2_RTM_RA.md`
 
 | Required Section | Description |
 |-----------------|-------------|
 | Design System | 디자인 시스템 정의 (컬러 팔레트, 타이포그래피, 스페이싱, 컴포넌트 규칙) |
 | Screen Definition | 화면 목록 및 상세 설계 (화면ID, 화면명, 주요 컴포넌트) |
 | Data Specification | 데이터 구조 정의 (Entity, Attribute, Type) |
+| Requirements Traceability Matrix | `FR→US→FT→IA/Screen/API/ERD/QA` 매핑 테이블 |
 | State Changes | 상태 전이 다이어그램 (`stateDiagram-v2`) |
 | Exception Handling | 예외 케이스 정의 테이블 |
 | ER Diagram | Mermaid `erDiagram` (Entity 관계도) |
@@ -174,12 +178,13 @@ pie title Test Results
 
 ### 3.5 ACT Phase Documents
 
-> 대상: `5_IterationLog_RA.md`, `5_Retrospective_PM.md`
+> 대상: `5_IterationLog_RA.md`, `5_Retrospective_PM.md`, `5_DailyReport_PM_yyyymmddhhmm.md`
 
 | Required Section | Description |
 |-----------------|-------------|
 | Iteration History | Iteration별 변경 이력 (날짜, Phase, 변경 내용) |
 | Retrospective | 회고 (Good / Improve / Actions) |
+| Daily Report | 일일 진행/이슈/다음 액션 보고 (파일명 타임스탬프 포함) |
 | XY Chart | Mermaid `xychart-beta` (Iteration별 진행률 추이) |
 
 ```mermaid
@@ -198,10 +203,10 @@ xychart-beta
 | Phase | Prefix | Example |
 |-------|--------|---------|
 | PLAN | `1_` | `1_Roadmap_PM.md`, `1_SRS_RA.md`, `1_IA_RA.md`, `1_Index_PM.md`, `1_Common_RA.md` |
-| DESIGN | `2_` | `2_UXGuide_UX.md`, `2_ERD_SA.md`, `2_API_SA.md`, `2_Screen_UX.md` |
+| DESIGN | `2_` | `2_UXGuide_UX.md`, `2_ERD_SA.md`, `2_RTM_RA.md`, `2_API_SA.md`, `2_Screen_UX.md`, `2_ScreenFlow_UX.md` |
 | DEV | `3_` | `3_Screen_UX.md`, `3_UIComponents_UX.md`, `3_DesignToken_UX.md`, `3_Code_DV.md` |
 | CHECK | `4_` | `4_Case_QA.md`, `4_Report_QA.md` |
-| ACT | `5_` | `5_IterationLog_RA.md`, `5_Retrospective_PM.md` |
+| ACT | `5_` | `5_IterationLog_RA.md`, `5_Retrospective_PM.md`, `5_DailyReport_PM_yyyymmddhhmm.md` |
 | ALL (root) | — | `_links.json` (.u-maker/docs/ 루트, 문서 간 매핑) |
 
 ---
@@ -219,13 +224,15 @@ xychart-beta
 │   │   └── 1_Common_RA.md
 │   ├── 02-design/
 │   │   ├── 2_ERD_SA.md
+│   │   ├── 2_RTM_RA.md
 │   │   └── 2_UXGuide_UX.md
 │   ├── 03-dev/
 │   │   ├── 3_UIComponents_UX.md
 │   │   └── 3_DesignToken_UX.md
 │   └── 05-act/
 │       ├── 5_IterationLog_RA.md
-│       └── 5_Retrospective_PM.md
+│       ├── 5_Retrospective_PM.md
+│       └── 5_DailyReport_PM_yyyymmddhhmm.md
 ├── _links.json                     # u-agent-ra 소유 (문서 간 매핑 단일 진실 공급원)
 ├── {app}/                          # Per-app docs (e.g., web/, admin/)
 │   ├── 01-plan/
@@ -233,7 +240,8 @@ xychart-beta
 │   │   └── 1_IA_RA.md
 │   ├── 02-design/
 │   │   ├── 2_API_SA.md
-│   │   └── 2_Screen_UX.md
+│   │   ├── 2_Screen_UX.md
+│   │   └── 2_ScreenFlow_UX.md
 │   ├── 03-dev/
 │   │   ├── 3_Code_DV.md
 │   │   └── 3_Screen_UX.md
@@ -255,7 +263,7 @@ xychart-beta
 2. 문서 내 다른 SSoT 문서 참조 시 `[문서명](상대경로)` 형식을 사용한다
 3. shared 문서 참조: `.u-maker/docs/common/{phase}/{doc}` 형식
 4. app-specific 문서 참조: `.u-maker/docs/{app}/{phase}/{doc}` 형식
-5. 수직적 추적성: Roadmap(why) → SRS(US+what) → MN/IA(navigate) → Screen(design) → ERD(how) → Code(execute)
+5. 수직적 추적성: Roadmap(why) → SRS(FR→US→FT+what) → MN/IA(navigate) → Screen(design) → ERD(how) → Code(execute)
 6. 수평적 추적성: Screen(UI) ↔ API(data) ↔ QA Case(verify)
 7. 추적성 깨짐 발견 시 `u-RA`에게 보고한다
 
@@ -372,5 +380,5 @@ xychart-beta
 | 4인+ | 문서 + 도메인 그룹 기준 분업. common 문서는 순차 PR |
 
 - 같은 문서를 동시에 편집하지 않는다
-- common 문서(`2_ERD_SA`, `1_Roadmap_PM`, `1_Index_PM` 등)는 동시 편집 금지, PR 기반 순차 merge
+- common 문서(`2_ERD_SA`, `2_RTM_RA`, `1_Roadmap_PM`, `1_Index_PM` 등)는 동시 편집 금지, PR 기반 순차 merge
 - ID 채번 충돌 방지: 도메인 그룹 범위를 작업자별로 할당
