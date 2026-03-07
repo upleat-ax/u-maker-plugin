@@ -24,7 +24,7 @@ imports:
   - ${PLUGIN_ROOT}/_refer/iteration-rules.md
   - ${PLUGIN_ROOT}/_refer/post-execution-summary.md
   - ${PLUGIN_ROOT}/_refer/json-export.md
-  - ${PLUGIN_ROOT}/.u-maker/u-ssot.config.json
+  - ${PLUGIN_ROOT}/.u-maker/u-maker.config.json
 ---
 
 # Loop Stop
@@ -33,7 +33,7 @@ imports:
 
 ## Action
 
-1. .u-maker/u-ssot.config.json의 loopStatus를 PAUSED로 설정
+1. .u-maker/u-maker.config.json의 loopStatus를 PAUSED로 설정
 2. 현재 Phase와 상태 저장
 3. 중단 상태 보고
 

@@ -33,7 +33,7 @@ imports:
   - ${PLUGIN_ROOT}/templates/01-plan/1_SRS_RA.template.md
   - ${PLUGIN_ROOT}/templates/02-design/2_ERD_SA.template.md
   - ${PLUGIN_ROOT}/templates/02-design/2_API_SA.template.md
-  - ${PLUGIN_ROOT}/.u-maker/u-ssot.config.json
+  - ${PLUGIN_ROOT}/.u-maker/u-maker.config.json
 ---
 
 ## u-SA: Software Architect Agent
@@ -43,12 +43,12 @@ imports:
 
 ### Core Responsibilities
 
-1. **SRS 작성**: User Story 기반 Functional/Non-Functional Requirements 정의 (`1_SRS_RA.md`)
+1. **SRS 작성**: FR+NFR → US → FT 순서로 요구사항 체인 정의 (`1_SRS_RA.md`)
 2. **ERD 작성**: Entity 정의, Relationship 다이어그램 (`2_ERD_SA.md`)
 3. **API Contract 작성**: OpenAPI 3.0 기반 API 명세 (`2_API_SA.md`)
 4. **FR 추가**: `/u-agent-fr-add`로 개별 FR 항목을 `1_SRS_RA.md`에 추가
 5. **US 추가**: `/u-agent-us-add`로 개별 US 항목을 `1_SRS_RA.md`의 User Stories 섹션에 추가
-6. **추적성 보장**: SRS US → FR → ERD Entity → API Endpoint 매핑
+6. **추적성 보장**: SRS FR+NFR → US → FT → ERD Entity/API Endpoint 매핑
 
 ### Owned SSoT Documents
 
@@ -63,19 +63,15 @@ imports:
 ### SRS Workflow (`/u-skill-srs`)
 
 1. `1_Roadmap_PM.md` 존재 시 프로젝트 목표 및 범위 참조. 미존재 시 사용자 요구사항에서 직접 도출.
-1.5. **User Stories 작성** (SRS Section 2):
-   - 사용자 요구사항을 As a / I want to / So that 형식의 US로 정리
-   - MoSCoW 우선순위 부여 (Must / Should / Could / Won't)
-   - FT Mapping은 `TBD`로 시작 (FT 도출 후 갱신)
-2. Functional Requirements 도출 (FR-0010 ~ FR-NNNN, 10단위 증분)
-   - **1차 FR 소스**: User Stories에서 FR 도출 (US 1개당 3~7개 FR)
+1.5. Functional Requirements 도출 (FR-0010 ~ FR-NNNN, 10단위 증분, SRS Section 2)
+   - 사용자 요구사항과 로드맵 기반으로 FR을 먼저 정의
    - **2차 FR 소스**: 암묵적(Implicit) FR 추론 (입력 검증, 에러 처리, 권한 등)
    - 그룹별 최소 15개 도출
    - 각 FR에 US Mapping 필드 추가 (예: US-0010, US-0020)
    - 각 FR에 구현 상태 필드: `[ ] Not Started` / `[~] In Progress` / `[x] Implemented`
    - **FR 그룹화**: Domain 코드(AUTH, CORE, ADMIN 등)로 FR을 그룹핑하여 테이블에 그룹 헤더 삽입 (`| **AUTH Group** | | | | |`)
    - **최소 FR 수**: 일반 앱 기준 최소 15개 이상. 규모에 따라 25~40개 목표
-   - **User Story 1개당 3~7개 FR 도출**
+   - 이후 US/FT 도출을 고려하여 FR을 세분화
    - **암묵적(Implicit) FR 반드시 추론**:
      * 입력 유효성 검증 (빈칸, 형식, 길이)
      * 에러/예외 처리 (네트워크, 서버, 권한 오류)
@@ -83,13 +79,19 @@ imports:
      * 감사/이력 추적 (생성자, 수정일시)
      * 페이지네이션, 검색, 필터 (목록이 있는 모든 기능)
      * 로딩/Empty/Error 상태 처리
-3. Non-Functional Requirements 도출 (NFR-0010 ~ NFR-NNNN, 10단위 증분)
+2. Non-Functional Requirements 도출 (NFR-0010 ~ NFR-NNNN, 10단위 증분, SRS Section 3)
    - **NFR 최소 10개**: Performance 2개, Security 3개, Usability 2개, Reliability 2개, Scalability 1개
-4. 시스템 제약사항 정의
-5. Mermaid flowchart로 기능 관계도 작성
-6. 추적성 매트릭스 포함 (FT → Screen, FT → API)
-7. **FR Details 완성도**: 각 FR Details에 Input/Output/Business Rule/Exception 모두 실제 내용으로 작성 (`{{TODO}}` 없이 구체적으로 기술)
-8. **[MANDATORY] JSON Export**: .md 파일 Write 완료 직후, 동일 경로에 동명의 `.json` 파일을 Write한다. ID가 부여된 모든 항목(US, FR, NFR 등)을 `json-export.md` 스키마에 따라 추출한다. **이 단계를 건너뛰면 안 된다.**
+3. Users 정의 (USR, SRS Section 4)
+4. User Stories 작성 (SRS Section 5)
+   - As a / I want to / So that 형식
+   - FR Mapping 필수, FT Mapping은 초기 `TBD` 허용
+5. Features 도출 (SRS Section 6)
+   - US 기반 구현 단위로 분해
+6. 시스템 제약사항 정의
+7. Mermaid flowchart로 기능 관계도 작성
+8. 추적성 매트릭스 포함 (FT → Screen, FT → API)
+9. **FR Details 완성도**: 각 FR Details에 Input/Output/Business Rule/Exception 모두 실제 내용으로 작성 (`{{TODO}}` 없이 구체적으로 기술)
+10. **[MANDATORY] JSON Export**: .md 파일 Write 완료 직후, 동일 경로에 동명의 `.json` 파일을 Write한다. ID가 부여된 모든 항목(US, FR, NFR 등)을 `json-export.md` 스키마에 따라 추출한다. **이 단계를 건너뛰면 안 된다.**
 
 ### FR Add Workflow (`/u-agent-fr-add`)
 
@@ -99,7 +101,7 @@ imports:
    - Feature (필수), Description (필수)
    - Priority (기본값: Should), US Mapping (기본값: TBD, Technical은 `-`)
    - Input / Output / Business Rule / Exception (선택, 미입력 시 `{{TODO}}`)
-4. FR 테이블 (Section 3)에 행 추가 (Implemented = `[ ] Not Started`)
+4. FR 테이블 (Section 2)에 행 추가 (Implemented = `[ ] Not Started`)
 5. FR Details 블록 추가
 6. Change Log 갱신 (Version Minor 증가)
 

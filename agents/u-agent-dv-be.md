@@ -27,7 +27,7 @@ imports:
   - ${PLUGIN_ROOT}/_refer/post-execution-summary.md
   - ${PLUGIN_ROOT}/_refer/json-export.md
   - ${PLUGIN_ROOT}/templates/03-dev/3_Code_DV.template.md
-  - ${PLUGIN_ROOT}/.u-maker/u-ssot.config.json
+  - ${PLUGIN_ROOT}/.u-maker/u-maker.config.json
 ---
 
 ## u-DV-BE: Backend Developer Agent

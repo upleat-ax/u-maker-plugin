@@ -1,7 +1,7 @@
 ---
 name: u-skill-design
 description: |
-  DESIGN Phase 실행. 화면설계 → ERD + API Contract → 모순검수 순서로 진행한다.
+  DESIGN Phase 실행. 화면설계 → ERD + API Contract + RTM → 모순검수 순서로 진행한다.
   Optional [app] argument for multi-app projects (e.g., `/u-skill-design web`).
   Triggers: /u-skill-design, design phase, 설계
 model: sonnet
@@ -25,7 +25,7 @@ imports:
   - ${PLUGIN_ROOT}/_refer/mermaid-guide.md
   - ${PLUGIN_ROOT}/_refer/post-execution-summary.md
   - ${PLUGIN_ROOT}/_refer/json-export.md
-  - ${PLUGIN_ROOT}/.u-maker/u-ssot.config.json
+  - ${PLUGIN_ROOT}/.u-maker/u-maker.config.json
 agents:
   u-agent-ux: u-maker:u-agent-ux
   u-agent-sa: u-maker:u-agent-sa
@@ -34,7 +34,7 @@ agents:
 
 # DESIGN Phase
 
-> 화면설계 → ERD + API Contract → 모순검수 순서로 문서를 생성한다.
+> 화면설계 → ERD + API Contract + RTM → 모순검수 순서로 문서를 생성한다.
 
 ## App Context
 
@@ -60,12 +60,14 @@ agents:
    - Entity 정의, Relationship 다이어그램 (Mermaid erDiagram)
 7. `u-agent-sa`: API Contract 작성 (`{app}/02-design/2_API_SA.md`)
    - OpenAPI 3.0 스펙, Endpoint 목록, Request/Response Schema
-8. `u-agent-ra`: 모순 검수
+8. `u-agent-ra`: 요구사항 추적표(RTM) 작성 (`common/02-design/2_RTM_RA.md`)
+   - `FR+NFR → US → FT` 기준으로 IA/Screen/API/ERD/QA 매핑 검증
+9. `u-agent-ra`: 모순 검수
    - Screen ↔ ScreenFlow ↔ API ↔ ERD 간 불일치 탐지
 
 ## Gate → DO
 
-`common/2_ERD_SA`, `common/2_UXGuide_UX` Final + 모든 앱의 `2_API_SA`, `2_Screen_UX`, `2_ScreenFlow_UX` Final + u-RA 검수 통과
+`common/2_ERD_SA`, `common/2_RTM_RA`, `common/2_UXGuide_UX` Final + 모든 앱의 `2_API_SA`, `2_Screen_UX`, `2_ScreenFlow_UX` Final + u-RA 검수 통과
 
 ## Rules
 

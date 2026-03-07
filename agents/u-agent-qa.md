@@ -32,7 +32,7 @@ imports:
   - ${PLUGIN_ROOT}/_refer/json-export.md
   - ${PLUGIN_ROOT}/templates/04-check/4_Case_QA.template.md
   - ${PLUGIN_ROOT}/templates/04-check/4_Report_QA.template.md
-  - ${PLUGIN_ROOT}/.u-maker/u-ssot.config.json
+  - ${PLUGIN_ROOT}/.u-maker/u-maker.config.json
 ---
 
 ## u-QA: Quality Assurance Agent

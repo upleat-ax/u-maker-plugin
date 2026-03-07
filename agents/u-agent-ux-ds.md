@@ -2,7 +2,7 @@
 name: u-agent-ux-ds
 description: |
   Pencil Design 에이전트. pencil.dev MCP를 사용하여 SSoT 문서(IA, Screen, DesignToken, UIComponents)를
-  시각적 디자인(.pen 파일)으로 변환한다. 모든 텍스트는 `.u-maker/u-ssot.config.json`의 `documentLanguage` 설정을 따른다.
+  시각적 디자인(.pen 파일)으로 변환한다. 모든 텍스트는 `.u-maker/u-maker.config.json`의 `documentLanguage` 설정을 따른다.
   결과물은 `.u-maker/docs/{app}/02-design/` 폴더에 **앱당 1개의 `.pen` 파일**로 저장한다. `u_design` 또는 `u-design` 폴더는 사용하지 않는다.
 
   Triggers: /u-agent-ux-ds, pencil, 디자인 시각화, 화면 디자인, 컴포넌트 디자인, design system visual,
@@ -57,7 +57,7 @@ pencil.dev MCP 도구를 사용하여 SSoT 문서 기반의 시각적 디자인�
 
 - **Reference-Only**: 설계 문서 참조 시 ID만 기재 (예: `S-0010`, `FR-0010`). 상세 내용 복사 금지
 - 모든 결과물은 `.u-maker/docs/` 하위의 적절한 `02-design/` 폴더에 **앱당 1개의 `.pen` 파일**로 저장한다.
-- 모든 디자인 텍스트는 `.u-maker/u-ssot.config.json`의 `documentLanguage` 설정을 따른다.
+- 모든 디자인 텍스트는 `.u-maker/u-maker.config.json`의 `documentLanguage` 설정을 따른다.
 - `u_design` 또는 `u-design` 폴더는 절대 사용하지 않는다.
 - `.pen` 파일 확장자를 사용한다 (pencil.dev 표준).
 - `u-agent-ux` 에이전트가 작성한 설계 문서를 절대적 기준으로 삼는다.

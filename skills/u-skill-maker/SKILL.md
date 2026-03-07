@@ -1,7 +1,7 @@
 ---
 name: u-skill-maker
 description: |
-  PDCA 기반 SSoT 협업 오케스트레이터. 6개 전문 에이전트를 조율하여
+  PDCA 기반 SSoT 협업 오케스트레이터. 7개 전문 에이전트를 조율하여
   Plan-Design-Do-Check-Act 사이클로 소프트웨어 개발을 자동화한다.
 
   이 스킬은 자연어 라우터 역할을 한다. 명시적 슬래시 커맨드가 아닌
@@ -31,8 +31,9 @@ imports:
   - ${PLUGIN_ROOT}/_refer/slash-commands.md
   - ${PLUGIN_ROOT}/_refer/post-execution-summary.md
   - ${PLUGIN_ROOT}/_refer/json-export.md
-  - ${PLUGIN_ROOT}/.u-maker/u-ssot.config.json
+  - ${PLUGIN_ROOT}/.u-maker/u-maker.config.json
 agents:
+  u-agent-pm: u-maker:u-agent-pm
   u-agent-ra: u-maker:u-agent-ra
   u-agent-sa: u-maker:u-agent-sa
   u-agent-ux: u-maker:u-agent-ux
@@ -51,7 +52,7 @@ agents:
 1. **문서 중심**: 모든 결정과 산출물은 `.u-maker/docs/` SSoT 문서에 기록
 2. **Phase Gate**: 각 Phase 전환은 Gate 조건 충족 필수
 3. **자동 반복**: CHECK 실패 시 ACT → 다음 Iteration 자동 전환
-4. **역할 분리**: 6개 전문 에이전트가 명확한 역할 분담
+4. **역할 분리**: 7개 전문 에이전트가 명확한 역할 분담
 5. **기술 스택 강제**: 10가지 기술 스택 규칙 위반 시 거부
 6. **JSON 내보내기**: 마크다운 문서 생성/갱신 시 동명의 `.json` 파일을 동일 경로에 반드시 함께 생성
 
@@ -59,7 +60,8 @@ agents:
 
 | Agent | Role | Phase | Triggers |
 |-------|------|-------|----------|
-| `u-agent-ra` | Requirements & Admin | PLAN, ACT, ALL | 로드맵, 마일스톤, 프로젝트 시작, 문서 인덱스, 상태 추적, 모순 검수, 백로그 관리 |
+| `u-agent-pm` | Product Manager | PLAN, ACT | 로드맵, 인덱스, 회고, 데일리 리포트 |
+| `u-agent-ra` | Requirements & Admin | PLAN, ACT, ALL | 마일스톤, 프로젝트 시작, 상태 추적, 모순 검수, 백로그 관리 |
 | `u-agent-sa` | Solution Architect | PLAN, DESIGN | SRS, ERD, API Contract, 유저 스토리, FR |
 | `u-agent-ux` | UX Designer | PLAN, DESIGN, DO | 정보 구조도(IA), 화면 설계, Design System, Screen 구현, UI Components, Design Token |
 | `u-agent-dv-fe` | Frontend Developer | DO | Next.js, react-query, Storybook |
@@ -73,7 +75,7 @@ agents:
 2. Slash Command 매칭
    ├── /u-skill-* 또는 /u-agent-* 명령어 → 해당 스킬 직접 실행
    └── 자연어 → 키워드 분석 → Agent 라우팅
-3. 현재 Phase 확인 (.u-maker/u-ssot.config.json)
+3. 현재 Phase 확인 (.u-maker/u-maker.config.json)
 4. Phase에 활동 가능한 Agent만 호출
 5. Agent 작업 실행
 6. 결과 보고 + Post-Execution Summary Box
@@ -114,6 +116,7 @@ agents:
 ### Agent Direct
 | Command | Skill |
 |---------|-------|
+| `/u-agent-pm` | u-agent-pm |
 | `/u-agent-ra` | u-agent-ra |
 | `/u-agent-sa` | u-agent-sa |
 | `/u-agent-ux` | u-agent-ux |
@@ -146,6 +149,7 @@ agents:
 | `/u-skill-testcase` | u-skill-testcase |
 | `/u-skill-qa` | u-skill-qa |
 | `/u-skill-bug-report` | u-skill-bug-report |
+| `/u-skill-daily-report` | u-skill-daily-report |
 
 ### Utility
 | Command | Skill |

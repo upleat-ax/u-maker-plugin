@@ -21,14 +21,14 @@ imports:
   - ${PLUGIN_ROOT}/_refer/ssot-standard.md
   - ${PLUGIN_ROOT}/_refer/post-execution-summary.md
   - ${PLUGIN_ROOT}/_refer/json-export.md
-  - ${PLUGIN_ROOT}/.u-maker/u-ssot.config.json
+  - ${PLUGIN_ROOT}/.u-maker/u-maker.config.json
 agents:
-  - u-maker:u-agent-ra
+  - u-maker:u-agent-pm
 ---
 
 # u-agent-index
 
-`u-agent-ra` 에이전트를 호출하여 1_Index_PM.md를 갱신한다.
+`u-agent-pm` 에이전트를 호출하여 1_Index_PM.md를 갱신한다.
 
 ## Output
 

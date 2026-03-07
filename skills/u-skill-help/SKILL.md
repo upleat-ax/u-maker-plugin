@@ -21,7 +21,7 @@ imports:
   - ${PLUGIN_ROOT}/_refer/ssot-standard.md
   - ${PLUGIN_ROOT}/_refer/slash-commands.md
   - ${PLUGIN_ROOT}/_refer/post-execution-summary.md
-  - ${PLUGIN_ROOT}/.u-maker/u-ssot.config.json
+  - ${PLUGIN_ROOT}/.u-maker/u-maker.config.json
 ---
 
 # u-maker Help
@@ -34,6 +34,7 @@ slash-commands.md의 내용을 참조하여 사용 가능한 모든 명령어를
 
 | Agent | Role | Phase |
 |-------|------|-------|
+| u-agent-pm | Product Manager | PLAN, ACT |
 | u-agent-ra | Requirements & Admin | PLAN, ACT, ALL |
 | u-agent-sa | Solution Architect | PLAN, DESIGN |
 | u-agent-ux | UX Designer | PLAN, DESIGN, DO |

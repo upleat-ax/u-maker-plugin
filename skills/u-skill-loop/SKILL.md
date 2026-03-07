@@ -18,6 +18,7 @@ allowed-tools:
   - TaskList
   - AskUserQuestion
 agents:
+  - u-agent-pm: u-maker:u-agent-pm
   - u-agent-ra: u-maker:u-agent-ra
   - u-agent-sa: u-maker:u-agent-sa
   - u-agent-ux: u-maker:u-agent-ux
@@ -33,7 +34,7 @@ imports:
   - ${PLUGIN_ROOT}/_refer/mermaid-guide.md
   - ${PLUGIN_ROOT}/_refer/post-execution-summary.md
   - ${PLUGIN_ROOT}/_refer/json-export.md
-  - ${PLUGIN_ROOT}/.u-maker/u-ssot.config.json
+  - ${PLUGIN_ROOT}/.u-maker/u-maker.config.json
 ---
 
 # PDCA Auto Loop
@@ -63,6 +64,6 @@ imports:
 ## Rules
 
 - 매 Iteration 시작 시 진행률 보고
-- 최대 반복 제한: .u-maker/u-ssot.config.json의 maxIterations (기본 10)
+- 최대 반복 제한: .u-maker/u-maker.config.json의 maxIterations (기본 10)
 - Iteration 2+: 변경 필요한 문서/코드만 증분 갱신 (전체 재작성 금지)
 - Post-Execution Summary Box 출력 필수

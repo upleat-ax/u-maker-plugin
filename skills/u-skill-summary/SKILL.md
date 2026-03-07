@@ -21,7 +21,7 @@ imports:
   - ${PLUGIN_ROOT}/_refer/ssot-standard.md
   - ${PLUGIN_ROOT}/_refer/post-execution-summary.md
   - ${PLUGIN_ROOT}/_refer/json-export.md
-  - ${PLUGIN_ROOT}/.u-maker/u-ssot.config.json
+  - ${PLUGIN_ROOT}/.u-maker/u-maker.config.json
 agents:
   - u-maker:u-agent-ra
 ---
@@ -32,7 +32,7 @@ agents:
 
 ## Flow
 
-1. .u-maker/u-ssot.config.json에서 프로젝트 메타정보 수집
+1. .u-maker/u-maker.config.json에서 프로젝트 메타정보 수집
 2. 1_Roadmap_PM.md에서 프로젝트 목표, 마일스톤 추출
 3. 1_SRS_RA.md에서 FT 구현 현황 추출
 4. 1_Index_PM.md에서 문서 상태 수집

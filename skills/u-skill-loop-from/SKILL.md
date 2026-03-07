@@ -18,6 +18,7 @@ allowed-tools:
   - TaskList
   - AskUserQuestion
 agents:
+  - u-agent-pm: u-maker:u-agent-pm
   - u-agent-ra: u-maker:u-agent-ra
   - u-agent-sa: u-maker:u-agent-sa
   - u-agent-ux: u-maker:u-agent-ux
@@ -33,7 +34,7 @@ imports:
   - ${PLUGIN_ROOT}/_refer/mermaid-guide.md
   - ${PLUGIN_ROOT}/_refer/post-execution-summary.md
   - ${PLUGIN_ROOT}/_refer/json-export.md
-  - ${PLUGIN_ROOT}/.u-maker/u-ssot.config.json
+  - ${PLUGIN_ROOT}/.u-maker/u-maker.config.json
 ---
 
 # PDCA Loop from Phase

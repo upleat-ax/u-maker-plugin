@@ -24,7 +24,7 @@ imports:
   - ${PLUGIN_ROOT}/_refer/pdca-workflow.md
   - ${PLUGIN_ROOT}/_refer/post-execution-summary.md
   - ${PLUGIN_ROOT}/_refer/json-export.md
-  - ${PLUGIN_ROOT}/.u-maker/u-ssot.config.json
+  - ${PLUGIN_ROOT}/.u-maker/u-maker.config.json
 agents:
   u-agent-ux: u-maker:u-agent-ux
   u-agent-dv-fe: u-maker:u-agent-dv-fe

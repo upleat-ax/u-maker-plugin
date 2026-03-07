@@ -23,9 +23,10 @@ imports:
   - ${PLUGIN_ROOT}/_refer/iteration-rules.md
   - ${PLUGIN_ROOT}/_refer/post-execution-summary.md
   - ${PLUGIN_ROOT}/_refer/json-export.md
-  - ${PLUGIN_ROOT}/.u-maker/u-ssot.config.json
+  - ${PLUGIN_ROOT}/.u-maker/u-maker.config.json
 agents:
   u-agent-ra: u-maker:u-agent-ra
+  u-agent-pm: u-maker:u-agent-pm
 ---
 
 # ACT Phase
@@ -37,12 +38,14 @@ agents:
 1. `u-agent-ra`: DEF → BL 변환 및 Iteration Log에 백로그 기록 (`common/05-act/5_IterationLog_RA.md`)
    - 모든 앱의 `4_Report_QA.md` Open DEF → BL 자동 변환 (아래 Conversion Rules 참조)
    - 기존 Open/InProgress 항목 우선순위 재평가
-2. `u-agent-ra`: 회고 작성 (`common/05-act/5_Retrospective_PM.md`)
+2. `u-agent-pm`: 회고 작성 (`common/05-act/5_Retrospective_PM.md`)
    - 잘된 점, 개선할 점, 다음 Iteration 목표
-3. `u-agent-ra`: 아카이브 + 인덱스 갱신
+3. `u-agent-pm`: 데일리 리포트 작성 (`common/05-act/5_DailyReport_PM_yyyymmddhhmm.md`)
+   - 파일명에 12자리 타임스탬프(`yyyymmddhhmm`) 포함
+4. `u-agent-ra`: 아카이브 수행
    - 현재 Iteration 문서 → `.u-maker/docs/iterations/iter-N/` 복사
    - `common/05-act/5_IterationLog_RA.md` 갱신
-4. 다음 Iteration 전환 (currentIteration + 1)
+5. 다음 Iteration 전환 (currentIteration + 1)
 
 ## Gate → PLAN (Iter N+1)
 

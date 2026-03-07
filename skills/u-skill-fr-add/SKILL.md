@@ -22,14 +22,14 @@ imports:
   - ${PLUGIN_ROOT}/_refer/ssot-standard.md
   - ${PLUGIN_ROOT}/_refer/post-execution-summary.md
   - ${PLUGIN_ROOT}/_refer/json-export.md
-  - ${PLUGIN_ROOT}/.u-maker/u-ssot.config.json
+  - ${PLUGIN_ROOT}/.u-maker/u-maker.config.json
 agents:
   - u-maker:u-agent-sa
 ---
 
 # Functional Requirement Add
 
-> 새로운 FR을 1_SRS_RA.md의 Section 3에 추가한다.
+> 새로운 FR을 1_SRS_RA.md의 Section 2에 추가한다.
 
 ## Syntax
 
@@ -48,10 +48,10 @@ agents:
 
 | Field | Required | Default |
 |-------|----------|---------|
-| Feature | Y | - |
+| Requirement | Y | - |
 | Description | Y | - |
 | Priority | N | Should |
-| US Mapping | N | TBD (Technical FR은 -) |
+| US Mapping | N | TBD (Technical FR은 `-`) |
 | Input/Output/Business Rule/Exception | N | {{TODO}} |
 
 ## App Context

@@ -6,7 +6,7 @@ description: |
   PLAN Phase에서 IA를, DESIGN Phase에서 화면 설계와 디자인 시스템을,
   DO Phase에서 화면 구현과 UI 컴포넌트/디자인 토큰을 작성한다.
   디자인 시스템은 3-Layer 토큰 아키텍처(Primitive → Alias → Component) 기반으로 설계한다.
-  화면 와이어프레임을 HTML로 생성하여 `.u-maker/docs/{app}/02-design/2_Screen_Wireframes/`에 저장하고 화면설계서와 연결한다 (/u-agent-wireframe). 모든 텍스트는 `.u-maker/u-ssot.config.json`의 `documentLanguage` 설정을 따른다.
+  화면 와이어프레임을 HTML로 생성하여 `.u-maker/docs/{app}/02-design/2_Screen_Wireframes/`에 저장하고 화면설계서와 연결한다 (/u-agent-wireframe). 모든 텍스트는 `.u-maker/u-maker.config.json`의 `documentLanguage` 설정을 따른다.
   pencil.dev MCP를 활용한 시각적 디자인 작업 결과물을 `.u-maker/docs/{app}/02-design/` 폴더에 **앱당 1개의 `.pen` 파일**로 저장한다 (/u-agent-ux-ds). `u_design` 또는 `u-design` 폴더는 사용하지 않는다.
 
   Triggers: 정보 구조도, IA, 화면 설계, 화면 흐름도, 와이어프레임, UX, 사용자 흐름,
@@ -39,7 +39,7 @@ imports:
   - ${PLUGIN_ROOT}/templates/03-dev/3_Screen_UX.template.md
   - ${PLUGIN_ROOT}/templates/03-dev/3_UIComponents_UX.template.md
   - ${PLUGIN_ROOT}/templates/03-dev/3_DesignToken_UX.template.md
-  - ${PLUGIN_ROOT}/.u-maker/u-ssot.config.json
+  - ${PLUGIN_ROOT}/.u-maker/u-maker.config.json
 ---
 
 ## u-UX: UX Designer Agent
@@ -281,7 +281,7 @@ journey
 
 ### Visual Design Workflow (`/u-agent-ux-ds`, pencil.dev)
 
-pencil.dev MCP 도구를 사용하여 SSoT 문서 기반의 시각적 디자인을 생성하거나 갱신한다. 모든 디자인 텍스트는 `.u-maker/u-ssot.config.json`의 `documentLanguage` 설정을 준수한다.
+pencil.dev MCP 도구를 사용하여 SSoT 문서 기반의 시각적 디자인을 생성하거나 갱신한다. 모든 디자인 텍스트는 `.u-maker/u-maker.config.json`의 `documentLanguage` 설정을 준수한다.
 결과물(`.pen` 파일)은 **`.u-maker/docs/{app}/02-design/` 폴더**에 **앱당 1개의 `.pen` 파일**로 저장한다. `u_design` 또는 `u-design` 폴더는 사용하지 않는다.
 
 #### 출력 파일 경로 규칙

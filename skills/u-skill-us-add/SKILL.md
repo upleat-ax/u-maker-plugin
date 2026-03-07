@@ -21,7 +21,7 @@ imports:
   - ${PLUGIN_ROOT}/_refer/ssot-standard.md
   - ${PLUGIN_ROOT}/_refer/post-execution-summary.md
   - ${PLUGIN_ROOT}/_refer/json-export.md
-  - ${PLUGIN_ROOT}/.u-maker/u-ssot.config.json
+  - ${PLUGIN_ROOT}/.u-maker/u-maker.config.json
 agents:
   - u-maker:u-agent-sa
 ---
@@ -38,7 +38,7 @@ agents:
 
 1. 1_SRS_RA.md 존재 확인 (없으면 템플릿에서 자동 생성)
 2. 기존 US-ID 최대값 → 다음 US-ID 채번 (10단위 올림)
-3. 항목 정보 추출: As a [role], I want to [feature], So that [benefit]
+3. 항목 정보 추출: As a [role], I want to [need], So that [benefit]
 4. User Stories 테이블에 행 추가
 5. Change Log 갱신
 
@@ -47,15 +47,17 @@ agents:
 | Field | Required | Default | Values |
 |-------|----------|---------|--------|
 | As a... | Y | - | 역할 |
-| I want to... | Y | - | 기능 |
+| I want to... | Y | - | 사용자 필요/의도 |
 | So that... | Y | - | 기대 효과 |
 | Priority | N | Should | Must, Should, Could, Won't |
+| FR Mapping | Y | - | FR-NNNN |
 | FT Mapping | N | TBD | FT-NNNN |
 
 ## Rules
 
 - u-agent-sa 에이전트가 담당
 - US-ID는 4자리 10단위 자동 채번
+- FR Mapping은 필수
 - FT Mapping 기본값은 TBD
 - Version은 Minor 증가
 - Post-Execution Summary Box 출력 필수

@@ -22,7 +22,7 @@ imports:
   - ${PLUGIN_ROOT}/_refer/ssot-standard.md
   - ${PLUGIN_ROOT}/_refer/post-execution-summary.md
   - ${PLUGIN_ROOT}/_refer/json-export.md
-  - ${PLUGIN_ROOT}/.u-maker/u-ssot.config.json
+  - ${PLUGIN_ROOT}/.u-maker/u-maker.config.json
   - ${PLUGIN_ROOT}/_refer/traceability-matrix.md
   - ${PLUGIN_ROOT}/_refer/mermaid-guide.md
 agents:
@@ -39,7 +39,7 @@ agents:
 
 ## Prerequisites
 
-- Roadmap optional (단, SRS 내부 구조는 항상 `FR → US → FT`)
+- Roadmap optional (단, SRS 내부 구조는 항상 `FR+NFR → US → FT`)
 
 ## App Context
 
@@ -52,6 +52,6 @@ agents:
 ## Rules
 
 - 모든 문서 생성/갱신 시 동명의 `.json` 파일을 동일 경로에 함께 생성
-- `1_SRS_RA.json`은 `FR → userStories → features` 체인을 유지해야 함
+- `1_SRS_RA.json`은 `fr + nonFunctionalRequirements + userStories + features` 구조를 유지해야 함
 - `1_SRS_RA.json`의 `userStories[]`는 `id`, `role`, `need`, `benefit`, `priority`, `fr`, `ft`를 모두 포함해야 함 (값 미확정 시 `null`)
 - Post-Execution Summary Box 출력 필수

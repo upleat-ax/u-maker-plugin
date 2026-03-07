@@ -21,7 +21,7 @@ imports:
   - ${PLUGIN_ROOT}/_refer/ssot-standard.md
   - ${PLUGIN_ROOT}/_refer/post-execution-summary.md
   - ${PLUGIN_ROOT}/_refer/json-export.md
-  - ${PLUGIN_ROOT}/.u-maker/u-ssot.config.json
+  - ${PLUGIN_ROOT}/.u-maker/u-maker.config.json
   - ${PLUGIN_ROOT}/_refer/pdca-workflow.md
   - ${PLUGIN_ROOT}/_refer/tech-stack-rules.md
 agents:
@@ -35,4 +35,5 @@ agents:
 ## Rules
 
 - 모든 문서 생성/갱신 시 동명의 `.json` 파일을 동일 경로에 함께 생성
+- 생성된 프로젝트 기본 의존성에 `@tabler/icons-react`를 포함
 - Post-Execution Summary Box 출력 필수
