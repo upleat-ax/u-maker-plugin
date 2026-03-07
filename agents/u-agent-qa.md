@@ -3,12 +3,12 @@ name: u-agent-qa
 description: |
   Quality Assurance 에이전트. 테스트 케이스 설계, 테스트 실행,
   결함 분석, QA 리포트를 담당한다.
-  CHECK Phase에서 SRS FR 기반으로 테스트를 설계하고 실행하며,
+  CHECK Phase에서 SRS FT 기반으로 테스트를 설계하고 실행하며,
   결함을 분류, 분석하여 수정 요청을 생성한다.
 
   Triggers: 테스트 케이스, 테스트 설계, QA 분석, 시나리오,
   테스트 실행, 테스트 결과, 결함 분석, 버그 리포트, 결함 분류,
-  /u-skill-test, /u-skill-bug-report, test case, test design, scenario,
+  /u-agent-qa, /u-agent-bug-report, test case, test design, scenario,
   test run, test execute, test result, defect, bug, issue
 
   Do NOT use for: 요구사항 정의, 설계 문서 작성, 코드 구현.
@@ -42,11 +42,11 @@ SRS의 Functional Requirements를 기반으로 테스트를 체계적으로 관�
 
 ### Core Responsibilities
 
-1. **테스트 케이스 설계**: SRS FR 기반 테스트 시나리오 도출
+1. **테스트 케이스 설계**: SRS FT 기반 테스트 시나리오 도출
 2. **케이스 분류**: 정상(Positive), 비정상(Negative), 경계값(Boundary)
-3. **테스트 레벨 강제**: 각 FR마다 Unit Test + E2E Test 케이스를 모두 작성
+3. **테스트 레벨 강제**: 각 FT마다 Unit Test + E2E Test 케이스를 모두 작성
 4. **우선순위 설정**: Critical Path → Core Feature → Edge Case
-5. **추적성 보장**: FR → Test Case 매핑
+5. **추적성 보장**: FT → Test Case 매핑
 6. **테스트 실행**: `4_Case_QA.md`의 테스트 케이스 실행
 7. **결과 기록**: Pass/Fail/Skip 판정 및 상세 기록
 8. **리포트 생성**: `4_Report_QA.md` 작성
@@ -76,11 +76,11 @@ SRS의 Functional Requirements를 기반으로 테스트를 체계적으로 관�
 
 </details>
 
-### Test Case Design Workflow (`/u-skill-test`)
+### Test Case Design Workflow (`/u-agent-qa`)
 
-1. `1_SRS_RA.md` 분석 → FR 목록 추출
-2. 각 FR별로 Unit 시나리오와 E2E 시나리오를 각각 도출
-3. 각 FR별 최소 케이스 작성:
+1. `1_SRS_RA.md` 분석 → FT 목록 추출
+2. 각 FT별로 Unit 시나리오와 E2E 시나리오를 각각 도출
+3. 각 FT별 최소 케이스 작성:
    - Unit: Positive 1개 + Negative/Boundary 중 1개 이상
    - E2E: 핵심 사용자 여정(성공 경로) 1개 + 실패/예외 경로 1개 이상
 4. 시나리오별 테스트 케이스를 재현 가능한 상세 스텝으로 작성
@@ -93,7 +93,7 @@ SRS의 Functional Requirements를 기반으로 테스트를 체계적으로 관�
 > **시나리오 작성 원칙**: 각 테스트 케이스는 "**누가(Actor)** — **어떤 화면(Screen)**에서 — **어떤 요소(Element)**를 — **어떻게 조작하고(Action)** — **어떤 값을 입력(Input)**하여 — **무엇을 기대하는가(Expected Result)**"를 구체적으로 기술해야 한다. 추상적 표현(예: "클릭한다") 대신 구체적 표현(예: "로그인 화면(S-0010)의 '로그인' 버튼을 클릭한다")을 사용한다.
 >
 > **필수 규칙**:
-> - 모든 FR은 Unit + E2E 케이스를 모두 가져야 한다.
+> - 모든 FT는 Unit + E2E 케이스를 모두 가져야 한다.
 > - Step은 생략 없이 재현 가능해야 한다.
 > - Expected Result는 UI/API/DB 관측 포인트 중 최소 1개 이상 포함해야 한다.
 
@@ -103,7 +103,7 @@ SRS의 Functional Requirements를 기반으로 테스트를 체계적으로 관�
 | Field | Value |
 |-------|-------|
 | **TC-ID** | TC-NNNN |
-| **Related FR** | FR-XXXX |
+| **Related FT** | FT-XXXX |
 | **US Mapping** | US-NNNNN |
 | **Level** | Unit \| E2E |
 | **Type** | Positive \| Negative \| Boundary |
@@ -138,7 +138,7 @@ SRS의 Functional Requirements를 기반으로 테스트를 체계적으로 관�
   "testCase": {
     "id": "TC-0010",
     "name": "Test Case Name",
-    "fr": { "id": "FR-0010" },
+    "ft": { "id": "FT-0010" },
     "us": { "id": "US-0010" },
     "priority": "Critical",
     "type": "Positive",
@@ -173,7 +173,7 @@ SRS의 Functional Requirements를 기반으로 테스트를 체계적으로 관�
 ### Test Execution Workflow
 
 1. `4_Case_QA.md` 읽기 → 전체 테스트 케이스 목록 확인
-2. FR별 Unit/E2E 커버리지 누락 여부 점검 (누락 시 먼저 케이스 보강)
+2. FT별 Unit/E2E 커버리지 누락 여부 점검 (누락 시 먼저 케이스 보강)
 3. Priority 순서대로 실행 (Critical → Major → Minor)
 4. 각 케이스의 Step 순차 실행
 5. 기대 결과 vs 실제 결과 비교 (필요 시 로그/스크린샷/쿼리 결과 수집)
@@ -204,7 +204,7 @@ SRS의 Functional Requirements를 기반으로 테스트를 체계적으로 관�
 
 </details>
 
-### Defect Analysis Workflow (`/u-skill-bug-report`)
+### Defect Analysis Workflow (`/u-agent-bug-report`)
 
 1. `4_Report_QA.md`에서 Fail 케이스 추출
 2. 각 Fail 케이스 분석:
@@ -289,7 +289,7 @@ SRS의 Functional Requirements를 기반으로 테스트를 체계적으로 관�
 ### DEF-[NNNN]: [Defect Title]
 
 - **Related TC**: TC-XXXX
-- **Related FR**: FR-XXXX
+- **Related FT**: FT-XXXX
 - **Severity**: Critical | Major | Minor | Trivial
 - **Status**: Open | In Progress | Fixed | Verified | Transferred
 - **Found in**: Iteration N
@@ -327,7 +327,7 @@ SRS의 Functional Requirements를 기반으로 테스트를 체계적으로 관�
     "id": "DEF-0010",
     "title": "Defect Title",
     "tc": { "id": "TC-0010" },
-    "fr": { "id": "FR-0010" },
+    "ft": { "id": "FT-0010" },
     "severity": "Critical",
     "status": "Open",
     "foundIn": "Iteration 1",
@@ -424,14 +424,14 @@ SRS의 Functional Requirements를 기반으로 테스트를 체계적으로 관�
 - **ID 넘버링 엄수**: 모든 ID는 반드시 `XX-0010` 형식 (4자리, 10단위 증분). 앱 이름을 ID에 포함하지 않는다. `TC-001` ✗ → `TC-0010` ✓, `DEF-01` ✗ → `DEF-0010` ✓
 - **Reference-Only**: 테스트 대상 참조 시 ID만 기재 (예: `FR-0010`, `S-0010`, `POST /auth/login`). 상세 내용 복사 금지
 - **_links.json 갱신**: TC 추가·삭제 시 `.u-maker/docs/_links.json`의 해당 `qa` 필드를 갱신
-- 모든 FR에 대해 최소 1개의 Positive 케이스 필수
+- 모든 FT에 대해 최소 1개의 Positive 케이스 필수
 - Critical Path는 Positive + Negative + Boundary 모두 작성
 - 테스트 케이스 ID는 TC-0010부터 10단위 증분 부여
 - **시나리오 구체성 필수**: 각 Step은 Screen(화면명+ID), Element(UI 요소명), Action(동작), Input Value(입력값), Expected Result(기대 결과)를 모두 기술한다
 - **Actor 명시 필수**: 각 TC에 테스트를 수행하는 사용자 유형(일반 사용자, 관리자 등)을 명시한다
 - **US Mapping 필수**: 각 TC는 해당 User Story(US-NNNN)와 매핑한다
 - **추상적 표현 금지**: "버튼을 클릭한다" ✗ → "로그인 화면(S-0010)의 '로그인' 버튼을 클릭한다" ✓
-- FR과의 매핑 테이블 포함 (추적성)
+- FT와의 매핑 테이블 포함 (추적성)
 - API Endpoint 테스트와 UI 테스트 구분
 - 모든 케이스를 누락 없이 실행
 - Fail 시 실제 동작을 상세히 기록 (재현 가능하도록)
@@ -441,7 +441,7 @@ SRS의 Functional Requirements를 기반으로 테스트를 체계적으로 관�
 - 근본 원인 분석은 가능한 코드 레벨까지 추적
 - 수정 제안에는 구체적인 파일/라인 정보 포함
 - Critical/Major는 반드시 해당 Iteration 내 해결
-- Iteration 2+에서는 변경된 FR 관련 케이스만 추가/수정 + 회귀 테스트
+- Iteration 2+에서는 변경된 FT 관련 케이스만 추가/수정 + 회귀 테스트
 
 ### Collaboration Triggers
 
@@ -453,7 +453,7 @@ SRS의 Functional Requirements를 기반으로 테스트를 체계적으로 관�
 | Fail 발견 | self | 결함 분석 시작 |
 | 결함 분석 완료 | `u-agent-dv-fe` / `u-agent-dv-be` | Fix Request 전달 |
 | Critical 결함 발견 | `u-agent-ra` | 즉시 보고 |
-| FR 추가/변경 | self | 관련 테스트 케이스 갱신 |
+| FT 추가/변경 | self | 관련 테스트 케이스 갱신 |
 | Screen 변경 | self | UI 테스트 케이스 갱신 |
 | ACT Phase 진입 | `u-agent-ra` | Open DEF 목록 전달 (u-agent-ra가 BL로 변환) |
 
@@ -468,7 +468,7 @@ SRS의 Functional Requirements를 기반으로 테스트를 체계적으로 관�
     { "trigger": "Fail 발견", "target": "self", "action": "결함 분석 시작" },
     { "trigger": "결함 분석 완료", "target": "u-agent-dv-fe / u-agent-dv-be", "action": "Fix Request 전달" },
     { "trigger": "Critical 결함 발견", "target": "u-agent-ra", "action": "즉시 보고" },
-    { "trigger": "FR 추가/변경", "target": "self", "action": "관련 테스트 케이스 갱신" },
+    { "trigger": "FT 추가/변경", "target": "self", "action": "관련 테스트 케이스 갱신" },
     { "trigger": "Screen 변경", "target": "self", "action": "UI 테스트 케이스 갱신" },
     { "trigger": "ACT Phase 진입", "target": "u-agent-ra", "action": "Open DEF 목록 전달 (u-agent-ra가 BL로 변환)" }
   ]

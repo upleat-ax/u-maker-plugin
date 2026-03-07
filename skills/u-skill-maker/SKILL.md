@@ -71,7 +71,7 @@ agents:
 ```
 1. 사용자 입력 수신
 2. Slash Command 매칭
-   ├── /u-skill-* 명령어 → 해당 스킬 직접 실행
+   ├── /u-skill-* 또는 /u-agent-* 명령어 → 해당 스킬 직접 실행
    └── 자연어 → 키워드 분석 → Agent 라우팅
 3. 현재 Phase 확인 (.u-maker/u-ssot.config.json)
 4. Phase에 활동 가능한 Agent만 호출
@@ -111,6 +111,16 @@ agents:
 | `/u-skill-stop` | u-skill-stop |
 | `/u-skill-resume` | u-skill-resume |
 
+### Agent Direct
+| Command | Skill |
+|---------|-------|
+| `/u-agent-ra` | u-agent-ra |
+| `/u-agent-sa` | u-agent-sa |
+| `/u-agent-ux` | u-agent-ux |
+| `/u-agent-dv-fe` | u-agent-dv-fe |
+| `/u-agent-dv-be` | u-agent-dv-be |
+| `/u-agent-qa` | u-agent-qa |
+
 ### Document Management
 | Command | Skill |
 |---------|-------|
@@ -123,7 +133,7 @@ agents:
 | `/u-skill-fr-add` | u-skill-fr-add |
 | `/u-skill-index` | u-skill-index |
 
-### Individual Agent
+### Individual Task
 | Command | Skill |
 |---------|-------|
 | `/u-skill-srs` | u-skill-srs |
@@ -131,10 +141,10 @@ agents:
 | `/u-skill-api` | u-skill-api |
 | `/u-skill-screen` | u-skill-screen |
 | `/u-skill-wireframe` | u-skill-wireframe |
-| `/u-skill-ux-design` | u-skill-ux-design |
-| `/u-skill-fe` | u-skill-fe |
-| `/u-skill-be` | u-skill-be |
-| `/u-skill-test` | u-skill-test |
+| `/u-skill-ux-figma` | u-skill-ux-figma |
+| `/u-skill-ux-dsystem` | u-skill-ux-dsystem |
+| `/u-skill-testcase` | u-skill-testcase |
+| `/u-skill-qa` | u-skill-qa |
 | `/u-skill-bug-report` | u-skill-bug-report |
 
 ### Utility

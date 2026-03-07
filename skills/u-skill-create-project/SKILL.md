@@ -24,11 +24,11 @@ imports:
   - ${PLUGIN_ROOT}/.u-maker/u-ssot.config.json
   - ${PLUGIN_ROOT}/_refer/pdca-workflow.md
   - ${PLUGIN_ROOT}/_refer/tech-stack-rules.md
+agents:
+  - u-maker:u-agent-ra
 ---
 
-# u-skill-create-project
-
-agent: u-maker:u-agent-ra
+# u-agent-create-project
 
 `u-agent-ra` 에이전트를 호출하여 Turborepo 모노레포 + .u-maker/docs SSoT 문서 구조를 생성한다. 새 프로젝트 초기화.
 

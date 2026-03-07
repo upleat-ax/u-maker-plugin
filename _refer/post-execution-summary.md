@@ -3,7 +3,7 @@
 **u-maker 에코시스템의 모든 skill, command, agent 실행 완료 후 반드시 아래 형식의 Summary Box를 출력한다.**
 
 이 규칙은 다음 모든 경우에 적용된다:
-- **Slash Commands**: `/u-skill-plan`, `/u-skill-design`, `/u-skill-dev`, `/u-skill-check`, `/u-skill-act`, `/u-skill-srs`, `/u-skill-erd`, `/u-skill-api`, `/u-skill-screen`, `/u-skill-fe`, `/u-skill-be`, `/u-skill-test`, `/u-skill-bug-report`, `/u-skill-status`, `/u-skill-docs`, `/u-skill-validate`, `/u-skill-backlog`, `/u-skill-backlog-add`, `/u-skill-u-skill-add`, `/u-skill-fr-add`, `/u-skill-init`, `/u-skill-create-project`, `/u-skill-loop`, `/u-skill-loop-from`, `/u-skill-stop`, `/u-skill-resume`, `/u-skill-index`, `/u-skill-history`, `/u-skill-archive`, `/u-skill-storybook`, `/u-skill-build`, `/u-skill-summary`, `/u-skill-gap-detector`, `/u-skill-git-pr`, `/u-skill-help`
+- **Slash Commands**: `/u-skill-plan`, `/u-skill-design`, `/u-skill-dev`, `/u-skill-check`, `/u-skill-act`, `/u-skill-srs`, `/u-skill-erd`, `/u-skill-api`, `/u-skill-screen`, `/u-agent-dv-fe`, `/u-agent-dv-be`, `/u-skill-test`, `/u-skill-bug-report`, `/u-agent-status`, `/u-agent-docs`, `/u-agent-validate`, `/u-agent-backlog`, `/u-agent-backlog-add`, `/u-skill-u-skill-add`, `/u-skill-fr-add`, `/u-skill-init`, `/u-skill-create-project`, `/u-skill-loop`, `/u-skill-loop-from`, `/u-skill-stop`, `/u-skill-resume`, `/u-skill-index`, `/u-skill-history`, `/u-skill-archive`, `/u-skill-storybook`, `/u-skill-build`, `/u-skill-summary`, `/u-skill-gap-detector`, `/u-skill-git-pr`, `/u-skill-help`
 - **Agent 실행**: `u-agent-ra`, `u-agent-sa`, `u-agent-ux`, `u-agent-dv-fe`, `u-agent-dv-be`, `u-agent-qa` 에이전트가 작업을 완료했을 때
 - **Skill 호출**: u-maker 관련 skill이 호출되어 실행 완료되었을 때
 - **자연어 트리거**: 사용자의 자연어 요청이 u-maker 에코시스템으로 라우팅되어 처리되었을 때
@@ -55,19 +55,19 @@
 
 | 현재 상태 | 추천 Next Steps |
 |-----------|----------------|
-| PLAN 문서 작성 중 | → 미완성 문서 작성 명령어, → `/u-skill-validate`, → `/u-skill-design` (Gate 충족 시) |
+| PLAN 문서 작성 중 | → 미완성 문서 작성 명령어, → `/u-agent-validate`, → `/u-skill-design` (Gate 충족 시) |
 | PLAN 완료 | → `/u-skill-design` |
-| DESIGN 문서 작성 중 | → 미완성 문서 작성 명령어, → `/u-skill-validate`, → `/u-skill-dev` (Gate 충족 시) |
+| DESIGN 문서 작성 중 | → 미완성 문서 작성 명령어, → `/u-agent-validate`, → `/u-skill-dev` (Gate 충족 시) |
 | DESIGN 완료 | → `/u-skill-dev` |
-| DO Phase 중 | → `/u-skill-fe`, `/u-skill-be`, → `/u-skill-build`, → `/u-skill-check` (구현 완료 시) |
+| DO Phase 중 | → `/u-agent-dv-fe`, `/u-agent-dv-be`, → `/u-skill-build`, → `/u-skill-check` (구현 완료 시) |
 | DO 완료 | → `/u-skill-check` |
 | CHECK 완료 (Pass) | → `/u-skill-act` (결함 있을 시), → Complete (결함 없을 시) |
 | CHECK 완료 (Fail) | → `/u-skill-act` |
 | ACT 완료 | → `/u-skill-plan` (다음 Iteration) |
-| 문서 개별 작성 후 | → 다음 문서 작성, → `/u-skill-status`, → Phase 실행 명령어 |
-| 백로그/US/FR 추가 후 | → `/u-skill-status`, → 해당 Phase 실행 명령어 |
-| `/u-skill-status` 후 | → 현재 Phase 실행 명령어, → `/u-skill-validate` |
-| `/u-skill-validate` 후 | → 발견된 문제 수정 명령어, → Phase 실행 명령어 |
+| 문서 개별 작성 후 | → 다음 문서 작성, → `/u-agent-status`, → Phase 실행 명령어 |
+| 백로그/US/FR 추가 후 | → `/u-agent-status`, → 해당 Phase 실행 명령어 |
+| `/u-agent-status` 후 | → 현재 Phase 실행 명령어, → `/u-agent-validate` |
+| `/u-agent-validate` 후 | → 발견된 문제 수정 명령어, → Phase 실행 명령어 |
 | `/u-skill-loop` 시작 | → `/u-skill-stop` (중단 필요 시) |
 | `/u-skill-stop` 후 | → `/u-skill-resume` |
 

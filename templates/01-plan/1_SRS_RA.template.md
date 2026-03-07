@@ -7,10 +7,10 @@ version: "v0.1.0"
 last_updated: "{{DATE}}"
 app: "{{APP_NAME}}"
 related_docs:
-  - ".u-maker/docs/shared/01-plan/1_Roadmap_PM.md"
-  - ".u-maker/docs/shared/02-design/2_ERD_SA.md"
+  - ".u-maker/docs/common/01-plan/1_Roadmap_PM.md"
+  - ".u-maker/docs/common/02-design/2_ERD_SA.md"
   - ".u-maker/docs/{{APP_NAME}}/02-design/2_API_SA.md"
-  - ".u-maker/docs/shared/01-plan/1_Index_PM.md"
+  - ".u-maker/docs/common/01-plan/1_Index_PM.md"
 external_links: []
 ---
 
@@ -38,44 +38,79 @@ external_links: []
 
 ---
 
-## 2. User Stories
+## 2. Users (USR)
 
-> PLAN Gate 전 모든 US는 FR과 매핑 필수. FR Mapping은 FR 도출 후 갱신 가능.
+> 시스템을 사용하는 사용자 유형(역할)을 정의한다.
 
-| US-ID | As a... | I want to... | So that... | Priority | FR Mapping |
-|-------|---------|-------------|------------|----------|------------|
-| US-0010 | {{역할}} | {{기능}} | {{가치}} | Must | TBD |
-| US-0020 | {{역할}} | {{기능}} | {{가치}} | Should | TBD |
-| US-0030 | {{역할}} | {{기능}} | {{가치}} | Could | TBD |
+| USR-ID | Role | Description | Priority |
+|--------|------|-------------|----------|
+| USR-0010 | {{역할명}} | {{역할 설명}} | Must |
+| USR-0020 | {{역할명}} | {{역할 설명}} | Should |
+| USR-0030 | {{역할명}} | {{역할 설명}} | Could |
 
 ---
 
-## 3. Functional Requirements (FR)
+## 3. User Stories (US)
 
-> US Mapping은 User Stories 작성 후 갱신 가능. Technical FR은 `-`로 표시.
-> FR은 Domain 코드별로 그룹핑하여 작성한다. 최소 15개 이상 도출 필수.
+> PLAN Gate 전 모든 US는 USR 및 FT와 매핑 필수. FT Mapping은 FT 도출 후 갱신 가능.
 
-| FR-ID | Feature | Description | Priority | US Mapping | Implemented |
+| US-ID | USR Mapping | As a... | I want to... | So that... | Priority | FT Mapping |
+|-------|-------------|---------|-------------|------------|----------|------------|
+| US-0010 | USR-0010 | {{역할}} | {{기능}} | {{가치}} | Must | TBD |
+| US-0020 | USR-0010 | {{역할}} | {{기능}} | {{가치}} | Should | TBD |
+| US-0030 | USR-0020 | {{역할}} | {{기능}} | {{가치}} | Could | TBD |
+
+---
+
+## 4. Features (FT)
+
+> US Mapping은 User Stories 작성 후 갱신 가능. Technical FT는 `-`로 표시.
+> FT는 Domain 코드별로 그룹핑하여 작성한다. 최소 15개 이상 도출 필수.
+
+| FT-ID | Feature | Description | Priority | US Mapping | Implemented |
 |-------|---------|-------------|----------|------------|-------------|
 | **AUTH Group** | | | | | |
-| FR-0010 | Login | 이메일/비밀번호로 사용자 인증 | Must | US-0010 | No |
-| FR-0020 | Register | 신규 계정 생성 | Must | US-0010 | No |
-| FR-0030 | Password Reset | 비밀번호 재설정 (이메일 인증) | Must | US-0010 | No |
-| FR-0040 | Input Validation | 이메일 형식, 비밀번호 강도 검증 | Must | - | No |
+| FT-0010 | Login | 이메일/비밀번호로 사용자 인증 | Must | US-0010 | No |
+| FT-0020 | Register | 신규 계정 생성 | Must | US-0010 | No |
+| FT-0030 | Password Reset | 비밀번호 재설정 (이메일 인증) | Must | US-0010 | No |
+| FT-0040 | Input Validation | 이메일 형식, 비밀번호 강도 검증 | Must | - | No |
 | **CORE Group** | | | | | |
-| FR-0110 | {{핵심 기능명}} | {{상세 설명}} | Must | US-0020 | No |
-| FR-0120 | {{핵심 기능명}} | {{상세 설명}} | Must | US-0020 | No |
-| FR-0130 | Pagination & Search | 목록 페이지네이션, 키워드 검색, 필터 | Should | US-0020 | No |
-| FR-0140 | Error Handling | 네트워크/서버/권한 오류 처리 및 메시지 표시 | Must | - | No |
+| FT-0110 | {{핵심 기능명}} | {{상세 설명}} | Must | US-0020 | No |
+| FT-0120 | {{핵심 기능명}} | {{상세 설명}} | Must | US-0020 | No |
+| FT-0130 | Pagination & Search | 목록 페이지네이션, 키워드 검색, 필터 | Should | US-0020 | No |
+| FT-0140 | Error Handling | 네트워크/서버/권한 오류 처리 및 메시지 표시 | Must | - | No |
 | **ADMIN Group** | | | | | |
-| FR-0210 | {{관리 기능명}} | {{상세 설명}} | Should | US-0030 | No |
-| FR-0220 | Audit Log | 주요 데이터 생성/수정/삭제 이력 추적 | Could | - | No |
+| FT-0210 | {{관리 기능명}} | {{상세 설명}} | Should | US-0030 | No |
+| FT-0220 | Audit Log | 주요 데이터 생성/수정/삭제 이력 추적 | Could | - | No |
+
+---
+
+## 5. Functional Requirements (FR)
+
+> FT를 구현하기 위한 상세 기능 요구사항. FT Mapping 필수.
+> FR은 Domain 코드별로 그룹핑하여 작성한다.
+
+| FR-ID | Requirement | Description | Priority | FT Mapping | Implemented |
+|-------|-------------|-------------|----------|------------|-------------|
+| **AUTH Group** | | | | | |
+| FR-0010 | 사용자 인증 처리 | 이메일/비밀번호 검증 후 JWT 발급 | Must | FT-0010 | No |
+| FR-0020 | 계정 생성 처리 | 이메일 중복 검사 + 비밀번호 암호화 저장 | Must | FT-0020 | No |
+| FR-0030 | 비밀번호 재설정 처리 | 이메일 인증 토큰 발송 + 토큰 검증 후 변경 | Must | FT-0030 | No |
+| FR-0040 | 입력 유효성 검증 | 클라이언트/서버 양측 형식·길이·필수 검증 | Must | FT-0040 | No |
+| **CORE Group** | | | | | |
+| FR-0110 | {{요구사항명}} | {{상세 설명}} | Must | FT-0110 | No |
+| FR-0120 | {{요구사항명}} | {{상세 설명}} | Must | FT-0120 | No |
+| FR-0130 | 페이지네이션·검색 처리 | 페이지 단위 로드 + 키워드 검색 + 필터 | Should | FT-0130 | No |
+| FR-0140 | 에러 핸들링 처리 | 네트워크/서버/권한 오류별 메시지 표시 | Must | FT-0140 | No |
+| **ADMIN Group** | | | | | |
+| FR-0210 | {{요구사항명}} | {{상세 설명}} | Should | FT-0210 | No |
+| FR-0220 | 감사 로그 처리 | 데이터 CRUD 이력 자동 추적·저장 | Could | FT-0220 | No |
 
 ### FR Details
 
 ### AUTH Group
 
-#### FR-0010: Login
+#### FR-0010: 사용자 인증 처리 (FT-0010)
 
 - **Description**: 이메일과 비밀번호를 입력받아 사용자를 인증하고 JWT 토큰을 발급한다.
 - **Input**: email (string, required), password (string, required)
@@ -83,7 +118,7 @@ external_links: []
 - **Business Rule**: 5회 연속 실패 시 계정 잠금 (30분). 비밀번호는 bcrypt 해싱 후 비교.
 - **Exception**: 이메일 미존재 → 401. 비밀번호 불일치 → 401. 계정 잠금 → 423.
 
-#### FR-0020: Register
+#### FR-0020: 계정 생성 처리 (FT-0020)
 
 - **Description**: 신규 사용자 계정을 생성한다. 이메일 중복 검사 후 비밀번호를 암호화하여 저장한다.
 - **Input**: email (string, required, unique), password (string, required, min 8자), name (string, required)
@@ -91,7 +126,7 @@ external_links: []
 - **Business Rule**: 이메일은 RFC 5321 형식 준수. 비밀번호는 8자 이상, 대/소문자+숫자 포함.
 - **Exception**: 중복 이메일 → 409 Conflict. 형식 오류 → 400 Validation Error.
 
-#### FR-0030: Password Reset
+#### FR-0030: 비밀번호 재설정 처리 (FT-0030)
 
 - **Description**: 등록된 이메일로 비밀번호 재설정 링크를 발송하고, 토큰 검증 후 비밀번호를 변경한다.
 - **Input**: email (string, required) → reset token (UUID, 1시간 유효) → new password (string, required)
@@ -99,7 +134,7 @@ external_links: []
 - **Business Rule**: 재설정 토큰은 1회 사용 후 무효화. 만료 시간 1시간.
 - **Exception**: 미등록 이메일 → 200 (보안상 동일 응답). 토큰 만료 → 410 Gone.
 
-#### FR-0040: Input Validation
+#### FR-0040: 입력 유효성 검증 (FT-0040)
 
 - **Description**: 모든 사용자 입력에 대해 형식, 길이, 필수 여부를 검증하고 필드별 에러 메시지를 표시한다.
 - **Input**: 폼 필드 입력값 (이메일, 비밀번호, 이름 등)
@@ -109,7 +144,7 @@ external_links: []
 
 ### CORE Group
 
-#### FR-0110: {{핵심 기능명}}
+#### FR-0110: {{요구사항명}} (FT-0110)
 
 - **Description**: {{상세 설명}}
 - **Input**: {{입력 데이터/조건}}
@@ -117,7 +152,7 @@ external_links: []
 - **Business Rule**: {{비즈니스 규칙}}
 - **Exception**: {{예외 케이스}}
 
-#### FR-0120: {{핵심 기능명}}
+#### FR-0120: {{요구사항명}} (FT-0120)
 
 - **Description**: {{상세 설명}}
 - **Input**: {{입력 데이터/조건}}
@@ -125,7 +160,7 @@ external_links: []
 - **Business Rule**: {{비즈니스 규칙}}
 - **Exception**: {{예외 케이스}}
 
-#### FR-0130: Pagination & Search
+#### FR-0130: 페이지네이션·검색 처리 (FT-0130)
 
 - **Description**: 목록 데이터를 페이지 단위로 로드하고, 키워드 검색과 필터 조건을 지원한다.
 - **Input**: page (number, default 1), limit (number, default 20), keyword (string, optional), filter params
@@ -133,7 +168,7 @@ external_links: []
 - **Business Rule**: limit 최대값 100. 검색어 최소 2자 이상. 필터는 AND 조건 적용.
 - **Exception**: 범위 초과 page → 빈 배열 반환. 검색어 1자 → 400 Bad Request.
 
-#### FR-0140: Error Handling
+#### FR-0140: 에러 핸들링 처리 (FT-0140)
 
 - **Description**: 네트워크 오류, 서버 오류, 권한 오류 발생 시 사용자에게 적절한 메시지를 표시한다.
 - **Input**: API 응답 에러 코드 (4xx, 5xx)
@@ -143,7 +178,7 @@ external_links: []
 
 ### ADMIN Group
 
-#### FR-0210: {{관리 기능명}}
+#### FR-0210: {{요구사항명}} (FT-0210)
 
 - **Description**: {{상세 설명}}
 - **Input**: {{입력 데이터/조건}}
@@ -151,7 +186,7 @@ external_links: []
 - **Business Rule**: {{비즈니스 규칙}}
 - **Exception**: {{예외 케이스}}
 
-#### FR-0220: Audit Log
+#### FR-0220: 감사 로그 처리 (FT-0220)
 
 - **Description**: 주요 데이터(생성, 수정, 삭제)에 대한 이력을 자동으로 추적하고 저장한다.
 - **Input**: 데이터 변경 이벤트 (entity, action, actor, before/after)
@@ -161,7 +196,7 @@ external_links: []
 
 ---
 
-## 4. Non-Functional Requirements (NFR)
+## 6. Non-Functional Requirements (NFR)
 
 | NFR-ID | Category | Requirement | Target | Priority |
 |--------|----------|-------------|--------|----------|
@@ -178,25 +213,25 @@ external_links: []
 
 ---
 
-## 5. Feature Dependency
+## 7. Feature Dependency
 
 ```mermaid
 flowchart TD
-    FR010["FR-0010: Login"] --> FR110["FR-0110: {{핵심 기능}}"]
-    FR020["FR-0020: Register"] --> FR010
-    FR030["FR-0030: Password Reset"] --> FR010
-    FR040["FR-0040: Input Validation"] --> FR010
-    FR040 --> FR020
-    FR110 --> FR130["FR-0130: Pagination & Search"]
-    FR140["FR-0140: Error Handling"] --> FR110
+    FT010["FT-0010: Login"] --> FT110["FT-0110: {{핵심 기능}}"]
+    FT020["FT-0020: Register"] --> FT010
+    FT030["FT-0030: Password Reset"] --> FT010
+    FT040["FT-0040: Input Validation"] --> FT010
+    FT040 --> FT020
+    FT110 --> FT130["FT-0130: Pagination & Search"]
+    FT140["FT-0140: Error Handling"] --> FT110
 ```
 
 ---
 
-## 6. FR Priority Distribution
+## 8. FT Priority Distribution
 
 ```mermaid
-pie title FR Priority Distribution
+pie title FT Priority Distribution
     "Must" : 12
     "Should" : 8
     "Could" : 4
@@ -204,7 +239,7 @@ pie title FR Priority Distribution
 
 ---
 
-## 7. Gantt (Feature Timeline)
+## 9. Gantt (Feature Timeline)
 
 ```mermaid
 gantt
@@ -212,22 +247,22 @@ gantt
     dateFormat YYYY-MM-DD
 
     section Core
-        FR-0010 {{기능명}}  :f1, {{START_DATE}}, 5d
-        FR-0020 {{기능명}}  :f2, after f1, 5d
+        FT-0010 {{기능명}}  :f1, {{START_DATE}}, 5d
+        FT-0020 {{기능명}}  :f2, after f1, 5d
 
     section Extended
-        FR-0030 {{기능명}}  :f3, after f2, 3d
-        FR-0040 {{기능명}}  :f4, after f2, 3d
+        FT-0030 {{기능명}}  :f3, after f2, 3d
+        FT-0040 {{기능명}}  :f4, after f2, 3d
 ```
 
 ---
 
-## 8. Acceptance Criteria Summary
+## 10. Acceptance Criteria Summary
 
-| FR-ID | Acceptance Criteria |
+| FT-ID | Acceptance Criteria |
 |-------|-------------------|
-| FR-0010 | {{인수 조건 1}}, {{인수 조건 2}} |
-| FR-0020 | {{인수 조건 1}}, {{인수 조건 2}} |
+| FT-0010 | {{인수 조건 1}}, {{인수 조건 2}} |
+| FT-0020 | {{인수 조건 1}}, {{인수 조건 2}} |
 
 ---
 

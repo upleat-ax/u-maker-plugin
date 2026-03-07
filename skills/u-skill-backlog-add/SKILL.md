@@ -55,7 +55,7 @@ agents:
 | Priority | N | Minor | Critical, Major, Minor, Trivial |
 | Origin | N | DEV | PLAN, DESIGN, DEV, CHECK |
 | Est. Hours | N | TBD | 숫자 + h |
-| Related Request | N | - | FR-NNNN, SC-NNNN, US-NNNN |
+| Related Request | N | - | FT-NNNN, SC-NNNN, US-NNNN |
 | Acceptance Criteria | N | - | Given-When-Then 체크리스트 (최소 1개 필수) |
 
 ## Auto-Assignment Rules

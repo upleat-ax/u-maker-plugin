@@ -12,7 +12,7 @@ related_docs:
   - ".u-maker/docs/{{APP_NAME}}/02-design/2_Screen_UX.md"
   - ".u-maker/docs/{{APP_NAME}}/03-dev/3_Code_DV.md"
   - ".u-maker/docs/{{APP_NAME}}/04-check/4_Report_QA.md"
-  - ".u-maker/docs/shared/01-plan/1_Index_PM.md"
+  - ".u-maker/docs/common/01-plan/1_Index_PM.md"
 external_links: []
 ---
 
@@ -22,7 +22,7 @@ external_links: []
 
 ### 1.1 Purpose
 
-{{테스트 케이스 문서의 목적. SRS의 FR을 기반으로 테스트 케이스를 설계한다.}}
+{{테스트 케이스 문서의 목적. SRS의 FT를 기반으로 테스트 케이스를 설계한다.}}
 
 ### 1.2 Test Strategy
 
@@ -60,18 +60,18 @@ external_links: []
 > **시나리오 작성 규칙**: 각 테스트 스텝은 "누가(Actor) — 어떤 화면(Screen)에서 — 어떤 요소(Element)를 — 어떻게 조작하고(Action) — 어떤 값을 입력(Input)하여 — 무엇을 기대하는가(Expected)"를 구체적으로 기술한다.
 >
 > **필수 규칙**:
-> - 모든 FR은 반드시 Unit Test 케이스와 E2E Test 케이스를 모두 포함한다.
-> - 각 FR의 Unit 케이스는 최소 2개(정상 1 + 비정상/경계 1 이상), E2E 케이스는 최소 2개(성공 여정 1 + 실패/예외 1 이상) 작성한다.
+> - 모든 FT는 반드시 Unit Test 케이스와 E2E Test 케이스를 모두 포함한다.
+> - 각 FT의 Unit 케이스는 최소 2개(정상 1 + 비정상/경계 1 이상), E2E 케이스는 최소 2개(성공 여정 1 + 실패/예외 1 이상) 작성한다.
 > - Expected Result는 UI/API/DB 중 최소 1개 이상의 검증 포인트를 포함한다.
 
-### 3.1 FR-0010: {{기능명}}
+### 3.1 FT-0010: {{기능명}}
 
 #### TC-0010: {{테스트명 - 정상 케이스}}
 
 | Field | Value |
 |-------|-------|
 | **TC-ID** | TC-0010 |
-| **FR Mapping** | FR-0010 |
+| **FT Mapping** | FT-0010 |
 | **US Mapping** | US-0010 |
 | **Level** | Unit |
 | **Type** | Positive |
@@ -96,7 +96,7 @@ external_links: []
 | Field | Value |
 |-------|-------|
 | **TC-ID** | TC-0020 |
-| **FR Mapping** | FR-0010 |
+| **FT Mapping** | FT-0010 |
 | **US Mapping** | US-0010 |
 | **Level** | Unit |
 | **Type** | Negative \| Boundary |
@@ -115,14 +115,14 @@ external_links: []
 **Result**: [ ] Pass / [ ] Fail / [ ] Skip
 **Note**: -
 
-### 3.2 FR-0020: {{기능명}}
+### 3.2 FT-0020: {{기능명}}
 
 #### TC-0030: {{테스트명 - E2E 시나리오}}
 
 | Field | Value |
 |-------|-------|
 | **TC-ID** | TC-0030 |
-| **FR Mapping** | FR-0020 |
+| **FT Mapping** | FT-0020 |
 | **US Mapping** | US-0020 |
 | **Level** | E2E |
 | **Type** | Positive |
@@ -146,7 +146,7 @@ external_links: []
 | Field | Value |
 |-------|-------|
 | **TC-ID** | TC-0040 |
-| **FR Mapping** | FR-0020 |
+| **FT Mapping** | FT-0020 |
 | **US Mapping** | US-0020 |
 | **Level** | E2E |
 | **Type** | Negative \| Boundary |
@@ -169,12 +169,12 @@ external_links: []
 
 ## 4. Test Case Summary
 
-| TC-ID | FR | US | Level | Type | Priority | Actor | Description | Result |
+| TC-ID | FT | US | Level | Type | Priority | Actor | Description | Result |
 |-------|----|----|-------|------|----------|-------|-------------|--------|
-| TC-0010 | FR-0010 | US-0010 | Unit | Positive | Critical | {{Actor}} | {{설명}} | [ ] |
-| TC-0020 | FR-0010 | US-0010 | Unit | Negative/Boundary | Major | {{Actor}} | {{설명}} | [ ] |
-| TC-0030 | FR-0020 | US-0020 | E2E | Positive | Major | {{Actor}} | {{설명}} | [ ] |
-| TC-0040 | FR-0020 | US-0020 | E2E | Negative/Boundary | Major | {{Actor}} | {{설명}} | [ ] |
+| TC-0010 | FT-0010 | US-0010 | Unit | Positive | Critical | {{Actor}} | {{설명}} | [ ] |
+| TC-0020 | FT-0010 | US-0010 | Unit | Negative/Boundary | Major | {{Actor}} | {{설명}} | [ ] |
+| TC-0030 | FT-0020 | US-0020 | E2E | Positive | Major | {{Actor}} | {{설명}} | [ ] |
+| TC-0040 | FT-0020 | US-0020 | E2E | Negative/Boundary | Major | {{Actor}} | {{설명}} | [ ] |
 
 ---
 
@@ -205,14 +205,14 @@ sequenceDiagram
 
 ## 6. Coverage Matrix
 
-| FR-ID | Feature | Unit Cases | E2E Cases | Coverage |
+| FT-ID | Feature | Unit Cases | E2E Cases | Coverage |
 |-------|---------|------------|-----------|----------|
-| FR-0010 | {{기능명}} | TC-0010, TC-0020 | TC-0030, TC-0040 | Covered |
-| FR-0020 | {{기능명}} | TC-0050, TC-0060 | TC-0070, TC-0080 | Covered |
-| FR-0030 | {{기능명}} | - | - | Not Covered |
+| FT-0010 | {{기능명}} | TC-0010, TC-0020 | TC-0030, TC-0040 | Covered |
+| FT-0020 | {{기능명}} | TC-0050, TC-0060 | TC-0070, TC-0080 | Covered |
+| FT-0030 | {{기능명}} | - | - | Not Covered |
 
 ```mermaid
-pie title Test Coverage by FR
+pie title Test Coverage by FT
     "Covered" : 2
     "Not Covered" : 1
 ```

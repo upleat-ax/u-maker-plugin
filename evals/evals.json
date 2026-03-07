@@ -18,10 +18,10 @@
       "expectedAgents": ["u-agent-ra", "u-agent-sa", "u-agent-ux"],
       "expectedPhase": "plan",
       "expectedDocuments": [
-        ".u-maker/docs/shared/01-plan/1_Roadmap_PM.md",
+        ".u-maker/docs/common/01-plan/1_Roadmap_PM.md",
         ".u-maker/docs/web/01-plan/1_SRS_RA.md",
         ".u-maker/docs/web/01-plan/1_IA_RA.md",
-        ".u-maker/docs/shared/01-plan/1_Index_PM.md"
+        ".u-maker/docs/common/01-plan/1_Index_PM.md"
       ],
       "tags": ["project-init", "plan", "e2e"]
     },
@@ -41,7 +41,7 @@
       "expectedAgents": ["u-agent-sa"],
       "expectedPhase": "design",
       "expectedDocuments": [
-        ".u-maker/docs/shared/02-design/2_ERD_SA.md"
+        ".u-maker/docs/common/02-design/2_ERD_SA.md"
       ],
       "tags": ["design", "erd", "traceability"]
     },
@@ -128,15 +128,15 @@
       "expectedAgents": ["u-agent-ra", "u-agent-sa", "u-agent-ux", "u-agent-dv-fe", "u-agent-dv-be", "u-agent-qa"],
       "expectedPhase": "act",
       "expectedDocuments": [
-        ".u-maker/docs/shared/05-act/5_IterationLog_RA.md"
+        ".u-maker/docs/common/05-act/5_IterationLog_RA.md"
       ],
       "tags": ["loop", "iteration", "e2e"]
     },
     {
       "id": "eval-007",
-      "name": "/u-skill-status output",
+      "name": "/u-agent-status output",
       "description": "Test status command output format and accuracy",
-      "prompt": "/u-skill-status",
+      "prompt": "/u-agent-status",
       "expectedBehavior": [
         "Should display current PDCA phase",
         "Should display current iteration number",
@@ -168,16 +168,16 @@
       "expectedAgents": ["u-agent-ra"],
       "expectedPhase": "act",
       "expectedDocuments": [
-        ".u-maker/docs/shared/05-act/5_IterationLog_RA.md",
-        ".u-maker/docs/shared/05-act/5_Retrospective_PM.md"
+        ".u-maker/docs/common/05-act/5_IterationLog_RA.md",
+        ".u-maker/docs/common/05-act/5_Retrospective_PM.md"
       ],
       "tags": ["act", "iteration", "backlog"]
     },
     {
       "id": "eval-009",
-      "name": "/u-skill-backlog output",
+      "name": "/u-agent-backlog output",
       "description": "Test backlog command output",
-      "prompt": "/u-skill-backlog",
+      "prompt": "/u-agent-backlog",
       "expectedBehavior": [
         "Should read 5_IterationLog_RA.md",
         "Should display all open backlog items",
@@ -200,10 +200,10 @@
         "Should organize commands by category (lifecycle, docs, agents, utility)",
         "Should show brief description for each command",
         "Should show current phase and suggest relevant commands",
-        "Should include: /u-skill-create-project, /u-skill-plan, /u-skill-design, /u-skill-dev, /u-skill-check, /u-skill-act",
+        "Should include: /u-agent-create-project, /u-skill-plan, /u-skill-design, /u-skill-dev, /u-skill-check, /u-skill-act",
         "Should include: /u-skill-loop, /u-skill-stop, /u-skill-resume",
-        "Should include: /u-skill-status, /u-skill-docs, /u-skill-validate, /u-skill-backlog",
-        "Should include: /u-skill-srs, /u-skill-erd, /u-skill-api, /u-skill-screen, /u-skill-fe, /u-skill-be, /u-skill-test"
+        "Should include: /u-agent-status, /u-agent-docs, /u-agent-validate, /u-agent-backlog",
+        "Should include: /u-skill-srs, /u-skill-erd, /u-skill-api, /u-agent-screen, /u-agent-dv-fe, /u-agent-dv-be, /u-agent-qa"
       ],
       "expectedAgents": [],
       "expectedPhase": null,

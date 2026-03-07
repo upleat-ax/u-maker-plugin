@@ -1,12 +1,9 @@
 ---
-name: u-skill-test
+name: u-agent-dv-be
 description: |
-  테스트 케이스를 설계한다. SRS FR 기반으로 정상/비정상/경계값 케이스를 작성하며,
-  각 FR에 대해 Unit Test 케이스와 E2E Test 케이스를 모두 포함해야 한다.
-  테스트 스텝은 Actor/Screen/Element/Action/Input/Expected를 상세하게 작성한다.
-  u-agent-qa 에이전트가 담당한다.
-  Optional [app] argument for multi-app projects (e.g., `/u-skill-test web`).
-  Triggers: /u-skill-test, 테스트 케이스, test case, QA
+  Backend 개발을 실행한다. API Routes + Prisma/Drizzle ORM 기반. u-agent-dv-be 에이전트가 담당한다.
+  Optional [app] argument for multi-app projects (e.g., `/u-agent-dv-be web`).
+  Triggers: /u-agent-dv-be, 백엔드, backend, API 구현
 model: sonnet
 user-invocable: true
 argument-hint: "[web]"
@@ -26,18 +23,19 @@ imports:
   - ${PLUGIN_ROOT}/_refer/post-execution-summary.md
   - ${PLUGIN_ROOT}/_refer/json-export.md
   - ${PLUGIN_ROOT}/.u-maker/u-ssot.config.json
-  - ${PLUGIN_ROOT}/_refer/traceability-matrix.md
+  - ${PLUGIN_ROOT}/_refer/tech-stack-rules.md
+agents:
+  - u-maker:u-agent-dv-be
 ---
 
-# u-skill-test
+# u-agent-dv-be
 
-agent: u-maker:u-agent-qa
-
-`u-agent-qa` 에이전트를 호출하여 테스트 케이스를 설계한다. Unit + E2E.
+`u-agent-dv-be` 에이전트를 호출하여 Backend 개발을 실행한다.
 
 ## Output
 
-`.u-maker/docs/{app}/04-check/4_Case_QA.md`
+- code (소스 파일)
+- `.u-maker/docs/{app}/03-dev/3_Code_DV.md`
 
 ## App Context
 

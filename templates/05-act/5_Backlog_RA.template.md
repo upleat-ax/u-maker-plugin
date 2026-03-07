@@ -7,8 +7,8 @@ version: "v0.1.0"
 last_updated: "{{DATE}}"
 related_docs:
   - ".u-maker/docs/{{APP_NAME}}/04-check/4_Report_QA.md"
-  - ".u-maker/docs/shared/05-act/5_IterationLog_RA.md"
-  - ".u-maker/docs/shared/01-plan/1_Index_PM.md"
+  - ".u-maker/docs/common/05-act/5_IterationLog_RA.md"
+  - ".u-maker/docs/common/01-plan/1_Index_PM.md"
 external_links: []
 ---
 
@@ -61,14 +61,14 @@ external_links: []
 
 | BL-ID | Type | Origin | Description | Priority | Status | Added Date | Est. Hours | Related Request | Impl. Status | Related DEF | Iteration | Assignee |
 |-------|------|--------|-------------|----------|--------|------------|------------|-----------------|--------------|-------------|-----------|----------|
-| BL-0010 | Bug | CHECK | {{설명}} | Critical | Open | {{YYYY-MM-DD}} | {{N}}h | FR-0010, US-0010 | ❌ Not Implemented | DEF-0010 | Iter {{N}} | {{agent}} |
-| BL-0020 | Enhancement | DESIGN | {{설명}} | Major | Open | {{YYYY-MM-DD}} | {{N}}h | FR-0020 | ❌ Not Implemented | - | Iter {{N}} | {{agent}} |
+| BL-0010 | Bug | CHECK | {{설명}} | Critical | Open | {{YYYY-MM-DD}} | {{N}}h | FT-0010, US-0010 | ❌ Not Implemented | DEF-0010 | Iter {{N}} | {{agent}} |
+| BL-0020 | Enhancement | DESIGN | {{설명}} | Major | Open | {{YYYY-MM-DD}} | {{N}}h | FT-0020 | ❌ Not Implemented | - | Iter {{N}} | {{agent}} |
 | BL-0030 | Task | DEV | {{설명}} | Minor | Done | {{YYYY-MM-DD}} | {{N}}h | - | ✅ Implemented | - | Iter {{N}} | {{agent}} |
 
 **컬럼 설명**:
 - **Added Date**: 백로그 항목 등록 날짜 (YYYY-MM-DD)
 - **Est. Hours**: 예상 작업 시간 (단위: h)
-- **Related Request**: 관련 FR-ID, US-ID 목록
+- **Related Request**: 관련 FT-ID, US-ID 목록
 - **Impl. Status**: ✅ Implemented (구현 완료) / ⏳ In Progress (구현 중) / ❌ Not Implemented (미구현)
 
 <details><summary>JSON Format (Backlog Item)</summary>
@@ -83,7 +83,7 @@ external_links: []
   "status": "Open",
   "addedDate": "2026-03-01",
   "estimatedHours": 4,
-  "relatedRequest": ["FR-0010", "US-0010"],
+  "relatedRequest": ["FT-0010", "US-0010"],
   "implStatus": "Not Implemented",
   "relatedDef": "DEF-0010",
   "iteration": "Iter 1",
@@ -206,8 +206,8 @@ pie title Backlog by Origin
 | **Impl. Status** | ❌ Not Implemented |
 | **Iteration** | Iter {{N}} |
 | **Assignee** | {{agent}} |
-| **Related FR** | FR-0010 |
-| **Related Request** | FR-0010, US-0010 |
+| **Related FT** | FT-0010 |
+| **Related Request** | FT-0010, US-0010 |
 | **Related DEF** | DEF-0010 |
 
 **Description**: {{상세 설명}}
@@ -231,8 +231,8 @@ pie title Backlog by Origin
   "implStatus": "Not Implemented",
   "iteration": "Iter 1",
   "assignee": "u-agent-dv-be",
-  "relatedFr": "FR-0010",
-  "relatedRequest": ["FR-0010", "US-0010"],
+  "relatedFt": "FT-0010",
+  "relatedRequest": ["FT-0010", "US-0010"],
   "relatedDef": "DEF-0010",
   "description": "상세 설명",
   "acceptanceCriteria": [
@@ -262,8 +262,8 @@ pie title Backlog by Origin
 | **Impl. Status** | ❌ Not Implemented |
 | **Iteration** | Iter {{N}} |
 | **Assignee** | {{agent}} |
-| **Related FR** | FR-0020 |
-| **Related Request** | FR-0020 |
+| **Related FT** | FT-0020 |
+| **Related Request** | FT-0020 |
 | **Related DEF** | - |
 
 **Description**: {{상세 설명}}

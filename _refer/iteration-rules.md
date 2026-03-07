@@ -75,7 +75,7 @@ flowchart TD
 +--------------------------------------------------+
 | LOOP PAUSED                                       |
 | Iteration: 2 | Phase: DO | Progress: 45%         |
-| Resume: /u-skill-resume | Status: /u-skill-status             |
+| Resume: /u-skill-resume | Status: /u-agent-status             |
 +--------------------------------------------------+
 ```
 

@@ -25,11 +25,11 @@ imports:
   - ${PLUGIN_ROOT}/_refer/post-execution-summary.md
   - ${PLUGIN_ROOT}/_refer/json-export.md
   - ${PLUGIN_ROOT}/.u-maker/u-ssot.config.json
+agents:
+  - u-maker:u-agent-ux
 ---
 
-# u-skill-wireframe
-
-agent: u-maker:u-agent-ux
+# u-agent-wireframe
 
 `u-agent-ux` 에이전트를 호출하여 HTML 와이어프레임을 생성/갱신한다.
 

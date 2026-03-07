@@ -50,12 +50,12 @@ agents:
 | I want to... | Y | - | 기능 |
 | So that... | Y | - | 기대 효과 |
 | Priority | N | Should | Must, Should, Could, Won't |
-| FR Mapping | N | TBD | FR-NNNN |
+| FT Mapping | N | TBD | FT-NNNN |
 
 ## Rules
 
 - u-agent-sa 에이전트가 담당
 - US-ID는 4자리 10단위 자동 채번
-- FR Mapping 기본값은 TBD
+- FT Mapping 기본값은 TBD
 - Version은 Minor 증가
 - Post-Execution Summary Box 출력 필수

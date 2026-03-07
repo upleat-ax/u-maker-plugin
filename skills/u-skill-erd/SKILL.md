@@ -23,17 +23,17 @@ imports:
   - ${PLUGIN_ROOT}/_refer/json-export.md
   - ${PLUGIN_ROOT}/.u-maker/u-ssot.config.json
   - ${PLUGIN_ROOT}/_refer/mermaid-guide.md
+agents:
+  - u-maker:u-agent-sa
 ---
 
 # u-skill-erd
-
-agent: u-maker:u-agent-sa
 
 `u-agent-sa` 에이전트를 호출하여 ERD 문서를 생성/갱신한다.
 
 ## Output
 
-`.u-maker/docs/shared/02-design/2_ERD_SA.md`
+`.u-maker/docs/common/02-design/2_ERD_SA.md`
 
 ## Rules
 

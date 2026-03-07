@@ -6,8 +6,8 @@ status: "Draft"
 version: "v0.1.0"
 last_updated: "{{DATE}}"
 related_docs:
-  - ".u-maker/docs/shared/05-act/5_IterationLog_RA.md"
-  - ".u-maker/docs/shared/01-plan/1_Index_PM.md"
+  - ".u-maker/docs/common/05-act/5_IterationLog_RA.md"
+  - ".u-maker/docs/common/01-plan/1_Index_PM.md"
 external_links: []
 ---
 

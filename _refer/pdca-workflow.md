@@ -299,7 +299,7 @@ EXIT =
 |---|-----------|-------------|
 | 1 | 백로그 활성 항목 없음 (Done/Cancelled/Deferred 외 0건) | `5_IterationLog_RA.md` 파싱 |
 | 2 | Critical/Major 결함 0건 | `4_Report_QA.md` 파싱 |
-| 3 | SRS의 모든 FR 구현 완료 | `1_SRS_RA.md` 구현 상태 확인 |
+| 3 | SRS의 모든 FT 구현 완료 | `1_SRS_RA.md` 구현 상태 확인 |
 | 4 | 빌드 성공 | `bun run build` 실행 결과 |
 
 <details><summary>JSON Format (Exit Criteria)</summary>
@@ -310,7 +310,7 @@ EXIT =
     "conditions": [
       { "id": 1, "name": "backlogNoActive", "check": "5_IterationLog_RA.md", "rule": "status not in ['Done','Cancelled','Deferred'] === 0" },
       { "id": 2, "name": "noCriticalMajor", "check": "4_Report_QA.md", "rule": "Critical + Major === 0" },
-      { "id": 3, "name": "allFrImplemented", "check": "1_SRS_RA.md", "rule": "모든 FR implemented === true" },
+      { "id": 3, "name": "allFtImplemented", "check": "1_SRS_RA.md", "rule": "모든 FT implemented === true" },
       { "id": 4, "name": "buildSuccess", "check": "bun run build", "rule": "returncode === 0" }
     ],
     "passCondition": "all",

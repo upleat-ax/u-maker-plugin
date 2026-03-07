@@ -6,7 +6,7 @@ status: "Draft"
 version: "v0.1.0"
 last_updated: "{{DATE}}"
 related_docs:
-  - ".u-maker/docs/shared/01-plan/1_Roadmap_PM.md"
+  - ".u-maker/docs/common/01-plan/1_Roadmap_PM.md"
   - ".u-maker/docs/{{APP_NAME}}/01-plan/1_SRS_RA.md"
   - ".u-maker/docs/{{APP_NAME}}/01-plan/1_IA_RA.md"
 external_links: []
@@ -145,20 +145,20 @@ stateDiagram-v2
 
 | Gate | From → To | Conditions | Status |
 |------|-----------|-----------|--------|
-| Gate 1 | PLAN → DESIGN | `1_Roadmap_PM`=Final, `1_SRS_RA`=Final, `1_IA_RA`=Final + US↔FR mapping complete (no TBD) | Not Ready |
+| Gate 1 | PLAN → DESIGN | `1_Roadmap_PM`=Final, `1_SRS_RA`=Final, `1_IA_RA`=Final + US↔FT mapping complete (no TBD) | Not Ready |
 | Gate 2 | DESIGN → DO | `2_ERD_SA`=Final, `2_API_SA`=Final, `2_Screen_UX`=Final + u-RA 검수 | Not Ready |
 | Gate 3 | DO → CHECK | 코드 구현 완료 + `bun run build` 성공 | Not Ready |
-| Gate 4 | CHECK → Complete | Critical/Major 0건 + Backlog 0건 + 전체 FR 구현 | Not Ready |
+| Gate 4 | CHECK → Complete | Critical/Major 0건 + Backlog 0건 + 전체 FT 구현 | Not Ready |
 | Gate 5 | ACT → PLAN(N+1) | Backlog 정리 + 회고 + 아카이브 완료 | Not Ready |
 
 ---
 
-## 5. FR Implementation Tracking
+## 5. FT Implementation Tracking
 
-| FR-ID | Feature | Menu ID | SRS | ERD | API | Screen | Code | QA | Status |
+| FT-ID | Feature | Menu ID | SRS | ERD | API | Screen | Code | QA | Status |
 |-------|---------|---------|-----|-----|-----|--------|------|----|--------|
-| FR-0010 | {{기능명}} | MN-XXX-NNNN | - | - | - | - | - | - | Planned |
-| FR-0020 | {{기능명}} | MN-XXX-NNNN | - | - | - | - | - | - | Planned |
+| FT-0010 | {{기능명}} | MN-XXX-NNNN | - | - | - | - | - | - | Planned |
+| FT-0020 | {{기능명}} | MN-XXX-NNNN | - | - | - | - | - | - | Planned |
 
 ---
 

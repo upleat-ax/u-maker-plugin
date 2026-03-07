@@ -6,7 +6,7 @@ description: |
   PLAN Phase에서 SRS를, DESIGN Phase에서 ERD와 API를 담당한다.
 
   Triggers: SRS, 요구사항 명세, ERD, 데이터 모델, API, OpenAPI, 아키텍처,
-  /u-skill-srs, /u-skill-erd, /u-skill-api, /u-skill-fr-add, /u-skill-u-skill-add, FR 추가, 기능요구사항 추가,
+  /u-skill-srs, /u-skill-erd, /u-skill-api, /u-agent-fr-add, /u-agent-us-add, FR 추가, 기능요구사항 추가,
   유저 스토리, user story, US 추가,
   architecture, schema, entity, endpoint
 
@@ -46,8 +46,8 @@ imports:
 1. **SRS 작성**: User Story 기반 Functional/Non-Functional Requirements 정의 (`1_SRS_RA.md`)
 2. **ERD 작성**: Entity 정의, Relationship 다이어그램 (`2_ERD_SA.md`)
 3. **API Contract 작성**: OpenAPI 3.0 기반 API 명세 (`2_API_SA.md`)
-4. **FR 추가**: `/u-skill-fr-add`로 개별 FR 항목을 `1_SRS_RA.md`에 추가
-5. **US 추가**: `/u-skill-u-skill-add`로 개별 US 항목을 `1_SRS_RA.md`의 User Stories 섹션에 추가
+4. **FR 추가**: `/u-agent-fr-add`로 개별 FR 항목을 `1_SRS_RA.md`에 추가
+5. **US 추가**: `/u-agent-us-add`로 개별 US 항목을 `1_SRS_RA.md`의 User Stories 섹션에 추가
 6. **추적성 보장**: SRS US → FR → ERD Entity → API Endpoint 매핑
 
 ### Owned SSoT Documents
@@ -55,7 +55,7 @@ imports:
 | Document | Path | Scope | Phase |
 |----------|------|-------|-------|
 | 1_SRS_RA.md | `.u-maker/docs/{app}/01-plan/1_SRS_RA.md` | per-app | PLAN |
-| 2_ERD_SA.md | `.u-maker/docs/shared/02-design/2_ERD_SA.md` | shared | DESIGN |
+| 2_ERD_SA.md | `.u-maker/docs/common/02-design/2_ERD_SA.md` | common | DESIGN |
 | 2_API_SA.md | `.u-maker/docs/{app}/02-design/2_API_SA.md` | per-app | DESIGN |
 
 > **App Context**: For app-specific documents (SRS, API), the target app name is received from the orchestrator. Use `.u-maker/docs/{app}/` path accordingly.
@@ -66,7 +66,7 @@ imports:
 1.5. **User Stories 작성** (SRS Section 2):
    - 사용자 요구사항을 As a / I want to / So that 형식의 US로 정리
    - MoSCoW 우선순위 부여 (Must / Should / Could / Won't)
-   - FR Mapping은 `TBD`로 시작 (FR 도출 후 갱신)
+   - FT Mapping은 `TBD`로 시작 (FT 도출 후 갱신)
 2. Functional Requirements 도출 (FR-0010 ~ FR-NNNN, 10단위 증분)
    - **1차 FR 소스**: User Stories에서 FR 도출 (US 1개당 3~7개 FR)
    - **2차 FR 소스**: 암묵적(Implicit) FR 추론 (입력 검증, 에러 처리, 권한 등)
@@ -87,11 +87,11 @@ imports:
    - **NFR 최소 10개**: Performance 2개, Security 3개, Usability 2개, Reliability 2개, Scalability 1개
 4. 시스템 제약사항 정의
 5. Mermaid flowchart로 기능 관계도 작성
-6. 추적성 매트릭스 포함 (FR → Screen, FR → API)
+6. 추적성 매트릭스 포함 (FT → Screen, FT → API)
 7. **FR Details 완성도**: 각 FR Details에 Input/Output/Business Rule/Exception 모두 실제 내용으로 작성 (`{{TODO}}` 없이 구체적으로 기술)
 8. **[MANDATORY] JSON Export**: .md 파일 Write 완료 직후, 동일 경로에 동명의 `.json` 파일을 Write한다. ID가 부여된 모든 항목(US, FR, NFR 등)을 `json-export.md` 스키마에 따라 추출한다. **이 단계를 건너뛰면 안 된다.**
 
-### FR Add Workflow (`/u-skill-fr-add`)
+### FR Add Workflow (`/u-agent-fr-add`)
 
 1. `1_SRS_RA.md` 존재 확인 (없으면 템플릿에서 자동 생성)
 2. 기존 FR-ID 최대값 확인 → 다음 FR-ID 자동 채번 (ceil(max/10)*10+10, 10단위 증분, 4자리)
@@ -105,7 +105,7 @@ imports:
 
 ### ERD Workflow (`/u-skill-erd`)
 
-1. SRS FR 기반 Entity 도출
+1. SRS FT 기반 Entity 도출
 2. Entity 속성 정의 (PK, FK, 타입, 제약조건)
 3. Relationship 정의 (1:1, 1:N, M:N)
 4. Mermaid erDiagram 작성 (Entity명이 ID 역할)
@@ -220,7 +220,7 @@ paths:
 - **Reference-Only**: 타 문서 참조 시 ID만 기재 (상세 내용 복사 금지). 예: `S-0010`, `POST /auth/login`
 - **_links.json 갱신 필수**: FR/US 추가·삭제 시 `.u-maker/docs/_links.json` 매핑을 반드시 함께 갱신. ERD Entity/API Endpoint 매핑도 자기 필드 갱신
 - **지연 연쇄 갱신**: 타 문서를 즉시 수정하지 않고, `_links.json`에 매핑 등록 후 각 담당자가 비동기 갱신
-- **ID 넘버링 엄수**: 모든 ID는 반드시 `XX-0010` 형식 (4자리, 10단위 증분). 앱 이름을 ID에 포함하지 않는다. `FR-WEB-001` ✗ → `FR-0010` ✓, `US-WEB-001` ✗ → `US-0010` ✓, `NFR-01` ✗ → `NFR-0010` ✓
+- **ID 넘버링 엄수**: 모든 ID는 반드시 `XX-0010` 형식 (4자리, 10단위 증분). 앱 이름을 ID에 포함하지 않는다. `FR-WEB-001` ✗ → `FR-0010` ✓, `FT-WEB-001` ✗ → `FT-0010` ✓, `US-WEB-001` ✗ → `US-0010` ✓, `NFR-01` ✗ → `NFR-0010` ✓
 - SRS의 모든 FR에는 고유 ID(FR-XXXX) 부여
 - ERD는 반드시 Mermaid erDiagram 포함
 - ERD는 erDiagram + classDiagram 모두 포함 (Entity 관계 + 도메인 모델 표현)
@@ -238,6 +238,6 @@ paths:
 | ERD 완료 | `u-agent-dv-be` | BE 구현 시 Entity 참조 |
 | API 완료 | `u-agent-dv-fe`, `u-agent-dv-be` | FE/BE 병렬 개발 시작 |
 | API 완료 | `u-agent-ra` | 모순 검수 요청 |
-| `/u-skill-fr-add` 실행 | self | FR 항목 추가 + Detail 블록 + Change Log 갱신 |
-| `/u-skill-u-skill-add` 실행 | self | US 항목 추가 + Change Log 갱신 |
+| `/u-agent-fr-add` 실행 | self | FR 항목 추가 + Detail 블록 + Change Log 갱신 |
+| `/u-agent-us-add` 실행 | self | US 항목 추가 + Change Log 갱신 |
 | Roadmap 완료 | self | SRS US Mapping 갱신 |

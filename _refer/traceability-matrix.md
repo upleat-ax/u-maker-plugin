@@ -42,8 +42,8 @@ flowchart TD
 
 ### Tracing Rules (Vertical)
 
-1. `1_SRS_RA.md`의 모든 User Story(Section 2)는 FR(Section 3)과 매핑되어야 한다 (PLAN Gate 검증 시점에 적용. 작성 중 `TBD` 허용)
-2. `1_SRS_RA.md`의 모든 FR은 `2_ERD_SA.md` 또는 `2_API_SA.md`에서 구체화되어야 한다
+1. `1_SRS_RA.md`의 모든 User Story(Section 2)는 FT(Section 3)와 매핑되어야 한다 (PLAN Gate 검증 시점에 적용. 작성 중 `TBD` 허용)
+2. `1_SRS_RA.md`의 모든 FT는 `2_ERD_SA.md` 또는 `2_API_SA.md`에서 구체화되어야 한다
 3. `2_ERD_SA.md`의 모든 Entity는 `3_Code_DV.md`의 모델 파일과 매핑되어야 한다
 4. `2_API_SA.md`의 모든 Endpoint는 `3_Code_DV.md`의 라우트 파일과 매핑되어야 한다
 5. Technical FR (US 없는 FR)은 US Mapping이 `-`로 표시 가능
@@ -173,7 +173,7 @@ flowchart TD
 | # | Validation Rule | Source | Target | Severity |
 |---|----------------|--------|--------|----------|
 | V-001 | 모든 User Story(SRS Section 2)는 FR과 매핑 (PLAN Gate 검증 시점에 적용. 작성 중 `TBD` 허용) | `1_SRS_RA.md` | `1_SRS_RA.md` | Critical |
-| V-002 | 모든 FR은 ERD 또는 API에서 구체화 | `1_SRS_RA.md` | `2_ERD_SA.md`, `2_API_SA.md` | Critical |
+| V-002 | 모든 FT는 ERD 또는 API에서 구체화 | `1_SRS_RA.md` | `2_ERD_SA.md`, `2_API_SA.md` | Critical |
 | V-003 | 모든 IA 항목은 Screen에서 설계 | `1_IA_RA.md` | `2_Screen_UX.md` | Major |
 | V-004 | 모든 Screen은 사용 API를 명시 | `2_Screen_UX.md` | `2_API_SA.md` | Major |
 | V-004a | 모든 Screen은 ScreenFlow에서 전환 흐름이 정의 | `2_Screen_UX.md` | `2_ScreenFlow_UX.md` | Major |
@@ -190,17 +190,17 @@ flowchart TD
 실제 프로젝트에서 작성되는 추적성 매트릭스 테이블 형식:
 
 ```markdown
-| FR-ID | Description | SRS | Menu | ERD | API | Screen | Code | QA Case | Status |
+| FT-ID | Description | SRS | Menu | ERD | API | Screen | Code | QA Case | Status |
 |-------|-------------|-----|------|-----|-----|--------|------|---------|--------|
-| FR-0010 | 사용자 로그인 | 1SA:FR-0010 | MN-AUTH-0010 | 2SA:USER | 2SA:POST /auth | 2UX:S-0010 | auth.ts | 4QA:TC-0010 | Implemented |
-| FR-0020 | 대시보드 조회 | 1SA:FR-0020 | MN-DASH-0010 | 2SA:DASHBOARD | 2SA:GET /dashboard | 2UX:S-0020 | dashboard.ts | 4QA:TC-0020 | In Progress |
+| FT-0010 | 사용자 로그인 | 1SA:FT-0010 | MN-AUTH-0010 | 2SA:USER | 2SA:POST /auth | 2UX:S-0010 | auth.ts | 4QA:TC-0010 | Implemented |
+| FT-0020 | 대시보드 조회 | 1SA:FT-0020 | MN-DASH-0010 | 2SA:DASHBOARD | 2SA:GET /dashboard | 2UX:S-0020 | dashboard.ts | 4QA:TC-0020 | In Progress |
 ```
 
 ### 4.3 Validation Process
 
 1. **자동 검증**: `scripts/validate-ssot.py`가 문서 파싱 후 추적성 검증
 2. **u-RA 검수**: Phase 전환 Gate에서 `u-RA`가 문서 간 모순 검사
-3. **수동 검토**: `/u-skill-validate` 커맨드로 사용자가 직접 검증 요청 가능
+3. **수동 검토**: `/u-agent-validate` 커맨드로 사용자가 직접 검증 요청 가능
 
 ```mermaid
 flowchart LR
@@ -237,10 +237,10 @@ flowchart LR
 문서 변경 시 관련 문서를 **즉시 갱신하지 않는다**. `_links.json` 기반으로 비동기 갱신한다:
 
 ```
-1. 원본 문서 수정 (예: SRS에 FR-0030 추가)
+1. 원본 문서 수정 (예: SRS에 FT-0030 추가)
 2. _links.json에 매핑 행 추가/갱신 (미정 필드는 null)
 3. 각 문서 담당자가 자기 문서를 비동기로 갱신
-4. /u-skill-validate로 _links.json 기준 누락 항목 탐지
+4. /u-agent-validate로 _links.json 기준 누락 항목 탐지
 ```
 
 ### 5.3 Rules
@@ -248,7 +248,7 @@ flowchart LR
 - Reference-Only: 타 문서 내용 복제 금지, ID 참조만 허용
 - 항목 추가/변경 시 `_links.json` 매핑을 반드시 함께 갱신
 - Final 문서 변경 시 Status → Draft
-- `/u-skill-validate` 검증 시 `_links.json` 기준으로 누락 탐지
+- `/u-agent-validate` 검증 시 `_links.json` 기준으로 누락 탐지
 - **즉시 갱신 예외**: 항목 삭제 시 (삭제된 ID 참조 제거), 구조 변경 시 (Phase Gate 전 동기화)
 
 ---
@@ -260,7 +260,7 @@ flowchart LR
 | Document | ID Format | Example |
 |----------|-----------|---------|
 | SRS User Story | `US-{NNNN}` | US-0010 |
-| SRS Feature | `FR-{NNNN}` | FR-0010 |
+| SRS Feature | `FT-{NNNN}` | FT-0010 |
 | SRS Non-Functional | `NFR-{NNNN}` | NFR-0010 |
 | IA Menu Navigation | `MN-{DOMAIN}-{NNNN}` | MN-AUTH-0010 |
 | ERD Entity | `Entity: {NAME}` | Entity: USER |

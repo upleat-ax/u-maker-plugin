@@ -25,11 +25,11 @@ imports:
   - ${PLUGIN_ROOT}/.u-maker/u-ssot.config.json
   - ${PLUGIN_ROOT}/_refer/traceability-matrix.md
   - ${PLUGIN_ROOT}/_refer/mermaid-guide.md
+agents:
+  - u-maker:u-agent-sa
 ---
 
 # u-skill-srs
-
-agent: u-maker:u-agent-sa
 
 `u-agent-sa` 에이전트를 호출하여 SRS 문서를 생성/갱신한다.
 
@@ -39,7 +39,7 @@ agent: u-maker:u-agent-sa
 
 ## Prerequisites
 
-- Roadmap optional (FR-First 시 없이도 실행 가능)
+- Roadmap optional (FT-First 시 없이도 실행 가능)
 
 ## App Context
 

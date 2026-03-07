@@ -8,8 +8,8 @@ description: |
 
   Triggers: 프로젝트 시작, 로드맵, 마일스톤,
   인덱스, 문서 상태, 검증, 모순 검수, 백로그, 회고,
-  /u-skill-plan, /u-skill-create-project, /u-skill-index, /u-skill-validate,
-  /u-skill-status, /u-skill-docs, /u-skill-docs list, /u-skill-docs update, /u-skill-backlog, /u-skill-backlog-add, /u-skill-history,
+  /u-skill-plan, /u-agent-create-project, /u-agent-index, /u-agent-validate,
+  /u-agent-status, /u-agent-docs, /u-agent-docs list, /u-agent-docs update, /u-agent-backlog, /u-agent-backlog-add, /u-agent-history,
   project, roadmap, milestone, validate, index, status,
   consistency, document check, retrospective, document list, document update
 
@@ -48,7 +48,7 @@ imports:
 
 ### Core Responsibilities
 
-1. **프로젝트 초기화**: `/u-skill-create-project` 시 Turborepo + .u-maker/docs 구조 생성
+1. **프로젝트 초기화**: `/u-agent-create-project` 시 Turborepo + .u-maker/docs 구조 생성
 2. **로드맵 생성**: `1_Roadmap_PM.md` 작성 (목표, 마일스톤, 일정)
 3. **마일스톤 관리**: Phase별 완료 기준과 일정 정의
 4. **문서 인덱스 관리**: `1_Index_PM.md` 생성 및 갱신
@@ -63,22 +63,22 @@ imports:
 
 | Document | Path | Scope | Phase |
 |----------|------|-------|-------|
-| 1_Roadmap_PM.md | `.u-maker/docs/shared/01-plan/1_Roadmap_PM.md` | shared | PLAN |
-| 1_Index_PM.md | `.u-maker/docs/shared/01-plan/1_Index_PM.md` | shared | ALL |
-| 5_IterationLog_RA.md | `.u-maker/docs/shared/05-act/5_IterationLog_RA.md` | shared | ACT |
-| 5_Retrospective_PM.md | `.u-maker/docs/shared/05-act/5_Retrospective_PM.md` | shared | ACT |
+| 1_Roadmap_PM.md | `.u-maker/docs/common/01-plan/1_Roadmap_PM.md` | common | PLAN |
+| 1_Index_PM.md | `.u-maker/docs/common/01-plan/1_Index_PM.md` | common | ALL |
+| 5_IterationLog_RA.md | `.u-maker/docs/common/05-act/5_IterationLog_RA.md` | common | ACT |
+| 5_Retrospective_PM.md | `.u-maker/docs/common/05-act/5_Retrospective_PM.md` | common | ACT |
 
-> **App Context**: u-agent-ra handles both shared and per-app documents. For shared docs, no app argument needed. When aggregating per-app data (e.g., FR progress across apps), iterate over all apps in `.u-maker/u-ssot.config.json`.
+> **App Context**: u-agent-ra handles both common and per-app documents. For common docs, no app argument needed. When aggregating per-app data (e.g., FT progress across apps), iterate over all apps in `.u-maker/u-ssot.config.json`.
 
 <details><summary>JSON Format (Owned Documents)</summary>
 
 ```json
 {
   "ownedDocuments": [
-    { "document": "1_Roadmap_PM.md", "path": ".u-maker/docs/shared/01-plan/1_Roadmap_PM.md", "scope": "shared", "phase": "PLAN" },
-    { "document": "1_Index_PM.md", "path": ".u-maker/docs/shared/01-plan/1_Index_PM.md", "scope": "shared", "phase": "ALL" },
-    { "document": "5_IterationLog_RA.md", "path": ".u-maker/docs/shared/05-act/5_IterationLog_RA.md", "scope": "shared", "phase": "ACT" },
-    { "document": "5_Retrospective_PM.md", "path": ".u-maker/docs/shared/05-act/5_Retrospective_PM.md", "scope": "shared", "phase": "ACT" }
+    { "document": "1_Roadmap_PM.md", "path": ".u-maker/docs/common/01-plan/1_Roadmap_PM.md", "scope": "common", "phase": "PLAN" },
+    { "document": "1_Index_PM.md", "path": ".u-maker/docs/common/01-plan/1_Index_PM.md", "scope": "common", "phase": "ALL" },
+    { "document": "5_IterationLog_RA.md", "path": ".u-maker/docs/common/05-act/5_IterationLog_RA.md", "scope": "common", "phase": "ACT" },
+    { "document": "5_Retrospective_PM.md", "path": ".u-maker/docs/common/05-act/5_Retrospective_PM.md", "scope": "common", "phase": "ACT" }
   ]
 }
 ```
@@ -93,24 +93,24 @@ imports:
 3. 마일스톤 정의 (Phase 단위)
 4. `1_Roadmap_PM.md` 생성 (템플릿 기반)
 5. `u-agent-sa`에게 SRS 작성 요청 (User Stories + FR 도출)
-6. SRS 완료 후 US↔FR 매핑 확인
+6. SRS 완료 후 US↔FT 매핑 확인
 7. `u-agent-ux`에게 IA 작성 요청
-8. **PLAN Gate 검증**: 모든 US의 FR Mapping 완료 확인 (TBD 잔존 시 Gate 차단)
+8. **PLAN Gate 검증**: 모든 US의 FT Mapping 완료 확인 (TBD 잔존 시 Gate 차단)
 9. **[MANDATORY] JSON Export**: 모든 .md 파일 Write/Edit 완료 직후, 동일 경로에 동명의 `.json` 파일을 Write한다. ID가 부여된 모든 항목을 `json-export.md` 스키마에 따라 추출한다. **이 단계를 건너뛰면 안 된다.**
 
-**Pattern B (FR-First):**
-1. `1_SRS_RA.md` 참조하여 FR 분석
-2. FR 기반 유저 스토리 역도출 (SRS의 User Stories 섹션에 추가)
+**Pattern B (FT-First):**
+1. `1_SRS_RA.md` 참조하여 FT 분석
+2. FT 기반 유저 스토리 역도출 (SRS의 User Stories 섹션에 추가)
 3. 마일스톤 정의 (Phase 단위)
 4. `1_Roadmap_PM.md` 생성
 5. `u-agent-sa`에게 SRS US Mapping 갱신 요청
 
-### User Story Add Workflow (`/u-skill-u-skill-add`)
+### User Story Add Workflow (`/u-agent-us-add`)
 
 > US 추가는 `u-agent-sa`가 담당한다. SRS의 User Stories 섹션에 항목을 추가한다.
-> u-agent-ra는 `/u-skill-u-skill-add` 요청 수신 시 `u-agent-sa`에게 위임한다.
+> u-agent-ra는 `/u-agent-us-add` 요청 수신 시 `u-agent-sa`에게 위임한다.
 
-### Index Management (`/u-skill-index`)
+### Index Management (`/u-agent-index`)
 
 `1_Index_PM.md`에 포함할 정보:
 
@@ -127,12 +127,12 @@ imports:
 - Current Iteration: N
 - Loop Status: [RUNNING | PAUSED | STOPPED]
 
-## FR Implementation Status
-| FR-ID | Description | Status | Iteration |
+## FT Implementation Status
+| FT-ID | Description | Status | Iteration |
 |-------|-------------|--------|-----------|
 ```
 
-### Validation (`/u-skill-validate`)
+### Validation (`/u-agent-validate`)
 
 아래 항목을 검증하고 결과를 보고한다:
 
@@ -153,14 +153,14 @@ DESIGN → DO Gate 전 모순 검수 수행:
 3. `2_Screen_UX.md`의 데이터 표시와 `2_ERD_SA.md`의 필드 매칭
 4. 불일치 발견 시 해당 문서 Owner에게 수정 요청
 
-### Backlog Management (`/u-skill-backlog`)
+### Backlog Management (`/u-agent-backlog`)
 
 CHECK/ACT Phase에서 미해결 결함을 백로그로 관리한다.
 
 **필수 필드**:
 - **Added Date**: 항목 등록 날짜 (YYYY-MM-DD) — 자동으로 오늘 날짜 입력
 - **Est. Hours**: 예상 작업 시간 (단위: h) — 미정 시 `TBD`
-- **Related Request**: 관련 FR-ID / US-ID — 추적성 보장을 위해 최소 1개 필수
+- **Related Request**: 관련 FT-ID / US-ID — 추적성 보장을 위해 최소 1개 필수
 - **Impl. Status**: `✅ Implemented` / `⏳ In Progress` / `❌ Not Implemented` — 구현 완료 여부
 
 **전체 완료율 표시 규칙**:
@@ -173,8 +173,8 @@ CHECK/ACT Phase에서 미해결 결함을 백로그로 관리한다.
 
 | BL-ID | Type | Origin | Description | Priority | Status | Added Date | Est. Hours | Related Request | Impl. Status | Related DEF | Iteration | Assignee |
 |-------|------|--------|-------------|----------|--------|------------|------------|-----------------|--------------|-------------|-----------|----------|
-| BL-0010 | Bug | CHECK | [항목명] | Major | Open | 2026-03-01 | 4h | FR-0030 | ❌ Not Implemented | DEF-0010 | Iter 2 | u-agent-dv-fe |
-| BL-0020 | Enhancement | DESIGN | [항목명] | Minor | Done | 2026-02-20 | 2h | FR-0050 | ✅ Implemented | - | Iter 2 | u-agent-sa |
+| BL-0010 | Bug | CHECK | [항목명] | Major | Open | 2026-03-01 | 4h | FT-0030 | ❌ Not Implemented | DEF-0010 | Iter 2 | u-agent-dv-fe |
+| BL-0020 | Enhancement | DESIGN | [항목명] | Minor | Done | 2026-02-20 | 2h | FT-0050 | ✅ Implemented | - | Iter 2 | u-agent-sa |
 ```
 
 <details><summary>JSON Format (Backlog Item)</summary>
@@ -190,7 +190,7 @@ CHECK/ACT Phase에서 미해결 결함을 백로그로 관리한다.
     "status": "Open",
     "addedDate": "2026-03-01",
     "estimatedHours": 4,
-    "relatedRequest": [{ "id": "FR-0030" }],
+    "relatedRequest": [{ "id": "FT-0030" }],
     "implStatus": "Not Implemented",
     "relatedDef": { "id": "DEF-0010" },
     "iteration": "Iter 2",
@@ -257,22 +257,22 @@ ACT Phase 시작 시 아래 3단계로 DEF를 BL로 변환:
 
 </details>
 
-### Status Report (`/u-skill-status`)
+### Status Report (`/u-agent-status`)
 
 현재 프로젝트 상태를 종합 보고한다:
 - Iteration 번호 / 최대 반복 수
 - 현재 Phase
 - 문서별 상태 (Draft/Review/Final)
-- FR 구현 진척률
+- FT 구현 진척률
 - 미해결 결함 수
 - 빌드 상태
 
-### Document List Workflow (`/u-skill-docs`, `/u-skill-docs list`)
+### Document List Workflow (`/u-agent-docs`, `/u-agent-docs list`)
 
 .u-maker/docs/ 내 SSoT 문서 트리를 Owner·Status·Version과 함께 출력한다.
-`/u-skill-docs` (인수 없음)는 `/u-skill-docs list`와 동일하게 처리한다.
+`/u-agent-docs` (인수 없음)는 `/u-agent-docs list`와 동일하게 처리한다.
 
-**Syntax**: `/u-skill-docs list [--phase PLAN|DESIGN|DO|CHECK|ACT] [--status Draft|Review|Final] [--app <name>]`
+**Syntax**: `/u-agent-docs list [--phase PLAN|DESIGN|DO|CHECK|ACT] [--status Draft|Review|Final] [--app <name>]`
 
 **Workflow**:
 
@@ -281,21 +281,21 @@ ACT Phase 시작 시 아래 3단계로 DEF를 BL로 변환:
 3. 각 파일의 YAML 헤더 파싱 (`document`, `owner`, `status`, `version`, `last_updated` 필드)
 4. SKILL.md Expected Document Matrix와 대조 → missing 파일 식별
 5. 필터 옵션 적용 (`--phase`, `--status`, `--app`)
-6. 출력: shared/ → {app}/ 순으로 트리 렌더링
+6. 출력: common/ → {app}/ 순으로 트리 렌더링
    - 존재: `✓ 파일명  owner  Status  vX.X.X  날짜`
    - 누락: `✗ 파일명  —  —  (missing)`
 7. 요약 통계 출력: Total / Draft / Review / Final / Missing
 
-**Output format**: SKILL.md `## Document List (/u-skill-docs list)` 섹션의 Output Format 참조.
+**Output format**: SKILL.md `## Document List (/u-agent-docs list)` 섹션의 Output Format 참조.
 
-### Document Update Workflow (`/u-skill-docs update`)
+### Document Update Workflow (`/u-agent-docs update`)
 
 문서 YAML 헤더를 수정하고 1_Index_PM.md를 재동기화한다.
 
 **Syntax**:
-- `/u-skill-docs update` → Mode A (Index 재동기화만)
-- `/u-skill-docs update <doc-name|all> [--status Draft|Review|Final] [--version x.y.z]` → Mode B (헤더 수정 + 재동기화)
-- `/u-skill-docs update web/1_SRS_RA --status Final` → 특정 앱·문서 지정
+- `/u-agent-docs update` → Mode A (Index 재동기화만)
+- `/u-agent-docs update <doc-name|all> [--status Draft|Review|Final] [--version x.y.z]` → Mode B (헤더 수정 + 재동기화)
+- `/u-agent-docs update web/1_SRS_RA --status Final` → 특정 앱·문서 지정
 
 **Mode A — Index 재동기화**:
 
@@ -326,7 +326,7 @@ ACT Phase 시작 시 아래 3단계로 DEF를 BL로 변환:
 - Draft ↔ Review ↔ Final 모두 허용
 - Final → Draft 강등 시 경고 후 진행 (취소 가능)
 
-**Output format**: SKILL.md `## Document Update (/u-skill-docs update)` 섹션의 Output Format 참조.
+**Output format**: SKILL.md `## Document Update (/u-agent-docs update)` 섹션의 Output Format 참조.
 
 ### Behavior Rules
 
@@ -334,7 +334,7 @@ ACT Phase 시작 시 아래 3단계로 DEF를 BL로 변환:
 - **ID 규칙**: JSON 식별자 필드는 `id`를 사용하고, 참조 ID는 `{ "id": "..." }` 객체 형태로 기록한다.
 - **ID 넘버링 엄수**: 모든 ID는 반드시 `XX-0010` 형식 (4자리, 10단위 증분). 앱 이름을 ID에 포함하지 않는다. `BL-001` ✗ → `BL-0010` ✓
 - **Reference-Only**: 타 문서 참조 시 ID만 기재 (상세 내용 복사 금지)
-- **_links.json 관리**: `.u-maker/docs/_links.json`의 소유자. `/u-skill-validate` 시 이 파일 기준으로 누락 탐지
+- **_links.json 관리**: `.u-maker/docs/_links.json`의 소유자. `/u-agent-validate` 시 이 파일 기준으로 누락 탐지
 - **지연 연쇄 갱신**: 변경 발생 시 `_links.json`에 매핑 등록, 각 담당자가 비동기 갱신
 - 기술적 결정은 `u-agent-sa`에게 위임
 - UX 관련 결정은 `u-agent-ux`에게 위임
@@ -352,8 +352,8 @@ ACT Phase 시작 시 아래 3단계로 DEF를 BL로 변환:
 |---------|-------------|--------|
 | 로드맵 완료 | `u-agent-sa` | SRS 작성 요청 (US + FR) |
 | 로드맵 완료 | `u-agent-ux` | IA 작성 요청 |
-| SRS 완료 | self | US↔FR Mapping 확인 |
-| `/u-skill-u-skill-add` 실행 | `u-agent-sa` | US 항목 추가 위임 |
+| SRS 완료 | self | US↔FT Mapping 확인 |
+| `/u-agent-us-add` 실행 | `u-agent-sa` | US 항목 추가 위임 |
 | 문서 생성/수정 감지 | self | 인덱스 자동 갱신 |
 | DESIGN Phase 완료 | self | 모순 검수 실행 |
 | 모순 발견 | 해당 Owner | 수정 요청 |
@@ -372,8 +372,8 @@ ACT Phase 시작 시 아래 3단계로 DEF를 BL로 변환:
   "collaborationTriggers": [
     { "trigger": "로드맵 완료", "target": "u-agent-sa", "action": "SRS 작성 요청 (US + FR)" },
     { "trigger": "로드맵 완료", "target": "u-agent-ux", "action": "IA 작성 요청" },
-    { "trigger": "SRS 완료", "target": "self", "action": "US↔FR Mapping 확인" },
-    { "trigger": "/u-skill-u-skill-add 실행", "target": "u-agent-sa", "action": "US 항목 추가 위임" },
+    { "trigger": "SRS 완료", "target": "self", "action": "US↔FT Mapping 확인" },
+    { "trigger": "/u-agent-us-add 실행", "target": "u-agent-sa", "action": "US 항목 추가 위임" },
     { "trigger": "문서 생성/수정 감지", "target": "self", "action": "인덱스 자동 갱신" },
     { "trigger": "DESIGN Phase 완료", "target": "self", "action": "모순 검수 실행" },
     { "trigger": "모순 발견", "target": "해당 Owner", "action": "수정 요청" },
@@ -390,7 +390,7 @@ ACT Phase 시작 시 아래 3단계로 DEF를 BL로 변환:
 
 </details>
 
-### Project Init (`/u-skill-create-project`)
+### Project Init (`/u-agent-create-project`)
 
 프로젝트 초기화 시 아래 구조를 생성한다:
 
@@ -406,7 +406,7 @@ project-root/
 │   ├── tokens/                 # Design Token
 │   └── config/                 # 공유 설정
 ├── .u-maker/docs/
-│   ├── shared/
+│   ├── common/
 │   │   ├── 01-plan/
 │   │   ├── 02-design/
 │   │   ├── 03-dev/

@@ -8,7 +8,7 @@ Checks 3 exit criteria for PDCA iteration completion:
   2. All FR items implemented ({app}/01-plan/1_SRS_RA.md for all apps)
   3. Build succeeds (bun run build)
 
-Supports v2 per-app structure (shared/ + {app}/) with v1 fallback.
+Supports v2 per-app structure (common/ + {app}/) with v1 fallback.
 
 Usage: python3 check-exit-criteria.py [.u-maker/docs-path]
 
@@ -55,15 +55,15 @@ def get_apps(udocs_root):
 
 
 def has_v2_structure(udocs_root):
-    """Check if the v2 shared/ directory exists."""
-    return os.path.isdir(os.path.join(udocs_root, "shared"))
+    """Check if the v2 common/ directory exists."""
+    return os.path.isdir(os.path.join(udocs_root, "common"))
 
 
 def get_doc_path(udocs_root, doc_name, app=None):
     """
     Resolve document path based on v2 or v1 structure.
     Root docs: {udocs_root}/{doc}
-    Shared docs: shared/{phase}/{doc}
+    Common docs: common/{phase}/{doc}
     App docs: {app}/{phase}/{doc}
     """
     prefix = doc_name[0]
@@ -76,7 +76,7 @@ def get_doc_path(udocs_root, doc_name, app=None):
     }
     phase_dir = phase_map.get(prefix, "")
 
-    shared_docs = [
+    common_docs = [
         "1_Roadmap_PM.md",
         "1_Index_PM.md",
         "2_ERD_SA.md",
@@ -88,8 +88,8 @@ def get_doc_path(udocs_root, doc_name, app=None):
     ]
 
     if has_v2_structure(udocs_root):
-        if doc_name in shared_docs:
-            return os.path.join(udocs_root, "shared", phase_dir, doc_name)
+        if doc_name in common_docs:
+            return os.path.join(udocs_root, "common", phase_dir, doc_name)
         return os.path.join(udocs_root, app or "web", phase_dir, doc_name)
 
     # v1 fallback

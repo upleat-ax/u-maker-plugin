@@ -28,16 +28,17 @@
   },
   "documentPaths": {
     "root": ".u-maker/docs",
-    "shared": ".u-maker/docs/shared",
+    "common": ".u-maker/docs/common",
     "iterations": ".u-maker/docs/iterations"
   },
   "documentScopes": {
     "root": [
       "_links.json"
     ],
-    "shared": [
+    "common": [
       "1_Roadmap_PM.md",
       "1_Index_PM.md",
+      "1_Common_RA.md",
       "2_ERD_SA.md",
       "2_UXGuide_UX.md",
       "3_UIComponents_UX.md",
@@ -64,7 +65,7 @@
         "required": true
       }
     },
-    "shared": {
+    "common": {
       "01-plan": {
         "1_Roadmap_PM.md": {
           "owner": "u-agent-ra",
@@ -73,6 +74,10 @@
         "1_Index_PM.md": {
           "owner": "u-agent-ra",
           "required": true
+        },
+        "1_Common_RA.md": {
+          "owner": "u-agent-ra",
+          "required": false
         }
       },
       "02-design": {
@@ -155,7 +160,7 @@
   },
   "phaseGates": {
     "plan-to-design": {
-      "shared": [
+      "common": [
         "1_Roadmap_PM.md"
       ],
       "perApp": [
@@ -166,7 +171,7 @@
       "validator": "u-agent-ra"
     },
     "design-to-do": {
-      "shared": [
+      "common": [
         "2_ERD_SA.md"
       ],
       "perApp": [
@@ -199,7 +204,7 @@
       "trigger": "check-to-complete-failed"
     },
     "act-to-plan": {
-      "shared": [
+      "common": [
         "5_IterationLog_RA.md",
         "5_Retrospective_PM.md"
       ],
@@ -423,6 +428,7 @@
       "1_SRS_RA",
       "1_IA_RA",
       "1_Index_PM",
+      "1_Common_RA",
       "2_ERD_SA",
       "2_API_SA",
       "2_Screen_UX",

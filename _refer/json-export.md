@@ -18,7 +18,7 @@
 ### 경로 예시
 
 ```
-.u-maker/docs/shared/01-plan/1_Roadmap_PM.md  →  .u-maker/docs/shared/01-plan/1_Roadmap_PM.json
+.u-maker/docs/common/01-plan/1_Roadmap_PM.md  →  .u-maker/docs/common/01-plan/1_Roadmap_PM.json
 .u-maker/docs/web/01-plan/1_SRS_RA.md        →  .u-maker/docs/web/01-plan/1_SRS_RA.json
 ```
 
@@ -66,23 +66,42 @@
 {
   "document": "1_SRS_RA",
   "meta": { "owner": "u-agent-sa", "status": "Draft", "version": "v0.1.0", "lastUpdated": "YYYY-MM-DD", "app": "web" },
+  "users": [
+    {
+      "id": "USR-0010",
+      "role": "사용자",
+      "description": "...",
+      "priority": "Must"
+    }
+  ],
   "userStories": [
     {
       "id": "US-0010",
+      "usr": { "id": "USR-0010" },
       "role": "사용자",
       "feature": "...",
       "benefit": "...",
       "priority": "Must",
-      "fr": { "id": "FR-0010" }
+      "ft": [{ "id": "FT-0010" }]
+    }
+  ],
+  "features": [
+    {
+      "id": "FT-0010",
+      "feature": "...",
+      "description": "...",
+      "priority": "Must",
+      "us": { "id": "US-0010" },
+      "status": "Not Started"
     }
   ],
   "functionalRequirements": [
     {
       "id": "FR-0010",
-      "feature": "...",
+      "requirement": "...",
       "description": "...",
       "priority": "Must",
-      "us": { "id": "US-0010" },
+      "ft": { "id": "FT-0010" },
       "status": "Not Started"
     }
   ],
@@ -98,12 +117,65 @@
 ```
 
 `1_SRS_RA.json` 필드 완전성 규칙:
-- `userStories[]`: `id`, `role`, `feature`, `benefit`, `priority`, `fr`를 모두 포함한다.
-- `functionalRequirements[]`: `id`, `feature`, `description`, `priority`, `us`, `status`를 모두 포함한다.
+- `users[]`: `id`, `role`, `description`, `priority`를 모두 포함한다.
+- `userStories[]`: `id`, `usr`, `role`, `feature`, `benefit`, `priority`, `ft`를 모두 포함한다.
+- `features[]`: `id`, `feature`, `description`, `priority`, `us`, `status`를 모두 포함한다.
+- `functionalRequirements[]`: `id`, `requirement`, `description`, `priority`, `ft`, `status`를 모두 포함한다.
 - `nonFunctionalRequirements[]`: `id`, `category`, `requirement`, `metric`를 모두 포함한다.
 - `id`만 남기는 축약 출력은 금지한다. 값 미확정 시 키를 생략하지 말고 `null`로 기록한다.
 
-### 2.3 `1_IA_RA.json`
+### 2.3 `1_Common_RA.json`
+
+```json
+{
+  "document": "1_Common_RA",
+  "meta": { "owner": "u-agent-ra", "status": "Draft", "version": "v0.1.0", "lastUpdated": "YYYY-MM-DD" },
+  "authPolicy": {
+    "methods": [
+      { "method": "JWT", "description": "...", "useCase": "..." }
+    ],
+    "tokenManagement": {
+      "tokenType": "JWT",
+      "accessTokenTTL": "15min",
+      "refreshTokenTTL": "7d",
+      "storage": "httpOnly cookie"
+    }
+  },
+  "rbacPolicy": {
+    "roles": [
+      { "role": "Admin", "description": "...", "accessLevel": "Full" }
+    ],
+    "permissions": [
+      { "resource": "...", "public": "N", "user": "R", "admin": "W" }
+    ]
+  },
+  "securityPolicy": {
+    "inputValidation": [
+      { "rule": "XSS Prevention", "description": "..." }
+    ],
+    "dataProtection": [
+      { "item": "Password Hashing", "policy": "bcrypt" }
+    ],
+    "apiSecurity": [
+      { "item": "Rate Limiting", "policy": "100 req/min per IP" }
+    ]
+  },
+  "businessRules": [
+    { "id": "BR-0010", "rule": "...", "description": "...", "scope": "..." }
+  ],
+  "errorHandling": {
+    "format": "{ error: { code, message, details } }",
+    "codes": [
+      { "code": "ERR_AUTH_001", "httpStatus": 401, "description": "...", "action": "..." }
+    ]
+  },
+  "glossary": [
+    { "term": "...", "definition": "..." }
+  ]
+}
+```
+
+### 2.4 `1_IA_RA.json`
 
 ```json
 {
@@ -117,7 +189,7 @@
       "depth": 2,
       "parent": { "id": "MN-AUTH" },
       "screen": { "id": "S-0010" },
-      "fr": { "id": "FR-0010" }
+      "ft": { "id": "FT-0010" }
     }
   ],
   "screens": [
@@ -132,7 +204,7 @@
 }
 ```
 
-### 2.4 `1_Index_PM.json`
+### 2.5 `1_Index_PM.json`
 
 ```json
 {
@@ -145,14 +217,14 @@
       "owner": "u-agent-ra",
       "status": "Final",
       "version": "v1.0.0",
-      "path": ".u-maker/docs/shared/01-plan/1_Roadmap_PM.md",
+      "path": ".u-maker/docs/common/01-plan/1_Roadmap_PM.md",
       "phase": "PLAN"
     }
   ]
 }
 ```
 
-### 2.5 `2_ERD_SA.json`
+### 2.6 `2_ERD_SA.json`
 
 ```json
 {
@@ -174,7 +246,7 @@
 }
 ```
 
-### 2.6 `2_API_SA.json`
+### 2.7 `2_API_SA.json`
 
 ```json
 {
@@ -186,7 +258,7 @@
       "method": "POST",
       "path": "/api/auth/login",
       "description": "...",
-      "fr": { "id": "FR-0010" },
+      "ft": { "id": "FT-0010" },
       "auth": false,
       "requestBody": { "email": "string", "password": "string" },
       "responses": {
@@ -198,7 +270,7 @@
 }
 ```
 
-### 2.7 `2_Screen_UX.json`
+### 2.8 `2_Screen_UX.json`
 
 ```json
 {
@@ -211,7 +283,7 @@
       "goal": "...",
       "accessRole": "Public",
       "menu": { "id": "MN-AUTH-0010" },
-      "fr": [{ "id": "FR-0010" }],
+      "ft": [{ "id": "FT-0010" }],
       "wireframe": "2_Screen_Wireframes/S-0010.html",
       "connectedScreens": [
         { "screen": { "id": "S-0020" }, "condition": "로그인 성공" }
@@ -224,7 +296,7 @@
 }
 ```
 
-### 2.8 `2_ScreenFlow_UX.json`
+### 2.9 `2_ScreenFlow_UX.json`
 
 ```json
 {
@@ -258,7 +330,7 @@
 }
 ```
 
-### 2.9 `2_UXGuide_UX.json`
+### 2.10 `2_UXGuide_UX.json`
 
 ```json
 {
@@ -280,7 +352,7 @@
 }
 ```
 
-### 2.9 `3_UIComponents_UX.json`
+### 2.11 `3_UIComponents_UX.json`
 
 ```json
 {
@@ -305,7 +377,7 @@
 }
 ```
 
-### 2.10 `3_DesignToken_UX.json`
+### 2.12 `3_DesignToken_UX.json`
 
 ```json
 {
@@ -323,7 +395,7 @@
 }
 ```
 
-### 2.11 `3_Code_DV.json`
+### 2.13 `3_Code_DV.json`
 
 ```json
 {
@@ -334,26 +406,26 @@
       "path": "apps/web/app/login/page.tsx",
       "type": "page",
       "screen": { "id": "S-0010" },
-      "fr": [{ "id": "FR-0010" }],
+      "ft": [{ "id": "FT-0010" }],
       "status": "implemented"
     }
   ],
   "summary": {
-    "totalFr": 0,
-    "implementedFr": 0,
+    "totalFt": 0,
+    "implementedFt": 0,
     "progress": 0
   }
 }
 ```
 
-### 2.12 `4_Case_QA.json`
+### 2.14 `4_Case_QA.json`
 
 ```json
 {
   "document": "4_Case_QA",
   "meta": { "owner": "u-agent-qa", "status": "Draft", "version": "v0.1.0", "lastUpdated": "YYYY-MM-DD", "app": "web" },
   "background": {
-    "purpose": "SRS FR 기반 테스트 케이스 설계",
+    "purpose": "SRS FT 기반 테스트 케이스 설계",
     "testStrategy": {
       "testTypes": ["Unit", "E2E"],
       "coverageTarget": "80%+",
@@ -372,7 +444,7 @@
   "testCases": [
     {
       "id": "TC-0010",
-      "fr": { "id": "FR-0010" },
+      "ft": { "id": "FT-0010" },
       "us": { "id": "US-0010" },
       "level": "Unit",
       "type": "Positive",
@@ -396,7 +468,7 @@
   ],
   "coverageMatrix": [
     {
-      "fr": { "id": "FR-0010" },
+      "ft": { "id": "FT-0010" },
       "feature": "로그인",
       "unitCases": [{ "id": "TC-0010" }, { "id": "TC-0020" }],
       "e2eCases": [{ "id": "TC-0030" }, { "id": "TC-0040" }],
@@ -417,12 +489,12 @@
 - `background`: `purpose`, `testStrategy`(testTypes, coverageTarget, tools, environment)를 모두 포함한다.
 - `testConditions.prerequisites[]`: `id`, `condition`, `description`을 모두 포함한다.
 - `testConditions.testData[]`: `dataSet`, `description`, `records`를 모두 포함한다.
-- `testCases[]`: `id`, `fr`, `us`, `level`, `type`, `priority`, `actor`, `precondition`, `automationTarget`, `steps`, `result`, `note`를 모두 포함한다.
+- `testCases[]`: `id`, `ft`, `us`, `level`, `type`, `priority`, `actor`, `precondition`, `automationTarget`, `steps`, `result`, `note`를 모두 포함한다.
 - `testCases[].steps[]`: `step`, `screen`, `element`, `action`, `input`, `expected`를 모두 포함한다. 이는 "누가-어디서-무엇을-어떻게-무엇을입력-기대결과" 6W 구조를 반영한다.
-- `coverageMatrix[]`: `fr`, `feature`, `unitCases`, `e2eCases`, `coverage`를 모두 포함한다.
+- `coverageMatrix[]`: `ft`, `feature`, `unitCases`, `e2eCases`, `coverage`를 모두 포함한다.
 - `summary`: `total`, `pass`, `fail`, `skip`, `pending`을 모두 포함한다.
 
-### 2.13 `4_Report_QA.json`
+### 2.15 `4_Report_QA.json`
 
 ```json
 {
@@ -435,7 +507,7 @@
       "severity": "Major",
       "status": "Open",
       "tc": { "id": "TC-0010" },
-      "fr": { "id": "FR-0010" },
+      "ft": { "id": "FT-0010" },
       "steps": "...",
       "rootCause": "...",
       "fixSuggestion": "..."
@@ -477,7 +549,7 @@
 - **누락 값**: 마크다운에서 파싱 불가한 값은 `null`로 설정한다
 - **배열 순서**: 마크다운 문서 내 순서를 유지한다 (ID 오름차순)
 - **ID 필드명 규칙**: 식별자 필드는 항상 `id`를 사용한다
-- **참조 필드 규칙**: 다른 문서/엔터티 ID를 참조할 때는 문자열 직접 삽입 대신 객체를 사용한다. 예: `"fr": { "id": "FR-0010" }`, `"fr": [{ "id": "FR-0010" }]`
+- **참조 필드 규칙**: 다른 문서/엔터티 ID를 참조할 때는 문자열 직접 삽입 대신 객체를 사용한다. 예: `"ft": { "id": "FT-0010" }`, `"fr": { "id": "FR-0010" }`, `"fr": [{ "id": "FR-0010" }]`
 - **필드 완전성 규칙**: 테이블/목록의 각 행은 스키마에 정의된 필드를 모두 포함해야 하며, `id`만 남기는 축약 출력은 허용하지 않는다.
 - **인코딩**: UTF-8, 들여쓰기 2 스페이스
 - **Summary Box**: JSON 파일 생성/갱신 결과를 Post-Execution Summary Box에 표시한다
@@ -500,8 +572,10 @@
   "lastUpdated": "YYYY-MM-DD",
   "mappings": [
     {
+      "ft": { "id": "FT-0010" },
       "fr": { "id": "FR-0010" },
       "us": [{ "id": "US-0010" }],
+      "usr": { "id": "USR-0010" },
       "mn": { "id": "MN-AUTH-0010" },
       "screen": { "id": "S-0010" },
       "api": "POST /auth/login",
@@ -516,8 +590,10 @@
 
 | 필드 | 타입 | Required | 설명 | 원본 문서 |
 |------|------|----------|------|-----------|
-| `fr` | `{ id: string }` | Yes | 기능 요구사항 ID (매핑의 기준 키) | `1_SRS_RA.md` |
-| `us` | `{ id: string }[]` | Yes | 유저 스토리 ID 목록. Technical FR은 `[{"id":"-"}]` | `1_SRS_RA.md` |
+| `ft` | `{ id: string }` | Yes | Feature ID (매핑의 기준 키) | `1_SRS_RA.md` |
+| `fr` | `{ id: string }` | Yes | 기능 요구사항 ID | `1_SRS_RA.md` |
+| `us` | `{ id: string }[]` | Yes | 유저 스토리 ID 목록. Technical FT는 `[{"id":"-"}]` | `1_SRS_RA.md` |
+| `usr` | `{ id: string } \| null` | No | 사용자 유형 ID | `1_SRS_RA.md` |
 | `mn` | `{ id: string } \| null` | No | 메뉴 네비게이션 ID | `1_IA_RA.md` |
 | `screen` | `{ id: string } \| null` | No | 화면 ID | `2_Screen_UX.md` |
 | `api` | `string \| null` | No | API Endpoint (`METHOD /path`) | `2_API_SA.md` |
@@ -526,11 +602,11 @@
 
 ### 5.4 규칙
 
-1. FR 추가 시 `_links.json`에 매핑 행을 반드시 함께 추가한다
+1. FT 추가 시 `_links.json`에 매핑 행을 반드시 함께 추가한다
 2. 미정 필드는 `null`로 기입한다 (나중에 해당 문서 작성 시 갱신)
-3. FR 삭제 시 해당 매핑 행을 제거한다
+3. FT 삭제 시 해당 매핑 행을 제거한다
 4. `version`은 매핑 변경 시 MINOR bump, 구조 변경 시 MAJOR bump
-5. `/u-skill-validate` 검증 시 이 파일 기준으로 누락을 탐지한다:
+5. `/u-agent-validate` 검증 시 이 파일 기준으로 누락을 탐지한다:
    - `"screen": { "id": "S-0050" }` 인데 `2_Screen_UX.md`에 S-0050이 없음 → Fail
-   - `"api": null` 인 FR이 DESIGN Phase Gate 시점에 존재 → Warning
-6. `mappings` 배열은 `fr.id` 오름차순으로 정렬한다
+   - `"api": null` 인 FT가 DESIGN Phase Gate 시점에 존재 → Warning
+6. `mappings` 배열은 `ft.id` 오름차순으로 정렬한다

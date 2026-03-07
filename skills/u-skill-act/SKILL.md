@@ -34,14 +34,14 @@ agents:
 
 ## Execution Sequence
 
-1. `u-agent-ra`: DEF → BL 변환 및 Iteration Log에 백로그 기록 (`shared/05-act/5_IterationLog_RA.md`)
+1. `u-agent-ra`: DEF → BL 변환 및 Iteration Log에 백로그 기록 (`common/05-act/5_IterationLog_RA.md`)
    - 모든 앱의 `4_Report_QA.md` Open DEF → BL 자동 변환 (아래 Conversion Rules 참조)
    - 기존 Open/InProgress 항목 우선순위 재평가
-2. `u-agent-ra`: 회고 작성 (`shared/05-act/5_Retrospective_PM.md`)
+2. `u-agent-ra`: 회고 작성 (`common/05-act/5_Retrospective_PM.md`)
    - 잘된 점, 개선할 점, 다음 Iteration 목표
 3. `u-agent-ra`: 아카이브 + 인덱스 갱신
    - 현재 Iteration 문서 → `.u-maker/docs/iterations/iter-N/` 복사
-   - `shared/05-act/5_IterationLog_RA.md` 갱신
+   - `common/05-act/5_IterationLog_RA.md` 갱신
 4. 다음 Iteration 전환 (currentIteration + 1)
 
 ## Gate → PLAN (Iter N+1)
@@ -58,7 +58,7 @@ ACT Phase에서 u-agent-ra가 CHECK Phase의 결함(DEF)을 백로그 항목(BL)
 |-----------|----------|------|
 | Severity | Priority | 1:1 매핑 (Critical→Critical, Major→Major, Minor→Minor, Trivial→Trivial) |
 | DEF-ID | Related DEF | BL 상세에 DEF 참조 기록 |
-| TC-ID → FR-ID | Related FR | 복사 |
+| TC-ID → FT-ID | Related FT | 복사 |
 | - | Type | 항상 `Bug` |
 | - | Origin | 항상 `CHECK` |
 | - | Status | 항상 `Open` |

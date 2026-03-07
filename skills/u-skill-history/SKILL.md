@@ -22,17 +22,17 @@ imports:
   - ${PLUGIN_ROOT}/_refer/post-execution-summary.md
   - ${PLUGIN_ROOT}/_refer/json-export.md
   - ${PLUGIN_ROOT}/.u-maker/u-ssot.config.json
+agents:
+  - u-maker:u-agent-ra
 ---
 
-# u-skill-history
-
-agent: u-maker:u-agent-ra
+# u-agent-history
 
 `u-agent-ra` 에이전트를 호출하여 5_IterationLog_RA.md 내용을 표시한다.
 
 ## Source
 
-`.u-maker/docs/shared/05-act/5_IterationLog_RA.md`
+`.u-maker/docs/common/05-act/5_IterationLog_RA.md`
 
 ## Rules
 

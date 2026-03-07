@@ -7,10 +7,10 @@ version: "v0.1.0"
 last_updated: "{{DATE}}"
 app: "{{APP_NAME}}"
 related_docs:
-  - ".u-maker/docs/shared/01-plan/1_Roadmap_PM.md"
+  - ".u-maker/docs/common/01-plan/1_Roadmap_PM.md"
   - ".u-maker/docs/{{APP_NAME}}/01-plan/1_SRS_RA.md"
   - ".u-maker/docs/{{APP_NAME}}/02-design/2_Screen_UX.md"
-  - ".u-maker/docs/shared/01-plan/1_Index_PM.md"
+  - ".u-maker/docs/common/01-plan/1_Index_PM.md"
 external_links: []
 ---
 
@@ -54,37 +54,37 @@ external_links: []
 
 ### 3.1 Menu Tree Diagram
 
-> **규칙**: Mermaid는 `flowchart TD` 또는 `journey` 형식을 사용한다. `mindmap` 사용 금지.
+> **규칙**: Menu Tree는 Mermaid `flowchart TD`로 작성한다. `mindmap` 사용 금지.
 
 ```mermaid
 flowchart TD
     ROOT(("{{APP_NAME}}"))
-    
+
     %% Depth 1
     ROOT --> AUTH["AUTH (인증)"]
     ROOT --> DASH["DASH (대시보드)"]
     ROOT --> DOMAIN["{{DOMAIN}} ({{도메인명}})"]
     ROOT --> SET["SET (설정)"]
-    
+
     %% Depth 2: AUTH
     AUTH --> A1["Login"]
     AUTH --> A2["Register"]
     AUTH --> A3["Password Reset"]
-    
+
     %% Depth 2: DASH
     DASH --> D1["Overview"]
     DASH --> D2["{{기능 1}}"]
     DASH --> D3["{{기능 2}}"]
-    
+
     %% Depth 2: DOMAIN
     DOMAIN --> M1["{{하위 메뉴 1}}"]
     DOMAIN --> M2["{{하위 메뉴 2}}"]
     DOMAIN --> M3["{{하위 메뉴 3}}"]
-    
+
     %% Depth 3 (예시)
     M1 --> M1_1["{{상세 기능 1-1}}"]
     M1 --> M1_2["{{상세 기능 1-2}}"]
-    
+
     %% Depth 2: SET
     SET --> S1["Profile"]
     SET --> S2["Notifications"]
@@ -93,13 +93,13 @@ flowchart TD
 
 ### 3.2 Menu Tree Table
 
-| Menu ID | Menu Name | Path | Depth | Parent MN-ID | Screen ID | Icon | Auth | Order | Visible | FR Mapping |
+| Menu ID | Menu Name | Path | Depth | Parent MN-ID | Screen ID | Icon | Auth | Order | Visible | FT Mapping |
 |---------|-----------|------|-------|-------------|-----------|------|------|-------|---------|------------|
 | MN-AUTH-0010 | Login | `/auth/login` | 1 | - | S-0010 | LogIn | No | 1 | Conditional | - |
 | MN-AUTH-0020 | Register | `/auth/register` | 1 | - | S-0020 | UserPlus | No | 2 | Conditional | - |
-| MN-DASH-0010 | Dashboard | `/dashboard` | 1 | - | S-0030 | LayoutDashboard | Yes | 1 | Always | FR-0010 |
-| MN-{{DOMAIN}}-0010 | {{메뉴명}} | `/{{path}}` | 1 | - | S-0040 | {{아이콘}} | Yes | 2 | Always | FR-0020 |
-| MN-{{DOMAIN}}-0020 | {{하위 메뉴}} | `/{{path}}/{{sub}}` | 2 | MN-{{DOMAIN}}-0010 | S-0050 | {{아이콘}} | Yes | 1 | Always | FR-0030 |
+| MN-DASH-0010 | Dashboard | `/dashboard` | 1 | - | S-0030 | LayoutDashboard | Yes | 1 | Always | FT-0010 |
+| MN-{{DOMAIN}}-0010 | {{메뉴명}} | `/{{path}}` | 1 | - | S-0040 | {{아이콘}} | Yes | 2 | Always | FT-0020 |
+| MN-{{DOMAIN}}-0020 | {{하위 메뉴}} | `/{{path}}/{{sub}}` | 2 | MN-{{DOMAIN}}-0010 | S-0050 | {{아이콘}} | Yes | 1 | Always | FT-0030 |
 | MN-SET-0010 | Settings | `/settings` | 1 | - | S-0060 | Settings | Yes | 99 | Always | - |
 | MN-SET-0020 | Profile | `/settings/profile` | 2 | MN-SET-0010 | S-0070 | User | Yes | 1 | Always | - |
 
@@ -132,16 +132,16 @@ flowchart LR
 
 ## 5. Screen Inventory
 
-| Screen ID | Screen Name | Path | Access Type | Menu ID | Parent Screen | FR Mapping | Priority |
+| Screen ID | Screen Name | Path | Access Type | Menu ID | Parent Screen | FT Mapping | Priority |
 |-----------|------------|------|-------------|---------|---------------|------------|----------|
 | S-0010 | Login | `/auth/login` | Menu | MN-AUTH-0010 | - | - | Must |
 | S-0020 | Register | `/auth/register` | Menu | MN-AUTH-0020 | - | - | Must |
-| S-0030 | Dashboard | `/dashboard` | Menu | MN-DASH-0010 | - | FR-0010 | Must |
-| S-0040 | {{화면명}} | `/{{path}}` | Menu | MN-{{DOMAIN}}-0010 | Dashboard | FR-0020 | Must |
-| S-0050 | {{화면명}} | `/{{path}}/{{sub}}` | Menu | MN-{{DOMAIN}}-0020 | S-0040 | FR-0030 | Should |
+| S-0030 | Dashboard | `/dashboard` | Menu | MN-DASH-0010 | - | FT-0010 | Must |
+| S-0040 | {{화면명}} | `/{{path}}` | Menu | MN-{{DOMAIN}}-0010 | Dashboard | FT-0020 | Must |
+| S-0050 | {{화면명}} | `/{{path}}/{{sub}}` | Menu | MN-{{DOMAIN}}-0020 | S-0040 | FT-0030 | Should |
 | S-0060 | Settings | `/settings` | Menu | MN-SET-0010 | - | - | Must |
 | S-0070 | Profile | `/settings/profile` | Menu | MN-SET-0020 | Settings | - | Must |
-| S-0080 | {{모달/Drawer}} | - | Modal | - | S-0040 | FR-0040 | Should |
+| S-0080 | {{모달/Drawer}} | - | Modal | - | S-0040 | FT-0040 | Should |
 | S-0090 | Error 404 | `/404` | Error | - | - | - | Must |
 
 ### 5.1 Access Type Guide

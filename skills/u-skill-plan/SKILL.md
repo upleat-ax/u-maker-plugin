@@ -46,30 +46,30 @@ agents:
 
 ## Execution Sequence
 
-PLAN Phase는 US-First 또는 FR-First 두 가지 패턴을 지원한다.
+PLAN Phase는 US-First 또는 FT-First 두 가지 패턴을 지원한다.
 
 ### Pattern A (US-First)
-1. `u-agent-ra`: 로드맵 생성 (`shared/01-plan/1_Roadmap_PM.md`)
-2. `u-agent-sa`: SRS 작성 — User Stories(Section 2) → FR 도출 (`{app}/01-plan/1_SRS_RA.md`)
-3. Cross-mapping: US↔FR TBD → 실제 ID 매핑 전체 갱신 (TBD 불허)
+1. `u-agent-ra`: 로드맵 생성 (`common/01-plan/1_Roadmap_PM.md`)
+2. `u-agent-sa`: SRS 작성 — USR(Section 2) → US(Section 3) → FT 도출(Section 4) → FR 도출(Section 5) (`{app}/01-plan/1_SRS_RA.md`)
+3. Cross-mapping: US↔FT TBD → 실제 ID 매핑 전체 갱신 (TBD 불허)
 4. `u-agent-ux`: 정보 구조도 작성 (`{app}/01-plan/1_IA_RA.md`)
-5. `u-agent-ra`: 인덱스 생성 (`shared/01-plan/1_Index_PM.md`)
+5. `u-agent-ra`: 인덱스 생성 (`common/01-plan/1_Index_PM.md`)
 
-### Pattern B (FR-First)
-1. `u-agent-sa`: SRS 작성 — FR 먼저 (`{app}/01-plan/1_SRS_RA.md`)
-2. `u-agent-ra`: 로드맵 생성 (`shared/01-plan/1_Roadmap_PM.md`)
+### Pattern B (FT-First)
+1. `u-agent-sa`: SRS 작성 — FT 먼저 (`{app}/01-plan/1_SRS_RA.md`)
+2. `u-agent-ra`: 로드맵 생성 (`common/01-plan/1_Roadmap_PM.md`)
 3. Cross-mapping 완료
 4. `u-agent-ux`: 정보 구조도 작성 (`{app}/01-plan/1_IA_RA.md`)
-5. `u-agent-ra`: 인덱스 생성 (`shared/01-plan/1_Index_PM.md`)
+5. `u-agent-ra`: 인덱스 생성 (`common/01-plan/1_Index_PM.md`)
 
 ### SRS 작성 규칙
-- `u-agent-sa`: SRS의 User Stories(Section 2)에서 FR 도출 → US Mapping 필드로 추적
-- `u-agent-sa`: 암묵적(Implicit) FR 추가 도출 (유효성 검증, 에러 처리, 권한 등)
-- User Story 1개당 3~7개 FR 도출 목표
+- `u-agent-sa`: SRS의 User Stories(Section 3)에서 FT 도출 → US Mapping 필드로 추적
+- `u-agent-sa`: 암묵적(Implicit) FT 추가 도출 (유효성 검증, 에러 처리, 권한 등)
+- User Story 1개당 3~7개 FT 도출 목표
 
 ## Gate → DESIGN
 
-`shared/1_Roadmap_PM` Final + 모든 앱의 `1_SRS_RA`, `1_IA_RA` Final + **US→FR mapping complete** (모든 US에 FR-ID 매핑 완료, TBD 잔존 불허)
+`common/1_Roadmap_PM` Final + 모든 앱의 `1_SRS_RA`, `1_IA_RA` Final + **US→FR mapping complete** (모든 US에 FR-ID 매핑 완료, TBD 잔존 불허)
 
 ## Rules
 

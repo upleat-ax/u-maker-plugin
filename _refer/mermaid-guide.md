@@ -420,9 +420,61 @@ zenuml
 
 ---
 
-## 3. Naming Conventions
+## 3. Mandatory Diagram Matrix
 
-### Node ID Naming
+> **원칙**: 각 SSoT 문서는 아래 매트릭스에 명시된 다이어그램을 **반드시** 포함해야 한다. 적용 가능한 다이어그램은 최대한 많이 작성한다.
+
+### 3.1 Document → Required Diagrams
+
+| Document | Required Diagrams | Optional Diagrams |
+|----------|-------------------|-------------------|
+| `1_Roadmap_PM` | gantt, timeline | pie (우선순위 분포) |
+| `1_SRS_RA` | flowchart (US→FR 매핑), pie (FR 우선순위 분포) | classDiagram (도메인 개념 모델) |
+| `1_IA_RA` | **flowchart TD** (메뉴 트리), journey (유저 여정), flowchart (유저 플로우) | stateDiagram-v2 (네비게이션 상태) |
+| `2_UXGuide_UX` | flowchart (디자인 시스템 구조) | classDiagram (컴포넌트 계층) |
+| `2_Screen_UX` | stateDiagram-v2 (화면 상태 전이), flowchart (화면 간 전환 플로우) | sequenceDiagram (인터랙션 흐름) |
+| `2_ScreenFlow_UX` | flowchart LR (스크린 플로우), stateDiagram-v2 (조건부 네비게이션) | journey (핵심 태스크 플로우) |
+| `2_ERD_SA` | erDiagram (엔티티 관계), classDiagram (도메인 모델) | flowchart (데이터 흐름) |
+| `2_API_SA` | C4Context (시스템 아키텍처), sequenceDiagram (API 인터랙션), flowchart (인증 플로우) | zenuml (복잡한 조건 분기) |
+| `3_Code_DV` | flowchart (프로세스 플로우, 조건 분기), classDiagram (모듈 구조), C4Context (시스템 아키텍처) | sequenceDiagram (데이터 흐름) |
+| `3_DesignToken_UX` | flowchart TD (토큰 계층 구조) | classDiagram (토큰 타입 관계) |
+| `3_UIComponents_UX` | classDiagram (컴포넌트 계층, Atomic Design), stateDiagram-v2 (컴포넌트 상태) | flowchart (컴포넌트 합성 흐름) |
+| `4_Case_QA` | flowchart (테스트 시나리오 플로우) | pie (케이스 분포), stateDiagram-v2 (테스트 상태) |
+| `4_Report_QA` | pie (Pass/Fail/Skip 비율), xychart-beta (추이 분석) | flowchart (결함 분류) |
+| `5_IterationLog_RA` | xychart-beta (Iteration 진행률), gantt (실제 일정) | pie (완료 비율) |
+| `5_Retrospective_PM` | flowchart (개선 액션 플로우) | pie (카테고리 분포) |
+
+### 3.2 Diagram Category Guide
+
+| Category | Diagram Types | When to Use |
+|----------|--------------|-------------|
+| **Menu Tree** | `flowchart TD` | 메뉴 계층 구조 (mindmap 사용 금지) |
+| **Data Flow** | `flowchart LR`, `sequenceDiagram` | 데이터가 시스템 간/컴포넌트 간 이동하는 흐름 |
+| **Conditional Flow** | `flowchart TD` (diamond nodes), `zenuml` | 분기/조건에 따라 처리가 달라지는 로직 |
+| **Process Flow** | `flowchart TD/LR`, `sequenceDiagram` | 순차적 처리 단계, 비즈니스 프로세스 |
+| **System Architecture** | `C4Context`, `flowchart TD` (subgraph) | 시스템 구성 요소와 외부 의존성 |
+| **Screen Flow** | `flowchart LR`, `stateDiagram-v2` | 화면 간 전환, 네비게이션 경로 |
+| **UserStory → Features** | `flowchart TD`, `pie` | US에서 FR로의 매핑, 기능 분류 |
+| **Entity / ERD** | `erDiagram`, `classDiagram` | 데이터 모델, 엔티티 관계, 속성 정의 |
+| **Class Diagram** | `classDiagram` | 도메인 모델, 타입 관계, 컴포넌트 계층 |
+| **Activity Diagram** | `flowchart TD` (start/end nodes), `stateDiagram-v2` | 사용자 활동 흐름, 상태 전이 |
+| **Statistics** | `pie`, `xychart-beta` | 비율, 커버리지, 진행률 추이 |
+| **Timeline** | `gantt`, `timeline` | 일정, 마일스톤, 이력 |
+| **User Journey** | `journey` | 사용자 경험 단계별 만족도 |
+
+### 3.3 Minimum Diagram Count per Document
+
+- **PLAN Phase 문서**: 최소 2개 다이어그램
+- **DESIGN Phase 문서**: 최소 3개 다이어그램
+- **DEV Phase 문서**: 최소 2개 다이어그램
+- **CHECK Phase 문서**: 최소 2개 다이어그램
+- **ACT Phase 문서**: 최소 1개 다이어그램
+
+---
+
+## 4. Naming Conventions
+
+### 4.1 Node ID Naming
 
 | Context | Convention | Example |
 |---------|-----------|---------|
@@ -432,7 +484,7 @@ zenuml
 | Participant | `PascalCase` | `Client`, `API`, `DB` |
 | Phase/Section | `UPPER_CASE` | `PLAN`, `DESIGN`, `CHECK` |
 
-### Diagram Title Naming
+### 4.2 Diagram Title Naming
 
 | Phase | Title Convention | Example |
 |-------|-----------------|---------|
@@ -442,7 +494,7 @@ zenuml
 | CHECK | `{Test} Results` | `"API Test Results"` |
 | ACT | `Iteration {N} {Metric}` | `"Iteration Progress"` |
 
-### Color & Style
+### 4.3 Color & Style
 
 - Mermaid 기본 테마를 사용한다 (커스텀 테마 불필요)
 - 필요시 `classDef`로 상태별 색상을 지정할 수 있다:
@@ -456,9 +508,9 @@ flowchart TD
 
 ---
 
-## 4. Syntax Pitfalls (필수 준수)
+## 5. Syntax Pitfalls (필수 준수)
 
-### 4.1 노드 라벨에 `/` 직접 사용 금지
+### 5.1 노드 라벨에 `/` 직접 사용 금지
 
 Mermaid는 `[/text/]`를 trapezoid(사다리꼴) 노드로 해석한다. URL 경로를 노드 라벨에 넣으면 lexical error가 발생한다.
 
@@ -485,7 +537,7 @@ flowchart TD
 - 노드 라벨은 반드시 `["..."]` (큰따옴표 래핑) 사용
 - trapezoid 노드 `[/text/]` 문법은 사용하지 않는다
 
-### 4.2 특수문자 이스케이프
+### 5.2 특수문자 이스케이프
 
 노드 라벨에 특수문자가 있으면 반드시 `["..."]`로 감싼다:
 
@@ -497,7 +549,7 @@ flowchart TD
 | `>`, `<` | `A[a>b]` | `A["a>b"]` |
 | `→` | `A{PLAN→DESIGN}` | `A{"PLAN to DESIGN"}` |
 
-### 4.3 한글 라벨 안전 패턴
+### 5.3 한글 라벨 안전 패턴
 
 한글 텍스트는 기본적으로 `[한글]`로 사용 가능하지만, 특수문자와 함께 쓸 때는 `["..."]`를 사용한다:
 
@@ -510,7 +562,7 @@ flowchart TD
 
 ---
 
-## 5. Best Practices
+## 6. Best Practices
 
 1. **한 다이어그램에 너무 많은 노드를 넣지 않는다** — 최대 15~20개 노드 권장
 2. **방향을 일관되게 유지한다** — 같은 문서 내 flowchart는 동일 방향 사용

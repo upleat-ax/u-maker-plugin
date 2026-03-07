@@ -38,9 +38,9 @@ pencil.dev MCP 도구를 사용하여 SSoT 문서 기반의 시각적 디자인�
 
 | Target | File Path | Content |
 |--------|-----------|---------|
-| Shared System | `.u-maker/docs/shared/02-design/design-system.pen` | Design Tokens, Component Library |
+| Common System | `.u-maker/docs/common/02-design/design-system.pen` | Design Tokens, Component Library |
 | App Design | `.u-maker/docs/{app}/02-design/{app}.pen` | All Screens for the specific app (Single File) |
-| Components | `.u-maker/docs/shared/02-design/components.pen` | Isolated UI Components |
+| Components | `.u-maker/docs/common/02-design/components.pen` | Isolated UI Components |
 
 ### Workflow
 

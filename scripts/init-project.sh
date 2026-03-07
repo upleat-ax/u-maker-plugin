@@ -137,18 +137,18 @@ echo "  -> Storybook configured"
 echo ""
 echo "[4/5] Creating .u-maker/docs/ SSoT document structure..."
 
-# Shared directories
-SHARED_DIRS=(
-  ".u-maker/docs/shared/01-plan"
-  ".u-maker/docs/shared/02-design"
-  ".u-maker/docs/shared/03-dev"
-  ".u-maker/docs/shared/05-act"
-  ".u-maker/docs/shared/assets/diagrams"
-  ".u-maker/docs/shared/assets/screenshots"
+# Common directories
+COMMON_DIRS=(
+  ".u-maker/docs/common/01-plan"
+  ".u-maker/docs/common/02-design"
+  ".u-maker/docs/common/03-dev"
+  ".u-maker/docs/common/05-act"
+  ".u-maker/docs/common/assets/diagrams"
+  ".u-maker/docs/common/assets/screenshots"
   ".u-maker/docs/iterations"
 )
 
-for dir in "${SHARED_DIRS[@]}"; do
+for dir in "${COMMON_DIRS[@]}"; do
   mkdir -p "$dir"
 done
 
@@ -172,15 +172,15 @@ This directory is the **Single Source of Truth (SSoT)** for all project document
 
 | Directory | Scope | Phase | Contents |
 |-----------|-------|-------|----------|
-| `shared/01-plan/` | Shared | PLAN | Roadmap, Master Index |
-| `shared/02-design/` | Shared | DESIGN | ERD, Design System |
-| `shared/03-dev/` | Shared | DO | UI Components, Design Tokens |
-| `shared/05-act/` | Shared | ACT | Backlog, Iteration Log, Retrospective |
+| `common/01-plan/` | Common | PLAN | Roadmap, Master Index |
+| `common/02-design/` | Common | DESIGN | ERD, Design System |
+| `common/03-dev/` | Common | DO | UI Components, Design Tokens |
+| `common/05-act/` | Common | ACT | Backlog, Iteration Log, Retrospective |
 | `{app}/01-plan/` | Per-App | PLAN | SRS, Information Architecture |
 | `{app}/02-design/` | Per-App | DESIGN | API Contract, Screen Design |
 | `{app}/03-dev/` | Per-App | DO | Code Implementation Log |
 | `{app}/04-check/` | Per-App | CHECK | QA Test Cases, QA Report |
-| `shared/assets/` | Shared | - | Diagrams, Screenshots |
+| `common/assets/` | Common | - | Diagrams, Screenshots |
 | `iterations/` | - | - | Iteration Archives (iter-1/, iter-2/, ...) |
 
 ## Document Standards
@@ -197,10 +197,10 @@ All SSoT documents must include the standard header:
 
 ## Commands
 
-- `/u-skill-status` — View current project status
-- `/u-skill-docs` — List all documents in .u-maker/docs
-- `/u-skill-validate` — Validate document integrity
-- `/u-skill-backlog` — View open backlog items
+- `/u-agent-status` — View current project status
+- `/u-agent-docs` — List all documents in .u-maker/docs
+- `/u-agent-validate` — Validate document integrity
+- `/u-agent-backlog` — View open backlog items
 UDOCSREADME
 
 echo "  -> .u-maker/docs/ structure created with README.md"
@@ -212,7 +212,7 @@ echo ""
 echo "[5/5] Finalizing project structure..."
 
 # Add .gitkeep to empty dirs
-for dir in "${SHARED_DIRS[@]}"; do
+for dir in "${COMMON_DIRS[@]}"; do
   if [ -z "$(ls -A "$dir" 2>/dev/null)" ]; then
     touch "$dir/.gitkeep"
   fi

@@ -34,7 +34,7 @@ agents:
 
 1. .u-maker/u-ssot.config.json에서 프로젝트 메타정보 수집
 2. 1_Roadmap_PM.md에서 프로젝트 목표, 마일스톤 추출
-3. 1_SRS_RA.md에서 FR 구현 현황 추출
+3. 1_SRS_RA.md에서 FT 구현 현황 추출
 4. 1_Index_PM.md에서 문서 상태 수집
 5. 현재 Iteration, Phase, Loop 상태 확인
 6. 콘솔에 요약 출력

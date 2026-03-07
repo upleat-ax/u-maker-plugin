@@ -7,11 +7,11 @@ version: "v0.1.0"
 last_updated: "{{DATE}}"
 app: "{{APP_NAME}}"
 related_docs:
-  - ".u-maker/docs/shared/02-design/2_ERD_SA.md"
+  - ".u-maker/docs/common/02-design/2_ERD_SA.md"
   - ".u-maker/docs/{{APP_NAME}}/02-design/2_API_SA.md"
   - ".u-maker/docs/{{APP_NAME}}/02-design/2_Screen_UX.md"
   - ".u-maker/docs/{{APP_NAME}}/04-check/4_Case_QA.md"
-  - ".u-maker/docs/shared/01-plan/1_Index_PM.md"
+  - ".u-maker/docs/common/01-plan/1_Index_PM.md"
 external_links: []
 ---
 
@@ -218,12 +218,12 @@ flowchart TD
 
 ---
 
-## 7. FR Implementation Status
+## 7. FT Implementation Status
 
-| FR-ID | Feature | Code Files | Build | Test | Status |
+| FT-ID | Feature | Code Files | Build | Test | Status |
 |-------|---------|-----------|-------|------|--------|
-| FR-0010 | {{기능명}} | - | - | - | Not Started |
-| FR-0020 | {{기능명}} | - | - | - | Not Started |
+| FT-0010 | {{기능명}} | - | - | - | Not Started |
+| FT-0020 | {{기능명}} | - | - | - | Not Started |
 
 ---
 

@@ -22,17 +22,17 @@ imports:
   - ${PLUGIN_ROOT}/_refer/post-execution-summary.md
   - ${PLUGIN_ROOT}/_refer/json-export.md
   - ${PLUGIN_ROOT}/.u-maker/u-ssot.config.json
+agents:
+  - u-maker:u-agent-ra
 ---
 
-# u-skill-index
-
-agent: u-maker:u-agent-ra
+# u-agent-index
 
 `u-agent-ra` 에이전트를 호출하여 1_Index_PM.md를 갱신한다.
 
 ## Output
 
-`.u-maker/docs/shared/01-plan/1_Index_PM.md`
+`.u-maker/docs/common/01-plan/1_Index_PM.md`
 
 ## Rules
 

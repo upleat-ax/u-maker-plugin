@@ -68,14 +68,14 @@ let contextMessage = '';
 
 if (isSsotDoc) {
   // Determine scope and phase from path
-  // v2: relPath = "shared/01-plan/1_Roadmap_PM.md" or "web/01-plan/1_SRS_RA.md"
+  // v2: relPath = "common/01-plan/1_Roadmap_PM.md" or "web/01-plan/1_SRS_RA.md"
   // v1: relPath = "01-plan/1_SRS_RA.md"
   const parts = relPath.split(path.sep);
   let scope = '';
   let phaseDir = '';
 
   if (parts.length >= 3) {
-    // v2 structure: parts[0] = scope (shared or app name), parts[1] = phaseDir
+    // v2 structure: parts[0] = scope (common or app name), parts[1] = phaseDir
     scope = parts[0];
     phaseDir = parts[1];
   } else {

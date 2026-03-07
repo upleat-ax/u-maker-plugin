@@ -8,9 +8,9 @@ last_updated: "{{DATE}}"
 related_docs:
   - ".u-maker/docs/{{APP_NAME}}/02-design/2_Screen_UX.md"
   - ".u-maker/docs/{{APP_NAME}}/02-design/2_ScreenFlow_UX.md"
-  - ".u-maker/docs/shared/03-dev/3_UIComponents_UX.md"
-  - ".u-maker/docs/shared/03-dev/3_DesignToken_UX.md"
-  - ".u-maker/docs/shared/01-plan/1_Index_PM.md"
+  - ".u-maker/docs/common/03-dev/3_UIComponents_UX.md"
+  - ".u-maker/docs/common/03-dev/3_DesignToken_UX.md"
+  - ".u-maker/docs/common/01-plan/1_Index_PM.md"
 external_links: []
 ---
 
@@ -576,16 +576,16 @@ stateDiagram-v2
 
 | File | 내용 | 담당 |
 |------|------|------|
-| `.u-maker/docs/shared/02-design/design-system.pen` | 디자인 시스템 전체 (색상, 타이포, 컴포넌트) | u-agent-ux |
+| `.u-maker/docs/common/02-design/design-system.pen` | 디자인 시스템 전체 (색상, 타이포, 컴포넌트) | u-agent-ux |
 | `.u-maker/docs/{{app}}/02-design/{{app}}.pen` | {{app}} 화면 전체 | u-agent-ux |
-| `.u-maker/docs/shared/02-design/components.pen` | UI 컴포넌트 Storybook 시각화 | u-agent-ux |
+| `.u-maker/docs/common/02-design/components.pen` | UI 컴포넌트 Storybook 시각화 | u-agent-ux |
 
 > **참고**: `.pen` 파일은 반드시 pencil.dev MCP 도구(`batch_get`, `batch_design`)로만 접근한다.
 > `Read` / `Edit` 도구 사용 금지.
 
 ```
 .u-maker/docs/
-├── shared/02-design/
+├── common/02-design/
 │   ├── design-system.pen         # 디자인 시스템 (토큰, 컴포넌트)
 │   └── components.pen            # 재사용 컴포넌트 시각화
 └── {{app}}/02-design/

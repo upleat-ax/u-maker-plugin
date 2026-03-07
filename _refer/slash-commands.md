@@ -47,7 +47,7 @@
 | Field | Value |
 |-------|-------|
 | **Syntax** | `/u-skill-design [app]` |
-| **Description** | DESIGN Phase를 실행한다. DesignSystem, Screen, ERD, API Contract를 생성한다 |
+| **Description** | DESIGN Phase를 실행한다. UXGuide, Screen, ERD, API Contract를 생성한다 |
 | **Calling Agents** | Orchestrator → `u-UX` → `u-SA` → `u-RA` |
 | **Prerequisites** | PLAN Gate 통과 (`1_Roadmap_PM`, `1_SRS_RA`, `1_IA_RA` 모두 Final) |
 | **Output** | `2_UXGuide_UX.md`, `2_Screen_UX.md`, `2_ERD_SA.md`, `2_API_SA.md` |
@@ -130,7 +130,53 @@ PDCA 사이클 자동 반복을 제어하는 커맨드.
 
 ---
 
-## 3. Document Management Commands
+## 3. Agent Direct Commands
+
+특정 에이전트를 직접 호출하여 자유 형식 작업을 요청하는 커맨드.
+
+### `/u-agent-ra`
+
+| Field | Value |
+|-------|-------|
+| **Syntax** | `/u-agent-ra [task description]` |
+| **Description** | Agent RA(Requirements & Admin)에게 직접 작업을 요청한다 |
+| **Calling Agents** | `u-RA` |
+| **Prerequisites** | None |
+| **Output** | 요청에 따라 다름 |
+
+### `/u-agent-sa`
+
+| Field | Value |
+|-------|-------|
+| **Syntax** | `/u-agent-sa [task description]` |
+| **Description** | Agent SA(Software Architect)에게 직접 작업을 요청한다 |
+| **Calling Agents** | `u-SA` |
+| **Prerequisites** | None |
+| **Output** | 요청에 따라 다름 |
+
+### `/u-agent-ux`
+
+| Field | Value |
+|-------|-------|
+| **Syntax** | `/u-agent-ux [task description]` |
+| **Description** | Agent UX(UX Designer)에게 직접 작업을 요청한다 |
+| **Calling Agents** | `u-UX` |
+| **Prerequisites** | None |
+| **Output** | 요청에 따라 다름 |
+
+### `/u-agent-qa`
+
+| Field | Value |
+|-------|-------|
+| **Syntax** | `/u-agent-qa [task description]` |
+| **Description** | Agent QA(Tester)에게 직접 작업을 요청한다 |
+| **Calling Agents** | `u-QA` |
+| **Prerequisites** | None |
+| **Output** | 요청에 따라 다름 |
+
+---
+
+## 4. Document Management Commands
 
 SSoT 문서 상태를 관리하고 검증하는 커맨드.
 
@@ -184,19 +230,19 @@ SSoT 문서 상태를 관리하고 검증하는 커맨드.
 | **Prerequisites** | 프로젝트 생성 완료 (`5_IterationLog_RA.md` 없으면 자동 생성) |
 | **Output** | `5_IterationLog_RA.md` 업데이트 (Table row + Detail block + Summary 갱신) |
 
-**Input Fields**: Type (Bug/Enhancement/Task), Priority (Critical/Major/Minor/Trivial), Origin (PLAN/DESIGN/DEV/CHECK), Assignee, Related FR, Acceptance Criteria
+**Input Fields**: Type (Bug/Enhancement/Task), Priority (Critical/Major/Minor/Trivial), Origin (PLAN/DESIGN/DEV/CHECK), Assignee, Related FT, Acceptance Criteria
 
-### `/u-skill-u-skill-add`
+### `/u-skill-us-add`
 
 | Field | Value |
 |-------|-------|
-| **Syntax** | `/u-skill-u-skill-add [description]` |
+| **Syntax** | `/u-skill-us-add [description]` |
 | **Description** | 새로운 유저 스토리를 추가한다. 인자 없이 실행하면 대화형으로 입력받는다 |
 | **Calling Agents** | `u-RA` |
 | **Prerequisites** | 프로젝트 생성 완료 (`1_Roadmap_PM.md` 없으면 자동 생성) |
 | **Output** | `1_Roadmap_PM.md` 업데이트 (Table row + Change Log 갱신) |
 
-**Input Fields**: As a (역할), I want to (기능), So that (효과), Priority (Must/Should/Could/Won't), FR Mapping
+**Input Fields**: As a (역할), I want to (기능), So that (효과), Priority (Must/Should/Could/Won't), FT Mapping
 
 ### `/u-skill-fr-add`
 
@@ -222,9 +268,9 @@ SSoT 문서 상태를 관리하고 검증하는 커맨드.
 
 ---
 
-## 4. Individual Agent Commands
+## 5. Individual Task Commands
 
-특정 에이전트를 직접 호출하여 개별 문서를 생성/수정하는 커맨드.
+특정 문서/산출물을 개별적으로 생성/수정하는 커맨드.
 
 ### `/u-skill-srs`
 
@@ -233,7 +279,7 @@ SSoT 문서 상태를 관리하고 검증하는 커맨드.
 | **Syntax** | `/u-skill-srs [app]` |
 | **Description** | SRS(Software Requirements Specification)를 생성/수정한다 |
 | **Calling Agents** | `u-SA` |
-| **Prerequisites** | `1_Roadmap_PM.md` 존재 (optional; FR-First 시 없이도 실행 가능) |
+| **Prerequisites** | `1_Roadmap_PM.md` 존재 (optional; FT-First 시 없이도 실행 가능) |
 | **Output** | `{app}/01-plan/1_SRS_RA.md` |
 
 ### `/u-skill-erd`
@@ -244,7 +290,7 @@ SSoT 문서 상태를 관리하고 검증하는 커맨드.
 | **Description** | ERD(Entity Relationship Diagram)를 생성/수정한다 |
 | **Calling Agents** | `u-SA` |
 | **Prerequisites** | `1_SRS_RA.md` = Final |
-| **Output** | `shared/02-design/2_ERD_SA.md` |
+| **Output** | `common/02-design/2_ERD_SA.md` |
 
 ### `/u-skill-api`
 
@@ -266,35 +312,55 @@ SSoT 문서 상태를 관리하고 검증하는 커맨드.
 | **Prerequisites** | `1_IA_RA.md` = Final |
 | **Output** | `{app}/02-design/2_Screen_UX.md` |
 
-### `/u-skill-fe`
+### `/u-skill-wireframe`
 
 | Field | Value |
 |-------|-------|
-| **Syntax** | `/u-skill-fe [app]` |
-| **Description** | Frontend 코드를 생성한다 |
-| **Calling Agents** | `u-DV-FE` |
-| **Prerequisites** | `2_Screen_UX.md` = Final, `2_API_SA.md` = Final |
-| **Output** | Frontend code files + `3_Code_DV.md` 업데이트 |
+| **Syntax** | `/u-skill-wireframe [app]` |
+| **Description** | 화면 와이어프레임을 HTML로 생성/수정한다 |
+| **Calling Agents** | `u-UX` |
+| **Prerequisites** | `2_Screen_UX.md` 존재 |
+| **Output** | `{app}/02-design/2_Screen_Wireframes/*.html` |
 
-### `/u-skill-be`
-
-| Field | Value |
-|-------|-------|
-| **Syntax** | `/u-skill-be [app]` |
-| **Description** | Backend 코드를 생성한다 |
-| **Calling Agents** | `u-DV-BE` |
-| **Prerequisites** | `2_ERD_SA.md` = Final, `2_API_SA.md` = Final |
-| **Output** | Backend code files + `3_Code_DV.md` 업데이트 |
-
-### `/u-skill-test`
+### `/u-skill-ux-figma`
 
 | Field | Value |
 |-------|-------|
-| **Syntax** | `/u-skill-test [app]` |
-| **Description** | Unit+E2E 테스트 케이스를 상세 설계하고 실행한다 |
+| **Syntax** | `/u-skill-ux-figma [app]` |
+| **Description** | pencil.dev MCP를 사용하여 화면을 시각적으로 디자인한다 |
+| **Calling Agents** | `u-UX-DS` |
+| **Prerequisites** | `2_Screen_UX.md` 존재, 와이어프레임 완료 |
+| **Output** | `.pen` 파일 |
+
+### `/u-skill-ux-dsystem`
+
+| Field | Value |
+|-------|-------|
+| **Syntax** | `/u-skill-ux-dsystem [app]` |
+| **Description** | pencil.dev를 사용해 디자인 시스템, 컴포넌트를 시각적으로 구성한다 |
+| **Calling Agents** | `u-UX-DS` |
+| **Prerequisites** | `2_UXGuide_UX.md` 존재 |
+| **Output** | `.pen` 파일 |
+
+### `/u-skill-testcase`
+
+| Field | Value |
+|-------|-------|
+| **Syntax** | `/u-skill-testcase [app]` |
+| **Description** | SRS FT 기반으로 Unit+E2E 테스트 케이스를 상세 설계한다 |
 | **Calling Agents** | `u-QA` |
-| **Prerequisites** | DO Phase 완료 |
-| **Output** | `4_Case_QA.md`, `4_Report_QA.md` |
+| **Prerequisites** | `1_SRS_RA.md` = Final |
+| **Output** | `{app}/04-check/4_Case_QA.md` |
+
+### `/u-skill-qa`
+
+| Field | Value |
+|-------|-------|
+| **Syntax** | `/u-skill-qa [app]` |
+| **Description** | 테스트를 실행한다. Unit Test(Vitest) + E2E Test(Playwright) 실행 및 결과 리포트 |
+| **Calling Agents** | `u-QA` |
+| **Prerequisites** | `4_Case_QA.md` 존재, `bun run build` 성공 |
+| **Output** | `{app}/04-check/4_Report_QA.md` |
 
 ### `/u-skill-bug-report`
 
@@ -308,7 +374,7 @@ SSoT 문서 상태를 관리하고 검증하는 커맨드.
 
 ---
 
-## 5. Quality Assurance Commands
+## 6. Quality Assurance Commands
 
 CHECK Phase에서 설계-구현 일치도를 분석하는 커맨드.
 
@@ -323,7 +389,7 @@ CHECK Phase에서 설계-구현 일치도를 분석하는 커맨드.
 | **Output** | Gap Analysis Report (`4_Report_QA.md`에 추가), Match Rate 산출 |
 
 **Analysis Targets**:
-- **SRS FR 검사**: `1_SRS_RA.md`의 모든 FR 항목이 코드에 구현되었는지 확인
+- **SRS FT 검사**: `1_SRS_RA.md`의 모든 FT 항목이 코드에 구현되었는지 확인
 - **API Endpoint 검사**: `2_API_SA.md`의 모든 Endpoint가 API Route에 존재하는지 확인
 - **ERD Entity 검사**: `2_ERD_SA.md`의 모든 Entity가 DB Schema/ORM에 정의되었는지 확인
 - **Screen 검사**: `2_Screen_UX.md`의 모든 화면이 페이지/컴포넌트로 구현되었는지 확인
@@ -334,7 +400,7 @@ CHECK Phase에서 설계-구현 일치도를 분석하는 커맨드.
 
 ---
 
-## 6. Utility Commands
+## 7. Utility Commands
 
 프로젝트 유틸리티 커맨드.
 
@@ -388,6 +454,16 @@ CHECK Phase에서 설계-구현 일치도를 분석하는 커맨드.
 | **Prerequisites** | 프로젝트 코드 존재 |
 | **Output** | 빌드 결과 (성공/실패 + 로그) |
 
+### `/u-skill-summary`
+
+| Field | Value |
+|-------|-------|
+| **Syntax** | `/u-skill-summary` |
+| **Description** | 프로젝트 개요와 개발 상태를 콘솔에 요약 출력한다 (파일 생성 없음) |
+| **Calling Agents** | `u-RA` |
+| **Prerequisites** | 프로젝트 생성 완료 |
+| **Output** | 프로젝트 요약 (터미널 출력) |
+
 ### `/u-skill-git-pr`
 
 | Field | Value |
@@ -408,7 +484,7 @@ CHECK Phase에서 설계-구현 일치도를 분석하는 커맨드.
 
 ---
 
-## 7. Command Summary Table
+## 8. Command Summary Table
 
 | Category | Command | Phase | Agents |
 |----------|---------|-------|--------|
@@ -423,26 +499,33 @@ CHECK Phase에서 설계-구현 일치도를 분석하는 커맨드.
 | Auto-Loop | `/u-skill-loop-from` | Varies | Orch → Varies |
 | Auto-Loop | `/u-skill-stop` | - | Orch |
 | Auto-Loop | `/u-skill-resume` | - | Orch |
+| Agent Direct | `/u-agent-ra` | - | u-RA |
+| Agent Direct | `/u-agent-sa` | - | u-SA |
+| Agent Direct | `/u-agent-ux` | - | u-UX |
+| Agent Direct | `/u-agent-qa` | - | u-QA |
 | Doc Mgmt | `/u-skill-status` | - | u-RA |
 | Doc Mgmt | `/u-skill-docs` | - | u-RA |
 | Doc Mgmt | `/u-skill-validate` | - | u-RA + script |
 | Doc Mgmt | `/u-skill-backlog` | - | u-RA |
 | Doc Mgmt | `/u-skill-backlog-add` | - | u-RA |
-| Doc Mgmt | `/u-skill-u-skill-add` | PLAN | u-RA |
+| Doc Mgmt | `/u-skill-us-add` | PLAN | u-RA |
 | Doc Mgmt | `/u-skill-fr-add` | PLAN | u-SA |
 | Doc Mgmt | `/u-skill-index` | - | u-RA |
-| Agent | `/u-skill-srs [app]` | PLAN | u-SA |
-| Agent | `/u-skill-erd` | DESIGN | u-SA |
-| Agent | `/u-skill-api [app]` | DESIGN | u-SA |
-| Agent | `/u-skill-screen [app]` | DESIGN | u-UX |
-| Agent | `/u-skill-fe [app]` | DO | u-DV-FE |
-| Agent | `/u-skill-be [app]` | DO | u-DV-BE |
-| Agent | `/u-skill-test [app]` | CHECK | u-QA |
-| Agent | `/u-skill-bug-report [app]` | CHECK | u-QA |
+| Task | `/u-skill-srs [app]` | PLAN | u-SA |
+| Task | `/u-skill-erd` | DESIGN | u-SA |
+| Task | `/u-skill-api [app]` | DESIGN | u-SA |
+| Task | `/u-skill-screen [app]` | DESIGN | u-UX |
+| Task | `/u-skill-wireframe [app]` | DESIGN | u-UX |
+| Task | `/u-skill-ux-figma [app]` | DESIGN | u-UX-DS |
+| Task | `/u-skill-ux-dsystem [app]` | DESIGN | u-UX-DS |
+| Task | `/u-skill-testcase [app]` | CHECK | u-QA |
+| Task | `/u-skill-qa [app]` | CHECK | u-QA |
+| Task | `/u-skill-bug-report [app]` | CHECK | u-QA |
 | QA | `/u-skill-gap-detector` | CHECK | u-RA → u-QA |
 | Utility | `/u-skill-help` | - | Orch |
 | Utility | `/u-skill-history` | - | u-RA |
 | Utility | `/u-skill-archive` | ACT | u-RA |
 | Utility | `/u-skill-storybook` | DO | u-DV-FE |
 | Utility | `/u-skill-build` | DO | Orch (Bash) |
+| Utility | `/u-skill-summary` | - | u-RA |
 | Utility | `/u-skill-git-pr` | - | Orch (Bash + gh) |

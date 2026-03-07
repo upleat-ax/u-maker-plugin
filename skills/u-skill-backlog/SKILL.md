@@ -23,17 +23,17 @@ imports:
   - ${PLUGIN_ROOT}/_refer/json-export.md
   - ${PLUGIN_ROOT}/.u-maker/u-ssot.config.json
   - ${PLUGIN_ROOT}/_refer/iteration-rules.md
+agents:
+  - u-maker:u-agent-ra
 ---
 
-# u-skill-backlog
-
-agent: u-maker:u-agent-ra
+# u-agent-backlog
 
 `u-agent-ra` 에이전트를 호출하여 백로그 Open 항목을 조회한다.
 
 ## Source
 
-`.u-maker/docs/shared/05-act/5_IterationLog_RA.md`
+`.u-maker/docs/common/05-act/5_IterationLog_RA.md`
 
 ## Rules
 

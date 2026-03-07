@@ -47,8 +47,8 @@ agents:
 
 1. `u-agent-ux`: Screen/UI 구현
    - Screen 구현 (`{app}/03-dev/3_Screen_UX.md`)
-   - UI Components 구현 (`shared/03-dev/3_UIComponents_UX.md`)
-   - Design Token 정의 (`shared/03-dev/3_DesignToken_UX.md`)
+   - UI Components 구현 (`common/03-dev/3_UIComponents_UX.md`)
+   - Design Token 정의 (`common/03-dev/3_DesignToken_UX.md`)
 2. `u-agent-dv-fe`: Frontend 개발
    - Next.js App Router + react-query
    - Storybook 컴포넌트 문서화

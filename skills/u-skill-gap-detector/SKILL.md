@@ -36,8 +36,8 @@ agents:
 
 | Design Document | Comparison Target | Check Items |
 |----------------|-------------------|-------------|
-| {app}/1_SRS_RA.md | 구현 코드 | 모든 FR 구현 여부 |
-| shared/2_ERD_SA.md | DB Schema/ORM | Entity, Relationship 일치 |
+| {app}/1_SRS_RA.md | 구현 코드 | 모든 FT 구현 여부 |
+| common/2_ERD_SA.md | DB Schema/ORM | Entity, Relationship 일치 |
 | {app}/2_API_SA.md | API Route | Endpoint, 스키마 일치 |
 | {app}/2_Screen_UX.md | 페이지/컴포넌트 | 화면 구현, 인터랙션 |
 

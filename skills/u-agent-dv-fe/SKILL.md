@@ -1,9 +1,9 @@
 ---
-name: u-skill-be
+name: u-agent-dv-fe
 description: |
-  Backend 개발을 실행한다. API Routes + Prisma/Drizzle ORM 기반. u-agent-dv-be 에이전트가 담당한다.
-  Optional [app] argument for multi-app projects (e.g., `/u-skill-be web`).
-  Triggers: /u-skill-be, 백엔드, backend, API 구현
+  Frontend 개발을 실행한다. Next.js App Router + react-query 기반. u-agent-dv-fe 에이전트가 담당한다.
+  Optional [app] argument for multi-app projects (e.g., `/u-agent-dv-fe web`).
+  Triggers: /u-agent-dv-fe, 프론트엔드, frontend, 화면 구현
 model: sonnet
 user-invocable: true
 argument-hint: "[web]"
@@ -24,13 +24,13 @@ imports:
   - ${PLUGIN_ROOT}/_refer/json-export.md
   - ${PLUGIN_ROOT}/.u-maker/u-ssot.config.json
   - ${PLUGIN_ROOT}/_refer/tech-stack-rules.md
+agents:
+  - u-maker:u-agent-dv-fe
 ---
 
-# u-skill-be
+# u-agent-dv-fe
 
-agent: u-maker:u-agent-dv-be
-
-`u-agent-dv-be` 에이전트를 호출하여 Backend 개발을 실행한다.
+`u-agent-dv-fe` 에이전트를 호출하여 Frontend 개발을 실행한다.
 
 ## Output
 

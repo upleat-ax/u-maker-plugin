@@ -46,7 +46,7 @@ agents:
 
 ## Execution Sequence
 
-1. `u-agent-ux`: UX 표준가이드 + 디자인 시스템 (`shared/02-design/2_UXGuide_UX.md`)
+1. `u-agent-ux`: UX 표준가이드 + 디자인 시스템 (`common/02-design/2_UXGuide_UX.md`)
    - UX 원칙, 컬러, 타이포, 스페이싱, 컴포넌트 카탈로그
 2. `u-agent-ux`: 화면 상세 설계 (`{app}/02-design/2_Screen_UX.md`)
    - UI 컴포넌트, 상태 전이, 반응형 규격
@@ -56,7 +56,7 @@ agents:
    - HTML/CSS 레이아웃 시각화, floating 어노테이션 패널
 5. `u-agent-ux`: 화면 디자인 (`.pen` 파일, pencil.dev MCP)
    - 시각적 디자인 구현
-6. `u-agent-sa`: ERD 작성 (`shared/02-design/2_ERD_SA.md`)
+6. `u-agent-sa`: ERD 작성 (`common/02-design/2_ERD_SA.md`)
    - Entity 정의, Relationship 다이어그램 (Mermaid erDiagram)
 7. `u-agent-sa`: API Contract 작성 (`{app}/02-design/2_API_SA.md`)
    - OpenAPI 3.0 스펙, Endpoint 목록, Request/Response Schema
@@ -65,7 +65,7 @@ agents:
 
 ## Gate → DO
 
-`shared/2_ERD_SA`, `shared/2_UXGuide_UX` Final + 모든 앱의 `2_API_SA`, `2_Screen_UX`, `2_ScreenFlow_UX` Final + u-RA 검수 통과
+`common/2_ERD_SA`, `common/2_UXGuide_UX` Final + 모든 앱의 `2_API_SA`, `2_Screen_UX`, `2_ScreenFlow_UX` Final + u-RA 검수 통과
 
 ## Rules
 

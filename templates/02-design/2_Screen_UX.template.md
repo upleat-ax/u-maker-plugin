@@ -10,7 +10,7 @@ related_docs:
   - ".u-maker/docs/{{APP_NAME}}/01-plan/1_IA_RA.md"
   - ".u-maker/docs/{{APP_NAME}}/02-design/2_API_SA.md"
   - ".u-maker/docs/{{APP_NAME}}/04-check/4_Case_QA.md"
-  - ".u-maker/docs/shared/01-plan/1_Index_PM.md"
+  - ".u-maker/docs/common/01-plan/1_Index_PM.md"
 external_links: []
 ---
 
@@ -53,15 +53,15 @@ external_links: []
 
 ## 3. Screen Definition
 
-| Screen ID | Screen Name | Path | Menu ID | Goal | Access Role | FR Mapping | API Endpoints | Connected Screens (← 전환 조건) | Priority |
+| Screen ID | Screen Name | Path | Menu ID | Goal | Access Role | FT Mapping | API Endpoints | Connected Screens (← 전환 조건) | Priority |
 |-----------|------------|------|---------|------|-------------|------------|--------------|----------------------------------|----------|
 | S-0010 | Home | `/` | MN-XXX-NNNN | {{화면 목표}} | Public | - | - | S-0060 ← 로그인 클릭, S-0070 ← CTA 클릭 | Must |
-| S-0020 | Dashboard | `/dashboard` | MN-XXX-NNNN | {{화면 목표}} | User | FR-0010 | GET /dashboard | S-0030 ← 행 클릭, S-0050 ← 설정 메뉴 | Must |
-| S-0030 | {{화면명}} | `/{{path}}` | MN-XXX-NNNN | {{화면 목표}} | User | FR-0020 | GET /{{resource}} | S-0020 ← 뒤로가기, S-0040 ← 관리 버튼 | Must |
-| S-0040 | {{화면명}} | `/{{path}}` | MN-XXX-NNNN | {{화면 목표}} | Admin | FR-0030 | POST /{{resource}} | S-0030 ← 뒤로가기 | Should |
+| S-0020 | Dashboard | `/dashboard` | MN-XXX-NNNN | {{화면 목표}} | User | FT-0010 | GET /dashboard | S-0030 ← 행 클릭, S-0050 ← 설정 메뉴 | Must |
+| S-0030 | {{화면명}} | `/{{path}}` | MN-XXX-NNNN | {{화면 목표}} | User | FT-0020 | GET /{{resource}} | S-0020 ← 뒤로가기, S-0040 ← 관리 버튼 | Must |
+| S-0040 | {{화면명}} | `/{{path}}` | MN-XXX-NNNN | {{화면 목표}} | Admin | FT-0030 | POST /{{resource}} | S-0030 ← 뒤로가기 | Should |
 | S-0050 | Settings | `/settings` | MN-XXX-NNNN | {{화면 목표}} | User | - | GET, PUT /settings | S-0020 ← 사이드바 메뉴 | Must |
-| S-0060 | Login | `/auth/login` | MN-XXX-NNNN | 사용자 인증 | Public | FR-0010 | POST /auth/login | S-0010 ← 로고, S-0020 ← 로그인 성공, S-0070 ← 회원가입 링크 | Must |
-| S-0070 | Register | `/auth/register` | MN-XXX-NNNN | 신규 계정 생성 | Public | FR-0010 | POST /auth/register | S-0060 ← 가입 완료 | Must |
+| S-0060 | Login | `/auth/login` | MN-XXX-NNNN | 사용자 인증 | Public | FT-0010 | POST /auth/login | S-0010 ← 로고, S-0020 ← 로그인 성공, S-0070 ← 회원가입 링크 | Must |
+| S-0070 | Register | `/auth/register` | MN-XXX-NNNN | 신규 계정 생성 | Public | FT-0010 | POST /auth/register | S-0060 ← 가입 완료 | Must |
 
 ### Access Role Definitions
 
@@ -88,7 +88,7 @@ external_links: []
 | **Access Role** | Public |
 | **Connected Screens** | S-0060 (Login) ← 로그인 버튼 클릭, S-0070 (Register) ← 회원가입 CTA 버튼 클릭 |
 | **Menu ID** | MN-XXX-NNNN |
-| **FR Mapping** | - |
+| **FT Mapping** | - |
 | **Wireframe** | [HTML Wireframe](2_Screen_Wireframes/S-0010.html) |
 | **Design** | [Pencil Design]({{APP_NAME}}.pen) |
 
@@ -135,7 +135,7 @@ external_links: []
 | **Access Role** | Public (로그인 상태면 Dashboard로 리다이렉트) |
 | **Connected Screens** | S-0010 (Home) ← 로고 클릭, S-0020 (Dashboard) ← 로그인 성공 시, S-0070 (Register) ← 회원가입 링크 클릭 |
 | **Menu ID** | MN-XXX-NNNN |
-| **FR Mapping** | FR-0010 |
+| **FT Mapping** | FT-0010 |
 | **Wireframe** | [HTML Wireframe](2_Screen_Wireframes/S-0060.html) |
 | **Design** | [Pencil Design]({{APP_NAME}}.pen) |
 
@@ -184,7 +184,7 @@ external_links: []
 | **Access Role** | User |
 | **Connected Screens** | S-0030 ({{화면명}}) ← 데이터 행 클릭, S-0050 (Settings) ← 사이드바 설정 메뉴 클릭 |
 | **Menu ID** | MN-XXX-NNNN |
-| **FR Mapping** | FR-0010 |
+| **FT Mapping** | FT-0010 |
 | **Wireframe** | [HTML Wireframe](2_Screen_Wireframes/S-0020.html) |
 | **Design** | [Pencil Design]({{APP_NAME}}.pen) |
 

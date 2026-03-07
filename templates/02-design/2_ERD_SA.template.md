@@ -9,7 +9,7 @@ related_docs:
   - ".u-maker/docs/{{APP_NAME}}/01-plan/1_SRS_RA.md"
   - ".u-maker/docs/{{APP_NAME}}/02-design/2_API_SA.md"
   - ".u-maker/docs/{{APP_NAME}}/03-dev/3_Code_DV.md"
-  - ".u-maker/docs/shared/01-plan/1_Index_PM.md"
+  - ".u-maker/docs/common/01-plan/1_Index_PM.md"
 external_links: []
 ---
 
@@ -189,12 +189,12 @@ stateDiagram-v2
 
 ---
 
-## 7. FR Mapping
+## 7. FT Mapping
 
-| FR-ID | Feature | Related Entities |
+| FT-ID | Feature | Related Entities |
 |-------|---------|-----------------|
-| FR-0010 | {{기능명}} | USER |
-| FR-0020 | {{기능명}} | {{Entity 목록}} |
+| FT-0010 | {{기능명}} | USER |
+| FT-0020 | {{기능명}} | {{Entity 목록}} |
 
 ---
 

@@ -22,11 +22,11 @@ imports:
   - ${PLUGIN_ROOT}/_refer/post-execution-summary.md
   - ${PLUGIN_ROOT}/_refer/json-export.md
   - ${PLUGIN_ROOT}/.u-maker/u-ssot.config.json
+agents:
+  - u-maker:u-agent-ra
 ---
 
-# u-skill-archive
-
-agent: u-maker:u-agent-ra
+# u-agent-archive
 
 `u-agent-ra` 에이전트를 호출하여 현재 Iteration 문서를 `.u-maker/docs/iterations/iter-N/`으로 복사한다.
 

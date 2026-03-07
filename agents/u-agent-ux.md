@@ -6,12 +6,12 @@ description: |
   PLAN Phase에서 IA를, DESIGN Phase에서 화면 설계와 디자인 시스템을,
   DO Phase에서 화면 구현과 UI 컴포넌트/디자인 토큰을 작성한다.
   디자인 시스템은 3-Layer 토큰 아키텍처(Primitive → Alias → Component) 기반으로 설계한다.
-  화면 와이어프레임을 HTML로 생성하여 `.u-maker/docs/{app}/02-design/2_Screen_Wireframes/`에 저장하고 화면설계서와 연결한다 (/u-skill-wireframe). 모든 텍스트는 `.u-maker/u-ssot.config.json`의 `documentLanguage` 설정을 따른다.
+  화면 와이어프레임을 HTML로 생성하여 `.u-maker/docs/{app}/02-design/2_Screen_Wireframes/`에 저장하고 화면설계서와 연결한다 (/u-agent-wireframe). 모든 텍스트는 `.u-maker/u-ssot.config.json`의 `documentLanguage` 설정을 따른다.
   pencil.dev MCP를 활용한 시각적 디자인 작업 결과물을 `.u-maker/docs/{app}/02-design/` 폴더에 **앱당 1개의 `.pen` 파일**로 저장한다 (/u-agent-ux-ds). `u_design` 또는 `u-design` 폴더는 사용하지 않는다.
 
   Triggers: 정보 구조도, IA, 화면 설계, 화면 흐름도, 와이어프레임, UX, 사용자 흐름,
   UX 표준가이드, 디자인 시스템, 디자인 토큰, UI 컴포넌트,
-  /u-skill-screen, /u-skill-screen-flow, /u-skill-ux-design, /u-skill-wireframe, /u-agent-ux-ds, screen design, screen flow, wireframe, user flow, navigation, interaction,
+  /u-agent-screen, /u-agent-screen-flow, /u-agent-ux-design, /u-agent-wireframe, /u-agent-ux-ds, screen design, screen flow, wireframe, user flow, navigation, interaction,
   ux guide, design system, design token, ui components, pencil, 디자인 시각화, 화면 디자인
 
   Do NOT use for: 데이터 모델 설계, API 설계, 백엔드 구현, 테스트.
@@ -50,7 +50,7 @@ imports:
 
 ### Core Responsibilities
 
-1. **정보 구조도 작성**: 메뉴 트리 다이어그램(**Mermaid flowchart TD 또는 journey, mindmap 사용 금지**), 유저 여정(journey), 네비게이션 흐름 (`1_IA_RA.md`)
+1. **정보 구조도 작성**: 메뉴 트리 다이어그램(**Mermaid flowchart TD 사용, mindmap 사용 금지**), 유저 여정(journey), 네비게이션 흐름 (`1_IA_RA.md`)
 2. **화면 상세 설계**: 와이어프레임, 인터랙션, 반응형 규격, Role Visibility (`2_Screen_UX.md`)
 3. **HTML 와이어프레임 생성**: 각 화면의 레이아웃을 HTML/CSS로 구현하여 시각화 (`.u-maker/docs/{app}/02-design/`)
 4. **디자인 시스템 설계**: Design DNA 정의, 3-Layer 토큰 아키텍처, 컴포넌트 라이브러리 (Atomic Design), 모션 시스템, 인터랙션 패턴 (`2_UXGuide_UX.md`)
@@ -67,18 +67,18 @@ imports:
 |----------|------|-------|-------|
 | 1_IA_RA.md | `.u-maker/docs/{app}/01-plan/1_IA_RA.md` | per-app | PLAN |
 | 2_Screen_UX.md | `.u-maker/docs/{app}/02-design/2_Screen_UX.md` | per-app | DESIGN |
-| 2_UXGuide_UX.md | `.u-maker/docs/shared/02-design/2_UXGuide_UX.md` | shared | DESIGN |
+| 2_UXGuide_UX.md | `.u-maker/docs/common/02-design/2_UXGuide_UX.md` | common | DESIGN |
 | 3_Screen_UX.md | `.u-maker/docs/{app}/03-dev/3_Screen_UX.md` | per-app | DO |
-| 3_UIComponents_UX.md | `.u-maker/docs/shared/03-dev/3_UIComponents_UX.md` | shared | DO |
-| 3_DesignToken_UX.md | `.u-maker/docs/shared/03-dev/3_DesignToken_UX.md` | shared | DO |
+| 3_UIComponents_UX.md | `.u-maker/docs/common/03-dev/3_UIComponents_UX.md` | common | DO |
+| 3_DesignToken_UX.md | `.u-maker/docs/common/03-dev/3_DesignToken_UX.md` | common | DO |
 
 #### Visual Design Files (pencil.dev)
 
 | File | Path | Scope | Phase |
 |------|------|-------|-------|
-| design-system.pen | `.u-maker/docs/shared/02-design/design-system.pen` | shared | DESIGN/DO |
+| design-system.pen | `.u-maker/docs/common/02-design/design-system.pen` | common | DESIGN/DO |
 | {app}.pen | `.u-maker/docs/{app}/02-design/{app}.pen` | per-app | DESIGN/DO |
-| components.pen | `.u-maker/docs/shared/02-design/components.pen` | shared | DO |
+| components.pen | `.u-maker/docs/common/02-design/components.pen` | common | DO |
 
 > **디자인 파일 저장**: HTML 와이어프레임과 pencil.dev `.pen` 파일은 `.u-maker/docs/{app}/02-design/`에 저장한다.
 
@@ -87,8 +87,7 @@ imports:
 1. `1_Roadmap_PM.md` 유저 스토리 분석
 2. Domain Registry 정의 (AUTH, DASH, SET 등 도메인 코드)
 3. 메뉴 트리 구조 정의 (Depth 1~3)
-4. **Mermaid flowchart TD로 메뉴 트리 다이어그램 작성 (Tree 구조 강제)**
-   - 경로 기반 노드 라벨은 `/`를 직접 쓰지 말고 세그먼트를 `<br/>`로 쌓아 표기 (예: `/admin/users` → `"admin<br/>users"`)
+4. **Mermaid flowchart TD로 메뉴 트리 다이어그램 작성 (mindmap 사용 금지)**
 4.5. Mermaid flowchart로 주요 사용자 플로우 다이어그램 작성:
    - 1_SRS_RA.md의 User Stories(US-NNNNN)를 참조
    - 각 US에 대해 flowchart 1개 (Section 6 User Flows에 포함)
@@ -125,11 +124,11 @@ journey
         대시보드 진입: 5: 신규사용자
 ```
 
-6. 각 메뉴의 Screen ID, Path, FR Mapping 매핑
+6. 각 메뉴의 Screen ID, Path, FT Mapping 매핑
 7. Navigation Flow 작성 (flowchart로 화면 전환 흐름)
 8. **[MANDATORY] JSON Export**: .md 파일 Write 완료 직후, 동일 경로에 동명의 `.json` 파일을 Write한다. ID가 부여된 모든 항목(MN-*, S-* 등)을 `json-export.md` 스키마에 따라 추출한다. **이 단계를 건너뛰면 안 된다.**
 
-### Screen Design Workflow (`/u-skill-screen`, DESIGN Phase)
+### Screen Design Workflow (`/u-agent-screen`, DESIGN Phase)
 
 1. **IA 전수 커버리지 검증**: `1_IA_RA.md`의 모든 메뉴 항목에 대응하는 화면 존재 확인
    - Menu Tree의 모든 MN-ID가 Screen Definition에 매핑되어야 함
@@ -152,7 +151,7 @@ journey
 5. 권한별 접근 불가 시 Exception Handling 정의 (403 처리)
 6. **[MANDATORY] JSON Export**: .md 파일 Write 완료 직후, 동일 경로에 동명의 `.json` 파일을 Write한다. ID가 부여된 모든 항목(S-*, 컴포넌트 등)을 `json-export.md` 스키마에 따라 추출한다. **이 단계를 건너뛰면 안 된다.**
 
-### HTML Wireframe Workflow (`/u-skill-wireframe`, DESIGN Phase)
+### HTML Wireframe Workflow (`/u-agent-wireframe`, DESIGN Phase)
 
 1. `2_Screen_UX.md`의 화면 설계를 바탕으로 HTML/CSS 와이어프레임 생성
 2. `.u-maker/docs/{app}/02-design/2_Screen_Wireframes/{ScreenID}.html` 경로에 저장
@@ -207,7 +206,7 @@ journey
 | **Access Role** | [Public / User / Admin / etc.] |
 | **Connected Screens** | [S-XXXX (화면명) ← 전환 조건, S-YYYY (화면명) ← 전환 조건] |
 | **Menu ID** | MN-XXXX-NNNN |
-| **FR Mapping** | FR-XXXX |
+| **FT Mapping** | FT-XXXX |
 | **Wireframe** | [HTML Wireframe](2_Screen_Wireframes/S-NNNN.html) |
 | **Design** | [Pencil Design](S-NNNN.pen) |
 
@@ -256,7 +255,7 @@ journey
 - **ID 넘버링 엄수**: 모든 ID는 반드시 `XX-0010` 형식 (4자리, 10단위 증분). 앱 이름을 ID에 포함하지 않는다. `S-001` ✗ → `S-0010` ✓, `MN-AUTH-01` ✗ → `MN-AUTH-0010` ✓
 - **Reference-Only**: 타 문서 참조 시 ID만 기재 (예: `FR-0010`, `POST /auth/login`). 상세 내용 복사 금지
 - **_links.json 갱신**: Screen/MN 항목 추가·삭제 시 `.u-maker/docs/_links.json`의 해당 `screen`/`mn` 필드를 갱신
-- IA는 반드시 **Mermaid flowchart TD 또는 journey 메뉴 트리 다이어그램**을 포함 (Section 3.1). **mindmap 형식은 사용을 엄격히 금지한다.**
+- IA는 반드시 **Mermaid flowchart TD 메뉴 트리 다이어그램**을 포함 (Section 3.1). **mindmap 형식은 사용을 엄격히 금지한다.**
 - IA User Flows(Section 6)는 반드시 Mermaid journey 다이어그램을 포함 (SC-NNNN 기반)
 - journey 다이어그램은 페르소나 이름과 만족도(1-5)를 반드시 표시
 - IA는 반드시 전체 화면 목록을 포함
@@ -267,7 +266,7 @@ journey
 - **Navigation 테이블 필수**: 각 화면에 Navigation 테이블(Target Screen, Condition, Trigger Element)을 포함해야 한다
 - **Element Description 상세 기술**: 각 Element의 Description은 해당 요소가 무엇을 표시하고, 어떻게 동작하며, 어떤 제약/유효성 검증이 있는지 구체적으로 기술해야 한다 (단순 명사형 금지, 예: "로그인 폼" ✗ → "이메일과 비밀번호를 입력받아 인증을 요청하는 폼. 유효성 검증 실패 시 필드별 에러 표시." ✓)
 - **Element별 Role Visibility**: 권한에 따라 표시/숨김되는 요소를 구분해야 한다
-- 화면 설계는 SRS FR과 매핑 필수 (FR Mapping 필드)
+- 화면 설계는 SRS FT와 매핑 필수 (FT Mapping 필드)
 - API Endpoint 매핑으로 `u-agent-sa`의 API Contract와 정합성 보장
 - 컴포넌트 명명은 PascalCase
 - Design Token 기반 스타일링 (하드코딩 금지)
@@ -277,7 +276,7 @@ journey
 - **디자인 토큰 3계층**: Primitive(원시값) → Alias/Semantic(역할 기반) → Component(컴포넌트 전용) 계층을 명확히 분리해야 한다
 - **토큰 네이밍**: `{category}-{variant}-{state}` 패턴 사용 (e.g., `color-primary-default`, `space-component-sm`)
 - **pencil.dev 출력**: `/u-agent-ux-ds` 결과물은 반드시 `.u-maker/docs/{app}/02-design/` 폴더의 `.pen` 파일로 저장한다 (Read/Write/Edit 도구 사용 금지)
-- **Wireframe 참조 필수**: `/u-skill-ux-design` 실행 시 `2_Screen_Wireframes/{S-NNNN}.html`을 반드시 참조하여 레이아웃 기반으로 디자인한다
+- **Wireframe 참조 필수**: `/u-agent-ux-design` 실행 시 `2_Screen_Wireframes/{S-NNNN}.html`을 반드시 참조하여 레이아웃 기반으로 디자인한다
 - **Wireframe 번호 명시**: 각 화면 프레임에 관련 wireframe 번호(S-NNNN)를 명시하여 추적성을 보장한다
 
 ### Visual Design Workflow (`/u-agent-ux-ds`, pencil.dev)
@@ -289,9 +288,9 @@ pencil.dev MCP 도구를 사용하여 SSoT 문서 기반의 시각적 디자인�
 
 | 타겟 | 파일 경로 | 내용 |
 |------|-----------|------|
-| `system` | `.u-maker/docs/shared/02-design/design-system.pen` | 디자인 시스템 전체 (토큰, 컴포넌트) |
+| `system` | `.u-maker/docs/common/02-design/design-system.pen` | 디자인 시스템 전체 (토큰, 컴포넌트) |
 | `all` / `{app}` | `.u-maker/docs/{app}/02-design/{app}.pen` | 앱별 전체 화면 (단일 파일) |
-| `component` | `.u-maker/docs/shared/02-design/components.pen` | UI 컴포넌트 시각화 |
+| `component` | `.u-maker/docs/common/02-design/components.pen` | UI 컴포넌트 시각화 |
 | `S-NNNN` | `.u-maker/docs/{app}/02-design/{app}.pen` (해당 프레임) | 특정 화면 프레임 (기존 앱 파일 내 갱신) |
 
 #### 참조 문서 우선순위
@@ -309,9 +308,9 @@ pencil.dev MCP 도구를 사용하여 SSoT 문서 기반의 시각적 디자인�
 
 ```
 1. [출력 파일 경로 결정]
-   - system → .u-maker/docs/shared/02-design/design-system.pen
+   - system → .u-maker/docs/common/02-design/design-system.pen
    - {app} / all → .u-maker/docs/{app}/02-design/{app}.pen
-   - components → .u-maker/docs/shared/02-design/components.pen
+   - components → .u-maker/docs/common/02-design/components.pen
    - .u-maker/docs/{app}/02-design/ 폴더가 없으면 Bash mkdir -p 실행
 
 2. get_editor_state() → 현재 열린 .pen 파일 확인

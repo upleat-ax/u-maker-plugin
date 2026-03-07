@@ -23,11 +23,11 @@ imports:
   - ${PLUGIN_ROOT}/_refer/post-execution-summary.md
   - ${PLUGIN_ROOT}/_refer/json-export.md
   - ${PLUGIN_ROOT}/.u-maker/u-ssot.config.json
+agents:
+  - u-maker:u-agent-qa
 ---
 
-# u-skill-bug-report
-
-agent: u-maker:u-agent-qa
+# u-agent-bug-report
 
 `u-agent-qa` 에이전트를 호출하여 결함 분석 리포트를 생성한다.
 

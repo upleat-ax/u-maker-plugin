@@ -23,11 +23,11 @@ imports:
   - ${PLUGIN_ROOT}/_refer/json-export.md
   - ${PLUGIN_ROOT}/.u-maker/u-ssot.config.json
   - ${PLUGIN_ROOT}/_refer/traceability-matrix.md
+agents:
+  - u-maker:u-agent-ra
 ---
 
-# u-skill-validate
-
-agent: u-maker:u-agent-ra
+# u-agent-validate
 
 `u-agent-ra` 에이전트를 호출하여 SSoT 무결성을 검증한다. 헤더 누락, 추적성 깨짐, 구조 위반을 탐지한다.
 

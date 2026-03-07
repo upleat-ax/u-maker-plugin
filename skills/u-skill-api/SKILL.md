@@ -23,11 +23,11 @@ imports:
   - ${PLUGIN_ROOT}/_refer/post-execution-summary.md
   - ${PLUGIN_ROOT}/_refer/json-export.md
   - ${PLUGIN_ROOT}/.u-maker/u-ssot.config.json
+agents:
+  - u-maker:u-agent-sa
 ---
 
 # u-skill-api
-
-agent: u-maker:u-agent-sa
 
 `u-agent-sa` 에이전트를 호출하여 API Contract 문서를 생성/갱신한다.
 

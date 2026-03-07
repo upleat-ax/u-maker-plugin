@@ -77,7 +77,7 @@ Semantic Versioning (`vMAJOR.MINOR.PATCH`)을 따른다:
 
 ### 3.1 PLAN Phase Documents
 
-> 대상: `1_Roadmap_PM.md` (shared), `1_SRS_RA.md` (per-app), `1_IA_RA.md` (per-app), `1_Index_PM.md` (shared)
+> 대상: `1_Roadmap_PM.md` (common), `1_SRS_RA.md` (per-app), `1_IA_RA.md` (per-app), `1_Index_PM.md` (common), `1_Common_RA.md` (common)
 
 | Required Section | Description |
 |-----------------|-------------|
@@ -197,7 +197,7 @@ xychart-beta
 
 | Phase | Prefix | Example |
 |-------|--------|---------|
-| PLAN | `1_` | `1_Roadmap_PM.md`, `1_SRS_RA.md`, `1_IA_RA.md`, `1_Index_PM.md` |
+| PLAN | `1_` | `1_Roadmap_PM.md`, `1_SRS_RA.md`, `1_IA_RA.md`, `1_Index_PM.md`, `1_Common_RA.md` |
 | DESIGN | `2_` | `2_UXGuide_UX.md`, `2_ERD_SA.md`, `2_API_SA.md`, `2_Screen_UX.md` |
 | DEV | `3_` | `3_Screen_UX.md`, `3_UIComponents_UX.md`, `3_DesignToken_UX.md`, `3_Code_DV.md` |
 | CHECK | `4_` | `4_Case_QA.md`, `4_Report_QA.md` |
@@ -208,14 +208,15 @@ xychart-beta
 
 ## 5. Document Storage Path
 
-모든 SSoT 문서는 프로젝트 루트의 `.u-maker/docs/` 하위에 저장된다. shared 문서와 per-app 문서가 분리된다:
+모든 SSoT 문서는 프로젝트 루트의 `.u-maker/docs/` 하위에 저장된다. common 문서와 per-app 문서가 분리된다:
 
 ```
 .u-maker/docs/
-├── shared/                         # Project-level shared docs
+├── common/                         # Project-level common docs
 │   ├── 01-plan/
 │   │   ├── 1_Roadmap_PM.md
-│   │   └── 1_Index_PM.md
+│   │   ├── 1_Index_PM.md
+│   │   └── 1_Common_RA.md
 │   ├── 02-design/
 │   │   ├── 2_ERD_SA.md
 │   │   └── 2_UXGuide_UX.md
@@ -250,9 +251,9 @@ xychart-beta
 
 ## 6. Cross-Reference Rules
 
-1. `related_docs`에는 반드시 `.u-maker/docs/` 기준 상대 경로를 사용한다 (shared/ 또는 {app}/ 접두사 포함)
+1. `related_docs`에는 반드시 `.u-maker/docs/` 기준 상대 경로를 사용한다 (common/ 또는 {app}/ 접두사 포함)
 2. 문서 내 다른 SSoT 문서 참조 시 `[문서명](상대경로)` 형식을 사용한다
-3. shared 문서 참조: `.u-maker/docs/shared/{phase}/{doc}` 형식
+3. shared 문서 참조: `.u-maker/docs/common/{phase}/{doc}` 형식
 4. app-specific 문서 참조: `.u-maker/docs/{app}/{phase}/{doc}` 형식
 5. 수직적 추적성: Roadmap(why) → SRS(US+what) → MN/IA(navigate) → Screen(design) → ERD(how) → Code(execute)
 6. 수평적 추적성: Screen(UI) ↔ API(data) ↔ QA Case(verify)
@@ -262,7 +263,7 @@ xychart-beta
 
 ## 7. ID 넘버링 규칙
 
-- **기본 형식**: `{PREFIX}-{4자리숫자}` (예: `FR-0010`, `US-0020`, `S-0010`, `TC-0010`)
+- **기본 형식**: `{PREFIX}-{4자리숫자}` (예: `FT-0010`, `FR-0010`, `US-0020`, `S-0010`, `TC-0010`)
 - **기본 증분**: 10 단위 (0010, 0020, 0030, ...)
 - **삽입 규칙**: 기존 ID 사이에 연관 서브 항목이 필요하면 중간 번호 사용
   - 예: FR-0010, FR-0020 사이 → FR-0011 (서브/관련 FR)
@@ -270,7 +271,11 @@ xychart-beta
 - **자동 채번**: 기존 최대값의 10단위 올림 (예: 최대 FR-0023 → 다음 FR-0030)
 - **4자리 포맷 유지**: 0010~9990 (최대 999개 기본 항목 + 중간 삽입)
 - **앱 이름 포함 금지**: ID에 앱 이름(WEB, ADMIN 등)을 절대 포함하지 않는다. 앱 구분은 파일 경로(`.u-maker/docs/{app}/`)로 한다
-- **FR 도메인 그룹**: 도메인별 1000단위 범위 할당
+- **FT 도메인 그룹**: 도메인별 1000단위 범위 할당
+  - AUTH Group: FT-0010~0099
+  - CORE Group: FT-0110~0199
+  - ADMIN Group: FT-0210~0299
+- **FR 도메인 그룹**: FT 그룹과 동일 범위 할당
   - AUTH Group: FR-0010~0099
   - CORE Group: FR-0110~0199
   - ADMIN Group: FR-0210~0299
@@ -280,6 +285,8 @@ xychart-beta
 
 | 잘못된 형식 | 올바른 형식 | 위반 사유 |
 |------------|-----------|----------|
+| `FT-WEB-001` | `FT-0010` | 앱 이름 포함 + 3자리 + 1단위 증분 |
+| `FT-001` | `FT-0010` | 3자리 + 1단위 증분 |
 | `FR-WEB-001` | `FR-0010` | 앱 이름 포함 + 3자리 + 1단위 증분 |
 | `FR-001` | `FR-0010` | 3자리 + 1단위 증분 |
 | `US-WEB-001` | `US-0010` | 앱 이름 포함 |
@@ -297,7 +304,8 @@ xychart-beta
 
 | 항목 | 허용 | 금지 |
 |------|------|------|
-| FR 참조 | `FR-0010` | `FR-0010 사용자 로그인 (이메일+비밀번호로 인증)` |
+| FT 참조 | `FT-0010` | `FT-0010 사용자 로그인 (이메일+비밀번호로 인증)` |
+| FR 참조 | `FR-0010` | `FR-0010 이메일+비밀번호 인증 처리` |
 | Screen 참조 | `S-0010` | `S-0010 로그인 화면 — 이메일/비밀번호 입력 폼` |
 | API 참조 | `POST /auth/login` | `POST /auth/login — 이메일/비밀번호 검증 후 토큰 반환` |
 | Entity 참조 | `Entity: USER` | `Entity: USER (id, email, password_hash, name, role)` |
@@ -312,7 +320,7 @@ xychart-beta
 {
   "mappings": [
     {
-      "fr": "FR-0010",
+      "ft": "FT-0010",
       "us": ["US-0010"],
       "mn": "MN-AUTH-0010",
       "screen": "S-0010",
@@ -337,7 +345,7 @@ xychart-beta
 **규칙**:
 1. 문서에 항목을 추가/삭제할 때 `_links.json`의 해당 매핑도 함께 갱신한다
 2. 매핑 필드가 아직 미정이면 `null`로 기입한다 (예: Screen 미설계 시 `"screen": null`)
-3. `/u-skill-validate` 검증 시 `_links.json` 기준으로 누락을 탐지한다
+3. `/u-agent-validate` 검증 시 `_links.json` 기준으로 누락을 탐지한다
 4. Technical FR (US 없는 FR)은 `"us": ["-"]`로 표기한다
 
 ### 8.3 Deferred Cascading Update (지연 연쇄 갱신)
@@ -345,10 +353,10 @@ xychart-beta
 문서 변경 시 관련 문서를 **즉시 갱신하지 않는다**. 대신 아래 절차를 따른다:
 
 ```
-1. 원본 문서 수정 (예: SRS에 FR-0030 추가)
+1. 원본 문서 수정 (예: SRS에 FT-0030 추가)
 2. _links.json에 매핑 행 추가 (미정 필드는 null)
 3. 각 문서 담당자가 자기 문서를 비동기로 갱신
-4. /u-skill-validate로 누락 항목 탐지
+4. /u-agent-validate로 누락 항목 탐지
 ```
 
 **즉시 갱신이 필요한 예외**:
@@ -361,8 +369,8 @@ xychart-beta
 |-----------|---------------|
 | 1인 | 제약 없음 |
 | 2~3인 (역할 분리) | 문서 소유권(owner) 기준 분업 |
-| 4인+ | 문서 + 도메인 그룹 기준 분업. shared 문서는 순차 PR |
+| 4인+ | 문서 + 도메인 그룹 기준 분업. common 문서는 순차 PR |
 
 - 같은 문서를 동시에 편집하지 않는다
-- shared 문서(`2_ERD_SA`, `1_Roadmap_PM`, `1_Index_PM` 등)는 동시 편집 금지, PR 기반 순차 merge
+- common 문서(`2_ERD_SA`, `1_Roadmap_PM`, `1_Index_PM` 등)는 동시 편집 금지, PR 기반 순차 merge
 - ID 채번 충돌 방지: 도메인 그룹 범위를 작업자별로 할당

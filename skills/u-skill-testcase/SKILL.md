@@ -1,9 +1,12 @@
 ---
-name: u-skill-fe
+name: u-skill-testcase
 description: |
-  Frontend 개발을 실행한다. Next.js App Router + react-query 기반. u-agent-dv-fe 에이전트가 담당한다.
-  Optional [app] argument for multi-app projects (e.g., `/u-skill-fe web`).
-  Triggers: /u-skill-fe, 프론트엔드, frontend, 화면 구현
+  테스트 케이스를 설계한다. SRS FT 기반으로 정상/비정상/경계값 케이스를 작성하며,
+  각 FT에 대해 Unit Test 케이스와 E2E Test 케이스를 모두 포함해야 한다.
+  테스트 스텝은 Actor/Screen/Element/Action/Input/Expected를 상세하게 작성한다.
+  u-agent-qa 에이전트가 담당한다.
+  Optional [app] argument for multi-app projects (e.g., `/u-agent-qa web`).
+  Triggers: /u-skill-testcase, 테스트 케이스, test case, QA
 model: sonnet
 user-invocable: true
 argument-hint: "[web]"
@@ -23,19 +26,18 @@ imports:
   - ${PLUGIN_ROOT}/_refer/post-execution-summary.md
   - ${PLUGIN_ROOT}/_refer/json-export.md
   - ${PLUGIN_ROOT}/.u-maker/u-ssot.config.json
-  - ${PLUGIN_ROOT}/_refer/tech-stack-rules.md
+  - ${PLUGIN_ROOT}/_refer/traceability-matrix.md
+agents:
+  - u-maker:u-agent-qa
 ---
 
-# u-skill-fe
+# u-agent-qa
 
-agent: u-maker:u-agent-dv-fe
-
-`u-agent-dv-fe` 에이전트를 호출하여 Frontend 개발을 실행한다.
+`u-agent-qa` 에이전트를 호출하여 테스트 케이스를 설계한다. Unit + E2E.
 
 ## Output
 
-- code (소스 파일)
-- `.u-maker/docs/{app}/03-dev/3_Code_DV.md`
+`.u-maker/docs/{app}/04-check/4_Case_QA.md`
 
 ## App Context
 

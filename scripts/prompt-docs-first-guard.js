@@ -43,15 +43,15 @@ if (!prompt) {
 // ============================================================
 
 const DOC_COMMANDS = [
-  '/u-skill-u-skill-add', '/u-skill-fr-add', '/u-skill-srs', '/u-skill-plan', '/u-skill-design',
-  '/u-skill-backlog-add', '/u-skill-erd', '/u-skill-api', '/u-skill-screen', '/u-skill-index',
-  '/u-skill-create-project', '/u-skill-init', '/u-skill-check', '/u-skill-act',
-  '/u-skill-loop', '/u-skill-loop-from', '/u-skill-dev', '/u-skill-fe', '/u-skill-be',
-  '/u-skill-test', '/u-skill-bug-report', '/u-skill-gap-detector',
-  '/u-skill-validate', '/u-skill-status', '/u-skill-docs', '/u-skill-backlog',
-  '/u-skill-help', '/u-skill-history', '/u-skill-archive', '/u-skill-storybook',
+  '/u-agent-us-add', '/u-agent-fr-add', '/u-skill-srs', '/u-skill-plan', '/u-skill-design',
+  '/u-agent-backlog-add', '/u-skill-erd', '/u-skill-api', '/u-agent-screen', '/u-agent-index',
+  '/u-agent-create-project', '/u-skill-init', '/u-skill-check', '/u-skill-act',
+  '/u-skill-loop', '/u-skill-loop-from', '/u-skill-dev', '/u-agent-dv-fe', '/u-agent-dv-be',
+  '/u-agent-qa', '/u-agent-bug-report', '/u-skill-gap-detector',
+  '/u-agent-validate', '/u-agent-status', '/u-agent-docs', '/u-agent-backlog',
+  '/u-skill-help', '/u-agent-history', '/u-agent-archive', '/u-skill-storybook',
   '/u-skill-build', '/u-skill-git-pr', '/u-skill-stop', '/u-skill-resume',
-  '/u-skill-summary', '/u-skill-wireframe', '/u-skill-ux-design', '/u-skill-ux-ds',
+  '/u-agent-summary', '/u-agent-wireframe', '/u-agent-ux-design', '/u-agent-ux-ds',
 ];
 
 const promptLower = prompt.toLowerCase();
@@ -149,21 +149,21 @@ if (!matched) {
 function suggestCommand(text) {
   const t = text.toLowerCase();
   if (/(?:유저|사용자)\s*스토리|user\s*story|as\s+a\s+\w+/.test(t)) {
-    return '`/u-skill-u-skill-add` — 유저 스토리 추가 후 SRS 연계';
+    return '`/u-agent-us-add` — 유저 스토리 추가 후 SRS 연계';
   }
   if (/(?:api|엔드포인트|endpoint|route|라우트)/.test(t)) {
     return '`/u-skill-api` — API Contract 문서 갱신';
   }
   if (/(?:페이지|화면|스크린|page|screen)/.test(t)) {
-    return '`/u-skill-screen` — 화면 설계 문서 갱신';
+    return '`/u-agent-screen` — 화면 설계 문서 갱신';
   }
   if (/(?:erd|데이터|db|database|테이블|table|모델|model)/.test(t)) {
     return '`/u-skill-erd` — ERD 문서 갱신';
   }
   if (/(?:버그|bug|오류|error|결함|defect|수정|fix)/.test(t)) {
-    return '`/u-skill-backlog-add` — 백로그에 결함/이슈 등록';
+    return '`/u-agent-backlog-add` — 백로그에 결함/이슈 등록';
   }
-  return '`/u-skill-fr-add` — FR(기능 요구사항) 추가 또는 `/u-skill-srs` — SRS 전체 갱신';
+  return '`/u-agent-fr-add` — FR(기능 요구사항) 추가 또는 `/u-skill-srs` — SRS 전체 갱신';
 }
 
 const suggestion = suggestCommand(prompt);

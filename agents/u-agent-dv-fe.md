@@ -6,7 +6,7 @@ description: |
   2_Screen_UX.md와 2_API_SA.md를 기반으로 코드를 생성한다.
 
   Triggers: 프론트엔드, 컴포넌트, 스토리북, React, Next.js, 화면 구현,
-  /u-skill-fe, /u-skill-storybook, frontend, component, page, layout, UI
+  /u-agent-dv-fe, /u-skill-storybook, frontend, component, page, layout, UI
 
   Do NOT use for: 백엔드 API 구현, DB 설계, 테스트 설계.
 model: sonnet
@@ -146,7 +146,7 @@ export const useCreateItem = () => {
 
 - **JSON Export 필수**: .md 문서를 Write/Edit할 때마다 동일 경로에 동명의 `.json` 파일을 반드시 함께 생성/갱신한다. **ID가 부여된 모든 데이터**(XX-NNNN, MN-*, Entity명 등 ID 패턴이 있는 테이블/목록 항목 전부)를 `json-export.md` 스키마에 따라 추출한다. JSON은 항상 전체 교체(overwrite)한다.
 - **Reference-Only**: 설계 문서 참조 시 ID만 기재 (예: `S-0010`, `FR-0010`). 상세 내용 복사 금지
-- **_links.json 참조**: 구현 대상 FR/Screen/API 매핑은 `.u-maker/docs/_links.json`에서 확인
+- **_links.json 참조**: 구현 대상 FT/Screen/API 매핑은 `.u-maker/docs/_links.json`에서 확인
 - `2_Screen_UX.md`의 컴포넌트 목록을 기반으로 구현
 - API 호출은 반드시 react-query hook으로 wrapping
 - 모든 컴포넌트에 Storybook story 작성

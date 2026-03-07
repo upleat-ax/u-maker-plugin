@@ -30,7 +30,7 @@ u-maker는 7개 전문 에이전트가 PDCA(Plan-Design-Do-Check-Act) 사이클�
 
 ```bash
 # 1. 새 프로젝트 초기화 (Turborepo + .u-maker/docs 구조)
-/u-skill-create-project my-app
+/u-agent-create-project my-app
 
 # 2. PLAN Phase (로드맵 → SRS(US+FR) → IA → 인덱스)
 /u-skill-plan
@@ -57,7 +57,7 @@ u-maker-plugin/
 ├── .u-maker/                          # 프로젝트 설정 및 SSoT 문서
 │   ├── u-ssot.config.json             # 프로젝트 설정 (단일 진실 공급원)
 │   └── docs/                          # SSoT 문서 루트
-│       ├── shared/                    # 공유 문서 (Roadmap, ERD 등)
+│       ├── common/                    # 공유 문서 (Roadmap, ERD 등)
 │       ├── {app}/                     # 앱별 문서 (SRS, API 등)
 │       └── iterations/                # 이터레이션 아카이브
 │
@@ -139,16 +139,16 @@ flowchart LR
 
 | # | 산출문서 | 파일명 | 담당 에이전트 | Scope |
 |---|---------|--------|-------------|-------|
-| 1 | 로드맵 | `1_Roadmap_PM.md` | u-agent-ra | shared |
+| 1 | 로드맵 | `1_Roadmap_PM.md` | u-agent-ra | common |
 | 2 | 요구사항명세서 | `1_SRS_RA.md` | u-agent-sa | app |
 | 3 | 정보구조도 (IA) | `1_IA_RA.md` | u-agent-ux | app |
-| 4 | 문서인덱스 | `1_Index_PM.md` | u-agent-ra | shared |
-| 5 | UX표준가이드 (디자인시스템 포함) | `2_UXGuide_UX.md` | u-agent-ux | shared |
+| 4 | 문서인덱스 | `1_Index_PM.md` | u-agent-ra | common |
+| 5 | UX표준가이드 (디자인시스템 포함) | `2_UXGuide_UX.md` | u-agent-ux | common |
 | 6 | 화면설계서 | `2_Screen_UX.md` | u-agent-ux | app |
 | 7 | 화면흐름도 | `2_ScreenFlow_UX.md` | u-agent-ux | app |
 | 8 | 와이어프레임 | `2_Screen_Wireframes/*.html` | u-agent-ux | app |
 | 9 | 화면디자인 | `.pen` 파일 (pencil.dev) | u-agent-ux-ds | app |
-| 10 | ERD | `2_ERD_SA.md` | u-agent-sa | shared |
+| 10 | ERD | `2_ERD_SA.md` | u-agent-sa | common |
 | 11 | API Contract | `2_API_SA.md` | u-agent-sa | app |
 | 12 | 개발현황 | `3_Code_DV.md` + 코드 | u-agent-dv-fe/be | app |
 | 13 | 테스트케이스 | `4_Case_QA.md` | u-agent-qa | app |
@@ -176,10 +176,10 @@ stateDiagram-v2
 
 | Transition | 조건 (Gate Criteria) | 검수자 |
 |------------|---------------------|-------|
-| PLAN → DESIGN | Roadmap + SRS + IA 상태가 'Final'이며 모든 US→FR 매핑 완료 | `u-agent-ra` |
+| PLAN → DESIGN | Roadmap + SRS + IA 상태가 'Final'이며 모든 US→FT 매핑 완료 | `u-agent-ra` |
 | DESIGN → DO | ERD + UXGuide + API + Screen + ScreenFlow 상태가 'Final'이며 모순 검수 통과 | `u-agent-ra` |
 | DO → CHECK | 모든 코드 구현 완료 및 `bun run build` 성공 | 시스템 |
-| CHECK → COMPLETE | Critical/Major 결함 0건 + 모든 FR 구현 완료 + 백로그 0건 | `u-agent-qa` |
+| CHECK → COMPLETE | Critical/Major 결함 0건 + 모든 FT 구현 완료 + 백로그 0건 | `u-agent-qa` |
 | CHECK → ACT | 위 조건 미충족 시 자동으로 ACT 단계로 진입 | 시스템 |
 
 ### Exit Criteria
@@ -187,7 +187,7 @@ stateDiagram-v2
 루프가 종료되려면 아래 조건을 모두 충족해야 합니다:
 
 1. `4_Report_QA.md`에서 Critical/Major 결함 수 = 0
-2. `1_SRS_RA.md`의 모든 FR 항목 상태가 Implemented
+2. `1_SRS_RA.md`의 모든 FT 항목 상태가 Implemented
 3. `bun run build` 통과
 
 ---
@@ -198,7 +198,7 @@ stateDiagram-v2
 
 ```
 .u-maker/docs/
-├── shared/
+├── common/
 │   ├── 01-plan/          1_Roadmap_PM, 1_Index_PM
 │   ├── 02-design/        2_ERD_SA, 2_UXGuide_UX
 │   ├── 03-dev/           3_UIComponents_UX, 3_DesignToken_UX
@@ -221,7 +221,7 @@ stateDiagram-v2
 
 | Skill | Syntax | Description |
 |-------|--------|-------------|
-| `u-skill-create-project` | `/u-skill-create-project <name>` | 새 프로젝트 생성 및 .u-maker/docs 구조 초기화 |
+| `u-agent-create-project` | `/u-agent-create-project <name>` | 새 프로젝트 생성 및 .u-maker/docs 구조 초기화 |
 | `u-skill-init` | `/u-skill-init [path]` | 기존 프로젝트 분석 및 SSoT 역공학 생성 |
 | `u-skill-plan` | `/u-skill-plan [app]` | PLAN 단계 실행 (Roadmap, SRS, IA 생성) |
 | `u-skill-design` | `/u-skill-design [app]` | DESIGN 단계 실행 (UXGuide ~ API, 모순검수) |
@@ -237,23 +237,23 @@ stateDiagram-v2
 
 | Skill | Description |
 |-------|-------------|
-| `u-skill-us-add` | 새로운 유저 스토리 추가 → `1_SRS_RA.md` |
-| `u-skill-fr-add` | 새로운 기능 요구사항(FR) 추가 → `1_SRS_RA.md` |
-| `u-skill-backlog-add` | 새로운 백로그(버그/개선) 항목 추가 → `5_IterationLog_RA.md` |
-| `u-skill-status` | 현재 Iteration/Phase 진행률 및 상태 보고 |
-| `u-skill-docs` | 전체 SSoT 문서 목록 및 상태 조회 |
-| `u-skill-validate` | SSoT 문서 무결성 및 추적성 검증 |
+| `u-agent-us-add` | 새로운 유저 스토리 추가 → `1_SRS_RA.md` |
+| `u-agent-fr-add` | 새로운 기능 요구사항(FR) 추가 → `1_SRS_RA.md` |
+| `u-agent-backlog-add` | 새로운 백로그(버그/개선) 항목 추가 → `5_IterationLog_RA.md` |
+| `u-agent-status` | 현재 Iteration/Phase 진행률 및 상태 보고 |
+| `u-agent-docs` | 전체 SSoT 문서 목록 및 상태 조회 |
+| `u-agent-validate` | SSoT 문서 무결성 및 추적성 검증 |
 | `u-skill-gap-detector` | 설계 문서 vs 실제 구현 코드 일치도 분석 |
-| `u-skill-summary` | 프로젝트 개요 및 현재 상태 요약 출력 |
+| `u-agent-summary` | 프로젝트 개요 및 현재 상태 요약 출력 |
 
 ### Individual Agent Skills
 
 | Category | Skills |
 |----------|--------|
-| **Design** | `u-skill-srs` (요구사항 명세), `u-skill-erd` (ERD), `u-skill-api` (API Contract), `u-skill-screen` (화면 설계), `u-skill-wireframe` (HTML 와이어프레임) |
-| **Visual Design** | `u-skill-ux-design` (pencil.dev 기반 시각 디자인), `u-skill-ux-ds` (디자인 시스템) |
-| **Implementation** | `u-skill-fe` (Frontend), `u-skill-be` (Backend), `u-skill-storybook` (Storybook) |
-| **Quality** | `u-skill-test` (테스트 케이스), `u-skill-bug-report` (결함 분석) |
+| **Design** | `u-skill-srs` (요구사항 명세), `u-skill-erd` (ERD), `u-skill-api` (API Contract), `u-agent-screen` (화면 설계), `u-agent-wireframe` (HTML 와이어프레임) |
+| **Visual Design** | `u-agent-ux-design` (pencil.dev 기반 시각 디자인), `u-agent-ux-ds` (디자인 시스템) |
+| **Implementation** | `u-agent-dv-fe` (Frontend), `u-agent-dv-be` (Backend), `u-skill-storybook` (Storybook) |
+| **Quality** | `u-agent-qa` (테스트 케이스), `u-agent-bug-report` (결함 분석) |
 
 ### Utility
 
@@ -261,9 +261,9 @@ stateDiagram-v2
 |-------|-------------|
 | `u-skill-build` | 프로젝트 빌드 실행 (`bun run build`) |
 | `u-skill-git-pr` | 변경 파일을 feature 단위로 커밋 및 GitHub PR 생성 |
-| `u-skill-history` | 전체 Iteration 수행 이력 조회 |
-| `u-skill-archive` | 현재 Iteration 문서를 `iterations/`로 아카이브 |
-| `u-skill-index` | 문서 인덱스 갱신 |
+| `u-agent-history` | 전체 Iteration 수행 이력 조회 |
+| `u-agent-archive` | 현재 Iteration 문서를 `iterations/`로 아카이브 |
+| `u-agent-index` | 문서 인덱스 갱신 |
 | `u-skill-help` | 모든 스킬 상세 설명 및 사용법 표시 |
 | `u-skill-json-report` | JSON Export 파일을 HTML 보고서로 렌더링 |
 | `u-skill-json-report-render` | 지정 template + json으로 HTML 보고서 렌더링 |
@@ -274,35 +274,35 @@ stateDiagram-v2
 
 ### 1. 신규 프로젝트 시작 (Zero to One)
 ```bash
-/u-skill-create-project my-app    # 프로젝트 구조 생성
-/u-skill-us-add "핵심 아이디어"     # 유저 스토리 등록
+/u-agent-create-project my-app    # 프로젝트 구조 생성
+/u-agent-us-add "핵심 아이디어"     # 유저 스토리 등록
 /u-skill-loop                      # 전체 PDCA 자동 실행
 ```
 
 ### 2. 기존 프로젝트 분석 및 SSoT 도입
 ```bash
 /u-skill-init                      # 기존 코드 → SSoT 역공학
-/u-skill-status                    # 생성된 문서 상태 확인
+/u-agent-status                    # 생성된 문서 상태 확인
 /u-skill-loop                      # 부족한 설계 보완 후 개발 사이클
 ```
 
 ### 3. 새로운 기능 추가 (Feature Addition)
 ```bash
-/u-skill-us-add                    # 유저 스토리(사용자 요구사항) 추가
-/u-skill-fr-add                    # 기능 요구사항(시스템 상세 명세) 추가
+/u-agent-us-add                    # 유저 스토리(사용자 요구사항) 추가
+/u-agent-fr-add                    # 기능 요구사항(시스템 상세 명세) 추가
 /u-skill-loop                      # 설계 변경 및 코드 구현 자동화
 ```
 
 ### 4. 유지보수 및 버그 수정 (Maintenance)
 ```bash
-/u-skill-backlog-add               # 이슈 등록
+/u-agent-backlog-add               # 이슈 등록
 /u-skill-loop-from design          # DESIGN 단계부터 루프
-/u-skill-bug-report                # 결함 분석 및 수정 가이드
+/u-agent-bug-report                # 결함 분석 및 수정 가이드
 ```
 
 ### 5. 품질 검증 및 배포 (Quality & Deploy)
 ```bash
-/u-skill-validate                  # SSoT 문서 무결성 검증
+/u-agent-validate                  # SSoT 문서 무결성 검증
 /u-skill-gap-detector              # 설계-구현 일치도 분석
 /u-skill-build                     # 최종 빌드 확인
 /u-skill-git-pr                    # feature별 커밋 + PR 생성

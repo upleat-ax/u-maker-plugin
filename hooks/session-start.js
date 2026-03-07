@@ -3,7 +3,7 @@
  * session-start.js — u-maker SessionStart Hook
  *
  * Checks if .u-maker/docs/ exists in the current working directory.
- * If not, creates the full SSoT folder structure (v2: shared/ + per-app).
+ * If not, creates the full SSoT folder structure (v2: common/ + per-app).
  *
  * Output: JSON { result: "success" }
  */
@@ -14,14 +14,14 @@ const path = require('path');
 const cwd = process.cwd();
 const udocsRoot = path.join(cwd, '.u-maker', 'docs');
 
-// Required shared directory structure
+// Required common directory structure
 const UDOCS_DIRS = [
-  'shared/01-plan',
-  'shared/02-design',
-  'shared/03-dev',
-  'shared/05-act',
-  'shared/assets/diagrams',
-  'shared/assets/screenshots',
+  'common/01-plan',
+  'common/02-design',
+  'common/03-dev',
+  'common/05-act',
+  'common/assets/diagrams',
+  'common/assets/screenshots',
   'iterations',
 ];
 
@@ -51,7 +51,7 @@ function ensureUdocsStructure() {
   const created = [];
   const apps = getAppsFromConfig();
 
-  // Create shared directories
+  // Create common directories
   for (const dir of UDOCS_DIRS) {
     const fullPath = path.join(udocsRoot, dir);
     if (!fs.existsSync(fullPath)) {
@@ -81,10 +81,10 @@ function ensureUdocsStructure() {
       '',
       '| Directory | Scope | Phase |',
       '|-----------|-------|-------|',
-      '| `shared/01-plan/` | Shared | PLAN |',
-      '| `shared/02-design/` | Shared | DESIGN |',
-      '| `shared/03-dev/` | Shared | DO |',
-      '| `shared/05-act/` | Shared | ACT |',
+      '| `common/01-plan/` | Shared | PLAN |',
+      '| `common/02-design/` | Shared | DESIGN |',
+      '| `common/03-dev/` | Shared | DO |',
+      '| `common/05-act/` | Shared | ACT |',
       ...apps.map(app => `| \`${app}/01-plan/\` ~ \`${app}/04-check/\` | ${app} | PLAN~CHECK |`),
       '',
     ].join('\n'), 'utf8');

@@ -8,11 +8,11 @@ last_updated: "{{DATE}}"
 app: "{{APP_NAME}}"
 related_docs:
   - ".u-maker/docs/{{APP_NAME}}/01-plan/1_SRS_RA.md"
-  - ".u-maker/docs/shared/02-design/2_ERD_SA.md"
+  - ".u-maker/docs/common/02-design/2_ERD_SA.md"
   - ".u-maker/docs/{{APP_NAME}}/02-design/2_Screen_UX.md"
   - ".u-maker/docs/{{APP_NAME}}/03-dev/3_Code_DV.md"
   - ".u-maker/docs/{{APP_NAME}}/04-check/4_Case_QA.md"
-  - ".u-maker/docs/shared/01-plan/1_Index_PM.md"
+  - ".u-maker/docs/common/01-plan/1_Index_PM.md"
 external_links: []
 ---
 
@@ -37,14 +37,14 @@ external_links: []
 
 ## 2. API Overview
 
-| Method | Path | Description | FR Mapping | Screen Mapping | Menu Mapping | Auth |
+| Method | Path | Description | FT Mapping | Screen Mapping | Menu Mapping | Auth |
 |--------|------|-------------|------------|---------------|-------------|------|
-| POST | `/auth/login` | 로그인 | FR-0010 | S-0060 | MN-AUTH-0010 | No |
-| POST | `/auth/register` | 회원가입 | FR-0010 | S-0070 | MN-AUTH-0020 | No |
-| GET | `/{{resource}}` | {{설명}} | FR-0020 | S-0030 | MN-XXX-NNNN | Yes |
-| POST | `/{{resource}}` | {{설명}} | FR-0030 | S-0040 | MN-XXX-NNNN | Yes |
-| PUT | `/{{resource}}/:id` | {{설명}} | FR-0030 | S-0040 | MN-XXX-NNNN | Yes |
-| DELETE | `/{{resource}}/:id` | {{설명}} | FR-0030 | S-0040 | MN-XXX-NNNN | Yes |
+| POST | `/auth/login` | 로그인 | FT-0010 | S-0060 | MN-AUTH-0010 | No |
+| POST | `/auth/register` | 회원가입 | FT-0010 | S-0070 | MN-AUTH-0020 | No |
+| GET | `/{{resource}}` | {{설명}} | FT-0020 | S-0030 | MN-XXX-NNNN | Yes |
+| POST | `/{{resource}}` | {{설명}} | FT-0030 | S-0040 | MN-XXX-NNNN | Yes |
+| PUT | `/{{resource}}/:id` | {{설명}} | FT-0030 | S-0040 | MN-XXX-NNNN | Yes |
+| DELETE | `/{{resource}}/:id` | {{설명}} | FT-0030 | S-0040 | MN-XXX-NNNN | Yes |
 
 ---
 
@@ -57,7 +57,7 @@ external_links: []
 **Summary**: 사용자 로그인
 **Tags**: Auth
 **Auth Required**: No
-**Related FR**: FR-0010 | **Screen**: S-0060 | **Menu**: MN-AUTH-0010
+**Related FT**: FT-0010 | **Screen**: S-0060 | **Menu**: MN-AUTH-0010
 
 #### Parameters
 
@@ -112,7 +112,7 @@ external_links: []
 **Summary**: {{리소스 목록 조회}}
 **Tags**: {{Tag}}
 **Auth Required**: Yes (Bearer Token)
-**Related FR**: FR-0020 | **Screen**: S-0030 | **Menu**: MN-XXX-NNNN
+**Related FT**: FT-0020 | **Screen**: S-0030 | **Menu**: MN-XXX-NNNN
 
 #### Parameters
 
@@ -171,7 +171,7 @@ external_links: []
 **Summary**: {{리소스 생성}}
 **Tags**: {{Tag}}
 **Auth Required**: Yes (Bearer Token)
-**Related FR**: FR-0030 | **Screen**: S-0040 | **Menu**: MN-XXX-NNNN
+**Related FT**: FT-0030 | **Screen**: S-0040 | **Menu**: MN-XXX-NNNN
 
 #### Parameters
 
@@ -227,7 +227,7 @@ external_links: []
 **Summary**: {{리소스 수정}}
 **Tags**: {{Tag}}
 **Auth Required**: Yes (Bearer Token)
-**Related FR**: FR-0030 | **Screen**: S-0040
+**Related FT**: FT-0030 | **Screen**: S-0040
 
 #### Parameters
 
@@ -275,7 +275,7 @@ external_links: []
 **Summary**: {{리소스 삭제}}
 **Tags**: {{Tag}}
 **Auth Required**: Yes (Bearer Token)
-**Related FR**: FR-0030
+**Related FT**: FT-0030
 
 #### Parameters
 

@@ -8,8 +8,8 @@ last_updated: "{{DATE}}"
 app: "{{APP_NAME}}"
 related_docs:
   - ".u-maker/docs/{{APP_NAME}}/04-check/4_Case_QA.md"
-  - ".u-maker/docs/shared/05-act/5_IterationLog_RA.md"
-  - ".u-maker/docs/shared/01-plan/1_Index_PM.md"
+  - ".u-maker/docs/common/05-act/5_IterationLog_RA.md"
+  - ".u-maker/docs/common/01-plan/1_Index_PM.md"
 external_links: []
 ---
 
@@ -52,23 +52,23 @@ pie title Test Results
     "Skip" : {{SKIP}}
 ```
 
-### 2.2 Results by FR
+### 2.2 Results by FT
 
-| FR-ID | Feature | Total | Pass | Fail | Skip | Status |
+| FT-ID | Feature | Total | Pass | Fail | Skip | Status |
 |-------|---------|-------|------|------|------|--------|
-| FR-0010 | {{기능명}} | 2 | 1 | 1 | 0 | Partial |
-| FR-0020 | {{기능명}} | 1 | 1 | 0 | 0 | Pass |
-| FR-0030 | {{기능명}} | 1 | 0 | 0 | 1 | Skip |
+| FT-0010 | {{기능명}} | 2 | 1 | 1 | 0 | Partial |
+| FT-0020 | {{기능명}} | 1 | 1 | 0 | 0 | Pass |
+| FT-0030 | {{기능명}} | 1 | 0 | 0 | 1 | Skip |
 
 ---
 
 ## 3. Actual vs Expected
 
-| TC-ID | FR | Expected | Actual | Result | Evidence |
+| TC-ID | FT | Expected | Actual | Result | Evidence |
 |-------|-----|----------|--------|--------|----------|
-| TC-0010 | FR-0010 | {{기대 결과}} | {{실제 결과}} | Pass | [Log](.u-maker/docs/assets/tc-0010.log) |
-| TC-0020 | FR-0010 | {{기대 결과}} | {{실제 결과}} | Fail | [Screenshot](.u-maker/docs/assets/tc-0020.png) |
-| TC-0030 | FR-0020 | {{기대 결과}} | {{실제 결과}} | Pass | [Log](.u-maker/docs/assets/tc-0030.log) |
+| TC-0010 | FT-0010 | {{기대 결과}} | {{실제 결과}} | Pass | [Log](.u-maker/docs/assets/tc-0010.log) |
+| TC-0020 | FT-0010 | {{기대 결과}} | {{실제 결과}} | Fail | [Screenshot](.u-maker/docs/assets/tc-0020.png) |
+| TC-0030 | FT-0020 | {{기대 결과}} | {{실제 결과}} | Pass | [Log](.u-maker/docs/assets/tc-0030.log) |
 
 ---
 
@@ -118,7 +118,7 @@ stateDiagram-v2
 | **DEF-ID** | DEF-0010 |
 | **Severity** | Critical / Major / Minor / Trivial |
 | **TC-ID** | TC-0020 |
-| **FR-ID** | FR-0010 |
+| **FT-ID** | FT-0010 |
 | **Status** | Open |
 | **Found Date** | {{DATE}} |
 | **Found By** | u-QA |
@@ -166,13 +166,15 @@ stateDiagram-v2
 flowchart TD
     START[CHECK Phase Complete] --> Q1{Critical/Major = 0?}
     Q1 -->|No| ACT[→ ACT Phase]
-    Q1 -->|Yes| Q2{All FR Implemented?}
+    Q1 -->|Yes| Q2{All FT Implemented?}
     Q2 -->|No| ACT
-    Q2 -->|Yes| Q3{Backlog Open = 0?}
+    Q2 -->|Yes| Q3{All FT Implemented?}
     Q3 -->|No| ACT
-    Q3 -->|Yes| Q4{Build Success?}
+    Q3 -->|Yes| Q4{Backlog Open = 0?}
     Q4 -->|No| ACT
-    Q4 -->|Yes| COMPLETE[→ COMPLETE]
+    Q4 -->|Yes| Q5{Build Success?}
+    Q5 -->|No| ACT
+    Q5 -->|Yes| COMPLETE[→ COMPLETE]
 ```
 
 ## 8. Exit Criteria Check
@@ -181,7 +183,7 @@ flowchart TD
 |---|---------|--------|-------|
 | 1 | All backlog items Done | {{PASS/FAIL}} | {{open count}} open |
 | 2 | No Critical/Major defects | {{PASS/FAIL}} | {{count}} remaining |
-| 3 | All FR implemented | {{PASS/FAIL}} | {{count}} remaining |
+| 3 | All FT implemented | {{PASS/FAIL}} | {{count}} remaining |
 | 4 | Build success | {{PASS/FAIL}} | {{result}} |
 | **Overall** | | **{{PASS/FAIL}}** | |
 

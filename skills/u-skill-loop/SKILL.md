@@ -43,7 +43,7 @@ imports:
 ## Exit Criteria (4가지 모두 충족 시 종료)
 
 1. Critical/Major 결함 0건
-2. SRS 전체 FR 구현 (모든 FR이 Implemented)
+2. SRS 전체 FT 구현 (모든 FT가 Implemented)
 3. 빌드 성공 (bun run build)
 
 ## Loop Flow
