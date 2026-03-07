@@ -22,6 +22,7 @@ imports:
   - ${PLUGIN_ROOT}/_refer/ssot-standard.md
   - ${PLUGIN_ROOT}/_refer/post-execution-summary.md
   - ${PLUGIN_ROOT}/_refer/json-export.md
+  - ${PLUGIN_ROOT}/_refer/html-report-standard.md
   - ${PLUGIN_ROOT}/templates/05-act/5_DailyReport_PM.template.md
   - ${PLUGIN_ROOT}/.u-maker/u-maker.config.json
 agents:
@@ -35,10 +36,15 @@ agents:
 ## Output Path
 
 - `.u-maker/docs/common/05-act/5_DailyReport_PM_yyyymmddhhmm.md`
+- `.u-maker/docs/common/05-act/5_DailyReport_PM_yyyymmddhhmm.json`
+- `.u-maker/docs/common/05-act/5_DailyReport_PM_yyyymmddhhmm.html`
 
 ## Rules
 
 - 타임스탬프는 반드시 `yyyymmddhhmm` 형식(12자리 숫자)
 - 인자가 없으면 현재 시각으로 생성
-- 동명의 `.json` 파일을 동일 경로에 함께 생성
+- 3종 파일 동시 생성: `.md` + `.json` + `.html`
+- `.html`은 `html-report-standard.md`의 템플릿 구조를 따름
+- `.md`와 `.html`은 동일한 데이터, 동일한 버전
+- HTML은 단일 파일로 완결 (외부 CSS/JS 금지, Pretendard CDN만 허용)
 - Post-Execution Summary Box 출력 필수
