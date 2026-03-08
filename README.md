@@ -6,6 +6,7 @@ PDCA(Plan-Design-Do-Check-Act) 기반 SSoT(Single Source of Truth) 협업 오케
 - Plugin version: `1.0.0`
 - SSoT config version: `2.0.0`
 - Skills: `48` | Agents: `8`
+- [한국어 README (HTML)](README.ko.html) | [English README (HTML)](README.en.html)
 
 ---
 
@@ -158,7 +159,9 @@ flowchart TD
 | `/u-skill-wireframe [app]` | 와이어프레임 HTML 생성 |
 | `/u-skill-ux-figma [app]` | pencil.dev 기반 화면 디자인 |
 | `/u-skill-ux-dsystem [app]` | 디자인 시스템 시각 구성 |
-| `/u-skill-testcase [app]` | Unit+E2E 테스트 케이스 설계 |
+| `/u-skill-testcase [app]` | Unit+E2E 테스트 케이스 일괄 설계 |
+| `/u-skill-tc-add [app] [FT] [desc]` | 테스트 케이스 개별 추가 (`all` 지원) |
+| `/u-skill-tc-refine <TC> [app]` | 테스트 케이스 세분화 (하위 TC로 분해) |
 | `/u-skill-qa [app]` | 테스트 실행 (Vitest + Playwright) |
 | `/u-skill-us-add [desc]` | 유저 스토리 추가 |
 | `/u-skill-fr-add [app] [desc]` | 기능 요구사항(FR) 추가 |
@@ -373,6 +376,8 @@ u-maker-plugin/
 │   ├── u-skill-loop/      #   PDCA 자동 반복
 │   ├── u-skill-srs/       #   SRS 문서
 │   ├── u-skill-refine/    #   FR/US/FT 세분화
+│   ├── u-skill-tc-add/    #   테스트 케이스 개별 추가
+│   ├── u-skill-tc-refine/ #   테스트 케이스 세분화
 │   ├── u-agent-*/         #   에이전트 직접 호출 (7개)
 │   └── ...                #   기타 40개 스킬
 ├── hooks/                 # Claude hook 설정
@@ -522,7 +527,12 @@ mv .u-maker/u-ssot.config.json .u-maker/u-maker.config.json
 /u-skill-refine US-0010        # US를 하위 US로 분해
 /u-skill-refine FT-0010 web    # FT를 하위 FT로 분해
 
-# 4. 설계부터 재실행
+# 4. 테스트 케이스 추가/세분화
+/u-skill-tc-add web FT-0010 로그인 성공 TC    # TC 개별 추가
+/u-skill-tc-add all FT-0010 로그인 TC         # 모든 앱에 동일 TC 일괄 추가
+/u-skill-tc-refine TC-0010 web                # TC를 하위 TC로 세분화
+
+# 5. 설계부터 재실행
 /u-skill-design web
 /u-skill-dev web
 /u-skill-check web

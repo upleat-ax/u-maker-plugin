@@ -851,7 +851,9 @@
           <tr><td><code>/u-skill-wireframe [app]</code></td><td>와이어프레임 HTML 생성</td></tr>
           <tr><td><code>/u-skill-ux-figma [app]</code></td><td>pencil.dev 기반 화면 디자인</td></tr>
           <tr><td><code>/u-skill-ux-dsystem [app]</code></td><td>디자인 시스템 시각 구성</td></tr>
-          <tr><td><code>/u-skill-testcase [app]</code></td><td>Unit+E2E 테스트 케이스 설계</td></tr>
+          <tr><td><code>/u-skill-testcase [app]</code></td><td>Unit+E2E 테스트 케이스 일괄 설계</td></tr>
+          <tr><td><code>/u-skill-tc-add [app] [FT] [desc]</code></td><td>테스트 케이스 개별 추가 (<code>all</code> 지원)</td></tr>
+          <tr><td><code>/u-skill-tc-refine &lt;TC&gt; [app]</code></td><td>테스트 케이스 세분화 (하위 TC로 분해)</td></tr>
           <tr><td><code>/u-skill-qa [app]</code></td><td>테스트 실행 (Vitest + Playwright)</td></tr>
           <tr><td><code>/u-skill-us-add [desc]</code></td><td>유저 스토리 추가</td></tr>
           <tr><td><code>/u-skill-fr-add [app] [desc]</code></td><td>기능 요구사항(FR) 추가</td></tr>
@@ -1178,8 +1180,10 @@
 &#9474;   &#9500;&#9472;&#9472; u-skill-loop/          <span class="comment"># PDCA 자동 루프</span>
 &#9474;   &#9500;&#9472;&#9472; u-skill-srs/           <span class="comment"># SRS 문서</span>
 &#9474;   &#9500;&#9472;&#9472; u-skill-refine/        <span class="comment"># FR/US/FT 분해</span>
+&#9474;   &#9500;&#9472;&#9472; u-skill-tc-add/        <span class="comment"># 테스트 케이스 개별 추가</span>
+&#9474;   &#9500;&#9472;&#9472; u-skill-tc-refine/     <span class="comment"># 테스트 케이스 세분화</span>
 &#9474;   &#9500;&#9472;&#9472; u-agent-*/             <span class="comment"># Agent 직접 호출 (7개)</span>
-&#9474;   &#9492;&#9472;&#9472; ...                    <span class="comment"># 40개 이상 추가 스킬</span>
+&#9474;   &#9492;&#9472;&#9472; ...                    <span class="comment"># 기타 스킬</span>
 &#9500;&#9472;&#9472; <span style="color:var(--orange);">hooks/</span>                 <span class="comment"># Claude 훅 설정</span>
 &#9474;   &#9500;&#9472;&#9472; hooks.json
 &#9474;   &#9492;&#9472;&#9472; session-start.js
@@ -1289,6 +1293,11 @@
 
 <span class="comment"># 너무 크면 분해</span>
 <span class="cmd">/u-skill-refine</span> <span class="flag">FR-0010</span> <span class="str">web</span>
+
+<span class="comment"># TC 추가/세분화</span>
+<span class="cmd">/u-skill-tc-add</span> <span class="str">web</span> <span class="flag">FT-0010</span> <span class="str">로그인 TC</span>
+<span class="cmd">/u-skill-tc-add</span> <span class="flag">all</span> <span class="flag">FT-0010</span> <span class="str">로그인 TC</span>
+<span class="cmd">/u-skill-tc-refine</span> <span class="flag">TC-0010</span> <span class="str">web</span>
 
 <span class="comment"># 설계부터 재실행</span>
 <span class="cmd">/u-skill-design</span> <span class="str">web</span></pre>
@@ -1536,6 +1545,8 @@
 <span class="cmd">/u-skill-us-add</span>                        <span class="comment"># 유저 스토리 추가</span>
 <span class="cmd">/u-skill-fr-add</span> <span class="str">web</span>                   <span class="comment"># FR 추가</span>
 <span class="cmd">/u-skill-refine</span> <span class="flag">FR-0010</span> <span class="str">web</span>           <span class="comment"># 분해</span>
+<span class="cmd">/u-skill-tc-add</span> <span class="str">web</span> <span class="flag">FT-0010</span> <span class="str">설명</span>    <span class="comment"># TC 개별 추가</span>
+<span class="cmd">/u-skill-tc-refine</span> <span class="flag">TC-0010</span> <span class="str">web</span>       <span class="comment"># TC 세분화</span>
 
 <span class="comment"># ── 보고서 & 유틸리티 ──</span>
 <span class="cmd">/u-skill-report</span> <span class="str">web</span>                   <span class="comment"># 종합 보고서</span>
