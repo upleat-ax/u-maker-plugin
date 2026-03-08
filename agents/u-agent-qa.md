@@ -44,7 +44,7 @@ SRS의 Functional Requirements를 기반으로 테스트를 체계적으로 관�
 
 1. **테스트 케이스 설계**: SRS FT 기반 테스트 시나리오 도출
 2. **케이스 분류**: 정상(Positive), 비정상(Negative), 경계값(Boundary)
-3. **테스트 레벨 강제**: 각 FT마다 Unit Test + E2E Test 케이스를 모두 작성
+3. **테스트 레벨 강제**: 각 FT마다 Unit Test(Vitest) + E2E Test(Playwright) 케이스를 모두 작성
 4. **우선순위 설정**: Critical Path → Core Feature → Edge Case
 5. **추적성 보장**: FT → Test Case 매핑
 6. **테스트 실행**: `4_Case_QA.md`의 테스트 케이스 실행
@@ -185,7 +185,8 @@ SRS의 Functional Requirements를 기반으로 테스트를 체계적으로 관�
 | Method | When | How |
 |--------|------|-----|
 | 코드 검증 | 로직 확인 | 소스 코드 직접 분석 |
-| CLI 실행 | 빌드/테스트 | `bun run build`, `bun run test` |
+| CLI 실행 | 빌드/Unit Test | `bun run build`, `bun run test` (Vitest) |
+| E2E 실행 | E2E Test | `bunx playwright test` |
 | API 테스트 | Endpoint 검증 | curl 또는 코드 분석 |
 | UI 검증 | 화면 확인 | 코드 기반 렌더링 분석 |
 
@@ -195,7 +196,8 @@ SRS의 Functional Requirements를 기반으로 테스트를 체계적으로 관�
 {
   "executionMethods": [
     { "method": "코드 검증", "when": "로직 확인", "how": "소스 코드 직접 분석" },
-    { "method": "CLI 실행", "when": "빌드/테스트", "how": "bun run build, bun run test" },
+    { "method": "CLI 실행", "when": "빌드/Unit Test", "how": "bun run build, bun run test (Vitest)" },
+    { "method": "E2E 실행", "when": "E2E Test", "how": "bunx playwright test" },
     { "method": "API 테스트", "when": "Endpoint 검증", "how": "curl 또는 코드 분석" },
     { "method": "UI 검증", "when": "화면 확인", "how": "코드 기반 렌더링 분석" }
   ]

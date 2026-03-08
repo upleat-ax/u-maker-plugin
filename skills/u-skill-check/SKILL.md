@@ -48,7 +48,7 @@ agents:
 1. `u-agent-qa`: 테스트 케이스 설계 (`{app}/04-check/4_Case_QA.md`)
    - SRS FT 기반 케이스 도출
    - 정상/비정상/경계값 시나리오
-   - Unit Test + E2E Test 모두 포함
+   - Unit Test(Vitest) + E2E Test(Playwright) 모두 포함
 2. `u-agent-qa`: 테스트 실행 및 결과 기록
    - 각 케이스 Pass/Fail 판정
    - `{app}/04-check/4_Report_QA.md`에 실행 결과 기록

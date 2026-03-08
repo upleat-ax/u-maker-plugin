@@ -42,6 +42,8 @@ external_links: []
 | Critical/Major Defects | {{DEFECT_COUNT}} | {{PASS/FAIL}} |
 | Build Status | {{BUILD_STATUS}} | {{PASS/FAIL}} |
 | Technical Debt Items | {{DEBT_COUNT}} | - |
+| Final Match Rate (Gap) | {{MATCH_RATE}}% | {{PASS/FAIL}} |
+| Total Gap Attempts | {{GAP_ATTEMPTS}} | - |
 
 ---
 
@@ -73,7 +75,36 @@ external_links: []
 
 ---
 
-## 4. Implementation Summary
+## 4. Gap Analysis History
+
+### 4.1 Match Rate Trend
+
+| Iter | Gap Attempt | Match Rate | Gap FTs | Resolved | Result |
+|------|------------|-----------|---------|----------|--------|
+| 1 | 1 | {{N}}% | {{FT list}} | {{FT list}} | {{Pass/Retry}} |
+| 1 | 2 | {{N}}% | {{FT list}} | {{FT list}} | {{Pass/Retry}} |
+| 2 | 1 | {{N}}% | {{FT list}} | {{FT list}} | {{Pass/Retry}} |
+
+### 4.2 Gap FT Detail
+
+| FT-ID | Feature | First Detected | Attempts | Resolution | Final Status |
+|-------|---------|---------------|----------|------------|-------------|
+| FT-{{NNNN}} | {{기능명}} | Iter {{N}} Attempt {{N}} | {{N}} | {{내용}} | {{Resolved/Remaining}} |
+
+### 4.3 Gap Resolution Summary
+
+| Metric | Value |
+|--------|-------|
+| Initial Match Rate | {{N}}% |
+| Final Match Rate | {{N}}% |
+| Total Gap Attempts | {{N}} |
+| Gap FTs Detected | {{N}} |
+| Gap FTs Resolved | {{N}} |
+| Gap FTs Remaining | {{N}} |
+
+---
+
+## 5. Implementation Summary
 
 ### 4.1 Code Statistics
 
@@ -104,7 +135,7 @@ external_links: []
 
 ---
 
-## 5. Test Summary
+## 6. Test Summary
 
 ### 5.1 Test Execution
 
@@ -130,7 +161,7 @@ external_links: []
 
 ---
 
-## 6. Defect Summary
+## 7. Defect Summary
 
 ### 6.1 Defects by Severity
 
@@ -150,7 +181,7 @@ external_links: []
 
 ---
 
-## 7. Technical Debt
+## 8. Technical Debt
 
 ### 7.1 Debt Items
 
@@ -169,7 +200,7 @@ external_links: []
 
 ---
 
-## 8. Traceability Matrix
+## 9. Traceability Matrix
 
 | US-ID | FT-ID | FR-ID | Screen | API | DB Entity | TC-ID | Status |
 |-------|-------|-------|--------|-----|-----------|-------|--------|
@@ -177,7 +208,7 @@ external_links: []
 
 ---
 
-## 9. Exit Criteria
+## 10. Exit Criteria
 
 | # | Criteria | Status | Value |
 |---|---------|--------|-------|
@@ -188,12 +219,12 @@ external_links: []
 
 ---
 
-## 10. Iteration History
+## 11. Iteration History
 
-| Iter | Phase Reached | Pass Rate | Defects | FT Impl | Result |
-|------|--------------|-----------|---------|---------|--------|
-| 1 | {{PHASE}} | {{N}}% | {{N}} | {{N}}/{{T}} | {{Pass/Fail}} |
-| 2 | {{PHASE}} | {{N}}% | {{N}} | {{N}}/{{T}} | {{Pass/Fail}} |
+| Iter | Phase Reached | Match Rate | Gap Attempts | Pass Rate | Defects | FT Impl | Result |
+|------|--------------|-----------|-------------|-----------|---------|---------|--------|
+| 1 | {{PHASE}} | {{N}}% | {{N}} | {{N}}% | {{N}} | {{N}}/{{T}} | {{Pass/Fail}} |
+| 2 | {{PHASE}} | {{N}}% | {{N}} | {{N}}% | {{N}} | {{N}}/{{T}} | {{Pass/Fail}} |
 
 ---
 

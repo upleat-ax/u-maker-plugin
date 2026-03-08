@@ -55,12 +55,12 @@ agents:
 
 | # | Source Document | 수집 데이터 |
 |---|----------------|------------|
-| 1 | `.u-maker/u-ssot.config.json` | 프로젝트명, iteration, phase |
+| 1 | `.u-maker/u-maker.config.json` | 프로젝트명, iteration, phase |
 | 2 | `{app}/01-plan/1_SRS_RA.md` | USR, US, FT, FR 목록 |
 | 3 | `{app}/02-design/2_RTM_RA.md` | 추적 매트릭스 |
 | 4 | `{app}/02-design/2_ERD_SA.md` | Entity 목록 |
 | 5 | `{app}/02-design/2_API_SA.md` | Endpoint 목록 |
-| 6 | `{app}/03-dev/3_Code_DV.md` | 구현 현황 |
+| 6 | `{app}/03-dev/3_Code_DV.md` | 구현 현황 + **Gap 이력** |
 | 7 | `{app}/04-check/4_Case_QA.md` | 테스트 케이스 |
 | 8 | `{app}/04-check/4_Report_QA.md` | 테스트 결과, 결함 |
 | 9 | `common/05-act/5_IterationLog_RA.md` | 백로그, 기술부채 |
@@ -68,17 +68,18 @@ agents:
 
 ## Report Sections
 
-보고서는 아래 10개 섹션으로 구성한다:
+보고서는 아래 11개 섹션으로 구성한다:
 
-1. **KPI Dashboard** — 핵심 지표 요약 (US, FT, FR, TC, Pass Rate, Defects, Build, Debt)
+1. **KPI Dashboard** — 핵심 지표 요약 (US, FT, FR, TC, Pass Rate, Defects, Build, Debt, **최종 Match Rate**)
 2. **Requirements Summary** — USR, US, FT, FR 전체 목록 + 상태
 3. **Implementation Summary** — 코드 통계, FT별 구현 상태, 기술 스택
-4. **Test Summary** — TC 실행 결과, FT별 결과, 실패 케이스 상세
-5. **Defect Summary** — Severity별 통계, 결함 상세
-6. **Technical Debt** — 부채 항목, 카테고리별 통계
-7. **Traceability Matrix** — US→FT→FR→Screen→API→DB→TC 추적
-8. **Exit Criteria** — 종료 조건 판정
-9. **Iteration History** — 전체 Iteration 이력
+4. **Gap Analysis History** — Iteration별 Match Rate 추이, Gap FT 목록, 해소 이력 (**NEW**)
+5. **Test Summary** — TC 실행 결과, FT별 결과, 실패 케이스 상세
+6. **Defect Summary** — Severity별 통계, 결함 상세
+7. **Technical Debt** — 부채 항목, 카테고리별 통계
+8. **Traceability Matrix** — US→FT→FR→Screen→API→DB→TC 추적
+9. **Exit Criteria** — 종료 조건 판정
+10. **Iteration History** — 전체 Iteration 이력 (Gap Attempt 포함)
 
 ## HTML Generation Rules
 

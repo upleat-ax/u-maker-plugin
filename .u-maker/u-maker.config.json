@@ -21,6 +21,8 @@
     "autoIterate": true,
     "loopStatus": "STOPPED",
     "planWorkflow": "fr-first",
+    "gapThreshold": 90,
+    "maxGapRetries": 3,
     "supportedPlanWorkflows": [
       "fr-first"
     ]

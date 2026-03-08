@@ -33,7 +33,7 @@ agents:
 
 # u-agent-qa
 
-`u-agent-qa` 에이전트를 호출하여 테스트 케이스를 설계한다. Unit + E2E.
+`u-agent-qa` 에이전트를 호출하여 테스트 케이스를 설계한다. Unit(Vitest) + E2E(Playwright).
 
 ## Output
 

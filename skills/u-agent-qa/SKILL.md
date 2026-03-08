@@ -32,7 +32,7 @@ agents:
 
 ## Scope
 
-- 테스트 케이스 설계 (Unit + E2E)
+- 테스트 케이스 설계 (Unit/Vitest + E2E/Playwright)
 - 테스트 실행
 - 결함 분석 리포트
 - 커버리지 매트릭스
