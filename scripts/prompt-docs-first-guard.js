@@ -52,7 +52,7 @@ const DOC_COMMANDS = [
   '/u-skill-help', '/u-agent-history', '/u-agent-archive', '/u-skill-storybook',
   '/u-skill-build', '/u-skill-git-pr', '/u-skill-stop', '/u-skill-resume',
   '/u-agent-summary', '/u-agent-wireframe', '/u-agent-ux-design', '/u-agent-ux-ds',
-  '/u-agent-pm', '/u-skill-daily-report',
+  '/u-agent-pm', '/u-skill-report',
 ];
 
 const promptLower = prompt.toLowerCase();
@@ -158,8 +158,8 @@ function suggestCommand(text) {
   if (/(?:페이지|화면|스크린|page|screen)/.test(t)) {
     return '`/u-agent-screen` — 화면 설계 문서 갱신';
   }
-  if (/(?:daily report|daily|데일리\s*리포트|일일\s*리포트|daily\s*status)/.test(t)) {
-    return '`/u-skill-daily-report` — PM 데일리 리포트 생성';
+  if (/(?:report|리포트|보고서|daily report|daily|데일리)/.test(t)) {
+    return '`/u-skill-report` — 프로젝트 종합 보고서 생성';
   }
   if (/(?:erd|데이터|db|database|테이블|table|모델|model)/.test(t)) {
     return '`/u-skill-erd` — ERD 문서 갱신';

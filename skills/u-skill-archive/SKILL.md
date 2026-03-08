@@ -5,7 +5,6 @@ description: |
   Triggers: /u-skill-archive, 아카이브, archive iteration
 model: sonnet
 user-invocable: true
-argument-hint: "[args]"
 allowed-tools:
   - Read
   - Write

@@ -5,7 +5,6 @@ description: |
   Triggers: /u-skill-act, act phase, 개선, 회고
 model: sonnet
 user-invocable: true
-argument-hint: "[args]"
 allowed-tools:
   - Read
   - Write

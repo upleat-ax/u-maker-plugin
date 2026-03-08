@@ -5,7 +5,6 @@ description: |
   Triggers: /u-skill-history, 이력, iteration history
 model: sonnet
 user-invocable: true
-argument-hint: "[args]"
 allowed-tools:
   - Read
   - Write

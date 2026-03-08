@@ -5,7 +5,6 @@ description: |
   Triggers: /u-skill-index, 인덱스, index update
 model: sonnet
 user-invocable: true
-argument-hint: "[args]"
 allowed-tools:
   - Read
   - Write

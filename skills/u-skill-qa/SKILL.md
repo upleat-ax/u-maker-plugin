@@ -3,11 +3,11 @@ name: u-skill-qa
 description: |
   테스트를 실행한다. Unit Test(Vitest) + E2E Test(Playwright) 실행 및 결과 리포트.
   4_Case_QA.md의 테스트 케이스를 기반으로 실행하고 4_Report_QA.md에 결과를 기록한다.
-  Optional [app] argument for multi-app projects (e.g., `/u-skill-qa web`).
+  Args: `[app]` — 멀티앱 프로젝트 시 앱 이름 (e.g., `web`)
   Triggers: /u-skill-qa, 테스트 실행, test run, test execute
 model: sonnet
 user-invocable: true
-argument-hint: "[web]"
+argument-hint: "[app]"
 allowed-tools:
   - Read
   - Write

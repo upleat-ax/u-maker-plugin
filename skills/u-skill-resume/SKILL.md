@@ -5,7 +5,6 @@ description: |
   Triggers: /u-skill-resume, 루프 재개, resume loop
 model: sonnet
 user-invocable: true
-argument-hint: "[args]"
 allowed-tools:
   - Read
   - Write

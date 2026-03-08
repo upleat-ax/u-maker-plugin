@@ -5,7 +5,6 @@ description: |
   Triggers: /u-skill-backlog, 백로그, open items
 model: sonnet
 user-invocable: true
-argument-hint: "[args]"
 allowed-tools:
   - Read
   - Write

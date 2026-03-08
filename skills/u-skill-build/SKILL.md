@@ -5,7 +5,6 @@ description: |
   Triggers: /u-skill-build, 빌드, build project
 model: sonnet
 user-invocable: true
-argument-hint: "[args]"
 allowed-tools:
   - Read
   - Write

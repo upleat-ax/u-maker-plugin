@@ -5,7 +5,6 @@ description: |
   Triggers: /u-skill-storybook, 스토리북, storybook run
 model: sonnet
 user-invocable: true
-argument-hint: "[args]"
 allowed-tools:
   - Read
   - Write

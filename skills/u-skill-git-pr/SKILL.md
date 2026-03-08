@@ -2,9 +2,10 @@
 name: u-skill-git-pr
 description: |
   feature별로 git commit하고 PR을 생성한다. 변경된 파일을 feature 단위로 그룹핑하여 커밋 후 GitHub PR을 남긴다.
+  Args: `[feat/<feature-name>]` — feature 브랜치 이름 (생략 시 자동 분류)
   Triggers: /u-skill-git-pr, git pr, 커밋, commit and pr, pull request
 user-invocable: true
-argument-hint: "[args]"
+argument-hint: "[feat/<feature-name>]"
 model: sonnet
 allowed-tools:
   - Read

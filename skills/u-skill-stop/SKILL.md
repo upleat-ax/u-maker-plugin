@@ -5,7 +5,6 @@ description: |
   Triggers: /u-skill-stop, 루프 중단, stop loop
 model: sonnet
 user-invocable: true
-argument-hint: "[args]"
 allowed-tools:
   - Read
   - Write

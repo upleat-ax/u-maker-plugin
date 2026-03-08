@@ -2,11 +2,11 @@
 name: u-agent-dv-be
 description: |
   Backend 개발을 실행한다. API Routes + Prisma/Drizzle ORM 기반. u-agent-dv-be 에이전트가 담당한다.
-  Optional [app] argument for multi-app projects (e.g., `/u-agent-dv-be web`).
+  Args: `[app]` — 멀티앱 프로젝트 시 앱 이름 (e.g., `web`)
   Triggers: /u-agent-dv-be, 백엔드, backend, API 구현
 model: sonnet
 user-invocable: true
-argument-hint: "[web]"
+argument-hint: "[app]"
 allowed-tools:
   - Read
   - Write

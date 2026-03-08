@@ -5,7 +5,6 @@ description: |
   Triggers: /u-skill-validate, 검증, 무결성, validate
 model: sonnet
 user-invocable: true
-argument-hint: "[args]"
 allowed-tools:
   - Read
   - Write

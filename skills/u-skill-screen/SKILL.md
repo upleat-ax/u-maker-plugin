@@ -2,11 +2,11 @@
 name: u-skill-screen
 description: |
   화면 상세 설계 문서를 생성하거나 갱신한다. u-agent-ux 에이전트가 담당한다.
-  Optional [app] argument for multi-app projects (e.g., `/u-skill-screen web`).
+  Args: `[app]` — 멀티앱 프로젝트 시 앱 이름 (e.g., `web`)
   Triggers: /u-skill-screen, 화면 설계, wireframe, screen design
 model: sonnet
 user-invocable: true
-argument-hint: "[web]"
+argument-hint: "[app]"
 allowed-tools:
   - Read
   - Write

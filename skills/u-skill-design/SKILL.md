@@ -2,11 +2,11 @@
 name: u-skill-design
 description: |
   DESIGN Phase 실행. 화면설계 → ERD + API Contract + RTM → 모순검수 순서로 진행한다.
-  Optional [app] argument for multi-app projects (e.g., `/u-skill-design web`).
+  Args: `[app]` — 멀티앱 프로젝트 시 앱 이름 (e.g., `web`)
   Triggers: /u-skill-design, design phase, 설계
 model: sonnet
 user-invocable: true
-argument-hint: "[web]"
+argument-hint: "[app]"
 allowed-tools:
   - Read
   - Write

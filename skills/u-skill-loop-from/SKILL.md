@@ -2,6 +2,7 @@
 name: u-skill-loop-from
 description: |
   지정 Phase부터 PDCA 루프를 시작한다. 예: /u-skill-loop-from design
+  Args: `<phase>` — 시작 Phase (plan|design|do|check|act) (필수)
   Triggers: /u-skill-loop-from, 루프 시작점
 model: sonnet
 user-invocable: true

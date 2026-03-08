@@ -2,10 +2,11 @@
 name: u-skill-create-project
 description: |
   새 프로젝트 초기화. Turborepo 모노레포 + .u-maker/docs SSoT 문서 구조를 생성한다.
+  Args: `<project-name>` — 프로젝트 이름 (필수)
   Triggers: /u-skill-create-project, 프로젝트 생성, 프로젝트 시작, new project
 model: sonnet
 user-invocable: true
-argument-hint: "[args]"
+argument-hint: "<project-name>"
 allowed-tools:
   - Read
   - Write

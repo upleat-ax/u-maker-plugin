@@ -3,6 +3,7 @@ name: u-skill-ux-dsystem
 description: |
   pencil.dev를 사용해 컴포넌트, 디자인 시스템, 화면을 시각적으로 구성하고 업데이트한다.
   IA, Screen, DesignToken, UIComponents 문서를 참고하여 .pen 파일에 디자인을 반영한다.
+  Args: `[app] [screen-id|component|all]` — 앱 + 대상 지정
   Triggers: /u-skill-ux-dsystem, pencil, 디자인 시각화, 화면 디자인, 컴포넌트 디자인, design system visual,
   screen visual, ui design, pen file, pencil design
 model: sonnet

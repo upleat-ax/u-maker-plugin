@@ -148,9 +148,7 @@ agents:
 | `/u-skill-ux-dsystem` | u-skill-ux-dsystem |
 | `/u-skill-testcase` | u-skill-testcase |
 | `/u-skill-qa` | u-skill-qa |
-| `/u-skill-bug-report` | u-skill-bug-report |
-| `/u-skill-daily-report` | u-skill-daily-report |
-| `/u-skill-loop-report` | u-skill-loop-report |
+| `/u-skill-report` | u-skill-report |
 
 ### Utility
 | Command | Skill |

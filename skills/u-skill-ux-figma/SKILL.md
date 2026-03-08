@@ -5,10 +5,11 @@ description: |
   2_Screen_Wireframes/ 의 HTML 와이어프레임을 참조하여 각 화면의 .pen 파일을 생성하며,
   관련된 wireframe 번호(S-NNNN)를 명시한다.
   IA, Screen, DesignToken, UIComponents, Wireframe 문서를 참고하여 .pen 파일에 디자인을 반영한다.
+  Args: `[app] <all|system|S-NNNN>` — 앱 + 대상 화면/시스템
   Triggers: /u-skill-ux-figma, pencil, 디자인 시각화, 화면 디자인, 컴포넌트 디자인, design system visual,
   screen visual, ui design, pen file, pencil design
 user-invocable: true
-argument-hint: "[web] <all|system|S-NNNN|component-id>"
+argument-hint: "[app] <all|system|S-NNNN|component-id>"
 model: sonnet
 allowed-tools:
   - Read

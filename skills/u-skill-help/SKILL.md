@@ -5,7 +5,6 @@ description: |
   Show all available u-maker commands and agents.
 model: sonnet
 user-invocable: true
-argument-hint: "[args]"
 allowed-tools:
   - Read
   - Write

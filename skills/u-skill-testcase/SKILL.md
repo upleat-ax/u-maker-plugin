@@ -5,11 +5,11 @@ description: |
   각 FT에 대해 Unit Test 케이스와 E2E Test 케이스를 모두 포함해야 한다.
   테스트 스텝은 Actor/Screen/Element/Action/Input/Expected를 상세하게 작성한다.
   u-agent-qa 에이전트가 담당한다.
-  Optional [app] argument for multi-app projects (e.g., `/u-agent-qa web`).
+  Args: `[app]` — 멀티앱 프로젝트 시 앱 이름 (e.g., `web`)
   Triggers: /u-skill-testcase, 테스트 케이스, test case, QA
 model: sonnet
 user-invocable: true
-argument-hint: "[web]"
+argument-hint: "[app]"
 allowed-tools:
   - Read
   - Write

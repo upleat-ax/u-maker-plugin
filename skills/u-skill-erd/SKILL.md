@@ -5,7 +5,6 @@ description: |
   Triggers: /u-skill-erd, ERD, 데이터 모델
 model: sonnet
 user-invocable: true
-argument-hint: "[args]"
 allowed-tools:
   - Read
   - Write

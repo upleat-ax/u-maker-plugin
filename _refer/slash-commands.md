@@ -372,35 +372,15 @@ SSoT 문서 상태를 관리하고 검증하는 커맨드.
 | **Prerequisites** | `4_Case_QA.md` 존재, `bun run build` 성공 |
 | **Output** | `{app}/04-check/4_Report_QA.md` |
 
-### `/u-skill-bug-report`
+### `/u-skill-report`
 
 | Field | Value |
 |-------|-------|
-| **Syntax** | `/u-skill-bug-report [app]` |
-| **Description** | 결함 분석 리포트를 생성한다 |
-| **Calling Agents** | `u-QA` |
-| **Prerequisites** | `4_Report_QA.md` 존재 |
-| **Output** | 결함 분석 결과 `.md` + `.json` + `.html`, `5_IterationLog_RA.md` 업데이트 |
-
-### `/u-skill-daily-report`
-
-| Field | Value |
-|-------|-------|
-| **Syntax** | `/u-skill-daily-report [yyyymmddhhmm]` |
-| **Description** | PM 데일리 리포트를 생성한다 (파일명 타임스탬프 포함) |
+| **Syntax** | `/u-skill-report [app]` |
+| **Description** | 프로젝트 종합 보고서를 생성한다. SSoT 문서와 git 이력 기반으로 FR/US/FT/NFR 구현 현황, QA 결과, 결함 목록, 기술 부채, Iteration 이력을 포함한다 |
 | **Calling Agents** | `u-PM` |
 | **Prerequisites** | 프로젝트 생성 완료 |
-| **Output** | `common/05-act/5_DailyReport_PM_yyyymmddhhmm.md` + `.json` + `.html` |
-
-### `/u-skill-loop-report`
-
-| Field | Value |
-|-------|-------|
-| **Syntax** | `/u-skill-loop-report [app]` |
-| **Description** | PDCA Loop 완료 후 종합 보고서를 생성한다. 요구사항, 유저스토리, 피쳐, 구현내용, 테스트케이스, 테스트결과, 기술부채를 포함한다 |
-| **Calling Agents** | `u-PM` |
-| **Prerequisites** | Loop 실행 완료 또는 CHECK Phase 완료 |
-| **Output** | `common/05-act/5_LoopReport_PM_yyyymmddhhmm.md` + `.json` + `.html` |
+| **Output** | `common/05-act/5_Report_PM_yyyymmddhhmm.md` + `.html` |
 
 ---
 
@@ -551,9 +531,7 @@ CHECK Phase에서 설계-구현 일치도를 분석하는 커맨드.
 | Task | `/u-skill-ux-dsystem [app]` | DESIGN | u-UX-DS |
 | Task | `/u-skill-testcase [app]` | CHECK | u-QA |
 | Task | `/u-skill-qa [app]` | CHECK | u-QA |
-| Task | `/u-skill-bug-report [app]` | CHECK | u-QA |
-| Task | `/u-skill-daily-report [yyyymmddhhmm]` | ACT | u-PM |
-| Task | `/u-skill-loop-report [app]` | ACT | u-PM |
+| Task | `/u-skill-report [app]` | ACT | u-PM |
 | QA | `/u-skill-gap-detector` | CHECK | u-RA → u-QA |
 | Utility | `/u-skill-help` | - | Orch |
 | Utility | `/u-skill-history` | - | u-RA |

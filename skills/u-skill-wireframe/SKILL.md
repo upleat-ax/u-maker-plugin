@@ -5,6 +5,7 @@ description: |
   IA, Screen 문서를 참고하여 HTML/CSS로 레이아웃을 시각화한다.
   각 화면 요소에는 floating 어노테이션 패널이 포함된다 --
   관련 요구사항(FR), 플로우(SC/User Flow), 조건(Business Rule), 요소 설명을 표시한다.
+  Args: `[app] <all|screen-id>` — 앱 이름 + 대상 화면 (all=전체)
   Triggers: /u-skill-wireframe, HTML 와이어프레임, wireframe generate
 model: sonnet
 user-invocable: true

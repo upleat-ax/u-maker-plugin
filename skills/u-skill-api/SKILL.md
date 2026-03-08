@@ -2,11 +2,11 @@
 name: u-skill-api
 description: |
   API Contract(OpenAPI 3.0) 문서를 생성하거나 갱신한다. u-agent-sa 에이전트가 담당한다.
-  Optional [app] argument for multi-app projects (e.g., `/u-skill-api web`).
+  Args: `[app]` — 멀티앱 프로젝트 시 앱 이름 (e.g., `web`)
   Triggers: /u-skill-api, API, OpenAPI, endpoint
 model: sonnet
 user-invocable: true
-argument-hint: "[web]"
+argument-hint: "[app]"
 allowed-tools:
   - Read
   - Write

@@ -6,7 +6,6 @@ description: |
   Triggers: /u-skill-loop, 루프, 자동 반복, auto loop
 model: sonnet
 user-invocable: true
-argument-hint: "[args]"
 allowed-tools:
   - Read
   - Write
@@ -117,8 +116,8 @@ DO Phase 완료 후 gap-detector를 실행하여 Match Rate를 산출한다:
 
 ## Loop Report
 
-루프 종료 시 (Exit Criteria 충족 또는 최대 Iteration 도달) `u-skill-loop-report`를 자동 호출한다.
-보고서는 `.md` + `.json` + `.html` 3종으로 생성되며, Gap 분석 이력을 포함한다.
+루프 종료 시 (Exit Criteria 충족 또는 최대 Iteration 도달) `u-skill-report`를 자동 호출한다.
+보고서는 `.md` + `.html` 2종으로 생성되며, FR/US/FT/NFR 구현 현황, QA 결과, 결함, 기술 부채, Iteration 이력을 포함한다.
 
 ## Rules
 

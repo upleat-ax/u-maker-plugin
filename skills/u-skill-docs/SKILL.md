@@ -2,6 +2,7 @@
 name: u-skill-docs
 description: |
   .u-maker/docs/ 내 전체 문서 트리를 조회한다.
+  Args: `[list|update|rebuild] [--phase <phase>] [--status <status>] [--app <app>]`
   Triggers: /u-skill-docs, 문서 목록, 문서 조회, document list
 user-invocable: true
 argument-hint: "[list|update|rebuild] [--phase <plan|design|do|check|act>] [--status <Draft|Review|Final>] [--app web]"

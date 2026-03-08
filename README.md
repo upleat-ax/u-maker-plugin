@@ -57,30 +57,21 @@ u-maker는 **문서 중심 개발(SSoT)**을 강제하는 협업 오케스트레
 | 단계 건너뛰기로 품질 저하 | Phase Gate로 전 단계 문서 Final 확인 후에만 다음 단계 진행 |
 | 반복적인 수정-테스트 사이클 | PDCA Loop 자동화 (최대 10회 반복, 종료 조건 자동 판정) |
 | 기술 스택 규칙 위반 | Hook 기반 사전 차단 (CSS-in-JS, Pages Router 등 10개 규칙) |
-| 문서와 코드 버전 불일치 | 문서 변경 시 `.md` + `.json` + `.html` 3종 동시 생성 |
+| 문서와 코드 버전 불일치 | 문서 변경 시 `.md` + `.json` 동시 생성, 리포트는 `.md` + `.html` 2종 생성 |
 
 ---
 
 ## 2. Architecture Overview
 
-```
-User Input (slash command / natural language)
-    |
-    v
-[u-skill-maker] ── Natural Language Router
-    |
-    +── Slash Command? ──> [u-skill-*] ── Self-contained Skill
-    |                           |
-    +── Natural Language? ─> Keyword Analysis ── Agent Routing
-                                |
-                                v
-                    [u-agent-*] ── Specialized Agent
-                          |
-                          v
-                    SSoT Documents (.md + .json + .html)
-                          |
-                          v
-                    Post-Execution Summary Box
+```mermaid
+flowchart TD
+    A["User Input<br/>(slash command / natural language)"] --> B["u-skill-maker<br/>Natural Language Router"]
+    B -->|Slash Command| C["u-skill-*<br/>Self-contained Skill"]
+    B -->|Natural Language| D[Keyword Analysis]
+    D --> E["u-agent-*<br/>Specialized Agent"]
+    C --> F["SSoT Documents<br/>(.md + .json + .html)"]
+    E --> F
+    F --> G[Post-Execution Summary Box]
 ```
 
 ### Token Architecture
@@ -104,7 +95,7 @@ User Input (slash command / natural language)
 | `u-agent-ux-ds` | Pencil Designer | DESIGN, DO | .pen 파일 (pencil.dev MCP 기반 시각 디자인) |
 | `u-agent-dv-fe` | Frontend Developer | DO | Next.js App Router + react-query + Storybook |
 | `u-agent-dv-be` | Backend Developer | DO | API Routes + Prisma/Drizzle ORM |
-| `u-agent-qa` | QA Engineer | CHECK | Test Cases (Unit+E2E), Test Execution, Defect Analysis |
+| `u-agent-qa` | QA Engineer | CHECK | Test Cases (Vitest+Playwright), Test Execution, Defect Analysis |
 
 ### Agent Invocation
 
@@ -138,10 +129,11 @@ User Input (slash command / natural language)
 
 | Command | Description |
 |---------|-------------|
-| `/u-skill-loop` | PDCA 사이클을 종료 조건 충족까지 자동 반복 |
+| `/u-skill-loop` | PDCA 사이클을 종료 조건 충족까지 자동 반복 (DO 후 Gap Check 포함) |
 | `/u-skill-loop-from <phase>` | 지정 Phase부터 루프 시작 (plan/design/dev/check/act) |
 | `/u-skill-stop` | 실행 중인 루프를 즉시 중단 (상태 저장) |
 | `/u-skill-resume` | 중단된 루프를 재개 |
+| `/u-skill-gap-detector` | 설계-구현 Gap 분석 (Match Rate 산출) |
 
 ### 4.3 Agent Direct
 
@@ -174,13 +166,11 @@ User Input (slash command / natural language)
 
 ### 4.5 Reports
 
-모든 리포트는 `.md` + `.json` + `.html` 3종 파일을 동시에 생성한다.
+모든 리포트는 `.md` + `.html` 2종 파일을 동시에 생성한다.
 
 | Command | Description |
 |---------|-------------|
-| `/u-skill-daily-report [yyyymmddhhmm]` | PM 데일리 리포트 |
-| `/u-skill-bug-report [app]` | 결함 분석 리포트 (Fail 케이스 분류, 원인 분석, 수정 제안) |
-| `/u-skill-loop-report [app]` | PDCA Loop 종합 보고서 (요구사항, US, FT, 구현, TC, 결함, 기술부채) |
+| `/u-skill-report [app]` | 프로젝트 종합 보고서 (FR/NFR/US/FT/TC 전체 카운트 + 이전 보고서 비교 트렌드 차트 + Git 활동 요약 + QA 결과 + 결함 + 기술 부채 + Iteration 이력) |
 
 ### 4.6 Status & Utility
 
@@ -197,21 +187,24 @@ User Input (slash command / natural language)
 | `/u-skill-build` | `bun run build` 실행 |
 | `/u-skill-storybook` | Storybook 실행 |
 | `/u-skill-git-pr` | feature별 git commit + GitHub PR 생성 |
-| `/u-skill-gap-detector` | 설계-구현 Gap 분석 (Match Rate 산출) |
 | `/u-skill-help` | 전체 명령어 도움말 |
 
 ---
 
 ## 5. PDCA Workflow
 
-```
-[PLAN] --Gate--> [DESIGN] --Gate--> [DO] --Gate--> [CHECK]
-                                                      |
-                                          Exit OK? ---+--- Yes --> [COMPLETE]
-                                                      |                + Loop Report
-                                                      No
-                                                      |
-                                                    [ACT] --> Next Iteration --> [PLAN]
+```mermaid
+flowchart TD
+    PLAN["PLAN"] -->|Gate| DESIGN["DESIGN"]
+    DESIGN -->|Gate| DO["DO"]
+    DO --> GAP{"Gap Check<br/>Match >= 90%?"}
+    GAP -->|No| INNER["Inner Gap Loop<br/>Gap FT별 DO 재실행<br/>(최대 maxGapRetries)"]
+    INNER --> GAP
+    GAP -->|Yes| CHECK["CHECK"]
+    CHECK --> EXIT{"Exit Criteria<br/>충족?"}
+    EXIT -->|Yes| COMPLETE["COMPLETE<br/>+ Loop Report"]
+    EXIT -->|No| ACT["ACT"]
+    ACT -->|Next Iteration| PLAN
 ```
 
 ### Phase Details
@@ -220,7 +213,7 @@ User Input (slash command / natural language)
 |-------|--------|---------------|--------------|
 | **PLAN** | PM, SA, UX | Roadmap, SRS(FR->US->FT), IA, Index | Roadmap + SRS + IA = Final |
 | **DESIGN** | UX, SA, RA | UXGuide, Screen, ScreenFlow, Wireframe, ERD, API, RTM, 모순 검수 | ERD + RTM + UXGuide + API + Screen + ScreenFlow = Final |
-| **DO** | UX, DV-FE, DV-BE | Screen 구현, Frontend, Backend, Code Doc | `bun run build` 성공 |
+| **DO** | UX, DV-FE, DV-BE | Screen 구현, Frontend, Backend, Code Doc, Gap Check | `bun run build` 성공 + Match Rate >= 90% |
 | **CHECK** | QA | Test Case 설계, 실행 (Vitest+Playwright), 결함 분석 | Critical/Major=0, All FT Implemented, Build OK |
 | **ACT** | RA, PM | Backlog 정리, Archive, Retrospective, Daily Report | Log + Retro 완료 |
 
@@ -234,31 +227,41 @@ User Input (slash command / natural language)
 | 2 | SRS의 모든 FT 구현 완료 | `1_SRS_RA.md` 상태 확인 |
 | 3 | 빌드 성공 | `bun run build` 실행 |
 
+### Inner Gap Loop
+
+DO Phase 완료 후 `u-skill-gap-detector`로 설계-구현 Match Rate를 측정한다.
+
+| Match Rate | Action |
+|-----------|--------|
+| >= 90% | CHECK Phase로 진행 |
+| < 90% | Gap FT 목록 추출 → FT별 DO 재실행 → 재측정 (최대 `maxGapRetries`회, 기본 3) |
+
+- Gap FT별로 `u-agent-dv-fe` + `u-agent-dv-be`를 증분 호출 (전체 재작성 금지)
+- 재시도 초과 시 현재 Match Rate를 기록하고 CHECK Phase로 강제 진행
+- Gap 이력은 `3_Code_DV.md`에 누적, Loop Report에 포함
+
 ---
 
 ## 6. 4-Tier ID Hierarchy
 
 요구사항부터 테스트까지 전 구간 추적을 위한 계층 구조:
 
-```
-USR-XXXX (User Type)          "관리자", "일반 사용자"
-    |
-    v
-US-XXXX (User Story)          "관리자로서 사용자를 관리하고 싶다"
-    |
-    v
-FT-XXXX (Feature)             "사용자 목록 조회" -- 구현 추적의 기본 단위
-    |
-    v
-FR-XXXX (Functional Req.)     "목록 페이지네이션 20건 단위"
+```mermaid
+flowchart TD
+    USR["USR-XXXX<br/>User Type<br/><i>관리자, 일반 사용자</i>"]
+    US["US-XXXX<br/>User Story<br/><i>관리자로서 사용자를 관리하고 싶다</i>"]
+    FT["FT-XXXX<br/>Feature ★ 구현 추적 기본 단위<br/><i>사용자 목록 조회</i>"]
+    FR["FR-XXXX<br/>Functional Req.<br/><i>목록 페이지네이션 20건 단위</i>"]
+    USR --> US --> FT --> FR
 ```
 
 ### Traceability Matrix (RTM)
 
 `2_RTM_RA.md`에서 전체 추적성을 관리한다:
 
-```
-US -> FT -> FR -> Screen -> API Endpoint -> DB Entity -> Test Case
+```mermaid
+flowchart LR
+    US --> FT --> FR --> Screen --> API[API Endpoint] --> DB[DB Entity] --> TC[Test Case]
 ```
 
 ---
@@ -321,7 +324,7 @@ US -> FT -> FR -> Screen -> API Endpoint -> DB Entity -> Test Case
 |-----------|---------|
 | `.md` | 사람이 읽는 마크다운 문서 (SSoT 원본) |
 | `.json` | 기계가 파싱하는 구조화 데이터 (ID 기반 배열) |
-| `.html` | 리포트 문서 전용. 브라우저에서 독립 표시 가능한 단일 파일 |
+| `.html` | 리포트 문서 전용. 브라우저에서 독립 표시 가능한 단일 파일 (SVG 차트, 트렌드 비교 차트 포함) |
 
 ---
 
@@ -329,18 +332,18 @@ US -> FT -> FR -> Screen -> API Endpoint -> DB Entity -> Test Case
 
 문서 생성 순서:
 
-```
-SRS (FR+NFR -> US -> FT)
-  -> IA (정보 구조도)
-    -> UXGuide (디자인 시스템)
-      -> Screen (화면 상세 설계)
-        -> ScreenFlow (화면 흐름도)
-          -> Wireframe (HTML)
-            -> Design (.pen)
-              -> ERD
-                -> API Contract
-                  -> Dev (FE + BE)
-                    -> Test
+```mermaid
+flowchart LR
+    SRS["SRS<br/>(FR+NFR→US→FT)"] --> IA["IA<br/>정보 구조도"]
+    IA --> UXGuide["UXGuide<br/>디자인 시스템"]
+    UXGuide --> Screen["Screen<br/>화면 상세 설계"]
+    Screen --> ScreenFlow["ScreenFlow<br/>화면 흐름도"]
+    ScreenFlow --> Wireframe["Wireframe<br/>HTML"]
+    Wireframe --> Design["Design<br/>.pen"]
+    Design --> ERD
+    ERD --> API["API Contract"]
+    API --> Dev["Dev<br/>(FE + BE)"]
+    Dev --> Test
 ```
 
 ---
@@ -527,8 +530,8 @@ mv .u-maker/u-ssot.config.json .u-maker/u-maker.config.json
 # 특정 Phase부터 루프 재시작
 /u-skill-loop-from design
 
-# 결함 분석 리포트 생성
-/u-skill-bug-report web
+# 종합 보고서 생성
+/u-skill-report web
 ```
 
 ### Scenario 6: 중간에 루프 중단 & 재개
@@ -544,24 +547,28 @@ mv .u-maker/u-ssot.config.json .u-maker/u-maker.config.json
 /u-skill-resume
 ```
 
-### Scenario 7: 리포트 생성
+### Scenario 7: 종합 보고서 생성
 
 ```bash
-# 데일리 리포트 (현재 시각 자동)
-/u-skill-daily-report
+# 프로젝트 종합 보고서 (현재 시각 자동)
+/u-skill-report
 
-# 특정 시각 지정
-/u-skill-daily-report 202603071500
-
-# PDCA Loop 종합 보고서 (수동 생성)
-/u-skill-loop-report web
-
-# 결함 분석 리포트
-/u-skill-bug-report web
+# 특정 앱 지정 (멀티앱 프로젝트)
+/u-skill-report web
 ```
 
-리포트는 `.md` + `.json` + `.html` 3종이 동일 경로에 생성된다.
+보고서는 `.md` + `.html` 2종이 동일 경로에 생성된다.
 HTML은 Pretendard 폰트 기반 단일 파일로, 브라우저에서 바로 열어 확인 가능하다.
+
+#### 보고서 주요 기능
+
+| 기능 | 설명 |
+|------|------|
+| **전체 카운트 대시보드** | FR/NFR/US/FT/TC 전체·구현·미구현 갯수를 KPI 카드로 표시 |
+| **이전 보고서 비교** | 직전 보고서와 비교하여 Delta(▲▼) 테이블 + 트렌드 바 차트 시각화 |
+| **Git 활동 요약** | 커밋 분류(feat/fix/refactor 등) 도넛 차트, 기여자 테이블, 변경 통계, Top 5 변경사항 |
+| **섹션별 카운트 뱃지** | 각 섹션(FR/NFR/US/FT/TC) 테이블 상단에 전체·완료·미착수 카운트 표시 |
+| **MD 차트** | 유니코드 블록 문자(█)로 바 차트, 화살표(▲▼—)로 트렌드 표현 |
 
 ### Scenario 8: 설계-구현 Gap 분석
 
@@ -701,6 +708,11 @@ app 인자가 필요한 스킬은 명시적으로 `/u-skill-xxx <app>` 형태로
 
 최대 반복 제한 (기본 10회)에 도달하면 자동 종료된다.
 `.u-maker/u-maker.config.json`의 `pdca.maxIterations` 값을 조정할 수 있다.
+
+### Gap Loop가 수렴하지 않을 때
+
+Inner Gap Loop는 최대 `maxGapRetries` (기본 3회) 재시도 후 강제 진행된다.
+`.u-maker/u-maker.config.json`의 `pdca.gapThreshold` (기본 90%)와 `pdca.maxGapRetries` 값을 조정할 수 있다.
 
 ---
 

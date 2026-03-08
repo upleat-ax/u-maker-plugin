@@ -2,11 +2,11 @@
 name: u-agent-dv-fe
 description: |
   Frontend 개발을 실행한다. Next.js App Router + react-query 기반. u-agent-dv-fe 에이전트가 담당한다.
-  Optional [app] argument for multi-app projects (e.g., `/u-agent-dv-fe web`).
+  Args: `[app]` — 멀티앱 프로젝트 시 앱 이름 (e.g., `web`)
   Triggers: /u-agent-dv-fe, 프론트엔드, frontend, 화면 구현
 model: sonnet
 user-invocable: true
-argument-hint: "[web]"
+argument-hint: "[app]"
 allowed-tools:
   - Read
   - Write
