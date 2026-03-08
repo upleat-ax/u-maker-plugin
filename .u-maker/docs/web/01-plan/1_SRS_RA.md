@@ -30,16 +30,16 @@ external_links: []
 
 ## 2. Functional Requirements (FR)
 
-| FR-ID | Requirement | Description | Priority | US Mapping | Implemented |
+| FR-ID | Requirement | Description | Priority | USR Mapping | Implemented |
 |---|---|---|---|---|---|
-| FR-0010 | 플러그인 로컬 배포 | Claude/Codex/Gemini 환경에 플러그인을 동기화하고 상태를 점검한다. | Must | US-0010 | Yes |
-| FR-0020 | 기존 프로젝트 reverse engineering init | 현재 저장소를 스캔해 `.u-maker/docs` 초안을 생성한다. | Must | US-0010 | Partial |
-| FR-0030 | PDCA phase 문서 생성/호출 | plan/design/do/check/act 관련 문서 스킬을 제공한다. | Must | US-0020 | Yes |
-| FR-0040 | Docs-First guard | 새 기능 요청이 감지되면 문서 명령을 먼저 제안한다. | Must | US-0030 | Yes |
-| FR-0050 | SSoT 무결성 검증 | 헤더, 경로, 관련 문서 링크를 점검한다. | Must | US-0020 | Yes |
-| FR-0060 | Exit criteria 및 phase gate 판정 | build, defect, FR 구현 상태를 종합해 진행 가능 여부를 판단한다. | Must | US-0020 | Yes |
-| FR-0070 | 전문 에이전트/스킬 카탈로그 관리 | 역할별 에이전트와 스킬 정의를 저장소에서 유지한다. | Should | US-0040 | Yes |
-| FR-0080 | 세션 자동 구조 보정 | 세션 시작 시 `.u-maker/docs` 구조가 없으면 자동 보정한다. | Should | US-0050 | Yes |
+| FR-0010 | 플러그인 로컬 배포 | Claude/Codex/Gemini 환경에 플러그인을 동기화하고 상태를 점검한다. | Must | USR-0010 | Yes |
+| FR-0020 | 기존 프로젝트 reverse engineering init | 현재 저장소를 스캔해 `.u-maker/docs` 초안을 생성한다. | Must | USR-0010 | Partial |
+| FR-0030 | PDCA phase 문서 생성/호출 | plan/design/do/check/act 관련 문서 스킬을 제공한다. | Must | USR-0020 | Yes |
+| FR-0040 | Docs-First guard | 새 기능 요청이 감지되면 문서 명령을 먼저 제안한다. | Must | USR-0020 | Yes |
+| FR-0050 | SSoT 무결성 검증 | 헤더, 경로, 관련 문서 링크를 점검한다. | Must | USR-0020 | Yes |
+| FR-0060 | Exit criteria 및 phase gate 판정 | build, defect, FR 구현 상태를 종합해 진행 가능 여부를 판단한다. | Must | USR-0020 | Yes |
+| FR-0070 | 전문 에이전트/스킬 카탈로그 관리 | 역할별 에이전트와 스킬 정의를 저장소에서 유지한다. | Should | USR-0030 | Yes |
+| FR-0080 | 세션 자동 구조 보정 | 세션 시작 시 `.u-maker/docs` 구조가 없으면 자동 보정한다. | Should | USR-0010 | Yes |
 
 ## 3. Non-Functional Requirements (NFR)
 
