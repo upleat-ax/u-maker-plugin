@@ -266,6 +266,18 @@ SSoT 문서 상태를 관리하고 검증하는 커맨드.
 
 **Input Fields**: Requirement (요구사항명), Description (설명), Priority (Must/Should/Could/Won't), US Mapping, Input/Output/Business Rule/Exception (선택)
 
+### `/u-skill-refine`
+
+| Field | Value |
+|-------|-------|
+| **Syntax** | `/u-skill-refine <FR-NNNN\|US-NNNN\|FT-NNNN> [app]` |
+| **Description** | FR, US, FT 항목을 세분화한다. 하나의 큰 항목을 분석하여 하위 항목으로 분해하고 SRS를 갱신한다 |
+| **Calling Agents** | `u-SA` |
+| **Prerequisites** | 프로젝트 생성 완료 (`1_SRS_RA.md` 존재) |
+| **Output** | `1_SRS_RA.md` 업데이트 (원본 항목 "(세분화됨)" 표시 + 하위 항목 테이블/Detail 추가 + Change Log 갱신) |
+
+**Decomposition Types**: FR → 하위 FR (중간 번호 FR-0011~), US → 하위 US (중간 번호 US-0011~), FT → 하위 FT (중간 번호 FT-0011~)
+
 ### `/u-skill-index`
 
 | Field | Value |
@@ -521,6 +533,7 @@ CHECK Phase에서 설계-구현 일치도를 분석하는 커맨드.
 | Doc Mgmt | `/u-skill-backlog-add` | - | u-RA |
 | Doc Mgmt | `/u-skill-us-add` | PLAN | u-RA |
 | Doc Mgmt | `/u-skill-fr-add` | PLAN | u-SA |
+| Doc Mgmt | `/u-skill-refine` | PLAN | u-SA |
 | Doc Mgmt | `/u-skill-index` | - | u-PM |
 | Task | `/u-skill-srs [app]` | PLAN | u-SA |
 | Task | `/u-skill-erd` | DESIGN | u-SA |
