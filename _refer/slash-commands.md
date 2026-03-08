@@ -408,6 +408,20 @@ SSoT 문서 상태를 관리하고 검증하는 커맨드.
 | **Prerequisites** | `4_Case_QA.md` 존재, `bun run build` 성공 |
 | **Output** | `{app}/04-check/4_Report_QA.md` |
 
+### `/u-skill-fix`
+
+| Field | Value |
+|-------|-------|
+| **Syntax** | `/u-skill-fix [app] [FT-NNNN\|description]` |
+| **Description** | 버그/기능을 수정한다. 코드를 fix한 후, 백그라운드에서 QA 에이전트가 해당 수정에 대한 TC가 없으면 자동 추가한다 |
+| **Calling Agents** | `u-DV-FE` / `u-DV-BE` (foreground) + `u-QA` (background) |
+| **Prerequisites** | 프로젝트 코드 존재, `1_SRS_RA.md` 존재 (FT 유효성 검증) |
+| **Output** | 수정된 코드 파일 + `{app}/04-check/4_Case_QA.md` 갱신 (background) |
+
+**Workflow**:
+- Foreground: 관련 코드 분석 → FE/BE 에이전트를 통한 코드 수정 → 빌드 검증
+- Background: QA 에이전트가 4_Case_QA.md에서 해당 FT의 TC 존재 여부 확인 → 없으면 Positive/Negative TC 자동 추가
+
 ### `/u-skill-report`
 
 | Field | Value |
@@ -570,6 +584,7 @@ CHECK Phase에서 설계-구현 일치도를 분석하는 커맨드.
 | Task | `/u-skill-tc-add [app] [FT] [desc]` | CHECK | u-QA |
 | Task | `/u-skill-tc-refine <TC> [app]` | CHECK | u-QA |
 | Task | `/u-skill-qa [app]` | CHECK | u-QA |
+| Task | `/u-skill-fix [app] [FT\|desc]` | DO | u-DV-FE / u-DV-BE + u-QA (bg) |
 | Task | `/u-skill-report [app]` | ACT | u-PM |
 | QA | `/u-skill-gap-detector` | CHECK | u-RA → u-QA |
 | Utility | `/u-skill-help` | - | Orch |

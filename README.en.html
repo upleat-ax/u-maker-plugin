@@ -850,7 +850,9 @@
           <tr><td><code>/u-skill-wireframe [app]</code></td><td>Wireframe HTML generation</td></tr>
           <tr><td><code>/u-skill-ux-figma [app]</code></td><td>pencil.dev visual screen design</td></tr>
           <tr><td><code>/u-skill-ux-dsystem [app]</code></td><td>Design system visual composition</td></tr>
-          <tr><td><code>/u-skill-testcase [app]</code></td><td>Unit+E2E test case design</td></tr>
+          <tr><td><code>/u-skill-testcase [app]</code></td><td>Unit+E2E test case batch design</td></tr>
+          <tr><td><code>/u-skill-tc-add [app] [FT] [desc]</code></td><td>Add individual test case (supports <code>all</code> for all apps)</td></tr>
+          <tr><td><code>/u-skill-tc-refine &lt;TC&gt; [app]</code></td><td>Decompose test case into sub-TCs</td></tr>
           <tr><td><code>/u-skill-qa [app]</code></td><td>Test execution (Vitest + Playwright)</td></tr>
           <tr><td><code>/u-skill-us-add [desc]</code></td><td>Add user story</td></tr>
           <tr><td><code>/u-skill-fr-add [app] [desc]</code></td><td>Add functional requirement (FR)</td></tr>
@@ -1177,6 +1179,8 @@
 &#9474;   &#9500;&#9472;&#9472; u-skill-loop/          <span class="comment"># PDCA auto-loop</span>
 &#9474;   &#9500;&#9472;&#9472; u-skill-srs/           <span class="comment"># SRS document</span>
 &#9474;   &#9500;&#9472;&#9472; u-skill-refine/        <span class="comment"># FR/US/FT decomposition</span>
+&#9474;   &#9500;&#9472;&#9472; u-skill-tc-add/        <span class="comment"># Add individual test case</span>
+&#9474;   &#9500;&#9472;&#9472; u-skill-tc-refine/     <span class="comment"># Test case decomposition</span>
 &#9474;   &#9500;&#9472;&#9472; u-agent-*/             <span class="comment"># Agent direct call (7)</span>
 &#9474;   &#9492;&#9472;&#9472; ...                    <span class="comment"># 40+ more skills</span>
 &#9500;&#9472;&#9472; <span style="color:var(--orange);">hooks/</span>                 <span class="comment"># Claude hook config</span>
@@ -1289,8 +1293,15 @@
 <span class="comment"># Decompose if too large</span>
 <span class="cmd">/u-skill-refine</span> <span class="flag">FR-0010</span> <span class="str">web</span>
 
+<span class="comment"># Add test cases &amp; refine</span>
+<span class="cmd">/u-skill-tc-add</span> <span class="str">web</span> <span class="flag">FT-0010</span> <span class="str">Login success TC</span>
+<span class="cmd">/u-skill-tc-add</span> <span class="flag">all</span> <span class="flag">FT-0010</span> <span class="str">Login TC</span>
+<span class="cmd">/u-skill-tc-refine</span> <span class="flag">TC-0010</span> <span class="str">web</span>
+
 <span class="comment"># Re-run from design</span>
-<span class="cmd">/u-skill-design</span> <span class="str">web</span></pre>
+<span class="cmd">/u-skill-design</span> <span class="str">web</span>
+<span class="cmd">/u-skill-dev</span> <span class="str">web</span>
+<span class="cmd">/u-skill-check</span> <span class="str">web</span></pre>
         </div>
       </div>
 
@@ -1534,7 +1545,12 @@
 <span class="comment"># ── Requirements ──</span>
 <span class="cmd">/u-skill-us-add</span>                        <span class="comment"># Add user story</span>
 <span class="cmd">/u-skill-fr-add</span> <span class="str">web</span>                   <span class="comment"># Add FR</span>
-<span class="cmd">/u-skill-refine</span> <span class="flag">FR-0010</span> <span class="str">web</span>           <span class="comment"># Decompose</span>
+<span class="cmd">/u-skill-refine</span> <span class="flag">FR-0010</span> <span class="str">web</span>           <span class="comment"># Decompose FR/US/FT</span>
+
+<span class="comment"># ── Test Cases ──</span>
+<span class="cmd">/u-skill-testcase</span> <span class="str">web</span>                 <span class="comment"># Batch TC design</span>
+<span class="cmd">/u-skill-tc-add</span> <span class="str">web</span> <span class="flag">FT-0010</span> <span class="str">desc</span>    <span class="comment"># Add individual TC</span>
+<span class="cmd">/u-skill-tc-refine</span> <span class="flag">TC-0010</span> <span class="str">web</span>       <span class="comment"># Decompose TC</span>
 
 <span class="comment"># ── Reports &amp; Utilities ──</span>
 <span class="cmd">/u-skill-report</span> <span class="str">web</span>                   <span class="comment"># Comprehensive report</span>
