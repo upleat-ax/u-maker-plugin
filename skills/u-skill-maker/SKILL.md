@@ -148,6 +148,8 @@ agents:
 | `/u-skill-ux-figma` | u-skill-ux-figma |
 | `/u-skill-ux-dsystem` | u-skill-ux-dsystem |
 | `/u-skill-testcase` | u-skill-testcase |
+| `/u-skill-tc-add` | u-skill-tc-add |
+| `/u-skill-tc-refine` | u-skill-tc-refine |
 | `/u-skill-qa` | u-skill-qa |
 | `/u-skill-report` | u-skill-report |
 

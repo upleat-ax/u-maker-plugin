@@ -374,6 +374,30 @@ SSoT 문서 상태를 관리하고 검증하는 커맨드.
 | **Prerequisites** | `1_SRS_RA.md` = Final |
 | **Output** | `{app}/04-check/4_Case_QA.md` |
 
+### `/u-skill-tc-add`
+
+| Field | Value |
+|-------|-------|
+| **Syntax** | `/u-skill-tc-add [app] [FT-NNNN] [description]` |
+| **Description** | 새로운 테스트 케이스(TC)를 개별 추가한다. `app=all`이면 모든 앱에 추가. 인자 없이 실행하면 대화형으로 입력받는다 |
+| **Calling Agents** | `u-QA` |
+| **Prerequisites** | `1_SRS_RA.md` 존재 (FT 유효성 검증 필요) |
+| **Output** | `{app}/04-check/4_Case_QA.md` 업데이트 (TC row + Detail block + coverageMatrix + Change Log 갱신), `_links.json` qa 필드 갱신 |
+
+**Input Fields**: FT Mapping (필수), Title, Level (Unit/E2E), Type (Positive/Negative/Boundary), Priority (Critical/Major/Minor/Trivial), Actor, Precondition, AutomationTarget, Steps (6W: step/screen/element/action/input/expected)
+
+### `/u-skill-tc-refine`
+
+| Field | Value |
+|-------|-------|
+| **Syntax** | `/u-skill-tc-refine <TC-NNNN> [app]` |
+| **Description** | 테스트 케이스를 세분화한다. 하나의 큰 TC를 분석하여 하위 TC로 분해하고 4_Case_QA.md를 갱신한다 |
+| **Calling Agents** | `u-QA` |
+| **Prerequisites** | `4_Case_QA.md` 존재, 대상 TC-NNNN 존재 |
+| **Output** | `{app}/04-check/4_Case_QA.md` 업데이트 (원본 TC "*(세분화됨)*" 표시 + 하위 TC 테이블/Detail 추가 + coverageMatrix + Change Log 갱신), `_links.json` qa 필드 갱신 |
+
+**Decomposition Criteria**: 시나리오 독립성, Type 분리(Positive/Negative/Boundary), Level 분리(Unit/E2E), 스텝 복잡도, 입력 데이터 분기
+
 ### `/u-skill-qa`
 
 | Field | Value |
@@ -543,6 +567,8 @@ CHECK Phase에서 설계-구현 일치도를 분석하는 커맨드.
 | Task | `/u-skill-ux-figma [app]` | DESIGN | u-UX-DS |
 | Task | `/u-skill-ux-dsystem [app]` | DESIGN | u-UX-DS |
 | Task | `/u-skill-testcase [app]` | CHECK | u-QA |
+| Task | `/u-skill-tc-add [app] [FT] [desc]` | CHECK | u-QA |
+| Task | `/u-skill-tc-refine <TC> [app]` | CHECK | u-QA |
 | Task | `/u-skill-qa [app]` | CHECK | u-QA |
 | Task | `/u-skill-report [app]` | ACT | u-PM |
 | QA | `/u-skill-gap-detector` | CHECK | u-RA → u-QA |
