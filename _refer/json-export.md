@@ -80,7 +80,7 @@
       "requirement": "...",
       "description": "...",
       "priority": "Must",
-      "us": [{ "id": "US-0010" }],
+      "usr": [{ "id": "USR-0010" }],
       "status": "Not Started"
     }
   ],
@@ -119,7 +119,7 @@
 
 `1_SRS_RA.json` 필드 완전성 규칙:
 - `users[]`: `id`, `role`, `description`, `priority`를 모두 포함한다.
-- `functionalRequirements[]`: `id`, `requirement`, `description`, `priority`, `us`, `status`를 모두 포함한다.
+- `functionalRequirements[]`: `id`, `requirement`, `description`, `priority`, `usr`, `status`를 모두 포함한다.
 - `userStories[]`: `id`, `usr`, `role`, `need`, `benefit`, `priority`, `fr`, `ft`를 모두 포함한다.
 - `features[]`: `id`, `feature`, `description`, `priority`, `us`, `status`를 모두 포함한다.
 - `nonFunctionalRequirements[]`: `id`, `category`, `requirement`, `metric`를 모두 포함한다.

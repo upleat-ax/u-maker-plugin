@@ -87,15 +87,15 @@ imports:
 
 ### PLAN Phase Workflow
 
-**단일 체인 (FR+NFR → US → FT):**
+**단일 체인 (FR → US → FT):**
 1. 사용자 요구사항 분석 및 정리
 2. 프로젝트 목표 정의 (OKR 또는 Goal 형식)
 3. 마일스톤 정의 (Phase 단위)
 4. `1_Roadmap_PM.md` 생성 (템플릿 기반)
 5. `u-agent-sa`에게 SRS 작성 요청 (FR 먼저 정의 후 US, FT 순차 도출)
-6. SRS 완료 후 FR/NFR↔US↔FT 매핑 확인
+6. SRS 완료 후 FR→US→FT 매핑 확인
 7. `u-agent-ux`에게 IA 작성 요청
-8. **PLAN Gate 검증**: FR+NFR→US→FT 매핑의 `TBD` 잔존 여부 확인 (잔존 시 Gate 차단)
+8. **PLAN Gate 검증**: FR→US→FT 매핑의 `TBD` 잔존 여부 확인 (잔존 시 Gate 차단)
 9. **[MANDATORY] JSON Export**: 모든 .md 파일 Write/Edit 완료 직후, 동일 경로에 동명의 `.json` 파일을 Write한다. ID가 부여된 모든 항목을 `json-export.md` 스키마에 따라 추출한다. **이 단계를 건너뛰면 안 된다.**
 
 ### User Story Add Workflow (`/u-agent-us-add`)
@@ -343,9 +343,9 @@ ACT Phase 시작 시 아래 3단계로 DEF를 BL로 변환:
 
 | Trigger | Target Agent | Action |
 |---------|-------------|--------|
-| 로드맵 완료 | `u-agent-sa` | SRS 작성 요청 (FR+NFR → US → FT) |
+| 로드맵 완료 | `u-agent-sa` | SRS 작성 요청 (FR → US → FT) |
 | 로드맵 완료 | `u-agent-ux` | IA 작성 요청 |
-| SRS 완료 | self | FR/NFR↔US↔FT Mapping 확인 |
+| SRS 완료 | self | FR→US→FT Mapping 확인 |
 | `/u-agent-us-add` 실행 | `u-agent-sa` | US 항목 추가 위임 |
 | 문서 생성/수정 감지 | self | 인덱스 자동 갱신 |
 | DESIGN Phase 완료 | self | 모순 검수 실행 |
@@ -363,9 +363,9 @@ ACT Phase 시작 시 아래 3단계로 DEF를 BL로 변환:
 ```json
 {
   "collaborationTriggers": [
-    { "trigger": "로드맵 완료", "target": "u-agent-sa", "action": "SRS 작성 요청 (FR+NFR → US → FT)" },
+    { "trigger": "로드맵 완료", "target": "u-agent-sa", "action": "SRS 작성 요청 (FR → US → FT)" },
     { "trigger": "로드맵 완료", "target": "u-agent-ux", "action": "IA 작성 요청" },
-    { "trigger": "SRS 완료", "target": "self", "action": "FR/NFR↔US↔FT Mapping 확인" },
+    { "trigger": "SRS 완료", "target": "self", "action": "FR→US→FT Mapping 확인" },
     { "trigger": "/u-agent-us-add 실행", "target": "u-agent-sa", "action": "US 항목 추가 위임" },
     { "trigger": "문서 생성/수정 감지", "target": "self", "action": "인덱스 자동 갱신" },
     { "trigger": "DESIGN Phase 완료", "target": "self", "action": "모순 검수 실행" },

@@ -52,8 +52,8 @@ agents:
 
 | # | Source | 수집 데이터 |
 |---|--------|------------|
-| 1 | `.u-maker/u-maker.config.json` | 프로젝트명, iteration, phase |
-| 2 | `{app}/01-plan/1_SRS_RA.md` | USR, US, FT, FR 목록 + NFR |
+| 1 | `.u-maker/u-maker.config.json` | 프로젝트명, iteration, phase, documentLanguage |
+| 2 | `{app}/01-plan/1_SRS_RA.md` | USR, FR, US, FT 목록 + NFR |
 | 3 | `{app}/02-design/2_RTM_RA.md` | 추적 매트릭스 |
 | 4 | `{app}/02-design/2_ERD_SA.md` | Entity 목록 |
 | 5 | `{app}/02-design/2_API_SA.md` | Endpoint 목록 |
@@ -479,11 +479,13 @@ last_updated: "{{DATE}}"
 
 ## HTML Generation Rules
 
-`.html` 파일은 `html-report-standard.md`의 CSS 스타일을 따르며:
+`.html` 파일은 `html-report-standard.md`의 dark-first purple-accent CSS 스타일을 따르며:
 
-- **Header**: 다크 그래디언트 배경 + 프로젝트명 + KPI 한 줄 요약
+- **Theme**: Dark-first (`:root` = 다크 기본, `[data-theme="light"]` = 라이트), 원형 토글 버튼
+- **Language**: `<html lang="{{LANG}}">` — `documentLanguage` config 값, 모든 텍스트도 해당 언어로 작성
+- **Header**: purple accent-glow 그래디언트 배경 + 프로젝트명 + KPI 한 줄 요약
 - **Gate Banner**: 성공(green) / 실패(red) 배너
-- **KPI Cards**: `.kpi-grid` + `.kpi-card` (success/primary/info/accent/warning 컬러)
+- **KPI Cards**: `.kpi-grid` + `.kpi-card` (success/primary/info/accent/warning 컬러) + hover translateY 효과
 - **Section Title**: 숫자 뱃지(`.num`) + 하단 파란 보더
 - **FT Cards**: `.ft-grid` + `.ft-card` 그리드 레이아웃
 - **Tables**: `.table-wrap` + 표준 테이블, `.total-row`, `.new-row`, `.fixed-row` 하이라이트
@@ -511,6 +513,8 @@ last_updated: "{{DATE}}"
 - 2종 파일 동시 생성: `.md` + `.html`
 - `.md`와 `.html`은 동일한 데이터, 동일한 버전
 - HTML은 단일 파일로 완결 (Pretendard CDN만 허용, 외부 JS 금지)
-- HTML 문서 언어는 `.u-maker/u-maker.config.json`의 `documentLanguage` 설정을 따름
+- HTML `<html lang>` 속성은 `.u-maker/u-maker.config.json`의 `documentLanguage` 값을 사용 (예: `ko`, `en`, `ja`, `zh`)
+- 보고서 내 모든 레이블, 섹션 제목, 설명 텍스트는 `documentLanguage` 설정 언어로 작성
+- HTML 스타일은 Dark-first (`:root` = 다크, `[data-theme="light"]` = 라이트), README.html과 동일한 purple-accent 디자인
 - Post-Execution Summary Box 출력 필수
 - 데이터가 없는 섹션은 "해당 없음" 또는 "데이터 없음"으로 표시 (섹션 자체는 유지)

@@ -61,7 +61,7 @@ agents:
 7. `u-agent-sa`: API Contract 작성 (`{app}/02-design/2_API_SA.md`)
    - OpenAPI 3.0 스펙, Endpoint 목록, Request/Response Schema
 8. `u-agent-ra`: 요구사항 추적표(RTM) 작성 (`common/02-design/2_RTM_RA.md`)
-   - `FR+NFR → US → FT` 기준으로 IA/Screen/API/ERD/QA 매핑 검증
+   - `FR → US → FT` 기준으로 IA/Screen/API/ERD/QA 매핑 검증
 9. `u-agent-ra`: 모순 검수
    - Screen ↔ ScreenFlow ↔ API ↔ ERD 간 불일치 탐지
 

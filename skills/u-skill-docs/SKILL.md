@@ -69,11 +69,11 @@ agents:
 
 `/u-skill-docs update all` 또는 `/u-skill-docs rebuild` 수행 시, 모든 앱의 `1_SRS_RA.md`는 아래 구조를 강제한다.
 
-1. FR + NFR
+1. FR
 2. US
 3. FT
 
-즉, 상위 구조는 반드시 `FR+NFR > US > FT` 순서를 유지해야 한다.
+즉, 상위 구조는 반드시 `FR > US > FT` 순서를 유지해야 한다.
 
 ## Status Transition Rules
 
@@ -158,4 +158,4 @@ flowchart TD
 - **모든 출력에 최소 1개 이상의 Mermaid 다이어그램을 반드시 포함한다**
 - `_refer/mermaid-guide.md` Section 3 "Mandatory Diagram Matrix"를 준수하여 적용 가능한 다이어그램을 최대한 많이 작성한다
 - Menu Tree는 `flowchart TD` 사용 (mindmap 사용 금지)
-- 모든 `1_SRS_RA.md`는 `FR+NFR > US > FT` 순서를 준수한다
+- 모든 `1_SRS_RA.md`는 `FR > US > FT` 순서를 준수한다

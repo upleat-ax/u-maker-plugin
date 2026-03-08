@@ -13,6 +13,7 @@
 | **파일 경로** | 마크다운 파일과 **동일한 경로**, 확장자만 `.html`로 변경 |
 | **생성 시점** | `.md` 파일 생성/갱신과 동시에 |
 | **내용 동기화** | `.md`와 `.html`은 같은 데이터, 같은 버전 |
+| **문서 언어** | `u-maker.config.json`의 `documentLanguage` 값에 따라 `<html lang>` 속성 및 모든 텍스트 언어 결정 |
 
 ### 경로 예시
 
@@ -29,99 +30,112 @@
 
 ```html
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="{{LANG}}">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{{PROJECT_NAME}} — {{REPORT_TITLE}}</title>
 <style>
-  /* Light Mode (default) */
+  /* Dark Mode (default) */
   :root {
-    --bg: #f8f9fb;
+    --bg: #0f0f13;
+    --card: #1a1a24;
+    --border: #2a2a3a;
+    --text: #e4e4ed;
+    --text2: #8b8ba0;
+    --text-bright: #ffffff;
+    --primary: #7c6af6;
+    --primary-bg: rgba(124, 106, 246, 0.15);
+    --success: #34d399;
+    --success-bg: rgba(52, 211, 153, 0.12);
+    --warning: #f59e0b;
+    --warning-bg: rgba(245, 158, 11, 0.12);
+    --danger: #f87171;
+    --danger-bg: rgba(248, 113, 113, 0.12);
+    --info: #60a5fa;
+    --info-bg: rgba(96, 165, 250, 0.12);
+    --accent: #22d3ee;
+    --accent-bg: rgba(34, 211, 238, 0.12);
+    --th-bg: #15151f;
+    --row-hover: rgba(124, 106, 246, 0.08);
+    --row-border: #2a2a3a;
+    --header-gradient-start: #0f0f13;
+    --header-gradient-end: #1a1a24;
+    --donut-text-fill: #e4e4ed;
+    --bg-code: #12121b;
+    --accent-glow: rgba(124, 106, 246, 0.15);
+    --radius: 12px;
+    --radius-sm: 8px;
+    --mono: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+  }
+
+  /* Light Mode */
+  [data-theme="light"] {
+    --bg: #f8f8fc;
     --card: #ffffff;
-    --border: #e2e6ea;
-    --text: #1a1d21;
-    --text2: #5a6170;
-    --primary: #2563eb;
-    --primary-bg: #eff4ff;
+    --border: #dddde8;
+    --text: #2d2d3a;
+    --text2: #6b6b80;
+    --text-bright: #111118;
+    --primary: #6c5ce7;
+    --primary-bg: rgba(108, 92, 231, 0.08);
     --success: #16a34a;
     --success-bg: #ecfdf3;
     --warning: #d97706;
     --warning-bg: #fffbeb;
     --danger: #dc2626;
     --danger-bg: #fef2f2;
-    --info: #7c3aed;
-    --info-bg: #f5f0ff;
+    --info: #2563eb;
+    --info-bg: #eff4ff;
     --accent: #0891b2;
     --accent-bg: #ecfeff;
-    --th-bg: #f1f3f6;
-    --row-hover: #fafbfc;
-    --row-border: #f1f3f6;
+    --th-bg: #f2f2f8;
+    --row-hover: rgba(108, 92, 231, 0.05);
+    --row-border: #eeeef5;
     --header-gradient-start: #1e293b;
     --header-gradient-end: #0f172a;
-    --donut-text-fill: #1a1d21;
-  }
-
-  /* Dark Mode */
-  [data-theme="dark"] {
-    --bg: #0f1117;
-    --card: #1a1d27;
-    --border: #2d3348;
-    --text: #e4e6eb;
-    --text2: #9ca3b4;
-    --primary: #60a5fa;
-    --primary-bg: #1e2a4a;
-    --success: #4ade80;
-    --success-bg: #14291e;
-    --warning: #fbbf24;
-    --warning-bg: #2a2210;
-    --danger: #f87171;
-    --danger-bg: #2d1518;
-    --info: #a78bfa;
-    --info-bg: #1f1835;
-    --accent: #22d3ee;
-    --accent-bg: #0f2830;
-    --th-bg: #1f2233;
-    --row-hover: #1f2233;
-    --row-border: #252939;
-    --header-gradient-start: #0a0c14;
-    --header-gradient-end: #060810;
-    --donut-text-fill: #e4e6eb;
+    --donut-text-fill: #2d2d3a;
+    --bg-code: #eeeef5;
+    --accent-glow: rgba(108, 92, 231, 0.08);
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
   body {
     font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     background: var(--bg);
     color: var(--text);
-    line-height: 1.6;
+    line-height: 1.7;
+    font-size: 16px;
+    transition: background 0.3s, color 0.3s;
   }
 
   /* Theme Toggle */
   .theme-toggle {
     position: fixed;
-    top: 16px;
-    right: 16px;
+    top: 20px;
+    right: 20px;
     z-index: 1000;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
     background: var(--card);
     border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 8px;
     cursor: pointer;
     display: flex;
     align-items: center;
-    gap: 6px;
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--text2);
-    box-shadow: 0 2px 8px rgba(0,0,0,.1);
-    transition: background .2s, color .2s, border-color .2s;
+    justify-content: center;
+    font-size: 20px;
+    transition: all 0.3s;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.2);
   }
-  .theme-toggle:hover { background: var(--primary-bg); color: var(--primary); }
-  .theme-toggle .icon { font-size: 18px; line-height: 1; }
+  .theme-toggle:hover { border-color: var(--primary); transform: scale(1.1); }
+  .theme-toggle .icon { line-height: 1; }
 
   /* Header */
   .header {
-    background: linear-gradient(135deg, var(--header-gradient-start) 0%, var(--header-gradient-end) 100%);
+    background:
+      radial-gradient(ellipse 80% 50% at 50% 0%, var(--accent-glow), transparent),
+      linear-gradient(135deg, var(--header-gradient-start) 0%, var(--header-gradient-end) 100%);
     color: #fff;
     padding: 48px 0 40px;
   }
@@ -131,16 +145,18 @@
     padding: 0 24px;
   }
   .header-badge {
-    display: inline-block;
-    background: rgba(255,255,255,.12);
-    border: 1px solid rgba(255,255,255,.18);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(124, 106, 246, 0.15);
+    border: 1px solid rgba(124, 106, 246, 0.25);
     border-radius: 20px;
-    padding: 4px 14px;
+    padding: 6px 16px;
     font-size: 12px;
     font-weight: 600;
     letter-spacing: .5px;
     margin-bottom: 16px;
-    backdrop-filter: blur(4px);
+    color: #9d8fff;
   }
   .header h1 {
     font-size: 32px;
@@ -173,6 +189,7 @@
   .section-title {
     font-size: 20px;
     font-weight: 700;
+    color: var(--text-bright);
     margin-bottom: 16px;
     padding-bottom: 10px;
     border-bottom: 2px solid var(--primary);
@@ -185,7 +202,7 @@
     color: #fff;
     width: 28px;
     height: 28px;
-    border-radius: 8px;
+    border-radius: var(--radius-sm);
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -203,12 +220,12 @@
   .kpi-card {
     background: var(--card);
     border: 1px solid var(--border);
-    border-radius: 14px;
+    border-radius: var(--radius);
     padding: 20px 24px;
     text-align: center;
-    transition: box-shadow .15s;
+    transition: all 0.3s;
   }
-  .kpi-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,.06); }
+  .kpi-card:hover { border-color: var(--primary); transform: translateY(-2px); box-shadow: 0 8px 32px rgba(124, 106, 246, 0.1); }
   .kpi-label { font-size: 13px; color: var(--text2); font-weight: 500; margin-bottom: 6px; }
   .kpi-value { font-size: 36px; font-weight: 800; letter-spacing: -1px; }
   .kpi-sub { font-size: 12px; color: var(--text2); margin-top: 4px; }
@@ -220,7 +237,7 @@
 
   /* Gate Banner */
   .gate-banner {
-    border-radius: 14px;
+    border-radius: var(--radius);
     padding: 24px 32px;
     margin-bottom: 36px;
     display: flex;
@@ -245,32 +262,42 @@
   .table-wrap {
     background: var(--card);
     border: 1px solid var(--border);
-    border-radius: 14px;
+    border-radius: var(--radius);
     overflow: hidden;
     margin-bottom: 20px;
   }
   table {
     width: 100%;
     border-collapse: collapse;
-    font-size: 14px;
+    font-size: 0.9rem;
   }
   thead th {
     background: var(--th-bg);
     padding: 12px 16px;
     text-align: left;
     font-weight: 600;
-    font-size: 13px;
+    font-size: 0.8rem;
     color: var(--text2);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
     white-space: nowrap;
     border-bottom: 1px solid var(--border);
   }
   tbody td {
-    padding: 11px 16px;
+    padding: 12px 16px;
     border-bottom: 1px solid var(--row-border);
     vertical-align: middle;
   }
   tbody tr:last-child td { border-bottom: none; }
   tbody tr:hover { background: var(--row-hover); }
+  td code {
+    font-family: var(--mono);
+    font-size: 0.82rem;
+    background: var(--bg-code);
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: var(--primary);
+  }
   tbody tr.total-row { background: var(--th-bg); font-weight: 700; }
   tbody tr.highlight-row { background: var(--primary-bg); }
   tbody tr.new-row { background: var(--warning-bg); }
@@ -319,22 +346,24 @@
   .chart-card {
     background: var(--card);
     border: 1px solid var(--border);
-    border-radius: 14px;
+    border-radius: var(--radius);
     padding: 24px;
+    transition: all 0.3s;
   }
-  .chart-card h4 { font-size: 15px; font-weight: 600; margin-bottom: 16px; }
+  .chart-card:hover { border-color: var(--primary); box-shadow: 0 4px 20px rgba(124, 106, 246, 0.08); }
+  .chart-card h4 { font-size: 15px; font-weight: 600; color: var(--text-bright); margin-bottom: 16px; }
 
   /* Bar chart */
   .bar-chart { display: flex; flex-direction: column; gap: 10px; }
   .bar-row { display: flex; align-items: center; gap: 10px; }
   .bar-label { width: 100px; font-size: 12px; font-weight: 500; text-align: right; color: var(--text2); flex-shrink: 0; }
-  .bar-track { flex: 1; background: var(--th-bg); border-radius: 6px; height: 22px; position: relative; overflow: hidden; }
-  .bar-fill { height: 100%; border-radius: 6px; display: flex; align-items: center; padding-left: 8px; font-size: 11px; font-weight: 700; color: #fff; min-width: 32px; }
-  .bar-fill.green { background: linear-gradient(90deg, #16a34a, #22c55e); }
-  .bar-fill.blue { background: linear-gradient(90deg, #2563eb, #60a5fa); }
-  .bar-fill.purple { background: linear-gradient(90deg, #7c3aed, #a78bfa); }
-  .bar-fill.teal { background: linear-gradient(90deg, #0891b2, #22d3ee); }
-  .bar-fill.orange { background: linear-gradient(90deg, #d97706, #fbbf24); }
+  .bar-track { flex: 1; background: var(--th-bg); border-radius: var(--radius-sm); height: 22px; position: relative; overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: var(--radius-sm); display: flex; align-items: center; padding-left: 8px; font-size: 11px; font-weight: 700; color: #fff; min-width: 32px; }
+  .bar-fill.green { background: linear-gradient(90deg, #34d399, #6ee7b7); }
+  .bar-fill.blue { background: linear-gradient(90deg, #60a5fa, #93c5fd); }
+  .bar-fill.purple { background: linear-gradient(90deg, #7c6af6, #9d8fff); }
+  .bar-fill.teal { background: linear-gradient(90deg, #22d3ee, #67e8f9); }
+  .bar-fill.orange { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
 
   /* Donut */
   .donut-wrap { display: flex; align-items: center; justify-content: center; gap: 32px; }
@@ -376,13 +405,13 @@
   .ft-card {
     background: var(--card);
     border: 1px solid var(--border);
-    border-radius: 12px;
+    border-radius: var(--radius);
     padding: 20px;
-    transition: box-shadow .15s;
+    transition: all 0.3s;
   }
-  .ft-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,.06); }
+  .ft-card:hover { border-color: var(--primary); transform: translateY(-2px); box-shadow: 0 8px 32px rgba(124, 106, 246, 0.1); }
   .ft-card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
-  .ft-card h5 { font-size: 15px; font-weight: 700; }
+  .ft-card h5 { font-size: 15px; font-weight: 700; color: var(--text-bright); }
   .ft-card ul { margin: 0; padding-left: 18px; font-size: 13px; color: var(--text2); }
   .ft-card li { padding: 2px 0; }
 
@@ -411,10 +440,10 @@
     padding-bottom: 4px;
   }
   .trend-bar.prev { background: var(--border); color: var(--text2); }
-  .trend-bar.curr.green { background: linear-gradient(180deg, #16a34a, #22c55e); }
-  .trend-bar.curr.blue { background: linear-gradient(180deg, #2563eb, #60a5fa); }
-  .trend-bar.curr.purple { background: linear-gradient(180deg, #7c3aed, #a78bfa); }
-  .trend-bar.curr.teal { background: linear-gradient(180deg, #0891b2, #22d3ee); }
+  .trend-bar.curr.green { background: linear-gradient(180deg, #34d399, #6ee7b7); }
+  .trend-bar.curr.blue { background: linear-gradient(180deg, #60a5fa, #93c5fd); }
+  .trend-bar.curr.purple { background: linear-gradient(180deg, #7c6af6, #9d8fff); }
+  .trend-bar.curr.teal { background: linear-gradient(180deg, #22d3ee, #67e8f9); }
   .trend-chart {
     display: flex;
     align-items: flex-end;
@@ -455,10 +484,12 @@
   .git-stat-card {
     background: var(--card);
     border: 1px solid var(--border);
-    border-radius: 10px;
+    border-radius: var(--radius);
     padding: 16px;
     text-align: center;
+    transition: all 0.3s;
   }
+  .git-stat-card:hover { border-color: var(--primary); transform: translateY(-2px); }
   .git-stat-card .stat-value { font-size: 28px; font-weight: 800; color: var(--primary); }
   .git-stat-card .stat-label { font-size: 12px; color: var(--text2); margin-top: 4px; }
 
@@ -472,7 +503,7 @@
   .section-count .count-item {
     background: var(--card);
     border: 1px solid var(--border);
-    border-radius: 8px;
+    border-radius: var(--radius-sm);
     padding: 6px 14px;
     font-size: 13px;
     font-weight: 600;
@@ -481,9 +512,11 @@
 
   /* Summary Box */
   .summary-box {
-    background: linear-gradient(135deg, var(--header-gradient-start) 0%, var(--header-gradient-end) 100%);
+    background:
+      radial-gradient(ellipse 80% 50% at 50% 0%, var(--accent-glow), transparent),
+      linear-gradient(135deg, var(--header-gradient-start) 0%, var(--header-gradient-end) 100%);
     color: #fff;
-    border-radius: 14px;
+    border-radius: var(--radius);
     padding: 28px 32px;
     margin-top: 36px;
   }
@@ -508,7 +541,7 @@
 
   /* Print */
   @media print {
-    body { background: #fff; }
+    body { background: #fff; color: #000; }
     .header { padding: 24px 0; }
     .kpi-card, .chart-card, .ft-card, .table-wrap { break-inside: avoid; }
     .theme-toggle { display: none; }
@@ -531,8 +564,8 @@
 <body>
 
 <!-- THEME TOGGLE -->
-<button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">
-  <span class="icon" id="theme-icon">&#9789;</span>
+<button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" aria-label="Toggle theme">
+  <span class="icon" id="theme-icon">&#9788;</span>
 </button>
 
 <!-- HEADER -->
@@ -588,21 +621,21 @@
 function toggleTheme() {
   var html = document.documentElement;
   var icon = document.getElementById('theme-icon');
-  if (html.getAttribute('data-theme') === 'dark') {
+  if (html.getAttribute('data-theme') === 'light') {
     html.removeAttribute('data-theme');
-    icon.innerHTML = '&#9789;';
-    localStorage.setItem('theme', 'light');
-  } else {
-    html.setAttribute('data-theme', 'dark');
     icon.innerHTML = '&#9788;';
     localStorage.setItem('theme', 'dark');
+  } else {
+    html.setAttribute('data-theme', 'light');
+    icon.innerHTML = '&#9789;';
+    localStorage.setItem('theme', 'light');
   }
 }
 (function() {
   var saved = localStorage.getItem('theme');
-  if (saved === 'dark' || (!saved && matchMedia('(prefers-color-scheme:dark)').matches)) {
-    document.documentElement.setAttribute('data-theme', 'dark');
-    document.getElementById('theme-icon').innerHTML = '&#9788;';
+  if (saved === 'light' || (!saved && matchMedia('(prefers-color-scheme:light)').matches)) {
+    document.documentElement.setAttribute('data-theme', 'light');
+    document.getElementById('theme-icon').innerHTML = '&#9789;';
   }
 })();
 </script>
@@ -620,8 +653,9 @@ function toggleTheme() {
 | 폰트 | `'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif` | 한국어 최적화 + 폴백 |
 | CSS 위치 | `<style>` 블록 내 인라인 | 단일 파일 완결성 |
 | max-width | `1120px` | 가독성 |
-| 테마 | Light(기본) + Dark (`[data-theme="dark"]`) | 사용자 선호 대응 |
-| 테마 감지 | `prefers-color-scheme` 자동 감지 + `localStorage` 저장 | OS 설정 연동 |
+| 테마 | Dark(기본) + Light (`[data-theme="light"]`) | README.html과 동일한 dark-first 스타일 |
+| 테마 감지 | `prefers-color-scheme:light` 자동 감지 + `localStorage` 저장 | OS 설정 연동 |
+| 언어 | `<html lang="{{LANG}}">` — `documentLanguage` 설정값 | 다국어 보고서 지원 |
 | 색상 | 모든 색상은 CSS 변수(`--bg`, `--card` 등) 사용, 하드코딩 금지 | 테마 전환 대응 |
 | JS | 테마 토글 인라인 스크립트만 허용 (외부 JS 라이브러리 금지) | 단일 파일 완결성 |
 | 반응형 | `@media (max-width: 768px)` 최소 대응 | 모바일 접근 |
@@ -636,8 +670,8 @@ function toggleTheme() {
 
 ```html
 <!-- body 최상단에 배치 -->
-<button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">
-  <span class="icon" id="theme-icon">&#9789;</span>
+<button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" aria-label="Toggle theme">
+  <span class="icon" id="theme-icon">&#9788;</span>
 </button>
 ```
 
@@ -647,29 +681,29 @@ function toggleTheme() {
 function toggleTheme() {
   var html = document.documentElement;
   var icon = document.getElementById('theme-icon');
-  if (html.getAttribute('data-theme') === 'dark') {
+  if (html.getAttribute('data-theme') === 'light') {
     html.removeAttribute('data-theme');
-    icon.innerHTML = '&#9789;';
-    localStorage.setItem('theme', 'light');
-  } else {
-    html.setAttribute('data-theme', 'dark');
     icon.innerHTML = '&#9788;';
     localStorage.setItem('theme', 'dark');
+  } else {
+    html.setAttribute('data-theme', 'light');
+    icon.innerHTML = '&#9789;';
+    localStorage.setItem('theme', 'light');
   }
 }
 (function() {
   var saved = localStorage.getItem('theme');
-  if (saved === 'dark' || (!saved && matchMedia('(prefers-color-scheme:dark)').matches)) {
-    document.documentElement.setAttribute('data-theme', 'dark');
-    document.getElementById('theme-icon').innerHTML = '&#9788;';
+  if (saved === 'light' || (!saved && matchMedia('(prefers-color-scheme:light)').matches)) {
+    document.documentElement.setAttribute('data-theme', 'light');
+    document.getElementById('theme-icon').innerHTML = '&#9789;';
   }
 })();
 </script>
 ```
 
-동작: OS 다크모드 설정 자동 감지 → 토글 클릭 시 전환 → `localStorage`에 저장 → 재방문 시 유지.
+동작: 다크 모드가 기본값. OS 라이트 모드 설정 감지 시 자동 전환 → 토글 클릭 시 전환 → `localStorage`에 저장 → 재방문 시 유지.
 
-아이콘: Light 모드일 때 `☽` (9789), Dark 모드일 때 `☀` (9788).
+아이콘: Dark 모드일 때 `☀` (9788), Light 모드일 때 `☽` (9789).
 
 ### 4.2 Header
 
@@ -948,11 +982,14 @@ Delta 규칙: 개선이면 `.delta-up`, 악화면 `.delta-down`, 동일하면 `.
 - [ ] 단일 HTML 파일로 완결
 - [ ] `.md`와 동일한 데이터
 - [ ] 테이블/차트는 HTML/CSS/SVG로 구현
-- [ ] Dark/Light 테마 토글 버튼 (`button.theme-toggle`) 포함
-- [ ] `[data-theme="dark"]` CSS 변수 오버라이드 포함
-- [ ] OS 설정 자동 감지 (`prefers-color-scheme`) + `localStorage` 저장
+- [ ] Dark-first 테마: `:root`가 다크, `[data-theme="light"]`가 라이트
+- [ ] Dark/Light 테마 토글 버튼 (원형 `button.theme-toggle`) 포함
+- [ ] `[data-theme="light"]` CSS 변수 오버라이드 포함
+- [ ] OS 설정 자동 감지 (`prefers-color-scheme:light`) + `localStorage` 저장
 - [ ] 하드코딩 색상 금지 — 모든 배경/테두리/텍스트는 CSS 변수 사용
 - [ ] SVG 내 텍스트 `fill`은 `var(--donut-text-fill)` 또는 CSS `currentColor` 사용
+- [ ] `<html lang="{{LANG}}">` — `u-maker.config.json`의 `documentLanguage` 값 사용
+- [ ] 보고서 내 모든 레이블/제목/섹션명은 `documentLanguage` 설정 언어로 작성
 - [ ] Gate Banner 표시 (complete / in-progress)
 - [ ] KPI Cards에 FR/NFR/US/FT/TC/결함/빌드 전체 카운트 표시
 - [ ] 이전 보고서 비교 — 트렌드 차트 + 비교 테이블 (이전 없으면 "첫 번째 보고서" 표시)

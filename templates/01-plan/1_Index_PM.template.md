@@ -152,7 +152,7 @@ stateDiagram-v2
 
 | Gate | From → To | Conditions | Status |
 |------|-----------|-----------|--------|
-| Gate 1 | PLAN → DESIGN | `1_Roadmap_PM`=Final, `1_SRS_RA`=Final, `1_IA_RA`=Final + FR+NFR→US→FT mapping complete (no TBD) | Not Ready |
+| Gate 1 | PLAN → DESIGN | `1_Roadmap_PM`=Final, `1_SRS_RA`=Final, `1_IA_RA`=Final + FR→US→FT mapping complete (no TBD) | Not Ready |
 | Gate 2 | DESIGN → DO | `2_ERD_SA`=Final, `2_RTM_RA`=Final, `2_UXGuide_UX`=Final, `2_API_SA`=Final, `2_Screen_UX`=Final, `2_ScreenFlow_UX`=Final + u-RA 검수 | Not Ready |
 | Gate 3 | DO → CHECK | 코드 구현 완료 + `bun run build` 성공 | Not Ready |
 | Gate 4 | CHECK → Complete | Critical/Major 0건 + Backlog 0건 + 전체 FT 구현 | Not Ready |

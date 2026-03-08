@@ -43,12 +43,12 @@ imports:
 
 ### Core Responsibilities
 
-1. **SRS 작성**: FR+NFR → US → FT 순서로 요구사항 체인 정의 (`1_SRS_RA.md`)
+1. **SRS 작성**: FR → US → FT 순서로 요구사항 체인 정의 (`1_SRS_RA.md`)
 2. **ERD 작성**: Entity 정의, Relationship 다이어그램 (`2_ERD_SA.md`)
 3. **API Contract 작성**: OpenAPI 3.0 기반 API 명세 (`2_API_SA.md`)
 4. **FR 추가**: `/u-agent-fr-add`로 개별 FR 항목을 `1_SRS_RA.md`에 추가
 5. **US 추가**: `/u-agent-us-add`로 개별 US 항목을 `1_SRS_RA.md`의 User Stories 섹션에 추가
-6. **추적성 보장**: SRS FR+NFR → US → FT → ERD Entity/API Endpoint 매핑
+6. **추적성 보장**: SRS FR → US → FT → ERD Entity/API Endpoint 매핑
 
 ### Owned SSoT Documents
 
@@ -67,7 +67,7 @@ imports:
    - 사용자 요구사항과 로드맵 기반으로 FR을 먼저 정의
    - **2차 FR 소스**: 암묵적(Implicit) FR 추론 (입력 검증, 에러 처리, 권한 등)
    - 그룹별 최소 15개 도출
-   - 각 FR에 US Mapping 필드 추가 (예: US-0010, US-0020)
+   - 각 FR에 USR Mapping 필드 추가 (예: USR-0010, USR-0020)
    - 각 FR에 구현 상태 필드: `[ ] Not Started` / `[~] In Progress` / `[x] Implemented`
    - **FR 그룹화**: Domain 코드(AUTH, CORE, ADMIN 등)로 FR을 그룹핑하여 테이블에 그룹 헤더 삽입 (`| **AUTH Group** | | | | |`)
    - **최소 FR 수**: 일반 앱 기준 최소 15개 이상. 규모에 따라 25~40개 목표
@@ -84,9 +84,9 @@ imports:
 3. Users 정의 (USR, SRS Section 4)
 4. User Stories 작성 (SRS Section 5)
    - As a / I want to / So that 형식
-   - FR Mapping 필수, FT Mapping은 초기 `TBD` 허용
+   - FR Mapping 필수 (FR에서 파생), FT Mapping은 초기 `TBD` 허용
 5. Features 도출 (SRS Section 6)
-   - US 기반 구현 단위로 분해
+   - US 기반 구현 단위로 분해, US Mapping 필수
 6. 시스템 제약사항 정의
 7. Mermaid flowchart로 기능 관계도 작성
 8. 추적성 매트릭스 포함 (FT → Screen, FT → API)
@@ -99,7 +99,7 @@ imports:
 2. 기존 FR-ID 최대값 확인 → 다음 FR-ID 자동 채번 (ceil(max/10)*10+10, 10단위 증분, 4자리)
 3. 사용자 입력에서 항목 정보 추출:
    - Feature (필수), Description (필수)
-   - Priority (기본값: Should), US Mapping (기본값: TBD, Technical은 `-`)
+   - Priority (기본값: Should), USR Mapping (기본값: TBD)
    - Input / Output / Business Rule / Exception (선택, 미입력 시 `{{TODO}}`)
 4. FR 테이블 (Section 2)에 행 추가 (Implemented = `[ ] Not Started`)
 5. FR Details 블록 추가
@@ -228,7 +228,7 @@ paths:
 - ERD는 erDiagram + classDiagram 모두 포함 (Entity 관계 + 도메인 모델 표현)
 - API Contract는 OpenAPI 3.0 스펙 준수
 - API Contract는 C4Context (시스템 컨텍스트) + sequenceDiagram 또는 zenuml (플로우) 포함
-- 추적성: SRS US → FR-XXXX → ERD Entity → API Endpoint 매핑 필수
+- 추적성: SRS FR → US → FT → ERD Entity → API Endpoint 매핑 필수
 - Clean Architecture 원칙 반영 (도메인 ← 인프라 의존 방향)
 - Iteration 2+에서는 변경된 FR/Entity/Endpoint만 증분 갱신
 
@@ -242,4 +242,4 @@ paths:
 | API 완료 | `u-agent-ra` | 모순 검수 요청 |
 | `/u-agent-fr-add` 실행 | self | FR 항목 추가 + Detail 블록 + Change Log 갱신 |
 | `/u-agent-us-add` 실행 | self | US 항목 추가 + Change Log 갱신 |
-| Roadmap 완료 | self | SRS US Mapping 갱신 |
+| Roadmap 완료 | self | SRS FR→US→FT Mapping 갱신 |

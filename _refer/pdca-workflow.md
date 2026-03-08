@@ -93,7 +93,7 @@ flowchart TD
 | Step | Agent | Output | Description |
 |------|-------|--------|-------------|
 | 1 | u-PM | `shared/1_Roadmap_PM.md` | 로드맵 작성 |
-| 2 | u-SA | `{app}/1_SRS_RA.md` | SRS 작성 (`FR+NFR → US → FT` 순서 고정) |
+| 2 | u-SA | `{app}/1_SRS_RA.md` | SRS 작성 (`FR → US → FT` 순서 고정) |
 | 2.5 | u-RA + u-SA | Cross-mapping 갱신 | TBD 매핑을 실제 ID로 갱신 |
 | 3 | u-UX | `{app}/1_IA_RA.md` | 정보 구조도 + Menu Tree (MN-{DOMAIN}-{NNNN}) |
 | 4 | u-PM | `shared/1_Index_PM.md` | 문서 인덱스 생성, 상태 추적 시작 |
@@ -122,7 +122,7 @@ flowchart LR
 | 5 | u-UX | `.pen` 파일 | 화면 디자인 (pencil.dev MCP) |
 | 6 | u-SA | `shared/2_ERD_SA.md` | Entity Relationship Diagram |
 | 7 | u-SA | `{app}/2_API_SA.md` | API Contract (OpenAPI 3.0) |
-| 8 | u-RA | `shared/2_RTM_RA.md` | 요구사항 추적표(RTM) 작성: `FR+NFR→US→FT→IA/Screen/API/ERD/QA` |
+| 8 | u-RA | `shared/2_RTM_RA.md` | 요구사항 추적표(RTM) 작성: `FR→US→FT→IA/Screen/API/ERD/QA` |
 | 9 | u-RA | 검수 결과 | 문서 간 모순 검수, 추적성 검증 |
 
 ```mermaid

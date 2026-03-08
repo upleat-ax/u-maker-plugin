@@ -39,7 +39,7 @@ agents:
 
 ## Prerequisites
 
-- Roadmap optional (단, SRS 내부 구조는 항상 `FR+NFR → US → FT`)
+- Roadmap optional (단, SRS 내부 구조는 항상 `FR → US → FT`)
 
 ## App Context
 

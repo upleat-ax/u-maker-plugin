@@ -16,7 +16,7 @@ external_links: []
 
 # {{PROJECT_NAME}} SRS
 
-> 작성 순서 규칙: **Requirements(FR)+Non-Functional Requirements(NFR) → User Stories(US) → Features(FT)**.
+> 작성 순서 규칙: **Requirements(FR) → User Stories(US) → Features(FT)**.
 
 ## 1. Background
 
@@ -42,30 +42,30 @@ external_links: []
 
 ## 2. Functional Requirements (FR)
 
-> SRS의 기준 체인은 `Requirements(FR)+Non-Functional Requirements(NFR) → User Stories(US) → Features(FT)`를 따른다.
-> PLAN Gate 전 모든 FR은 US와 매핑 필수. Technical FR은 US Mapping을 `-`로 표시 가능.
+> SRS의 기준 체인은 `Requirements(FR) → User Stories(US) → Features(FT)`를 따른다.
+> PLAN Gate 전 모든 FR은 USR와 매핑 필수. Technical FR은 USR Mapping을 `-`로 표시 가능.
 
-| FR-ID | Requirement | Description | Priority | US Mapping | Implemented |
-|-------|-------------|-------------|----------|------------|-------------|
+| FR-ID | Requirement | Description | Priority | USR Mapping | Implemented |
+|-------|-------------|-------------|----------|-------------|-------------|
 | **AUTH Group** | | | | | |
-| FR-0010 | 사용자 인증 처리 | 이메일/비밀번호 검증 후 JWT 발급 | Must | US-0010 | No |
-| FR-0020 | 계정 생성 처리 | 이메일 중복 검사 + 비밀번호 암호화 저장 | Must | US-0010 | No |
-| FR-0030 | 비밀번호 재설정 처리 | 이메일 인증 토큰 발송 + 토큰 검증 후 변경 | Must | US-0010 | No |
+| FR-0010 | 사용자 인증 처리 | 이메일/비밀번호 검증 후 JWT 발급 | Must | USR-0010 | No |
+| FR-0020 | 계정 생성 처리 | 이메일 중복 검사 + 비밀번호 암호화 저장 | Must | USR-0010 | No |
+| FR-0030 | 비밀번호 재설정 처리 | 이메일 인증 토큰 발송 + 토큰 검증 후 변경 | Must | USR-0010 | No |
 | FR-0040 | 입력 유효성 검증 | 클라이언트/서버 양측 형식·길이·필수 검증 | Must | - | No |
 | **CORE Group** | | | | | |
-| FR-0110 | {{요구사항명}} | {{상세 설명}} | Must | US-0020 | No |
-| FR-0120 | {{요구사항명}} | {{상세 설명}} | Must | US-0020 | No |
-| FR-0130 | 페이지네이션·검색 처리 | 페이지 단위 로드 + 키워드 검색 + 필터 | Should | US-0020 | No |
+| FR-0110 | {{요구사항명}} | {{상세 설명}} | Must | USR-0010 | No |
+| FR-0120 | {{요구사항명}} | {{상세 설명}} | Must | USR-0010 | No |
+| FR-0130 | 페이지네이션·검색 처리 | 페이지 단위 로드 + 키워드 검색 + 필터 | Should | USR-0010 | No |
 | FR-0140 | 에러 핸들링 처리 | 네트워크/서버/권한 오류별 메시지 표시 | Must | - | No |
 | **ADMIN Group** | | | | | |
-| FR-0210 | {{요구사항명}} | {{상세 설명}} | Should | US-0030 | No |
+| FR-0210 | {{요구사항명}} | {{상세 설명}} | Should | USR-0020 | No |
 | FR-0220 | 감사 로그 처리 | 데이터 CRUD 이력 자동 추적·저장 | Could | - | No |
 
 ### FR Details
 
 ### AUTH Group
 
-#### FR-0010: 사용자 인증 처리 (US-0010)
+#### FR-0010: 사용자 인증 처리 (USR-0010)
 
 - **Description**: 이메일과 비밀번호를 입력받아 사용자를 인증하고 JWT 토큰을 발급한다.
 - **Input**: email (string, required), password (string, required)
@@ -73,7 +73,7 @@ external_links: []
 - **Business Rule**: 5회 연속 실패 시 계정 잠금 (30분). 비밀번호는 bcrypt 해싱 후 비교.
 - **Exception**: 이메일 미존재 → 401. 비밀번호 불일치 → 401. 계정 잠금 → 423.
 
-#### FR-0020: 계정 생성 처리 (US-0010)
+#### FR-0020: 계정 생성 처리 (USR-0010)
 
 - **Description**: 신규 사용자 계정을 생성한다. 이메일 중복 검사 후 비밀번호를 암호화하여 저장한다.
 - **Input**: email (string, required, unique), password (string, required, min 8자), name (string, required)
@@ -81,7 +81,7 @@ external_links: []
 - **Business Rule**: 이메일은 RFC 5321 형식 준수. 비밀번호는 8자 이상, 대/소문자+숫자 포함.
 - **Exception**: 중복 이메일 → 409 Conflict. 형식 오류 → 400 Validation Error.
 
-#### FR-0030: 비밀번호 재설정 처리 (US-0010)
+#### FR-0030: 비밀번호 재설정 처리 (USR-0010)
 
 - **Description**: 등록된 이메일로 비밀번호 재설정 링크를 발송하고, 토큰 검증 후 비밀번호를 변경한다.
 - **Input**: email (string, required) → reset token (UUID, 1시간 유효) → new password (string, required)
@@ -99,7 +99,7 @@ external_links: []
 
 ### CORE Group
 
-#### FR-0110: {{요구사항명}} (US-0020)
+#### FR-0110: {{요구사항명}} (USR-0010)
 
 - **Description**: {{상세 설명}}
 - **Input**: {{입력 데이터/조건}}
@@ -107,7 +107,7 @@ external_links: []
 - **Business Rule**: {{비즈니스 규칙}}
 - **Exception**: {{예외 케이스}}
 
-#### FR-0120: {{요구사항명}} (US-0020)
+#### FR-0120: {{요구사항명}} (USR-0010)
 
 - **Description**: {{상세 설명}}
 - **Input**: {{입력 데이터/조건}}
@@ -115,7 +115,7 @@ external_links: []
 - **Business Rule**: {{비즈니스 규칙}}
 - **Exception**: {{예외 케이스}}
 
-#### FR-0130: 페이지네이션·검색 처리 (US-0020)
+#### FR-0130: 페이지네이션·검색 처리 (USR-0010)
 
 - **Description**: 목록 데이터를 페이지 단위로 로드하고, 키워드 검색과 필터 조건을 지원한다.
 - **Input**: page (number, default 1), limit (number, default 20), keyword (string, optional), filter params
@@ -133,7 +133,7 @@ external_links: []
 
 ### ADMIN Group
 
-#### FR-0210: {{요구사항명}} (US-0030)
+#### FR-0210: {{요구사항명}} (USR-0020)
 
 - **Description**: {{상세 설명}}
 - **Input**: {{입력 데이터/조건}}
@@ -195,7 +195,7 @@ external_links: []
 ## 6. Features (FT)
 
 > Feature는 User Story를 구현 단위로 분해한 결과물이다.
-> US Mapping은 필수이며, FR/NFR을 반영한 `FR+NFR → US → FT` 체인으로 추적한다.
+> US Mapping은 필수이며, `FR → US → FT` 체인으로 추적한다.
 
 | FT-ID | Feature | Description | Priority | US Mapping | Implemented |
 |-------|---------|-------------|----------|------------|-------------|

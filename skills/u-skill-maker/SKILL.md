@@ -134,6 +134,7 @@ agents:
 | `/u-skill-backlog-add` | u-skill-backlog-add |
 | `/u-skill-us-add` | u-skill-us-add |
 | `/u-skill-fr-add` | u-skill-fr-add |
+| `/u-skill-refine` | u-skill-refine |
 | `/u-skill-index` | u-skill-index |
 
 ### Individual Task

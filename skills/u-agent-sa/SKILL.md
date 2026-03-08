@@ -35,7 +35,7 @@ agents:
 - SRS (Software Requirements Specification) 작성
 - ERD (Entity-Relationship Diagram) 작성
 - API Contract (OpenAPI 3.0) 작성
-- USR/US/FT/FR 도출 및 매핑
+- USR/FR/US/FT 도출 및 매핑
 
 ## Rules
 

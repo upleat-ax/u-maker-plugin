@@ -51,7 +51,7 @@ agents:
 | Requirement | Y | - |
 | Description | Y | - |
 | Priority | N | Should |
-| US Mapping | N | TBD (Technical FR은 `-`) |
+| USR Mapping | N | TBD |
 | Input/Output/Business Rule/Exception | N | {{TODO}} |
 
 ## App Context

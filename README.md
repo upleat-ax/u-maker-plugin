@@ -5,7 +5,7 @@ PDCA(Plan-Design-Do-Check-Act) 기반 SSoT(Single Source of Truth) 협업 오케
 
 - Plugin version: `1.0.0`
 - SSoT config version: `2.0.0`
-- Skills: `47` | Agents: `8`
+- Skills: `48` | Agents: `8`
 
 ---
 
@@ -53,7 +53,7 @@ u-maker는 **문서 중심 개발(SSoT)**을 강제하는 협업 오케스트레
 
 | Problem | Solution |
 |---------|----------|
-| 요구사항과 코드가 따로 놀아 추적 불가 | 4-Tier ID(`USR→US→FT→FR`)로 요구사항~테스트 전 구간 추적 |
+| 요구사항과 코드가 따로 놀아 추적 불가 | 4-Tier ID(`USR→FR→US→FT`)로 요구사항~테스트 전 구간 추적 |
 | 단계 건너뛰기로 품질 저하 | Phase Gate로 전 단계 문서 Final 확인 후에만 다음 단계 진행 |
 | 반복적인 수정-테스트 사이클 | PDCA Loop 자동화 (최대 10회 반복, 종료 조건 자동 판정) |
 | 기술 스택 규칙 위반 | Hook 기반 사전 차단 (CSS-in-JS, Pages Router 등 10개 규칙) |
@@ -151,7 +151,7 @@ flowchart TD
 
 | Command | Description |
 |---------|-------------|
-| `/u-skill-srs [app]` | SRS 생성/수정 (FR+NFR -> US -> FT) |
+| `/u-skill-srs [app]` | SRS 생성/수정 (FR → US → FT) |
 | `/u-skill-erd` | ERD 생성/수정 |
 | `/u-skill-api [app]` | API Contract (OpenAPI 3.0) 생성/수정 |
 | `/u-skill-screen [app]` | 화면 상세 설계 |
@@ -162,6 +162,7 @@ flowchart TD
 | `/u-skill-qa [app]` | 테스트 실행 (Vitest + Playwright) |
 | `/u-skill-us-add [desc]` | 유저 스토리 추가 |
 | `/u-skill-fr-add [app] [desc]` | 기능 요구사항(FR) 추가 |
+| `/u-skill-refine <ID> [app]` | FR/US/FT 세분화 (하위 항목으로 분해) |
 | `/u-skill-backlog-add [desc]` | 백로그 항목 추가 |
 
 ### 4.5 Reports
@@ -170,7 +171,7 @@ flowchart TD
 
 | Command | Description |
 |---------|-------------|
-| `/u-skill-report [app]` | 프로젝트 종합 보고서 (FR/NFR/US/FT/TC 전체 카운트 + 이전 보고서 비교 트렌드 차트 + Git 활동 요약 + QA 결과 + 결함 + 기술 부채 + Iteration 이력) |
+| `/u-skill-report [app]` | 프로젝트 종합 보고서 (FR/NFR/US/FT/TC 전체 카운트 + 이전 보고서 비교 + 부채(기획/디자인/기술) + 기여자별 작업 내역 + Git 활동 + QA 결과 + 결함 + Iteration 이력). Dark/Light 모드 토글 지원 |
 
 ### 4.6 Status & Utility
 
@@ -211,7 +212,7 @@ flowchart TD
 
 | Phase | Agents | Key Activities | Gate to Next |
 |-------|--------|---------------|--------------|
-| **PLAN** | PM, SA, UX | Roadmap, SRS(FR->US->FT), IA, Index | Roadmap + SRS + IA = Final |
+| **PLAN** | PM, SA, UX | Roadmap, SRS(FR→US→FT), IA, Index | Roadmap + SRS + IA = Final |
 | **DESIGN** | UX, SA, RA | UXGuide, Screen, ScreenFlow, Wireframe, ERD, API, RTM, 모순 검수 | ERD + RTM + UXGuide + API + Screen + ScreenFlow = Final |
 | **DO** | UX, DV-FE, DV-BE | Screen 구현, Frontend, Backend, Code Doc, Gap Check | `bun run build` 성공 + Match Rate >= 90% |
 | **CHECK** | QA | Test Case 설계, 실행 (Vitest+Playwright), 결함 분석 | Critical/Major=0, All FT Implemented, Build OK |
@@ -249,10 +250,10 @@ DO Phase 완료 후 `u-skill-gap-detector`로 설계-구현 Match Rate를 측정
 ```mermaid
 flowchart TD
     USR["USR-XXXX<br/>User Type<br/><i>관리자, 일반 사용자</i>"]
-    US["US-XXXX<br/>User Story<br/><i>관리자로서 사용자를 관리하고 싶다</i>"]
-    FT["FT-XXXX<br/>Feature ★ 구현 추적 기본 단위<br/><i>사용자 목록 조회</i>"]
-    FR["FR-XXXX<br/>Functional Req.<br/><i>목록 페이지네이션 20건 단위</i>"]
-    USR --> US --> FT --> FR
+    FR["FR-XXXX<br/>Functional Req.<br/><i>고객 요구사항 (계약/RFP 기반)</i>"]
+    US["US-XXXX<br/>User Story<br/><i>FR을 사용자 관점으로 분해</i>"]
+    FT["FT-XXXX<br/>Feature ★ 구현 추적 기본 단위<br/><i>사용자 목록 조회, 검색</i>"]
+    USR --> FR --> US --> FT
 ```
 
 ### Traceability Matrix (RTM)
@@ -261,7 +262,7 @@ flowchart TD
 
 ```mermaid
 flowchart LR
-    US --> FT --> FR --> Screen --> API[API Endpoint] --> DB[DB Entity] --> TC[Test Case]
+    FR --> US --> FT --> Screen --> API[API Endpoint] --> DB[DB Entity] --> TC[Test Case]
 ```
 
 ---
@@ -334,7 +335,7 @@ flowchart LR
 
 ```mermaid
 flowchart LR
-    SRS["SRS<br/>(FR+NFR→US→FT)"] --> IA["IA<br/>정보 구조도"]
+    SRS["SRS<br/>(FR→US→FT)"] --> IA["IA<br/>정보 구조도"]
     IA --> UXGuide["UXGuide<br/>디자인 시스템"]
     UXGuide --> Screen["Screen<br/>화면 상세 설계"]
     Screen --> ScreenFlow["ScreenFlow<br/>화면 흐름도"]
@@ -362,7 +363,7 @@ u-maker-plugin/
 │   ├── u-agent-dv-fe.md
 │   ├── u-agent-dv-be.md
 │   └── u-agent-qa.md
-├── skills/                # 47개 user-invocable 스킬
+├── skills/                # 48개 user-invocable 스킬
 │   ├── u-skill-maker/     #   슬림 라우터 (자연어 -> 에이전트 라우팅)
 │   ├── u-skill-plan/      #   PLAN Phase
 │   ├── u-skill-design/    #   DESIGN Phase
@@ -371,6 +372,7 @@ u-maker-plugin/
 │   ├── u-skill-act/       #   ACT Phase
 │   ├── u-skill-loop/      #   PDCA 자동 반복
 │   ├── u-skill-srs/       #   SRS 문서
+│   ├── u-skill-refine/    #   FR/US/FT 세분화
 │   ├── u-agent-*/         #   에이전트 직접 호출 (7개)
 │   └── ...                #   기타 40개 스킬
 ├── hooks/                 # Claude hook 설정
@@ -515,7 +517,12 @@ mv .u-maker/u-ssot.config.json .u-maker/u-maker.config.json
 # 2. 기능 요구사항 추가
 /u-skill-fr-add web
 
-# 3. 설계부터 재실행
+# 3. 항목이 너무 크면 세분화
+/u-skill-refine FR-0010 web    # FR을 하위 FR로 분해
+/u-skill-refine US-0010        # US를 하위 US로 분해
+/u-skill-refine FT-0010 web    # FT를 하위 FT로 분해
+
+# 4. 설계부터 재실행
 /u-skill-design web
 /u-skill-dev web
 /u-skill-check web
@@ -566,8 +573,12 @@ HTML은 Pretendard 폰트 기반 단일 파일로, 브라우저에서 바로 열
 |------|------|
 | **전체 카운트 대시보드** | FR/NFR/US/FT/TC 전체·구현·미구현 갯수를 KPI 카드로 표시 |
 | **이전 보고서 비교** | 직전 보고서와 비교하여 Delta(▲▼) 테이블 + 트렌드 바 차트 시각화 |
-| **Git 활동 요약** | 커밋 분류(feat/fix/refactor 등) 도넛 차트, 기여자 테이블, 변경 통계, Top 5 변경사항 |
-| **섹션별 카운트 뱃지** | 각 섹션(FR/NFR/US/FT/TC) 테이블 상단에 전체·완료·미착수 카운트 표시 |
+| **US 상세 카드** | As a / I want to / So that 3요소 + 수락 기준 원문 리스트 카드 |
+| **TC FT별 그룹 뷰** | FT 단위 카드 내 TC 테이블 (시나리오, 기대/실제 결과, Pass/Fail 뱃지) |
+| **3종 부채 현황** | 기획 부채 (TBD/누락 US) + 디자인 부채 (미작성 와이어프레임/불일치) + 기술 부채 |
+| **기여자별 작업 내역** | git 기반 기여자 요약 테이블 + 작업 상세 카드 (feat/fix별 갯수, 주요 파일) |
+| **Git 활동 요약** | 커밋 분류(feat/fix/refactor 등) 도넛 차트, 변경 통계, Top 5 변경사항 |
+| **Dark/Light 모드** | OS 설정 자동 감지 + 토글 버튼 + localStorage 저장 |
 | **MD 차트** | 유니코드 블록 문자(█)로 바 차트, 화살표(▲▼—)로 트렌드 표현 |
 
 ### Scenario 8: 설계-구현 Gap 분석
