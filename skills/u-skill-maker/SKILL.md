@@ -151,6 +151,7 @@ agents:
 | `/u-skill-tc-add` | u-skill-tc-add |
 | `/u-skill-tc-refine` | u-skill-tc-refine |
 | `/u-skill-qa` | u-skill-qa |
+| `/u-skill-fix` | u-skill-fix |
 | `/u-skill-report` | u-skill-report |
 
 ### Utility
