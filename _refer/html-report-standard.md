@@ -35,6 +35,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{{PROJECT_NAME}} — {{REPORT_TITLE}}</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
 <style>
   /* Dark Mode (default) */
   :root {
@@ -539,6 +540,18 @@
     margin-top: 40px;
   }
 
+  /* Mermaid Diagram */
+  .diagram-wrap {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    margin: 16px 0;
+    overflow-x: auto;
+    text-align: center;
+  }
+  .diagram-wrap svg { max-width: 100%; height: auto; }
+
   /* Print */
   @media print {
     body { background: #fff; color: #000; }
@@ -618,6 +631,22 @@
 </div>
 
 <script>
+function getMermaidTheme() {
+  return document.documentElement.getAttribute('data-theme') === 'light' ? 'default' : 'dark';
+}
+function rerenderMermaid() {
+  document.querySelectorAll('.diagram-wrap').forEach(function(wrap) {
+    var src = wrap.getAttribute('data-diagram');
+    if (!src) return;
+    var pre = document.createElement('pre');
+    pre.className = 'mermaid';
+    pre.textContent = src;
+    wrap.innerHTML = '';
+    wrap.appendChild(pre);
+  });
+  mermaid.initialize({ startOnLoad: false, theme: getMermaidTheme(), securityLevel: 'loose' });
+  mermaid.run({ querySelector: '.mermaid' });
+}
 function toggleTheme() {
   var html = document.documentElement;
   var icon = document.getElementById('theme-icon');
@@ -630,6 +659,7 @@ function toggleTheme() {
     icon.innerHTML = '&#9789;';
     localStorage.setItem('theme', 'light');
   }
+  rerenderMermaid();
 }
 (function() {
   var saved = localStorage.getItem('theme');
@@ -637,6 +667,7 @@ function toggleTheme() {
     document.documentElement.setAttribute('data-theme', 'light');
     document.getElementById('theme-icon').innerHTML = '&#9789;';
   }
+  mermaid.initialize({ startOnLoad: true, theme: getMermaidTheme(), securityLevel: 'loose' });
 })();
 </script>
 
@@ -657,7 +688,8 @@ function toggleTheme() {
 | 테마 감지 | `prefers-color-scheme:light` 자동 감지 + `localStorage` 저장 | OS 설정 연동 |
 | 언어 | `<html lang="{{LANG}}">` — `documentLanguage` 설정값 | 다국어 보고서 지원 |
 | 색상 | 모든 색상은 CSS 변수(`--bg`, `--card` 등) 사용, 하드코딩 금지 | 테마 전환 대응 |
-| JS | 테마 토글 인라인 스크립트만 허용 (외부 JS 라이브러리 금지) | 단일 파일 완결성 |
+| JS | 테마 토글 인라인 스크립트 + **Mermaid CDN** 허용 (그 외 외부 JS 금지) | 단일 파일 완결성 |
+| Mermaid | `https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js` (`<head>` 내 `<script>` 태그) | 다이어그램 렌더링 |
 | 반응형 | `@media (max-width: 768px)` 최소 대응 | 모바일 접근 |
 | 차트 | HTML/CSS + SVG만 사용 | 단일 파일 완결성 |
 | 인쇄 | `@media print` 최소 대응 + 토글 숨김 | 인쇄 시 깨짐 방지 |
@@ -678,6 +710,22 @@ function toggleTheme() {
 ```html
 <!-- </body> 직전에 배치 -->
 <script>
+function getMermaidTheme() {
+  return document.documentElement.getAttribute('data-theme') === 'light' ? 'default' : 'dark';
+}
+function rerenderMermaid() {
+  document.querySelectorAll('.diagram-wrap').forEach(function(wrap) {
+    var src = wrap.getAttribute('data-diagram');
+    if (!src) return;
+    var pre = document.createElement('pre');
+    pre.className = 'mermaid';
+    pre.textContent = src;
+    wrap.innerHTML = '';
+    wrap.appendChild(pre);
+  });
+  mermaid.initialize({ startOnLoad: false, theme: getMermaidTheme(), securityLevel: 'loose' });
+  mermaid.run({ querySelector: '.mermaid' });
+}
 function toggleTheme() {
   var html = document.documentElement;
   var icon = document.getElementById('theme-icon');
@@ -690,6 +738,7 @@ function toggleTheme() {
     icon.innerHTML = '&#9789;';
     localStorage.setItem('theme', 'light');
   }
+  rerenderMermaid();
 }
 (function() {
   var saved = localStorage.getItem('theme');
@@ -697,6 +746,7 @@ function toggleTheme() {
     document.documentElement.setAttribute('data-theme', 'light');
     document.getElementById('theme-icon').innerHTML = '&#9789;';
   }
+  mermaid.initialize({ startOnLoad: true, theme: getMermaidTheme(), securityLevel: 'loose' });
 })();
 </script>
 ```
@@ -957,6 +1007,33 @@ Delta 규칙: 개선이면 `.delta-up`, 악화면 `.delta-down`, 동일하면 `.
 <span class="badge badge-gray">Could</span>
 ```
 
+### 4.17 Mermaid Diagram
+
+`.md` 파일의 ` ```mermaid ... ``` ` 블록을 아래 구조로 변환한다.
+`data-diagram` 속성에 원본 소스를 보존하면 테마 전환 시 재렌더링이 가능하다.
+
+```html
+<!-- 필수: <head>에 CDN 추가 -->
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+
+<!-- 본문: .md의 ```mermaid 블록 → diagram-wrap -->
+<div class="diagram-wrap" data-diagram="flowchart TD&#10;    A[Start] --&gt; B[End]">
+  <pre class="mermaid">flowchart TD
+    A[Start] --> B[End]</pre>
+</div>
+```
+
+**변환 규칙:**
+- ` ```mermaid\n{source}\n``` ` → `<div class="diagram-wrap" data-diagram="{source_escaped}"><pre class="mermaid">{source}</pre></div>`
+- `data-diagram` 값: HTML 엔티티 인코딩 (`&amp;`, `&lt;`, `&gt;`, `&#10;` for newline)
+- Mermaid 초기화: `(function() { ... mermaid.initialize({ startOnLoad: true, theme: getMermaidTheme(), securityLevel: 'loose' }); })()`
+- 테마 전환 시: `rerenderMermaid()` 호출 (기존 `.diagram-wrap` 내용을 원본으로 교체 후 `mermaid.run()`)
+
+**다이어그램 위치 규칙:**
+- 섹션 내 관련 데이터 테이블 바로 다음에 배치
+- 서브섹션 구분선(`---`) 앞에 배치하면 안 됨
+- 제목 없이 독립된 `.diagram-wrap`으로 배치
+
 ---
 
 ## 5. 생성 순서
@@ -976,7 +1053,11 @@ Delta 규칙: 개선이면 `.delta-up`, 악화면 `.delta-down`, 동일하면 `.
 ### HTML 생성 시
 - [ ] Pretendard 폰트 폴백 (`'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif`)
 - [ ] 모든 CSS는 `<style>` 블록 내
-- [ ] 외부 JS 라이브러리 미사용 (테마 토글 인라인 JS만 허용)
+- [ ] Mermaid CDN `<script>` 태그 `<head>` 내 포함 (`https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js`)
+- [ ] Mermaid 초기화: `mermaid.initialize({ startOnLoad: true, theme: getMermaidTheme(), securityLevel: 'loose' })` — IIFE 내부
+- [ ] `.md`의 ` ```mermaid ``` ` 블록 → `<div class="diagram-wrap" data-diagram="..."><pre class="mermaid">...</pre></div>` 변환
+- [ ] 테마 전환 시 `rerenderMermaid()` 호출 — `toggleTheme()` 마지막에 추가
+- [ ] Mermaid 외 외부 JS 라이브러리 미사용
 - [ ] 반응형 최소 대응 (`@media (max-width: 768px)`)
 - [ ] 인쇄 대응 (`@media print` + 토글 숨김)
 - [ ] 단일 HTML 파일로 완결

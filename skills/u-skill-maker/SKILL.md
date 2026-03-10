@@ -165,6 +165,7 @@ agents:
 | `/u-skill-summary` | u-skill-summary |
 | `/u-skill-git-pr` | u-skill-git-pr |
 | `/u-skill-gap-detector` | u-skill-gap-detector |
+| `/u-skill-html-doc` | u-skill-html-doc |
 
 ## Error Handling
 

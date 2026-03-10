@@ -534,6 +534,23 @@ CHECK Phase에서 설계-구현 일치도를 분석하는 커맨드.
 | **Prerequisites** | git 저장소 초기화 완료, 변경된 파일 존재 |
 | **Output** | feature 브랜치 생성, commit, push, PR URL 출력 |
 
+### `/u-skill-html-doc`
+
+| Field | Value |
+|-------|-------|
+| **Syntax** | `/u-skill-html-doc [doc-type] [app]` |
+| **Description** | SSoT 문서(.md + .json)를 인터랙티브 HTML 뷰어/보고서로 변환한다. Plan~Act 전 Phase 문서를 지원한다 |
+| **Calling Agents** | Orchestrator |
+| **Prerequisites** | 변환 대상 SSoT 문서 존재 |
+| **Output** | 원본 .md와 동일 경로에 `.html` 파일 생성 |
+
+**doc-type (Plan)**: `srs`, `ia`, `common`, `roadmap`
+**doc-type (Design)**: `erd`, `api`, `screen`, `screenflow`, `uxguide`, `rtm`
+**doc-type (Dev)**: `code`, `uicomponents`, `designtoken`
+**doc-type (Check)**: `testcase`, `qareport`
+**doc-type (Act)**: `iteration`, `report`
+**doc-type (All)**: `all` — 전체 문서 변환 (파일 없으면 Skip)
+
 **Feature Grouping**: 변경 파일을 디렉토리/문서 기준으로 feature 단위로 자동 분류하거나, 사용자가 feature 이름을 직접 지정할 수 있다.
 
 **Rules**:
@@ -594,3 +611,4 @@ CHECK Phase에서 설계-구현 일치도를 분석하는 커맨드.
 | Utility | `/u-skill-build` | DO | Orch (Bash) |
 | Utility | `/u-skill-summary` | - | u-RA |
 | Utility | `/u-skill-git-pr` | - | Orch (Bash + gh) |
+| Utility | `/u-skill-html-doc [doc-type] [app]` | - | Orch |
