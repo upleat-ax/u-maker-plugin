@@ -2,6 +2,7 @@
 
 > 모든 리포트 문서(.md)는 동일한 내용의 `.html` 파일을 같은 경로에 함께 생성한다.
 > HTML은 단일 파일로 완결되며, 외부 의존성 없이 브라우저에서 독립 표시 가능해야 한다.
+> 다이어그램은 인라인 SVG로 작성 (Mermaid CDN 사용 금지). Light/Dark 테마 토글 지원.
 
 ---
 
@@ -35,7 +36,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{{PROJECT_NAME}} — {{REPORT_TITLE}}</title>
-<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
 <style>
   /* Dark Mode (default) */
   :root {
@@ -65,6 +65,17 @@
     --donut-text-fill: #e4e4ed;
     --bg-code: #12121b;
     --accent-glow: rgba(124, 106, 246, 0.15);
+    /* SVG Diagram */
+    --diagram-bg: #1a1a24;
+    --diagram-node-bg: #1e1e2e;
+    --diagram-node-border: #3a3a4e;
+    --diagram-accent-bg: #7c6af6;
+    --diagram-accent-text: #ffffff;
+    --diagram-accent: #7c6af6;
+    --diagram-line: #4a4a5e;
+    --diagram-text: #e4e4ed;
+    --diagram-text-sub: #8b8ba0;
+    --diagram-label-bg: #2a2a3a;
     --radius: 12px;
     --radius-sm: 8px;
     --mono: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
@@ -98,6 +109,17 @@
     --donut-text-fill: #2d2d3a;
     --bg-code: #eeeef5;
     --accent-glow: rgba(108, 92, 231, 0.08);
+    /* SVG Diagram */
+    --diagram-bg: #f8f8fc;
+    --diagram-node-bg: #ffffff;
+    --diagram-node-border: #d1d5db;
+    --diagram-accent-bg: #6c5ce7;
+    --diagram-accent-text: #ffffff;
+    --diagram-accent: #6c5ce7;
+    --diagram-line: #9ca3af;
+    --diagram-text: #2d2d3a;
+    --diagram-text-sub: #6b6b80;
+    --diagram-label-bg: #f3f4f6;
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   html { scroll-behavior: smooth; }
@@ -540,9 +562,9 @@
     margin-top: 40px;
   }
 
-  /* Mermaid Diagram */
+  /* SVG Diagram */
   .diagram-wrap {
-    background: var(--card);
+    background: var(--diagram-bg);
     border: 1px solid var(--border);
     border-radius: var(--radius);
     padding: 24px;
@@ -631,43 +653,25 @@
 </div>
 
 <script>
-function getMermaidTheme() {
-  return document.documentElement.getAttribute('data-theme') === 'light' ? 'default' : 'dark';
-}
-function rerenderMermaid() {
-  document.querySelectorAll('.diagram-wrap').forEach(function(wrap) {
-    var src = wrap.getAttribute('data-diagram');
-    if (!src) return;
-    var pre = document.createElement('pre');
-    pre.className = 'mermaid';
-    pre.textContent = src;
-    wrap.innerHTML = '';
-    wrap.appendChild(pre);
-  });
-  mermaid.initialize({ startOnLoad: false, theme: getMermaidTheme(), securityLevel: 'loose' });
-  mermaid.run({ querySelector: '.mermaid' });
-}
 function toggleTheme() {
   var html = document.documentElement;
   var icon = document.getElementById('theme-icon');
   if (html.getAttribute('data-theme') === 'light') {
     html.removeAttribute('data-theme');
     icon.innerHTML = '&#9788;';
-    localStorage.setItem('theme', 'dark');
+    localStorage.setItem('report-theme', 'dark');
   } else {
     html.setAttribute('data-theme', 'light');
     icon.innerHTML = '&#9789;';
-    localStorage.setItem('theme', 'light');
+    localStorage.setItem('report-theme', 'light');
   }
-  rerenderMermaid();
 }
 (function() {
-  var saved = localStorage.getItem('theme');
+  var saved = localStorage.getItem('report-theme');
   if (saved === 'light' || (!saved && matchMedia('(prefers-color-scheme:light)').matches)) {
     document.documentElement.setAttribute('data-theme', 'light');
     document.getElementById('theme-icon').innerHTML = '&#9789;';
   }
-  mermaid.initialize({ startOnLoad: true, theme: getMermaidTheme(), securityLevel: 'loose' });
 })();
 </script>
 
@@ -688,8 +692,8 @@ function toggleTheme() {
 | 테마 감지 | `prefers-color-scheme:light` 자동 감지 + `localStorage` 저장 | OS 설정 연동 |
 | 언어 | `<html lang="{{LANG}}">` — `documentLanguage` 설정값 | 다국어 보고서 지원 |
 | 색상 | 모든 색상은 CSS 변수(`--bg`, `--card` 등) 사용, 하드코딩 금지 | 테마 전환 대응 |
-| JS | 테마 토글 인라인 스크립트 + **Mermaid CDN** 허용 (그 외 외부 JS 금지) | 단일 파일 완결성 |
-| Mermaid | `https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js` (`<head>` 내 `<script>` 태그) | 다이어그램 렌더링 |
+| JS | 테마 토글 인라인 스크립트만 (외부 JS 완전 금지, Mermaid CDN 사용 금지) | 단일 파일 완결성 |
+| 다이어그램 | 인라인 SVG (CSS 변수 `--diagram-*` 사용), 외부 라이브러리 금지 | 단일 파일 완결 + 테마 자동 전환 |
 | 반응형 | `@media (max-width: 768px)` 최소 대응 | 모바일 접근 |
 | 차트 | HTML/CSS + SVG만 사용 | 단일 파일 완결성 |
 | 인쇄 | `@media print` 최소 대응 + 토글 숨김 | 인쇄 시 깨짐 방지 |
@@ -710,48 +714,31 @@ function toggleTheme() {
 ```html
 <!-- </body> 직전에 배치 -->
 <script>
-function getMermaidTheme() {
-  return document.documentElement.getAttribute('data-theme') === 'light' ? 'default' : 'dark';
-}
-function rerenderMermaid() {
-  document.querySelectorAll('.diagram-wrap').forEach(function(wrap) {
-    var src = wrap.getAttribute('data-diagram');
-    if (!src) return;
-    var pre = document.createElement('pre');
-    pre.className = 'mermaid';
-    pre.textContent = src;
-    wrap.innerHTML = '';
-    wrap.appendChild(pre);
-  });
-  mermaid.initialize({ startOnLoad: false, theme: getMermaidTheme(), securityLevel: 'loose' });
-  mermaid.run({ querySelector: '.mermaid' });
-}
 function toggleTheme() {
   var html = document.documentElement;
   var icon = document.getElementById('theme-icon');
   if (html.getAttribute('data-theme') === 'light') {
     html.removeAttribute('data-theme');
     icon.innerHTML = '&#9788;';
-    localStorage.setItem('theme', 'dark');
+    localStorage.setItem('report-theme', 'dark');
   } else {
     html.setAttribute('data-theme', 'light');
     icon.innerHTML = '&#9789;';
-    localStorage.setItem('theme', 'light');
+    localStorage.setItem('report-theme', 'light');
   }
-  rerenderMermaid();
 }
 (function() {
-  var saved = localStorage.getItem('theme');
+  var saved = localStorage.getItem('report-theme');
   if (saved === 'light' || (!saved && matchMedia('(prefers-color-scheme:light)').matches)) {
     document.documentElement.setAttribute('data-theme', 'light');
     document.getElementById('theme-icon').innerHTML = '&#9789;';
   }
-  mermaid.initialize({ startOnLoad: true, theme: getMermaidTheme(), securityLevel: 'loose' });
 })();
 </script>
 ```
 
 동작: 다크 모드가 기본값. OS 라이트 모드 설정 감지 시 자동 전환 → 토글 클릭 시 전환 → `localStorage`에 저장 → 재방문 시 유지.
+SVG 다이어그램은 CSS 변수를 사용하므로 테마 전환 시 자동 업데이트 (JS 재렌더링 불필요).
 
 아이콘: Dark 모드일 때 `☀` (9788), Light 모드일 때 `☽` (9789).
 
@@ -1007,27 +994,40 @@ Delta 규칙: 개선이면 `.delta-up`, 악화면 `.delta-down`, 동일하면 `.
 <span class="badge badge-gray">Could</span>
 ```
 
-### 4.17 Mermaid Diagram
+### 4.17 SVG Diagram
 
-`.md` 파일의 ` ```mermaid ... ``` ` 블록을 아래 구조로 변환한다.
-`data-diagram` 속성에 원본 소스를 보존하면 테마 전환 시 재렌더링이 가능하다.
+`.md` 파일의 ` ```mermaid ... ``` ` 블록 또는 문서 데이터를 인라인 SVG로 변환한다.
+**외부 JS 라이브러리(Mermaid 포함)는 사용하지 않는다.**
+SVG 내 모든 색상은 CSS 변수를 사용하므로 테마 전환 시 자동으로 업데이트된다.
 
 ```html
-<!-- 필수: <head>에 CDN 추가 -->
-<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
-
-<!-- 본문: .md의 ```mermaid 블록 → diagram-wrap -->
-<div class="diagram-wrap" data-diagram="flowchart TD&#10;    A[Start] --&gt; B[End]">
-  <pre class="mermaid">flowchart TD
-    A[Start] --> B[End]</pre>
+<div class="diagram-wrap">
+  <svg viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5"
+        markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--diagram-line)"/>
+      </marker>
+    </defs>
+    <rect x="125" y="20" width="150" height="44" rx="8"
+          fill="var(--diagram-node-bg)" stroke="var(--diagram-node-border)" stroke-width="1.5"/>
+    <text x="200" y="47" text-anchor="middle" fill="var(--diagram-text)"
+          font-size="14" font-family="Pretendard, sans-serif">Start</text>
+    <line x1="200" y1="64" x2="200" y2="136" stroke="var(--diagram-line)"
+          stroke-width="2" marker-end="url(#arrow)"/>
+    <rect x="125" y="136" width="150" height="44" rx="8"
+          fill="var(--diagram-accent-bg)" stroke="var(--diagram-accent)" stroke-width="1.5"/>
+    <text x="200" y="163" text-anchor="middle" fill="var(--diagram-accent-text)"
+          font-size="14" font-family="Pretendard, sans-serif">End</text>
+  </svg>
 </div>
 ```
 
 **변환 규칙:**
-- ` ```mermaid\n{source}\n``` ` → `<div class="diagram-wrap" data-diagram="{source_escaped}"><pre class="mermaid">{source}</pre></div>`
-- `data-diagram` 값: HTML 엔티티 인코딩 (`&amp;`, `&lt;`, `&gt;`, `&#10;` for newline)
-- Mermaid 초기화: `(function() { ... mermaid.initialize({ startOnLoad: true, theme: getMermaidTheme(), securityLevel: 'loose' }); })()`
-- 테마 전환 시: `rerenderMermaid()` 호출 (기존 `.diagram-wrap` 내용을 원본으로 교체 후 `mermaid.run()`)
+- ` ```mermaid\n{source}\n``` ` → 의미를 해석하여 인라인 `<svg>` 태그로 변환
+- 모든 `fill`, `stroke` 색상은 CSS 변수 사용 (`var(--diagram-*)`)
+- `<defs>` 블록에 공통 마커(arrow) 정의
+- 테마 전환 시 JS 재렌더링 불필요 (CSS 변수가 자동 전환)
 
 **다이어그램 위치 규칙:**
 - 섹션 내 관련 데이터 테이블 바로 다음에 배치
@@ -1053,11 +1053,10 @@ Delta 규칙: 개선이면 `.delta-up`, 악화면 `.delta-down`, 동일하면 `.
 ### HTML 생성 시
 - [ ] Pretendard 폰트 폴백 (`'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif`)
 - [ ] 모든 CSS는 `<style>` 블록 내
-- [ ] Mermaid CDN `<script>` 태그 `<head>` 내 포함 (`https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js`)
-- [ ] Mermaid 초기화: `mermaid.initialize({ startOnLoad: true, theme: getMermaidTheme(), securityLevel: 'loose' })` — IIFE 내부
-- [ ] `.md`의 ` ```mermaid ``` ` 블록 → `<div class="diagram-wrap" data-diagram="..."><pre class="mermaid">...</pre></div>` 변환
-- [ ] 테마 전환 시 `rerenderMermaid()` 호출 — `toggleTheme()` 마지막에 추가
-- [ ] Mermaid 외 외부 JS 라이브러리 미사용
+- [ ] 외부 JS 라이브러리 완전 미사용 (Mermaid CDN 포함 금지)
+- [ ] 다이어그램은 인라인 SVG로 작성 (`<div class="diagram-wrap"><svg>...</svg></div>`)
+- [ ] SVG 내 모든 색상은 CSS 변수 사용 (`var(--diagram-*)`) — 테마 자동 전환
+- [ ] `.md`의 ` ```mermaid ``` ` 블록 → 의미 해석 후 인라인 SVG로 변환
 - [ ] 반응형 최소 대응 (`@media (max-width: 768px)`)
 - [ ] 인쇄 대응 (`@media print` + 토글 숨김)
 - [ ] 단일 HTML 파일로 완결

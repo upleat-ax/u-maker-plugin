@@ -101,8 +101,17 @@ PDCA 전 Phase의 모든 문서 유형을 지원하며, `all`로 전체 문서�
 
 | Style | 적용 문서 | CSS 테마 | 레이아웃 |
 |-------|----------|---------|---------|
-| **Sidebar Viewer** | Plan, Design phase 문서 | Light-first (`html-doc-template.md`) | Fixed sidebar(280px) + 스크롤 main |
-| **Report (Dark)** | Dev, Check, Act phase 문서 | Dark-first (`html-report-standard.md`) | 단일 컬럼, KPI Cards, Section Banner |
+| **Sidebar Viewer** | Plan, Design phase 문서 | Light-first + Dark 토글 (`html-doc-template.md`) | Fixed sidebar(280px) + 스크롤 main |
+| **Report** | Dev, Check, Act phase 문서 | Dark-first + Light 토글 (`html-report-standard.md`) | 단일 컬럼, KPI Cards, Section Banner |
+
+### 공통 테마 규칙
+
+- 모든 HTML 파일에 **Light/Dark 테마 토글 버튼** 포함
+- Sidebar Viewer: Light-first (`:root` = 라이트, `[data-theme="dark"]` = 다크)
+- Report: Dark-first (`:root` = 다크, `[data-theme="light"]` = 라이트)
+- OS `prefers-color-scheme` 자동 감지 + `localStorage` 저장
+- 모든 색상은 CSS 변수 사용 (하드코딩 금지)
+- SVG 다이어그램은 CSS 변수로 테마 자동 전환 (JS 재렌더링 불필요)
 
 ## Execution Flow
 
@@ -135,13 +144,15 @@ PDCA 전 Phase의 모든 문서 유형을 지원하며, `all`로 전체 문서�
 `html-doc-template.md`의 light-first 사이드바 스타일을 따른다:
 
 - **Layout**: Fixed sidebar (280px) + scrollable main content
-- **Theme**: Light-first (blue accent `#2563eb`)
+- **Theme**: Light-first + Dark 토글 (`:root` = 라이트, `[data-theme="dark"]` = 다크)
 - **Language**: `<html lang="{{LANG}}">` — `documentLanguage` config 값
 - **Header**: Blue gradient background + 문서 제목 + 버전 뱃지
 - **Stats**: `.stats-row` + `.stat-card` 주요 카운트 표시
 - **Sections**: `.section` 카드 스타일 (white bg, rounded, shadow)
 - **Navigation**: Smooth scroll + scroll spy + search filter
-- **Single file**: Pretendard CDN만 허용, 외부 JS 금지
+- **Theme Toggle**: Fixed 버튼 (우상단) — Light/Dark 전환 + localStorage 저장
+- **Diagram**: 인라인 SVG (Mermaid CDN 사용 금지)
+- **Single file**: 단일 HTML, 외부 JS 완전 금지
 
 ### Sidebar 문서 유형별 추가 컴포넌트
 
@@ -177,17 +188,18 @@ PDCA 전 Phase의 모든 문서 유형을 지원하며, `all`로 전체 문서�
 | `uicomponents` | 🧩 |
 | `designtoken` | 🎨 |
 
-## Report (Dark) 생성 규칙
+## Report 생성 규칙
 
 `html-report-standard.md`의 dark-first purple-accent 스타일을 따른다:
 
-- **Theme**: Dark-first (`:root` = 다크, `[data-theme="light"]` = 라이트)
+- **Theme**: Dark-first + Light 토글 (`:root` = 다크, `[data-theme="light"]` = 라이트)
 - **Header**: purple accent-glow gradient + 문서 제목 + 버전
 - **KPI Cards**: `.kpi-grid` + `.kpi-card` (주요 카운트)
 - **Section Title**: 숫자 뱃지(`.num`) + 파란 보더
 - **Tables**: `.table-wrap` + `.total-row` / `.new-row` / `.fixed-row`
 - **Badges**: `.badge-success` / `.badge-primary` / `.badge-warning` / `.badge-danger`
 - **Summary Box**: `.summary-box` (dark background)
+- **Diagram**: 인라인 SVG (Mermaid CDN 사용 금지)
 
 ### Report 문서 유형별 KPI Cards
 
@@ -206,15 +218,16 @@ PDCA 전 Phase의 모든 문서 유형을 지원하며, `all`로 전체 문서�
 - `####` 헤더 → `<h4>`
 - Markdown 테이블 → `<div class="table-wrap"><table>...</table></div>`
 - `- 항목` 리스트 → `<ul>` 또는 `.br-list`
-- ` ```mermaid ... ``` ` → **Mermaid Diagram** (아래 규칙 참조)
+- ` ```mermaid ... ``` ` → **인라인 SVG 다이어그램** (아래 규칙 참조)
 - ` ```코드블록``` ` → `<pre><code>`
 - `**굵게**` → `<strong>`
 - `[링크](url)` → `<a href>`
 - `ID 패턴` (FR-XXXX, US-XXXX, FT-XXXX 등) → `.tag` 스타일 인라인 뱃지
 
-## Mermaid Diagram 파싱 규칙
+## SVG Diagram 변환 규칙
 
-`.md` 파일의 ` ```mermaid ... ``` ` 코드 블록을 HTML로 변환한다.
+`.md` 파일의 ` ```mermaid ... ``` ` 코드 블록 또는 문서 데이터를 **인라인 SVG**로 직접 변환한다.
+**외부 JS 라이브러리(Mermaid 포함)는 사용하지 않는다.** 모든 다이어그램은 순수 `<svg>` 태그로 작성한다.
 
 ### 변환 형식
 
@@ -226,44 +239,97 @@ INPUT  (.md):
   ```
 
 OUTPUT (.html):
-  <div class="diagram-wrap" data-diagram="flowchart TD&#10;    A[시작] --&gt; B[종료]">
-    <pre class="mermaid">flowchart TD
-      A[시작] --> B[종료]</pre>
+  <div class="diagram-wrap">
+    <svg viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg">
+      <rect x="150" y="20" width="100" height="40" rx="8" fill="var(--diagram-node-bg)" stroke="var(--diagram-node-border)"/>
+      <text x="200" y="45" text-anchor="middle" fill="var(--diagram-text)" font-size="14">시작</text>
+      <line x1="200" y1="60" x2="200" y2="120" stroke="var(--diagram-line)" stroke-width="2" marker-end="url(#arrow)"/>
+      <rect x="150" y="120" width="100" height="40" rx="8" fill="var(--diagram-node-bg)" stroke="var(--diagram-node-border)"/>
+      <text x="200" y="145" text-anchor="middle" fill="var(--diagram-text)" font-size="14">종료</text>
+    </svg>
   </div>
 ```
 
-### 변환 규칙
+### SVG 규칙
 
 | 항목 | 규칙 |
 |------|------|
-| `data-diagram` | 원본 소스를 HTML 엔티티 인코딩 (`&amp;`, `&lt;`, `&gt;`, 개행 → `&#10;`) |
-| `<pre class="mermaid">` | 원본 소스 그대로 (인코딩 없이) |
-| CDN 위치 | `<head>` 내 `<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>` |
-| 초기화 | `mermaid.initialize({ startOnLoad: true, theme: getMermaidTheme(), securityLevel: 'loose' })` |
-| 테마 연동 | Report(Dark): `getMermaidTheme()` 함수 사용, Sidebar(Light): `theme: 'default'` 고정 |
-| 테마 전환 | `toggleTheme()` 또는 테마 변경 시 `rerenderMermaid()` 호출 |
-| 다이어그램 없는 문서 | CDN과 초기화 스크립트는 항상 포함 (다이어그램이 없어도 오류 없음) |
+| 렌더링 | 순수 인라인 `<svg>` — 외부 JS 라이브러리 금지 (Mermaid CDN 사용 금지) |
+| 색상 | 모든 `fill`, `stroke`, `color`는 CSS 변수 사용 (`var(--diagram-*)`) |
+| 테마 연동 | CSS 변수가 light/dark 테마에 따라 자동 전환됨 (JS 재렌더링 불필요) |
+| viewBox | 콘텐츠에 맞게 적절히 설정, `width="100%"` + `max-width` 제한 |
+| 반응형 | `<svg>` 는 `.diagram-wrap` 내 배치, `max-width:100%; height:auto` |
+| 화살표 | `<defs><marker id="arrow">` 공통 정의 후 `marker-end="url(#arrow)"` 참조 |
+| 텍스트 | `<text>` 태그, `font-family` 는 body와 동일, `fill: var(--diagram-text)` |
+| 노드 박스 | `<rect rx="8">` 또는 `<rect rx="20">` (둥근 모서리), 배경 `var(--diagram-node-bg)` |
+| 강조 노드 | `fill: var(--diagram-accent-bg)`, `stroke: var(--diagram-accent)` |
+| 연결선 | `<line>` 또는 `<path>` (곡선), `stroke: var(--diagram-line)`, `stroke-width: 2` |
+| 점선 | `stroke-dasharray="6 4"` |
+| 레이블 | 연결선 위 `<text>` — `font-size: 11px`, `fill: var(--diagram-text-sub)` |
 
-### 문서 유형별 Mermaid 다이어그램 매핑
+### SVG CSS 변수 (Light/Dark 공통)
 
-`mermaid-guide.md`의 Mandatory Diagram Matrix에 따라 각 문서 유형에 맞는 다이어그램을 포함한다:
+```css
+/* Light theme (Sidebar Viewer :root 또는 Report [data-theme="light"]) */
+--diagram-node-bg: #ffffff;
+--diagram-node-border: #d1d5db;
+--diagram-accent-bg: #1e293b;
+--diagram-accent-text: #ffffff;
+--diagram-accent: #1e293b;
+--diagram-line: #9ca3af;
+--diagram-text: #1e293b;
+--diagram-text-sub: #6b7280;
+--diagram-label-bg: #f3f4f6;
 
-| doc-type | 포함할 Mermaid 다이어그램 |
-|----------|------------------------|
-| `srs` | `flowchart TD` (FR→US→FT 매핑), `pie` (FR 우선순위 분포) |
-| `ia` | `flowchart TD` (메뉴 트리), `journey` (유저 여정) |
-| `erd` | `erDiagram` (엔티티 관계), `classDiagram` (도메인 모델) |
-| `api` | `C4Context` (시스템 아키텍처), `sequenceDiagram` (API 인터랙션) |
-| `screen` | `stateDiagram-v2` (화면 상태 전이), `flowchart` (화면 전환) |
-| `screenflow` | `flowchart LR` (스크린 플로우) |
-| `uxguide` | `flowchart` (디자인 시스템 구조) |
-| `rtm` | `flowchart LR` (FR→US→FT→TC 추적 흐름), `pie` (Coverage 분포) |
-| `code` | `flowchart` (프로세스 플로우), `classDiagram` (모듈 구조) |
-| `testcase` | `flowchart` (테스트 시나리오 플로우), `pie` (케이스 분포) |
-| `qareport` | `pie` (Pass/Fail/Skip 비율), `xychart-beta` (추이) |
-| `iteration` | `xychart-beta` (진행률), `gantt` (실제 일정) |
+/* Dark theme (Report :root 또는 Sidebar [data-theme="dark"]) */
+--diagram-node-bg: #1e1e2e;
+--diagram-node-border: #3a3a4e;
+--diagram-accent-bg: #7c6af6;
+--diagram-accent-text: #ffffff;
+--diagram-accent: #7c6af6;
+--diagram-line: #4a4a5e;
+--diagram-text: #e4e4ed;
+--diagram-text-sub: #8b8ba0;
+--diagram-label-bg: #2a2a3a;
+```
 
-소스 `.md`에 이미 Mermaid 블록이 있으면 그대로 변환. 없으면 문서 유형에 맞게 자동 생성.
+### 문서 유형별 SVG 다이어그램 매핑
+
+각 문서 유형에 맞는 다이어그램을 인라인 SVG로 생성한다:
+
+| doc-type | 포함할 SVG 다이어그램 |
+|----------|---------------------|
+| `srs` | Flowchart (FR→US→FT 매핑), Donut/Pie (FR 우선순위 분포) |
+| `ia` | Tree Diagram (메뉴 트리), Flow (유저 여정) |
+| `erd` | ER Diagram (엔티티 관계 — 박스 + 연결선), Class Diagram (도메인 모델) |
+| `api` | Architecture Diagram (시스템 구성), Sequence Diagram (API 인터랙션 — 수직 타임라인) |
+| `screen` | State Diagram (화면 상태 전이), Flowchart (화면 전환) |
+| `screenflow` | Horizontal Flowchart (스크린 플로우, LR 방향) |
+| `uxguide` | Hierarchy Diagram (디자인 시스템 구조) |
+| `rtm` | Horizontal Flowchart (FR→US→FT→TC 추적), Donut (Coverage 분포) |
+| `code` | Flowchart (프로세스 플로우), Module Diagram (모듈 구조) |
+| `testcase` | Flowchart (테스트 시나리오), Donut (케이스 분포) |
+| `qareport` | Donut (Pass/Fail/Skip 비율), Bar Chart (추이) |
+| `iteration` | Bar Chart (진행률), Timeline (일정) |
+
+소스 `.md`에 Mermaid 블록이 있으면 의미를 해석하여 SVG로 변환. 없으면 문서 데이터 기반으로 자동 생성.
+
+### SVG 공통 Defs 블록
+
+모든 다이어그램 SVG에 아래 `<defs>`를 포함한다:
+
+```html
+<defs>
+  <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5"
+    markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+    <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--diagram-line)"/>
+  </marker>
+  <marker id="arrow-accent" viewBox="0 0 10 10" refX="9" refY="5"
+    markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+    <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--diagram-accent)"/>
+  </marker>
+</defs>
+```
 
 ## Stats Row 자동 생성
 
@@ -286,7 +352,9 @@ OUTPUT (.html):
 
 - 원본 .md 파일이 존재하지 않으면 해당 문서는 Skip (에러 아님, 로그에 기록)
 - `.html` 파일명은 원본 `.md` 파일명과 동일 (확장자만 `.html`)
-- 단일 HTML 파일로 완결 (Pretendard CDN만 허용, 외부 JS 금지)
+- 단일 HTML 파일로 완결 (외부 JS/CSS 완전 금지, Mermaid CDN 사용 금지)
+- 다이어그램은 인라인 SVG로 작성 (CSS 변수 사용, 테마 자동 전환)
+- 모든 HTML 파일에 Light/Dark 테마 토글 버튼 포함
 - `<html lang>` 속성은 `u-maker.config.json`의 `documentLanguage` 값
 - 모든 레이블/섹션 제목은 `documentLanguage` 설정 언어로 작성
 - Change Log 섹션은 반드시 포함
