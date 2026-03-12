@@ -60,6 +60,12 @@ PM 산출물 생성과 프로젝트 운영 기록을 담당한다.
 4. `.html` 파일 생성 (html-report-standard.md 스타일 적용)
 5. `1_Index_PM.md`의 ACT 섹션에 신규 리포트 항목 반영
 
+### 약어 표기 규칙
+
+> CRITICAL: 보고서/HTML 생성 시 약어를 풀어쓸 때:
+> - FT = Feature (구현 단위). ~~Functional Test~~ 절대 아님.
+> - FR = Functional Requirement, US = User Story, TC = Test Case
+
 ### Rules
 
 - PM 소유 문서만 직접 수정한다.

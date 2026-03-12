@@ -48,18 +48,18 @@ external_links: []
 | FR-ID | Requirement | Description | Priority | USR Mapping | Implemented |
 |-------|-------------|-------------|----------|-------------|-------------|
 | **AUTH Group** | | | | | |
-| FR-0010 | 사용자 인증 처리 | 이메일/비밀번호 검증 후 JWT 발급 | Must | USR-0010 | No |
-| FR-0020 | 계정 생성 처리 | 이메일 중복 검사 + 비밀번호 암호화 저장 | Must | USR-0010 | No |
-| FR-0030 | 비밀번호 재설정 처리 | 이메일 인증 토큰 발송 + 토큰 검증 후 변경 | Must | USR-0010 | No |
-| FR-0040 | 입력 유효성 검증 | 클라이언트/서버 양측 형식·길이·필수 검증 | Must | - | No |
+| <a id="fr-0010"></a>FR-0010 | 사용자 인증 처리 | 이메일/비밀번호 검증 후 JWT 발급 | Must | [USR-0010](#usr-0010) | No |
+| <a id="fr-0020"></a>FR-0020 | 계정 생성 처리 | 이메일 중복 검사 + 비밀번호 암호화 저장 | Must | [USR-0010](#usr-0010) | No |
+| <a id="fr-0030"></a>FR-0030 | 비밀번호 재설정 처리 | 이메일 인증 토큰 발송 + 토큰 검증 후 변경 | Must | [USR-0010](#usr-0010) | No |
+| <a id="fr-0040"></a>FR-0040 | 입력 유효성 검증 | 클라이언트/서버 양측 형식·길이·필수 검증 | Must | - | No |
 | **CORE Group** | | | | | |
-| FR-0110 | {{요구사항명}} | {{상세 설명}} | Must | USR-0010 | No |
-| FR-0120 | {{요구사항명}} | {{상세 설명}} | Must | USR-0010 | No |
-| FR-0130 | 페이지네이션·검색 처리 | 페이지 단위 로드 + 키워드 검색 + 필터 | Should | USR-0010 | No |
-| FR-0140 | 에러 핸들링 처리 | 네트워크/서버/권한 오류별 메시지 표시 | Must | - | No |
+| <a id="fr-0110"></a>FR-0110 | {{요구사항명}} | {{상세 설명}} | Must | [USR-0010](#usr-0010) | No |
+| <a id="fr-0120"></a>FR-0120 | {{요구사항명}} | {{상세 설명}} | Must | [USR-0010](#usr-0010) | No |
+| <a id="fr-0130"></a>FR-0130 | 페이지네이션·검색 처리 | 페이지 단위 로드 + 키워드 검색 + 필터 | Should | [USR-0010](#usr-0010) | No |
+| <a id="fr-0140"></a>FR-0140 | 에러 핸들링 처리 | 네트워크/서버/권한 오류별 메시지 표시 | Must | - | No |
 | **ADMIN Group** | | | | | |
-| FR-0210 | {{요구사항명}} | {{상세 설명}} | Should | USR-0020 | No |
-| FR-0220 | 감사 로그 처리 | 데이터 CRUD 이력 자동 추적·저장 | Could | - | No |
+| <a id="fr-0210"></a>FR-0210 | {{요구사항명}} | {{상세 설명}} | Should | [USR-0020](#usr-0020) | No |
+| <a id="fr-0220"></a>FR-0220 | 감사 로그 처리 | 데이터 CRUD 이력 자동 추적·저장 | Could | - | No |
 
 ### FR Details
 
@@ -155,16 +155,16 @@ external_links: []
 
 | NFR-ID | Category | Requirement | Target | Priority |
 |--------|----------|-------------|--------|----------|
-| NFR-0010 | Performance | API 응답 시간 | P95 < 300ms | Must |
-| NFR-0020 | Performance | 페이지 초기 로딩 시간 | LCP < 2.5s | Must |
-| NFR-0030 | Security | 비밀번호 암호화 | bcrypt rounds ≥ 10 | Must |
-| NFR-0040 | Security | HTTPS 강제 적용 | 모든 엔드포인트 TLS 1.2+ | Must |
-| NFR-0050 | Security | JWT 토큰 만료 | Access 1h, Refresh 7d | Must |
-| NFR-0060 | Usability | 반응형 지원 | Mobile (360px) ~ Desktop (1920px) | Should |
-| NFR-0070 | Usability | 접근성 | WCAG 2.1 AA 수준 | Should |
-| NFR-0080 | Reliability | 서비스 가용성 | 99.9% Uptime | Should |
-| NFR-0090 | Reliability | 에러 복구 | 자동 재시도 3회, Fallback UI 표시 | Should |
-| NFR-0100 | Scalability | 동시 접속자 | 최소 1,000 동시 사용자 지원 | Could |
+| <a id="nfr-0010"></a>NFR-0010 | Performance | API 응답 시간 | P95 < 300ms | Must |
+| <a id="nfr-0020"></a>NFR-0020 | Performance | 페이지 초기 로딩 시간 | LCP < 2.5s | Must |
+| <a id="nfr-0030"></a>NFR-0030 | Security | 비밀번호 암호화 | bcrypt rounds ≥ 10 | Must |
+| <a id="nfr-0040"></a>NFR-0040 | Security | HTTPS 강제 적용 | 모든 엔드포인트 TLS 1.2+ | Must |
+| <a id="nfr-0050"></a>NFR-0050 | Security | JWT 토큰 만료 | Access 1h, Refresh 7d | Must |
+| <a id="nfr-0060"></a>NFR-0060 | Usability | 반응형 지원 | Mobile (360px) ~ Desktop (1920px) | Should |
+| <a id="nfr-0070"></a>NFR-0070 | Usability | 접근성 | WCAG 2.1 AA 수준 | Should |
+| <a id="nfr-0080"></a>NFR-0080 | Reliability | 서비스 가용성 | 99.9% Uptime | Should |
+| <a id="nfr-0090"></a>NFR-0090 | Reliability | 에러 복구 | 자동 재시도 3회, Fallback UI 표시 | Should |
+| <a id="nfr-0100"></a>NFR-0100 | Scalability | 동시 접속자 | 최소 1,000 동시 사용자 지원 | Could |
 
 ---
 
@@ -174,9 +174,9 @@ external_links: []
 
 | USR-ID | Role | Description | Priority |
 |--------|------|-------------|----------|
-| USR-0010 | {{역할명}} | {{역할 설명}} | Must |
-| USR-0020 | {{역할명}} | {{역할 설명}} | Should |
-| USR-0030 | {{역할명}} | {{역할 설명}} | Could |
+| <a id="usr-0010"></a>USR-0010 | {{역할명}} | {{역할 설명}} | Must |
+| <a id="usr-0020"></a>USR-0020 | {{역할명}} | {{역할 설명}} | Should |
+| <a id="usr-0030"></a>USR-0030 | {{역할명}} | {{역할 설명}} | Could |
 
 ---
 
@@ -186,32 +186,33 @@ external_links: []
 
 | US-ID | USR Mapping | As a... | I want to... | So that... | Priority | FR Mapping | FT Mapping |
 |-------|-------------|---------|-------------|------------|----------|------------|------------|
-| US-0010 | USR-0010 | {{역할}} | {{원하는 동작}} | {{가치}} | Must | FR-0010, FR-0020, FR-0030 | TBD |
-| US-0020 | USR-0010 | {{역할}} | {{원하는 동작}} | {{가치}} | Should | FR-0110, FR-0120, FR-0130 | TBD |
-| US-0030 | USR-0020 | {{역할}} | {{원하는 동작}} | {{가치}} | Could | FR-0210 | TBD |
+| <a id="us-0010"></a>US-0010 | [USR-0010](#usr-0010) | {{역할}} | {{원하는 동작}} | {{가치}} | Must | [FR-0010](#fr-0010), [FR-0020](#fr-0020), [FR-0030](#fr-0030) | TBD |
+| <a id="us-0020"></a>US-0020 | [USR-0010](#usr-0010) | {{역할}} | {{원하는 동작}} | {{가치}} | Should | [FR-0110](#fr-0110), [FR-0120](#fr-0120), [FR-0130](#fr-0130) | TBD |
+| <a id="us-0030"></a>US-0030 | [USR-0020](#usr-0020) | {{역할}} | {{원하는 동작}} | {{가치}} | Could | [FR-0210](#fr-0210) | TBD |
 
 ---
 
 ## 6. Features (FT)
 
+> FT = Feature (구현 단위). "Functional Test"가 아님.
 > Feature는 User Story를 구현 단위로 분해한 결과물이다.
 > US Mapping은 필수이며, `FR → US → FT` 체인으로 추적한다.
 
 | FT-ID | Feature | Description | Priority | US Mapping | Implemented |
 |-------|---------|-------------|----------|------------|-------------|
 | **AUTH Group** | | | | | |
-| FT-0010 | Login | 이메일/비밀번호로 사용자 인증 | Must | US-0010 | No |
-| FT-0020 | Register | 신규 계정 생성 | Must | US-0010 | No |
-| FT-0030 | Password Reset | 비밀번호 재설정 (이메일 인증) | Must | US-0010 | No |
-| FT-0040 | Input Validation | 이메일 형식, 비밀번호 강도 검증 | Must | US-0010 | No |
+| <a id="ft-0010"></a>FT-0010 | Login | 이메일/비밀번호로 사용자 인증 | Must | [US-0010](#us-0010) | No |
+| <a id="ft-0020"></a>FT-0020 | Register | 신규 계정 생성 | Must | [US-0010](#us-0010) | No |
+| <a id="ft-0030"></a>FT-0030 | Password Reset | 비밀번호 재설정 (이메일 인증) | Must | [US-0010](#us-0010) | No |
+| <a id="ft-0040"></a>FT-0040 | Input Validation | 이메일 형식, 비밀번호 강도 검증 | Must | [US-0010](#us-0010) | No |
 | **CORE Group** | | | | | |
-| FT-0110 | {{핵심 기능명}} | {{상세 설명}} | Must | US-0020 | No |
-| FT-0120 | {{핵심 기능명}} | {{상세 설명}} | Must | US-0020 | No |
-| FT-0130 | Pagination & Search | 목록 페이지네이션, 키워드 검색, 필터 | Should | US-0020 | No |
-| FT-0140 | Error Handling | 네트워크/서버/권한 오류 처리 및 메시지 표시 | Must | US-0020 | No |
+| <a id="ft-0110"></a>FT-0110 | {{핵심 기능명}} | {{상세 설명}} | Must | [US-0020](#us-0020) | No |
+| <a id="ft-0120"></a>FT-0120 | {{핵심 기능명}} | {{상세 설명}} | Must | [US-0020](#us-0020) | No |
+| <a id="ft-0130"></a>FT-0130 | Pagination & Search | 목록 페이지네이션, 키워드 검색, 필터 | Should | [US-0020](#us-0020) | No |
+| <a id="ft-0140"></a>FT-0140 | Error Handling | 네트워크/서버/권한 오류 처리 및 메시지 표시 | Must | [US-0020](#us-0020) | No |
 | **ADMIN Group** | | | | | |
-| FT-0210 | {{관리 기능명}} | {{상세 설명}} | Should | US-0030 | No |
-| FT-0220 | Audit Log | 주요 데이터 생성/수정/삭제 이력 추적 | Could | US-0030 | No |
+| <a id="ft-0210"></a>FT-0210 | {{관리 기능명}} | {{상세 설명}} | Should | [US-0030](#us-0030) | No |
+| <a id="ft-0220"></a>FT-0220 | Audit Log | 주요 데이터 생성/수정/삭제 이력 추적 | Could | [US-0030](#us-0030) | No |
 
 ## 7. Feature Dependency
 

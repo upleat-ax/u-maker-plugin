@@ -193,8 +193,8 @@ stateDiagram-v2
 
 | FT-ID | Feature | Related Entities |
 |-------|---------|-----------------|
-| FT-0010 | {{기능명}} | USER |
-| FT-0020 | {{기능명}} | {{Entity 목록}} |
+| [FT-0010](../01-plan/1_SRS_RA.md#ft-0010) | {{기능명}} | USER |
+| [FT-0020](../01-plan/1_SRS_RA.md#ft-0020) | {{기능명}} | {{Entity 목록}} |
 
 ---
 

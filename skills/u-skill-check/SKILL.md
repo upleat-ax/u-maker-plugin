@@ -46,7 +46,7 @@ agents:
 ## Execution Sequence
 
 1. `u-agent-qa`: 테스트 케이스 설계 (`{app}/04-check/4_Case_QA.md`)
-   - SRS FT 기반 케이스 도출
+   - SRS Feature(FT) 기반 케이스 도출
    - 정상/비정상/경계값 시나리오
    - Unit Test(Vitest) + E2E Test(Playwright) 모두 포함
 2. `u-agent-qa`: 테스트 실행 및 결과 기록

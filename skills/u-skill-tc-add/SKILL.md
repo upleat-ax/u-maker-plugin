@@ -112,7 +112,7 @@ agents:
 ## 1. Background
 
 ### 1.1 Purpose
-SRS FT 기반 테스트 케이스 설계
+SRS Feature(FT) 기반 테스트 케이스 설계
 
 ### 1.2 Test Strategy
 - **Test Types**: Unit, E2E

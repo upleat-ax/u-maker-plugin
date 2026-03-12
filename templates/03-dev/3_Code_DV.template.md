@@ -222,8 +222,8 @@ flowchart TD
 
 | FT-ID | Feature | Code Files | Build | Test | Status |
 |-------|---------|-----------|-------|------|--------|
-| FT-0010 | {{기능명}} | - | - | - | Not Started |
-| FT-0020 | {{기능명}} | - | - | - | Not Started |
+| <a id="code-ft-0010"></a>[FT-0010](../01-plan/1_SRS_RA.md#ft-0010) | {{기능명}} | - | - | - | Not Started |
+| <a id="code-ft-0020"></a>[FT-0020](../01-plan/1_SRS_RA.md#ft-0020) | {{기능명}} | - | - | - | Not Started |
 
 ---
 

@@ -268,9 +268,51 @@ xychart-beta
 6. 수평적 추적성: Screen(UI) ↔ API(data) ↔ QA Case(verify)
 7. 추적성 깨짐 발견 시 `u-RA`에게 보고한다
 
+### 6.1 ID 항목 링킹 규칙
+
+ID가 부여된 모든 항목(FR-NNNN, US-NNNN, FT-NNNN, TC-NNNN, NFR-NNNN, S-NNNN, MN-NNNN 등)은 문서 내/간 링크를 지원해야 한다.
+
+#### .md 파일
+
+| 위치 | 패턴 | 예시 |
+|------|------|------|
+| 테이블 ID 셀 (정의 위치) | `<a id="id"></a>ID` | `<a id="fr-0010"></a>FR-0010` |
+| 같은 문서 내 참조 | `[ID](#id)` | `[FR-0010](#fr-0010)` |
+| 다른 문서 참조 | `[ID](상대경로#id)` | `[FT-0010](../02-design/2_RTM_RA.md#ft-0010)` |
+| Mapping 컬럼 (콤마 구분) | 각각 링크 | `[FR-0010](#fr-0010), [FR-0020](#fr-0020)` |
+
+> 앵커 ID 형식: prefix와 숫자를 소문자 kebab으로 변환. 예: `FR-0010` → `fr-0010`, `MN-AUTH-0010` → `mn-auth-0010`
+
+#### .html 파일
+
+| 위치 | 패턴 | 예시 |
+|------|------|------|
+| 테이블 행 (정의 위치) | `<tr id="id">` | `<tr id="fr-0010">` |
+| ID 셀 텍스트 | `<a href="#id" class="id-link">ID</a>` | `<a href="#fr-0010" class="id-link">FR-0010</a>` |
+| 다른 ID 참조 (Mapping 등) | `<a href="#id" class="id-ref">ID</a>` | `<a href="#ft-0010" class="id-ref">FT-0010</a>` |
+| 다른 문서 ID 참조 | `<a href="문서.html#id" class="id-ref">ID</a>` | `<a href="1_SRS_RA.html#fr-0010" class="id-ref">FR-0010</a>` |
+
+> 같은 Phase 내 문서는 상대 경로, 다른 Phase는 `../../{phase}/` 상대 경로를 사용한다.
+
 ---
 
 ## 7. ID 넘버링 규칙
+
+### ID Prefix 약어 정의
+
+| Prefix | Full Name | 설명 | ⚠️ 주의 |
+|--------|-----------|------|---------|
+| USR | User Type | 사용자 유형 | |
+| FR | Functional Requirement | 기능 요구사항 | |
+| US | User Story | 사용자 스토리 | |
+| FT | Feature | 구현 단위 (★ 구현 추적 기본 단위) | Functional Test가 아님 |
+| NFR | Non-Functional Requirement | 비기능 요구사항 | |
+| TC | Test Case | 테스트 케이스 | |
+| S | Screen | 화면 | |
+| MN | Menu | 메뉴 항목 | |
+
+> CRITICAL: FT는 Feature(구현 단위)의 약어이다. "Functional Test"가 절대 아니다.
+> 문서, 리포트, HTML 생성 시 FT를 풀어쓸 때 반드시 "Feature"로 표기한다.
 
 - **기본 형식**: `{PREFIX}-{4자리숫자}` (예: `FT-0010`, `FR-0010`, `US-0020`, `S-0010`, `TC-0010`)
 - **기본 증분**: 10 단위 (0010, 0020, 0030, ...)

@@ -266,7 +266,7 @@ journey
 - **Navigation 테이블 필수**: 각 화면에 Navigation 테이블(Target Screen, Condition, Trigger Element)을 포함해야 한다
 - **Element Description 상세 기술**: 각 Element의 Description은 해당 요소가 무엇을 표시하고, 어떻게 동작하며, 어떤 제약/유효성 검증이 있는지 구체적으로 기술해야 한다 (단순 명사형 금지, 예: "로그인 폼" ✗ → "이메일과 비밀번호를 입력받아 인증을 요청하는 폼. 유효성 검증 실패 시 필드별 에러 표시." ✓)
 - **Element별 Role Visibility**: 권한에 따라 표시/숨김되는 요소를 구분해야 한다
-- 화면 설계는 SRS FT와 매핑 필수 (FT Mapping 필드)
+- 화면 설계는 SRS Feature(FT)와 매핑 필수 (FT Mapping 필드)
 - API Endpoint 매핑으로 `u-agent-sa`의 API Contract와 정합성 보장
 - 컴포넌트 명명은 PascalCase
 - Design Token 기반 스타일링 (하드코딩 금지)

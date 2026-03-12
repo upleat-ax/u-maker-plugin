@@ -113,6 +113,12 @@ PDCA 전 Phase의 모든 문서 유형을 지원하며, `all`로 전체 문서�
 - 모든 색상은 CSS 변수 사용 (하드코딩 금지)
 - SVG 다이어그램은 CSS 변수로 테마 자동 전환 (JS 재렌더링 불필요)
 
+## 약어 표기 규칙
+
+> CRITICAL: HTML 변환 시 약어를 풀어쓸 때 아래를 반드시 준수한다:
+> - FT = Feature (구현 단위). ~~Functional Test~~ 절대 아님.
+> - FR = Functional Requirement, US = User Story, TC = Test Case, NFR = Non-Functional Requirement
+
 ## Execution Flow
 
 ```
@@ -151,7 +157,7 @@ PDCA 전 Phase의 모든 문서 유형을 지원하며, `all`로 전체 문서�
 - **Sections**: `.section` 카드 스타일 (white bg, rounded, shadow)
 - **Navigation**: Smooth scroll + scroll spy + search filter
 - **Theme Toggle**: Fixed 버튼 (우상단) — Light/Dark 전환 + localStorage 저장
-- **Diagram**: 인라인 SVG (Mermaid CDN 사용 금지)
+- **Diagram**: 인라인 SVG (UML Sequence/Class Diagram만 Mermaid CDN 허용)
 - **Single file**: 단일 HTML, 외부 JS 완전 금지
 
 ### Sidebar 문서 유형별 추가 컴포넌트
@@ -199,7 +205,7 @@ PDCA 전 Phase의 모든 문서 유형을 지원하며, `all`로 전체 문서�
 - **Tables**: `.table-wrap` + `.total-row` / `.new-row` / `.fixed-row`
 - **Badges**: `.badge-success` / `.badge-primary` / `.badge-warning` / `.badge-danger`
 - **Summary Box**: `.summary-box` (dark background)
-- **Diagram**: 인라인 SVG (Mermaid CDN 사용 금지)
+- **Diagram**: 인라인 SVG (UML Sequence/Class Diagram만 Mermaid CDN 허용)
 
 ### Report 문서 유형별 KPI Cards
 
@@ -219,6 +225,7 @@ PDCA 전 Phase의 모든 문서 유형을 지원하며, `all`로 전체 문서�
 - Markdown 테이블 → `<div class="table-wrap"><table>...</table></div>`
 - `- 항목` 리스트 → `<ul>` 또는 `.br-list`
 - ` ```mermaid ... ``` ` → **인라인 SVG 다이어그램** (아래 규칙 참조)
+- ASCII art 레이아웃/다이어그램 → **인라인 SVG** (아래 "ASCII Art → SVG 변환 규칙" 참조, 단 예외 항목 제외)
 - ` ```코드블록``` ` → `<pre><code>`
 - `**굵게**` → `<strong>`
 - `[링크](url)` → `<a href>`
@@ -254,7 +261,7 @@ OUTPUT (.html):
 
 | 항목 | 규칙 |
 |------|------|
-| 렌더링 | 순수 인라인 `<svg>` — 외부 JS 라이브러리 금지 (Mermaid CDN 사용 금지) |
+| 렌더링 | 순수 인라인 `<svg>` — UML Sequence/Class Diagram만 Mermaid CDN 허용, 그 외 외부 JS 금지 |
 | 색상 | 모든 `fill`, `stroke`, `color`는 CSS 변수 사용 (`var(--diagram-*)`) |
 | 테마 연동 | CSS 변수가 light/dark 테마에 따라 자동 전환됨 (JS 재렌더링 불필요) |
 | viewBox | 콘텐츠에 맞게 적절히 설정, `width="100%"` + `max-width` 제한 |
@@ -314,6 +321,105 @@ OUTPUT (.html):
 
 소스 `.md`에 Mermaid 블록이 있으면 의미를 해석하여 SVG로 변환. 없으면 문서 데이터 기반으로 자동 생성.
 
+## ASCII Art → SVG 변환 규칙
+
+`.md` 파일에 포함된 **ASCII art 레이아웃/다이어그램**을 감지하여 **인라인 SVG**로 변환한다.
+ASCII art를 `<pre>` 태그로 그대로 출력하는 것은 **금지**한다 (예외 항목 제외).
+
+### 예외 — `<pre><code>` 허용 항목
+
+아래 유형은 ASCII art로 판정하지 않으며, `<pre><code>`로 그대로 렌더링한다:
+
+| 유형 | 예시 | 판정 기준 |
+|------|------|----------|
+| **소스 코드** | ` ```js`, ` ```python`, ` ```sql` 등 언어 태그가 있는 코드 블록 | 코드 펜스에 언어 식별자가 명시됨 |
+| **폴더/디렉토리 트리** | `├── src/`, `└── package.json`, `│   ├── components/` | `├`, `└`, `│` + 파일명/경로 패턴 (`/`, `.ext`) |
+| **CLI 출력** | `$ npm run build`, `> Building...` | 프롬프트(`$`, `>`) + 명령어 패턴 |
+
+### 감지 기준
+
+위 예외에 해당하지 않으면서, 아래 패턴 중 하나라도 포함된 코드 블록 또는 텍스트 영역은 ASCII art로 판정:
+
+| 패턴 | 예시 |
+|------|------|
+| Box-drawing 문자 | `┌ ┐ └ ┘ │ ─ ├ ┤ ┬ ┴ ┼` |
+| Pipe + dash 레이아웃 | `\| --- \| --- \|`, `+---+---+` |
+| 화살표 | `-->`, `→`, `←`, `↓`, `↑` |
+| 중첩 박스 구조 | 들여쓰기 + `\|` + 텍스트 반복 패턴 |
+
+### 변환 방법
+
+1. ASCII art의 **의미(시맨틱)**를 파악한다 (레이아웃 구조, 계층, 흐름 등)
+2. 의미에 맞는 **인라인 SVG**로 변환한다
+3. SVG는 기존 다이어그램 규칙과 동일한 CSS 변수를 사용한다 (`var(--diagram-*)`)
+
+### 변환 형식 예시
+
+```
+INPUT (.md):
+  ┌─────────────────────────────────────────┐
+  │ [Logo] App  [Search] [Notifications]    │
+  ├─────────┬───────────────────────────────┤
+  │ Sidebar │ Main Content Area             │
+  │         │                               │
+  │ Menu1   │ Breadcrumb: Home > Page       │
+  │ Menu2   │ ┌───────────────────────────┐ │
+  │ Menu3   │ │ Page Content              │ │
+  │ Menu4   │ │                           │ │
+  │ Menu5   │ └───────────────────────────┘ │
+  └─────────┴───────────────────────────────┘
+
+OUTPUT (.html):
+  <div class="diagram-wrap">
+    <svg viewBox="0 0 600 320" xmlns="http://www.w3.org/2000/svg">
+      <defs>...</defs>
+      <!-- Header bar -->
+      <rect x="0" y="0" width="600" height="48" rx="8" ry="8"
+        fill="var(--diagram-accent-bg)" stroke="var(--diagram-node-border)"/>
+      <text x="20" y="30" fill="var(--diagram-accent-text)" font-size="14" font-weight="600">Logo  App</text>
+      <text x="400" y="30" fill="var(--diagram-accent-text)" font-size="12">Search  Notifications</text>
+      <!-- Sidebar -->
+      <rect x="0" y="48" width="140" height="272" rx="0"
+        fill="var(--diagram-node-bg)" stroke="var(--diagram-node-border)"/>
+      <text x="16" y="80" fill="var(--diagram-text)" font-size="13">Menu1</text>
+      <text x="16" y="104" fill="var(--diagram-text)" font-size="13">Menu2</text>
+      <!-- ... -->
+      <!-- Main content area -->
+      <rect x="140" y="48" width="460" height="272" rx="0"
+        fill="var(--diagram-label-bg)" stroke="var(--diagram-node-border)"/>
+      <text x="160" y="80" fill="var(--diagram-text-sub)" font-size="12">Breadcrumb: Home > Page</text>
+      <!-- Inner content box -->
+      <rect x="160" y="96" width="420" height="200" rx="6"
+        fill="var(--diagram-node-bg)" stroke="var(--diagram-node-border)" stroke-dasharray="4 2"/>
+      <text x="180" y="130" fill="var(--diagram-text)" font-size="14">Page Content</text>
+    </svg>
+  </div>
+```
+
+### 문서 유형별 ASCII Art 처리
+
+| doc-type | 주요 ASCII Art | SVG 변환 형태 |
+|----------|---------------|--------------|
+| `ia` | 네비게이션 레이아웃, 사이트맵 트리 | Layout Diagram (Header + Sidebar + Main 구조) |
+| `screen` | 화면 와이어프레임, 레이아웃 스케치 | Wireframe SVG (영역 박스 + 라벨) |
+| `screenflow` | 화면 전환 흐름도 | Flow Diagram (화면 박스 + 화살표) |
+| `srs` | 상태 전이도, 프로세스 흐름 | State/Flow Diagram |
+| `uxguide` | 컴포넌트 레이아웃, 그리드 구조 | Layout Diagram |
+
+### ASCII Art SVG 규칙
+
+| 항목 | 규칙 |
+|------|------|
+| `<pre>` 금지 | ASCII art를 `<pre><code>` 로 그대로 출력하지 않는다 (소스 코드, 폴더 트리, CLI 출력은 예외) |
+| 의미 해석 | 박스, 화살표, 텍스트의 **의미**를 파악하여 SVG 구성 |
+| 색상 | 모든 `fill`, `stroke`는 CSS 변수 (`var(--diagram-*)`) |
+| 레이아웃 박스 | `<rect>` + `<text>` 조합, `rx="6"` 이상 둥근 모서리 |
+| 계층 구조 | 중첩 영역은 배경색 차이(`--diagram-node-bg` vs `--diagram-label-bg`)로 구분 |
+| 강조 영역 | 헤더/GNB 등 주요 영역은 `--diagram-accent-bg` 사용 |
+| 텍스트 | 원본 ASCII art의 텍스트 라벨을 `<text>` 태그로 보존 |
+| 반응형 | `viewBox` 설정 + `max-width:100%; height:auto` |
+| 테마 연동 | CSS 변수 사용으로 Light/Dark 테마 자동 전환 |
+
 ### SVG 공통 Defs 블록
 
 모든 다이어그램 SVG에 아래 `<defs>`를 포함한다:
@@ -352,7 +458,7 @@ OUTPUT (.html):
 
 - 원본 .md 파일이 존재하지 않으면 해당 문서는 Skip (에러 아님, 로그에 기록)
 - `.html` 파일명은 원본 `.md` 파일명과 동일 (확장자만 `.html`)
-- 단일 HTML 파일로 완결 (외부 JS/CSS 완전 금지, Mermaid CDN 사용 금지)
+- 단일 HTML 파일로 완결 (UML Sequence/Class Diagram만 Mermaid CDN 허용, 그 외 외부 JS 금지)
 - 다이어그램은 인라인 SVG로 작성 (CSS 변수 사용, 테마 자동 전환)
 - 모든 HTML 파일에 Light/Dark 테마 토글 버튼 포함
 - `<html lang>` 속성은 `u-maker.config.json`의 `documentLanguage` 값

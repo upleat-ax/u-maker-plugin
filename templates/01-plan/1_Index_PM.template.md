@@ -164,8 +164,8 @@ stateDiagram-v2
 
 | FT-ID | Feature | Menu ID | SRS | ERD | API | Screen | Code | QA | Status |
 |-------|---------|---------|-----|-----|-----|--------|------|----|--------|
-| FT-0010 | {{기능명}} | MN-XXX-NNNN | - | - | - | - | - | - | Planned |
-| FT-0020 | {{기능명}} | MN-XXX-NNNN | - | - | - | - | - | - | Planned |
+| <a id="idx-ft-0010"></a>[FT-0010](1_SRS_RA.md#ft-0010) | {{기능명}} | MN-XXX-NNNN | - | - | - | - | - | - | Planned |
+| <a id="idx-ft-0020"></a>[FT-0020](1_SRS_RA.md#ft-0020) | {{기능명}} | MN-XXX-NNNN | - | - | - | - | - | - | Planned |
 
 ---
 

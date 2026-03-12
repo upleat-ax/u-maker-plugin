@@ -89,6 +89,12 @@ agents:
 - `git diff --stat` 으로 변경된 파일 수, 추가/삭제 라인 수 집계
 - 주요 변경사항 Top 5를 요약 (가장 많은 변경이 있는 파일/기능 기준)
 
+## 약어 표기 규칙
+
+> CRITICAL: 보고서 내 약어를 풀어쓸 때 아래를 반드시 준수한다:
+> - FT = Feature (구현 단위). ~~Functional Test~~ 절대 아님.
+> - FR = Functional Requirement, US = User Story, TC = Test Case, NFR = Non-Functional Requirement
+
 ## Report Sections (HTML)
 
 보고서는 아래 13개 섹션으로 구성한다. HTML에서 각 섹션은 숫자 뱃지와 하단 구분선이 있는 `section-title`을 사용한다.
@@ -490,7 +496,7 @@ last_updated: "{{DATE}}"
 - **FT Cards**: `.ft-grid` + `.ft-card` 그리드 레이아웃
 - **Tables**: `.table-wrap` + 표준 테이블, `.total-row`, `.new-row`, `.fixed-row` 하이라이트
 - **Badges**: `.badge-success`, `.badge-primary`, `.badge-warning`, `.badge-danger`, `.badge-info`, `.badge-accent`, `.badge-gray`
-- **Charts**: SVG 도넛 + CSS 바 차트 (외부 JS 금지)
+- **Charts**: SVG 도넛 + CSS 바 차트 (UML Sequence/Class만 Mermaid CDN 허용, 그 외 외부 JS 금지)
 - **Timeline**: `.timeline` + `.tl-item` 컴포넌트
 - **Summary Box**: `.summary-box` (dark background) + `.summary-grid`
 - **Footer**: 가운데 정렬 + 프로젝트명 + 날짜
@@ -512,7 +518,7 @@ last_updated: "{{DATE}}"
 - 인자가 없으면 현재 시각으로 생성
 - 2종 파일 동시 생성: `.md` + `.html`
 - `.md`와 `.html`은 동일한 데이터, 동일한 버전
-- HTML은 단일 파일로 완결 (Pretendard CDN만 허용, 외부 JS 금지)
+- HTML은 단일 파일로 완결 (Pretendard CDN + UML Sequence/Class용 Mermaid CDN만 허용, 그 외 외부 JS 금지)
 - HTML `<html lang>` 속성은 `.u-maker/u-maker.config.json`의 `documentLanguage` 값을 사용 (예: `ko`, `en`, `ja`, `zh`)
 - 보고서 내 모든 레이블, 섹션 제목, 설명 텍스트는 `documentLanguage` 설정 언어로 작성
 - HTML 스타일은 Dark-first (`:root` = 다크, `[data-theme="light"]` = 라이트), README.html과 동일한 purple-accent 디자인

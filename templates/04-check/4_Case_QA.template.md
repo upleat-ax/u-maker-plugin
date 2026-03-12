@@ -64,15 +64,15 @@ external_links: []
 > - 각 FT의 Unit 케이스는 최소 2개(정상 1 + 비정상/경계 1 이상), E2E 케이스는 최소 2개(성공 여정 1 + 실패/예외 1 이상) 작성한다.
 > - Expected Result는 UI/API/DB 중 최소 1개 이상의 검증 포인트를 포함한다.
 
-### 3.1 FT-0010: {{기능명}}
+### 3.1 <a id="ft-group-0010"></a>FT-0010: {{기능명}}
 
-#### TC-0010: {{테스트명 - 정상 케이스}}
+#### <a id="tc-0010"></a>TC-0010: {{테스트명 - 정상 케이스}}
 
 | Field | Value |
 |-------|-------|
 | **TC-ID** | TC-0010 |
-| **FT Mapping** | FT-0010 |
-| **US Mapping** | US-0010 |
+| **FT Mapping** | [FT-0010](../01-plan/1_SRS_RA.md#ft-0010) |
+| **US Mapping** | [US-0010](../01-plan/1_SRS_RA.md#us-0010) |
 | **Level** | Unit |
 | **Type** | Positive |
 | **Priority** | Critical |
@@ -91,13 +91,13 @@ external_links: []
 **Result**: [ ] Pass / [ ] Fail / [ ] Skip
 **Note**: -
 
-#### TC-0020: {{테스트명 - 에러 케이스}}
+#### <a id="tc-0020"></a>TC-0020: {{테스트명 - 에러 케이스}}
 
 | Field | Value |
 |-------|-------|
 | **TC-ID** | TC-0020 |
-| **FT Mapping** | FT-0010 |
-| **US Mapping** | US-0010 |
+| **FT Mapping** | [FT-0010](../01-plan/1_SRS_RA.md#ft-0010) |
+| **US Mapping** | [US-0010](../01-plan/1_SRS_RA.md#us-0010) |
 | **Level** | Unit |
 | **Type** | Negative \| Boundary |
 | **Priority** | Major |
@@ -207,9 +207,9 @@ sequenceDiagram
 
 | FT-ID | Feature | Unit Cases | E2E Cases | Coverage |
 |-------|---------|------------|-----------|----------|
-| FT-0010 | {{기능명}} | TC-0010, TC-0020 | TC-0030, TC-0040 | Covered |
-| FT-0020 | {{기능명}} | TC-0050, TC-0060 | TC-0070, TC-0080 | Covered |
-| FT-0030 | {{기능명}} | - | - | Not Covered |
+| [FT-0010](../01-plan/1_SRS_RA.md#ft-0010) | {{기능명}} | [TC-0010](#tc-0010), [TC-0020](#tc-0020) | [TC-0030](#tc-0030), [TC-0040](#tc-0040) | Covered |
+| [FT-0020](../01-plan/1_SRS_RA.md#ft-0020) | {{기능명}} | [TC-0050](#tc-0050), [TC-0060](#tc-0060) | [TC-0070](#tc-0070), [TC-0080](#tc-0080) | Covered |
+| [FT-0030](../01-plan/1_SRS_RA.md#ft-0030) | {{기능명}} | - | - | Not Covered |
 
 ```mermaid
 pie title Test Coverage by FT

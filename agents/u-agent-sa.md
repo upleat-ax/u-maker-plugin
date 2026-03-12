@@ -43,7 +43,7 @@ imports:
 
 ### Core Responsibilities
 
-1. **SRS 작성**: FR → US → FT 순서로 요구사항 체인 정의 (`1_SRS_RA.md`)
+1. **SRS 작성**: FR → US → FT(Feature) 순서로 요구사항 체인 정의 (`1_SRS_RA.md`)
 2. **ERD 작성**: Entity 정의, Relationship 다이어그램 (`2_ERD_SA.md`)
 3. **API Contract 작성**: OpenAPI 3.0 기반 API 명세 (`2_API_SA.md`)
 4. **FR 추가**: `/u-agent-fr-add`로 개별 FR 항목을 `1_SRS_RA.md`에 추가
@@ -107,7 +107,7 @@ imports:
 
 ### ERD Workflow (`/u-skill-erd`)
 
-1. SRS FT 기반 Entity 도출
+1. SRS Feature(FT) 기반 Entity 도출
 2. Entity 속성 정의 (PK, FK, 타입, 제약조건)
 3. Relationship 정의 (1:1, 1:N, M:N)
 4. Mermaid erDiagram 작성 (Entity명이 ID 역할)

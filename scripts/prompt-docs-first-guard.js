@@ -193,7 +193,7 @@ const systemMessage = [
   '3. 문서가 갱신된 후에만 구현을 진행하십시오.',
   '4. 사용자가 이미 문서를 갱신했다고 확인해 주면 그때 구현을 시작하십시오.',
   '',
-  'SSoT 추적 체계: Roadmap → SRS(FR→US→FT) → ERD → API → Code → Test',
+  'SSoT 추적 체계: Roadmap → SRS(FR→US→FT(Feature)) → ERD → API → Code → Test',
 ].join('\n');
 
 console.log(JSON.stringify({

@@ -56,9 +56,9 @@ pie title Test Results
 
 | FT-ID | Feature | Total | Pass | Fail | Skip | Status |
 |-------|---------|-------|------|------|------|--------|
-| FT-0010 | {{기능명}} | 2 | 1 | 1 | 0 | Partial |
-| FT-0020 | {{기능명}} | 1 | 1 | 0 | 0 | Pass |
-| FT-0030 | {{기능명}} | 1 | 0 | 0 | 1 | Skip |
+| [FT-0010](../01-plan/1_SRS_RA.md#ft-0010) | {{기능명}} | 2 | 1 | 1 | 0 | Partial |
+| [FT-0020](../01-plan/1_SRS_RA.md#ft-0020) | {{기능명}} | 1 | 1 | 0 | 0 | Pass |
+| [FT-0030](../01-plan/1_SRS_RA.md#ft-0030) | {{기능명}} | 1 | 0 | 0 | 1 | Skip |
 
 ---
 

@@ -7,7 +7,9 @@
 
 ## 1. Vertical Traceability Chain
 
-Roadmap(why) → SRS(FR→US→FT+what) → MN/IA(navigate) → Screen(design) → ERD(how) → Code(execute) 순서의 수직적 추적성.
+Roadmap(why) → SRS(FR→US→FT(Feature)+what) → MN/IA(navigate) → Screen(design) → ERD(how) → Code(execute) 순서의 수직적 추적성.
+
+> **NOTE**: FT = **Feature** (구현 단위). "Functional Test"가 아님.
 
 | Level | Document | Role | Traces From | Traces To |
 |-------|----------|------|-------------|-----------|

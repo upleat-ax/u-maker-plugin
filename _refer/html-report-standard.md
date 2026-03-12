@@ -2,7 +2,20 @@
 
 > 모든 리포트 문서(.md)는 동일한 내용의 `.html` 파일을 같은 경로에 함께 생성한다.
 > HTML은 단일 파일로 완결되며, 외부 의존성 없이 브라우저에서 독립 표시 가능해야 한다.
-> 다이어그램은 인라인 SVG로 작성 (Mermaid CDN 사용 금지). Light/Dark 테마 토글 지원.
+> 다이어그램은 인라인 SVG로 작성. UML Sequence/Class Diagram만 Mermaid CDN 허용. Light/Dark 테마 토글 지원.
+
+### 약어 표기 규칙 (HTML/SVG 렌더링 시 필수)
+
+| 약어 | 정식 명칭 | ⚠️ 잘못된 표기 (금지) |
+|------|-----------|----------------------|
+| FR | Functional Requirement | |
+| US | User Story | User Scenario (✗) |
+| FT | Feature | Functional Test (✗) |
+| NFR | Non-Functional Requirement | |
+| TC | Test Case | |
+
+> CRITICAL: FT = Feature (구현 단위). "Functional Test"로 표기하면 절대 안 된다.
+> HTML 리포트의 KPI 카드, SVG 다이어그램, 테이블 헤더, 범례 등에서 FT를 풀어쓸 때 반드시 "Feature"로 표기한다.
 
 ---
 
@@ -325,6 +338,25 @@
   tbody tr.highlight-row { background: var(--primary-bg); }
   tbody tr.new-row { background: var(--warning-bg); }
   tbody tr.fixed-row { background: var(--success-bg); }
+
+  /* ID Links */
+  .id-link, .id-ref {
+    color: var(--primary);
+    text-decoration: none;
+    font-family: var(--mono);
+    font-size: 0.82rem;
+    font-weight: 600;
+    transition: color 0.2s;
+  }
+  .id-link:hover, .id-ref:hover {
+    color: var(--accent);
+    text-decoration: underline;
+  }
+  tr:target {
+    background: var(--primary-bg);
+    outline: 2px solid var(--primary);
+    outline-offset: -2px;
+  }
 
   /* Badges */
   .badge {
@@ -692,8 +724,9 @@ function toggleTheme() {
 | 테마 감지 | `prefers-color-scheme:light` 자동 감지 + `localStorage` 저장 | OS 설정 연동 |
 | 언어 | `<html lang="{{LANG}}">` — `documentLanguage` 설정값 | 다국어 보고서 지원 |
 | 색상 | 모든 색상은 CSS 변수(`--bg`, `--card` 등) 사용, 하드코딩 금지 | 테마 전환 대응 |
-| JS | 테마 토글 인라인 스크립트만 (외부 JS 완전 금지, Mermaid CDN 사용 금지) | 단일 파일 완결성 |
-| 다이어그램 | 인라인 SVG (CSS 변수 `--diagram-*` 사용), 외부 라이브러리 금지 | 단일 파일 완결 + 테마 자동 전환 |
+| JS | 테마 토글 인라인 스크립트 + UML Sequence/Class Diagram용 Mermaid CDN만 허용 | 단일 파일 완결성 |
+| 다이어그램 | 인라인 SVG (CSS 변수 `--diagram-*` 사용). UML Sequence/Class만 Mermaid 허용 | 단일 파일 완결 + 테마 자동 전환 |
+| ASCII art | ASCII art 레이아웃/다이어그램 → 인라인 SVG 변환 (`<pre>` 출력 금지, 소스 코드·폴더 트리·CLI 출력은 예외) | 시각적 품질 + 테마 대응 |
 | 반응형 | `@media (max-width: 768px)` 최소 대응 | 모바일 접근 |
 | 차트 | HTML/CSS + SVG만 사용 | 단일 파일 완결성 |
 | 인쇄 | `@media print` 최소 대응 + 토글 숨김 | 인쇄 시 깨짐 방지 |
@@ -982,7 +1015,38 @@ Delta 규칙: 개선이면 `.delta-up`, 악화면 `.delta-down`, 동일하면 `.
 </div>
 ```
 
-### 4.16 Badge
+### 4.16 ID Linkable Table Row
+
+ID가 부여된 항목(FR, US, FT, TC, NFR 등)의 테이블 행은 앵커 링크를 포함한다.
+
+```html
+<!-- 정의 위치: tr에 id, 첫 번째 셀에 self-link -->
+<tr id="fr-0010">
+  <td><a href="#fr-0010" class="id-link">FR-0010</a></td>
+  <td>사용자 인증 처리</td>
+  <td>Must</td>
+  <td><span class="badge badge-success">Implemented</span></td>
+</tr>
+
+<!-- Mapping 컬럼: 다른 ID 참조 -->
+<tr id="us-0010">
+  <td><a href="#us-0010" class="id-link">US-0010</a></td>
+  <td>로그인 시나리오</td>
+  <td><a href="#fr-0010" class="id-ref">FR-0010</a>, <a href="#fr-0020" class="id-ref">FR-0020</a></td>
+  <td><a href="#ft-0010" class="id-ref">FT-0010</a></td>
+</tr>
+
+<!-- 다른 문서 ID 참조 -->
+<td><a href="1_SRS_RA.html#fr-0010" class="id-ref">FR-0010</a></td>
+```
+
+앵커 ID 규칙:
+- prefix와 숫자를 소문자로 변환: `FR-0010` → `fr-0010`, `MN-AUTH-0010` → `mn-auth-0010`
+- `tr:target` CSS로 URL 해시 이동 시 해당 행 하이라이트
+- 같은 Phase 문서는 상대 경로 (`1_SRS_RA.html#fr-0010`)
+- 다른 Phase 문서는 `../../{phase}/` 상대 경로
+
+### 4.17 Badge
 
 ```html
 <span class="badge badge-success">Complete</span>
@@ -997,8 +1061,18 @@ Delta 규칙: 개선이면 `.delta-up`, 악화면 `.delta-down`, 동일하면 `.
 ### 4.17 SVG Diagram
 
 `.md` 파일의 ` ```mermaid ... ``` ` 블록 또는 문서 데이터를 인라인 SVG로 변환한다.
-**외부 JS 라이브러리(Mermaid 포함)는 사용하지 않는다.**
 SVG 내 모든 색상은 CSS 변수를 사용하므로 테마 전환 시 자동으로 업데이트된다.
+
+**다이어그램 렌더링 방식:**
+
+| 다이어그램 유형 | 렌더링 방식 | 비고 |
+|----------------|------------|------|
+| Flowchart, ER diagram, State diagram, Gantt 등 | 인라인 SVG (직접 작성) | 외부 JS 금지 |
+| UML Sequence Diagram | Mermaid CDN 허용 | 복잡한 lifeline/activation 표현 |
+| UML Class Diagram | Mermaid CDN 허용 | 복잡한 관계/메서드 표현 |
+
+> UML Sequence Diagram, Class Diagram은 인라인 SVG로 표현하기 복잡하므로 Mermaid CDN 사용을 허용한다.
+> 그 외 다이어그램은 인라인 SVG로 작성하며, 외부 JS 라이브러리를 사용하지 않는다.
 
 ```html
 <div class="diagram-wrap">
@@ -1025,9 +1099,24 @@ SVG 내 모든 색상은 CSS 변수를 사용하므로 테마 전환 시 자동�
 
 **변환 규칙:**
 - ` ```mermaid\n{source}\n``` ` → 의미를 해석하여 인라인 `<svg>` 태그로 변환
+- ASCII art (box-drawing 문자, pipe+dash 레이아웃) → 의미 해석 후 인라인 SVG로 변환 (`<pre>` 출력 금지, 소스 코드·폴더 트리·CLI 출력은 `<pre><code>` 허용)
 - 모든 `fill`, `stroke` 색상은 CSS 변수 사용 (`var(--diagram-*)`)
 - `<defs>` 블록에 공통 마커(arrow) 정의
 - 테마 전환 시 JS 재렌더링 불필요 (CSS 변수가 자동 전환)
+
+**ASCII art 감지 기준:**
+- Box-drawing 문자: `┌ ┐ └ ┘ │ ─ ├ ┤ ┬ ┴ ┼`
+- Pipe + dash 레이아웃: `| --- | --- |`, `+---+---+`
+- 화살표: `-->`, `→`, `←`, `↓`, `↑`
+- 중첩 박스 구조: 들여쓰기 + `|` + 텍스트 반복 패턴
+
+**예외 — `<pre><code>` 허용:**
+- 소스 코드: 언어 태그가 있는 코드 블록 (` ```js`, ` ```python` 등)
+- 폴더/디렉토리 트리: `├── src/`, `└── package.json` 등 파일명/경로 패턴
+- CLI 출력: 프롬프트(`$`, `>`) + 명령어 패턴
+
+위 예외에 해당하지 않는 패턴이 감지되면 ASCII art의 **의미(시맨틱)**를 파악하고, 적절한 인라인 SVG로 변환한다.
+레이아웃 박스는 `<rect>` + `<text>`, 계층 구조는 배경색 차이(`--diagram-node-bg` vs `--diagram-label-bg`)로 구분.
 
 **다이어그램 위치 규칙:**
 - 섹션 내 관련 데이터 테이블 바로 다음에 배치
@@ -1053,10 +1142,11 @@ SVG 내 모든 색상은 CSS 변수를 사용하므로 테마 전환 시 자동�
 ### HTML 생성 시
 - [ ] Pretendard 폰트 폴백 (`'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif`)
 - [ ] 모든 CSS는 `<style>` 블록 내
-- [ ] 외부 JS 라이브러리 완전 미사용 (Mermaid CDN 포함 금지)
-- [ ] 다이어그램은 인라인 SVG로 작성 (`<div class="diagram-wrap"><svg>...</svg></div>`)
+- [ ] 외부 JS 라이브러리 미사용 (예외: UML Sequence/Class Diagram은 Mermaid CDN 허용)
+- [ ] 일반 다이어그램은 인라인 SVG로 작성 (`<div class="diagram-wrap"><svg>...</svg></div>`)
 - [ ] SVG 내 모든 색상은 CSS 변수 사용 (`var(--diagram-*)`) — 테마 자동 전환
-- [ ] `.md`의 ` ```mermaid ``` ` 블록 → 의미 해석 후 인라인 SVG로 변환
+- [ ] `.md`의 ` ```mermaid ``` ` 블록 → 인라인 SVG 변환 (UML Sequence/Class는 Mermaid 렌더링)
+- [ ] ASCII art (box-drawing 문자, pipe+dash 레이아웃) → 의미 해석 후 인라인 SVG로 변환 (`<pre>` 출력 금지)
 - [ ] 반응형 최소 대응 (`@media (max-width: 768px)`)
 - [ ] 인쇄 대응 (`@media print` + 토글 숨김)
 - [ ] 단일 HTML 파일로 완결
@@ -1077,3 +1167,5 @@ SVG 내 모든 색상은 CSS 변수를 사용하므로 테마 전환 시 자동�
 - [ ] Git 활동 요약 — 커밋 분류 도넛 + 기여자 테이블 + 변경 통계
 - [ ] Post-Execution Summary Box 포함 (이전 대비 변화량 표시)
 - [ ] Footer에 프로젝트명 + 날짜
+- [ ] ID 항목(FR, US, FT, TC 등) 테이블 행에 `id` 속성 + `.id-link` self-link 포함
+- [ ] Mapping 컬럼의 다른 ID 참조에 `.id-ref` 링크 포함

@@ -1,7 +1,7 @@
 ---
 name: u-skill-testcase
 description: |
-  테스트 케이스를 설계한다. SRS FT 기반으로 정상/비정상/경계값 케이스를 작성하며,
+  테스트 케이스를 설계한다. SRS Feature(FT) 기반으로 정상/비정상/경계값 케이스를 작성하며,
   각 FT에 대해 Unit Test 케이스와 E2E Test 케이스를 모두 포함해야 한다.
   테스트 스텝은 Actor/Screen/Element/Action/Input/Expected를 상세하게 작성한다.
   u-agent-qa 에이전트가 담당한다.

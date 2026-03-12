@@ -49,9 +49,9 @@ external_links: []
 
 | FR-ID | US-ID | FT-ID | App | MN-ID | Screen ID | API Mapping | ERD Entity | QA Case | Status | Note |
 |-------|-------|-------|-----|-------|-----------|-------------|------------|---------|--------|------|
-| FR-0010 | US-0010 | FT-0010 | {{APP_NAME}} | MN-AUTH-0010 | S-0060 | POST /auth/login | USER | TC-0010 | Covered | - |
-| FR-0020 | US-0010 | FT-0020 | {{APP_NAME}} | MN-AUTH-0020 | S-0070 | POST /auth/register | USER | TC-0020 | Covered | - |
-| FR-0130 | US-0020 | FT-0130 | {{APP_NAME}} | MN-CORE-0010 | S-0020 | GET /items | ITEM, TAG | TC-0130 | Partial | QA 케이스 보강 필요 |
+| <a id="rtm-fr-0010"></a>[FR-0010](../01-plan/1_SRS_RA.md#fr-0010) | [US-0010](../01-plan/1_SRS_RA.md#us-0010) | [FT-0010](../01-plan/1_SRS_RA.md#ft-0010) | {{APP_NAME}} | MN-AUTH-0010 | S-0060 | POST /auth/login | USER | [TC-0010](../04-check/4_Case_QA.md#tc-0010) | Covered | - |
+| [FR-0020](../01-plan/1_SRS_RA.md#fr-0020) | [US-0010](../01-plan/1_SRS_RA.md#us-0010) | [FT-0020](../01-plan/1_SRS_RA.md#ft-0020) | {{APP_NAME}} | MN-AUTH-0020 | S-0070 | POST /auth/register | USER | [TC-0020](../04-check/4_Case_QA.md#tc-0020) | Covered | - |
+| [FR-0130](../01-plan/1_SRS_RA.md#fr-0130) | [US-0020](../01-plan/1_SRS_RA.md#us-0020) | [FT-0130](../01-plan/1_SRS_RA.md#ft-0130) | {{APP_NAME}} | MN-CORE-0010 | S-0020 | GET /items | ITEM, TAG | [TC-0130](../04-check/4_Case_QA.md#tc-0130) | Partial | QA 케이스 보강 필요 |
 
 ### Status Definition
 
