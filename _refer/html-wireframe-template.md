@@ -1,7 +1,7 @@
 # HTML Wireframe Template
 
 > 화면 와이어프레임 HTML 생성 표준. 각 UI 요소에 원 숫자(①②③...) 어노테이션 마커를 부착하고,
-> 클릭 시 팝업으로 상세 설명(요구사항, 흐름도, 비즈니스 룰 등)을 표시한다.
+> 클릭 시 **우측 Drawer**로 **디자인 설명**(Description)과 **개발 스펙**(동작방식, 흐름도, 옵션값, Validation 등)을 2-탭 구조로 표시한다.
 > 와이어프레임 디렉토리에 `index.html`을 생성하여 전체 화면 목록을 탐색할 수 있도록 한다.
 
 ---
@@ -15,6 +15,24 @@
 | **생성 시점** | `/u-skill-wireframe` 실행 시 |
 | **문서 언어** | `u-maker.config.json`의 `documentLanguage` 값에 따라 결정 |
 | **단일 파일** | 각 HTML은 외부 의존성 없이 단일 파일로 완결 (Pretendard CDN만 허용) |
+| **외부 링크** | 와이어프레임 내부 링크(`S-NNNN.html`, `index.html`)를 제외한 모든 외부 URL은 `target="_blank" rel="noopener noreferrer"` 필수 |
+
+### 링크 규칙
+
+| 링크 유형 | 예시 | 처리 |
+|----------|------|------|
+| **내부 화면 이동** | `S-0020.html`, `index.html` | 동일 탭에서 이동 (기본) |
+| **외부 URL** | `https://...`, `http://...`, 프로젝트 외부 리소스 | `target="_blank" rel="noopener noreferrer"` 추가 — 새 브라우저 탭에서 열림 |
+| **앵커 링크** | `#section-id` | 동일 페이지 내 스크롤 (기본) |
+
+```html
+<!-- 내부 링크: 동일 탭 -->
+<a href="S-0020.html">S-0020 회원가입</a>
+<a href="index.html" class="back-link">← All Screens</a>
+
+<!-- 외부 링크: 새 탭에서 열림 -->
+<a href="https://example.com/docs" target="_blank" rel="noopener noreferrer">API 문서 ↗</a>
+```
 
 ### 파일 구조
 
@@ -61,96 +79,469 @@
 | 10 | `&#9321;` | ⑩ |
 | 11~20 | `&#9322;`~`&#9331;` | ⑪~⑳ |
 
-### 2.2 어노테이션 팝업 (Annotation Popup)
+### 2.2 어노테이션 Drawer — 2-Tab 구조
 
-마커 클릭 시 팝업을 표시한다. 팝업에는 해당 요소의 상세 정보를 포함한다.
+마커 클릭 시 **우측 Drawer(슬라이드 패널)** 를 표시한다. Drawer는 **Design 탭**과 **Dev 탭** 2개 탭으로 구성된다.
+
+- **Design 탭**: 설명(Description), 요구사항, 비즈니스 룰/정책, 상태, 연결 화면 (기획/디자인 관점)
+- **Dev 탭**: 동작방식, 흐름도, 옵션값, Validation, API, 이벤트, 데이터 바인딩 (개발 관점)
+
+#### Description 작성 포맷
+
+Description은 스크린샷 예시처럼 **`[컴포넌트타입]` + 항목 이름** 형태의 헤더와 **들여쓰기된 조건/정책** 목록으로 구성한다.
+
+| 번호 | 포맷 | 예시 |
+|------|------|------|
+| 공통 | `[정책]` + 비즈니스 룰 목록 | 삭제 정책, 유효기간, 작성 개수 제한 |
+| 번호 | `[Button]` / `[Card]` / `[Badge]` / `[Confirm]` / `[Input]` / `[Select]` / `[List]` 등 + 상세 | 상태, 조건, 노출 문구 |
+
+```
+Description 작성 규칙:
+- 항목별로 bullet(•)을 사용하고, 하위 조건은 > 로 들여쓴다
+- 정책/비즈니스 룰은 빨간 강조 텍스트로 표시 (.desc-policy)
+- 노출 문구는 따옴표로 감싼다: '해당 부고는 발인 되었습니다.'
+- 비고(Note) 컬럼이 있으면 하단에 표시
+```
 
 ```html
-<!-- 팝업 컨테이너: body 하단에 모아둔다 -->
-<div class="annotation-popup" id="annotation-1">
-  <div class="popup-header">
-    <span class="popup-number">&#9312;</span>
-    <h4 class="popup-title">이메일 입력 필드</h4>
-    <button class="popup-close" onclick="closePopup('annotation-1')">&times;</button>
+<!-- Drawer 컨테이너: body 하단에 모아둔다 -->
+<div class="annotation-drawer" id="annotation-1">
+  <div class="drawer-header">
+    <span class="drawer-number">&#9312;</span>
+    <h4 class="drawer-title">이메일 입력 필드</h4>
+    <button class="drawer-close" onclick="closeDrawer()">&times;</button>
   </div>
-  <div class="popup-body">
-    <!-- 설명 -->
-    <div class="popup-section">
-      <h5>설명</h5>
-      <p>사용자의 이메일 주소를 입력받는 필드. 로그인 및 회원가입 시 사용된다.</p>
+
+  <!-- Tab Navigation -->
+  <div class="drawer-tabs">
+    <button class="drawer-tab active" onclick="switchTab(this,'design')">Design</button>
+    <button class="drawer-tab" onclick="switchTab(this,'dev')">Dev</button>
+  </div>
+
+  <!-- ===== Design Tab ===== -->
+  <div class="drawer-body tab-content active" data-tab="design">
+
+    <!-- Description (공통 정책) — 스크린샷 스타일 -->
+    <div class="desc-block">
+      <div class="desc-header">[정책]</div>
+      <ul class="desc-list">
+        <li>사용자는 부고장 삭제 가능
+          <ul class="desc-sub">
+            <li>사용자 생성 부고장 삭제 가능</li>
+            <li>대표 부고장 삭제 가능(삭제 시 경고 알림)</li>
+          </ul>
+        </li>
+        <li>1인당 작성 개수
+          <ul class="desc-sub">
+            <li>사용자는 부고장 10개까지 생성 가능</li>
+            <li>1인당 작성 개수 초과 시, 기존 부고장 삭제 후 추가 생성</li>
+          </ul>
+        </li>
+        <li>부고&amp;회원 유효기간
+          <ul class="desc-sub">
+            <li>최종 저장(최종 수정일) 기준 1년 경과 시 자동 삭제</li>
+            <li>삭제 시 해당 부고장 메인 상주의 부고장이 남아 있지 않은 경우 회원도 삭제</li>
+          </ul>
+        </li>
+        <li>부고 유효기간
+          <ul class="desc-sub">
+            <li>내용은 제거</li>
+            <li>발인 당일 발인 시간 초과 시 유효기간 종료(문구 노출)</li>
+            <li>노출 문구 : <span class="desc-quote">'해당 부고는 발인 되었습니다.'</span></li>
+          </ul>
+        </li>
+        <li>고객센터 부고장
+          <ul class="desc-sub">
+            <li>난수 생성 없이 비밀번호 재생성 하여 접근할 수 있도록 함</li>
+          </ul>
+        </li>
+      </ul>
     </div>
 
     <!-- 관련 요구사항 -->
-    <div class="popup-section">
+    <div class="drawer-section">
       <h5>요구사항</h5>
-      <ul class="popup-tags">
-        <li><span class="popup-tag tag-fr">FR-0010</span> 사용자 인증</li>
-        <li><span class="popup-tag tag-ft">FT-0010</span> 이메일 로그인</li>
-        <li><span class="popup-tag tag-us">US-0010</span> 로그인 사용자 스토리</li>
+      <ul class="drawer-tags">
+        <li><span class="drawer-tag tag-fr">FR-0010</span> 사용자 인증</li>
+        <li><span class="drawer-tag tag-ft">FT-0010</span> 이메일 로그인</li>
       </ul>
     </div>
 
-    <!-- 비즈니스 룰 -->
-    <div class="popup-section">
-      <h5>비즈니스 룰</h5>
-      <ul class="popup-rules">
-        <li>이메일 형식 검증 (RFC 5322)</li>
-        <li>최대 254자 제한</li>
-        <li>빈 값 제출 시 인라인 에러 표시</li>
+    <!-- 연결 화면 -->
+    <div class="drawer-section">
+      <h5>연결 화면</h5>
+      <ul class="drawer-links">
+        <li><a href="S-0020.html">S-0020 회원가입</a> — "회원가입" 링크 클릭 시</li>
       </ul>
     </div>
+  </div>
 
-    <!-- 흐름 (선택) -->
-    <div class="popup-section">
-      <h5>흐름</h5>
-      <div class="popup-flow">
-        <span class="flow-step">입력</span>
-        <span class="flow-arrow">→</span>
-        <span class="flow-step">유효성 검증</span>
-        <span class="flow-arrow">→</span>
-        <span class="flow-step">API 호출</span>
-        <span class="flow-arrow">→</span>
-        <span class="flow-step">성공/실패</span>
-      </div>
-    </div>
+  <!-- ===== Dev Tab ===== -->
+  <div class="drawer-body tab-content" data-tab="dev">
 
-    <!-- 상태 (선택) -->
-    <div class="popup-section">
-      <h5>상태</h5>
-      <table class="popup-table">
-        <tr><td class="state-label">Default</td><td>빈 입력 필드 + placeholder</td></tr>
-        <tr><td class="state-label">Focus</td><td>테두리 강조 + label 상단 이동</td></tr>
-        <tr><td class="state-label">Error</td><td>빨간 테두리 + 에러 메시지</td></tr>
-        <tr><td class="state-label">Disabled</td><td>회색 배경 + 입력 불가</td></tr>
+    <!-- 동작방식 -->
+    <div class="drawer-section">
+      <h5>동작방식</h5>
+      <table class="drawer-table">
+        <tr><td class="state-label">Type</td><td><code>input[type="email"]</code></td></tr>
+        <tr><td class="state-label">Component</td><td><code>EmailInput</code> (atoms/input)</td></tr>
+        <tr><td class="state-label">Debounce</td><td>300ms (중복 검사 시)</td></tr>
       </table>
     </div>
 
-    <!-- 연결 화면 (선택) -->
-    <div class="popup-section">
-      <h5>연결 화면</h5>
-      <ul class="popup-links">
-        <li><a href="S-0020.html">S-0020 회원가입</a> — "회원가입" 링크 클릭 시</li>
-        <li><a href="S-0030.html">S-0030 비밀번호 찾기</a> — "비밀번호 찾기" 클릭 시</li>
-      </ul>
+    <!-- Validation -->
+    <div class="drawer-section">
+      <h5>Validation</h5>
+      <table class="dev-validation-table">
+        <thead><tr><th>Rule</th><th>조건</th><th>에러 메시지</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><span class="dev-badge badge-required">required</span></td>
+            <td>빈 값</td>
+            <td><code>"이메일을 입력해주세요"</code></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 흐름도 -->
+    <div class="drawer-section">
+      <h5>흐름도</h5>
+      <div class="dev-flow-diagram">
+        <div class="dev-flow-row">
+          <span class="dev-flow-node">사용자 입력</span>
+          <span class="dev-flow-arrow">→</span>
+          <span class="dev-flow-node">onChange: 실시간 형식 검증</span>
+        </div>
+        <div class="dev-flow-row"><span class="dev-flow-arrow">↓</span></div>
+        <div class="dev-flow-row">
+          <span class="dev-flow-node dev-flow-decision">Valid?</span>
+          <span class="dev-flow-arrow">Yes →</span>
+          <span class="dev-flow-node dev-flow-success">에러 해제</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- API -->
+    <div class="drawer-section">
+      <h5>API</h5>
+      <div class="dev-api-card">
+        <span class="dev-method method-post">POST</span>
+        <code class="dev-endpoint">/api/v1/auth/login</code>
+      </div>
     </div>
   </div>
 </div>
 ```
 
-### 2.3 팝업 내용 구성 규칙
+#### 번호별 Description 예시 (스크린샷 참고)
 
-각 어노테이션 팝업에 포함할 섹션:
+```html
+<!-- ① [Button] 부고장 공유 -->
+<div class="desc-block">
+  <div class="desc-header">[Button] 부고장 공유</div>
+  <ul class="desc-list">
+    <li>상태 : 비활성</li>
+    <li>부고장 유효기간 만료 시 버튼 비활성
+      <ul class="desc-sub">
+        <li>발인 당일에 발인 시간 초과 시 유효기간 종료</li>
+      </ul>
+    </li>
+  </ul>
+  <div class="desc-note">비고</div>
+</div>
+
+<!-- ② [Card] 부고장 -->
+<div class="desc-block">
+  <div class="desc-header">[Card] 부고장</div>
+  <ul class="desc-list">
+    <li>고객센터에서 생성한 부고장</li>
+    <li class="desc-policy">정책 : 고객센터에서 생성한 부고장은 부고장 보유 개수 정책의 영향을 받지 않음</li>
+  </ul>
+  <div class="desc-note">비고</div>
+</div>
+
+<!-- ③ [Badge] 고객센터 생성 -->
+<div class="desc-block">
+  <div class="desc-header">[Badge] 고객센터 생성</div>
+  <ul class="desc-list">
+    <li>고객센터에서 생성한 부고장에 Badge 부여</li>
+  </ul>
+  <div class="desc-note">비고</div>
+</div>
+
+<!-- ④ [Badge] 대표 -->
+<div class="desc-block">
+  <div class="desc-header">[Badge] 대표</div>
+  <ul class="desc-list">
+    <li>FSMS 통해 대표 부고장 선정 됨</li>
+    <li>'대표' 선정 가능한 부고장 종류
+      <ul class="desc-sub">
+        <li>사용자 생성 부고장</li>
+        <li>고객센터 생성 부고장</li>
+      </ul>
+    </li>
+  </ul>
+  <div class="desc-note">비고</div>
+</div>
+
+<!-- ⑤ [Confirm] 삭제 확인 -->
+<div class="desc-block">
+  <div class="desc-header">[Confirm]</div>
+  <ul class="desc-list">
+    <li>대표 부고장 삭제 시도시 호출</li>
+    <li>버튼 정의
+      <ul class="desc-sub">
+        <li>(취소) Confirm 창 닫힘</li>
+        <li>(확인) 부고장 삭제</li>
+      </ul>
+    </li>
+  </ul>
+  <div class="desc-note">비고</div>
+</div>
+```
+
+#### Select/Dropdown 요소 예시 (Dev 탭 — 옵션값 포함)
+
+```html
+<!-- Dev 탭 내: Select 옵션값 섹션 -->
+<div class="popup-section">
+  <h5>옵션값</h5>
+  <table class="dev-options-table">
+    <thead><tr><th>Value</th><th>Label</th><th>조건</th></tr></thead>
+    <tbody>
+      <tr><td><code>""</code></td><td class="opt-placeholder">선택하세요</td><td>기본값 (disabled)</td></tr>
+      <tr><td><code>"admin"</code></td><td>관리자</td><td>superAdmin 권한 필요</td></tr>
+      <tr><td><code>"manager"</code></td><td>매니저</td><td>—</td></tr>
+      <tr><td><code>"user"</code></td><td>일반 사용자</td><td>—</td></tr>
+      <tr><td><code>"viewer"</code></td><td>뷰어 (읽기 전용)</td><td>—</td></tr>
+    </tbody>
+  </table>
+  <div class="dev-note">
+    <strong>Data Source:</strong> <code>GET /api/v1/roles</code> — 서버에서 동적 로드. 위 목록은 기본값이며 서버 응답으로 대체된다.
+  </div>
+</div>
+
+<!-- Dev 탭 내: Select 동작방식 -->
+<div class="popup-section">
+  <h5>동작방식</h5>
+  <table class="popup-table">
+    <tr><td class="state-label">Component</td><td><code>RoleSelect</code> (molecules/select)</td></tr>
+    <tr><td class="state-label">Multi-select</td><td>No (단일 선택)</td></tr>
+    <tr><td class="state-label">Searchable</td><td>Yes (5개 이상 시 검색 활성화)</td></tr>
+    <tr><td class="state-label">Default</td><td><code>"user"</code></td></tr>
+    <tr><td class="state-label">Disabled 조건</td><td>본인 권한 변경 불가</td></tr>
+  </table>
+</div>
+
+<!-- Dev 탭 내: Select Validation -->
+<div class="popup-section">
+  <h5>Validation</h5>
+  <table class="dev-validation-table">
+    <thead><tr><th>Rule</th><th>조건</th><th>에러 메시지</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><span class="dev-badge badge-required">required</span></td>
+        <td>미선택 (빈 값)</td>
+        <td><code>"권한을 선택해주세요"</code></td>
+      </tr>
+      <tr>
+        <td><span class="dev-badge badge-permission">permission</span></td>
+        <td>admin 선택 시 superAdmin 권한 없음</td>
+        <td><code>"관리자 권한 부여 권한이 없습니다"</code></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+```
+
+#### 버튼/액션 요소 예시 (Dev 탭 — 흐름도 중심)
+
+```html
+<!-- Dev 탭 내: 버튼 동작방식 -->
+<div class="popup-section">
+  <h5>동작방식</h5>
+  <table class="popup-table">
+    <tr><td class="state-label">Component</td><td><code>SubmitButton</code> (atoms/button)</td></tr>
+    <tr><td class="state-label">Type</td><td><code>button[type="submit"]</code></td></tr>
+    <tr><td class="state-label">Disabled 조건</td><td>form invalid 또는 isSubmitting=true</td></tr>
+    <tr><td class="state-label">Loading 표시</td><td>Spinner 아이콘 + "로그인 중..." 텍스트 교체</td></tr>
+    <tr><td class="state-label">중복 클릭 방지</td><td>isSubmitting 상태로 즉시 disable</td></tr>
+  </table>
+</div>
+
+<!-- Dev 탭 내: Submit 흐름도 -->
+<div class="popup-section">
+  <h5>흐름도</h5>
+  <div class="dev-flow-diagram">
+    <div class="dev-flow-row">
+      <span class="dev-flow-node">Click: 로그인 버튼</span>
+    </div>
+    <div class="dev-flow-row"><span class="dev-flow-arrow">↓</span></div>
+    <div class="dev-flow-row">
+      <span class="dev-flow-node">클라이언트 Validation 전체 실행</span>
+    </div>
+    <div class="dev-flow-row"><span class="dev-flow-arrow">↓</span></div>
+    <div class="dev-flow-row">
+      <span class="dev-flow-node dev-flow-decision">All valid?</span>
+    </div>
+    <div class="dev-flow-row">
+      <span class="dev-flow-arrow">No →</span>
+      <span class="dev-flow-node dev-flow-error">첫 번째 에러 필드에 focus</span>
+    </div>
+    <div class="dev-flow-row"><span class="dev-flow-arrow">Yes ↓</span></div>
+    <div class="dev-flow-row">
+      <span class="dev-flow-node">isSubmitting = true, 버튼 Loading</span>
+    </div>
+    <div class="dev-flow-row"><span class="dev-flow-arrow">↓</span></div>
+    <div class="dev-flow-row">
+      <div class="dev-api-card-inline">
+        <span class="dev-method method-post">POST</span>
+        <code>/api/v1/auth/login</code>
+      </div>
+    </div>
+    <div class="dev-flow-row"><span class="dev-flow-arrow">↓</span></div>
+    <div class="dev-flow-row">
+      <span class="dev-flow-node dev-flow-decision">Response?</span>
+    </div>
+    <div class="dev-flow-row">
+      <span class="dev-flow-arrow">200 →</span>
+      <span class="dev-flow-node dev-flow-success">토큰 저장 → S-0040 대시보드 이동</span>
+    </div>
+    <div class="dev-flow-row">
+      <span class="dev-flow-arrow">401 →</span>
+      <span class="dev-flow-node dev-flow-error">Toast: "이메일 또는 비밀번호가 틀립니다"</span>
+    </div>
+    <div class="dev-flow-row">
+      <span class="dev-flow-arrow">429 →</span>
+      <span class="dev-flow-node dev-flow-error">Toast: "잠시 후 다시 시도해주세요" + 30초 쿨다운</span>
+    </div>
+    <div class="dev-flow-row"><span class="dev-flow-arrow">↓ finally</span></div>
+    <div class="dev-flow-row">
+      <span class="dev-flow-node">isSubmitting = false</span>
+    </div>
+  </div>
+</div>
+```
+
+#### 테이블/리스트 요소 예시 (Dev 탭 — 데이터 로딩 + 페이지네이션)
+
+```html
+<!-- Dev 탭 내: 테이블 동작방식 -->
+<div class="popup-section">
+  <h5>동작방식</h5>
+  <table class="popup-table">
+    <tr><td class="state-label">Component</td><td><code>DataTable</code> (organisms/table)</td></tr>
+    <tr><td class="state-label">Pagination</td><td>서버 사이드, 20건/페이지</td></tr>
+    <tr><td class="state-label">Sorting</td><td>컬럼 헤더 클릭 시 ASC/DESC 토글</td></tr>
+    <tr><td class="state-label">Selection</td><td>체크박스 다중 선택, 헤더 전체선택</td></tr>
+    <tr><td class="state-label">Empty</td><td>데이터 없음 일러스트 + "등록된 항목이 없습니다"</td></tr>
+    <tr><td class="state-label">Loading</td><td>Skeleton row 5개 표시</td></tr>
+  </table>
+</div>
+
+<!-- Dev 탭 내: 테이블 컬럼 정의 -->
+<div class="popup-section">
+  <h5>컬럼 정의</h5>
+  <table class="dev-columns-table">
+    <thead><tr><th>Field</th><th>Label</th><th>Type</th><th>Sortable</th><th>Width</th></tr></thead>
+    <tbody>
+      <tr><td><code>name</code></td><td>이름</td><td>text</td><td>Yes</td><td>200px</td></tr>
+      <tr><td><code>email</code></td><td>이메일</td><td>text</td><td>Yes</td><td>flex</td></tr>
+      <tr><td><code>role</code></td><td>권한</td><td>badge</td><td>Yes</td><td>100px</td></tr>
+      <tr><td><code>createdAt</code></td><td>가입일</td><td>date (YYYY.MM.DD)</td><td>Yes</td><td>120px</td></tr>
+      <tr><td><code>actions</code></td><td></td><td>action-menu</td><td>No</td><td>60px</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Dev 탭 내: API + Query Params -->
+<div class="popup-section">
+  <h5>API</h5>
+  <div class="dev-api-card">
+    <span class="dev-method method-get">GET</span>
+    <code class="dev-endpoint">/api/v1/users</code>
+  </div>
+  <table class="popup-table">
+    <tr><td class="state-label">page</td><td><code>query.page</code> (default: 1)</td></tr>
+    <tr><td class="state-label">limit</td><td><code>query.limit</code> (default: 20)</td></tr>
+    <tr><td class="state-label">sort</td><td><code>query.sort</code> (e.g. "createdAt:desc")</td></tr>
+    <tr><td class="state-label">search</td><td><code>query.q</code> (이름/이메일 검색)</td></tr>
+  </table>
+</div>
+```
+
+### 2.3 Drawer 내용 구성 규칙
+
+각 어노테이션 Drawer는 **Design 탭**과 **Dev 탭** 2개 탭으로 구성한다.
+
+#### Design 탭 (기획/디자인 관점)
 
 | 섹션 | 필수 | 내용 |
 |------|------|------|
-| **설명** | ✅ | 요소의 역할, 동작, 제약사항 (`2_Screen_UX.md` Elements Description 기반) |
+| **Description** | ✅ | `[컴포넌트타입] 이름` 헤더 + bullet 목록으로 정책/비즈니스 룰/조건/노출 문구 기술. `.desc-block` 사용 |
 | **요구사항** | ✅ | 관련 FR, US, FT ID + 제목 (`2_Screen_UX.md` FT Mapping 기반) |
-| **비즈니스 룰** | 해당 시 | 유효성 검증, 조건, 제한사항 |
-| **흐름** | 해당 시 | 해당 요소의 인터랙션 흐름 (step 형태) |
-| **상태** | 해당 시 | 요소의 상태별 표시 방식 (Default, Hover, Focus, Error 등) |
 | **연결 화면** | 해당 시 | 클릭/동작 시 이동하는 화면 + 조건 (다른 와이어프레임 링크) |
-| **API** | 해당 시 | 바인딩된 API 엔드포인트 (메서드 + 경로) |
 | **권한** | 해당 시 | Role Visibility (어떤 권한에서 표시/숨김) |
+
+##### Description 작성 규칙
+
+1. **헤더**: `[컴포넌트타입] 이름` — 타입은 `[정책]`, `[Button]`, `[Card]`, `[Badge]`, `[Confirm]`, `[Input]`, `[Select]`, `[List]`, `[Table]`, `[Modal]`, `[Tab]`, `[Form]` 등 사용
+2. **항목**: `•` bullet로 주요 설명 기술, 하위 조건은 `>` 들여쓰기
+3. **정책/경고**: `.desc-policy` 클래스로 빨간 강조 텍스트 처리
+4. **노출 문구**: `.desc-quote`로 감싸기 — `'해당 부고는 발인 되었습니다.'`
+5. **비고**: `.desc-note`로 하단 표시
+6. **공통 정책**: 화면 전체에 적용되는 정책은 `공통` 번호로 별도 Description 블록 작성
+
+#### Dev 탭 (개발 관점)
+
+| 섹션 | 필수 | 적용 요소 | 내용 |
+|------|------|----------|------|
+| **동작방식** | ✅ | 전체 | HTML type, 컴포넌트명, debounce, auto-focus, disabled 조건, loading 표시 등 구현에 필요한 동작 명세 |
+| **이벤트** | 해당 시 | Input, Button, Link 등 | 이벤트명 + 핸들러명 + 구체적 동작 설명 테이블 |
+| **Validation** | ✅ (입력 요소) | Input, Select, Textarea, Form | Rule type(required/format/length/async/custom) + 조건 + **에러 메시지 원문** |
+| **흐름도** | ✅ (인터랙션 요소) | Button, Form, Link, 복합 동작 | 사용자 동작 → 검증 → API → 분기(성공/에러별) → 후속 동작의 **단계별 흐름** |
+| **옵션값** | ✅ (선택 요소) | Select, Radio, Checkbox Group, Tab | value + label + 표시 조건 + data source(정적/API) |
+| **컬럼 정의** | ✅ (테이블 요소) | DataTable, List | field + label + type + sortable + width |
+| **API** | ✅ (데이터 요소) | 전체 (API 연동 시) | HTTP method + endpoint + request field + query params |
+| **데이터 바인딩** | 해당 시 | 전체 | state 경로, error 경로, 관련 store/context |
+
+#### 요소 유형별 Dev 탭 필수 섹션 매트릭스
+
+| 요소 유형 | 동작방식 | 이벤트 | Validation | 흐름도 | 옵션값 | 컬럼 정의 | API | 데이터 바인딩 |
+|----------|---------|--------|-----------|--------|--------|----------|-----|-------------|
+| **Input** (text, email, password, number) | ✅ | ✅ | ✅ | — | — | — | 해당 시 | ✅ |
+| **Textarea** | ✅ | ✅ | ✅ | — | — | — | 해당 시 | ✅ |
+| **Select / Dropdown** | ✅ | ✅ | ✅ | — | ✅ | — | 해당 시 | ✅ |
+| **Radio / Checkbox Group** | ✅ | ✅ | ✅ | — | ✅ | — | 해당 시 | ✅ |
+| **Button (Submit)** | ✅ | ✅ | — | ✅ | — | — | ✅ | — |
+| **Button (Action)** | ✅ | ✅ | — | ✅ | — | — | 해당 시 | — |
+| **Link / Navigation** | ✅ | — | — | 해당 시 | — | — | — | — |
+| **DataTable** | ✅ | 해당 시 | — | — | — | ✅ | ✅ | ✅ |
+| **List** | ✅ | 해당 시 | — | — | — | ✅ | ✅ | ✅ |
+| **Tab / Stepper** | ✅ | ✅ | — | ✅ | ✅ | — | — | ✅ |
+| **Modal / Dialog** | ✅ | ✅ | — | ✅ | — | — | 해당 시 | — |
+| **Form (전체)** | ✅ | ✅ | — | ✅ | — | — | ✅ | ✅ |
+| **Header / Footer / Nav** | ✅ | — | — | — | — | — | — | — |
+| **Card / Section** | ✅ | — | — | — | — | — | 해당 시 | 해당 시 |
+| **Chart / Graph** | ✅ | 해당 시 | — | — | — | — | ✅ | ✅ |
+| **File Upload** | ✅ | ✅ | ✅ | ✅ | — | — | ✅ | ✅ |
+| **Search** | ✅ | ✅ | ✅ | ✅ | — | — | ✅ | ✅ |
+| **Toast / Alert** | ✅ | — | — | — | — | — | — | — |
+
+#### Validation Rule Types
+
+| Type | Badge Class | 용도 |
+|------|------------|------|
+| `required` | `.badge-required` | 필수 입력 |
+| `format` | `.badge-format` | 정규식/형식 검증 (email, phone, URL 등) |
+| `maxLength` / `minLength` | `.badge-length` | 글자수 제한 |
+| `min` / `max` | `.badge-range` | 숫자 범위 |
+| `pattern` | `.badge-pattern` | 커스텀 정규식 |
+| `async` | `.badge-async` | 서버 검증 (중복 확인, 존재 확인 등) |
+| `custom` | `.badge-custom` | 커스텀 검증 로직 |
+| `match` | `.badge-match` | 다른 필드와 일치 (비밀번호 확인 등) |
+| `permission` | `.badge-permission` | 권한 기반 검증 |
 
 ---
 
@@ -188,6 +579,7 @@
   --tag-ft: #2563eb;
   --tag-us: #059669;
   --overlay: rgba(0,0,0,0.3);
+  --hover-bg: #f1f5f9;
 }
 [data-theme="dark"] {
   --primary: #60a5fa;
@@ -212,6 +604,7 @@
   --tag-ft: #60a5fa;
   --tag-us: #34d399;
   --overlay: rgba(0,0,0,0.5);
+  --hover-bg: #334155;
 }
 
 * { margin:0; padding:0; box-sizing:border-box; }
@@ -295,52 +688,74 @@ body {
   box-shadow:0 3px 10px rgba(37,99,235,0.4);
 }
 
-/* ===== Annotation Popup ===== */
-.popup-overlay {
+/* ===== Annotation Drawer (Right Slide Panel) ===== */
+.drawer-overlay {
   display:none; position:fixed; top:0; left:0; right:0; bottom:0;
-  background:var(--overlay); z-index:100;
+  background:var(--overlay); z-index:100; transition:opacity 0.3s;
 }
-.popup-overlay.active { display:block; }
+.drawer-overlay.active { display:block; }
 
-.annotation-popup {
-  display:none; position:fixed; z-index:101;
-  top:50%; left:50%; transform:translate(-50%,-50%);
-  width:520px; max-width:90vw; max-height:80vh;
-  background:var(--popup-bg); border:1px solid var(--popup-border);
-  border-radius:16px; overflow:hidden;
-  box-shadow:0 20px 60px var(--popup-shadow);
+.annotation-drawer {
+  position:fixed; z-index:101;
+  top:0; right:-480px; width:480px; max-width:90vw; height:100vh;
+  background:var(--popup-bg); border-left:1px solid var(--popup-border);
+  box-shadow:-8px 0 30px var(--popup-shadow);
+  transition:right 0.3s ease;
+  display:flex; flex-direction:column;
 }
-.annotation-popup.active { display:block; }
+.annotation-drawer.active { right:0; }
 
-.popup-header {
+.drawer-header {
   display:flex; align-items:center; gap:12px;
   padding:16px 20px; border-bottom:1px solid var(--border);
-  background:var(--primary); color:#fff;
+  background:var(--primary); color:#fff; flex-shrink:0;
 }
-.popup-number { font-size:20px; font-weight:700; }
-.popup-title { flex:1; font-size:16px; font-weight:600; margin:0; }
-.popup-close {
+.drawer-number { font-size:20px; font-weight:700; }
+.drawer-title { flex:1; font-size:16px; font-weight:600; margin:0; }
+.drawer-close {
   width:32px; height:32px; border-radius:50%; border:none;
   background:rgba(255,255,255,0.2); color:#fff; font-size:18px;
   cursor:pointer; display:flex; align-items:center; justify-content:center;
   transition:background 0.2s;
 }
-.popup-close:hover { background:rgba(255,255,255,0.3); }
+.drawer-close:hover { background:rgba(255,255,255,0.3); }
 
-.popup-body { padding:20px; overflow-y:auto; max-height:calc(80vh - 60px); }
-.popup-section { margin-bottom:16px; }
-.popup-section:last-child { margin-bottom:0; }
-.popup-section h5 {
+/* Drawer Tabs */
+.drawer-tabs {
+  display:flex; border-bottom:2px solid var(--border); background:var(--card-bg); flex-shrink:0;
+}
+.drawer-tab {
+  flex:1; padding:10px 16px; border:none; background:none;
+  font-size:13px; font-weight:600; color:var(--text-secondary);
+  cursor:pointer; transition:all 0.2s; border-bottom:2px solid transparent;
+  margin-bottom:-2px;
+}
+.drawer-tab:hover { color:var(--text); background:var(--hover-bg); }
+.drawer-tab.active { color:var(--primary); border-bottom-color:var(--primary); }
+.tab-content { display:none; }
+.tab-content.active { display:block; }
+
+/* Drawer Body */
+.drawer-body { padding:20px; overflow-y:auto; flex:1; }
+.drawer-section { margin-bottom:16px; }
+.drawer-section:last-child { margin-bottom:0; }
+.drawer-section h5 {
   font-size:12px; text-transform:uppercase; letter-spacing:0.5px;
   color:var(--text-secondary); margin-bottom:8px; font-weight:600;
 }
-.popup-section p { font-size:14px; line-height:1.7; }
-.popup-section ul { list-style:none; padding:0; }
-.popup-section li { font-size:13px; padding:4px 0; }
+.drawer-section p { font-size:14px; line-height:1.7; }
+.drawer-section ul { list-style:none; padding:0; }
+.drawer-section li { font-size:13px; padding:4px 0; }
 
-/* Popup Tags */
-.popup-tags li { display:flex; align-items:center; gap:8px; }
-.popup-tag {
+/* Drawer Table */
+.drawer-table { width:100%; font-size:13px; border-collapse:collapse; }
+.drawer-table td { padding:6px 10px; border-bottom:1px solid var(--border); }
+.drawer-table code { background:var(--code-bg); padding:1px 5px; border-radius:3px; font-size:12px; font-family:'Fira Code',monospace; color:var(--code-color); }
+.state-label { font-weight:600; color:var(--primary); white-space:nowrap; width:80px; }
+
+/* Drawer Tags */
+.drawer-tags li { display:flex; align-items:center; gap:8px; }
+.drawer-tag {
   display:inline-block; padding:2px 8px; border-radius:4px;
   font-size:11px; font-weight:700; font-family:'Fira Code',monospace;
 }
@@ -348,24 +763,129 @@ body {
 .tag-ft { background:rgba(37,99,235,0.1); color:var(--tag-ft); }
 .tag-us { background:rgba(5,150,105,0.1); color:var(--tag-us); }
 
-/* Popup Rules */
-.popup-rules li { padding:6px 0; padding-left:16px; position:relative; }
-.popup-rules li::before { content:'•'; position:absolute; left:0; color:var(--primary); font-weight:700; }
+/* Drawer Links */
+.drawer-links li { padding:4px 0; }
+.drawer-links a { color:var(--primary); text-decoration:none; font-weight:600; font-size:13px; }
+.drawer-links a:hover { text-decoration:underline; }
 
-/* Popup Flow */
-.popup-flow { display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
-.flow-step { background:var(--primary-light); color:var(--primary); padding:4px 12px; border-radius:16px; font-size:12px; font-weight:600; }
-.flow-arrow { color:var(--text-muted); font-size:14px; }
+/* ===== Description Block (스크린샷 스타일) ===== */
+.desc-block {
+  background:var(--card-bg); border:1px solid var(--border); border-radius:8px;
+  padding:14px 16px; margin-bottom:12px;
+}
+.desc-header {
+  font-size:14px; font-weight:700; color:var(--text); margin-bottom:8px;
+  padding-bottom:6px; border-bottom:1px solid var(--border);
+}
+.desc-list {
+  list-style:none; padding:0; margin:0;
+}
+.desc-list > li {
+  font-size:13px; line-height:1.7; padding:3px 0 3px 16px;
+  position:relative;
+}
+.desc-list > li::before {
+  content:'•'; position:absolute; left:0; color:var(--text-secondary); font-weight:700;
+}
+.desc-sub {
+  list-style:none; padding:0; margin:2px 0 2px 4px;
+}
+.desc-sub > li {
+  font-size:12px; line-height:1.6; padding:1px 0 1px 16px;
+  position:relative; color:var(--text-secondary);
+}
+.desc-sub > li::before {
+  content:'>'; position:absolute; left:0; color:var(--text-muted); font-weight:600;
+}
+.desc-policy {
+  color:var(--tag-fr) !important; font-weight:700;
+}
+.desc-quote {
+  background:rgba(245,158,11,0.1); padding:1px 6px; border-radius:3px;
+  font-style:italic; color:var(--text);
+}
+.desc-note {
+  margin-top:8px; padding-top:6px; border-top:1px solid var(--border);
+  font-size:11px; color:var(--text-muted); font-weight:600;
+  text-transform:uppercase; letter-spacing:0.5px;
+}
 
-/* Popup Table */
-.popup-table { width:100%; font-size:13px; border-collapse:collapse; }
-.popup-table td { padding:6px 10px; border-bottom:1px solid var(--border); }
-.state-label { font-weight:600; color:var(--primary); white-space:nowrap; width:80px; }
+/* ===== Dev Tab Styles ===== */
 
-/* Popup Links */
-.popup-links li { padding:4px 0; }
-.popup-links a { color:var(--primary); text-decoration:none; font-weight:600; font-size:13px; }
-.popup-links a:hover { text-decoration:underline; }
+/* Dev Tables (Events, Validation, Options, Columns) */
+.dev-event-table, .dev-validation-table, .dev-options-table, .dev-columns-table {
+  width:100%; font-size:12px; border-collapse:collapse; margin:8px 0;
+}
+.dev-event-table th, .dev-validation-table th, .dev-options-table th, .dev-columns-table th {
+  background:var(--code-bg); color:var(--text-secondary); font-weight:600;
+  padding:8px 10px; text-align:left; font-size:11px; text-transform:uppercase;
+  letter-spacing:0.5px; border-bottom:2px solid var(--border);
+}
+.dev-event-table td, .dev-validation-table td, .dev-options-table td, .dev-columns-table td {
+  padding:7px 10px; border-bottom:1px solid var(--border); vertical-align:top;
+}
+.dev-event-table code, .dev-validation-table code, .dev-options-table code, .dev-columns-table code {
+  background:var(--code-bg); padding:1px 5px; border-radius:3px;
+  font-size:11px; font-family:'Fira Code',monospace; color:var(--code-color);
+}
+.opt-placeholder { color:var(--text-muted); font-style:italic; }
+
+/* Dev Badges */
+.dev-badge {
+  display:inline-block; padding:2px 8px; border-radius:4px;
+  font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.3px;
+}
+.badge-required { background:rgba(220,38,38,0.1); color:var(--tag-fr); }
+.badge-format { background:rgba(124,58,237,0.1); color:var(--code-color); }
+.badge-length, .badge-range { background:rgba(245,158,11,0.1); color:#f59e0b; }
+.badge-pattern { background:rgba(6,182,212,0.1); color:#06b6d4; }
+.badge-async { background:rgba(37,99,235,0.1); color:var(--tag-ft); }
+.badge-custom { background:rgba(107,114,128,0.1); color:var(--text-secondary); }
+.badge-match { background:rgba(5,150,105,0.1); color:var(--tag-us); }
+.badge-permission { background:rgba(249,115,22,0.1); color:#f97316; }
+
+/* Dev Flow Diagram */
+.dev-flow-diagram {
+  background:var(--code-bg); border:1px solid var(--border); border-radius:8px;
+  padding:16px; margin:8px 0;
+}
+.dev-flow-row { display:flex; align-items:center; gap:8px; margin:4px 0; flex-wrap:wrap; }
+.dev-flow-node {
+  background:var(--card-bg); border:1px solid var(--border);
+  padding:6px 12px; border-radius:6px; font-size:12px; font-weight:500;
+}
+.dev-flow-decision {
+  background:var(--primary-light); color:var(--primary); font-weight:700;
+  border-radius:16px; border-color:var(--primary);
+}
+.dev-flow-success { background:rgba(5,150,105,0.1); color:var(--tag-us); border-color:var(--tag-us); }
+.dev-flow-error { background:rgba(220,38,38,0.1); color:var(--tag-fr); border-color:var(--tag-fr); }
+.dev-flow-arrow { color:var(--text-muted); font-size:13px; font-weight:600; font-family:'Fira Code',monospace; white-space:nowrap; }
+
+/* Dev API Card */
+.dev-api-card, .dev-api-card-inline {
+  display:inline-flex; align-items:center; gap:8px;
+  padding:6px 12px; border-radius:6px; margin:4px 0;
+  background:var(--code-bg); border:1px solid var(--border);
+}
+.dev-method {
+  padding:2px 6px; border-radius:3px; font-size:10px; font-weight:700;
+  font-family:'Fira Code',monospace; letter-spacing:0.5px;
+}
+.method-get { background:rgba(37,99,235,0.15); color:var(--tag-ft); }
+.method-post { background:rgba(5,150,105,0.15); color:var(--tag-us); }
+.method-put { background:rgba(245,158,11,0.15); color:#f59e0b; }
+.method-patch { background:rgba(124,58,237,0.15); color:var(--code-color); }
+.method-delete { background:rgba(220,38,38,0.15); color:var(--tag-fr); }
+.dev-endpoint { font-size:12px; font-family:'Fira Code',monospace; color:var(--text); }
+
+/* Dev Note */
+.dev-note {
+  background:var(--primary-light); border-left:3px solid var(--primary);
+  padding:8px 12px; margin:8px 0; border-radius:0 6px 6px 0;
+  font-size:12px; color:var(--text-secondary);
+}
+.dev-note code { background:var(--code-bg); padding:1px 4px; border-radius:3px; font-size:11px; }
 
 /* ===== Annotation Legend ===== */
 .annotation-legend {
@@ -390,7 +910,7 @@ body {
 @media (max-width:768px) {
   .topbar { flex-wrap:wrap; }
   .info-grid { grid-template-columns:1fr; }
-  .annotation-popup { width:95vw; }
+  .annotation-drawer { width:100vw; max-width:100vw; right:-100vw; }
   .legend-list { columns:1; }
   .wf-row { flex-direction:column; }
 }
@@ -400,7 +920,7 @@ body {
   .topbar { position:static; box-shadow:none; }
   .theme-toggle { display:none; }
   .annotation-marker { print-color-adjust:exact; -webkit-print-color-adjust:exact; }
-  .annotation-popup, .popup-overlay { display:none !important; }
+  .annotation-drawer, .drawer-overlay { display:none !important; }
 }
 </style>
 </head>
@@ -448,8 +968,8 @@ body {
 <div class="annotation-legend">
   <h2>Annotations</h2>
   <ul class="legend-list">
-    <!-- 범례: 클릭 시 해당 팝업 오픈 -->
-    <li class="legend-item" onclick="openPopup('annotation-1')">
+    <!-- 범례: 클릭 시 해당 Drawer 오픈 -->
+    <li class="legend-item" onclick="openDrawer('annotation-1')">
       <span class="legend-num">&#9312;</span>
       <span>이메일 입력 필드</span>
     </li>
@@ -457,11 +977,11 @@ body {
   </ul>
 </div>
 
-<!-- Popup Overlay -->
-<div class="popup-overlay" id="popupOverlay" onclick="closeAllPopups()"></div>
+<!-- Drawer Overlay -->
+<div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
 
-<!-- Annotation Popups -->
-<!-- 각 어노테이션의 팝업을 여기에 배치 -->
+<!-- Annotation Drawers -->
+<!-- 각 어노테이션의 Drawer를 여기에 배치 -->
 
 <script>
 // Theme
@@ -478,34 +998,43 @@ function toggleTheme(){
   }
 })();
 
-// Popup
-function openPopup(id){
-  closeAllPopups();
-  document.getElementById('popupOverlay').classList.add('active');
-  var p=document.getElementById(id);
-  if(p)p.classList.add('active');
+// Tab switching
+function switchTab(btn,tabName){
+  var drawer=btn.closest('.annotation-drawer');
+  drawer.querySelectorAll('.drawer-tab').forEach(function(t){t.classList.remove('active');});
+  drawer.querySelectorAll('.tab-content').forEach(function(c){c.classList.remove('active');});
+  btn.classList.add('active');
+  drawer.querySelector('[data-tab="'+tabName+'"]').classList.add('active');
 }
-function closePopup(id){
-  document.getElementById('popupOverlay').classList.remove('active');
-  var p=document.getElementById(id);
-  if(p)p.classList.remove('active');
+
+// Drawer
+function openDrawer(id){
+  closeDrawer();
+  document.getElementById('drawerOverlay').classList.add('active');
+  var d=document.getElementById(id);
+  if(d){
+    d.classList.add('active');
+    // Reset to Design tab on open
+    var firstTab=d.querySelector('.drawer-tab');
+    if(firstTab)switchTab(firstTab,'design');
+  }
 }
-function closeAllPopups(){
-  document.getElementById('popupOverlay').classList.remove('active');
-  document.querySelectorAll('.annotation-popup').forEach(function(p){p.classList.remove('active');});
+function closeDrawer(){
+  document.getElementById('drawerOverlay').classList.remove('active');
+  document.querySelectorAll('.annotation-drawer').forEach(function(d){d.classList.remove('active');});
 }
 
 // Marker click
 document.querySelectorAll('.annotation-marker').forEach(function(m){
   m.addEventListener('click',function(e){
     e.stopPropagation();
-    openPopup(this.getAttribute('data-target'));
+    openDrawer(this.getAttribute('data-target'));
   });
 });
 
 // ESC to close
 document.addEventListener('keydown',function(e){
-  if(e.key==='Escape')closeAllPopups();
+  if(e.key==='Escape')closeDrawer();
 });
 </script>
 </body>
@@ -748,12 +1277,36 @@ function filterScreens(q){
     {
       "number": 1,
       "elementName": "이메일 입력 필드",
-      "description": "사용자의 이메일 주소를 입력받는 필드",
-      "requirements": ["FR-0010", "FT-0010", "US-0010"],
-      "businessRules": ["이메일 형식 검증", "최대 254자"],
-      "flow": ["입력", "유효성 검증", "API 호출", "성공/실패"],
-      "states": ["Default", "Focus", "Error", "Disabled"],
-      "connectedScreens": ["S-0020", "S-0030"]
+      "elementType": "input",
+      "design": {
+        "description": "사용자의 이메일 주소를 입력받는 필드",
+        "requirements": ["FR-0010", "FT-0010", "US-0010"],
+        "businessRules": ["이메일 형식 검증 (RFC 5322)", "최대 254자"],
+        "states": ["Default", "Focus", "Error", "Disabled"],
+        "connectedScreens": ["S-0020", "S-0030"],
+        "role": "Public"
+      },
+      "dev": {
+        "behavior": {
+          "htmlType": "input[type=\"email\"]",
+          "component": "EmailInput",
+          "debounce": "300ms",
+          "autoFocus": true,
+          "autocomplete": "email"
+        },
+        "events": [
+          { "event": "onChange", "handler": "handleEmailChange", "action": "입력값 state 업데이트 + 실시간 형식 검증" },
+          { "event": "onBlur", "handler": "handleEmailBlur", "action": "전체 유효성 검증 실행 + 에러 표시" }
+        ],
+        "validation": [
+          { "rule": "required", "condition": "빈 값", "message": "이메일을 입력해주세요" },
+          { "rule": "format", "condition": "/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/", "message": "올바른 이메일 형식이 아닙니다" },
+          { "rule": "maxLength", "condition": "254자 초과", "message": "이메일은 254자 이내로 입력해주세요" }
+        ],
+        "flow": ["사용자 입력", "onChange: 실시간 검증", "Valid? → 에러 해제 / 에러 표시", "onBlur: 최종 검증"],
+        "api": { "method": "POST", "endpoint": "/api/v1/auth/login", "field": "body.email" },
+        "dataBinding": { "state": "formState.email", "error": "formErrors.email" }
+      }
     }
   ]
 }
@@ -792,17 +1345,23 @@ index.html의 JSON (`index.json`):
 - [ ] OS 테마 자동 감지 + localStorage 저장
 - [ ] 모든 색상 CSS 변수 사용 (하드코딩 금지)
 - [ ] 모든 Elements에 원 숫자 마커 부착
-- [ ] 각 마커에 팝업 연결 (클릭 시 오픈)
-- [ ] 팝업에 설명, 요구사항, 비즈니스 룰 포함 (해당 시 흐름, 상태, 연결 화면, API, 권한도 포함)
-- [ ] Annotation Legend 섹션 포함 (범례 클릭 시 팝업 오픈)
-- [ ] ESC 키로 팝업 닫기
-- [ ] 오버레이 클릭으로 팝업 닫기
+- [ ] 각 마커에 2-탭 Drawer 연결 (클릭 시 우측 슬라이드, Design/Dev 탭 전환)
+- [ ] **Design 탭**: `[컴포넌트타입] 이름` 형식 Description 블록 + 요구사항, 연결 화면, 권한
+- [ ] **Dev 탭**: 요소 유형별 필수 섹션 매트릭스에 따라 동작방식, 이벤트, Validation, 흐름도, 옵션값, 컬럼 정의, API, 데이터 바인딩 포함
+- [ ] **Validation**: 입력 요소에 Rule type + 조건 + 에러 메시지 원문 포함
+- [ ] **흐름도**: 인터랙션 요소(버튼, 폼, 모달 등)에 단계별 흐름 + 성공/에러 분기 포함
+- [ ] **옵션값**: Select/Radio/Checkbox에 value + label + 조건 + data source 포함
+- [ ] **Description 포맷**: `[컴포넌트타입]` 헤더 + bullet/sub 목록, 정책은 빨간 강조, 노출 문구는 따옴표
+- [ ] Annotation Legend 섹션 포함 (범례 클릭 시 Drawer 오픈)
+- [ ] ESC 키로 Drawer 닫기
+- [ ] 오버레이 클릭으로 Drawer 닫기
+- [ ] 외부 URL에 `target="_blank" rel="noopener noreferrer"` 적용 (내부 `S-NNNN.html`/`index.html` 링크 제외)
 - [ ] index.html로의 뒤로가기 링크 포함
 - [ ] Info Panel에 Screen 메타 정보 표시
 - [ ] 반응형 대응 (@media max-width:768px)
 - [ ] 인쇄 대응 (@media print)
 - [ ] `<html lang="{{LANG}}">` 설정
-- [ ] 동명의 `.json` 파일 생성
+- [ ] 동명의 `.json` 파일 생성 (dev 스펙 포함)
 
 ### index.html 생성 시
 - [ ] 전체 화면 목록 반영 (2_Screen_UX.md 기준)
