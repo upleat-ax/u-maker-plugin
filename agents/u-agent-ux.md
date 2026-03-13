@@ -159,14 +159,15 @@ journey
 1. `2_Screen_UX.md`의 화면 설계를 바탕으로 HTML/CSS 와이어프레임 생성
 2. `.u-maker/docs/{app}/02-design/2_Screen_Wireframes/{ScreenID}.html` 경로에 저장
 3. Vanilla HTML/CSS를 사용하여 레이아웃과 기본 UI 요소를 시각화
-4. **어노테이션 마커**: 모든 UI Elements에 원 숫자(①②③...) 마커를 부착한다. 마커 클릭 시 **우측 Drawer(슬라이드 패널)** 를 표시한다 (2-탭):
+4. **어노테이션 마커**: **거의 모든 UI 요소**에 숫자 마커(1, 2, 3...) 를 부착한다. 단순 레이아웃 컨테이너(빈 div, spacer)만 제외하고 인터랙티브/표시/네비게이션/피드백/컨텐츠/정책 관련 요소를 전부 포함한다. **누락보다 과잉이 낫다.**
+5. **우측 Sidebar**: 전체 어노테이션을 아코디언 카드로 나열한다. Topbar의 **토글 버튼**으로 열기/닫기, **Expand All/Collapse All** 버튼을 포함한다. 마커 클릭 시 Sidebar가 열리고 해당 카드로 자동 스크롤 + 확장 + 하이라이트된다. 각 카드는 2-탭 구조:
    - **Design 탭**: `[컴포넌트타입] 이름` 형식의 Description 블록(정책/비즈니스 룰/조건/노출 문구를 bullet 목록으로 기술) + 요구사항(FR/US/FT), 연결 화면, 권한
    - **Dev 탭**: 동작방식, 이벤트 핸들러, Validation(에러 메시지 원문 포함), 흐름도(성공/에러 분기), Select 옵션값(value+label+조건), 테이블 컬럼 정의, API 연동, 데이터 바인딩
    - 요소 유형별 필수 섹션은 `html-wireframe-template.md`의 매트릭스를 따른다
-5. **Annotation Legend**: 와이어프레임 하단에 전체 마커 범례 섹션을 포함한다. 범례 클릭 시 해당 Drawer가 열린다
-6. `2_Screen_UX.md`의 각 화면 섹션에 해당 와이어프레임 링크 추가
-7. **index.html 필수**: 와이어프레임 생성/갱신 시 `.u-maker/docs/{app}/02-design/2_Screen_Wireframes/index.html` + `index.json`을 항상 함께 생성/갱신한다. 전체 화면 목록을 도메인별 그룹핑으로 표시하고 검색 기능을 제공한다
-8. **[MANDATORY] JSON Export**: 각 와이어프레임 HTML과 동명의 `.json`, index와 동명의 `index.json`을 함께 생성한다. 관련 .md 파일 수정 시 동일 경로에 동명의 `.json` 파일도 함께 갱신한다. **이 단계를 건너뛰면 안 된다.**
+6. **Annotation Legend**: 와이어프레임 하단에 전체 마커 범례 섹션을 포함한다. 범례 클릭 시 Sidebar의 해당 카드로 스크롤된다
+7. `2_Screen_UX.md`의 각 화면 섹션에 해당 와이어프레임 링크 추가
+8. **index.html 필수**: 와이어프레임 생성/갱신 시 `.u-maker/docs/{app}/02-design/2_Screen_Wireframes/index.html` + `index.json`을 항상 함께 생성/갱신한다. 전체 화면 목록을 도메인별 그룹핑으로 표시하고 검색 기능을 제공한다
+9. **[MANDATORY] JSON Export**: 각 와이어프레임 HTML과 동명의 `.json`, index와 동명의 `index.json`을 함께 생성한다. 관련 .md 파일 수정 시 동일 경로에 동명의 `.json` 파일도 함께 갱신한다. **이 단계를 건너뛰면 안 된다.**
 
 ### Design System Workflow (DESIGN Phase)
 

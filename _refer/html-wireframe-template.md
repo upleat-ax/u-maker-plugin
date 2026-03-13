@@ -1,7 +1,9 @@
 # HTML Wireframe Template
 
-> 화면 와이어프레임 HTML 생성 표준. 각 UI 요소에 원 숫자(①②③...) 어노테이션 마커를 부착하고,
-> 클릭 시 **우측 Drawer**로 **디자인 설명**(Description)과 **개발 스펙**(동작방식, 흐름도, 옵션값, Validation 등)을 2-탭 구조로 표시한다.
+> 화면 와이어프레임 HTML 생성 표준. 각 UI 요소에 숫자 마커(1, 2, 3...)를 부착하고,
+> **우측 Sidebar**에 전체 어노테이션을 아코디언 카드로 한눈에 표시한다.
+> 각 카드는 **Design 탭**과 **Dev 탭** 2-탭 구조로 디자인 설명과 개발 스펙을 제공한다.
+> Sidebar는 토글 버튼으로 열기/닫기가 가능하며, 마커 클릭 시 해당 어노테이션으로 자동 스크롤된다.
 > 와이어프레임 디렉토리에 `index.html`을 생성하여 전체 화면 목록을 탐색할 수 있도록 한다.
 
 ---
@@ -50,41 +52,60 @@
 
 ## 2. 어노테이션 시스템
 
-### 2.1 원 숫자 마커 (Annotation Marker)
+### 2.1 숫자 마커 (Annotation Marker) — CSS Circle Badge
 
-각 와이어프레임의 주요 UI 요소에 원 숫자 마커를 부착한다. 마커는 해당 요소의 우상단에 absolute 배치한다.
+**거의 모든 UI 요소**에 숫자 마커를 부착한다. 마커는 해당 요소의 우상단에 absolute 배치한다.
+
+#### 마커 부착 대상 기준
+
+| 부착 대상 (필수) | 예시 |
+|-----------------|------|
+| **모든 인터랙티브 요소** | Button, Input, Select, Textarea, Checkbox, Radio, Toggle, Link, Tab, Stepper, File Upload, Search |
+| **모든 데이터 표시 요소** | Card, Badge, Tag, Table, List, Chart, Graph, Stat, Progress Bar, Avatar |
+| **모든 네비게이션 요소** | Header, Nav, Sidebar, Breadcrumb, Pagination, Footer, Menu |
+| **모든 피드백 요소** | Toast, Alert, Modal, Dialog, Confirm, Tooltip, Empty State, Loading |
+| **모든 컨텐츠 영역** | Form (전체), Section (의미 있는), Banner, Hero, Panel |
+| **정책/비즈니스 룰 관련 영역** | 권한 분기, 상태 분기, 조건부 표시/숨김 영역 |
+
+| 부착 제외 (선택) | 예시 |
+|-----------------|------|
+| 순수 레이아웃 컨테이너 | 빈 wrapper div, spacer, grid/flex 컨테이너 |
+| 반복 항목의 개별 인스턴스 | 리스트의 개별 row (리스트 자체에는 부착) |
+
+> **원칙: 누락보다 과잉이 낫다.** 어노테이션이 충분하지 않으면 개발 시 누락이 발생한다.
+> 화면 내 모든 의미 있는 요소에 Description을 작성하는 것을 기본으로 한다.
 
 ```html
 <!-- 어노테이션 마커: 요소를 감싸는 wrapper에 부착 -->
 <div class="wf-element" data-annotation="1">
-  <span class="annotation-marker" data-target="annotation-1">&#9312;</span>
+  <span class="annotation-marker" data-target="annotation-1">1</span>
   <!-- 실제 UI 요소 -->
   <div class="wf-input">이메일 입력</div>
 </div>
 ```
 
-#### 원 숫자 문자 매핑
+마커는 **일반 숫자**를 CSS로 원형 배지 처리한다. 원 숫자 특수문자(①②③)는 사용하지 않는다.
+숫자가 20을 초과해도 제한 없이 표시 가능하다.
 
-| 번호 | HTML Entity | 문자 |
-|------|-------------|------|
-| 1 | `&#9312;` | ① |
-| 2 | `&#9313;` | ② |
-| 3 | `&#9314;` | ③ |
-| 4 | `&#9315;` | ④ |
-| 5 | `&#9316;` | ⑤ |
-| 6 | `&#9317;` | ⑥ |
-| 7 | `&#9318;` | ⑦ |
-| 8 | `&#9319;` | ⑧ |
-| 9 | `&#9320;` | ⑨ |
-| 10 | `&#9321;` | ⑩ |
-| 11~20 | `&#9322;`~`&#9331;` | ⑪~⑳ |
+```html
+<!-- 숫자만 넣으면 CSS가 원형 배지로 처리 -->
+<span class="annotation-marker" data-target="annotation-1">1</span>
+<span class="annotation-marker" data-target="annotation-15">15</span>
+<span class="annotation-marker" data-target="annotation-42">42</span>
+```
 
-### 2.2 어노테이션 Drawer — 2-Tab 구조
+### 2.2 어노테이션 Sidebar — 토글 + 아코디언 카드
 
-마커 클릭 시 **우측 Drawer(슬라이드 패널)** 를 표시한다. Drawer는 **Design 탭**과 **Dev 탭** 2개 탭으로 구성된다.
+**우측 Sidebar**에 해당 화면의 **전체 어노테이션을 아코디언 카드**로 나열한다.
+Topbar의 **토글 버튼**으로 Sidebar를 열거나 닫을 수 있다.
 
+- Sidebar가 열리면 본문(`.main-content`)이 좌측으로 축소되고, Sidebar가 우측 고정 패널로 표시
+- 각 어노테이션은 **접힌 상태(collapsed)** 의 카드로 나열되며, 클릭하면 확장(expand)
+- 확장된 카드 내부에 **Design 탭**과 **Dev 탭** 2개 탭
 - **Design 탭**: 설명(Description), 요구사항, 비즈니스 룰/정책, 상태, 연결 화면 (기획/디자인 관점)
 - **Dev 탭**: 동작방식, 흐름도, 옵션값, Validation, API, 이벤트, 데이터 바인딩 (개발 관점)
+- 마커 클릭 시 Sidebar가 열리고 해당 카드로 스크롤 + 자동 확장
+- Sidebar 상단에 **Expand All / Collapse All** 버튼 제공
 
 #### Description 작성 포맷
 
@@ -104,140 +125,150 @@ Description 작성 규칙:
 ```
 
 ```html
-<!-- Drawer 컨테이너: body 하단에 모아둔다 -->
-<div class="annotation-drawer" id="annotation-1">
-  <div class="drawer-header">
-    <span class="drawer-number">&#9312;</span>
-    <h4 class="drawer-title">이메일 입력 필드</h4>
-    <button class="drawer-close" onclick="closeDrawer()">&times;</button>
-  </div>
-
-  <!-- Tab Navigation -->
-  <div class="drawer-tabs">
-    <button class="drawer-tab active" onclick="switchTab(this,'design')">Design</button>
-    <button class="drawer-tab" onclick="switchTab(this,'dev')">Dev</button>
-  </div>
-
-  <!-- ===== Design Tab ===== -->
-  <div class="drawer-body tab-content active" data-tab="design">
-
-    <!-- Description (공통 정책) — 스크린샷 스타일 -->
-    <div class="desc-block">
-      <div class="desc-header">[정책]</div>
-      <ul class="desc-list">
-        <li>사용자는 부고장 삭제 가능
-          <ul class="desc-sub">
-            <li>사용자 생성 부고장 삭제 가능</li>
-            <li>대표 부고장 삭제 가능(삭제 시 경고 알림)</li>
-          </ul>
-        </li>
-        <li>1인당 작성 개수
-          <ul class="desc-sub">
-            <li>사용자는 부고장 10개까지 생성 가능</li>
-            <li>1인당 작성 개수 초과 시, 기존 부고장 삭제 후 추가 생성</li>
-          </ul>
-        </li>
-        <li>부고&amp;회원 유효기간
-          <ul class="desc-sub">
-            <li>최종 저장(최종 수정일) 기준 1년 경과 시 자동 삭제</li>
-            <li>삭제 시 해당 부고장 메인 상주의 부고장이 남아 있지 않은 경우 회원도 삭제</li>
-          </ul>
-        </li>
-        <li>부고 유효기간
-          <ul class="desc-sub">
-            <li>내용은 제거</li>
-            <li>발인 당일 발인 시간 초과 시 유효기간 종료(문구 노출)</li>
-            <li>노출 문구 : <span class="desc-quote">'해당 부고는 발인 되었습니다.'</span></li>
-          </ul>
-        </li>
-        <li>고객센터 부고장
-          <ul class="desc-sub">
-            <li>난수 생성 없이 비밀번호 재생성 하여 접근할 수 있도록 함</li>
-          </ul>
-        </li>
-      </ul>
-    </div>
-
-    <!-- 관련 요구사항 -->
-    <div class="drawer-section">
-      <h5>요구사항</h5>
-      <ul class="drawer-tags">
-        <li><span class="drawer-tag tag-fr">FR-0010</span> 사용자 인증</li>
-        <li><span class="drawer-tag tag-ft">FT-0010</span> 이메일 로그인</li>
-      </ul>
-    </div>
-
-    <!-- 연결 화면 -->
-    <div class="drawer-section">
-      <h5>연결 화면</h5>
-      <ul class="drawer-links">
-        <li><a href="S-0020.html">S-0020 회원가입</a> — "회원가입" 링크 클릭 시</li>
-      </ul>
+<!-- ===== Annotation Sidebar: body 하단, 전체 어노테이션을 아코디언 카드로 나열 ===== -->
+<aside class="annotation-sidebar" id="annotationSidebar">
+  <div class="sidebar-header">
+    <h3 class="sidebar-title">Annotations</h3>
+    <div class="sidebar-actions">
+      <button class="sidebar-btn" onclick="expandAllCards()" title="Expand All">&#9660; All</button>
+      <button class="sidebar-btn" onclick="collapseAllCards()" title="Collapse All">&#9650; All</button>
+      <button class="sidebar-close" onclick="toggleSidebar()" title="Close Sidebar">&times;</button>
     </div>
   </div>
+  <div class="sidebar-body" id="sidebarBody">
 
-  <!-- ===== Dev Tab ===== -->
-  <div class="drawer-body tab-content" data-tab="dev">
-
-    <!-- 동작방식 -->
-    <div class="drawer-section">
-      <h5>동작방식</h5>
-      <table class="drawer-table">
-        <tr><td class="state-label">Type</td><td><code>input[type="email"]</code></td></tr>
-        <tr><td class="state-label">Component</td><td><code>EmailInput</code> (atoms/input)</td></tr>
-        <tr><td class="state-label">Debounce</td><td>300ms (중복 검사 시)</td></tr>
-      </table>
-    </div>
-
-    <!-- Validation -->
-    <div class="drawer-section">
-      <h5>Validation</h5>
-      <table class="dev-validation-table">
-        <thead><tr><th>Rule</th><th>조건</th><th>에러 메시지</th></tr></thead>
-        <tbody>
-          <tr>
-            <td><span class="dev-badge badge-required">required</span></td>
-            <td>빈 값</td>
-            <td><code>"이메일을 입력해주세요"</code></td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <!-- 흐름도 -->
-    <div class="drawer-section">
-      <h5>흐름도</h5>
-      <div class="dev-flow-diagram">
-        <div class="dev-flow-row">
-          <span class="dev-flow-node">사용자 입력</span>
-          <span class="dev-flow-arrow">→</span>
-          <span class="dev-flow-node">onChange: 실시간 형식 검증</span>
+    <!-- ===== Annotation Card #1 ===== -->
+    <div class="annotation-card" id="annotation-1" data-annotation="1">
+      <div class="card-header" onclick="toggleCard(this)">
+        <span class="card-number">1</span>
+        <span class="card-title">이메일 입력 필드</span>
+        <span class="card-chevron">&#9660;</span>
+      </div>
+      <div class="card-body">
+        <!-- Tab Navigation -->
+        <div class="card-tabs">
+          <button class="card-tab active" onclick="switchTab(this,'design')">Design</button>
+          <button class="card-tab" onclick="switchTab(this,'dev')">Dev</button>
         </div>
-        <div class="dev-flow-row"><span class="dev-flow-arrow">↓</span></div>
-        <div class="dev-flow-row">
-          <span class="dev-flow-node dev-flow-decision">Valid?</span>
-          <span class="dev-flow-arrow">Yes →</span>
-          <span class="dev-flow-node dev-flow-success">에러 해제</span>
+
+        <!-- ===== Design Tab ===== -->
+        <div class="card-tab-content tab-content active" data-tab="design">
+          <!-- Description (공통 정책) -->
+          <div class="desc-block">
+            <div class="desc-header">[정책]</div>
+            <ul class="desc-list">
+              <li>사용자는 부고장 삭제 가능
+                <ul class="desc-sub">
+                  <li>사용자 생성 부고장 삭제 가능</li>
+                  <li>대표 부고장 삭제 가능(삭제 시 경고 알림)</li>
+                </ul>
+              </li>
+              <li>1인당 작성 개수
+                <ul class="desc-sub">
+                  <li>사용자는 부고장 10개까지 생성 가능</li>
+                  <li>1인당 작성 개수 초과 시, 기존 부고장 삭제 후 추가 생성</li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+
+          <!-- 관련 요구사항 -->
+          <div class="card-section">
+            <h5>요구사항</h5>
+            <ul class="card-tags">
+              <li><span class="card-tag tag-fr">FR-0010</span> 사용자 인증</li>
+              <li><span class="card-tag tag-ft">FT-0010</span> 이메일 로그인</li>
+            </ul>
+          </div>
+
+          <!-- 연결 화면 -->
+          <div class="card-section">
+            <h5>연결 화면</h5>
+            <ul class="card-links">
+              <li><a href="S-0020.html">S-0020 회원가입</a> — "회원가입" 링크 클릭 시</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- ===== Dev Tab ===== -->
+        <div class="card-tab-content tab-content" data-tab="dev">
+          <!-- 동작방식 -->
+          <div class="card-section">
+            <h5>동작방식</h5>
+            <table class="card-table">
+              <tr><td class="state-label">Type</td><td><code>input[type="email"]</code></td></tr>
+              <tr><td class="state-label">Component</td><td><code>EmailInput</code> (atoms/input)</td></tr>
+              <tr><td class="state-label">Debounce</td><td>300ms (중복 검사 시)</td></tr>
+            </table>
+          </div>
+
+          <!-- Validation -->
+          <div class="card-section">
+            <h5>Validation</h5>
+            <table class="dev-validation-table">
+              <thead><tr><th>Rule</th><th>조건</th><th>에러 메시지</th></tr></thead>
+              <tbody>
+                <tr>
+                  <td><span class="dev-badge badge-required">required</span></td>
+                  <td>빈 값</td>
+                  <td><code>"이메일을 입력해주세요"</code></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- 흐름도 -->
+          <div class="card-section">
+            <h5>흐름도</h5>
+            <div class="dev-flow-diagram">
+              <div class="dev-flow-row">
+                <span class="dev-flow-node">사용자 입력</span>
+                <span class="dev-flow-arrow">→</span>
+                <span class="dev-flow-node">onChange: 실시간 형식 검증</span>
+              </div>
+              <div class="dev-flow-row"><span class="dev-flow-arrow">↓</span></div>
+              <div class="dev-flow-row">
+                <span class="dev-flow-node dev-flow-decision">Valid?</span>
+                <span class="dev-flow-arrow">Yes →</span>
+                <span class="dev-flow-node dev-flow-success">에러 해제</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- API -->
+          <div class="card-section">
+            <h5>API</h5>
+            <div class="dev-api-card">
+              <span class="dev-method method-post">POST</span>
+              <code class="dev-endpoint">/api/v1/auth/login</code>
+            </div>
+          </div>
         </div>
       </div>
     </div>
+    <!-- ===== /Annotation Card #1 ===== -->
 
-    <!-- API -->
-    <div class="drawer-section">
-      <h5>API</h5>
-      <div class="dev-api-card">
-        <span class="dev-method method-post">POST</span>
-        <code class="dev-endpoint">/api/v1/auth/login</code>
+    <!-- ===== Annotation Card #2 (반복) ===== -->
+    <div class="annotation-card" id="annotation-2" data-annotation="2">
+      <div class="card-header" onclick="toggleCard(this)">
+        <span class="card-number">2</span>
+        <span class="card-title">비밀번호 입력 필드</span>
+        <span class="card-chevron">&#9660;</span>
+      </div>
+      <div class="card-body">
+        <!-- ... Design/Dev 탭 동일 구조 반복 ... -->
       </div>
     </div>
+    <!-- 이하 모든 어노테이션 카드 반복 -->
+
   </div>
-</div>
+</aside>
 ```
 
 #### 번호별 Description 예시 (스크린샷 참고)
 
 ```html
-<!-- ① [Button] 부고장 공유 -->
+<!-- #1 [Button] 부고장 공유 -->
 <div class="desc-block">
   <div class="desc-header">[Button] 부고장 공유</div>
   <ul class="desc-list">
@@ -251,7 +282,7 @@ Description 작성 규칙:
   <div class="desc-note">비고</div>
 </div>
 
-<!-- ② [Card] 부고장 -->
+<!-- #2 [Card] 부고장 -->
 <div class="desc-block">
   <div class="desc-header">[Card] 부고장</div>
   <ul class="desc-list">
@@ -261,7 +292,7 @@ Description 작성 규칙:
   <div class="desc-note">비고</div>
 </div>
 
-<!-- ③ [Badge] 고객센터 생성 -->
+<!-- #3 [Badge] 고객센터 생성 -->
 <div class="desc-block">
   <div class="desc-header">[Badge] 고객센터 생성</div>
   <ul class="desc-list">
@@ -270,7 +301,7 @@ Description 작성 규칙:
   <div class="desc-note">비고</div>
 </div>
 
-<!-- ④ [Badge] 대표 -->
+<!-- #4 [Badge] 대표 -->
 <div class="desc-block">
   <div class="desc-header">[Badge] 대표</div>
   <ul class="desc-list">
@@ -285,7 +316,7 @@ Description 작성 규칙:
   <div class="desc-note">비고</div>
 </div>
 
-<!-- ⑤ [Confirm] 삭제 확인 -->
+<!-- #5 [Confirm] 삭제 확인 -->
 <div class="desc-block">
   <div class="desc-header">[Confirm]</div>
   <ul class="desc-list">
@@ -305,7 +336,7 @@ Description 작성 규칙:
 
 ```html
 <!-- Dev 탭 내: Select 옵션값 섹션 -->
-<div class="popup-section">
+<div class="card-section">
   <h5>옵션값</h5>
   <table class="dev-options-table">
     <thead><tr><th>Value</th><th>Label</th><th>조건</th></tr></thead>
@@ -323,9 +354,9 @@ Description 작성 규칙:
 </div>
 
 <!-- Dev 탭 내: Select 동작방식 -->
-<div class="popup-section">
+<div class="card-section">
   <h5>동작방식</h5>
-  <table class="popup-table">
+  <table class="card-table">
     <tr><td class="state-label">Component</td><td><code>RoleSelect</code> (molecules/select)</td></tr>
     <tr><td class="state-label">Multi-select</td><td>No (단일 선택)</td></tr>
     <tr><td class="state-label">Searchable</td><td>Yes (5개 이상 시 검색 활성화)</td></tr>
@@ -335,7 +366,7 @@ Description 작성 규칙:
 </div>
 
 <!-- Dev 탭 내: Select Validation -->
-<div class="popup-section">
+<div class="card-section">
   <h5>Validation</h5>
   <table class="dev-validation-table">
     <thead><tr><th>Rule</th><th>조건</th><th>에러 메시지</th></tr></thead>
@@ -359,9 +390,9 @@ Description 작성 규칙:
 
 ```html
 <!-- Dev 탭 내: 버튼 동작방식 -->
-<div class="popup-section">
+<div class="card-section">
   <h5>동작방식</h5>
-  <table class="popup-table">
+  <table class="card-table">
     <tr><td class="state-label">Component</td><td><code>SubmitButton</code> (atoms/button)</td></tr>
     <tr><td class="state-label">Type</td><td><code>button[type="submit"]</code></td></tr>
     <tr><td class="state-label">Disabled 조건</td><td>form invalid 또는 isSubmitting=true</td></tr>
@@ -371,7 +402,7 @@ Description 작성 규칙:
 </div>
 
 <!-- Dev 탭 내: Submit 흐름도 -->
-<div class="popup-section">
+<div class="card-section">
   <h5>흐름도</h5>
   <div class="dev-flow-diagram">
     <div class="dev-flow-row">
@@ -428,9 +459,9 @@ Description 작성 규칙:
 
 ```html
 <!-- Dev 탭 내: 테이블 동작방식 -->
-<div class="popup-section">
+<div class="card-section">
   <h5>동작방식</h5>
-  <table class="popup-table">
+  <table class="card-table">
     <tr><td class="state-label">Component</td><td><code>DataTable</code> (organisms/table)</td></tr>
     <tr><td class="state-label">Pagination</td><td>서버 사이드, 20건/페이지</td></tr>
     <tr><td class="state-label">Sorting</td><td>컬럼 헤더 클릭 시 ASC/DESC 토글</td></tr>
@@ -441,7 +472,7 @@ Description 작성 규칙:
 </div>
 
 <!-- Dev 탭 내: 테이블 컬럼 정의 -->
-<div class="popup-section">
+<div class="card-section">
   <h5>컬럼 정의</h5>
   <table class="dev-columns-table">
     <thead><tr><th>Field</th><th>Label</th><th>Type</th><th>Sortable</th><th>Width</th></tr></thead>
@@ -456,13 +487,13 @@ Description 작성 규칙:
 </div>
 
 <!-- Dev 탭 내: API + Query Params -->
-<div class="popup-section">
+<div class="card-section">
   <h5>API</h5>
   <div class="dev-api-card">
     <span class="dev-method method-get">GET</span>
     <code class="dev-endpoint">/api/v1/users</code>
   </div>
-  <table class="popup-table">
+  <table class="card-table">
     <tr><td class="state-label">page</td><td><code>query.page</code> (default: 1)</td></tr>
     <tr><td class="state-label">limit</td><td><code>query.limit</code> (default: 20)</td></tr>
     <tr><td class="state-label">sort</td><td><code>query.sort</code> (e.g. "createdAt:desc")</td></tr>
@@ -471,9 +502,9 @@ Description 작성 규칙:
 </div>
 ```
 
-### 2.3 Drawer 내용 구성 규칙
+### 2.3 Sidebar Card 내용 구성 규칙
 
-각 어노테이션 Drawer는 **Design 탭**과 **Dev 탭** 2개 탭으로 구성한다.
+각 어노테이션 카드는 아코디언으로 접혀 있으며, 확장 시 **Design 탭**과 **Dev 탭** 2개 탭으로 구성한다.
 
 #### Design 탭 (기획/디자인 관점)
 
@@ -675,87 +706,164 @@ body {
 
 /* ===== Annotation Marker ===== */
 .annotation-marker {
-  position:absolute; top:-8px; right:-8px; z-index:10;
-  width:26px; height:26px; border-radius:50%;
+  position:absolute; top:-10px; right:-10px; z-index:10;
+  min-width:24px; height:24px; padding:0 5px; border-radius:50%;
   background:var(--marker-bg); color:var(--marker-text);
-  font-size:14px; font-weight:700; line-height:26px; text-align:center;
+  font-size:11px; font-weight:700; line-height:24px; text-align:center;
   cursor:pointer; transition:all 0.2s;
-  box-shadow:0 2px 6px rgba(37,99,235,0.3);
+  box-shadow:
+    0 2px 8px rgba(37,99,235,0.4),
+    0 0 0 2px rgba(255,255,255,0.9),
+    0 4px 12px rgba(0,0,0,0.15);
   user-select:none;
+  border:none;
+  font-family:'Fira Code',monospace;
+  letter-spacing:-0.5px;
+}
+/* 2자리 이상 숫자는 pill 형태로 확장 */
+.annotation-marker:nth-child(n) { /* 10+ 대응 */ }
+.annotation-marker {
+  min-width:24px; /* 1자리 */
 }
 .annotation-marker:hover {
-  transform:scale(1.15);
-  box-shadow:0 3px 10px rgba(37,99,235,0.4);
+  transform:scale(1.2);
+  box-shadow:
+    0 3px 12px rgba(37,99,235,0.5),
+    0 0 0 3px rgba(255,255,255,1),
+    0 6px 20px rgba(0,0,0,0.2);
 }
 
-/* ===== Annotation Drawer (Right Slide Panel) ===== */
-.drawer-overlay {
-  display:none; position:fixed; top:0; left:0; right:0; bottom:0;
-  background:var(--overlay); z-index:100; transition:opacity 0.3s;
+/* ===== Main Content Wrapper ===== */
+.main-content {
+  transition:margin-right 0.3s ease;
 }
-.drawer-overlay.active { display:block; }
+body.sidebar-open .main-content {
+  margin-right:480px;
+}
 
-.annotation-drawer {
-  position:fixed; z-index:101;
+/* ===== Sidebar Toggle Button (Topbar) ===== */
+.sidebar-toggle {
+  width:36px; height:36px; border-radius:50%;
+  background:var(--card-bg); border:1px solid var(--border);
+  cursor:pointer; display:flex; align-items:center; justify-content:center;
+  font-size:16px; transition:all 0.3s; position:relative;
+}
+.sidebar-toggle:hover { border-color:var(--primary); transform:scale(1.1); }
+.sidebar-toggle .badge-count {
+  position:absolute; top:-4px; right:-4px;
+  width:18px; height:18px; border-radius:50%;
+  background:var(--tag-fr); color:#fff; font-size:10px;
+  font-weight:700; line-height:18px; text-align:center;
+}
+
+/* ===== Annotation Sidebar (Right Fixed Panel) ===== */
+.annotation-sidebar {
+  position:fixed; z-index:90;
   top:0; right:-480px; width:480px; max-width:90vw; height:100vh;
   background:var(--popup-bg); border-left:1px solid var(--popup-border);
-  box-shadow:-8px 0 30px var(--popup-shadow);
+  box-shadow:-4px 0 20px var(--popup-shadow);
   transition:right 0.3s ease;
   display:flex; flex-direction:column;
 }
-.annotation-drawer.active { right:0; }
+body.sidebar-open .annotation-sidebar { right:0; }
 
-.drawer-header {
+/* Sidebar Header */
+.sidebar-header {
   display:flex; align-items:center; gap:12px;
-  padding:16px 20px; border-bottom:1px solid var(--border);
+  padding:14px 16px; border-bottom:1px solid var(--border);
   background:var(--primary); color:#fff; flex-shrink:0;
 }
-.drawer-number { font-size:20px; font-weight:700; }
-.drawer-title { flex:1; font-size:16px; font-weight:600; margin:0; }
-.drawer-close {
-  width:32px; height:32px; border-radius:50%; border:none;
-  background:rgba(255,255,255,0.2); color:#fff; font-size:18px;
+.sidebar-title { flex:1; font-size:15px; font-weight:700; margin:0; }
+.sidebar-actions { display:flex; gap:6px; }
+.sidebar-btn {
+  padding:4px 10px; border-radius:4px; border:1px solid rgba(255,255,255,0.3);
+  background:rgba(255,255,255,0.1); color:#fff; font-size:11px; font-weight:600;
+  cursor:pointer; transition:background 0.2s;
+}
+.sidebar-btn:hover { background:rgba(255,255,255,0.25); }
+.sidebar-close {
+  width:28px; height:28px; border-radius:50%; border:none;
+  background:rgba(255,255,255,0.2); color:#fff; font-size:16px;
   cursor:pointer; display:flex; align-items:center; justify-content:center;
   transition:background 0.2s;
 }
-.drawer-close:hover { background:rgba(255,255,255,0.3); }
+.sidebar-close:hover { background:rgba(255,255,255,0.3); }
 
-/* Drawer Tabs */
-.drawer-tabs {
-  display:flex; border-bottom:2px solid var(--border); background:var(--card-bg); flex-shrink:0;
+/* Sidebar Body (scrollable) */
+.sidebar-body { padding:12px; overflow-y:auto; flex:1; }
+
+/* ===== Annotation Card (Accordion) ===== */
+.annotation-card {
+  background:var(--card-bg); border:1px solid var(--border); border-radius:8px;
+  margin-bottom:8px; overflow:hidden; transition:border-color 0.2s;
 }
-.drawer-tab {
-  flex:1; padding:10px 16px; border:none; background:none;
-  font-size:13px; font-weight:600; color:var(--text-secondary);
+.annotation-card.highlight { border-color:var(--primary); box-shadow:0 0 0 2px var(--primary-light); }
+.annotation-card:last-child { margin-bottom:0; }
+
+/* Card Header (always visible, clickable) */
+.card-header {
+  display:flex; align-items:center; gap:10px;
+  padding:10px 14px; cursor:pointer; user-select:none;
+  transition:background 0.2s;
+}
+.card-header:hover { background:var(--hover-bg); }
+.card-number {
+  min-width:22px; height:22px; padding:0 4px; border-radius:50%; flex-shrink:0;
+  background:var(--marker-bg); color:var(--marker-text);
+  font-size:11px; font-weight:700; line-height:22px; text-align:center;
+  font-family:'Fira Code',monospace;
+  box-shadow:0 1px 4px rgba(37,99,235,0.3);
+}
+.card-title { flex:1; font-size:13px; font-weight:600; color:var(--text); }
+.card-chevron {
+  font-size:10px; color:var(--text-muted); transition:transform 0.2s;
+}
+.annotation-card.expanded .card-chevron { transform:rotate(180deg); }
+
+/* Card Body (collapsible) */
+.card-body {
+  display:none; border-top:1px solid var(--border);
+}
+.annotation-card.expanded .card-body { display:block; }
+
+/* Card Tabs */
+.card-tabs {
+  display:flex; border-bottom:2px solid var(--border); background:var(--card-bg);
+}
+.card-tab {
+  flex:1; padding:8px 12px; border:none; background:none;
+  font-size:12px; font-weight:600; color:var(--text-secondary);
   cursor:pointer; transition:all 0.2s; border-bottom:2px solid transparent;
   margin-bottom:-2px;
 }
-.drawer-tab:hover { color:var(--text); background:var(--hover-bg); }
-.drawer-tab.active { color:var(--primary); border-bottom-color:var(--primary); }
+.card-tab:hover { color:var(--text); background:var(--hover-bg); }
+.card-tab.active { color:var(--primary); border-bottom-color:var(--primary); }
 .tab-content { display:none; }
 .tab-content.active { display:block; }
 
-/* Drawer Body */
-.drawer-body { padding:20px; overflow-y:auto; flex:1; }
-.drawer-section { margin-bottom:16px; }
-.drawer-section:last-child { margin-bottom:0; }
-.drawer-section h5 {
-  font-size:12px; text-transform:uppercase; letter-spacing:0.5px;
-  color:var(--text-secondary); margin-bottom:8px; font-weight:600;
-}
-.drawer-section p { font-size:14px; line-height:1.7; }
-.drawer-section ul { list-style:none; padding:0; }
-.drawer-section li { font-size:13px; padding:4px 0; }
+/* Card Tab Content */
+.card-tab-content { padding:14px; }
 
-/* Drawer Table */
-.drawer-table { width:100%; font-size:13px; border-collapse:collapse; }
-.drawer-table td { padding:6px 10px; border-bottom:1px solid var(--border); }
-.drawer-table code { background:var(--code-bg); padding:1px 5px; border-radius:3px; font-size:12px; font-family:'Fira Code',monospace; color:var(--code-color); }
+/* Card Sections */
+.card-section { margin-bottom:14px; }
+.card-section:last-child { margin-bottom:0; }
+.card-section h5 {
+  font-size:11px; text-transform:uppercase; letter-spacing:0.5px;
+  color:var(--text-secondary); margin-bottom:6px; font-weight:600;
+}
+.card-section p { font-size:13px; line-height:1.7; }
+.card-section ul { list-style:none; padding:0; }
+.card-section li { font-size:12px; padding:3px 0; }
+
+/* Card Table */
+.card-table { width:100%; font-size:12px; border-collapse:collapse; }
+.card-table td { padding:5px 8px; border-bottom:1px solid var(--border); }
+.card-table code { background:var(--code-bg); padding:1px 5px; border-radius:3px; font-size:11px; font-family:'Fira Code',monospace; color:var(--code-color); }
 .state-label { font-weight:600; color:var(--primary); white-space:nowrap; width:80px; }
 
-/* Drawer Tags */
-.drawer-tags li { display:flex; align-items:center; gap:8px; }
-.drawer-tag {
+/* Card Tags */
+.card-tags li { display:flex; align-items:center; gap:8px; }
+.card-tag {
   display:inline-block; padding:2px 8px; border-radius:4px;
   font-size:11px; font-weight:700; font-family:'Fira Code',monospace;
 }
@@ -763,10 +871,10 @@ body {
 .tag-ft { background:rgba(37,99,235,0.1); color:var(--tag-ft); }
 .tag-us { background:rgba(5,150,105,0.1); color:var(--tag-us); }
 
-/* Drawer Links */
-.drawer-links li { padding:4px 0; }
-.drawer-links a { color:var(--primary); text-decoration:none; font-weight:600; font-size:13px; }
-.drawer-links a:hover { text-decoration:underline; }
+/* Card Links */
+.card-links li { padding:3px 0; }
+.card-links a { color:var(--primary); text-decoration:none; font-weight:600; font-size:12px; }
+.card-links a:hover { text-decoration:underline; }
 
 /* ===== Description Block (스크린샷 스타일) ===== */
 .desc-block {
@@ -900,17 +1008,20 @@ body {
 }
 .legend-item:hover { color:var(--primary); }
 .legend-num {
-  width:24px; height:24px; border-radius:50%;
+  min-width:22px; height:22px; padding:0 4px; border-radius:50%;
   background:var(--marker-bg); color:var(--marker-text);
-  font-size:12px; font-weight:700; line-height:24px; text-align:center;
-  flex-shrink:0;
+  font-size:11px; font-weight:700; line-height:22px; text-align:center;
+  flex-shrink:0; font-family:'Fira Code',monospace;
+  box-shadow:0 1px 4px rgba(37,99,235,0.3);
 }
 
 /* ===== Mobile ===== */
 @media (max-width:768px) {
   .topbar { flex-wrap:wrap; }
   .info-grid { grid-template-columns:1fr; }
-  .annotation-drawer { width:100vw; max-width:100vw; right:-100vw; }
+  .annotation-sidebar { width:100vw; max-width:100vw; right:-100vw; }
+  body.sidebar-open .main-content { margin-right:0; }
+  body.sidebar-open .annotation-sidebar { right:0; }
   .legend-list { columns:1; }
   .wf-row { flex-direction:column; }
 }
@@ -918,9 +1029,10 @@ body {
 /* ===== Print ===== */
 @media print {
   .topbar { position:static; box-shadow:none; }
-  .theme-toggle { display:none; }
+  .theme-toggle, .sidebar-toggle { display:none; }
   .annotation-marker { print-color-adjust:exact; -webkit-print-color-adjust:exact; }
-  .annotation-drawer, .drawer-overlay { display:none !important; }
+  .annotation-sidebar { display:none !important; }
+  .main-content { margin-right:0 !important; }
 }
 </style>
 </head>
@@ -934,7 +1046,14 @@ body {
   <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
     <span id="theme-icon">&#9789;</span>
   </button>
+  <button class="sidebar-toggle" onclick="toggleSidebar()" aria-label="Toggle annotations" title="Toggle Annotations">
+    &#9776;
+    <span class="badge-count" id="annotationCount">{{ANNOTATION_COUNT}}</span>
+  </button>
 </div>
+
+<!-- Main Content Wrapper -->
+<div class="main-content">
 
 <!-- Info Panel -->
 <div class="info-panel">
@@ -968,20 +1087,19 @@ body {
 <div class="annotation-legend">
   <h2>Annotations</h2>
   <ul class="legend-list">
-    <!-- 범례: 클릭 시 해당 Drawer 오픈 -->
-    <li class="legend-item" onclick="openDrawer('annotation-1')">
-      <span class="legend-num">&#9312;</span>
+    <!-- 범례: 클릭 시 Sidebar 열기 + 해당 카드로 스크롤 -->
+    <li class="legend-item" onclick="openAnnotation('annotation-1')">
+      <span class="legend-num">1</span>
       <span>이메일 입력 필드</span>
     </li>
     <!-- ... 반복 -->
   </ul>
 </div>
 
-<!-- Drawer Overlay -->
-<div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
+</div><!-- /.main-content -->
 
-<!-- Annotation Drawers -->
-<!-- 각 어노테이션의 Drawer를 여기에 배치 -->
+<!-- Annotation Sidebar -->
+<!-- 모든 어노테이션 카드를 여기에 배치 -->
 
 <script>
 // Theme
@@ -998,43 +1116,75 @@ function toggleTheme(){
   }
 })();
 
-// Tab switching
-function switchTab(btn,tabName){
-  var drawer=btn.closest('.annotation-drawer');
-  drawer.querySelectorAll('.drawer-tab').forEach(function(t){t.classList.remove('active');});
-  drawer.querySelectorAll('.tab-content').forEach(function(c){c.classList.remove('active');});
-  btn.classList.add('active');
-  drawer.querySelector('[data-tab="'+tabName+'"]').classList.add('active');
+// Sidebar Toggle
+function toggleSidebar(){
+  document.body.classList.toggle('sidebar-open');
+  localStorage.setItem('wf-sidebar',document.body.classList.contains('sidebar-open')?'open':'closed');
+}
+// Restore sidebar state
+(function(){
+  if(localStorage.getItem('wf-sidebar')==='open'){
+    document.body.classList.add('sidebar-open');
+  }
+})();
+
+// Card Accordion (expand/collapse)
+function toggleCard(headerEl){
+  var card=headerEl.closest('.annotation-card');
+  card.classList.toggle('expanded');
+}
+function expandAllCards(){
+  document.querySelectorAll('.annotation-card').forEach(function(c){c.classList.add('expanded');});
+}
+function collapseAllCards(){
+  document.querySelectorAll('.annotation-card').forEach(function(c){c.classList.remove('expanded');});
 }
 
-// Drawer
-function openDrawer(id){
-  closeDrawer();
-  document.getElementById('drawerOverlay').classList.add('active');
-  var d=document.getElementById(id);
-  if(d){
-    d.classList.add('active');
-    // Reset to Design tab on open
-    var firstTab=d.querySelector('.drawer-tab');
-    if(firstTab)switchTab(firstTab,'design');
+// Open specific annotation: open sidebar + expand card + scroll into view
+function openAnnotation(id){
+  if(!document.body.classList.contains('sidebar-open')){
+    document.body.classList.add('sidebar-open');
+    localStorage.setItem('wf-sidebar','open');
+  }
+  // Collapse all, then expand target
+  document.querySelectorAll('.annotation-card').forEach(function(c){
+    c.classList.remove('expanded','highlight');
+  });
+  var card=document.getElementById(id);
+  if(card){
+    card.classList.add('expanded','highlight');
+    // Reset to Design tab
+    var firstTab=card.querySelector('.card-tab');
+    if(firstTab) switchTab(firstTab,'design');
+    // Scroll into view in sidebar
+    setTimeout(function(){ card.scrollIntoView({behavior:'smooth',block:'start'}); },100);
+    // Remove highlight after animation
+    setTimeout(function(){ card.classList.remove('highlight'); },2000);
   }
 }
-function closeDrawer(){
-  document.getElementById('drawerOverlay').classList.remove('active');
-  document.querySelectorAll('.annotation-drawer').forEach(function(d){d.classList.remove('active');});
+
+// Tab switching (within a card)
+function switchTab(btn,tabName){
+  var card=btn.closest('.annotation-card');
+  card.querySelectorAll('.card-tab').forEach(function(t){t.classList.remove('active');});
+  card.querySelectorAll('.tab-content').forEach(function(c){c.classList.remove('active');});
+  btn.classList.add('active');
+  card.querySelector('[data-tab="'+tabName+'"]').classList.add('active');
 }
 
-// Marker click
+// Marker click → open sidebar + scroll to card
 document.querySelectorAll('.annotation-marker').forEach(function(m){
   m.addEventListener('click',function(e){
     e.stopPropagation();
-    openDrawer(this.getAttribute('data-target'));
+    openAnnotation(this.getAttribute('data-target'));
   });
 });
 
-// ESC to close
+// ESC to close sidebar
 document.addEventListener('keydown',function(e){
-  if(e.key==='Escape')closeDrawer();
+  if(e.key==='Escape'&&document.body.classList.contains('sidebar-open')){
+    toggleSidebar();
+  }
 });
 </script>
 </body>
@@ -1243,12 +1393,13 @@ function filterScreens(q){
 ### 5.1 와이어프레임별 규칙 (S-NNNN.html)
 
 1. `2_Screen_UX.md`의 해당 화면 설계를 기반으로 레이아웃 구성
-2. **모든 Elements 테이블 항목**에 원 숫자 마커 부착 (순서: 상단→하단, 좌→우)
-3. 각 마커에 대응하는 팝업을 body 하단에 생성
-4. 팝업 내용은 `2_Screen_UX.md`의 Description, FT Mapping, Navigation, Interactions, States 정보를 종합
-5. **Annotation Legend** 섹션에 전체 마커 목록을 범례로 표시
-6. `index.html`로의 뒤로가기 링크 포함
-7. 인접 화면으로의 링크 포함 (Connected Screens 기반)
+2. **거의 모든 UI 요소**에 숫자 마커 부착 (순서: 상단→하단, 좌→우). 단순 레이아웃 컨테이너를 제외한 인터랙티브/표시/네비게이션/피드백/컨텐츠/정책 관련 요소 전부 대상
+3. 우측 Sidebar에 모든 어노테이션을 아코디언 카드로 생성
+4. 카드 내용은 `2_Screen_UX.md`의 Description, FT Mapping, Navigation, Interactions, States 정보를 종합
+5. **Annotation Legend** 섹션에 전체 마커 목록을 범례로 표시 (클릭 시 Sidebar 해당 카드로 이동)
+6. **Topbar에 Sidebar 토글 버튼** + 어노테이션 개수 배지 포함
+7. `index.html`로의 뒤로가기 링크 포함
+8. 인접 화면으로의 링크 포함 (Connected Screens 기반)
 
 ### 5.2 index.html 규칙
 
@@ -1344,17 +1495,22 @@ index.html의 JSON (`index.json`):
 - [ ] Light/Dark 테마 토글 동작
 - [ ] OS 테마 자동 감지 + localStorage 저장
 - [ ] 모든 색상 CSS 변수 사용 (하드코딩 금지)
-- [ ] 모든 Elements에 원 숫자 마커 부착
-- [ ] 각 마커에 2-탭 Drawer 연결 (클릭 시 우측 슬라이드, Design/Dev 탭 전환)
+- [ ] **거의 모든 UI 요소**에 숫자 마커 부착 (순수 레이아웃 컨테이너만 제외, 누락보다 과잉 원칙)
+- [ ] 우측 Sidebar에 전체 어노테이션을 아코디언 카드로 배치
+- [ ] Topbar에 Sidebar 토글 버튼 + 어노테이션 개수 배지 포함
+- [ ] Sidebar Expand All / Collapse All 버튼 동작
+- [ ] Sidebar 열림 시 본문(`.main-content`) 좌측 축소 (margin-right)
+- [ ] Sidebar 상태 localStorage 유지
+- [ ] 각 카드에 2-탭(Design/Dev) 구조 포함
 - [ ] **Design 탭**: `[컴포넌트타입] 이름` 형식 Description 블록 + 요구사항, 연결 화면, 권한
 - [ ] **Dev 탭**: 요소 유형별 필수 섹션 매트릭스에 따라 동작방식, 이벤트, Validation, 흐름도, 옵션값, 컬럼 정의, API, 데이터 바인딩 포함
 - [ ] **Validation**: 입력 요소에 Rule type + 조건 + 에러 메시지 원문 포함
 - [ ] **흐름도**: 인터랙션 요소(버튼, 폼, 모달 등)에 단계별 흐름 + 성공/에러 분기 포함
 - [ ] **옵션값**: Select/Radio/Checkbox에 value + label + 조건 + data source 포함
 - [ ] **Description 포맷**: `[컴포넌트타입]` 헤더 + bullet/sub 목록, 정책은 빨간 강조, 노출 문구는 따옴표
-- [ ] Annotation Legend 섹션 포함 (범례 클릭 시 Drawer 오픈)
-- [ ] ESC 키로 Drawer 닫기
-- [ ] 오버레이 클릭으로 Drawer 닫기
+- [ ] Annotation Legend 섹션 포함 (범례 클릭 시 Sidebar 해당 카드로 스크롤)
+- [ ] 마커 클릭 시 Sidebar 열림 + 해당 카드 확장 + 스크롤 + 하이라이트
+- [ ] ESC 키로 Sidebar 닫기
 - [ ] 외부 URL에 `target="_blank" rel="noopener noreferrer"` 적용 (내부 `S-NNNN.html`/`index.html` 링크 제외)
 - [ ] index.html로의 뒤로가기 링크 포함
 - [ ] Info Panel에 Screen 메타 정보 표시
