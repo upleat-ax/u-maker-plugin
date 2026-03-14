@@ -1,12 +1,12 @@
 # u-maker Plugin
 
 PDCA(Plan-Design-Do-Check-Act) 기반 SSoT(Single Source of Truth) 협업 오케스트레이터.
-7개 전문 에이전트와 47개 스킬로 소프트웨어 개발 전 과정을 자동화하는 Claude Code 플러그인.
+8개 전문 에이전트와 52개 스킬로 소프트웨어 개발 전 과정을 자동화하는 Claude Code 플러그인.
 
 - Plugin version: `1.0.0`
 - SSoT config version: `2.0.0`
-- Skills: `48` | Agents: `8`
-- [한국어 README (HTML)](README.ko.html) | [English README (HTML)](README.en.html)
+- Skills: `52` | Agents: `8`
+- [시작 가이드 (초보자용)](GET_STARTED.md) | [한국어 README (HTML)](README.ko.html) | [English README (HTML)](README.en.html)
 
 ---
 
@@ -90,7 +90,7 @@ flowchart TD
 | Agent | Role | Phase | Key Outputs |
 |-------|------|-------|-------------|
 | `u-agent-pm` | Product Manager | PLAN, ACT | Roadmap, Index, Retrospective, Daily Report, Loop Report |
-| `u-agent-ra` | Requirements Analyst | ALL | Milestone, Validation, Backlog, Iteration Log, RTM |
+| `u-agent-ra` | Requirements Analyst | ALL | Milestone, Validation, Backlog, Iteration Log, RTM, Glossary, Workflow |
 | `u-agent-sa` | Software Architect | PLAN, DESIGN | SRS, ERD, API Contract |
 | `u-agent-ux` | UX Designer | PLAN, DESIGN, DO | IA, Screen, ScreenFlow, Wireframe, UX Guide, Design Token |
 | `u-agent-ux-ds` | Pencil Designer | DESIGN, DO | .pen 파일 (pencil.dev MCP 기반 시각 디자인) |
@@ -113,6 +113,14 @@ flowchart TD
 ---
 
 ## 4. Skills & Commands
+
+전체 52개 스킬. 자연어 입력 시 `u-skill-maker` 라우터가 자동으로 적절한 스킬/에이전트로 분배한다.
+
+### 4.0 Router
+
+| Command | Description |
+|---------|-------------|
+| `/u-skill-maker` | 자연어 라우터. 사용자 입력을 분석하여 적절한 스킬/에이전트로 자동 라우팅 (직접 호출 불필요, 자연어 입력 시 자동 동작) |
 
 ### 4.1 Lifecycle
 
@@ -152,13 +160,15 @@ flowchart TD
 
 | Command | Description |
 |---------|-------------|
-| `/u-skill-srs [app]` | SRS 생성/수정 (FR → US → FT) |
+| `/u-skill-srs [app]` | SRS 생성/수정 (FR -> US -> FT) |
 | `/u-skill-erd` | ERD 생성/수정 |
 | `/u-skill-api [app]` | API Contract (OpenAPI 3.0) 생성/수정 |
 | `/u-skill-screen [app]` | 화면 상세 설계 |
 | `/u-skill-wireframe [app]` | 와이어프레임 HTML 생성 |
 | `/u-skill-ux-figma [app]` | pencil.dev 기반 화면 디자인 |
 | `/u-skill-ux-dsystem [app]` | 디자인 시스템 시각 구성 |
+| `/u-skill-glossary [app]` | 용어 정의(Glossary) 문서 생성/수정 |
+| `/u-skill-workflow [app]` | 워크플로우 정의 문서 생성/수정 |
 | `/u-skill-testcase [app]` | Unit+E2E 테스트 케이스 일괄 설계 |
 | `/u-skill-tc-add [app] [FT] [desc]` | 테스트 케이스 개별 추가 (`all` 지원) |
 | `/u-skill-tc-refine <TC> [app]` | 테스트 케이스 세분화 (하위 TC로 분해) |
@@ -168,13 +178,14 @@ flowchart TD
 | `/u-skill-refine <ID> [app]` | FR/US/FT 세분화 (하위 항목으로 분해) |
 | `/u-skill-backlog-add [desc]` | 백로그 항목 추가 |
 
-### 4.5 Reports
+### 4.5 Reports & HTML
 
 모든 리포트는 `.md` + `.html` 2종 파일을 동시에 생성한다.
 
 | Command | Description |
 |---------|-------------|
-| `/u-skill-report [app]` | 프로젝트 종합 보고서 (FR/NFR/US/FT/TC 전체 카운트 + 이전 보고서 비교 + 부채(기획/디자인/기술) + 기여자별 작업 내역 + Git 활동 + QA 결과 + 결함 + Iteration 이력). Dark/Light 모드 토글 지원 |
+| `/u-skill-report [app]` | 프로젝트 종합 보고서 (FR/NFR/US/FT/TC 전체 카운트 + 이전 보고서 비교 + 3종 부채 + 기여자별 작업 + Git 활동 + QA 결과). Dark/Light 모드 HTML |
+| `/u-skill-html-doc [doc-type]` | SSoT 문서를 인터랙티브 HTML 뷰어로 변환. `all`로 전체 변환, `srs`, `erd`, `api` 등 개별 지정 가능 |
 
 ### 4.6 Status & Utility
 
@@ -190,7 +201,8 @@ flowchart TD
 | `/u-skill-summary` | 프로젝트 요약 (터미널 출력만, 파일 미생성) |
 | `/u-skill-build` | `bun run build` 실행 |
 | `/u-skill-storybook` | Storybook 실행 |
-| `/u-skill-git-pr` | feature별 git commit + GitHub PR 생성 |
+| `/u-skill-fix [app] [desc]` | 버그/기능 수정 + QA 에이전트가 자동으로 TC 보강 |
+| `/u-skill-git-pr [feat-name]` | feature별 git commit + GitHub PR 생성 |
 | `/u-skill-help` | 전체 명령어 도움말 |
 
 ---
@@ -215,7 +227,7 @@ flowchart TD
 
 | Phase | Agents | Key Activities | Gate to Next |
 |-------|--------|---------------|--------------|
-| **PLAN** | PM, SA, UX | Roadmap, SRS(FR→US→FT), IA, Index | Roadmap + SRS + IA = Final |
+| **PLAN** | PM, SA, UX | Roadmap, SRS(FR->US->FT), IA, Index | Roadmap + SRS + IA = Final |
 | **DESIGN** | UX, SA, RA | UXGuide, Screen, ScreenFlow, Wireframe, ERD, API, RTM, 모순 검수 | ERD + RTM + UXGuide + API + Screen + ScreenFlow = Final |
 | **DO** | UX, DV-FE, DV-BE | Screen 구현, Frontend, Backend, Code Doc, Gap Check | `bun run build` 성공 + Match Rate >= 90% |
 | **CHECK** | QA | Test Case 설계, 실행 (Vitest+Playwright), 결함 분석 | Critical/Major=0, All FT Implemented, Build OK |
@@ -238,7 +250,7 @@ DO Phase 완료 후 `u-skill-gap-detector`로 설계-구현 Match Rate를 측정
 | Match Rate | Action |
 |-----------|--------|
 | >= 90% | CHECK Phase로 진행 |
-| < 90% | Gap FT 목록 추출 → FT별 DO 재실행 → 재측정 (최대 `maxGapRetries`회, 기본 3) |
+| < 90% | Gap FT 목록 추출 -> FT별 DO 재실행 -> 재측정 (최대 `maxGapRetries`회, 기본 3) |
 
 - Gap FT별로 `u-agent-dv-fe` + `u-agent-dv-be`를 증분 호출 (전체 재작성 금지)
 - 재시도 초과 시 현재 Match Rate를 기록하고 CHECK Phase로 강제 진행
@@ -258,6 +270,8 @@ flowchart TD
     FT["FT-XXXX<br/>Feature ★ 구현 추적 기본 단위<br/><i>사용자 목록 조회, 검색</i>"]
     USR --> FR --> US --> FT
 ```
+
+> FT = **Feature** (구현 단위). ~~Functional Test~~ 절대 아님.
 
 ### Traceability Matrix (RTM)
 
@@ -294,7 +308,9 @@ flowchart LR
 ├── {app}/                               # 앱별 문서
 │   ├── 01-plan/
 │   │   ├── 1_SRS_RA.md (.json)          # Software Requirements Spec
-│   │   └── 1_IA_RA.md (.json)           # 정보 구조도
+│   │   ├── 1_IA_RA.md (.json)           # 정보 구조도
+│   │   ├── 1_Glossary_RA.md (.json)     # 용어 정의
+│   │   └── 1_Workflow_RA.md (.json)     # 워크플로우 정의
 │   ├── 02-design/
 │   │   ├── 2_API_SA.md (.json)          # API Contract (OpenAPI 3.0)
 │   │   ├── 2_Screen_UX.md (.json)       # 화면 상세 설계
@@ -320,15 +336,13 @@ flowchart LR
 - **Related Docs**: [문서 경로 목록]
 ```
 
-### 3-File Export Rule
+### File Export Rule
 
-모든 SSoT 문서는 생성/갱신 시 아래 3종 파일을 동시에 생성:
-
-| Extension | Purpose |
-|-----------|---------|
-| `.md` | 사람이 읽는 마크다운 문서 (SSoT 원본) |
-| `.json` | 기계가 파싱하는 구조화 데이터 (ID 기반 배열) |
-| `.html` | 리포트 문서 전용. 브라우저에서 독립 표시 가능한 단일 파일 (SVG 차트, 트렌드 비교 차트 포함) |
+| Extension | Purpose | 생성 조건 |
+|-----------|---------|----------|
+| `.md` | 사람이 읽는 마크다운 문서 (SSoT 원본) | 모든 문서 |
+| `.json` | 기계가 파싱하는 구조화 데이터 (ID 기반 배열) | 모든 문서 |
+| `.html` | 브라우저 독립 표시 가능한 인터랙티브 뷰어/리포트 | 리포트 문서 자동 + `/u-skill-html-doc`으로 전체 변환 |
 
 ---
 
@@ -366,7 +380,7 @@ u-maker-plugin/
 │   ├── u-agent-dv-fe.md
 │   ├── u-agent-dv-be.md
 │   └── u-agent-qa.md
-├── skills/                # 48개 user-invocable 스킬
+├── skills/                # 52개 user-invocable 스킬
 │   ├── u-skill-maker/     #   슬림 라우터 (자연어 -> 에이전트 라우팅)
 │   ├── u-skill-plan/      #   PLAN Phase
 │   ├── u-skill-design/    #   DESIGN Phase
@@ -375,11 +389,15 @@ u-maker-plugin/
 │   ├── u-skill-act/       #   ACT Phase
 │   ├── u-skill-loop/      #   PDCA 자동 반복
 │   ├── u-skill-srs/       #   SRS 문서
+│   ├── u-skill-fix/       #   버그/기능 수정 + 자동 TC 보강
 │   ├── u-skill-refine/    #   FR/US/FT 세분화
 │   ├── u-skill-tc-add/    #   테스트 케이스 개별 추가
 │   ├── u-skill-tc-refine/ #   테스트 케이스 세분화
+│   ├── u-skill-glossary/  #   용어 정의
+│   ├── u-skill-workflow/  #   워크플로우 정의
+│   ├── u-skill-html-doc/  #   SSoT 문서 HTML 변환
 │   ├── u-agent-*/         #   에이전트 직접 호출 (7개)
-│   └── ...                #   기타 40개 스킬
+│   └── ...                #   기타 스킬
 ├── hooks/                 # Claude hook 설정
 │   ├── hooks.json
 │   └── session-start.js
@@ -401,7 +419,7 @@ u-maker-plugin/
 │   ├── 03-dev/
 │   ├── 04-check/
 │   └── 05-act/
-├── _refer/                # 표준/정책/명령어 레퍼런스
+├── _refer/                # 표준/정책/명령어 레퍼런스 (13개)
 │   ├── ssot-standard.md
 │   ├── pdca-workflow.md
 │   ├── slash-commands.md
@@ -410,6 +428,8 @@ u-maker-plugin/
 │   ├── traceability-matrix.md
 │   ├── json-export.md
 │   ├── html-report-standard.md
+│   ├── html-doc-template.md
+│   ├── html-wireframe-template.md
 │   ├── post-execution-summary.md
 │   ├── mermaid-guide.md
 │   └── model-assignment.md
@@ -425,14 +445,14 @@ u-maker-plugin/
 
 ### Prerequisites
 
-| Tool | Purpose |
-|------|---------|
-| `bash` | macOS/Linux/WSL/Git Bash |
-| `node` | Hook 스크립트 실행 |
-| `python3` | validate-ssot.py, check-exit-criteria.py |
-| `bun` | 관리 대상 프로젝트 빌드/개발 |
-| Claude Code | 필수. 플러그인 호스트 |
-| Codex CLI / Gemini CLI | 선택. `~/.codex` / `~/.gemini` 공유 링크 |
+| Tool | Purpose | Required |
+|------|---------|----------|
+| `bash` | macOS/Linux/WSL/Git Bash | Yes |
+| `node` | Hook 스크립트 실행 | Yes |
+| `python3` | validate-ssot.py, check-exit-criteria.py | Yes |
+| `bun` | 관리 대상 프로젝트 빌드/개발 | Yes |
+| Claude Code | 플러그인 호스트 | Yes |
+| Codex CLI / Gemini CLI | `~/.codex` / `~/.gemini` 공유 링크 | No |
 
 ### Install
 
@@ -538,17 +558,15 @@ mv .u-maker/u-ssot.config.json .u-maker/u-maker.config.json
 /u-skill-check web
 ```
 
-### Scenario 5: 결함 수정 / 유지보수
+### Scenario 5: 버그 수정
 
 ```bash
-# 백로그에 결함 등록
-/u-skill-backlog-add
+# 코드 수정 + QA가 자동으로 TC 보강
+/u-skill-fix web "로그인 시 토큰 만료 처리 버그"
 
-# 특정 Phase부터 루프 재시작
+# 또는 백로그에 등록 후 루프 재시작
+/u-skill-backlog-add "로그인 토큰 만료 처리 미흡"
 /u-skill-loop-from design
-
-# 종합 보고서 생성
-/u-skill-report web
 ```
 
 ### Scenario 6: 중간에 루프 중단 & 재개
@@ -581,17 +599,30 @@ HTML은 Pretendard 폰트 기반 단일 파일로, 브라우저에서 바로 열
 
 | 기능 | 설명 |
 |------|------|
-| **전체 카운트 대시보드** | FR/NFR/US/FT/TC 전체·구현·미구현 갯수를 KPI 카드로 표시 |
-| **이전 보고서 비교** | 직전 보고서와 비교하여 Delta(▲▼) 테이블 + 트렌드 바 차트 시각화 |
+| **전체 카운트 대시보드** | FR/NFR/US/FT/TC 전체 및 구현/미구현 갯수를 KPI 카드로 표시 |
+| **이전 보고서 비교** | 직전 보고서와 비교하여 Delta(증감) 테이블 + 트렌드 바 차트 시각화 |
 | **US 상세 카드** | As a / I want to / So that 3요소 + 수락 기준 원문 리스트 카드 |
 | **TC FT별 그룹 뷰** | FT 단위 카드 내 TC 테이블 (시나리오, 기대/실제 결과, Pass/Fail 뱃지) |
-| **3종 부채 현황** | 기획 부채 (TBD/누락 US) + 디자인 부채 (미작성 와이어프레임/불일치) + 기술 부채 |
-| **기여자별 작업 내역** | git 기반 기여자 요약 테이블 + 작업 상세 카드 (feat/fix별 갯수, 주요 파일) |
-| **Git 활동 요약** | 커밋 분류(feat/fix/refactor 등) 도넛 차트, 변경 통계, Top 5 변경사항 |
+| **3종 부채 현황** | 기획 부채 (TBD/누락 US) + 디자인 부채 (미작성 와이어프레임) + 기술 부채 |
+| **기여자별 작업 내역** | git 기반 기여자 요약 테이블 + 작업 상세 카드 |
+| **Git 활동 요약** | 커밋 분류 도넛 차트, 변경 통계, Top 5 변경사항 |
 | **Dark/Light 모드** | OS 설정 자동 감지 + 토글 버튼 + localStorage 저장 |
-| **MD 차트** | 유니코드 블록 문자(█)로 바 차트, 화살표(▲▼—)로 트렌드 표현 |
 
-### Scenario 8: 설계-구현 Gap 분석
+### Scenario 8: SSoT 문서를 HTML로 변환
+
+```bash
+# 모든 문서를 HTML 뷰어로 변환
+/u-skill-html-doc
+
+# 특정 문서만 변환
+/u-skill-html-doc srs
+/u-skill-html-doc erd
+/u-skill-html-doc api
+```
+
+HTML 뷰어는 사이드바 네비게이션, 검색, Light/Dark 테마 토글을 포함한다.
+
+### Scenario 9: 설계-구현 Gap 분석
 
 ```bash
 # SRS/ERD/API/Screen vs 실제 코드 비교
@@ -601,7 +632,7 @@ HTML은 Pretendard 폰트 기반 단일 파일로, 브라우저에서 바로 열
 # Match Rate <  90%: FAIL -> Gap 항목이 백로그로 전환
 ```
 
-### Scenario 9: 에이전트에게 직접 요청
+### Scenario 10: 에이전트에게 직접 요청
 
 ```bash
 # SA에게 자유 형식 요청
@@ -614,7 +645,7 @@ HTML은 Pretendard 폰트 기반 단일 파일로, 브라우저에서 바로 열
 /u-agent-qa "인증 관련 테스트 케이스를 보강해줘"
 ```
 
-### Scenario 10: Git PR 생성
+### Scenario 11: Git PR 생성
 
 ```bash
 # 변경 파일을 feature 단위로 그룹핑하여 commit + PR
