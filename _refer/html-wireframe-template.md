@@ -1401,6 +1401,52 @@ function filterScreens(q){
 7. `index.html`로의 뒤로가기 링크 포함
 8. 인접 화면으로의 링크 포함 (Connected Screens 기반)
 
+### 5.1.1 Tab 화면 분리 규칙
+
+화면 내에 **Tab UI**가 있는 경우, 각 탭을 별도 와이어프레임 HTML로 생성한다.
+
+| 파일 | 내용 |
+|------|------|
+| `S-NNNN.html` | 부모 화면: 전체 레이아웃 + Tab 네비게이션 구조, 기본(첫 번째) 탭 활성 상태 |
+| `S-NNNN-T1.html` | 탭 1: 해당 탭의 고유 콘텐츠 + 전체 어노테이션 |
+| `S-NNNN-T2.html` | 탭 2: 해당 탭의 고유 콘텐츠 + 전체 어노테이션 |
+| ... | 탭 수만큼 반복 |
+
+1. **부모 화면**의 Tab 요소에서 각 탭 HTML(`S-NNNN-T1.html`, ...)로 링크
+2. **각 탭 화면**에서 부모 화면(`S-NNNN.html`)으로의 돌아가기 링크 포함
+3. 각 탭 화면에도 **탭별 고유 UI 요소 전체에 어노테이션 마커 + Sidebar 카드** 빠짐없이 작성
+4. 탭 화면의 Topbar에 현재 탭 이름 표시 (e.g., `S-0100 대시보드 > 통계 탭`)
+5. **index.html**에 탭별 화면도 포함 — 부모 화면 카드 하위에 들여쓰기로 표시
+
+```
+.u-maker/docs/{app}/02-design/2_Screen_Wireframes/
+├── S-0100.html         ← 부모: 대시보드 (Tab 네비게이션 포함)
+├── S-0100-T1.html      ← 탭 1: 개요
+├── S-0100-T2.html      ← 탭 2: 통계
+├── S-0100-T3.html      ← 탭 3: 설정
+├── S-0100.json
+├── S-0100-T1.json
+├── S-0100-T2.json
+├── S-0100-T3.json
+└── ...
+```
+
+### 5.1.2 조건별 화면 상태 규칙
+
+권한, 데이터 유무, 상태값 등 **조건에 따라 화면이 달라지는 모든 케이스**를 어노테이션으로 명확히 기술한다.
+
+| 조건 유형 | 어노테이션에 명시할 내용 |
+|-----------|------------------------|
+| **Empty State** | 데이터 없을 때 표시할 UI, 안내 문구, CTA 버튼 |
+| **Loading State** | 스켈레톤/스피너 위치, 로딩 중 인터랙션 비활성화 범위 |
+| **Error State** | 에러 메시지 원문, 재시도 버튼, fallback UI |
+| **권한별 분기** | 역할(Admin/User/Guest)에 따라 표시/숨김/비활성화 되는 요소 |
+| **데이터 조건별 분기** | 값 유무, 범위, 상태값에 따라 달라지는 UI (e.g., 결제 완료/미완료) |
+| **첫 방문 vs 재방문** | 온보딩 가이드, 튜토리얼 오버레이 표시 조건 |
+
+- 각 조건별 분기를 어노테이션 카드의 **Design 탭 States** 섹션과 **Dev 탭 동작방식**에 구체적으로 기술
+- 조건부 요소는 마커 Description에 `[조건]` prefix로 명시 (e.g., `[권한:Admin] 사용자 삭제 버튼`)
+
 ### 5.2 index.html 규칙
 
 1. **`/u-skill-wireframe` 실행 시 항상 index.html도 함께 생성/갱신**
@@ -1410,6 +1456,7 @@ function filterScreens(q){
 5. 검색 기능으로 화면 필터링 지원
 6. 상단에 통계 표시 (전체 화면 수, 도메인별 수)
 7. `data-search` 속성에 Screen ID + 이름 + 키워드를 포함하여 검색 범위 확장
+8. **생성된 모든 와이어프레임 HTML(`S-NNNN.html`)로의 링크를 반드시 포함** — 새 와이어프레임 추가/삭제 시 index.html의 화면 카드 목록도 동기화
 
 ### 5.3 JSON Export
 
@@ -1512,12 +1559,16 @@ index.html의 JSON (`index.json`):
 - [ ] 마커 클릭 시 Sidebar 열림 + 해당 카드 확장 + 스크롤 + 하이라이트
 - [ ] ESC 키로 Sidebar 닫기
 - [ ] 외부 URL에 `target="_blank" rel="noopener noreferrer"` 적용 (내부 `S-NNNN.html`/`index.html` 링크 제외)
-- [ ] index.html로의 뒤로가기 링크 포함
+- [ ] index.html로의 뒤로가기 버튼 포함 (`<a href="index.html" class="back-link">← All Screens</a>`)
 - [ ] Info Panel에 Screen 메타 정보 표시
 - [ ] 반응형 대응 (@media max-width:768px)
 - [ ] 인쇄 대응 (@media print)
 - [ ] `<html lang="{{LANG}}">` 설정
 - [ ] 동명의 `.json` 파일 생성 (dev 스펙 포함)
+- [ ] **Tab UI가 있는 화면**: 각 탭별 HTML(`S-NNNN-T1.html`, ...)을 별도 생성
+- [ ] **Tab 화면 상호 링크**: 부모↔탭 간 링크, 탭 화면 Topbar에 현재 탭 이름 표시
+- [ ] **조건별 화면 상태**: Empty/Loading/Error/권한별/데이터 조건별 분기를 어노테이션에 명시
+- [ ] **조건부 요소**: `[조건]` prefix로 마커 Description 기술
 
 ### index.html 생성 시
 - [ ] 전체 화면 목록 반영 (2_Screen_UX.md 기준)
@@ -1527,4 +1578,6 @@ index.html의 JSON (`index.json`):
 - [ ] 통계 카드 표시
 - [ ] Light/Dark 테마 토글 동작
 - [ ] 반응형 대응
+- [ ] 생성된 모든 와이어프레임 HTML(`S-NNNN.html`, `S-NNNN-T*.html` 포함)로의 링크 카드가 index.html에 포함됨
+- [ ] 탭 화면은 부모 화면 하위에 들여쓰기로 표시
 - [ ] 동명의 `index.json` 생성

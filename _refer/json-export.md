@@ -176,6 +176,83 @@
 }
 ```
 
+### 2.3a `1_Glossary_RA.json`
+
+```json
+{
+  "document": "1_Glossary_RA",
+  "meta": { "owner": "u-agent-ra", "status": "Draft", "version": "v0.1.0", "lastUpdated": "YYYY-MM-DD", "app": "web" },
+  "domainTerms": [
+    {
+      "id": "GL-0010",
+      "termEN": "...",
+      "termKO": "...",
+      "definition": "...",
+      "context": "...",
+      "relatedDocs": [{ "id": "FR-XXXX" }]
+    }
+  ],
+  "abbreviations": [
+    {
+      "abbreviation": "...",
+      "fullName": "...",
+      "definition": "...",
+      "usageContext": "..."
+    }
+  ],
+  "technicalTerms": [
+    {
+      "id": "GT-0010",
+      "term": "...",
+      "definition": "...",
+      "category": "Frontend | Backend | Infra | DB",
+      "relatedDocs": [{ "id": "FT-XXXX" }]
+    }
+  ]
+}
+```
+
+### 2.3b `1_Workflow_RA.json`
+
+```json
+{
+  "document": "1_Workflow_RA",
+  "meta": { "owner": "u-agent-ra", "status": "Draft", "version": "v0.1.0", "lastUpdated": "YYYY-MM-DD", "app": "web" },
+  "workflows": [
+    {
+      "id": "WF-0010",
+      "name": "...",
+      "category": "Core | Support | Admin",
+      "trigger": "...",
+      "actors": [{ "id": "USR-XXXX" }],
+      "precondition": "...",
+      "postcondition": "...",
+      "relatedFR": [{ "id": "FR-XXXX" }],
+      "relatedFT": [{ "id": "FT-XXXX" }],
+      "steps": [
+        {
+          "step": 1,
+          "actor": "...",
+          "action": "...",
+          "systemResponse": "...",
+          "branchCondition": null,
+          "nextStep": 2
+        }
+      ],
+      "exceptionFlows": [
+        {
+          "id": "EX-01",
+          "triggerCondition": "...",
+          "handling": "...",
+          "recovery": "..."
+        }
+      ],
+      "status": "Draft"
+    }
+  ]
+}
+```
+
 ### 2.4 `1_IA_RA.json`
 
 ```json

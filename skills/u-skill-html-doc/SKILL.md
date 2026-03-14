@@ -3,8 +3,8 @@ name: u-skill-html-doc
 description: |
   SSoT 문서(.md + .json)를 인터랙티브 HTML 뷰어 또는 보고서로 변환한다.
   Plan/Design/Dev/Check/Act 전 Phase의 모든 문서 유형을 지원한다.
-  SRS, IA, ERD, API, Screen, ScreenFlow, UXGuide, RTM, Code, UIComponents, DesignToken,
-  TestCase, QAReport, IterationLog 등 14가지 doc-type 또는 `all`로 전체 변환.
+  SRS, IA, Glossary, Workflow, ERD, API, Screen, ScreenFlow, UXGuide, RTM, Code, UIComponents, DesignToken,
+  TestCase, QAReport, IterationLog 등 16가지 doc-type 또는 `all`로 전체 변환.
   원본 .md와 동일한 경로에 .html 파일을 생성한다.
   Args: `[doc-type] [app]` — 문서 유형과 앱 이름
   Triggers: /u-skill-html-doc, HTML 문서, 문서 뷰어, document viewer, HTML 변환, html 보고서, 문서 html, html로 변환
@@ -49,6 +49,8 @@ PDCA 전 Phase의 모든 문서 유형을 지원하며, `all`로 전체 문서�
 | `ia` | `{app}/01-plan/1_IA_RA.md` | Sidebar Viewer | `1_IA_RA.html` |
 | `common` | `common/01-plan/1_Common_RA.md` | Sidebar Viewer | `1_Common_RA.html` |
 | `roadmap` | `common/01-plan/1_Roadmap_RA.md` | Sidebar Viewer | `1_Roadmap_RA.html` |
+| `glossary` | `{app}/01-plan/1_Glossary_RA.md` | Sidebar Viewer | `1_Glossary_RA.html` |
+| `workflow` | `{app}/01-plan/1_Workflow_RA.md` | Sidebar Viewer | `1_Workflow_RA.html` |
 
 ### Phase 02 — Design
 
@@ -176,6 +178,8 @@ PDCA 전 Phase의 모든 문서 유형을 지원하며, `all`로 전체 문서�
 | `designtoken` | 컬러 팔레트, 스페이싱 스케일 시각화 |
 | `common` | 공통 용어 테이블, 제약사항 목록 |
 | `roadmap` | 마일스톤 타임라인 |
+| `glossary` | 용어 테이블, 약어 테이블, 카테고리 필터 |
+| `workflow` | 워크플로우 다이어그램 (Flowchart SVG), 스텝 테이블, 예외 흐름 |
 
 ### Sidebar Icon 매핑
 
@@ -185,6 +189,8 @@ PDCA 전 Phase의 모든 문서 유형을 지원하며, `all`로 전체 문서�
 | `ia` | 🗺️ |
 | `common` | 📚 |
 | `roadmap` | 🗓️ |
+| `glossary` | 📖 |
+| `workflow` | 🔄 |
 | `erd` | 🗃️ |
 | `api` | 🔌 |
 | `screen` | 🖥️ |
@@ -452,6 +458,8 @@ OUTPUT (.html):
 | `code` | 구현 FT 수, API 수, 빌드 상태 |
 | `testcase` | 전체 TC 수, Unit 수, E2E 수 |
 | `qareport` | Pass 수, Fail 수, Skip 수 |
+| `glossary` | 도메인 용어 수, 약어 수, 기술 용어 수 |
+| `workflow` | 워크플로우 수, Core 수, Support 수, 예외 흐름 수 |
 | `iteration` | Open 수, Closed 수, 부채 수 |
 
 ## Rules

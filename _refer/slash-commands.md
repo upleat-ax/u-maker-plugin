@@ -266,6 +266,26 @@ SSoT 문서 상태를 관리하고 검증하는 커맨드.
 
 **Input Fields**: Requirement (요구사항명), Description (설명), Priority (Must/Should/Could/Won't), US Mapping, Input/Output/Business Rule/Exception (선택)
 
+### `/u-skill-glossary`
+
+| Field | Value |
+|-------|-------|
+| **Syntax** | `/u-skill-glossary [app]` |
+| **Description** | 용어 정의(Glossary) 문서를 생성/수정한다. 도메인 용어, 약어, 기술 용어를 정의하고 통일한다 |
+| **Calling Agents** | `u-RA` |
+| **Prerequisites** | 프로젝트 생성 완료 |
+| **Output** | `{app}/01-plan/1_Glossary_RA.md` |
+
+### `/u-skill-workflow`
+
+| Field | Value |
+|-------|-------|
+| **Syntax** | `/u-skill-workflow [app]` |
+| **Description** | 주요 워크플로우 정의 문서를 생성/수정한다. 비즈니스 프로세스, 사용자 흐름, 시스템 연동 플로우를 정의한다 |
+| **Calling Agents** | `u-RA` |
+| **Prerequisites** | `1_SRS_RA.md` 존재 (FR/US/FT 참조) |
+| **Output** | `{app}/01-plan/1_Workflow_RA.md` |
+
 ### `/u-skill-refine`
 
 | Field | Value |
@@ -588,6 +608,8 @@ CHECK Phase에서 설계-구현 일치도를 분석하는 커맨드.
 | Doc Mgmt | `/u-skill-backlog-add` | - | u-RA |
 | Doc Mgmt | `/u-skill-us-add` | PLAN | u-RA |
 | Doc Mgmt | `/u-skill-fr-add` | PLAN | u-SA |
+| Doc Mgmt | `/u-skill-glossary [app]` | PLAN | u-RA |
+| Doc Mgmt | `/u-skill-workflow [app]` | PLAN | u-RA |
 | Doc Mgmt | `/u-skill-refine` | PLAN | u-SA |
 | Doc Mgmt | `/u-skill-index` | - | u-PM |
 | Task | `/u-skill-srs [app]` | PLAN | u-SA |
