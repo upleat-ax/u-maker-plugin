@@ -10,54 +10,61 @@
 
 ## Output Format
 
-아래 markdown 테이블 기반 포맷을 사용한다. 터미널에서 가독성이 높고, 한눈에 파악 가능하도록 구성한다.
+**세로선 없는 ASCII 스타일**로 터미널에서 깔끔하게 표시한다. Markdown 테이블(`| ... |`)과 세로 박스 문자(`║ │`)는 사용하지 않는다. 수평선(`═ ─`)과 들여쓰기만으로 구조를 표현한다.
+
+### 문자 세트
+
+```
+상단/하단:  ═
+섹션 구분:  ─
+들여쓰기:   2칸 스페이스
+```
 
 ### Header + Context Bar
 
-```markdown
-## ⚡ u-maker Summary
-
-| | |
-|---|---|
-| **Skill** | `/u-skill-{command}` 또는 `{trigger}` |
-| **Phase** | `{PHASE_BADGE}` |
-| **Iter** | `{N} / {max}` |
-| **Result** | `✅ Success` 또는 `⚠️ Partial` 또는 `❌ Failed` |
+```
+══════════════════════════════════════════════════
+  ⚡ U-MAKER SUMMARY
+══════════════════════════════════════════════════
+  Skill     /u-skill-{command}
+  Phase     {PHASE}
+  Iter      {N} / {max}
+  Result    ✅ Success
+──────────────────────────────────────────────────
 ```
 
-### Work Done (테이블)
+### Work Done
 
-작업 내용이 **2개 이하**일 때는 간단 bullet로, **3개 이상**일 때는 테이블로 출력한다.
+작업 내용이 **2개 이하**일 때는 bullet, **3개 이상**일 때는 넘버링.
 
-#### 2개 이하 — Bullet List
+#### 2개 이하 — Bullet
 
-```markdown
-### 📋 Work Done
-- Added Tabler-based repo status badges to the visible terminal TabBar
-- Reused repo polling through a shared workspace status hook
+```
+  📋 Work Done
+  • Added Tabler-based repo status badges
+  • Reused repo polling via shared workspace hook
+──────────────────────────────────────────────────
 ```
 
-#### 3개 이상 — Table
+#### 3개 이상 — Numbered
 
-```markdown
-### 📋 Work Done
-
-| # | Action | Target |
-|--:|--------|--------|
-| 1 | Created | `1_SRS_RA.md` — 14 FRs, 8 USs, 12 FTs |
-| 2 | Created | `1_SRS_RA.json` |
-| 3 | Updated | `1_Index_PM.md` — added SRS entry |
-| 4 | Updated | `1_Index_PM.json` |
+```
+  📋 Work Done
+   #  Action       Target
+   1  Created      1_SRS_RA.md — 14 FRs, 8 USs
+   2  Created      1_SRS_RA.json
+   3  Updated      1_Index_PM.md — added SRS entry
+──────────────────────────────────────────────────
 ```
 
-### Resources Used (인라인)
+### Resources Used
 
-```markdown
-### 🔧 Resources
-
-| Skills | Agents | Docs Modified |
-|--------|--------|---------------|
-| `u-skill-srs` | `u-agent-sa` | `web/01-plan/1_SRS_RA.md` `.json` |
+```
+  🔧 Resources
+  Skills    u-skill-srs
+  Agents    u-agent-sa
+  Docs      web/01-plan/1_SRS_RA.md .json
+──────────────────────────────────────────────────
 ```
 
 Agent가 호출되지 않은 단순 조회 명령은 Agents 칸을 `—`로 표시한다.
@@ -66,135 +73,143 @@ Agent가 호출되지 않은 단순 조회 명령은 Agents 칸을 `—`로 표�
 
 빌드, 타입체크, 테스트 등 검증 작업이 포함된 경우에만 표시한다.
 
-```markdown
-### 🔍 Verification
-
-| Check | Command | Result |
-|-------|---------|--------|
-| Type Check | `bun run type-check` | ⚠️ Blocked — pre-existing TS6133 in `Sidebar.tsx:52` |
-| Build | `bun run build` | ✅ Pass |
+```
+  🔍 Verification
+  Type Check   bun run tsc      ⚠️ TS6133 Sidebar:52
+  Build        bun run build    ✅ Pass
+──────────────────────────────────────────────────
 ```
 
-### Next Steps (추천 명령어)
+### Next Steps
 
-```markdown
-### 👉 Next
-
-| # | Command | Description |
-|--:|---------|-------------|
-| 1 | `/u-skill-design web` | DESIGN Phase 실행 |
-| 2 | `/u-skill-validate` | 문서 무결성 검증 |
+```
+  👉 Next
+   1  /u-skill-design web    DESIGN Phase 실행
+   2  /u-skill-validate      문서 무결성 검증
+══════════════════════════════════════════════════
 ```
 
 ---
 
 ## Complete Example — Agent Direct 실행 후
 
-```markdown
-## ⚡ u-maker Summary
-
-| | |
-|---|---|
-| **Skill** | `/u-agent-dv-fe` |
-| **Phase** | `DO` |
-| **Iter** | `1 / 10` |
-| **Result** | `⚠️ Partial` |
-
-### 📋 Work Done
-
-| # | Action | Target |
-|--:|--------|--------|
-| 1 | Added | Tabler-based repo status badges to terminal TabBar |
-| 2 | Reused | Repo polling via shared workspace status hook |
-| 3 | Updated | StatusBar to use same hook for alignment |
-
-### 🔧 Resources
-
-| Skills | Agents | Docs Modified |
-|--------|--------|---------------|
-| `u-agent-dv-fe` | `u-agent-dv-fe` | `web/03-dev/3_Code_DV.md` |
-
-### 🔍 Verification
-
-| Check | Command | Result |
-|-------|---------|--------|
-| Type Check | `bun run type-check` | ⚠️ Blocked — pre-existing TS6133 in `Sidebar.tsx:52` |
-
-### 👉 Next
-
-| # | Command | Description |
-|--:|---------|-------------|
-| 1 | `/u-skill-fix web` | Sidebar.tsx TS6133 에러 수정 |
-| 2 | `/u-skill-build` | 빌드 재실행 |
+```
+══════════════════════════════════════════════════
+  ⚡ U-MAKER SUMMARY
+══════════════════════════════════════════════════
+  Skill     /u-agent-dv-fe
+  Phase     DO
+  Iter      1 / 10
+  Result    ⚠️ Partial
+──────────────────────────────────────────────────
+  📋 Work Done
+   #  Action     Target
+   1  Added      Tabler-based repo status badges
+   2  Reused     Repo polling via shared hook
+   3  Updated    StatusBar to use same hook
+──────────────────────────────────────────────────
+  🔧 Resources
+  Skills    u-agent-dv-fe
+  Agents    u-agent-dv-fe
+  Docs      web/03-dev/3_Code_DV.md
+──────────────────────────────────────────────────
+  🔍 Verification
+  Type Check   bun run tsc      ⚠️ TS6133 Sidebar:52
+──────────────────────────────────────────────────
+  👉 Next
+   1  /u-skill-fix web       Sidebar.tsx TS6133 수정
+   2  /u-skill-build         빌드 재실행
+══════════════════════════════════════════════════
 ```
 
 ---
 
 ## Complete Example — Phase 실행 후
 
-```markdown
-## ⚡ u-maker Summary
-
-| | |
-|---|---|
-| **Skill** | `/u-skill-plan web` |
-| **Phase** | `PLAN` |
-| **Iter** | `1 / 10` |
-| **Result** | `✅ Success` |
-
-### 📋 Work Done
-
-| # | Action | Target |
-|--:|--------|--------|
-| 1 | Created | `1_Roadmap_PM.md` — 5 milestones |
-| 2 | Created | `1_SRS_RA.md` — 8 FRs, 5 USs, 8 FTs |
-| 3 | Created | `1_IA_RA.md` — 7 domains, 8 menu items |
-| 4 | Updated | `1_Index_PM.md` — 3 new entries |
-| 5 | Created | `.json` files for all above |
-
-### 🔧 Resources
-
-| Skills | Agents | Docs Modified |
-|--------|--------|---------------|
-| `u-skill-plan` `u-skill-srs` `u-skill-index` | `u-agent-pm` `u-agent-sa` `u-agent-ux` | `common/01-plan/1_Roadmap_PM.md` `web/01-plan/1_SRS_RA.md` `web/01-plan/1_IA_RA.md` `common/01-plan/1_Index_PM.md` |
-
-### 👉 Next
-
-| # | Command | Description |
-|--:|---------|-------------|
-| 1 | `/u-skill-design web` | DESIGN Phase 실행 |
-| 2 | `/u-skill-validate` | 문서 무결성 검증 |
+```
+══════════════════════════════════════════════════
+  ⚡ U-MAKER SUMMARY
+══════════════════════════════════════════════════
+  Skill     /u-skill-plan web
+  Phase     PLAN
+  Iter      1 / 10
+  Result    ✅ Success
+──────────────────────────────────────────────────
+  📋 Work Done
+   #  Action     Target
+   1  Created    1_Roadmap_PM.md — 5 milestones
+   2  Created    1_SRS_RA.md — 8 FRs, 5 USs, 8 FTs
+   3  Created    1_IA_RA.md — 7 domains, 8 menus
+   4  Updated    1_Index_PM.md — 3 new entries
+   5  Created    .json files for all above
+──────────────────────────────────────────────────
+  🔧 Resources
+  Skills    u-skill-plan, u-skill-srs, u-skill-index
+  Agents    u-agent-pm, u-agent-sa, u-agent-ux
+  Docs      1_Roadmap_PM.md, 1_SRS_RA.md,
+            1_IA_RA.md, 1_Index_PM.md
+──────────────────────────────────────────────────
+  👉 Next
+   1  /u-skill-design web    DESIGN Phase 실행
+   2  /u-skill-validate      문서 무결성 검증
+══════════════════════════════════════════════════
 ```
 
 ---
 
 ## Complete Example — 단순 조회 명령
 
-```markdown
-## ⚡ u-maker Summary
+```
+══════════════════════════════════════════════════
+  ⚡ U-MAKER SUMMARY
+══════════════════════════════════════════════════
+  Skill     /u-skill-status
+  Phase     DO
+  Iter      2 / 10
+  Result    ✅ Success
+──────────────────────────────────────────────────
+  📋 Work Done
+  • Displayed project status (Phase: DO, 12/18 FTs)
+──────────────────────────────────────────────────
+  🔧 Resources
+  Skills    u-skill-status
+  Agents    —
+  Docs      —
+──────────────────────────────────────────────────
+  👉 Next
+   1  /u-skill-dev web       미구현 FT 개발 계속
+   2  /u-skill-gap-detector  설계-구현 Gap 분석
+══════════════════════════════════════════════════
+```
 
-| | |
-|---|---|
-| **Skill** | `/u-skill-status` |
-| **Phase** | `DO` |
-| **Iter** | `2 / 10` |
-| **Result** | `✅ Success` |
+---
 
-### 📋 Work Done
-- Displayed current project status (Phase: DO, 12/18 FTs implemented)
+## Complete Example — git-pr 실행 후
 
-### 🔧 Resources
-
-| Skills | Agents | Docs Modified |
-|--------|--------|---------------|
-| `u-skill-status` | — | — |
-
-### 👉 Next
-
-| # | Command | Description |
-|--:|---------|-------------|
-| 1 | `/u-skill-dev web` | 미구현 FT 개발 계속 |
-| 2 | `/u-skill-gap-detector` | 설계-구현 Gap 분석 |
+```
+══════════════════════════════════════════════════
+  ⚡ U-MAKER SUMMARY
+══════════════════════════════════════════════════
+  Skill     /u-skill-git-pr
+  Phase     DO
+  Iter      1 / 10
+  Result    ✅ Success
+──────────────────────────────────────────────────
+  📋 Work Done
+   #  Action                Target
+   1  branch, commit, push  feat/docs-plan → PR #16
+   2  branch, commit, push  feat/docs-design → PR #17
+   3  branch, commit, push  feat/misc-bootstrap → #18
+──────────────────────────────────────────────────
+  🔧 Resources
+  Skills    u-skill-git-pr
+  Agents    —
+  Docs      PLAN docs, DESIGN docs, u-maker metadata
+──────────────────────────────────────────────────
+  👉 Next
+   1  /u-skill-validate     SSoT 문서 무결성 검증
+   2  /u-skill-qa kiosk     테스트 케이스/실행 정리
+══════════════════════════════════════════════════
 ```
 
 ---
@@ -244,8 +259,14 @@ Phase 이름은 그대로 표시한다:
 | `/u-skill-stop` 후 | `/u-skill-resume` |
 | Verification 실패 시 | `/u-skill-fix` (에러 수정), 관련 에이전트 호출 |
 
-## Rules
+## Rendering Rules
 
+- **세로선 금지**: `║ │ ╟ ╢ ╤ ╧ ┼ ├ ┤ ┬ ┴` 등 세로 박스 문자 사용 금지. Markdown 테이블(`| ... |`)도 금지
+- **수평선만 사용**: 상단/하단은 `═`, 섹션 구분은 `─`. 폭은 50자 고정
+- **들여쓰기로 구조 표현**: 2칸 스페이스 들여쓰기로 라벨과 값을 정렬
+- **라벨-값 간격**: 라벨은 10자 폭 고정 후 값 표시 (예: `  Skill     /u-skill-plan`)
+- **넘버링**: Work Done, Next 항목은 `   #  Action  Target` 형태로 스페이스 정렬
+- **Resources**: `Skills`, `Agents`, `Docs` 각각 별도 행에 라벨-값 형태로 표시
 - **필수 출력**: u-maker 에코시스템의 skill, command, agent 실행 후 반드시 Summary Box를 출력해야 한다
 - **마지막에 출력**: Summary Box는 실행의 가장 마지막 출력이어야 한다
 - **정확한 정보**: 실제 실행된 내용만 기록한다 (추측이나 계획 X)
