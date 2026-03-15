@@ -2,7 +2,7 @@
 name: u-skill-wireframe
 description: |
   화면 와이어프레임을 HTML로 생성하거나 갱신한다. u-agent-ux 에이전트가 담당한다.
-  IA, Screen 문서를 참고하여 HTML/CSS로 레이아웃을 시각화한다.
+  IA, Screen 문서를 참고하여 **UI 레이아웃 영역은 SVG로** 시각화한다.
   우측 Sidebar에 전체 어노테이션을 아코디언 카드로 표시하며,
   각 카드에는 관련 요구사항(FR), 플로우(SC/User Flow), 조건(Business Rule), 요소 설명이 포함된다.
   Args: `[app] <all|screen-id>` — 앱 이름 + 대상 화면 (all=전체)
@@ -49,7 +49,7 @@ agents:
 
 ## Rules
 
-- **`html-wireframe-template.md` 표준을 엄격히 준수**
+- **`html-wireframe-template.md` 표준을 엄격히 준수** — UI 레이아웃은 반드시 SVG로 렌더링
 - 모든 문서 생성/갱신 시 동명의 `.json` 파일을 동일 경로에 함께 생성
 - **Tab 화면 분리 필수**: 화면 내에 Tab UI가 있는 경우, **각 탭을 별도 와이어프레임 HTML로 생성**해야 한다
   - 부모 화면(`S-NNNN.html`): 전체 레이아웃 + Tab 네비게이션 포함, 기본 탭 활성 상태

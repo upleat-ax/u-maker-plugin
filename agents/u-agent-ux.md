@@ -156,10 +156,10 @@ journey
 
 > **`_refer/html-wireframe-template.md` 표준을 엄격히 준수한다.**
 
-1. `2_Screen_UX.md`의 화면 설계를 바탕으로 HTML/CSS 와이어프레임 생성
+1. `2_Screen_UX.md`의 화면 설계를 바탕으로 HTML 와이어프레임 생성
 2. `.u-maker/docs/{app}/02-design/2_Screen_Wireframes/{ScreenID}.html` 경로에 저장
-3. Vanilla HTML/CSS를 사용하여 레이아웃과 기본 UI 요소를 시각화
-4. **어노테이션 마커**: **거의 모든 UI 요소**에 숫자 마커(1, 2, 3...) 를 부착한다. 단순 레이아웃 컨테이너(빈 div, spacer)만 제외하고 인터랙티브/표시/네비게이션/피드백/컨텐츠/정책 관련 요소를 전부 포함한다. **누락보다 과잉이 낫다.**
+3. **UI 레이아웃 영역은 SVG(`<svg class="wf-svg">`)로 렌더링** — `<g>` 그룹 + `<rect>` 박스 + `<text>` 라벨 + `<line>` 구분선으로 UI 요소를 시각화. HTML div 레이아웃 금지
+4. **어노테이션 마커**: **거의 모든 UI 요소**에 SVG 숫자 마커(`<circle>` + `<text>`)를 부착한다. 순수 레이아웃 컨테이너만 제외하고 인터랙티브/표시/네비게이션/피드백/컨텐츠/정책 관련 요소를 전부 포함한다. **누락보다 과잉이 낫다.**
 5. **우측 Sidebar**: 전체 어노테이션을 아코디언 카드로 나열한다. Topbar의 **토글 버튼**으로 열기/닫기, **Expand All/Collapse All** 버튼을 포함한다. 마커 클릭 시 Sidebar가 열리고 해당 카드로 자동 스크롤 + 확장 + 하이라이트된다. 각 카드는 2-탭 구조:
    - **Design 탭**: `[컴포넌트타입] 이름` 형식의 Description 블록(정책/비즈니스 룰/조건/노출 문구를 bullet 목록으로 기술) + 요구사항(FR/US/FT), 연결 화면, 권한
    - **Dev 탭**: 동작방식, 이벤트 핸들러, Validation(에러 메시지 원문 포함), 흐름도(성공/에러 분기), Select 옵션값(value+label+조건), 테이블 컬럼 정의, API 연동, 데이터 바인딩
