@@ -1,6 +1,7 @@
 # HTML Wireframe Template
 
-> 화면 와이어프레임 HTML 생성 표준. 각 UI 요소에 숫자 마커(1, 2, 3...)를 부착하고,
+> 화면 와이어프레임 HTML 생성 표준. **UI 레이아웃 영역은 SVG로 렌더링**한다.
+> 각 UI 요소에 숫자 마커(1, 2, 3...)를 부착하고,
 > **우측 Sidebar**에 전체 어노테이션을 아코디언 카드로 한눈에 표시한다.
 > 각 카드는 **Design 탭**과 **Dev 탭** 2-탭 구조로 디자인 설명과 개발 스펙을 제공한다.
 > Sidebar는 토글 버튼으로 열기/닫기가 가능하며, 마커 클릭 시 해당 어노테이션으로 자동 스크롤된다.
@@ -52,9 +53,9 @@
 
 ## 2. 어노테이션 시스템
 
-### 2.1 숫자 마커 (Annotation Marker) — CSS Circle Badge
+### 2.1 숫자 마커 (Annotation Marker) — SVG Circle Badge
 
-**거의 모든 UI 요소**에 숫자 마커를 부착한다. 마커는 해당 요소의 우상단에 absolute 배치한다.
+**거의 모든 UI 요소**에 숫자 마커를 부착한다. 마커는 해당 요소 `<g>` 그룹의 우상단에 SVG `<circle>` + `<text>`로 배치한다.
 
 #### 마커 부착 대상 기준
 
@@ -76,22 +77,30 @@
 > 화면 내 모든 의미 있는 요소에 Description을 작성하는 것을 기본으로 한다.
 
 ```html
-<!-- 어노테이션 마커: 요소를 감싸는 wrapper에 부착 -->
-<div class="wf-element" data-annotation="1">
-  <span class="annotation-marker" data-target="annotation-1">1</span>
+<!-- 어노테이션 마커: SVG <g> 그룹 내에 배치 -->
+<g class="wf-element" data-annotation="1">
   <!-- 실제 UI 요소 -->
-  <div class="wf-input">이메일 입력</div>
-</div>
+  <rect x="20" y="80" width="360" height="44" rx="6" class="wf-input"/>
+  <text x="36" y="106" class="wf-label">이메일 입력</text>
+  <!-- 어노테이션 마커: 요소 우상단 -->
+  <circle class="annotation-marker" cx="376" cy="80" r="12" data-target="annotation-1"/>
+  <text class="annotation-marker-text" x="376" y="84" data-target="annotation-1">1</text>
+</g>
 ```
 
-마커는 **일반 숫자**를 CSS로 원형 배지 처리한다. 원 숫자 특수문자(①②③)는 사용하지 않는다.
+마커는 SVG `<circle>` + `<text>`로 원형 배지를 렌더링한다. 원 숫자 특수문자(①②③)는 사용하지 않는다.
 숫자가 20을 초과해도 제한 없이 표시 가능하다.
 
 ```html
-<!-- 숫자만 넣으면 CSS가 원형 배지로 처리 -->
-<span class="annotation-marker" data-target="annotation-1">1</span>
-<span class="annotation-marker" data-target="annotation-15">15</span>
-<span class="annotation-marker" data-target="annotation-42">42</span>
+<!-- SVG 마커: circle + text 조합 -->
+<circle class="annotation-marker" cx="376" cy="80" r="12" data-target="annotation-1"/>
+<text class="annotation-marker-text" x="376" y="84" data-target="annotation-1">1</text>
+
+<circle class="annotation-marker" cx="760" cy="80" r="14" data-target="annotation-15"/>
+<text class="annotation-marker-text" x="760" y="84" data-target="annotation-15">15</text>
+
+<circle class="annotation-marker" cx="1140" cy="80" r="14" data-target="annotation-42"/>
+<text class="annotation-marker-text" x="1140" y="84" data-target="annotation-42">42</text>
 ```
 
 ### 2.2 어노테이션 Sidebar — 토글 + 아코디언 카드
@@ -678,59 +687,80 @@ body {
 .info-item .info-label { font-weight:600; color:var(--text-secondary); font-size:11px; text-transform:uppercase; letter-spacing:0.5px; }
 .info-item .info-value { margin-top:2px; }
 
-/* ===== Wireframe Canvas ===== */
+/* ===== Wireframe Canvas (SVG Container) ===== */
 .wf-canvas {
   background:var(--wf-bg); border:2px dashed var(--wf-border); border-radius:12px;
   margin:20px 24px; padding:24px; min-height:500px; position:relative;
 }
+.wf-svg {
+  width:100%; height:auto; display:block;
+  font-family:'Pretendard',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+}
 
-/* ===== Wireframe Elements ===== */
-.wf-element {
-  position:relative; margin-bottom:12px;
+/* ===== SVG Wireframe Elements ===== */
+.wf-svg .wf-element { cursor:default; }
+.wf-svg rect.wf-rect,
+.wf-svg rect.wf-section,
+.wf-svg rect.wf-input,
+.wf-svg rect.wf-card,
+.wf-svg rect.wf-list,
+.wf-svg rect.wf-nav,
+.wf-svg rect.wf-footer,
+.wf-svg rect.wf-sidebar-el,
+.wf-svg rect.wf-modal,
+.wf-svg rect.wf-table,
+.wf-svg rect.wf-form {
+  fill:var(--wf-element-bg); stroke:var(--wf-border); stroke-width:1;
 }
-.wf-header, .wf-section, .wf-input, .wf-button, .wf-list, .wf-card,
-.wf-nav, .wf-footer, .wf-sidebar, .wf-modal, .wf-table, .wf-form {
-  background:var(--wf-element-bg); border:1px solid var(--wf-border);
-  border-radius:6px; padding:12px 16px; font-size:13px; color:var(--text-secondary);
+.wf-svg rect.wf-header {
+  fill:var(--card-bg); stroke:var(--primary); stroke-width:2;
 }
-.wf-header { background:var(--card-bg); border-bottom:2px solid var(--primary); font-weight:600; color:var(--text); }
-.wf-button { background:var(--primary); color:#fff; border:none; border-radius:6px; padding:8px 16px; display:inline-block; font-weight:600; font-size:13px; }
-.wf-button.secondary { background:transparent; border:1px solid var(--border); color:var(--text-secondary); }
-.wf-placeholder { background:var(--wf-bg); border:1px dashed var(--wf-border); border-radius:6px; padding:20px; text-align:center; color:var(--text-muted); font-size:12px; }
+.wf-svg rect.wf-button {
+  fill:var(--primary); stroke:none; rx:6;
+}
+.wf-svg rect.wf-button-secondary {
+  fill:none; stroke:var(--border); stroke-width:1; rx:6;
+}
+.wf-svg rect.wf-placeholder {
+  fill:var(--wf-bg); stroke:var(--wf-border); stroke-width:1; stroke-dasharray:6 3;
+}
+.wf-svg text.wf-label {
+  fill:var(--text-secondary); font-size:13px;
+}
+.wf-svg text.wf-label-header {
+  fill:var(--text); font-size:14px; font-weight:600;
+}
+.wf-svg text.wf-label-button {
+  fill:#ffffff; font-size:13px; font-weight:600;
+}
+.wf-svg text.wf-label-button-secondary {
+  fill:var(--text-secondary); font-size:13px; font-weight:600;
+}
+.wf-svg text.wf-label-placeholder {
+  fill:var(--text-muted); font-size:12px; text-anchor:middle;
+}
+.wf-svg line.wf-divider {
+  stroke:var(--wf-border); stroke-width:1;
+}
+.wf-svg line.wf-divider-primary {
+  stroke:var(--primary); stroke-width:2;
+}
 
-/* ===== Grid Layout Helpers ===== */
-.wf-row { display:flex; gap:12px; margin-bottom:12px; }
-.wf-col { flex:1; }
-.wf-col-2 { flex:2; }
-.wf-col-3 { flex:3; }
-
-/* ===== Annotation Marker ===== */
-.annotation-marker {
-  position:absolute; top:-10px; right:-10px; z-index:10;
-  min-width:24px; height:24px; padding:0 5px; border-radius:50%;
-  background:var(--marker-bg); color:var(--marker-text);
-  font-size:11px; font-weight:700; line-height:24px; text-align:center;
-  cursor:pointer; transition:all 0.2s;
-  box-shadow:
-    0 2px 8px rgba(37,99,235,0.4),
-    0 0 0 2px rgba(255,255,255,0.9),
-    0 4px 12px rgba(0,0,0,0.15);
-  user-select:none;
-  border:none;
-  font-family:'Fira Code',monospace;
-  letter-spacing:-0.5px;
+/* ===== SVG Annotation Marker ===== */
+.wf-svg .annotation-marker {
+  fill:var(--marker-bg); cursor:pointer;
+  filter:drop-shadow(0 2px 4px rgba(37,99,235,0.4));
+  transition:transform 0.2s;
 }
-/* 2자리 이상 숫자는 pill 형태로 확장 */
-.annotation-marker:nth-child(n) { /* 10+ 대응 */ }
-.annotation-marker {
-  min-width:24px; /* 1자리 */
-}
-.annotation-marker:hover {
+.wf-svg .annotation-marker:hover {
   transform:scale(1.2);
-  box-shadow:
-    0 3px 12px rgba(37,99,235,0.5),
-    0 0 0 3px rgba(255,255,255,1),
-    0 6px 20px rgba(0,0,0,0.2);
+  filter:drop-shadow(0 3px 8px rgba(37,99,235,0.5));
+}
+.wf-svg .annotation-marker-text {
+  fill:var(--marker-text); font-size:11px; font-weight:700;
+  text-anchor:middle; dominant-baseline:central;
+  pointer-events:none; font-family:'Fira Code',monospace;
+  user-select:none;
 }
 
 /* ===== Main Content Wrapper ===== */
@@ -1023,7 +1053,7 @@ body.sidebar-open .annotation-sidebar { right:0; }
   body.sidebar-open .main-content { margin-right:0; }
   body.sidebar-open .annotation-sidebar { right:0; }
   .legend-list { columns:1; }
-  .wf-row { flex-direction:column; }
+  .wf-canvas { padding:12px; margin:12px; }
 }
 
 /* ===== Print ===== */
@@ -1078,9 +1108,44 @@ body.sidebar-open .annotation-sidebar { right:0; }
   </div>
 </div>
 
-<!-- Wireframe Canvas -->
+<!-- Wireframe Canvas (SVG) -->
 <div class="wf-canvas">
-  <!-- 와이어프레임 레이아웃 + 어노테이션 마커 배치 -->
+  <svg class="wf-svg" viewBox="0 0 {{SVG_WIDTH}} {{SVG_HEIGHT}}" xmlns="http://www.w3.org/2000/svg">
+    <!--
+      SVG 와이어프레임 레이아웃 렌더링 규칙:
+      - 모든 UI 요소는 <g class="wf-element" data-annotation="N"> 그룹으로 감싼다
+      - 요소 형태: rect(박스), text(라벨), line(구분선), path(곡선 커넥터)
+      - 어노테이션 마커: <circle class="annotation-marker"> + <text class="annotation-marker-text">
+      - viewBox는 화면 복잡도에 따라 조정 (기본 1200×800, 필요 시 확장)
+      - 반응형: viewBox 고정 + CSS width:100%로 스케일링
+    -->
+
+    <!-- 예: Header 영역 -->
+    <g class="wf-element" data-annotation="1">
+      <rect x="0" y="0" width="1200" height="60" rx="6" class="wf-header"/>
+      <text x="20" y="36" class="wf-label-header">Header Navigation</text>
+      <circle class="annotation-marker" cx="1190" cy="10" r="12" data-target="annotation-1"/>
+      <text class="annotation-marker-text" x="1190" y="10" data-target="annotation-1">1</text>
+    </g>
+
+    <!-- 예: Input 필드 -->
+    <g class="wf-element" data-annotation="2">
+      <rect x="20" y="80" width="360" height="44" rx="6" class="wf-input"/>
+      <text x="36" y="106" class="wf-label">이메일 입력</text>
+      <circle class="annotation-marker" cx="376" cy="80" r="12" data-target="annotation-2"/>
+      <text class="annotation-marker-text" x="376" y="80" data-target="annotation-2">2</text>
+    </g>
+
+    <!-- 예: Button -->
+    <g class="wf-element" data-annotation="3">
+      <rect x="20" y="140" width="120" height="40" rx="6" class="wf-button"/>
+      <text x="80" y="164" class="wf-label-button" text-anchor="middle">로그인</text>
+      <circle class="annotation-marker" cx="136" cy="140" r="12" data-target="annotation-3"/>
+      <text class="annotation-marker-text" x="136" y="140" data-target="annotation-3">3</text>
+    </g>
+
+    <!-- 이하 화면별 UI 요소 배치 -->
+  </svg>
 </div>
 
 <!-- Annotation Legend -->
@@ -1172,8 +1237,9 @@ function switchTab(btn,tabName){
   card.querySelector('[data-tab="'+tabName+'"]').classList.add('active');
 }
 
-// Marker click → open sidebar + scroll to card
-document.querySelectorAll('.annotation-marker').forEach(function(m){
+// SVG Marker click → open sidebar + scroll to card
+// circle과 text 모두 클릭 대상 (text에 pointer-events:none이므로 circle이 주로 수신)
+document.querySelectorAll('.wf-svg .annotation-marker, .wf-svg .annotation-marker-text').forEach(function(m){
   m.addEventListener('click',function(e){
     e.stopPropagation();
     openAnnotation(this.getAttribute('data-target'));
@@ -1539,10 +1605,13 @@ index.html의 JSON (`index.json`):
 
 ### 와이어프레임 HTML 생성 시
 - [ ] 단일 HTML 파일 완결 (외부 JS/CSS 없음, Pretendard CDN만 허용)
+- [ ] **UI 레이아웃 영역은 SVG(`<svg class="wf-svg">`)로 렌더링** — HTML div 금지
+- [ ] SVG viewBox 설정 (기본 1200×800, 화면 복잡도에 따라 확장)
+- [ ] SVG 요소: `<g class="wf-element">` 그룹 + `<rect>` 박스 + `<text>` 라벨 + `<line>` 구분선
 - [ ] Light/Dark 테마 토글 동작
 - [ ] OS 테마 자동 감지 + localStorage 저장
 - [ ] 모든 색상 CSS 변수 사용 (하드코딩 금지)
-- [ ] **거의 모든 UI 요소**에 숫자 마커 부착 (순수 레이아웃 컨테이너만 제외, 누락보다 과잉 원칙)
+- [ ] **거의 모든 UI 요소**에 SVG 숫자 마커 부착 (`<circle>` + `<text>`, 순수 레이아웃 컨테이너만 제외, 누락보다 과잉 원칙)
 - [ ] 우측 Sidebar에 전체 어노테이션을 아코디언 카드로 배치
 - [ ] Topbar에 Sidebar 토글 버튼 + 어노테이션 개수 배지 포함
 - [ ] Sidebar Expand All / Collapse All 버튼 동작
