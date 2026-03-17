@@ -5,6 +5,11 @@
   "author": {
     "name": "u-plugin"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/thinoo-v2/u-maker-plugin.git"
+  },
+  "homepage": "https://github.com/thinoo-v2/u-maker-plugin",
   "keywords": [
     "pdca",
     "ssot",

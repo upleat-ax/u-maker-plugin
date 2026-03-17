@@ -5,7 +5,7 @@ PDCA(Plan-Design-Do-Check-Act) 기반 SSoT(Single Source of Truth) 협업 오케
 
 - Plugin version: `1.0.0`
 - SSoT config version: `2.0.0`
-- Skills: `52` | Agents: `8`
+- Skills: `52` | Agents: `8` | Templates: `20` | References: `13`
 - [시작 가이드 (초보자용)](GET_STARTED.md) | [한국어 README (HTML)](README.ko.html) | [English README (HTML)](README.en.html)
 
 ---
@@ -38,13 +38,14 @@ PDCA(Plan-Design-Do-Check-Act) 기반 SSoT(Single Source of Truth) 협업 오케
 8. [Document Output Pipeline](#8-document-output-pipeline)
 9. [Repository Layout](#9-repository-layout)
 10. [Prerequisites & Install](#10-prerequisites--install)
-11. [Scenario Guide](#11-scenario-guide)
-12. [Hooks & Guardrails](#12-hooks--guardrails)
-13. [Tech Stack Policy](#13-tech-stack-policy)
-14. [Validation & Scripts](#14-validation--scripts)
-15. [Troubleshooting](#15-troubleshooting)
-16. [Contributor Notes](#16-contributor-notes)
-17. [License](#17-license)
+11. [Role-Based Guide](#11-role-based-guide)
+12. [Scenario Guide](#12-scenario-guide)
+13. [Hooks & Guardrails](#13-hooks--guardrails)
+14. [Tech Stack Policy](#14-tech-stack-policy)
+15. [Validation & Scripts](#15-validation--scripts)
+16. [Troubleshooting](#16-troubleshooting)
+17. [Contributor Notes](#17-contributor-notes)
+18. [License](#18-license)
 
 ---
 
@@ -52,13 +53,18 @@ PDCA(Plan-Design-Do-Check-Act) 기반 SSoT(Single Source of Truth) 협업 오케
 
 u-maker는 **문서 중심 개발(SSoT)**을 강제하는 협업 오케스트레이터이다.
 
-| Problem | Solution |
-|---------|----------|
+### 기존 방식 vs u-maker
+
+| 기존 방식 | u-maker 방식 |
+|----------|-------------|
+| 코드 먼저, 문서는 나중에 | 문서 먼저, 코드는 문서 기반 생성 (Docs-First) |
 | 요구사항과 코드가 따로 놀아 추적 불가 | 4-Tier ID(`USR→FR→US→FT`)로 요구사항~테스트 전 구간 추적 |
+| 설계서와 코드가 달라지는 문제 | Match Rate 자동 측정, 90% 미만이면 자동 보완 |
 | 단계 건너뛰기로 품질 저하 | Phase Gate로 전 단계 문서 Final 확인 후에만 다음 단계 진행 |
 | 반복적인 수정-테스트 사이클 | PDCA Loop 자동화 (최대 10회 반복, 종료 조건 자동 판정) |
-| 기술 스택 규칙 위반 | Hook 기반 사전 차단 (CSS-in-JS, Pages Router 등 10개 규칙) |
-| 문서와 코드 버전 불일치 | 문서 변경 시 `.md` + `.json` 동시 생성, 리포트는 `.md` + `.html` 2종 생성 |
+| 기술 스택 규칙 위반 | Hook 기반 실시간 차단 (CSS-in-JS, Pages Router 등 10개 규칙) |
+| 문서와 코드 버전 불일치 | `.md` + `.json` 동시 생성, 리포트는 `.html`도 추가 생성 |
+| 각 역할자가 개별 도구로 작업 | 8개 AI 에이전트가 하나의 SSoT 체계에서 협업 |
 
 ---
 
@@ -184,7 +190,7 @@ flowchart TD
 
 | Command | Description |
 |---------|-------------|
-| `/u-skill-report [app]` | 프로젝트 종합 보고서 (FR/NFR/US/FT/TC 전체 카운트 + 이전 보고서 비교 + 3종 부채 + 기여자별 작업 + Git 활동 + QA 결과). Dark/Light 모드 HTML |
+| `/u-skill-report [app]` | 프로젝트 종합 보고서 (FR/NFR/US/FT/TC 카운트 + 이전 보고서 비교 + 3종 부채 + 기여자별 작업 + Git 활동 + QA 결과). Dark/Light 모드 HTML |
 | `/u-skill-html-doc [doc-type]` | SSoT 문서를 인터랙티브 HTML 뷰어로 변환. `all`로 전체 변환, `srs`, `erd`, `api` 등 개별 지정 가능 |
 
 ### 4.6 Status & Utility
@@ -267,7 +273,7 @@ flowchart TD
     USR["USR-XXXX<br/>User Type<br/><i>관리자, 일반 사용자</i>"]
     FR["FR-XXXX<br/>Functional Req.<br/><i>고객 요구사항 (계약/RFP 기반)</i>"]
     US["US-XXXX<br/>User Story<br/><i>FR을 사용자 관점으로 분해</i>"]
-    FT["FT-XXXX<br/>Feature ★ 구현 추적 기본 단위<br/><i>사용자 목록 조회, 검색</i>"]
+    FT["FT-XXXX<br/>Feature<br/><i>★ 구현 추적 기본 단위</i>"]
     USR --> FR --> US --> FT
 ```
 
@@ -413,12 +419,12 @@ u-maker-plugin/
 │   ├── state.js
 │   ├── gate.js
 │   └── doc-tracker.js
-├── templates/             # SSoT 문서 템플릿 (22개)
-│   ├── 01-plan/
-│   ├── 02-design/
-│   ├── 03-dev/
-│   ├── 04-check/
-│   └── 05-act/
+├── templates/             # SSoT 문서 템플릿 (20개)
+│   ├── 01-plan/           #   SRS, IA, Index, Roadmap, Common (5)
+│   ├── 02-design/         #   API, ERD, Screen, ScreenFlow, UXGuide, RTM (6)
+│   ├── 03-dev/            #   Code, DesignToken, Screen, UIComponents (4)
+│   ├── 04-check/          #   Case, Report (2)
+│   └── 05-act/            #   Backlog, IterationLog, Retrospective (3)
 ├── _refer/                # 표준/정책/명령어 레퍼런스 (13개)
 │   ├── ssot-standard.md
 │   ├── pdca-workflow.md
@@ -481,15 +487,75 @@ mv .u-maker/u-ssot.config.json .u-maker/u-maker.config.json
 
 ---
 
-## 11. Scenario Guide
+## 11. Role-Based Guide
+
+> 각 역할별 상세 가이드는 [GET_STARTED.md](GET_STARTED.md) Part 3을 참고하세요.
+
+### 기획자 (PM / RA)
+
+요구사항 정의와 프로젝트 관리를 담당한다.
+
+| 핵심 명령어 | 용도 |
+|-------------|------|
+| `/u-skill-plan` | Plan Phase 전체 실행 |
+| `/u-skill-us-add` | 유저 스토리 추가 |
+| `/u-skill-fr-add` | 기능 요구사항 추가 |
+| `/u-skill-refine` | 항목 세분화 |
+| `/u-skill-status` | 프로젝트 현황 |
+| `/u-skill-report` | 종합 보고서 |
+| `/u-skill-validate` | 문서 무결성 검증 |
+| `/u-skill-glossary` | 용어 정의 |
+| `/u-skill-workflow` | 워크플로우 정의 |
+
+### 디자이너 (UX)
+
+화면 구조 설계, 와이어프레임, 시각 디자인을 담당한다.
+
+| 핵심 명령어 | 용도 |
+|-------------|------|
+| `/u-skill-design` | Design Phase 전체 실행 |
+| `/u-skill-screen` | 화면 상세 설계 |
+| `/u-skill-wireframe` | 와이어프레임 HTML |
+| `/u-skill-ux-figma` | pencil.dev 시각 디자인 |
+| `/u-skill-ux-dsystem` | 디자인 시스템 시각 구성 |
+| `/u-skill-html-doc screen` | 설계서 HTML 변환 |
+
+### 개발자 (Frontend / Backend)
+
+설계 문서 기반 코드 구현을 담당한다.
+
+| 핵심 명령어 | 용도 |
+|-------------|------|
+| `/u-skill-dev` | DO Phase 전체 실행 |
+| `/u-skill-fix` | 버그 수정 + 자동 TC 보강 |
+| `/u-skill-build` | 빌드 실행 |
+| `/u-skill-storybook` | Storybook 실행 |
+| `/u-skill-gap-detector` | 설계-구현 Gap 분석 |
+| `/u-skill-git-pr` | Git PR 생성 |
+| `/u-agent-dv-fe` | FE 에이전트 직접 요청 |
+| `/u-agent-dv-be` | BE 에이전트 직접 요청 |
+
+### QA (테스터)
+
+테스트 설계, 실행, 결함 분석을 담당한다.
+
+| 핵심 명령어 | 용도 |
+|-------------|------|
+| `/u-skill-testcase` | TC 일괄 설계 |
+| `/u-skill-tc-add` | TC 개별 추가 |
+| `/u-skill-tc-refine` | TC 세분화 |
+| `/u-skill-qa` | 테스트 실행 |
+| `/u-skill-check` | CHECK Phase 전체 |
+| `/u-agent-qa` | QA 에이전트 직접 요청 |
+
+---
+
+## 12. Scenario Guide
 
 ### Scenario 1: 새 프로젝트 처음부터 끝까지
 
 ```bash
-# 프로젝트 생성
 /u-skill-create-project my-saas
-
-# 전체 PDCA 자동 실행 (Plan -> Design -> Do -> Check -> Act 반복)
 /u-skill-loop
 ```
 
@@ -498,61 +564,28 @@ mv .u-maker/u-ssot.config.json .u-maker/u-maker.config.json
 ### Scenario 2: 기존 프로젝트에 SSoT 적용
 
 ```bash
-# 기존 코드 분석 후 SSoT 문서 역공학 생성 (Draft)
 /u-skill-init .
-
-# 생성된 문서 확인
 /u-skill-status
-/u-skill-docs
-
-# 문서 무결성 검증
 /u-skill-validate
-
-# PDCA 루프 시작
 /u-skill-loop
 ```
 
 ### Scenario 3: 단계별 수동 실행
 
 ```bash
-# PLAN
 /u-skill-plan web
-/u-skill-validate
-
-# DESIGN
 /u-skill-design web
-
-# DO
 /u-skill-dev web
-/u-skill-build
-
-# CHECK
 /u-skill-check web
-
-# ACT (결함 발견 시)
 /u-skill-act
 ```
 
 ### Scenario 4: 새 기능 추가
 
 ```bash
-# 1. 유저 스토리 추가
 /u-skill-us-add
-
-# 2. 기능 요구사항 추가
 /u-skill-fr-add web
-
-# 3. 항목이 너무 크면 세분화
-/u-skill-refine FR-0010 web    # FR을 하위 FR로 분해
-/u-skill-refine US-0010        # US를 하위 US로 분해
-/u-skill-refine FT-0010 web    # FT를 하위 FT로 분해
-
-# 4. 테스트 케이스 추가/세분화
-/u-skill-tc-add web FT-0010 로그인 성공 TC    # TC 개별 추가
-/u-skill-tc-add all FT-0010 로그인 TC         # 모든 앱에 동일 TC 일괄 추가
-/u-skill-tc-refine TC-0010 web                # TC를 하위 TC로 세분화
-
-# 5. 설계부터 재실행
+/u-skill-refine FR-0010 web
 /u-skill-design web
 /u-skill-dev web
 /u-skill-check web
@@ -561,39 +594,23 @@ mv .u-maker/u-ssot.config.json .u-maker/u-maker.config.json
 ### Scenario 5: 버그 수정
 
 ```bash
-# 코드 수정 + QA가 자동으로 TC 보강
 /u-skill-fix web "로그인 시 토큰 만료 처리 버그"
-
-# 또는 백로그에 등록 후 루프 재시작
-/u-skill-backlog-add "로그인 토큰 만료 처리 미흡"
-/u-skill-loop-from design
 ```
 
 ### Scenario 6: 중간에 루프 중단 & 재개
 
 ```bash
-# 루프 실행 중 중단
 /u-skill-stop
-
-# 상태 확인
 /u-skill-status
-
-# 재개
 /u-skill-resume
 ```
 
 ### Scenario 7: 종합 보고서 생성
 
 ```bash
-# 프로젝트 종합 보고서 (현재 시각 자동)
 /u-skill-report
-
-# 특정 앱 지정 (멀티앱 프로젝트)
-/u-skill-report web
+/u-skill-report web          # 멀티앱 프로젝트 시 앱 지정
 ```
-
-보고서는 `.md` + `.html` 2종이 동일 경로에 생성된다.
-HTML은 Pretendard 폰트 기반 단일 파일로, 브라우저에서 바로 열어 확인 가능하다.
 
 #### 보고서 주요 기능
 
@@ -611,53 +628,34 @@ HTML은 Pretendard 폰트 기반 단일 파일로, 브라우저에서 바로 열
 ### Scenario 8: SSoT 문서를 HTML로 변환
 
 ```bash
-# 모든 문서를 HTML 뷰어로 변환
-/u-skill-html-doc
-
-# 특정 문서만 변환
-/u-skill-html-doc srs
-/u-skill-html-doc erd
-/u-skill-html-doc api
+/u-skill-html-doc              # 모든 문서 변환
+/u-skill-html-doc srs          # 특정 문서만
+/u-skill-html-doc all          # 전체 변환 (파일 없으면 Skip)
 ```
 
-HTML 뷰어는 사이드바 네비게이션, 검색, Light/Dark 테마 토글을 포함한다.
-
-### Scenario 9: 설계-구현 Gap 분석
+### Scenario 9: 에이전트에게 직접 요청
 
 ```bash
-# SRS/ERD/API/Screen vs 실제 코드 비교
-/u-skill-gap-detector
-
-# Match Rate >= 90%: PASS
-# Match Rate <  90%: FAIL -> Gap 항목이 백로그로 전환
-```
-
-### Scenario 10: 에이전트에게 직접 요청
-
-```bash
-# SA에게 자유 형식 요청
 /u-agent-sa "User 엔티티에 프로필 이미지 필드를 추가해줘"
-
-# UX에게 요청
 /u-agent-ux "로그인 화면에 소셜 로그인 버튼을 추가해줘"
-
-# QA에게 요청
 /u-agent-qa "인증 관련 테스트 케이스를 보강해줘"
+/u-agent-pm "이번 주 데일리 리포트를 생성해줘"
 ```
 
-### Scenario 11: Git PR 생성
+### Scenario 10: 자연어로 요청하기
 
-```bash
-# 변경 파일을 feature 단위로 그룹핑하여 commit + PR
-/u-skill-git-pr
+슬래시 커맨드 대신 자연어로 말해도 된다. u-maker가 적절한 에이전트에게 자동 전달한다:
 
-# 또는 feature 이름 지정
-/u-skill-git-pr feat/user-auth
+```
+"로그인 기능을 추가하고 싶어"         → RA/SA가 문서 작성
+"ERD를 PostgreSQL로 최적화해줘"      → SA가 ERD 수정
+"테스트 케이스를 보강해줘"            → QA가 TC 추가
+"이번 주 보고서를 만들어줘"           → PM이 보고서 생성
 ```
 
 ---
 
-## 12. Hooks & Guardrails
+## 13. Hooks & Guardrails
 
 `hooks/hooks.json`에 정의된 자동 훅:
 
@@ -679,7 +677,7 @@ HTML 뷰어는 사이드바 네비게이션, 검색, Light/Dark 테마 토글을
 
 ---
 
-## 13. Tech Stack Policy
+## 14. Tech Stack Policy
 
 u-maker가 강제하는 10가지 기술 스택 규칙:
 
@@ -700,7 +698,7 @@ u-maker가 강제하는 10가지 기술 스택 규칙:
 
 ---
 
-## 14. Validation & Scripts
+## 15. Validation & Scripts
 
 ### SSoT Validation
 
@@ -729,7 +727,7 @@ Turborepo + Next.js App Router + Storybook + Design Token 구조를 자동 생�
 
 ---
 
-## 15. Troubleshooting
+## 16. Troubleshooting
 
 ### 배포 후 명령어가 안 보일 때
 
@@ -768,7 +766,7 @@ Inner Gap Loop는 최대 `maxGapRetries` (기본 3회) 재시도 후 강제 진�
 
 ---
 
-## 16. Contributor Notes
+## 17. Contributor Notes
 
 ### 새 스킬 추가
 
@@ -814,6 +812,6 @@ agents:
 
 ---
 
-## 17. License
+## 18. License
 
 Private repository. Internal use only.

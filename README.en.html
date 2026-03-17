@@ -3,7 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>u-maker Plugin — Claude Skills, Agents & SSoT Guide</title>
+<title>u-maker Plugin — PDCA SSoT Orchestrator</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <style>
   :root {
     --bg: #0f0f13;
@@ -44,10 +45,6 @@
     --accent-glow: rgba(108, 92, 231, 0.08);
     --border: #dddde8;
   }
-  @font-face {
-    font-family: 'Pretendard';
-    src: url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css');
-  }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   html { scroll-behavior: smooth; }
   body {
@@ -58,8 +55,6 @@
     font-size: 16px;
     transition: background 0.3s, color 0.3s;
   }
-
-  /* Theme Toggle */
   .theme-toggle {
     position: fixed; top: 20px; right: 20px; z-index: 1000;
     width: 44px; height: 44px; border-radius: 50%;
@@ -69,8 +64,6 @@
     box-shadow: 0 2px 12px rgba(0,0,0,0.2);
   }
   .theme-toggle:hover { border-color: var(--accent); transform: scale(1.1); }
-
-  /* Hero */
   .hero {
     min-height: 100vh; display: flex; flex-direction: column;
     align-items: center; justify-content: center; text-align: center;
@@ -100,20 +93,10 @@
     font-size: 1.15rem; color: var(--text-dim); max-width: 640px;
     margin-bottom: 40px;
   }
-  .hero-stats {
-    display: flex; gap: 32px; flex-wrap: wrap; justify-content: center;
-  }
-  .hero-stat {
-    text-align: center;
-  }
-  .hero-stat .num {
-    font-size: 2.2rem; font-weight: 800; color: var(--accent-light);
-  }
-  .hero-stat .label {
-    font-size: 0.85rem; color: var(--text-dim); margin-top: 2px;
-  }
-
-  /* Nav */
+  .hero-stats { display: flex; gap: 32px; flex-wrap: wrap; justify-content: center; }
+  .hero-stat { text-align: center; }
+  .hero-stat .num { font-size: 2.2rem; font-weight: 800; color: var(--accent-light); }
+  .hero-stat .label { font-size: 0.85rem; color: var(--text-dim); margin-top: 2px; }
   .nav-bar {
     position: sticky; top: 0; z-index: 100;
     background: rgba(15, 15, 19, 0.85);
@@ -128,14 +111,9 @@
   .nav-inner a {
     color: var(--text-dim); text-decoration: none;
     padding: 8px 14px; border-radius: var(--radius-sm);
-    font-size: 0.85rem; white-space: nowrap;
-    transition: all 0.2s;
+    font-size: 0.85rem; white-space: nowrap; transition: all 0.2s;
   }
-  .nav-inner a:hover {
-    color: var(--accent-light); background: var(--accent-glow);
-  }
-
-  /* Sections */
+  .nav-inner a:hover { color: var(--accent-light); background: var(--accent-glow); }
   .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
   section { padding: 80px 0; }
   .section-label {
@@ -148,19 +126,15 @@
     margin-bottom: 16px; letter-spacing: -0.01em;
   }
   section > .container > p {
-    color: var(--text-dim); font-size: 1.05rem; max-width: 700px;
-    margin-bottom: 40px;
+    color: var(--text-dim); font-size: 1.05rem; max-width: 700px; margin-bottom: 40px;
   }
-
-  /* Cards */
   .card-grid {
     display: grid; gap: 20px;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   }
   .card {
     background: var(--bg-card); border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 28px;
-    transition: all 0.3s;
+    border-radius: var(--radius); padding: 28px; transition: all 0.3s;
   }
   .card:hover {
     border-color: var(--accent); transform: translateY(-2px);
@@ -171,18 +145,12 @@
     display: flex; align-items: center; justify-content: center;
     font-size: 22px; margin-bottom: 16px;
   }
-  .card h3 {
-    font-size: 1.1rem; font-weight: 700; color: var(--text-bright);
-    margin-bottom: 8px;
-  }
+  .card h3 { font-size: 1.1rem; font-weight: 700; color: var(--text-bright); margin-bottom: 8px; }
   .card p { color: var(--text-dim); font-size: 0.92rem; }
-
-  /* Code Blocks */
   .code-block {
     background: var(--bg-code); border: 1px solid var(--border);
     border-radius: var(--radius); padding: 20px 24px;
-    overflow-x: auto; margin: 20px 0;
-    position: relative;
+    overflow-x: auto; margin: 20px 0; position: relative;
   }
   .code-block .lang {
     position: absolute; top: 10px; right: 14px;
@@ -190,22 +158,17 @@
     background: var(--bg-card); padding: 2px 8px; border-radius: 4px;
   }
   .code-block pre {
-    font-family: var(--mono); font-size: 0.88rem;
-    line-height: 1.7; color: var(--text);
+    font-family: var(--mono); font-size: 0.88rem; line-height: 1.7; color: var(--text);
   }
   .code-block .comment { color: #5c6370; font-style: italic; }
   .code-block .cmd { color: var(--cyan); }
   .code-block .flag { color: var(--orange); }
   .code-block .str { color: var(--green); }
-
-  /* Table */
   .table-wrap {
     overflow-x: auto; margin: 20px 0;
     border: 1px solid var(--border); border-radius: var(--radius);
   }
-  table {
-    width: 100%; border-collapse: collapse; font-size: 0.9rem;
-  }
+  table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
   thead { background: var(--bg-card-alt); }
   th {
     padding: 12px 16px; text-align: left; font-weight: 600;
@@ -213,10 +176,7 @@
     text-transform: uppercase; letter-spacing: 0.5px;
     border-bottom: 1px solid var(--border);
   }
-  td {
-    padding: 12px 16px; border-bottom: 1px solid var(--border);
-    color: var(--text);
-  }
+  td { padding: 12px 16px; border-bottom: 1px solid var(--border); color: var(--text); }
   tr:last-child td { border-bottom: none; }
   tr:hover td { background: var(--accent-glow); }
   td code {
@@ -224,8 +184,6 @@
     background: var(--bg-code); padding: 2px 6px; border-radius: 4px;
     color: var(--accent-light);
   }
-
-  /* Badges */
   .badge {
     display: inline-block; padding: 3px 10px; border-radius: 6px;
     font-size: 0.75rem; font-weight: 600; letter-spacing: 0.3px;
@@ -235,43 +193,27 @@
   .badge-orange { background: var(--orange-dim); color: var(--orange); }
   .badge-blue { background: var(--blue-dim); color: var(--blue); }
   .badge-red { background: var(--red-dim); color: var(--red); }
-
-  /* Flow Diagram */
   .flow {
     display: flex; align-items: center; gap: 8px;
-    flex-wrap: wrap; justify-content: center;
-    padding: 32px 0;
+    flex-wrap: wrap; justify-content: center; padding: 32px 0;
   }
   .flow-node {
     padding: 12px 20px; border-radius: var(--radius-sm);
-    font-weight: 600; font-size: 0.9rem; text-align: center;
-    min-width: 100px;
+    font-weight: 600; font-size: 0.9rem; text-align: center; min-width: 100px;
   }
-  .flow-arrow {
-    color: var(--text-dim); font-size: 1.3rem;
-  }
+  .flow-arrow { color: var(--text-dim); font-size: 1.3rem; }
   .flow-plan { background: var(--blue-dim); color: var(--blue); border: 1px solid rgba(96,165,250,0.25); }
   .flow-design { background: var(--accent-glow); color: var(--accent-light); border: 1px solid rgba(124,106,246,0.25); }
   .flow-do { background: var(--green-dim); color: var(--green); border: 1px solid rgba(52,211,153,0.25); }
   .flow-check { background: var(--orange-dim); color: var(--orange); border: 1px solid rgba(245,158,11,0.25); }
   .flow-act { background: var(--red-dim); color: var(--red); border: 1px solid rgba(248,113,113,0.25); }
-
-  /* Concept Box */
   .concept-box {
     background: var(--bg-card); border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 32px;
-    margin: 24px 0;
+    border-radius: var(--radius); padding: 32px; margin: 24px 0;
     border-left: 4px solid var(--accent);
   }
-  .concept-box h3 {
-    color: var(--text-bright); font-size: 1.15rem;
-    margin-bottom: 12px;
-  }
-  .concept-box p {
-    color: var(--text-dim); font-size: 0.95rem;
-  }
-
-  /* Tier Diagram */
+  .concept-box h3 { color: var(--text-bright); font-size: 1.15rem; margin-bottom: 12px; }
+  .concept-box p { color: var(--text-dim); font-size: 0.95rem; }
   .tier-diagram {
     display: flex; flex-direction: column; gap: 12px;
     align-items: center; padding: 32px 0;
@@ -280,27 +222,18 @@
     display: flex; align-items: center; gap: 16px;
     padding: 16px 24px; border-radius: var(--radius);
     border: 1px solid var(--border);
-    width: 100%; max-width: 560px;
-    transition: all 0.2s;
+    width: 100%; max-width: 560px; transition: all 0.2s;
   }
   .tier-item:hover { border-color: var(--accent); }
-  .tier-id {
-    font-family: var(--mono); font-weight: 700; font-size: 0.9rem;
-    min-width: 90px;
-  }
-  .tier-conn {
-    color: var(--text-dim); font-size: 1.5rem; text-align: center;
-  }
-
-  /* Agent Cards */
+  .tier-id { font-family: var(--mono); font-weight: 700; font-size: 0.9rem; min-width: 90px; }
+  .tier-conn { color: var(--text-dim); font-size: 1.5rem; text-align: center; }
   .agent-grid {
     display: grid; gap: 16px;
     grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
   }
   .agent-card {
     background: var(--bg-card); border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 20px;
-    transition: all 0.3s;
+    border-radius: var(--radius); padding: 20px; transition: all 0.3s;
   }
   .agent-card:hover {
     border-color: var(--accent);
@@ -308,18 +241,13 @@
   }
   .agent-card .agent-name {
     font-family: var(--mono); font-weight: 700;
-    font-size: 0.9rem; color: var(--accent-light);
-    margin-bottom: 4px;
+    font-size: 0.9rem; color: var(--accent-light); margin-bottom: 4px;
   }
   .agent-card .agent-role {
     font-weight: 600; color: var(--text-bright);
     font-size: 0.95rem; margin-bottom: 8px;
   }
-  .agent-card .agent-desc {
-    color: var(--text-dim); font-size: 0.85rem;
-  }
-
-  /* Skill Sample */
+  .agent-card .agent-desc { color: var(--text-dim); font-size: 0.85rem; }
   .skill-sample {
     background: var(--bg-card); border: 1px solid var(--border);
     border-radius: var(--radius); overflow: hidden; margin: 16px 0;
@@ -329,61 +257,37 @@
     border-bottom: 1px solid var(--border);
     display: flex; align-items: center; gap: 10px;
   }
-  .skill-sample-header .dot {
-    width: 10px; height: 10px; border-radius: 50%;
-  }
+  .skill-sample-header .dot { width: 10px; height: 10px; border-radius: 50%; }
   .skill-sample-body { padding: 20px; }
   .skill-sample-body pre {
-    font-family: var(--mono); font-size: 0.85rem;
-    line-height: 1.7; color: var(--text);
+    font-family: var(--mono); font-size: 0.85rem; line-height: 1.7; color: var(--text);
   }
-
-  /* Callout */
   .callout {
     display: flex; gap: 14px; padding: 18px 20px;
-    border-radius: var(--radius-sm);
-    margin: 20px 0; font-size: 0.92rem;
+    border-radius: var(--radius-sm); margin: 20px 0; font-size: 0.92rem;
   }
-  .callout-info {
-    background: var(--blue-dim); border: 1px solid rgba(96,165,250,0.2);
-    color: var(--blue);
-  }
-  .callout-warn {
-    background: var(--orange-dim); border: 1px solid rgba(245,158,11,0.2);
-    color: var(--orange);
-  }
+  .callout-info { background: var(--blue-dim); border: 1px solid rgba(96,165,250,0.2); color: var(--blue); }
+  .callout-warn { background: var(--orange-dim); border: 1px solid rgba(245,158,11,0.2); color: var(--orange); }
   .callout .icon { font-size: 1.2rem; flex-shrink: 0; margin-top: 1px; }
-
-  /* Comparison */
   .comparison {
     display: grid; gap: 20px;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    margin: 24px 0;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); margin: 24px 0;
   }
   .comparison-col {
     background: var(--bg-card); border: 1px solid var(--border);
     border-radius: var(--radius); padding: 24px;
   }
   .comparison-col h4 {
-    font-size: 0.95rem; font-weight: 700;
-    color: var(--text-bright); margin-bottom: 16px;
+    font-size: 0.95rem; font-weight: 700; color: var(--text-bright); margin-bottom: 16px;
     display: flex; align-items: center; gap: 8px;
   }
-  .comparison-col ul {
-    list-style: none; padding: 0;
-  }
+  .comparison-col ul { list-style: none; padding: 0; }
   .comparison-col li {
     padding: 6px 0; color: var(--text-dim); font-size: 0.9rem;
     display: flex; align-items: flex-start; gap: 8px;
   }
-  .comparison-col li::before {
-    content: '\2192'; color: var(--accent-light); flex-shrink: 0;
-  }
-
-  /* Problem-Solution */
-  .problem-solution {
-    display: grid; gap: 16px; margin: 24px 0;
-  }
+  .comparison-col li::before { content: '\2192'; color: var(--accent-light); flex-shrink: 0; }
+  .problem-solution { display: grid; gap: 16px; margin: 24px 0; }
   .ps-row {
     display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
     background: var(--bg-card); border: 1px solid var(--border);
@@ -395,101 +299,77 @@
     color: var(--text-dim); font-size: 0.9rem;
   }
   .ps-solution {
-    padding: 16px 20px;
-    display: flex; align-items: center; gap: 10px;
+    padding: 16px 20px; display: flex; align-items: center; gap: 10px;
     color: var(--green); font-size: 0.9rem;
   }
-
-  /* Architecture Diagram */
   .arch-diagram {
     background: var(--bg-card); border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 32px;
-    margin: 24px 0; text-align: center;
+    border-radius: var(--radius); padding: 32px; margin: 24px 0; text-align: center;
   }
-  .arch-flow {
-    display: flex; flex-direction: column; align-items: center; gap: 16px;
-  }
-  .arch-row {
-    display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
-    justify-content: center;
-  }
+  .arch-flow { display: flex; flex-direction: column; align-items: center; gap: 16px; }
+  .arch-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; justify-content: center; }
   .arch-box {
     padding: 12px 20px; border-radius: var(--radius-sm);
-    font-size: 0.85rem; font-weight: 600; text-align: center;
-    min-width: 140px;
+    font-size: 0.85rem; font-weight: 600; text-align: center; min-width: 140px;
   }
-  .arch-arrow-down {
-    color: var(--text-dim); font-size: 1.5rem;
-  }
-
-  /* Pipeline */
+  .arch-arrow-down { color: var(--text-dim); font-size: 1.5rem; }
   .pipeline {
     display: flex; align-items: center; gap: 6px;
-    flex-wrap: wrap; justify-content: center;
-    padding: 24px 0;
+    flex-wrap: wrap; justify-content: center; padding: 24px 0;
   }
   .pipeline-node {
     padding: 8px 14px; border-radius: var(--radius-sm);
     font-size: 0.78rem; font-weight: 600; text-align: center;
-    background: var(--bg-card); border: 1px solid var(--border);
-    color: var(--text);
+    background: var(--bg-card); border: 1px solid var(--border); color: var(--text);
   }
-  .pipeline-arrow {
-    color: var(--text-dim); font-size: 1rem;
-  }
-
-  /* Repo Tree */
+  .pipeline-arrow { color: var(--text-dim); font-size: 1rem; }
   .repo-tree {
     background: var(--bg-code); border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 24px;
-    margin: 20px 0; overflow-x: auto;
+    border-radius: var(--radius); padding: 24px; margin: 20px 0; overflow-x: auto;
   }
-  .repo-tree pre {
-    font-family: var(--mono); font-size: 0.85rem;
-    line-height: 1.8; color: var(--text);
-  }
-
-  /* Troubleshoot Accordion */
-  .troubleshoot {
-    margin: 20px 0;
-  }
+  .repo-tree pre { font-family: var(--mono); font-size: 0.85rem; line-height: 1.8; color: var(--text); }
+  .troubleshoot { margin: 20px 0; }
   .ts-item {
     background: var(--bg-card); border: 1px solid var(--border);
-    border-radius: var(--radius); margin-bottom: 12px;
-    overflow: hidden;
+    border-radius: var(--radius); margin-bottom: 12px; overflow: hidden;
   }
   .ts-item summary {
-    padding: 16px 20px; cursor: pointer;
-    font-weight: 600; color: var(--text-bright);
+    padding: 16px 20px; cursor: pointer; font-weight: 600; color: var(--text-bright);
     font-size: 0.95rem; list-style: none;
-    display: flex; align-items: center; gap: 10px;
-    transition: background 0.2s;
+    display: flex; align-items: center; gap: 10px; transition: background 0.2s;
   }
   .ts-item summary:hover { background: var(--accent-glow); }
   .ts-item summary::before {
-    content: '\25B6'; font-size: 0.7rem; color: var(--accent-light);
-    transition: transform 0.2s;
+    content: '\25B6'; font-size: 0.7rem; color: var(--accent-light); transition: transform 0.2s;
   }
   .ts-item[open] summary::before { transform: rotate(90deg); }
-  .ts-body {
-    padding: 0 20px 16px;
-    color: var(--text-dim); font-size: 0.9rem;
+  .ts-body { padding: 0 20px 16px; color: var(--text-dim); font-size: 0.9rem; }
+  .role-grid {
+    display: grid; gap: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   }
-
-  /* Footer */
+  .role-card {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 24px; transition: all 0.3s;
+  }
+  .role-card:hover { border-color: var(--accent); box-shadow: 0 4px 20px rgba(124, 106, 246, 0.08); }
+  .role-card h4 { color: var(--text-bright); font-size: 1rem; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+  .role-card .role-desc { color: var(--text-dim); font-size: 0.88rem; margin-bottom: 12px; }
+  .role-card table { font-size: 0.82rem; }
+  .role-card td { padding: 6px 10px; }
+  .role-card th { padding: 6px 10px; font-size: 0.72rem; }
   footer {
     border-top: 1px solid var(--border);
     padding: 40px 24px; text-align: center;
     color: var(--text-dim); font-size: 0.85rem;
   }
-
-  /* Responsive */
   @media (max-width: 640px) {
     section { padding: 48px 0; }
     .hero { min-height: 80vh; padding: 40px 16px; }
     .hero h1 { font-size: 2rem; }
     .card-grid { grid-template-columns: 1fr; }
     .agent-grid { grid-template-columns: 1fr; }
+    .role-grid { grid-template-columns: 1fr; }
     .flow { gap: 6px; }
     .flow-node { min-width: 70px; font-size: 0.8rem; padding: 8px 12px; }
     .ps-row { grid-template-columns: 1fr; }
@@ -510,14 +390,14 @@
     PDCA SSoT Orchestrator
   </h1>
   <p>
-    8 specialized agents and 48 skills automate the entire software development lifecycle.
+    8 specialized agents and 52 skills automate the entire software development lifecycle.
     Document-driven development (SSoT) enforces full traceability from requirements to tests.
   </p>
   <div class="hero-stats">
     <div class="hero-stat"><div class="num">8</div><div class="label">Agents</div></div>
-    <div class="hero-stat"><div class="num">48</div><div class="label">Skills</div></div>
-    <div class="hero-stat"><div class="num">5</div><div class="label">PDCA Phases</div></div>
-    <div class="hero-stat"><div class="num">4</div><div class="label">Tier ID Hierarchy</div></div>
+    <div class="hero-stat"><div class="num">52</div><div class="label">Skills</div></div>
+    <div class="hero-stat"><div class="num">5</div><div class="label">Phases</div></div>
+    <div class="hero-stat"><div class="num">20</div><div class="label">Templates</div></div>
   </div>
 </header>
 
@@ -535,13 +415,17 @@
     <a href="#pipeline">Document Pipeline</a>
     <a href="#repo">Repository</a>
     <a href="#install">Install</a>
+    <a href="#roles">Role Guide</a>
     <a href="#scenarios">Scenarios</a>
     <a href="#guardrails">Guardrails</a>
+    <a href="#techstack">Tech Stack</a>
+    <a href="#validation">Validation</a>
     <a href="#troubleshoot">Troubleshooting</a>
+    <a href="#contributor">Contributor</a>
   </div>
 </nav>
 
-<!-- Section: Problem & Solution -->
+<!-- Section 1: Problem & Solution -->
 <section id="problem">
   <div class="container">
     <div class="section-label">WHY U-MAKER</div>
@@ -550,8 +434,16 @@
 
     <div class="problem-solution">
       <div class="ps-row">
+        <div class="ps-problem">&#10060; Code first, docs later</div>
+        <div class="ps-solution">&#9989; Docs first, code generated from docs (Docs-First)</div>
+      </div>
+      <div class="ps-row">
         <div class="ps-problem">&#10060; Requirements and code are out of sync &mdash; no traceability</div>
         <div class="ps-solution">&#9989; 4-Tier ID (<code>USR&rarr;FR&rarr;US&rarr;FT</code>) traces every requirement to test</div>
+      </div>
+      <div class="ps-row">
+        <div class="ps-problem">&#10060; Design docs and code diverge over time</div>
+        <div class="ps-solution">&#9989; Match Rate auto-measured; auto-fix if below 90%</div>
       </div>
       <div class="ps-row">
         <div class="ps-problem">&#10060; Skipping phases degrades quality</div>
@@ -563,17 +455,21 @@
       </div>
       <div class="ps-row">
         <div class="ps-problem">&#10060; Tech stack rules violated constantly</div>
-        <div class="ps-solution">&#9989; Hook-based pre-write guards block violations (10 rules)</div>
+        <div class="ps-solution">&#9989; Hook-based real-time blocking (10 rules enforced)</div>
       </div>
       <div class="ps-row">
         <div class="ps-problem">&#10060; Document and code versions diverge</div>
-        <div class="ps-solution">&#9989; Every doc change generates <code>.md</code> + <code>.json</code> simultaneously</div>
+        <div class="ps-solution">&#9989; <code>.md</code> + <code>.json</code> generated simultaneously; reports add <code>.html</code></div>
+      </div>
+      <div class="ps-row">
+        <div class="ps-problem">&#10060; Each role uses separate tools</div>
+        <div class="ps-solution">&#9989; 8 AI agents collaborate in one unified SSoT system</div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- Section: Core Concepts -->
+<!-- Section 2: Core Concepts -->
 <section id="concepts" style="background: var(--bg-card-alt);">
   <div class="container">
     <div class="section-label">CORE CONCEPTS</div>
@@ -610,7 +506,6 @@
       </div>
     </div>
 
-    <!-- Skill Structure Sample -->
     <div style="margin-top: 48px;">
       <h3 style="color: var(--text-bright); margin-bottom: 16px;">Skill Structure (Self-contained Pattern)</h3>
       <div class="skill-sample">
@@ -646,7 +541,6 @@
       </div>
     </div>
 
-    <!-- Skill vs Agent -->
     <div class="comparison">
       <div class="comparison-col">
         <h4><span class="badge badge-purple">Skill</span> Structured invocation</h4>
@@ -670,7 +564,7 @@
   </div>
 </section>
 
-<!-- Section: Architecture -->
+<!-- Section 2: Architecture -->
 <section id="architecture">
   <div class="container">
     <div class="section-label">ARCHITECTURE</div>
@@ -713,7 +607,7 @@
   </div>
 </section>
 
-<!-- Section: Agents -->
+<!-- Section 3: Agents -->
 <section id="agents" style="background: var(--bg-card-alt);">
   <div class="container">
     <div class="section-label">SPECIALIZED AGENTS</div>
@@ -730,7 +624,7 @@
       <div class="agent-card">
         <div class="agent-name">u-agent-ra</div>
         <div class="agent-role">Requirements Analyst</div>
-        <div class="agent-desc">Milestone, Validation, Backlog, Iteration Log, RTM.</div>
+        <div class="agent-desc">Milestone, Validation, Backlog, Iteration Log, RTM, Glossary, Workflow.</div>
         <div style="margin-top: 8px;"><span class="badge badge-purple">ALL</span></div>
       </div>
       <div class="agent-card">
@@ -785,14 +679,24 @@
   </div>
 </section>
 
-<!-- Section: Skills -->
+<!-- Section 4: Skills & Commands -->
 <section id="skills">
   <div class="container">
-    <div class="section-label">48 SKILLS</div>
+    <div class="section-label">52 SKILLS</div>
     <h2>Skills &amp; Commands</h2>
-    <p>Phase-specific skills cover everything from document generation to build, test, and reporting.</p>
+    <p>All 52 skills. Natural language input is auto-routed by the <code>u-skill-maker</code> router to the appropriate skill or agent.</p>
 
-    <h3 style="color: var(--text-bright); margin-bottom: 16px;">Lifecycle Skills</h3>
+    <h3 style="color: var(--text-bright); margin-bottom: 16px;">Router</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Command</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td><code>/u-skill-maker</code></td><td>Natural language router. Analyzes user input and auto-routes to the appropriate skill/agent (no direct invocation needed; activates automatically on NL input)</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 style="color: var(--text-bright); margin: 32px 0 16px;">Lifecycle Skills</h3>
     <div class="table-wrap">
       <table>
         <thead><tr><th>Command</th><th>Description</th></tr></thead>
@@ -850,8 +754,10 @@
           <tr><td><code>/u-skill-wireframe [app]</code></td><td>Wireframe HTML generation</td></tr>
           <tr><td><code>/u-skill-ux-figma [app]</code></td><td>pencil.dev visual screen design</td></tr>
           <tr><td><code>/u-skill-ux-dsystem [app]</code></td><td>Design system visual composition</td></tr>
+          <tr><td><code>/u-skill-glossary [app]</code></td><td>Glossary (terminology definitions) document</td></tr>
+          <tr><td><code>/u-skill-workflow [app]</code></td><td>Workflow definition document</td></tr>
           <tr><td><code>/u-skill-testcase [app]</code></td><td>Unit+E2E test case batch design</td></tr>
-          <tr><td><code>/u-skill-tc-add [app] [FT] [desc]</code></td><td>Add individual test case (supports <code>all</code> for all apps)</td></tr>
+          <tr><td><code>/u-skill-tc-add [app] [FT] [desc]</code></td><td>Add individual test case (supports <code>all</code>)</td></tr>
           <tr><td><code>/u-skill-tc-refine &lt;TC&gt; [app]</code></td><td>Decompose test case into sub-TCs</td></tr>
           <tr><td><code>/u-skill-qa [app]</code></td><td>Test execution (Vitest + Playwright)</td></tr>
           <tr><td><code>/u-skill-us-add [desc]</code></td><td>Add user story</td></tr>
@@ -862,12 +768,23 @@
       </table>
     </div>
 
-    <h3 style="color: var(--text-bright); margin: 32px 0 16px;">Reports &amp; Utilities</h3>
+    <h3 style="color: var(--text-bright); margin: 32px 0 16px;">Reports &amp; HTML</h3>
+    <p style="color: var(--text-dim); margin-bottom: 16px;">All reports generate <code>.md</code> + <code>.html</code> simultaneously.</p>
     <div class="table-wrap">
       <table>
         <thead><tr><th>Command</th><th>Description</th></tr></thead>
         <tbody>
-          <tr><td><code>/u-skill-report [app]</code></td><td>Comprehensive report (.md + .html) with Dark/Light toggle, trend charts, debt analysis, contributor stats</td></tr>
+          <tr><td><code>/u-skill-report [app]</code></td><td>Comprehensive report (FR/NFR/US/FT/TC counts + previous report comparison + 3-type debt + contributor stats + Git activity + QA results). Dark/Light HTML</td></tr>
+          <tr><td><code>/u-skill-html-doc [doc-type]</code></td><td>Convert SSoT documents to interactive HTML viewer. Use <code>all</code> for bulk, or specify <code>srs</code>, <code>erd</code>, <code>api</code>, etc.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 style="color: var(--text-bright); margin: 32px 0 16px;">Status &amp; Utility</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Command</th><th>Description</th></tr></thead>
+        <tbody>
           <tr><td><code>/u-skill-status</code></td><td>Current iteration, phase, completion rate, document status</td></tr>
           <tr><td><code>/u-skill-docs</code></td><td>SSoT document list with status (Draft/Review/Final)</td></tr>
           <tr><td><code>/u-skill-validate</code></td><td>Document integrity check (headers, traceability, structure)</td></tr>
@@ -878,7 +795,8 @@
           <tr><td><code>/u-skill-summary</code></td><td>Project summary (terminal output only, no file)</td></tr>
           <tr><td><code>/u-skill-build</code></td><td><code>bun run build</code></td></tr>
           <tr><td><code>/u-skill-storybook</code></td><td>Run Storybook</td></tr>
-          <tr><td><code>/u-skill-git-pr</code></td><td>Feature-based git commit + GitHub PR</td></tr>
+          <tr><td><code>/u-skill-fix [app] [desc]</code></td><td>Bug/feature fix + QA agent auto-reinforces TCs</td></tr>
+          <tr><td><code>/u-skill-git-pr [feat-name]</code></td><td>Feature-based git commit + GitHub PR</td></tr>
           <tr><td><code>/u-skill-help</code></td><td>Show all commands</td></tr>
         </tbody>
       </table>
@@ -886,7 +804,7 @@
   </div>
 </section>
 
-<!-- Section: PDCA -->
+<!-- Section 5: PDCA Workflow -->
 <section id="pdca" style="background: var(--bg-card-alt);">
   <div class="container">
     <div class="section-label">WORKFLOW</div>
@@ -922,7 +840,7 @@
           <tr>
             <td><span class="badge badge-purple">DESIGN</span></td>
             <td>UX, SA, RA</td>
-            <td>UXGuide, Screen, ScreenFlow, Wireframe, ERD, API, RTM</td>
+            <td>UXGuide, Screen, ScreenFlow, Wireframe, ERD, API, RTM, consistency review</td>
             <td>ERD + RTM + UXGuide + API + Screen + ScreenFlow = Final</td>
           </tr>
           <tr>
@@ -971,14 +889,19 @@
         <thead><tr><th>Match Rate</th><th>Action</th></tr></thead>
         <tbody>
           <tr><td>&ge; 90%</td><td>Proceed to CHECK phase</td></tr>
-          <tr><td>&lt; 90%</td><td>Extract gap FT list &rarr; incremental DO per FT &rarr; re-measure (max <code>maxGapRetries</code>)</td></tr>
+          <tr><td>&lt; 90%</td><td>Extract gap FT list &rarr; incremental DO per FT &rarr; re-measure (max <code>maxGapRetries</code>, default 3)</td></tr>
         </tbody>
       </table>
     </div>
+    <p style="color: var(--text-dim); font-size: 0.9rem; margin-top: 12px;">
+      Gap FTs invoke <code>u-agent-dv-fe</code> + <code>u-agent-dv-be</code> incrementally (full rewrite forbidden).
+      If retries are exhausted, the current Match Rate is recorded and CHECK phase proceeds.
+      Gap history is accumulated in <code>3_Code_DV.md</code> and included in the Loop Report.
+    </p>
   </div>
 </section>
 
-<!-- Section: 4-Tier ID -->
+<!-- Section 6: 4-Tier ID -->
 <section id="tier">
   <div class="container">
     <div class="section-label">TRACEABILITY</div>
@@ -1006,7 +929,7 @@
         <div class="tier-id" style="color: var(--green);">US-XXXX</div>
         <div>
           <strong style="color: var(--text-bright);">User Story</strong>
-          <div style="color: var(--text-dim); font-size: 0.85rem;">"As an admin, I want to manage users"</div>
+          <div style="color: var(--text-dim); font-size: 0.85rem;">FR decomposed into user perspective scenarios</div>
         </div>
       </div>
       <div class="tier-conn">&darr;</div>
@@ -1014,7 +937,7 @@
         <div class="tier-id" style="color: var(--orange);">FT-XXXX</div>
         <div>
           <strong style="color: var(--text-bright);">Feature</strong> <span class="badge badge-orange" style="font-size: 0.65rem;">Implementation tracking unit</span>
-          <div style="color: var(--text-dim); font-size: 0.85rem;">User list view, search, filtering</div>
+          <div style="color: var(--text-dim); font-size: 0.85rem;">FT = Feature (implementation unit). Never "Functional Test".</div>
         </div>
       </div>
     </div>
@@ -1041,7 +964,7 @@
   </div>
 </section>
 
-<!-- Section: SSoT Document Structure -->
+<!-- Section 7: SSoT Document Structure -->
 <section id="ssot" style="background: var(--bg-card-alt);">
   <div class="container">
     <div class="section-label">SINGLE SOURCE OF TRUTH</div>
@@ -1067,12 +990,14 @@
 &#9474;   &#9492;&#9472;&#9472; 05-act/
 &#9474;       &#9500;&#9472;&#9472; 5_IterationLog_RA.md (.json) <span class="comment"># Backlog + Iteration log</span>
 &#9474;       &#9500;&#9472;&#9472; 5_Retrospective_PM.md (.json)<span class="comment"># Retrospective</span>
-&#9474;       &#9500;&#9472;&#9472; 5_DailyReport_PM_*.md/html   <span class="comment"># Daily report</span>
-&#9474;       &#9492;&#9472;&#9472; 5_LoopReport_PM_*.md/html    <span class="comment"># Loop summary report</span>
+&#9474;       &#9500;&#9472;&#9472; 5_DailyReport_PM_*.md/json/html <span class="comment"># Daily report</span>
+&#9474;       &#9492;&#9472;&#9472; 5_LoopReport_PM_*.md/json/html  <span class="comment"># Loop summary report</span>
 &#9500;&#9472;&#9472; <span style="color:var(--green);">{app}/</span>                               <span class="comment"># Per-app docs (web, mobile, etc.)</span>
 &#9474;   &#9500;&#9472;&#9472; 01-plan/
 &#9474;   &#9474;   &#9500;&#9472;&#9472; 1_SRS_RA.md (.json)          <span class="comment"># Software Requirements Spec</span>
-&#9474;   &#9474;   &#9492;&#9472;&#9472; 1_IA_RA.md (.json)           <span class="comment"># Information Architecture</span>
+&#9474;   &#9474;   &#9500;&#9472;&#9472; 1_IA_RA.md (.json)           <span class="comment"># Information Architecture</span>
+&#9474;   &#9474;   &#9500;&#9472;&#9472; 1_Glossary_RA.md (.json)     <span class="comment"># Glossary</span>
+&#9474;   &#9474;   &#9492;&#9472;&#9472; 1_Workflow_RA.md (.json)     <span class="comment"># Workflow definition</span>
 &#9474;   &#9500;&#9472;&#9472; 02-design/
 &#9474;   &#9474;   &#9500;&#9472;&#9472; 2_API_SA.md (.json)          <span class="comment"># API Contract (OpenAPI 3.0)</span>
 &#9474;   &#9474;   &#9500;&#9472;&#9472; 2_Screen_UX.md (.json)       <span class="comment"># Screen detail design</span>
@@ -1101,22 +1026,21 @@
 </pre>
     </div>
 
-    <h3 style="color: var(--text-bright); margin: 32px 0 16px;">3-File Export Rule</h3>
-    <p style="color: var(--text-dim); margin-bottom: 16px;">Every SSoT document generates these files simultaneously on create/update:</p>
+    <h3 style="color: var(--text-bright); margin: 32px 0 16px;">File Export Rule</h3>
     <div class="table-wrap">
       <table>
         <thead><tr><th>Extension</th><th>Purpose</th><th>Scope</th></tr></thead>
         <tbody>
           <tr><td><code>.md</code></td><td>Human-readable Markdown (SSoT source)</td><td>All documents</td></tr>
           <tr><td><code>.json</code></td><td>Machine-parseable structured data (ID-based arrays)</td><td>All documents</td></tr>
-          <tr><td><code>.html</code></td><td>Standalone visual report (SVG charts, trend comparison)</td><td>Report documents only</td></tr>
+          <tr><td><code>.html</code></td><td>Standalone interactive viewer/report</td><td>Reports auto + <code>/u-skill-html-doc</code> for all</td></tr>
         </tbody>
       </table>
     </div>
   </div>
 </section>
 
-<!-- Section: Document Pipeline -->
+<!-- Section 8: Document Pipeline -->
 <section id="pipeline">
   <div class="container">
     <div class="section-label">DOCUMENT PIPELINE</div>
@@ -1149,7 +1073,7 @@
   </div>
 </section>
 
-<!-- Section: Repository Layout -->
+<!-- Section 9: Repository Layout -->
 <section id="repo" style="background: var(--bg-card-alt);">
   <div class="container">
     <div class="section-label">REPOSITORY</div>
@@ -1169,7 +1093,7 @@
 &#9474;   &#9500;&#9472;&#9472; u-agent-dv-fe.md
 &#9474;   &#9500;&#9472;&#9472; u-agent-dv-be.md
 &#9474;   &#9492;&#9472;&#9472; u-agent-qa.md
-&#9500;&#9472;&#9472; <span style="color:var(--green);">skills/</span>                <span class="comment"># 48 user-invocable skills</span>
+&#9500;&#9472;&#9472; <span style="color:var(--green);">skills/</span>                <span class="comment"># 52 user-invocable skills</span>
 &#9474;   &#9500;&#9472;&#9472; u-skill-maker/         <span class="comment"># Slim router (NL &rarr; agent routing)</span>
 &#9474;   &#9500;&#9472;&#9472; u-skill-plan/          <span class="comment"># PLAN Phase</span>
 &#9474;   &#9500;&#9472;&#9472; u-skill-design/        <span class="comment"># DESIGN Phase</span>
@@ -1178,11 +1102,15 @@
 &#9474;   &#9500;&#9472;&#9472; u-skill-act/           <span class="comment"># ACT Phase</span>
 &#9474;   &#9500;&#9472;&#9472; u-skill-loop/          <span class="comment"># PDCA auto-loop</span>
 &#9474;   &#9500;&#9472;&#9472; u-skill-srs/           <span class="comment"># SRS document</span>
+&#9474;   &#9500;&#9472;&#9472; u-skill-fix/           <span class="comment"># Bug/feature fix + auto TC reinforcement</span>
 &#9474;   &#9500;&#9472;&#9472; u-skill-refine/        <span class="comment"># FR/US/FT decomposition</span>
 &#9474;   &#9500;&#9472;&#9472; u-skill-tc-add/        <span class="comment"># Add individual test case</span>
 &#9474;   &#9500;&#9472;&#9472; u-skill-tc-refine/     <span class="comment"># Test case decomposition</span>
+&#9474;   &#9500;&#9472;&#9472; u-skill-glossary/      <span class="comment"># Glossary</span>
+&#9474;   &#9500;&#9472;&#9472; u-skill-workflow/      <span class="comment"># Workflow definition</span>
+&#9474;   &#9500;&#9472;&#9472; u-skill-html-doc/      <span class="comment"># SSoT doc HTML conversion</span>
 &#9474;   &#9500;&#9472;&#9472; u-agent-*/             <span class="comment"># Agent direct call (7)</span>
-&#9474;   &#9492;&#9472;&#9472; ...                    <span class="comment"># 40+ more skills</span>
+&#9474;   &#9492;&#9472;&#9472; ...                    <span class="comment"># Other skills</span>
 &#9500;&#9472;&#9472; <span style="color:var(--orange);">hooks/</span>                 <span class="comment"># Claude hook config</span>
 &#9474;   &#9500;&#9472;&#9472; hooks.json
 &#9474;   &#9492;&#9472;&#9472; session-start.js
@@ -1195,17 +1123,39 @@
 &#9474;   &#9500;&#9472;&#9472; check-exit-criteria.py
 &#9474;   &#9492;&#9472;&#9472; init-project.sh
 &#9500;&#9472;&#9472; <span style="color:var(--orange);">lib/</span>                   <span class="comment"># State/gate/doc-tracker libraries</span>
-&#9500;&#9472;&#9472; <span style="color:var(--orange);">templates/</span>             <span class="comment"># SSoT document templates (22)</span>
-&#9500;&#9472;&#9472; <span style="color:var(--blue);">_refer/</span>                <span class="comment"># Standards/policies/reference docs</span>
+&#9474;   &#9500;&#9472;&#9472; state.js
+&#9474;   &#9500;&#9472;&#9472; gate.js
+&#9474;   &#9492;&#9472;&#9472; doc-tracker.js
+&#9500;&#9472;&#9472; <span style="color:var(--orange);">templates/</span>             <span class="comment"># SSoT document templates (20)</span>
+&#9474;   &#9500;&#9472;&#9472; 01-plan/               <span class="comment"># SRS, IA, Index, Roadmap, Common (5)</span>
+&#9474;   &#9500;&#9472;&#9472; 02-design/             <span class="comment"># API, ERD, Screen, ScreenFlow, UXGuide, RTM (6)</span>
+&#9474;   &#9500;&#9472;&#9472; 03-dev/                <span class="comment"># Code, DesignToken, Screen, UIComponents (4)</span>
+&#9474;   &#9500;&#9472;&#9472; 04-check/              <span class="comment"># Case, Report (2)</span>
+&#9474;   &#9492;&#9472;&#9472; 05-act/                <span class="comment"># Backlog, IterationLog, Retrospective (3)</span>
+&#9500;&#9472;&#9472; <span style="color:var(--blue);">_refer/</span>                <span class="comment"># Standards/policies/reference docs (13)</span>
+&#9474;   &#9500;&#9472;&#9472; ssot-standard.md
+&#9474;   &#9500;&#9472;&#9472; pdca-workflow.md
+&#9474;   &#9500;&#9472;&#9472; slash-commands.md
+&#9474;   &#9500;&#9472;&#9472; tech-stack-rules.md
+&#9474;   &#9500;&#9472;&#9472; iteration-rules.md
+&#9474;   &#9500;&#9472;&#9472; traceability-matrix.md
+&#9474;   &#9500;&#9472;&#9472; json-export.md
+&#9474;   &#9500;&#9472;&#9472; html-report-standard.md
+&#9474;   &#9500;&#9472;&#9472; html-doc-template.md
+&#9474;   &#9500;&#9472;&#9472; html-wireframe-template.md
+&#9474;   &#9500;&#9472;&#9472; post-execution-summary.md
+&#9474;   &#9500;&#9472;&#9472; mermaid-guide.md
+&#9474;   &#9492;&#9472;&#9472; model-assignment.md
 &#9500;&#9472;&#9472; <span style="color:var(--text-dim);">evals/</span>                 <span class="comment"># Evaluation configs</span>
 &#9500;&#9472;&#9472; .u-maker/              <span class="comment"># Project config</span>
+&#9474;   &#9492;&#9472;&#9472; u-maker.config.json
 &#9492;&#9472;&#9472; deploy_local.sh        <span class="comment"># Local deploy/verify/cleanup</span>
 </pre>
     </div>
   </div>
 </section>
 
-<!-- Section: Install -->
+<!-- Section 10: Install -->
 <section id="install">
   <div class="container">
     <div class="section-label">GETTING STARTED</div>
@@ -1214,13 +1164,14 @@
     <h3 style="color: var(--text-bright); margin-bottom: 16px;">Prerequisites</h3>
     <div class="table-wrap">
       <table>
-        <thead><tr><th>Tool</th><th>Purpose</th></tr></thead>
+        <thead><tr><th>Tool</th><th>Purpose</th><th>Required</th></tr></thead>
         <tbody>
-          <tr><td><code>bash</code></td><td>macOS / Linux / WSL / Git Bash</td></tr>
-          <tr><td><code>node</code></td><td>Hook script execution</td></tr>
-          <tr><td><code>python3</code></td><td>validate-ssot.py, check-exit-criteria.py</td></tr>
-          <tr><td><code>bun</code></td><td>Target project build/dev</td></tr>
-          <tr><td>Claude Code</td><td>Required. Plugin host</td></tr>
+          <tr><td><code>bash</code></td><td>macOS / Linux / WSL / Git Bash</td><td>Yes</td></tr>
+          <tr><td><code>node</code></td><td>Hook script execution</td><td>Yes</td></tr>
+          <tr><td><code>python3</code></td><td>validate-ssot.py, check-exit-criteria.py</td><td>Yes</td></tr>
+          <tr><td><code>bun</code></td><td>Target project build/dev</td><td>Yes</td></tr>
+          <tr><td>Claude Code</td><td>Plugin host</td><td>Yes</td></tr>
+          <tr><td>Codex CLI / Gemini CLI</td><td><code>~/.codex</code> / <code>~/.gemini</code> shared link</td><td>No</td></tr>
         </tbody>
       </table>
     </div>
@@ -1240,16 +1191,114 @@
 </pre>
     </div>
 
+    <p style="color: var(--text-dim); font-size: 0.92rem; margin: 16px 0;">
+      The deploy script registers marketplace + cache under <code>~/.claude/plugins/</code>,
+      creates symlinks in <code>~/.claude/skills/</code> and <code>~/.claude/agents/</code>,
+      and sets up Codex/Gemini shared links if installed.
+    </p>
+
     <div class="callout callout-warn">
       <div class="icon">&#9888;&#65039;</div>
-      <div><strong>Config Migration:</strong> Config file renamed. Existing projects need a one-time migration:<br>
+      <div><strong>Config Migration (Breaking Change):</strong> Config file renamed. Existing projects need a one-time migration:<br>
       <code>mv .u-maker/u-ssot.config.json .u-maker/u-maker.config.json</code></div>
     </div>
   </div>
 </section>
 
-<!-- Section: Scenarios -->
-<section id="scenarios" style="background: var(--bg-card-alt);">
+<!-- Section 11: Role-Based Guide -->
+<section id="roles" style="background: var(--bg-card-alt);">
+  <div class="container">
+    <div class="section-label">ROLE-BASED GUIDE</div>
+    <h2>Guide by Role</h2>
+    <p>Key commands for each role. For detailed guides, see <a href="GET_STARTED.md" style="color: var(--accent-light);">GET_STARTED.md</a> Part 3.</p>
+
+    <div class="role-grid">
+      <!-- Planner -->
+      <div class="role-card">
+        <h4><span class="badge badge-blue">PM / RA</span> Planner</h4>
+        <div class="role-desc">Requirements definition and project management.</div>
+        <div class="table-wrap" style="margin: 0;">
+          <table>
+            <thead><tr><th>Command</th><th>Purpose</th></tr></thead>
+            <tbody>
+              <tr><td><code>/u-skill-plan</code></td><td>Run full Plan Phase</td></tr>
+              <tr><td><code>/u-skill-us-add</code></td><td>Add user story</td></tr>
+              <tr><td><code>/u-skill-fr-add</code></td><td>Add functional requirement</td></tr>
+              <tr><td><code>/u-skill-refine</code></td><td>Decompose items</td></tr>
+              <tr><td><code>/u-skill-status</code></td><td>Project status</td></tr>
+              <tr><td><code>/u-skill-report</code></td><td>Comprehensive report</td></tr>
+              <tr><td><code>/u-skill-validate</code></td><td>Document integrity check</td></tr>
+              <tr><td><code>/u-skill-glossary</code></td><td>Glossary</td></tr>
+              <tr><td><code>/u-skill-workflow</code></td><td>Workflow definition</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Designer -->
+      <div class="role-card">
+        <h4><span class="badge badge-purple">UX</span> Designer</h4>
+        <div class="role-desc">Screen structure design, wireframes, and visual design.</div>
+        <div class="table-wrap" style="margin: 0;">
+          <table>
+            <thead><tr><th>Command</th><th>Purpose</th></tr></thead>
+            <tbody>
+              <tr><td><code>/u-skill-design</code></td><td>Run full Design Phase</td></tr>
+              <tr><td><code>/u-skill-screen</code></td><td>Screen detail design</td></tr>
+              <tr><td><code>/u-skill-wireframe</code></td><td>Wireframe HTML</td></tr>
+              <tr><td><code>/u-skill-ux-figma</code></td><td>pencil.dev visual design</td></tr>
+              <tr><td><code>/u-skill-ux-dsystem</code></td><td>Design system visuals</td></tr>
+              <tr><td><code>/u-skill-html-doc screen</code></td><td>Convert design to HTML</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Developer -->
+      <div class="role-card">
+        <h4><span class="badge badge-green">FE / BE</span> Developer</h4>
+        <div class="role-desc">Design-doc-based code implementation.</div>
+        <div class="table-wrap" style="margin: 0;">
+          <table>
+            <thead><tr><th>Command</th><th>Purpose</th></tr></thead>
+            <tbody>
+              <tr><td><code>/u-skill-dev</code></td><td>Run full DO Phase</td></tr>
+              <tr><td><code>/u-skill-fix</code></td><td>Bug fix + auto TC reinforcement</td></tr>
+              <tr><td><code>/u-skill-build</code></td><td>Run build</td></tr>
+              <tr><td><code>/u-skill-storybook</code></td><td>Run Storybook</td></tr>
+              <tr><td><code>/u-skill-gap-detector</code></td><td>Design-impl gap analysis</td></tr>
+              <tr><td><code>/u-skill-git-pr</code></td><td>Create Git PR</td></tr>
+              <tr><td><code>/u-agent-dv-fe</code></td><td>Direct FE agent request</td></tr>
+              <tr><td><code>/u-agent-dv-be</code></td><td>Direct BE agent request</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- QA -->
+      <div class="role-card">
+        <h4><span class="badge badge-orange">QA</span> Tester</h4>
+        <div class="role-desc">Test design, execution, and defect analysis.</div>
+        <div class="table-wrap" style="margin: 0;">
+          <table>
+            <thead><tr><th>Command</th><th>Purpose</th></tr></thead>
+            <tbody>
+              <tr><td><code>/u-skill-testcase</code></td><td>Batch TC design</td></tr>
+              <tr><td><code>/u-skill-tc-add</code></td><td>Add individual TC</td></tr>
+              <tr><td><code>/u-skill-tc-refine</code></td><td>Decompose TC</td></tr>
+              <tr><td><code>/u-skill-qa</code></td><td>Run tests</td></tr>
+              <tr><td><code>/u-skill-check</code></td><td>Full CHECK Phase</td></tr>
+              <tr><td><code>/u-agent-qa</code></td><td>Direct QA agent request</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Section 12: Scenarios -->
+<section id="scenarios">
   <div class="container">
     <div class="section-label">QUICK START</div>
     <h2>Scenario Guide</h2>
@@ -1257,48 +1306,41 @@
 
     <div class="card-grid" style="grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));">
       <div class="card">
-        <h3>&#128640; New Project</h3>
+        <h3>&#128640; Scenario 1: New Project End-to-End</h3>
         <div class="code-block" style="margin: 12px 0;">
-<pre><span class="comment"># Create project</span>
-<span class="cmd">/u-skill-create-project</span> <span class="str">my-saas</span>
-
-<span class="comment"># Full PDCA auto-execution</span>
+<pre><span class="cmd">/u-skill-create-project</span> <span class="str">my-saas</span>
 <span class="cmd">/u-skill-loop</span></pre>
         </div>
-        <p>A comprehensive Loop Report is auto-generated on loop completion.</p>
+        <p>Loop Report auto-generated on completion (<code>5_LoopReport_PM_*.md/json/html</code>).</p>
       </div>
 
       <div class="card">
-        <h3>&#128230; Apply SSoT to Existing Project</h3>
+        <h3>&#128230; Scenario 2: Apply SSoT to Existing Project</h3>
         <div class="code-block" style="margin: 12px 0;">
-<pre><span class="comment"># Analyze code &rarr; reverse-engineer SSoT docs</span>
-<span class="cmd">/u-skill-init</span> .
-
-<span class="comment"># Verify &amp; validate</span>
+<pre><span class="cmd">/u-skill-init</span> .
 <span class="cmd">/u-skill-status</span>
 <span class="cmd">/u-skill-validate</span>
-
-<span class="comment"># Start PDCA loop</span>
 <span class="cmd">/u-skill-loop</span></pre>
         </div>
       </div>
 
       <div class="card">
-        <h3>&#10133; Add New Feature</h3>
+        <h3>&#128736;&#65039; Scenario 3: Step-by-Step Manual</h3>
         <div class="code-block" style="margin: 12px 0;">
-<pre><span class="comment"># Add user story &rarr; FR</span>
-<span class="cmd">/u-skill-us-add</span>
+<pre><span class="cmd">/u-skill-plan</span> <span class="str">web</span>
+<span class="cmd">/u-skill-design</span> <span class="str">web</span>
+<span class="cmd">/u-skill-dev</span> <span class="str">web</span>
+<span class="cmd">/u-skill-check</span> <span class="str">web</span>
+<span class="cmd">/u-skill-act</span></pre>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>&#10133; Scenario 4: Add New Feature</h3>
+        <div class="code-block" style="margin: 12px 0;">
+<pre><span class="cmd">/u-skill-us-add</span>
 <span class="cmd">/u-skill-fr-add</span> <span class="str">web</span>
-
-<span class="comment"># Decompose if too large</span>
 <span class="cmd">/u-skill-refine</span> <span class="flag">FR-0010</span> <span class="str">web</span>
-
-<span class="comment"># Add test cases &amp; refine</span>
-<span class="cmd">/u-skill-tc-add</span> <span class="str">web</span> <span class="flag">FT-0010</span> <span class="str">Login success TC</span>
-<span class="cmd">/u-skill-tc-add</span> <span class="flag">all</span> <span class="flag">FT-0010</span> <span class="str">Login TC</span>
-<span class="cmd">/u-skill-tc-refine</span> <span class="flag">TC-0010</span> <span class="str">web</span>
-
-<span class="comment"># Re-run from design</span>
 <span class="cmd">/u-skill-design</span> <span class="str">web</span>
 <span class="cmd">/u-skill-dev</span> <span class="str">web</span>
 <span class="cmd">/u-skill-check</span> <span class="str">web</span></pre>
@@ -1306,61 +1348,56 @@
       </div>
 
       <div class="card">
-        <h3>&#128269; Direct Agent Request</h3>
+        <h3>&#128295; Scenario 5: Bug Fix</h3>
         <div class="code-block" style="margin: 12px 0;">
-<pre><span class="comment"># Free-form request to SA</span>
-<span class="cmd">/u-agent-sa</span> <span class="str">"Add profile image field to User entity"</span>
-
-<span class="comment"># Request to UX</span>
-<span class="cmd">/u-agent-ux</span> <span class="str">"Add social login buttons"</span>
-
-<span class="comment"># Request to QA</span>
-<span class="cmd">/u-agent-qa</span> <span class="str">"Strengthen auth test cases"</span></pre>
+<pre><span class="cmd">/u-skill-fix</span> <span class="str">web</span> <span class="str">"Token expiry handling bug on login"</span></pre>
         </div>
       </div>
 
       <div class="card">
-        <h3>&#128736;&#65039; Step-by-Step Manual</h3>
+        <h3>&#9208;&#65039; Scenario 6: Stop &amp; Resume Loop</h3>
         <div class="code-block" style="margin: 12px 0;">
-<pre><span class="cmd">/u-skill-plan</span> <span class="str">web</span>      <span class="comment"># PLAN</span>
-<span class="cmd">/u-skill-design</span> <span class="str">web</span>    <span class="comment"># DESIGN</span>
-<span class="cmd">/u-skill-dev</span> <span class="str">web</span>       <span class="comment"># DO</span>
-<span class="cmd">/u-skill-check</span> <span class="str">web</span>     <span class="comment"># CHECK</span>
-<span class="cmd">/u-skill-act</span>            <span class="comment"># ACT</span></pre>
+<pre><span class="cmd">/u-skill-stop</span>
+<span class="cmd">/u-skill-status</span>
+<span class="cmd">/u-skill-resume</span></pre>
         </div>
       </div>
 
       <div class="card">
-        <h3>&#128202; Report &amp; Gap Analysis</h3>
+        <h3>&#128202; Scenario 7: Comprehensive Report</h3>
         <div class="code-block" style="margin: 12px 0;">
-<pre><span class="comment"># Comprehensive report</span>
-<span class="cmd">/u-skill-report</span> <span class="str">web</span>
-
-<span class="comment"># Design-implementation gap</span>
-<span class="cmd">/u-skill-gap-detector</span>
-
-<span class="comment"># Git PR</span>
-<span class="cmd">/u-skill-git-pr</span></pre>
+<pre><span class="cmd">/u-skill-report</span>
+<span class="cmd">/u-skill-report</span> <span class="str">web</span>    <span class="comment"># Specify app for multi-app</span></pre>
         </div>
       </div>
 
       <div class="card">
-        <h3>&#9208;&#65039; Stop &amp; Resume Loop</h3>
+        <h3>&#128196; Scenario 8: Convert SSoT Docs to HTML</h3>
         <div class="code-block" style="margin: 12px 0;">
-<pre><span class="cmd">/u-skill-stop</span>       <span class="comment"># Stop (saves state)</span>
-<span class="cmd">/u-skill-status</span>     <span class="comment"># Check state</span>
-<span class="cmd">/u-skill-resume</span>     <span class="comment"># Resume</span></pre>
+<pre><span class="cmd">/u-skill-html-doc</span>          <span class="comment"># Convert all docs</span>
+<span class="cmd">/u-skill-html-doc</span> <span class="str">srs</span>      <span class="comment"># Specific doc only</span>
+<span class="cmd">/u-skill-html-doc</span> <span class="flag">all</span>      <span class="comment"># Full conversion</span></pre>
         </div>
       </div>
 
       <div class="card">
-        <h3>&#128295; Defect Fix / Maintenance</h3>
+        <h3>&#128269; Scenario 9: Direct Agent Request</h3>
         <div class="code-block" style="margin: 12px 0;">
-<pre><span class="comment"># Register defect to backlog</span>
-<span class="cmd">/u-skill-backlog-add</span>
+<pre><span class="cmd">/u-agent-sa</span> <span class="str">"Add profile image field to User entity"</span>
+<span class="cmd">/u-agent-ux</span> <span class="str">"Add social login buttons to login screen"</span>
+<span class="cmd">/u-agent-qa</span> <span class="str">"Strengthen auth test cases"</span>
+<span class="cmd">/u-agent-pm</span> <span class="str">"Generate this week's daily report"</span></pre>
+        </div>
+      </div>
 
-<span class="comment"># Restart loop from specific phase</span>
-<span class="cmd">/u-skill-loop-from</span> <span class="flag">design</span></pre>
+      <div class="card">
+        <h3>&#128172; Scenario 10: Natural Language Request</h3>
+        <div class="code-block" style="margin: 12px 0;">
+<pre><span class="comment"># Just speak naturally &mdash; u-maker auto-routes:</span>
+<span class="str">"I want to add a login feature"</span>     <span class="comment"># &rarr; RA/SA docs</span>
+<span class="str">"Optimize ERD for PostgreSQL"</span>       <span class="comment"># &rarr; SA edits ERD</span>
+<span class="str">"Strengthen test cases"</span>             <span class="comment"># &rarr; QA adds TCs</span>
+<span class="str">"Generate a weekly report"</span>          <span class="comment"># &rarr; PM report</span></pre>
         </div>
       </div>
     </div>
@@ -1372,11 +1409,11 @@
         <tbody>
           <tr><td>KPI Dashboard</td><td>FR/NFR/US/FT/TC counts &mdash; total, implemented, pending</td></tr>
           <tr><td>Trend Comparison</td><td>Delta table + bar chart vs previous report</td></tr>
-          <tr><td>US Detail Cards</td><td>As a / I want to / So that + acceptance criteria</td></tr>
+          <tr><td>US Detail Cards</td><td>As a / I want to / So that + acceptance criteria listing</td></tr>
           <tr><td>TC per FT Group</td><td>Test cases grouped by Feature with Pass/Fail badges</td></tr>
-          <tr><td>3-Type Debt</td><td>Planning debt + Design debt + Technical debt</td></tr>
-          <tr><td>Contributor Stats</td><td>Git-based contributor table + per-person detail cards</td></tr>
-          <tr><td>Git Activity</td><td>Commit classification donut, change stats, top 5 changes</td></tr>
+          <tr><td>3-Type Debt</td><td>Planning debt (TBD/missing US) + Design debt (missing wireframes) + Technical debt</td></tr>
+          <tr><td>Contributor Stats</td><td>Git-based contributor summary table + per-person detail cards</td></tr>
+          <tr><td>Git Activity</td><td>Commit classification donut chart, change stats, top 5 changes</td></tr>
           <tr><td>Dark/Light Mode</td><td>OS auto-detect + toggle button + localStorage persistence</td></tr>
         </tbody>
       </table>
@@ -1384,8 +1421,8 @@
   </div>
 </section>
 
-<!-- Section: Guardrails -->
-<section id="guardrails">
+<!-- Section 13: Hooks & Guardrails -->
+<section id="guardrails" style="background: var(--bg-card-alt);">
   <div class="container">
     <div class="section-label">SAFETY &amp; QUALITY</div>
     <h2>Hooks &amp; Guardrails</h2>
@@ -1396,10 +1433,10 @@
       <table>
         <thead><tr><th>Event</th><th>Script</th><th>Purpose</th></tr></thead>
         <tbody>
-          <tr><td><code>SessionStart</code></td><td>session-start.js</td><td>Auto-create/restore SSoT doc structure</td></tr>
-          <tr><td><code>UserPromptSubmit</code></td><td>prompt-docs-first-guard.js</td><td>Detect new features, enforce Docs-First workflow</td></tr>
-          <tr><td><code>PreToolUse(Write|Edit)</code></td><td>pre-write-guard.js</td><td>Block doc path + tech stack rule violations</td></tr>
-          <tr><td><code>PostToolUse(Write)</code></td><td>post-write-index.js</td><td>Hint to update index after doc write</td></tr>
+          <tr><td><code>SessionStart</code></td><td>session-start.js</td><td>Auto-create/restore <code>.u-maker/docs/</code> structure</td></tr>
+          <tr><td><code>UserPromptSubmit</code></td><td>prompt-docs-first-guard.js</td><td>Detect new requirements/features, enforce Docs-First workflow</td></tr>
+          <tr><td><code>PreToolUse(Write|Edit)</code></td><td>pre-write-guard.js</td><td>Block doc path policy + tech stack rule violations</td></tr>
+          <tr><td><code>PostToolUse(Write)</code></td><td>post-write-index.js</td><td>Output index update hint after doc write</td></tr>
           <tr><td><code>Stop</code></td><td>stop-state-save.js</td><td>Save phase/iteration/loop state on session end</td></tr>
         </tbody>
       </table>
@@ -1409,45 +1446,75 @@
       <div class="icon">&#128683;</div>
       <div><strong>Docs-First Guard:</strong> Attempting to code a new feature directly will be blocked. Use <code>/u-skill-us-add</code> or <code>/u-skill-fr-add</code> to update documents first.</div>
     </div>
-
-    <h3 style="color: var(--text-bright); margin: 32px 0 16px;">Tech Stack Policy (10 Rules)</h3>
-    <div class="card-grid" style="grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px;">
-      <div class="card" style="padding: 16px;">
-        <p style="font-size: 0.85rem;"><span class="badge badge-green">&#10003;</span> Clean Architecture <code>apps/</code> + <code>packages/</code></p>
-      </div>
-      <div class="card" style="padding: 16px;">
-        <p style="font-size: 0.85rem;"><span class="badge badge-green">&#10003;</span> <code>react-query</code> only</p>
-      </div>
-      <div class="card" style="padding: 16px;">
-        <p style="font-size: 0.85rem;"><span class="badge badge-red">&#10007;</span> No CSS-in-JS &rarr; Plain <code>.css</code></p>
-      </div>
-      <div class="card" style="padding: 16px;">
-        <p style="font-size: 0.85rem;"><span class="badge badge-green">&#10003;</span> Next.js App Router only</p>
-      </div>
-      <div class="card" style="padding: 16px;">
-        <p style="font-size: 0.85rem;"><span class="badge badge-green">&#10003;</span> Turborepo monorepo</p>
-      </div>
-      <div class="card" style="padding: 16px;">
-        <p style="font-size: 0.85rem;"><span class="badge badge-green">&#10003;</span> Functional Components only</p>
-      </div>
-      <div class="card" style="padding: 16px;">
-        <p style="font-size: 0.85rem;"><span class="badge badge-green">&#10003;</span> Storybook required</p>
-      </div>
-      <div class="card" style="padding: 16px;">
-        <p style="font-size: 0.85rem;"><span class="badge badge-green">&#10003;</span> Design Token-based styling</p>
-      </div>
-      <div class="card" style="padding: 16px;">
-        <p style="font-size: 0.85rem;"><span class="badge badge-green">&#10003;</span> <code>bun</code> only</p>
-      </div>
-      <div class="card" style="padding: 16px;">
-        <p style="font-size: 0.85rem;"><span class="badge badge-red">&#10007;</span> No Pages Router</p>
-      </div>
-    </div>
   </div>
 </section>
 
-<!-- Section: Troubleshooting -->
-<section id="troubleshoot" style="background: var(--bg-card-alt);">
+<!-- Section 14: Tech Stack Policy -->
+<section id="techstack">
+  <div class="container">
+    <div class="section-label">TECH STACK</div>
+    <h2>Tech Stack Policy</h2>
+    <p>10 enforced tech stack rules. Violations are blocked in real-time by the <code>pre-write-guard.js</code> hook.</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>#</th><th>Rule</th><th>Violation Blocked</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>Clean Architecture (<code>apps/</code>, <code>packages/</code>)</td><td>Incorrect folder structure rejected</td></tr>
+          <tr><td>2</td><td><code>react-query</code> only (usecase pattern forbidden)</td><td>usecase import rejected</td></tr>
+          <tr><td>3</td><td>Plain <code>.css</code> only (CSS-in-JS forbidden)</td><td>styled-components/emotion rejected</td></tr>
+          <tr><td>4</td><td>Next.js App Router (Pages Router forbidden)</td><td><code>pages/</code> directory rejected</td></tr>
+          <tr><td>5</td><td>No <code>eslint-plugin-header</code></td><td>Plugin usage rejected</td></tr>
+          <tr><td>6</td><td>Turborepo monorepo</td><td>Single-package structure rejected</td></tr>
+          <tr><td>7</td><td>Functional Components only</td><td>Class components rejected</td></tr>
+          <tr><td>8</td><td>Storybook required</td><td>PR without <code>.stories.tsx</code> rejected</td></tr>
+          <tr><td>9</td><td>Design Token-based styling</td><td>Hardcoded colors/sizes rejected</td></tr>
+          <tr><td>10</td><td><code>bun</code> only (npm/yarn/pnpm forbidden)</td><td>package-lock.json/yarn.lock rejected</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="color: var(--text-dim); font-size: 0.88rem; margin-top: 12px;">Details: <code>_refer/tech-stack-rules.md</code></p>
+  </div>
+</section>
+
+<!-- Section 15: Validation & Scripts -->
+<section id="validation" style="background: var(--bg-card-alt);">
+  <div class="container">
+    <div class="section-label">VALIDATION</div>
+    <h2>Validation &amp; Scripts</h2>
+
+    <h3 style="color: var(--text-bright); margin-bottom: 16px;">SSoT Validation</h3>
+    <div class="code-block">
+      <span class="lang">bash</span>
+<pre>
+<span class="cmd">python3</span> scripts/validate-ssot.py
+<span class="cmd">python3</span> scripts/validate-ssot.py .u-maker/docs
+</pre>
+    </div>
+    <p style="color: var(--text-dim); font-size: 0.9rem; margin-bottom: 24px;">Validates: required header fields, Status values, broken traceability, structural violations.</p>
+
+    <h3 style="color: var(--text-bright); margin-bottom: 16px;">Exit Criteria Check</h3>
+    <div class="code-block">
+      <span class="lang">bash</span>
+<pre>
+<span class="cmd">python3</span> scripts/check-exit-criteria.py
+</pre>
+    </div>
+    <p style="color: var(--text-dim); font-size: 0.9rem; margin-bottom: 24px;">Checks: Critical/Major defects = 0, all FTs implemented, build success.</p>
+
+    <h3 style="color: var(--text-bright); margin-bottom: 16px;">Project Scaffold</h3>
+    <div class="code-block">
+      <span class="lang">bash</span>
+<pre>
+<span class="cmd">./scripts/init-project.sh</span> <span class="str">my-new-app</span>
+</pre>
+    </div>
+    <p style="color: var(--text-dim); font-size: 0.9rem;">Auto-generates Turborepo + Next.js App Router + Storybook + Design Token structure.</p>
+  </div>
+</section>
+
+<!-- Section 16: Troubleshooting -->
+<section id="troubleshoot">
   <div class="container">
     <div class="section-label">HELP</div>
     <h2>Troubleshooting</h2>
@@ -1508,58 +1575,60 @@
   </div>
 </section>
 
-<!-- Section: Quick Command Reference -->
-<section id="commands">
+<!-- Section 17: Contributor Notes -->
+<section id="contributor" style="background: var(--bg-card-alt);">
   <div class="container">
-    <div class="section-label">REFERENCE</div>
-    <h2>Quick Command Reference</h2>
-    <p>All 48 skills at a glance, organized by category.</p>
+    <div class="section-label">CONTRIBUTING</div>
+    <h2>Contributor Notes</h2>
 
+    <h3 style="color: var(--text-bright); margin-bottom: 16px;">Adding a New Skill</h3>
+    <ol style="color: var(--text-dim); font-size: 0.92rem; padding-left: 24px; margin-bottom: 24px; line-height: 2;">
+      <li>Create <code>skills/&lt;skill-name&gt;/SKILL.md</code> (frontmatter: name, description, model, allowed-tools, imports, agents)</li>
+      <li>Register in the Command-Skill mapping table in <code>skills/u-skill-maker/SKILL.md</code></li>
+      <li>Add command definition to <code>_refer/slash-commands.md</code></li>
+      <li>Add to the command list in <code>_refer/post-execution-summary.md</code></li>
+      <li>Optionally add a document template in <code>templates/</code></li>
+      <li>Re-run <code>./deploy_local.sh</code></li>
+    </ol>
+
+    <h3 style="color: var(--text-bright); margin-bottom: 16px;">Skill Structure (Self-contained Pattern)</h3>
     <div class="code-block">
-      <span class="lang">quick-start</span>
+      <span class="lang">yaml</span>
 <pre>
-<span class="comment"># ── Project Start ──</span>
-<span class="cmd">/u-skill-create-project</span> <span class="str">my-app</span>      <span class="comment"># New project</span>
-<span class="cmd">/u-skill-init</span> .                       <span class="comment"># Reverse-engineer existing</span>
+<span style="color:#5c6370;">---</span>
+<span style="color:var(--blue);">name:</span> u-skill-xxx
+<span style="color:var(--blue);">description:</span> <span style="color:var(--green);">|</span>
+  <span style="color:var(--green);">Description. Triggers: /u-skill-xxx, keyword1, keyword2</span>
+<span style="color:var(--blue);">model:</span> sonnet
+<span style="color:var(--blue);">user-invocable:</span> <span style="color:var(--orange);">true</span>
+<span style="color:var(--blue);">argument-hint:</span> <span style="color:var(--green);">"[app]"</span>
+<span style="color:var(--blue);">allowed-tools:</span> Read, Write, Edit, Glob, Grep, Bash
+<span style="color:var(--blue);">imports:</span>
+  - <span style="color:var(--text-dim);">${PLUGIN_ROOT}/_refer/ssot-standard.md</span>
+  - <span style="color:var(--text-dim);">${PLUGIN_ROOT}/_refer/post-execution-summary.md</span>
+<span style="color:var(--blue);">agents:</span>
+  - <span style="color:var(--accent-light);">u-maker:u-agent-xx</span>
+<span style="color:#5c6370;">---</span>
 
-<span class="comment"># ── Auto PDCA ──</span>
-<span class="cmd">/u-skill-loop</span>                          <span class="comment"># Full cycle auto</span>
-<span class="cmd">/u-skill-loop-from</span> <span class="flag">design</span>             <span class="comment"># From specific phase</span>
-<span class="cmd">/u-skill-stop</span>                          <span class="comment"># Stop</span>
-<span class="cmd">/u-skill-resume</span>                        <span class="comment"># Resume</span>
-
-<span class="comment"># ── Manual Phases ──</span>
-<span class="cmd">/u-skill-plan</span> <span class="str">web</span>                     <span class="comment"># PLAN</span>
-<span class="cmd">/u-skill-design</span> <span class="str">web</span>                   <span class="comment"># DESIGN</span>
-<span class="cmd">/u-skill-dev</span> <span class="str">web</span>                      <span class="comment"># DO</span>
-<span class="cmd">/u-skill-check</span> <span class="str">web</span>                    <span class="comment"># CHECK</span>
-<span class="cmd">/u-skill-act</span>                           <span class="comment"># ACT</span>
-
-<span class="comment"># ── Documents ──</span>
-<span class="cmd">/u-skill-srs</span> <span class="str">web</span>                      <span class="comment"># SRS</span>
-<span class="cmd">/u-skill-erd</span>                           <span class="comment"># ERD</span>
-<span class="cmd">/u-skill-api</span> <span class="str">web</span>                      <span class="comment"># API Contract</span>
-<span class="cmd">/u-skill-screen</span> <span class="str">web</span>                   <span class="comment"># Screen design</span>
-<span class="cmd">/u-skill-wireframe</span> <span class="str">web</span>                <span class="comment"># Wireframe</span>
-
-<span class="comment"># ── Requirements ──</span>
-<span class="cmd">/u-skill-us-add</span>                        <span class="comment"># Add user story</span>
-<span class="cmd">/u-skill-fr-add</span> <span class="str">web</span>                   <span class="comment"># Add FR</span>
-<span class="cmd">/u-skill-refine</span> <span class="flag">FR-0010</span> <span class="str">web</span>           <span class="comment"># Decompose FR/US/FT</span>
-
-<span class="comment"># ── Test Cases ──</span>
-<span class="cmd">/u-skill-testcase</span> <span class="str">web</span>                 <span class="comment"># Batch TC design</span>
-<span class="cmd">/u-skill-tc-add</span> <span class="str">web</span> <span class="flag">FT-0010</span> <span class="str">desc</span>    <span class="comment"># Add individual TC</span>
-<span class="cmd">/u-skill-tc-refine</span> <span class="flag">TC-0010</span> <span class="str">web</span>       <span class="comment"># Decompose TC</span>
-
-<span class="comment"># ── Reports &amp; Utilities ──</span>
-<span class="cmd">/u-skill-report</span> <span class="str">web</span>                   <span class="comment"># Comprehensive report</span>
-<span class="cmd">/u-skill-status</span>                        <span class="comment"># Status check</span>
-<span class="cmd">/u-skill-validate</span>                      <span class="comment"># Integrity check</span>
-<span class="cmd">/u-skill-git-pr</span>                        <span class="comment"># Create PR</span>
-<span class="cmd">/u-skill-help</span>                          <span class="comment"># Help</span>
+<span class="comment"># Skill Body</span>
+<span class="comment"># Execution logic is written inline here.</span>
 </pre>
     </div>
+
+    <h3 style="color: var(--text-bright); margin: 24px 0 16px;">Policy Changes</h3>
+    <div class="callout callout-info">
+      <div class="icon">&#128161;</div>
+      <div>When changing policies, update both <code>_refer/*.md</code> and <code>.u-maker/u-maker.config.json</code> together. Keep gate/validation code (<code>lib/</code>, <code>scripts/</code>) in sync with doc standards.</div>
+    </div>
+  </div>
+</section>
+
+<!-- Section 18: License -->
+<section id="license">
+  <div class="container">
+    <div class="section-label">LICENSE</div>
+    <h2>License</h2>
+    <p>Private repository. Internal use only.</p>
   </div>
 </section>
 
@@ -1567,7 +1636,7 @@
 <footer>
   <div class="container">
     <p style="margin-bottom: 8px;">
-      <strong style="color: var(--text-bright);">u-maker</strong> Plugin v1.0.0 &middot; SSoT Config v2.0.0 &middot; Skills: 48 &middot; Agents: 8
+      <strong style="color: var(--text-bright);">u-maker</strong> Plugin v1.0.0 &middot; SSoT Config v2.0.0 &middot; Skills: 52 &middot; Agents: 8 &middot; Templates: 20
     </p>
     <p>PDCA-based SSoT Collaboration Orchestrator &mdash; Claude Code Plugin</p>
   </div>
