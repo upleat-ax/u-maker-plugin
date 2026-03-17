@@ -1,0 +1,45 @@
+name: Publish to u-maker (public)
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Prepare distribution
+        run: |
+          # Remove dev-only files
+          rm -rf .github .claude .u-maker evals deploy_local.sh deploy_local.bat
+          rm -f .gitignore .DS_Store
+          # Create clean .gitignore for public repo
+          cat > .gitignore << 'GITIGNORE'
+          .DS_Store
+          .u-maker/
+          .claude/
+          node_modules/
+          *.log
+          __pycache__
+          GITIGNORE
+          sed -i 's/^          //' .gitignore
+
+      - name: Push to public repo
+        env:
+          PUBLISH_TOKEN: ${{ secrets.PUBLISH_TOKEN }}
+        run: |
+          TAG="${GITHUB_REF#refs/tags/}"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Release ${TAG}" --allow-empty
+          git tag -f "${TAG}"
+          git remote add public https://x-access-token:${PUBLISH_TOKEN}@github.com/thinoo-v2/u-maker-production.git
+          git push public HEAD:main --force
+          git push public "${TAG}" --force
