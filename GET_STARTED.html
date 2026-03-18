@@ -656,6 +656,33 @@
 
     <!-- Install Steps -->
     <h3 class="sub-title">&#128230; 설치</h3>
+
+    <!-- Method A: GitHub Install -->
+    <h4 style="margin-top:1.5rem; color:var(--primary); font-size:1.05rem;">방법 A: GitHub에서 설치 (권장)</h4>
+    <p>GitHub에 배포된 공개 레포에서 바로 설치할 수 있습니다.</p>
+    <div class="step-grid">
+      <div class="step-card">
+        <h4><span class="step-num">1</span> GitHub 레포를 마켓플레이스로 등록</h4>
+        <p>터미널에서 아래 명령어를 실행합니다.</p>
+        <div class="code-block">
+          <span class="cmd">claude plugin marketplace add</span> <span class="arg">github:thinoo-v2/u-maker-production</span>
+        </div>
+      </div>
+      <div class="step-card">
+        <h4><span class="step-num">2</span> 플러그인 설치</h4>
+        <p>마켓플레이스 등록 후 플러그인을 설치합니다.</p>
+        <div class="code-block">
+          <span class="cmd">claude plugin install</span> <span class="arg">u-maker</span>
+        </div>
+      </div>
+    </div>
+    <div class="callout">
+      <strong>&#9888; 중요:</strong> 설치 후 반드시 <strong>Claude Code를 재시작</strong>해주세요.
+    </div>
+
+    <!-- Method B: Local Install -->
+    <h4 style="margin-top:2rem; color:var(--text2); font-size:1.05rem;">방법 B: 소스코드에서 로컬 설치</h4>
+    <p>소스코드를 직접 클론해서 로컬에 설치하는 방법입니다.</p>
     <div class="step-grid">
       <div class="step-card">
         <h4><span class="step-num">1</span> 배포 스크립트 실행</h4>

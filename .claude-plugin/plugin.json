@@ -5,10 +5,7 @@
   "author": {
     "name": "u-plugin"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/thinoo-v2/u-maker-plugin.git"
-  },
+  "repository": "https://github.com/thinoo-v2/u-maker-plugin",
   "homepage": "https://github.com/thinoo-v2/u-maker-plugin",
   "keywords": [
     "pdca",
