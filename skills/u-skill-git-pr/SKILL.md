@@ -69,11 +69,12 @@ CLI(`gh` 또는 `glab`)가 설치되어 있지 않은 경우:
 ## Flow
 
 1. **Provider 감지** (Step 0)
-2. `git status`로 변경 파일 수집
-3. 변경 파일을 feature 단위로 그룹핑
-4. feature별 브랜치 생성 (`feat/<feature-name>`)
-5. feature별 stage + commit
-6. push
+2. **u-maker.config.json 보호**: `.u-maker/u-maker.config.json`이 변경 목록에 있으면 `git checkout -- .u-maker/u-maker.config.json`으로 원래 상태로 복원한다 (런타임 상태 변경은 커밋하지 않음)
+3. `git status`로 변경 파일 수집
+4. 변경 파일을 feature 단위로 그룹핑
+5. feature별 브랜치 생성 (`feat/<feature-name>`)
+6. feature별 stage + commit
+7. push
 7. Provider에 따라 PR 또는 MR 생성:
    - **GitHub**: `gh pr create --title "<title>" --body "<body>"`
    - **GitLab**: `glab mr create --title "<title>" --description "<body>" --source-branch "<branch>"`
@@ -115,6 +116,7 @@ Types: feat, fix, docs, refactor, test, chore
 
 ## Rules
 
+- `.u-maker/u-maker.config.json`은 절대 커밋하지 않는다 (런타임 상태 파일)
 - main 브랜치에 직접 commit 금지
 - PR/MR 생성 전 git diff로 변경 확인 후 사용자에게 보여줌
 - force push 금지
