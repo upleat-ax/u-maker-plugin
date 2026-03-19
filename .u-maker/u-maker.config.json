@@ -483,7 +483,16 @@
     ],
     "schema": "${PLUGIN_ROOT}/_refer/json-export.md"
   },
-  "lastSessionEnd": "2026-03-02T23:25:31.852Z",
+  "lastSessionEnd": "2026-03-19T00:50:18.927Z",
+  "git": {
+    "provider": "auto",
+    "supportedProviders": [
+      "github",
+      "gitlab",
+      "auto"
+    ],
+    "description": "auto: git remote URL에서 자동 감지. github: gh CLI 사용. gitlab: glab CLI 사용."
+  },
   "project": {
     "name": "u-maker-plugin",
     "type": "local-plugin",
