@@ -63,6 +63,13 @@ PLAN Phase는 `FR → US → FT` 단일 체인으로 진행한다. 각 단계는
 - **Content**: 프로젝트 목표(OKR/Goal), 마일스톤 정의, 일정 계획, 범위 설정
 - **Diagram**: Mermaid flowchart로 마일스톤 흐름 시각화
 
+### Step 1.5. 공통 정의 문서 생성
+
+- **Agent**: `u-agent-ra`
+- **Output**: `common/01-plan/1_Common_RA.md` + `.json`
+- **Content**: 인증 정책, RBAC, 보안 정책, 공통 비즈니스 규칙, 에러 처리 표준, 용어 정의
+- **Template**: `templates/01-plan/1_Common_RA.template.md`
+
 ### Step 2. SRS 작성
 
 - **Agent**: `u-agent-sa`
@@ -113,6 +120,7 @@ PLAN Phase 완료 후 DESIGN Phase로 진행하기 위한 필수 조건:
 | Gate Condition | Verification |
 |---------------|-------------|
 | `common/1_Roadmap_PM` | Status = Final |
+| `common/1_Common_RA` | Status = Final |
 | 모든 앱의 `1_SRS_RA` | Status = Final |
 | 모든 앱의 `1_IA_RA` | Status = Final |
 | FR→US→FT mapping | `TBD` 잔존 0건 |

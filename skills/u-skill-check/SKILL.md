@@ -22,6 +22,7 @@ allowed-tools:
   - AskUserQuestion
 imports:
   - ${PLUGIN_ROOT}/_refer/ssot-standard.md
+  - ${PLUGIN_ROOT}/_refer/pdca-workflow.md
   - ${PLUGIN_ROOT}/_refer/traceability-matrix.md
   - ${PLUGIN_ROOT}/_refer/iteration-rules.md
   - ${PLUGIN_ROOT}/_refer/post-execution-summary.md
@@ -58,7 +59,7 @@ agents:
 
 ## Gate → COMPLETE
 
-Critical/Major 0건 + 전체 FT 구현 + 빌드 성공
+Critical/Major 결함 0건 + 백로그 활성 항목 0건 + 전체 FR 구현 완료 + 빌드 성공
 
 ## Gate → ACT
 

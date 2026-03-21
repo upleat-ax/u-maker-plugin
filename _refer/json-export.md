@@ -651,6 +651,36 @@
 }
 ```
 
+### 2.16 `4_GapReport_QA.json`
+
+```json
+{
+  "document": "4_GapReport_QA",
+  "meta": { "owner": "u-agent-qa", "status": "Draft", "version": "v0.1.0", "lastUpdated": "YYYY-MM-DD", "app": "web" },
+  "gaps": [
+    {
+      "category": "FT|API|ERD|Screen",
+      "designId": "FT-0010",
+      "designTitle": "...",
+      "implemented": true,
+      "matchDetail": "...",
+      "note": "..."
+    }
+  ],
+  "matchRate": {
+    "overall": 0,
+    "byCategory": {
+      "ft": { "total": 0, "matched": 0, "rate": 0, "weight": 40 },
+      "api": { "total": 0, "matched": 0, "rate": 0, "weight": 25 },
+      "erd": { "total": 0, "matched": 0, "rate": 0, "weight": 20 },
+      "screen": { "total": 0, "matched": 0, "rate": 0, "weight": 15 }
+    }
+  },
+  "result": "PASS|FAIL",
+  "threshold": 90
+}
+```
+
 ---
 
 ## 3. 생성/갱신 절차

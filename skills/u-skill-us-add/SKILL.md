@@ -24,7 +24,7 @@ imports:
   - ${PLUGIN_ROOT}/_refer/json-export.md
   - ${PLUGIN_ROOT}/.u-maker/u-maker.config.json
 agents:
-  - u-maker:u-agent-sa
+  u-agent-sa: u-maker:u-agent-sa
 ---
 
 # User Story Add

@@ -25,10 +25,10 @@ imports:
   - ${PLUGIN_ROOT}/.u-maker/u-maker.config.json
   - ${PLUGIN_ROOT}/_refer/mermaid-guide.md
 agents:
-  - u-maker:u-agent-ux
+  u-agent-ux: u-maker:u-agent-ux
 ---
 
-# u-agent-screen
+# u-skill-screen
 
 `u-agent-ux` 에이전트를 호출하여 화면 설계 문서를 생성/갱신한다.
 

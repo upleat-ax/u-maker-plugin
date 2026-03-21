@@ -24,6 +24,9 @@ imports:
   - ${PLUGIN_ROOT}/_refer/html-report-standard.md
   - ${PLUGIN_ROOT}/_refer/json-export.md
   - ${PLUGIN_ROOT}/_refer/post-execution-summary.md
+  - ${PLUGIN_ROOT}/skills/u-skill-html-doc/references/ascii-art-rules.md
+  - ${PLUGIN_ROOT}/skills/u-skill-html-doc/references/doc-type-components.md
+  - ${PLUGIN_ROOT}/skills/u-skill-html-doc/references/svg-rules.md
   - ${PLUGIN_ROOT}/.u-maker/u-maker.config.json
 ---
 

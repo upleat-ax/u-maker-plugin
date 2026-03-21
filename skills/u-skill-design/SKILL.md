@@ -54,8 +54,8 @@ agents:
    - 네비게이션 플로우, 조건부 전환, 딥링크 맵
 4. `u-agent-ux`: 와이어프레임 (`{app}/02-design/2_Screen_Wireframes/`)
    - HTML/CSS 레이아웃 시각화, floating 어노테이션 패널
-5. `u-agent-ux`: 화면 디자인 (`.pen` 파일, pencil.dev MCP)
-   - 시각적 디자인 구현
+5. `u-agent-ux-ds`: 화면 디자인 (`designTool` 설정에 따라 pencil/figma/stitch MCP)
+   - 시각적 디자인 구현 (도구 설정: `u-maker.config.json` → `designTool.tool`)
 6. `u-agent-sa`: ERD 작성 (`common/02-design/2_ERD_SA.md`)
    - Entity 정의, Relationship 다이어그램 (Mermaid erDiagram)
 7. `u-agent-sa`: API Contract 작성 (`{app}/02-design/2_API_SA.md`)
@@ -64,10 +64,12 @@ agents:
    - `FR → US → FT` 기준으로 IA/Screen/API/ERD/QA 매핑 검증
 9. `u-agent-ra`: 모순 검수
    - Screen ↔ ScreenFlow ↔ API ↔ ERD 간 불일치 탐지
+   - **경미한 불일치**: BL 항목으로 기록 (Origin: DESIGN), Phase 블로킹하지 않음
+   - **Critical 불일치** (데이터 모델 ↔ API 스키마 불일치, 필수 화면 누락 등): Gate 블로킹 → 해당 문서 수정 후 재검수
 
 ## Gate → DO
 
-`common/2_ERD_SA`, `common/2_RTM_RA`, `common/2_UXGuide_UX` Final + 모든 앱의 `2_API_SA`, `2_Screen_UX`, `2_ScreenFlow_UX` Final + u-RA 검수 통과
+`common/2_ERD_SA`, `common/2_RTM_RA`, `common/2_UXGuide_UX` Final + 모든 앱의 `2_API_SA`, `2_Screen_UX`, `2_ScreenFlow_UX` Final + u-RA 검수 통과 (Critical 불일치 0건)
 
 ## Rules
 

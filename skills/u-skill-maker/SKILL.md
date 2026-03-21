@@ -32,6 +32,7 @@ imports:
   - ${PLUGIN_ROOT}/_refer/slash-commands.md
   - ${PLUGIN_ROOT}/_refer/post-execution-summary.md
   - ${PLUGIN_ROOT}/_refer/json-export.md
+  - ${PLUGIN_ROOT}/_refer/model-assignment.md
   - ${PLUGIN_ROOT}/.u-maker/u-maker.config.json
 agents:
   u-agent-pm: u-maker:u-agent-pm
@@ -147,7 +148,7 @@ agents:
 | `/u-skill-screen` | u-skill-screen |
 | `/u-skill-wireframe` | u-skill-wireframe |
 | `/u-skill-ux-figma` | u-skill-ux-figma |
-| `/u-skill-ux-dsystem` | u-skill-ux-dsystem |
+| `/u-skill-ux-designsystem` | u-skill-ux-designsystem |
 | `/u-skill-testcase` | u-skill-testcase |
 | `/u-skill-tc-add` | u-skill-tc-add |
 | `/u-skill-tc-refine` | u-skill-tc-refine |
@@ -167,6 +168,7 @@ agents:
 | `/u-skill-git-pr` | u-skill-git-pr |
 | `/u-skill-gap-detector` | u-skill-gap-detector |
 | `/u-skill-html-doc` | u-skill-html-doc |
+| `/u-skill-import` | u-skill-import |
 
 ## Error Handling
 

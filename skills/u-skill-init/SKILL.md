@@ -29,10 +29,10 @@ imports:
   - ${PLUGIN_ROOT}/_refer/traceability-matrix.md
   - ${PLUGIN_ROOT}/_refer/mermaid-guide.md
 agents:
-  - u-maker:u-agent-pm
-  - u-maker:u-agent-ra
-  - u-maker:u-agent-sa
-  - u-maker:u-agent-ux
+  u-agent-pm: u-maker:u-agent-pm
+  u-agent-ra: u-maker:u-agent-ra
+  u-agent-sa: u-maker:u-agent-sa
+  u-agent-ux: u-maker:u-agent-ux
 ---
 
 # Project Init from Existing Codebase

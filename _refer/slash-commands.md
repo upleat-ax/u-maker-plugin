@@ -16,7 +16,7 @@
 | **Description** | 새 프로젝트를 생성하고 .u-maker/docs/ 구조를 초기화한다 |
 | **Calling Agents** | Orchestrator → `u-RA` |
 | **Prerequisites** | None |
-| **Output** | `.u-maker/docs/` 디렉토리 구조 생성, `1_Index_PM.md` 초기화, `.u-maker/u-ssot.config.json` 초기화 |
+| **Output** | `.u-maker/docs/` 디렉토리 구조 생성, `1_Index_PM.md` 초기화, `.u-maker/u-maker.config.json` 초기화 |
 
 ### `/u-skill-init`
 
@@ -26,7 +26,7 @@
 | **Description** | 기존 프로젝트의 리소스(package.json, 소스코드, DB 스키마, README 등)를 분석하여 SSoT 문서를 역공학으로 자동 생성한다 |
 | **Calling Agents** | Orchestrator → `u-RA` → `u-SA` → `u-UX` → `u-PM` |
 | **Prerequisites** | 프로젝트 파일 존재 (package.json 등) |
-| **Output** | `.u-maker/docs/` 구조 생성, 분석 기반 SSoT 문서 자동 생성 (Draft), `.u-maker/u-ssot.config.json` 업데이트 |
+| **Output** | `.u-maker/docs/` 구조 생성, 분석 기반 SSoT 문서 자동 생성 (Draft), `.u-maker/u-maker.config.json` 업데이트 |
 
 **Scan Targets**: package.json, README.md, 페이지/라우트 구조, API 라우트, Prisma/Drizzle 스키마, 컴포넌트 파일
 
@@ -374,11 +374,11 @@ SSoT 문서 상태를 관리하고 검증하는 커맨드.
 | **Prerequisites** | `2_Screen_UX.md` 존재, 와이어프레임 완료 |
 | **Output** | `.pen` 파일 |
 
-### `/u-skill-ux-dsystem`
+### `/u-skill-ux-designsystem`
 
 | Field | Value |
 |-------|-------|
-| **Syntax** | `/u-skill-ux-dsystem [app]` |
+| **Syntax** | `/u-skill-ux-designsystem [app]` |
 | **Description** | pencil.dev를 사용해 디자인 시스템, 컴포넌트를 시각적으로 구성한다 |
 | **Calling Agents** | `u-UX-DS` |
 | **Prerequisites** | `2_UXGuide_UX.md` 존재 |
@@ -581,6 +581,22 @@ CHECK Phase에서 설계-구현 일치도를 분석하는 커맨드.
 
 ---
 
+### `/u-skill-import`
+
+| Field | Value |
+|-------|-------|
+| **Syntax** | `/u-skill-import [source-type] [path-or-url]` |
+| **Description** | 외부 소스(문서, Figma, pencil, Stitch, URL, 이미지)를 SSoT 문서로 변환한다 |
+| **Calling Agents** | u-RA, u-SA, u-UX (소스 유형에 따라) |
+| **Prerequisites** | 소스 파일/URL 또는 `.u-maker/refs/_sources.json` |
+| **Output** | SSoT 문서 생성/갱신 (Draft 상태) |
+
+**source-type**: `figma`, `pencil`, `stitch`, `url`, `doc`, `image`
+**서브커맨드**: `init` (refs/ 구조 초기화), `sources` (현황 조회)
+**일괄 모드**: 인자 없이 실행 시 `_sources.json`의 `pending` 소스 일괄 처리
+
+---
+
 ## 8. Command Summary Table
 
 | Category | Command | Phase | Agents |
@@ -618,7 +634,7 @@ CHECK Phase에서 설계-구현 일치도를 분석하는 커맨드.
 | Task | `/u-skill-screen [app]` | DESIGN | u-UX |
 | Task | `/u-skill-wireframe [app]` | DESIGN | u-UX |
 | Task | `/u-skill-ux-figma [app]` | DESIGN | u-UX-DS |
-| Task | `/u-skill-ux-dsystem [app]` | DESIGN | u-UX-DS |
+| Task | `/u-skill-ux-designsystem [app]` | DESIGN | u-UX-DS |
 | Task | `/u-skill-testcase [app]` | CHECK | u-QA |
 | Task | `/u-skill-tc-add [app] [FT] [desc]` | CHECK | u-QA |
 | Task | `/u-skill-tc-refine <TC> [app]` | CHECK | u-QA |
@@ -634,3 +650,4 @@ CHECK Phase에서 설계-구현 일치도를 분석하는 커맨드.
 | Utility | `/u-skill-summary` | - | u-RA |
 | Utility | `/u-skill-git-pr` | - | Orch (Bash + gh) |
 | Utility | `/u-skill-html-doc [doc-type] [app]` | - | Orch |
+| Utility | `/u-skill-import [source-type] [path-or-url]` | - | u-RA, u-SA, u-UX |

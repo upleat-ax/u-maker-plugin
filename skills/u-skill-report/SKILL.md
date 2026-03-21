@@ -24,9 +24,12 @@ imports:
   - ${PLUGIN_ROOT}/_refer/ssot-standard.md
   - ${PLUGIN_ROOT}/_refer/post-execution-summary.md
   - ${PLUGIN_ROOT}/_refer/html-report-standard.md
+  - ${PLUGIN_ROOT}/skills/u-skill-report/references/report-sections.md
+  - ${PLUGIN_ROOT}/skills/u-skill-report/references/markdown-format.md
+  - ${PLUGIN_ROOT}/skills/u-skill-report/references/contributors-detail.md
   - ${PLUGIN_ROOT}/.u-maker/u-maker.config.json
 agents:
-  - u-maker:u-agent-pm
+  u-agent-pm: u-maker:u-agent-pm
 ---
 
 # u-skill-report
@@ -132,11 +135,11 @@ git 이력 분석으로 기여자별 커밋 수, 변경 라인, 주요 작업 �
 | 조건 | COMPLETE 기준 |
 |------|--------------|
 | Critical/Major 결함 | 0건 |
-| FR 구현률 | 100% (전체 FR 구현) |
+| 백로그 활성 항목 | 0건 (Done/Cancelled/Deferred 외) |
+| FR 구현률 | 100% (전체 FR 구현 완료) |
 | 빌드 | 성공 |
-| 테스트 통과율 | 100% (Unit + E2E) |
 
-4개 조건 모두 충족 시 `COMPLETE`, 하나라도 미충족 시 `IN PROGRESS`.
+4개 조건 모두 충족 시 `COMPLETE`, 하나라도 미충족 시 `IN PROGRESS`. (`pdca-workflow.md` CHECK→Complete 기준과 동일)
 
 ## Rules
 

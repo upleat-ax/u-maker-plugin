@@ -59,7 +59,7 @@ agents:
 ## When NOT to use
 
 - Figma 파일 직접 조작 → `/u-skill-ux-figma` 사용
-- 디자인 시스템 문서만 단독 생성 → `/u-skill-ux-dsystem` 사용
+- 디자인 시스템 문서만 단독 생성 → `/u-skill-ux-designsystem` 사용
 - API/ERD 설계 → `/u-agent-sa` 사용
 
 ## Rules

@@ -1,13 +1,14 @@
 ---
 name: u-skill-ux-figma
 description: |
-  pencil.dev MCP를 사용하여 화면을 시각적으로 디자인한다.
-  2_Screen_Wireframes/ 의 HTML 와이어프레임을 참조하여 각 화면의 .pen 파일을 생성하며,
+  설정된 디자인 도구(pencil/figma/stitch)를 사용하여 화면을 시각적으로 디자인한다.
+  u-maker.config.json의 designTool.tool 설정에 따라 적절한 MCP를 사용한다.
+  2_Screen_Wireframes/ 의 HTML 와이어프레임을 참조하여 각 화면의 디자인 파일을 생성하며,
   관련된 wireframe 번호(S-NNNN)를 명시한다.
-  IA, Screen, DesignToken, UIComponents, Wireframe 문서를 참고하여 .pen 파일에 디자인을 반영한다.
+  IA, Screen, DesignToken, UIComponents, Wireframe 문서를 참고하여 디자인 파일에 반영한다.
   Args: `[app] <all|system|S-NNNN>` — 앱 + 대상 화면/시스템
-  Triggers: /u-skill-ux-figma, pencil, 디자인 시각화, 화면 디자인, 컴포넌트 디자인, design system visual,
-  screen visual, ui design, pen file, pencil design, figma, 화면 설계, 와이어프레임 디자인, wireframe design, 화면 시각화, screen design
+  Triggers: /u-skill-ux-figma, pencil, figma, stitch, 디자인 시각화, 화면 디자인, 컴포넌트 디자인, design system visual,
+  screen visual, ui design, pen file, pencil design, figma design, stitch design, 화면 설계, 와이어프레임 디자인, wireframe design, 화면 시각화, screen design
 user-invocable: true
 argument-hint: "[app] <all|system|S-NNNN|component-id>"
 model: sonnet
@@ -29,13 +30,14 @@ imports:
   - ${PLUGIN_ROOT}/.u-maker/u-maker.config.json
   - ${PLUGIN_ROOT}/_refer/mermaid-guide.md
 agents:
-  - u-maker:u-agent-ux
+  u-agent-ux-ds: u-maker:u-agent-ux-ds
 ---
 
 # Visual UX Design
 
-> pencil.dev MCP를 사용하여 화면을 시각적으로 디자인한다.
-> 2_Screen_Wireframes/ 의 HTML 와이어프레임을 참조하여 각 화면의 .pen 파일을 생성하며,
+> 설정된 디자인 도구(pencil/figma/stitch)를 사용하여 화면을 시각적으로 디자인한다.
+> `u-maker.config.json`의 `designTool.tool` 값에 따라 pencil.dev, Figma, 또는 Stitch MCP를 사용한다.
+> 2_Screen_Wireframes/ 의 HTML 와이어프레임을 참조하여 각 화면의 디자인 파일을 생성하며,
 > 관련된 wireframe 번호(S-NNNN)를 명시한다.
 
 ## Syntax
