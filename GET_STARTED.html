@@ -421,7 +421,7 @@
     <p>u-maker를 처음 사용하시나요? 이 가이드는 u-maker의 핵심 개념부터 역할별 활용법까지 단계별로 안내합니다.<br>8명의 AI 전문가 팀이 소프트웨어 개발의 전 과정을 자동화합니다.</p>
     <div class="header-stats">
       <div class="header-stat"><div class="val">8</div><div class="lbl">Agents</div></div>
-      <div class="header-stat"><div class="val">52</div><div class="lbl">Skills</div></div>
+      <div class="header-stat"><div class="val">53</div><div class="lbl">Skills</div></div>
       <div class="header-stat"><div class="val">5</div><div class="lbl">PDCA Phases</div></div>
       <div class="header-stat"><div class="val">20</div><div class="lbl">Templates</div></div>
     </div>
@@ -575,8 +575,8 @@
       <div class="agent-card">
         <div class="agent-icon">&#9997;</div>
         <h5>UX-DS</h5>
-        <div class="agent-role">Pencil Designer</div>
-        <p>pencil.dev로 .pen 파일 시각 디자인</p>
+        <div class="agent-role">Visual Designer</div>
+        <p>디자인 도구(pencil/figma/stitch)로 시각 디자인</p>
         <div style="margin-top: 8px;"><span class="badge badge-primary">DESIGN</span> <span class="badge badge-accent">DO</span></div>
       </div>
       <div class="agent-card">
@@ -844,7 +844,7 @@
         <div class="code-block">
           <span class="cmd">/u-skill-screen</span> <span class="arg">web</span>                  <span class="comment"># 화면 상세 설계서 작성</span><br>
           <span class="cmd">/u-skill-wireframe</span> <span class="arg">web</span>               <span class="comment"># 와이어프레임 HTML 생성 (SVG 기반 레이아웃)</span><br>
-          <span class="cmd">/u-skill-ux-figma</span> <span class="arg">web</span>                <span class="comment"># pencil.dev로 시각적 화면 디자인 (.pen 파일)</span><br>
+          <span class="cmd">/u-skill-ux-figma</span> <span class="arg">web</span>                <span class="comment"># 디자인 도구(pencil/figma/stitch)로 화면 디자인</span><br>
           <span class="cmd">/u-skill-ux-designsystem</span> <span class="arg">web</span>              <span class="comment"># 디자인 시스템/컴포넌트 시각 구성</span>
         </div>
       </div>
@@ -870,7 +870,7 @@
         <strong>&#128161; 디자이너가 꼭 알아야 할 것:</strong><br>
         &bull; 화면 설계는 <code>IA</code> &rarr; <code>Screen</code> &rarr; <code>ScreenFlow</code> &rarr; <code>Wireframe</code> &rarr; <code>.pen</code> 순서로 진행됩니다.<br>
         &bull; 와이어프레임은 HTML 파일로 생성되며, UI 레이아웃 영역은 SVG로 시각화됩니다.<br>
-        &bull; <code>.pen</code> 파일은 pencil.dev MCP를 통해 생성/관리됩니다.
+        &bull; 시각 디자인 도구는 <code>u-maker.config.json</code>의 <code>designTool</code> 설정에 따라 pencil.dev, Figma, Stitch 중 선택됩니다.
       </div>
 
       <h3 class="sub-title">&#128221; 생성되는 문서</h3>
@@ -1311,10 +1311,11 @@
       <table>
         <thead><tr><th>활용</th><th>명령어</th></tr></thead>
         <tbody>
-          <tr><td>전체 52개 명령어 상세 도움말</td><td><code>/u-skill-help</code></td></tr>
+          <tr><td>전체 53개 명령어 상세 도움말</td><td><code>/u-skill-help</code></td></tr>
           <tr><td>종합 보고서 (Dark/Light HTML)</td><td><code>/u-skill-report</code></td></tr>
           <tr><td>SSoT 문서를 HTML 뷰어로 변환</td><td><code>/u-skill-html-doc</code></td></tr>
-          <tr><td>pencil.dev로 시각적 화면 디자인</td><td><code>/u-skill-ux-figma</code></td></tr>
+          <tr><td>디자인 도구로 시각적 화면 디자인</td><td><code>/u-skill-ux-figma</code></td></tr>
+          <tr><td>외부 소스를 SSoT 문서로 변환</td><td><code>/u-skill-import</code></td></tr>
           <tr><td>설계와 구현의 일치율 분석</td><td><code>/u-skill-gap-detector</code></td></tr>
           <tr><td>Git PR 생성</td><td><code>/u-skill-git-pr</code></td></tr>
           <tr><td>도메인 용어 정의</td><td><code>/u-skill-glossary</code></td></tr>
@@ -1338,7 +1339,7 @@
       </div>
       <div class="next-card">
         <code>/u-skill-ux-figma</code>
-        <p>pencil.dev 화면 디자인</p>
+        <p>디자인 도구로 화면 디자인</p>
       </div>
       <div class="next-card">
         <code>/u-skill-gap-detector</code>

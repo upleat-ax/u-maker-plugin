@@ -1,11 +1,11 @@
 # u-maker Plugin
 
 PDCA(Plan-Design-Do-Check-Act) 기반 SSoT(Single Source of Truth) 협업 오케스트레이터.
-8개 전문 에이전트와 52개 스킬로 소프트웨어 개발 전 과정을 자동화하는 Claude Code 플러그인.
+8개 전문 에이전트와 53개 스킬로 소프트웨어 개발 전 과정을 자동화하는 Claude Code 플러그인.
 
-- Plugin version: `1.0.0`
+- Plugin version: `1.0.3`
 - SSoT config version: `2.0.0`
-- Skills: `52` | Agents: `8` | Templates: `20` | References: `13`
+- Skills: `53` | Agents: `8` | Templates: `20` | References: `13`
 - [시작 가이드 (초보자용)](GET_STARTED.md) | [한국어 README (HTML)](README.ko.html) | [English README (HTML)](README.en.html)
 
 ---
@@ -99,7 +99,7 @@ flowchart TD
 | `u-agent-ra` | Requirements Analyst | ALL | Milestone, Validation, Backlog, Iteration Log, RTM, Glossary, Workflow |
 | `u-agent-sa` | Software Architect | PLAN, DESIGN | SRS, ERD, API Contract |
 | `u-agent-ux` | UX Designer | PLAN, DESIGN, DO | IA, Screen, ScreenFlow, Wireframe, UX Guide, Design Token |
-| `u-agent-ux-ds` | Pencil Designer | DESIGN, DO | .pen 파일 (pencil.dev MCP 기반 시각 디자인) |
+| `u-agent-ux-ds` | Visual Designer | DESIGN, DO | 디자인 도구(pencil/figma/stitch)로 시각 디자인 (config `designTool` 설정 기반) |
 | `u-agent-dv-fe` | Frontend Developer | DO | Next.js App Router + react-query + Storybook |
 | `u-agent-dv-be` | Backend Developer | DO | API Routes + Prisma/Drizzle ORM |
 | `u-agent-qa` | QA Engineer | CHECK | Test Cases (Vitest+Playwright), Test Execution, Defect Analysis |
@@ -120,7 +120,7 @@ flowchart TD
 
 ## 4. Skills & Commands
 
-전체 52개 스킬. 자연어 입력 시 `u-skill-maker` 라우터가 자동으로 적절한 스킬/에이전트로 분배한다.
+전체 53개 스킬. 자연어 입력 시 `u-skill-maker` 라우터가 자동으로 적절한 스킬/에이전트로 분배한다.
 
 ### 4.0 Router
 
@@ -171,8 +171,9 @@ flowchart TD
 | `/u-skill-api [app]` | API Contract (OpenAPI 3.0) 생성/수정 |
 | `/u-skill-screen [app]` | 화면 상세 설계 |
 | `/u-skill-wireframe [app]` | 와이어프레임 HTML 생성 |
-| `/u-skill-ux-figma [app]` | pencil.dev 기반 화면 디자인 |
-| `/u-skill-ux-designsystem [app]` | 디자인 시스템 시각 구성 |
+| `/u-skill-ux-figma [app]` | 디자인 도구(pencil/figma/stitch) 기반 화면 디자인 |
+| `/u-skill-ux-designsystem [app]` | 디자인 도구 기반 디자인 시스템/컴포넌트 시각 구성 |
+| `/u-skill-import [source] [path]` | 외부 소스(문서, Figma, pencil, Stitch, URL, 이미지)를 SSoT 문서로 변환 |
 | `/u-skill-glossary [app]` | 용어 정의(Glossary) 문서 생성/수정 |
 | `/u-skill-workflow [app]` | 워크플로우 정의 문서 생성/수정 |
 | `/u-skill-testcase [app]` | Unit+E2E 테스트 케이스 일괄 설계 |
@@ -386,7 +387,7 @@ u-maker-plugin/
 │   ├── u-agent-dv-fe.md
 │   ├── u-agent-dv-be.md
 │   └── u-agent-qa.md
-├── skills/                # 52개 user-invocable 스킬
+├── skills/                # 53개 user-invocable 스킬
 │   ├── u-skill-maker/     #   슬림 라우터 (자연어 -> 에이전트 라우팅)
 │   ├── u-skill-plan/      #   PLAN Phase
 │   ├── u-skill-design/    #   DESIGN Phase
@@ -396,6 +397,7 @@ u-maker-plugin/
 │   ├── u-skill-loop/      #   PDCA 자동 반복
 │   ├── u-skill-srs/       #   SRS 문서
 │   ├── u-skill-fix/       #   버그/기능 수정 + 자동 TC 보강
+│   ├── u-skill-import/    #   외부 소스 → SSoT 문서 변환
 │   ├── u-skill-refine/    #   FR/US/FT 세분화
 │   ├── u-skill-tc-add/    #   테스트 케이스 개별 추가
 │   ├── u-skill-tc-refine/ #   테스트 케이스 세분화
@@ -516,8 +518,8 @@ mv .u-maker/u-ssot.config.json .u-maker/u-maker.config.json
 | `/u-skill-design` | Design Phase 전체 실행 |
 | `/u-skill-screen` | 화면 상세 설계 |
 | `/u-skill-wireframe` | 와이어프레임 HTML |
-| `/u-skill-ux-figma` | pencil.dev 시각 디자인 |
-| `/u-skill-ux-designsystem` | 디자인 시스템 시각 구성 |
+| `/u-skill-ux-figma` | 디자인 도구 기반 화면 디자인 |
+| `/u-skill-ux-designsystem` | 디자인 도구 기반 디자인 시스템 구성 |
 | `/u-skill-html-doc screen` | 설계서 HTML 변환 |
 
 ### 개발자 (Frontend / Backend)
