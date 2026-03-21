@@ -3,7 +3,7 @@ name: u-skill-srs
 description: |
   SRS(Software Requirements Specification) 문서를 생성하거나 갱신한다. u-agent-sa 에이전트가 담당한다.
   Args: `[app]` — 멀티앱 프로젝트 시 앱 이름 (e.g., `web`)
-  Triggers: /u-skill-srs, SRS, 요구사항
+  Triggers: /u-skill-srs, SRS, 요구사항, 소프트웨어 요구사항 명세, requirements specification, 요구사항 문서, functional requirements, 기능 요구사항, 비기능 요구사항, non-functional requirements, 요구사항 정의, requirements doc
 model: sonnet
 user-invocable: true
 argument-hint: "[app]"

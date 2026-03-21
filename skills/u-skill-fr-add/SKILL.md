@@ -3,7 +3,7 @@ name: u-skill-fr-add
 description: |
   새로운 기능 요구사항(FR)을 추가한다. {app}/01-plan/1_SRS_RA.md에 FR 항목과 상세 블록을 생성하고 Change Log를 갱신한다.
   Args: `[app] [description]` — 앱 이름 + FR 설명 (생략 시 대화형 입력)
-  Triggers: /u-skill-fr-add, 기능요구사항 추가, FR 추가, functional requirement add, new FR
+  Triggers: /u-skill-fr-add, 기능요구사항 추가, FR 추가, functional requirement add, new FR, 요구사항 추가, FR 등록, add requirement, 신규 FR, 기능 추가 요청, requirement change, FR 변경
 user-invocable: true
 argument-hint: "[app] [description]"
 model: sonnet

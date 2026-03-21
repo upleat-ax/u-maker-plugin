@@ -2,7 +2,7 @@
 name: u-skill-gap-detector
 description: |
   설계-구현 Gap 분석을 수행한다. SRS/ERD/API/Screen 설계 vs 실제 코드 비교, Match Rate 산출.
-  Triggers: /u-skill-gap-detector, 갭 분석, gap analysis
+  Triggers: /u-skill-gap-detector, 갭 분석, gap analysis, 설계 구현 비교, design implementation gap, match rate, 커버리지 분석, coverage analysis, 누락 기능, missing feature, 불일치 검사, discrepancy check, 구현 검증
 user-invocable: true
 model: sonnet
 allowed-tools:

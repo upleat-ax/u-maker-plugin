@@ -3,6 +3,7 @@ name: u-skill-help
 description: |
   u-maker 전체 명령어 도움말 표시.
   Show all available u-maker commands and agents.
+  Triggers: /u-skill-help, 도움말, help, 명령어, 커맨드 목록, command list, 사용법, usage, 어떻게, how to use, 명령어 목록, available commands
 model: sonnet
 user-invocable: true
 allowed-tools:

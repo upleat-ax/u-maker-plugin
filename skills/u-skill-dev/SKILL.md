@@ -3,7 +3,7 @@ name: u-skill-dev
 description: |
   DO Phase 실행. API Contract 기반으로 FE/BE 병렬 개발을 수행한다.
   Args: `[app]` — 멀티앱 프로젝트 시 앱 이름 (e.g., `web`)
-  Triggers: /u-skill-dev, do phase, 개발, 구현
+  Triggers: /u-skill-dev, do phase, 개발, 구현, 코딩, development, implement, 개발 단계, coding, build feature, 기능 구현, FE 개발, BE 개발, frontend, backend
 model: sonnet
 user-invocable: true
 argument-hint: "[app]"

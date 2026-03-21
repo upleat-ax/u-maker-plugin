@@ -4,7 +4,7 @@ description: |
   새로운 테스트 케이스(TC)를 추가한다. {app}/04-check/4_Case_QA.md에 TC 항목을 생성하고 Change Log를 갱신한다.
   특정 앱 또는 모든 앱에 대해 개별 TC를 증분 추가할 수 있다.
   Args: `[app] [FT-NNNN] [description]` — 앱 이름 + 대상 FT + TC 설명 (생략 시 대화형 입력)
-  Triggers: /u-skill-tc-add, 테스트케이스 추가, TC 추가, test case add, new TC, add test case
+  Triggers: /u-skill-tc-add, 테스트케이스 추가, TC 추가, test case add, new TC, add test case, TC 신규, 케이스 추가, append TC, 테스트 추가, 새 테스트케이스, new test case
 user-invocable: true
 argument-hint: "[app] [FT-NNNN] [description]"
 model: sonnet

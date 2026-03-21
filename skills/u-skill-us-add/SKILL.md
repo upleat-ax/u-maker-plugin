@@ -3,7 +3,7 @@ name: u-skill-us-add
 description: |
   새로운 유저 스토리를 추가한다. 1_SRS_RA.md의 User Stories 섹션에 US 항목을 생성하고 Change Log를 갱신한다.
   Args: `[description]` — 유저 스토리 설명 (생략 시 대화형 입력)
-  Triggers: /u-skill-us-add, 유저스토리 추가, user story add, US 추가, new user story
+  Triggers: /u-skill-us-add, 유저스토리 추가, user story add, US 추가, new user story, 스토리 추가, add user story, US 신규, 사용자 스토리 추가, 요구사항 추가, append user story, new US
 user-invocable: true
 argument-hint: "[description]"
 model: sonnet

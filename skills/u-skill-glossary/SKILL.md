@@ -4,7 +4,7 @@ description: |
   용어 정의(Glossary) 문서를 생성하거나 갱신한다. u-agent-ra 에이전트가 담당한다.
   프로젝트에서 사용하는 도메인 용어, 약어, 기술 용어를 정의하고 통일한다.
   Args: `[app]` — 멀티앱 프로젝트 시 앱 이름 (e.g., `web`)
-  Triggers: /u-skill-glossary, 용어 정의, 용어집, glossary, terminology, 용어 사전
+  Triggers: /u-skill-glossary, 용어 정의, 용어집, glossary, terminology, 용어 사전, 도메인 용어, domain terms, 약어 정의, abbreviation, 용어 통일, term standardization, 단어 정의
 model: sonnet
 user-invocable: true
 argument-hint: "[app]"

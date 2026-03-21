@@ -3,7 +3,7 @@ name: u-skill-docs
 description: |
   .u-maker/docs/ 내 전체 문서 트리를 조회한다.
   Args: `[list|update|rebuild] [--phase <phase>] [--status <status>] [--app <app>]`
-  Triggers: /u-skill-docs, 문서 목록, 문서 조회, document list
+  Triggers: /u-skill-docs, 문서 목록, 문서 조회, document list, 문서 트리, docs tree, 문서 현황, document status, 문서 관리, document management, 문서 보기, list docs, show docs
 user-invocable: true
 argument-hint: "[list|update|rebuild] [--phase <plan|design|do|check|act>] [--status <Draft|Review|Final>] [--app web]"
 model: sonnet

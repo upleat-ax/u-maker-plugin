@@ -7,7 +7,7 @@ description: |
   IA, Screen, DesignToken, UIComponents, Wireframe 문서를 참고하여 .pen 파일에 디자인을 반영한다.
   Args: `[app] <all|system|S-NNNN>` — 앱 + 대상 화면/시스템
   Triggers: /u-skill-ux-figma, pencil, 디자인 시각화, 화면 디자인, 컴포넌트 디자인, design system visual,
-  screen visual, ui design, pen file, pencil design
+  screen visual, ui design, pen file, pencil design, figma, 화면 설계, 와이어프레임 디자인, wireframe design, 화면 시각화, screen design
 user-invocable: true
 argument-hint: "[app] <all|system|S-NNNN|component-id>"
 model: sonnet

@@ -8,7 +8,8 @@ description: |
   자연어 요청을 분석하여 적절한 에이전트로 라우팅한다.
 
   Triggers: u-agent, ssot, pdca, 프로젝트 시작, 프로젝트 초기화,
-  문서 관리, 에이전트, 협업
+  문서 관리, 에이전트, 협업, 오케스트레이터, orchestrator, pdca 사이클,
+  자동화, automation, 에이전트 라우팅, agent routing, 소프트웨어 개발 자동화
 
   Do NOT use for: non-PDCA workflows, standalone code editing without project context.
 model: sonnet

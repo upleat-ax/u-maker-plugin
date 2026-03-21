@@ -4,7 +4,7 @@ description: |
   주요 워크플로우 정의(Workflow) 문서를 생성하거나 갱신한다. u-agent-ra 에이전트가 담당한다.
   비즈니스 프로세스, 사용자 흐름, 시스템 간 연동 플로우를 정의한다.
   Args: `[app]` — 멀티앱 프로젝트 시 앱 이름 (e.g., `web`)
-  Triggers: /u-skill-workflow, 워크플로우, workflow, 업무 흐름, 프로세스 정의, business process
+  Triggers: /u-skill-workflow, 워크플로우, workflow, 업무 흐름, 프로세스 정의, business process, 비즈니스 프로세스, 사용자 흐름, user flow, 시스템 흐름, flow diagram, 프로세스 흐름도
 model: sonnet
 user-invocable: true
 argument-hint: "[app]"

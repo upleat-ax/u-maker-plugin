@@ -4,7 +4,7 @@ description: |
   feature별로 git commit하고 PR(GitHub) 또는 MR(GitLab)을 생성한다. 변경된 파일을 feature 단위로 그룹핑하여 커밋 후 PR/MR을 남긴다.
   Git provider는 u-maker.config.json의 git.provider 설정 또는 remote URL에서 자동 감지한다.
   Args: `[feat/<feature-name>]` — feature 브랜치 이름 (생략 시 자동 분류)
-  Triggers: /u-skill-git-pr, git pr, git mr, 커밋, commit and pr, pull request, merge request
+  Triggers: /u-skill-git-pr, git pr, git mr, 커밋, commit and pr, pull request, merge request, PR 생성, MR 생성, create pr, create mr, 브랜치 커밋, branch commit, 깃 커밋, git commit
 user-invocable: true
 argument-hint: "[feat/<feature-name>]"
 model: sonnet

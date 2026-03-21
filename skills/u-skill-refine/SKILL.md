@@ -3,7 +3,7 @@ name: u-skill-refine
 description: |
   FR, US, FT 항목을 세분화한다. 하나의 큰 항목을 분석하여 구체적인 하위 항목으로 분해하고 SRS를 갱신한다.
   Args: `<FR-NNNN|US-NNNN|FT-NNNN> [app]` — 세분화할 항목 ID + 앱 이름 (필수)
-  Triggers: /u-skill-refine, 세분화, 분해, decompose, split, break down, refine, 쪼개기
+  Triggers: /u-skill-refine, 세분화, 분해, decompose, split, break down, refine, 쪼개기, 항목 분해, FR 세분화, US 세분화, FT 세분화, 요구사항 분해, requirement split
 model: sonnet
 user-invocable: true
 argument-hint: "<FR-NNNN|US-NNNN|FT-NNNN> [app]"

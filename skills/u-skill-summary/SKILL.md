@@ -2,7 +2,7 @@
 name: u-skill-summary
 description: |
   프로젝트 개요와 개발 상태를 콘솔에 요약 출력한다 (파일 생성 없음).
-  Triggers: /u-skill-summary, 요약, 프로젝트 요약, project summary
+  Triggers: /u-skill-summary, 요약, 프로젝트 요약, project summary, 개요, overview, 전체 요약, summarize, 프로젝트 개요, 현재 요약, brief summary, 요약 출력
 user-invocable: true
 model: sonnet
 allowed-tools:

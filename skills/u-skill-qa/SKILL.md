@@ -4,7 +4,7 @@ description: |
   테스트를 실행한다. Unit Test(Vitest) + E2E Test(Playwright) 실행 및 결과 리포트.
   4_Case_QA.md의 테스트 케이스를 기반으로 실행하고 4_Report_QA.md에 결과를 기록한다.
   Args: `[app]` — 멀티앱 프로젝트 시 앱 이름 (e.g., `web`)
-  Triggers: /u-skill-qa, 테스트 실행, test run, test execute
+  Triggers: /u-skill-qa, 테스트 실행, test run, test execute, QA 실행, run tests, Vitest, Playwright, E2E test, unit test, 테스트 결과, test report, 자동화 테스트
 model: sonnet
 user-invocable: true
 argument-hint: "[app]"

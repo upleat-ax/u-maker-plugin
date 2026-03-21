@@ -5,7 +5,7 @@ description: |
   테스트 케이스는 Unit Test와 E2E Test를 모두 포함해야 하며,
   각 테스트는 재현 가능한 상세 스텝으로 문서화한다.
   Args: `[app]` — 멀티앱 프로젝트 시 앱 이름 (e.g., `web`)
-  Triggers: /u-skill-check, check phase, 검증, 테스트
+  Triggers: /u-skill-check, check phase, 검증, 테스트, QA, 품질 검사, test phase, 테스트 단계, verify, validation, 결함 분석, defect analysis, 테스트 실행
 model: sonnet
 user-invocable: true
 argument-hint: "[app]"

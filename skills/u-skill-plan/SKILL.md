@@ -3,7 +3,7 @@ name: u-skill-plan
 description: |
   PLAN Phase 실행. 로드맵 → SRS → IA → 인덱스 순서로 문서를 생성한다.
   Args: `[app]` — 멀티앱 프로젝트 시 앱 이름 (e.g., `web`)
-  Triggers: /u-skill-plan, plan phase, 플랜, 계획
+  Triggers: /u-skill-plan, plan phase, 플랜, 계획, planning, 계획 수립, 로드맵, roadmap, 기획, 요구사항 정리, requirements planning, SRS 작성, 이터레이션 계획, iteration planning
 model: sonnet
 user-invocable: true
 argument-hint: "[app]"

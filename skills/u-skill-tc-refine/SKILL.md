@@ -3,7 +3,7 @@ name: u-skill-tc-refine
 description: |
   테스트 케이스(TC)를 세분화한다. 하나의 큰 TC를 분석하여 더 작고 구체적인 하위 TC로 분해하고 4_Case_QA.md를 갱신한다.
   Args: `<TC-NNNN> [app]` — 세분화할 TC ID + 앱 이름 (필수)
-  Triggers: /u-skill-tc-refine, TC 세분화, TC 분해, test case refine, split TC, decompose TC
+  Triggers: /u-skill-tc-refine, TC 세분화, TC 분해, test case refine, split TC, decompose TC, 테스트케이스 세분화, 케이스 분해, TC 쪼개기, refine test case, break down TC, 테스트 분해
 user-invocable: true
 argument-hint: "<TC-NNNN> [app]"
 model: sonnet

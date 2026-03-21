@@ -2,7 +2,7 @@
 name: u-skill-status
 description: |
   현재 프로젝트 상태를 보고한다. Iteration, Phase, 문서 상태, 진행률을 표시한다.
-  Triggers: /u-skill-status, 상태, 현황, project status
+  Triggers: /u-skill-status, 상태, 현황, project status, 진행 상황, 진행률, progress, 현재 상태, current status, 프로젝트 현황, iteration status, 상태 보고
 user-invocable: true
 model: sonnet
 allowed-tools:

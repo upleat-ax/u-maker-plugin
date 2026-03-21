@@ -5,7 +5,7 @@ description: |
   프로젝트 폴더 내 리소스(package.json, 소스코드, DB 스키마, README 등)를 읽고
   분석하여 가능한 모든 SSoT 문서를 사전 작성(pre-fill)한다.
   Args: `[project-path]` — 분석할 프로젝트 경로 (생략 시 현재 디렉토리)
-  Triggers: /u-skill-init, 프로젝트 초기화, 기존 프로젝트 분석, init project, reverse engineer, 리버스 엔지니어링
+  Triggers: /u-skill-init, 프로젝트 초기화, 기존 프로젝트 분석, init project, reverse engineer, 리버스 엔지니어링, 문서 자동 생성, auto generate docs, 코드 분석, analyze codebase, SSoT 초기화, onboarding, 기존 코드 문서화
 user-invocable: true
 argument-hint: "[project-path]"
 model: sonnet

@@ -4,7 +4,7 @@ description: |
   버그/기능을 수정한다. 코드를 fix한 후, 백그라운드에서 QA 에이전트가 해당 수정 사항에 대한 TC가
   4_Case_QA.md에 존재하는지 확인하고, 없으면 자동으로 TC를 추가한다.
   Args: `[app] [FT-NNNN|description]` — 앱 이름 + 수정 대상 FT 또는 설명 (생략 시 대화형 입력)
-  Triggers: /u-skill-fix, 버그 수정, fix, bug fix, 수정, hotfix, patch
+  Triggers: /u-skill-fix, 버그 수정, fix, bug fix, 수정, hotfix, patch, 코드 수정, 오류 수정, error fix, 결함 수정, defect fix, 핫픽스, 수정 요청
 user-invocable: true
 argument-hint: "[app] [FT-NNNN|description]"
 model: sonnet

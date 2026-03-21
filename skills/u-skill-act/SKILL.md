@@ -2,7 +2,7 @@
 name: u-skill-act
 description: |
   ACT Phase 실행. 백로그 정리 → 회고 → 아카이브 → 다음 Iteration 전환.
-  Triggers: /u-skill-act, act phase, 개선, 회고
+  Triggers: /u-skill-act, act phase, 개선, 회고, retrospective, 백로그 정리, 아카이브, archive, iteration 전환, 다음 이터레이션, improve, reflection, backlog cleanup
 model: sonnet
 user-invocable: true
 allowed-tools:

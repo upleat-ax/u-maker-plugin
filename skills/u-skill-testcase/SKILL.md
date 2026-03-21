@@ -6,7 +6,7 @@ description: |
   테스트 스텝은 Actor/Screen/Element/Action/Input/Expected를 상세하게 작성한다.
   u-agent-qa 에이전트가 담당한다.
   Args: `[app]` — 멀티앱 프로젝트 시 앱 이름 (e.g., `web`)
-  Triggers: /u-skill-testcase, 테스트 케이스, test case, QA
+  Triggers: /u-skill-testcase, 테스트 케이스, test case, QA, TC 생성, 테스트 설계, test design, 케이스 작성, generate test case, 테스트 케이스 생성, write test case, 품질 테스트
 model: sonnet
 user-invocable: true
 argument-hint: "[app]"

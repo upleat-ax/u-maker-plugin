@@ -2,7 +2,7 @@
 name: u-skill-resume
 description: |
   중단된 PDCA 루프를 재개한다. 중단점부터 이어서 진행한다.
-  Triggers: /u-skill-resume, 루프 재개, resume loop
+  Triggers: /u-skill-resume, 루프 재개, resume loop, 재개, 이어서, continue, 중단 재개, resume pdca, 루프 계속, loop continue, 작업 재개, resume task
 model: sonnet
 user-invocable: true
 allowed-tools:

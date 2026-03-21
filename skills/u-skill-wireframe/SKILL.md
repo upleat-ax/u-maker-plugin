@@ -6,7 +6,7 @@ description: |
   우측 Sidebar에 전체 어노테이션을 아코디언 카드로 표시하며,
   각 카드에는 관련 요구사항(FR), 플로우(SC/User Flow), 조건(Business Rule), 요소 설명이 포함된다.
   Args: `[app] <all|screen-id>` — 앱 이름 + 대상 화면 (all=전체)
-  Triggers: /u-skill-wireframe, HTML 와이어프레임, wireframe generate
+  Triggers: /u-skill-wireframe, HTML 와이어프레임, wireframe generate, 와이어프레임, wireframe, 화면 와이어프레임, 목업, mockup, 와이어프레임 생성, create wireframe, 화면 프로토타입, screen prototype
 model: sonnet
 user-invocable: true
 argument-hint: "[app] <all|screen-id>"
