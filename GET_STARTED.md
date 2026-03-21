@@ -71,7 +71,7 @@ USR-0001 (사용자 유형: 예) 관리자, 일반 사용자)
 | **RA** | Requirements Analyst | 프로젝트 기획, 문서 관리, 백로그, 추적표 | ALL |
 | **SA** | Software Architect | SRS 작성, DB 설계(ERD), API 설계 | PLAN, DESIGN |
 | **UX** | UX Designer | 정보 구조도, 화면 설계, 와이어프레임, 화면 흐름도 | PLAN, DESIGN, DO |
-| **UX-DS** | Pencil Designer | pencil.dev로 .pen 파일 시각 디자인 | DESIGN, DO |
+| **UX-DS** | Visual Designer | 디자인 도구(pencil/figma/stitch)로 시각 디자인 | DESIGN, DO |
 | **DV-FE** | Frontend Dev | Next.js App Router + react-query + Storybook | DO |
 | **DV-BE** | Backend Dev | API Routes + Prisma/Drizzle ORM | DO |
 | **QA** | QA Engineer | 테스트 설계(Unit+E2E), 실행, 결함 분석 | CHECK |
@@ -229,8 +229,8 @@ u-maker가 Plan → Design → Do → Check → Act 전체 사이클을 자동�
 ```bash
 /u-skill-screen web                  # 화면 상세 설계서 작성
 /u-skill-wireframe web               # 와이어프레임 HTML 생성 (SVG 기반 레이아웃)
-/u-skill-ux-figma web                # pencil.dev로 시각적 화면 디자인 (.pen 파일)
-/u-skill-ux-designsystem web              # 디자인 시스템/컴포넌트 시각 구성
+/u-skill-ux-figma web                # 디자인 도구(pencil/figma/stitch)로 화면 디자인
+/u-skill-ux-designsystem web         # 디자인 도구 기반 디자인 시스템/컴포넌트 시각 구성
 ```
 
 **설계 문서 확인:**
@@ -248,9 +248,9 @@ u-maker가 Plan → Design → Do → Check → Act 전체 사이클을 자동�
 
 #### 디자이너가 꼭 알아야 할 것
 
-- 화면 설계는 `IA(정보 구조도) → Screen(화면 설계) → ScreenFlow(흐름도) → Wireframe(HTML) → .pen(시각 디자인)` 순서로 진행됩니다
+- 화면 설계는 `IA(정보 구조도) → Screen(화면 설계) → ScreenFlow(흐름도) → Wireframe(HTML) → 시각 디자인` 순서로 진행됩니다
 - 와이어프레임은 HTML 파일로 생성되며, UI 레이아웃 영역은 SVG로 시각화됩니다
-- `.pen` 파일은 pencil.dev MCP를 통해 생성/관리됩니다
+- 시각 디자인 도구는 `u-maker.config.json`의 `designTool` 설정에 따라 pencil.dev, Figma, Stitch 중 선택됩니다
 
 #### 생성되는 문서
 
@@ -490,7 +490,15 @@ u-maker가 Plan → Design → Do → Check → Act 전체 사이클을 자동�
 /u-skill-loop-from design            # Design Phase부터 루프
 ```
 
-### Scenario 8: 자연어로 요청하기
+### Scenario 8: 외부 소스 임포트
+
+```bash
+/u-skill-import figma https://figma.com/...   # Figma 디자인을 SSoT 문서로 변환
+/u-skill-import url https://example.com       # URL 콘텐츠를 SSoT 문서로 변환
+/u-skill-import                               # _sources.json 기반 일괄 임포트
+```
+
+### Scenario 9: 자연어로 요청하기
 
 슬래시 커맨드 대신 자연어로 말해도 됩니다. u-maker가 알아서 적절한 에이전트에게 전달합니다:
 
@@ -609,10 +617,11 @@ mv .u-maker/u-ssot.config.json .u-maker/u-maker.config.json
 
 | 활용 | 명령어 |
 |------|--------|
-| 전체 52개 명령어 상세 도움말 | `/u-skill-help` |
+| 전체 53개 명령어 상세 도움말 | `/u-skill-help` |
 | 종합 보고서 (Dark/Light HTML) | `/u-skill-report` |
 | SSoT 문서를 HTML 뷰어로 변환 | `/u-skill-html-doc` |
-| pencil.dev로 시각적 화면 디자인 | `/u-skill-ux-figma` |
+| 디자인 도구로 시각적 화면 디자인 | `/u-skill-ux-figma` |
+| 외부 소스를 SSoT 문서로 변환 | `/u-skill-import` |
 | 설계와 구현의 일치율 분석 | `/u-skill-gap-detector` |
 | Git PR 생성 | `/u-skill-git-pr` |
 | 도메인 용어 정의 | `/u-skill-glossary` |

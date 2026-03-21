@@ -504,18 +504,18 @@
 
 <!-- Hero -->
 <header class="hero">
-  <div class="hero-badge">&#10022; Claude Code Plugin v1.0.0</div>
+  <div class="hero-badge">&#10022; Claude Code Plugin v1.0.3</div>
   <h1>
     <span class="gradient">u-maker</span><br>
     PDCA 기반 SSoT 협업 오케스트레이터
   </h1>
   <p>
-    8개 전문 에이전트와 48개 스킬로 소프트웨어 개발 전 과정을 자동화하는 Claude Code 플러그인.
+    8개 전문 에이전트와 53개 스킬로 소프트웨어 개발 전 과정을 자동화하는 Claude Code 플러그인.
     문서 중심 개발(SSoT)을 강제하여 요구사항부터 테스트까지 전 구간을 추적합니다.
   </p>
   <div class="hero-stats">
     <div class="hero-stat"><div class="num">8</div><div class="label">Agents</div></div>
-    <div class="hero-stat"><div class="num">48</div><div class="label">Skills</div></div>
+    <div class="hero-stat"><div class="num">53</div><div class="label">Skills</div></div>
     <div class="hero-stat"><div class="num">5</div><div class="label">PDCA Phases</div></div>
     <div class="hero-stat"><div class="num">4</div><div class="label">Tier ID 계층</div></div>
   </div>
@@ -748,8 +748,8 @@
       </div>
       <div class="agent-card">
         <div class="agent-name">u-agent-ux-ds</div>
-        <div class="agent-role">Pencil Designer</div>
-        <div class="agent-desc">pencil.dev MCP 기반 .pen 파일 시각 디자인.</div>
+        <div class="agent-role">Visual Designer</div>
+        <div class="agent-desc">디자인 도구(pencil/figma/stitch)로 시각 디자인 (config 설정 기반).</div>
         <div style="margin-top: 8px;"><span class="badge badge-purple">DESIGN</span> <span class="badge badge-green">DO</span></div>
       </div>
       <div class="agent-card">
@@ -849,7 +849,8 @@
           <tr><td><code>/u-skill-api [app]</code></td><td>API Contract (OpenAPI 3.0) 생성/수정</td></tr>
           <tr><td><code>/u-skill-screen [app]</code></td><td>화면 상세 설계</td></tr>
           <tr><td><code>/u-skill-wireframe [app]</code></td><td>와이어프레임 HTML 생성</td></tr>
-          <tr><td><code>/u-skill-ux-figma [app]</code></td><td>pencil.dev 기반 화면 디자인</td></tr>
+          <tr><td><code>/u-skill-ux-figma [app]</code></td><td>디자인 도구(pencil/figma/stitch) 기반 화면 디자인</td></tr>
+          <tr><td><code>/u-skill-import [source] [path]</code></td><td>외부 소스를 SSoT 문서로 변환</td></tr>
           <tr><td><code>/u-skill-ux-designsystem [app]</code></td><td>디자인 시스템 시각 구성</td></tr>
           <tr><td><code>/u-skill-testcase [app]</code></td><td>Unit+E2E 테스트 케이스 일괄 설계</td></tr>
           <tr><td><code>/u-skill-tc-add [app] [FT] [desc]</code></td><td>테스트 케이스 개별 추가 (<code>all</code> 지원)</td></tr>
@@ -1170,7 +1171,7 @@
 &#9474;   &#9500;&#9472;&#9472; u-agent-dv-fe.md
 &#9474;   &#9500;&#9472;&#9472; u-agent-dv-be.md
 &#9474;   &#9492;&#9472;&#9472; u-agent-qa.md
-&#9500;&#9472;&#9472; <span style="color:var(--green);">skills/</span>                <span class="comment"># 48개 사용자 호출 스킬</span>
+&#9500;&#9472;&#9472; <span style="color:var(--green);">skills/</span>                <span class="comment"># 53개 사용자 호출 스킬</span>
 &#9474;   &#9500;&#9472;&#9472; u-skill-maker/         <span class="comment"># 슬림 라우터 (자연어 &rarr; 에이전트 라우팅)</span>
 &#9474;   &#9500;&#9472;&#9472; u-skill-plan/          <span class="comment"># PLAN Phase</span>
 &#9474;   &#9500;&#9472;&#9472; u-skill-design/        <span class="comment"># DESIGN Phase</span>
@@ -1512,7 +1513,7 @@
   <div class="container">
     <div class="section-label">REFERENCE</div>
     <h2>전체 커맨드 요약</h2>
-    <p>48개 스킬의 전체 명령어를 카테고리별로 정리합니다.</p>
+    <p>53개 스킬의 전체 명령어를 카테고리별로 정리합니다.</p>
 
     <div class="code-block">
       <span class="lang">quick-start</span>
@@ -1563,7 +1564,7 @@
 <footer>
   <div class="container">
     <p style="margin-bottom: 8px;">
-      <strong style="color: var(--text-bright);">u-maker</strong> Plugin v1.0.0 &middot; SSoT Config v2.0.0 &middot; Skills: 48 &middot; Agents: 8
+      <strong style="color: var(--text-bright);">u-maker</strong> Plugin v1.0.3 &middot; SSoT Config v2.0.0 &middot; Skills: 53 &middot; Agents: 8
     </p>
     <p>PDCA 기반 SSoT 협업 오케스트레이터 &mdash; Claude Code Plugin</p>
   </div>
