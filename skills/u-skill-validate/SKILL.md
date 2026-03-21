@@ -23,7 +23,7 @@ imports:
   - ${PLUGIN_ROOT}/.u-maker/u-maker.config.json
   - ${PLUGIN_ROOT}/_refer/traceability-matrix.md
 agents:
-  - u-maker:u-agent-ra
+  u-agent-ra: u-maker:u-agent-ra
 ---
 
 # u-skill-validate
@@ -44,11 +44,16 @@ agents:
 ## Flow
 
 1. `.u-maker/docs/` 하위 모든 `.md` 파일을 Glob으로 수집한다.
-2. 각 문서의 필수 헤더/섹션 존재 여부를 검사한다.
-3. FT/US/FR/USR ID의 상호 참조 일관성을 검증한다.
-4. `.json` 쌍 파일 누락 여부를 확인한다.
-5. 위반 항목을 심각도(ERROR/WARNING/INFO)별로 분류하여 검증 리포트를 작성한다.
-6. Post-Execution Summary Box를 출력한다.
+2. `u-maker.config.json`의 `currentPhase`를 읽어 현재 PDCA Phase를 확인한다.
+3. 각 문서의 필수 헤더/섹션 존재 여부를 검사한다.
+4. FT/US/FR/USR ID의 상호 참조 일관성을 검증한다.
+5. `.json` 쌍 파일 누락 여부를 확인한다.
+6. **Phase-aware 검증**: 현재 Phase에 따라 적용할 규칙을 조정한다.
+   - CHECK 이후 ~ ACT 이전: DEF→BL 변환 미완료는 WARNING (ACT에서 수행 예정)
+   - ACT 이후: DEF→BL 변환 미완료는 ERROR
+   - PLAN 이전: DESIGN/DO/CHECK 산출물 미존재는 검증 대상에서 제외
+7. 위반 항목을 심각도(ERROR/WARNING/INFO)별로 분류하여 검증 리포트를 작성한다.
+8. Post-Execution Summary Box를 출력한다.
 
 ## Output
 

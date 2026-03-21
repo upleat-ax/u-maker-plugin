@@ -92,11 +92,11 @@ flowchart TD
 
 | Step | Agent | Output | Description |
 |------|-------|--------|-------------|
-| 1 | u-PM | `shared/1_Roadmap_PM.md` | 로드맵 작성 |
+| 1 | u-PM | `common/1_Roadmap_PM.md` | 로드맵 작성 |
 | 2 | u-SA | `{app}/1_SRS_RA.md` | SRS 작성 (`FR → US → FT` 순서 고정) |
 | 2.5 | u-RA + u-SA | Cross-mapping 갱신 | TBD 매핑을 실제 ID로 갱신 |
 | 3 | u-UX | `{app}/1_IA_RA.md` | 정보 구조도 + Menu Tree (MN-{DOMAIN}-{NNNN}) |
-| 4 | u-PM | `shared/1_Index_PM.md` | 문서 인덱스 생성, 상태 추적 시작 |
+| 4 | u-PM | `common/1_Index_PM.md` | 문서 인덱스 생성, 상태 추적 시작 |
 
 ```mermaid
 flowchart LR
@@ -115,14 +115,14 @@ flowchart LR
 
 | Step | Agent | Output | Description |
 |------|-------|--------|-------------|
-| 1 | u-UX | `shared/2_UXGuide_UX.md` | UX 표준가이드 + 디자인 시스템 (컬러, 타이포, 스페이싱, 컴포넌트) |
+| 1 | u-UX | `common/2_UXGuide_UX.md` | UX 표준가이드 + 디자인 시스템 (컬러, 타이포, 스페이싱, 컴포넌트) |
 | 2 | u-UX | `{app}/2_Screen_UX.md` | 화면 상세 설계 (UI 컴포넌트, 상태 전이) |
 | 3 | u-UX | `{app}/2_ScreenFlow_UX.md` | 화면 간의 흐름도 (네비게이션 플로우, 딥링크) |
 | 4 | u-UX | `{app}/2_Screen_Wireframes/` | 와이어프레임 HTML |
 | 5 | u-UX | `.pen` 파일 | 화면 디자인 (pencil.dev MCP) |
-| 6 | u-SA | `shared/2_ERD_SA.md` | Entity Relationship Diagram |
+| 6 | u-SA | `common/2_ERD_SA.md` | Entity Relationship Diagram |
 | 7 | u-SA | `{app}/2_API_SA.md` | API Contract (OpenAPI 3.0) |
-| 8 | u-RA | `shared/2_RTM_RA.md` | 요구사항 추적표(RTM) 작성: `FR→US→FT→IA/Screen/API/ERD/QA` |
+| 8 | u-RA | `common/2_RTM_RA.md` | 요구사항 추적표(RTM) 작성: `FR→US→FT→IA/Screen/API/ERD/QA` |
 | 9 | u-RA | 검수 결과 | 문서 간 모순 검수, 추적성 검증 |
 
 ```mermaid
@@ -132,7 +132,7 @@ flowchart LR
     RA -->|검수 결과| GATE{DESIGN Gate}
 ```
 
-> **Backlog Trigger**: 모순 검수에서 불일치 발견 시 u-agent-ra가 BL 생성 (Origin: DESIGN). Phase를 블로킹하지 않음.
+> **Backlog Trigger**: 모순 검수에서 경미한 불일치 발견 시 u-agent-ra가 BL 생성 (Origin: DESIGN). Phase를 블로킹하지 않음. 단, Critical 불일치(데이터 모델 ↔ API 스키마 불일치, 필수 화면 누락 등)는 Gate를 블로킹하며 해당 문서 수정 후 재검수 필요.
 
 ### 2.3 DO Phase
 
@@ -140,7 +140,7 @@ flowchart LR
 
 | Step | Agent | Output | Description |
 |------|-------|--------|-------------|
-| 1 | u-UX | `{app}/3_Screen_UX.md`, `shared/3_UIComponents_UX.md`, `shared/3_DesignToken_UX.md` | 화면 구현 명세, UI 컴포넌트 명세, 디자인 토큰 |
+| 1 | u-UX | `{app}/3_Screen_UX.md`, `common/3_UIComponents_UX.md`, `common/3_DesignToken_UX.md` | 화면 구현 명세, UI 컴포넌트 명세, 디자인 토큰 |
 | 2 | u-DV-FE | Frontend Code | Next.js + react-query + Storybook |
 | 3 | u-DV-BE | Backend Code | API Routes + Prisma/Drizzle |
 | 4 | Both | `{app}/3_Code_DV.md` | 구현 기록, 파일 매핑 |
@@ -182,11 +182,11 @@ flowchart LR
 
 | Step | Agent | Output | Description |
 |------|-------|--------|-------------|
-| 1 | u-RA | `shared/5_IterationLog_RA.md` | DEF→BL 변환 + PLAN/DESIGN/DEV 기원 항목 확인 + 미해결 항목 정리 |
-| 2 | u-RA | `iterations/iter-N/` | 현재 Iteration 문서 아카이브 |
-| 3 | u-RA | `shared/5_IterationLog_RA.md` | Iteration 이력 기록 |
-| 4 | u-PM | `shared/5_Retrospective_PM.md` | 회고 (Good / Improve / Actions) |
-| 5 | u-PM | `shared/5_DailyReport_PM_YYYYMMDDHHMM.md` | 일일 보고서 (진행/이슈/다음 액션) |
+| 1 | u-RA | `common/5_IterationLog_RA.md` | DEF→BL 변환 + PLAN/DESIGN/DEV 기원 항목 확인 + 미해결 항목 정리 |
+| 2 | u-PM | `common/5_Retrospective_PM.md` | 회고 (Good / Improve / Actions) |
+| 3 | u-PM | `common/5_DailyReport_PM_YYYYMMDDHHMM.md` | 일일 보고서 (진행/이슈/다음 액션) |
+| 4 | u-RA | `iterations/iter-N/` | 현재 Iteration 문서 아카이브 (회고 포함) |
+| 5 | u-RA | `common/5_IterationLog_RA.md` | Iteration 이력 기록 + 다음 Iteration 전환 |
 
 ```mermaid
 flowchart LR
@@ -201,14 +201,14 @@ flowchart LR
 
 | Transition | Gate Conditions | Validator |
 |-----------|----------------|-----------|
-| PLAN → DESIGN | `shared/1_Roadmap_PM.md` = Final + 모든 앱의 `1_SRS_RA.md`, `1_IA_RA.md` = Final | u-RA |
-| DESIGN → DO | `shared/2_ERD_SA.md`, `shared/2_RTM_RA.md`, `shared/2_UXGuide_UX.md` = Final + 모든 앱의 `2_API_SA.md`, `2_Screen_UX.md`, `2_ScreenFlow_UX.md` = Final + u-RA 검수 통과 | u-RA |
+| PLAN → DESIGN | `common/1_Roadmap_PM.md` = Final + 모든 앱의 `1_SRS_RA.md`, `1_IA_RA.md` = Final | u-RA |
+| DESIGN → DO | `common/2_ERD_SA.md`, `common/2_RTM_RA.md`, `common/2_UXGuide_UX.md` = Final + 모든 앱의 `2_API_SA.md`, `2_Screen_UX.md`, `2_ScreenFlow_UX.md` = Final + u-RA 검수 통과 (Critical 불일치 0건) | u-RA |
 | DO → CHECK | 코드 구현 완료 + `bun run build` 성공 | u-RA |
 | CHECK → Complete | Critical/Major 결함 0건 + 백로그 활성 항목 0건 (Done/Cancelled/Deferred 외) + 모든 앱의 전체 FR 구현 완료 | u-RA + scripts |
 | CHECK → ACT | 위 CHECK → Complete 조건 미충족 시 자동 전환 | Orchestrator |
-| ACT → PLAN (Iter N+1) | `shared/5_IterationLog_RA.md` 정리 완료 + `shared/5_Retrospective_PM.md` 작성 + 아카이브 완료 | u-RA |
+| ACT → PLAN (Iter N+1) | `common/5_IterationLog_RA.md` 정리 완료 + `common/5_Retrospective_PM.md` 작성 + 아카이브 완료 | u-RA |
 
-> **Note**: shared 문서는 1회 검증. perApp 문서는 모든 앱이 Final이어야 Gate 통과.
+> **Note**: common 문서는 1회 검증. perApp 문서는 모든 앱이 Final이어야 Gate 통과.
 
 <details><summary>JSON Format (Gate Conditions)</summary>
 

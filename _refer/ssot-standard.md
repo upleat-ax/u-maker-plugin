@@ -204,9 +204,9 @@ xychart-beta
 | Phase | Prefix | Example |
 |-------|--------|---------|
 | PLAN | `1_` | `1_Roadmap_PM.md`, `1_SRS_RA.md`, `1_IA_RA.md`, `1_Index_PM.md`, `1_Common_RA.md` |
-| DESIGN | `2_` | `2_UXGuide_UX.md`, `2_ERD_SA.md`, `2_RTM_RA.md`, `2_API_SA.md`, `2_Screen_UX.md`, `2_ScreenFlow_UX.md` |
+| DESIGN | `2_` | `2_UXGuide_UX.md`, `2_ERD_SA.md`, `2_RTM_RA.md`, `2_API_SA.md`, `2_Screen_UX.md`, `2_ScreenFlow_UX.md`, `2_Design_UX.pen` |
 | DEV | `3_` | `3_Screen_UX.md`, `3_UIComponents_UX.md`, `3_DesignToken_UX.md`, `3_Code_DV.md` |
-| CHECK | `4_` | `4_Case_QA.md`, `4_Report_QA.md` |
+| CHECK | `4_` | `4_Case_QA.md`, `4_Report_QA.md`, `4_GapReport_QA.md` |
 | ACT | `5_` | `5_IterationLog_RA.md`, `5_Retrospective_PM.md`, `5_DailyReport_PM_yyyymmddhhmm.md` |
 | ALL (root) | — | `_links.json` (.u-maker/docs/ 루트, 문서 간 매핑) |
 
@@ -242,13 +242,15 @@ xychart-beta
 │   ├── 02-design/
 │   │   ├── 2_API_SA.md
 │   │   ├── 2_Screen_UX.md
-│   │   └── 2_ScreenFlow_UX.md
+│   │   ├── 2_ScreenFlow_UX.md
+│   │   └── 2_Design_UX.pen
 │   ├── 03-dev/
 │   │   ├── 3_Code_DV.md
 │   │   └── 3_Screen_UX.md
 │   └── 04-check/
 │       ├── 4_Case_QA.md
-│       └── 4_Report_QA.md
+│       ├── 4_Report_QA.md
+│       └── 4_GapReport_QA.md
 ├── assets/
 │   └── (다이어그램, 스크린샷)
 └── iterations/

@@ -172,7 +172,7 @@ flowchart TD
 | `/u-skill-screen [app]` | 화면 상세 설계 |
 | `/u-skill-wireframe [app]` | 와이어프레임 HTML 생성 |
 | `/u-skill-ux-figma [app]` | pencil.dev 기반 화면 디자인 |
-| `/u-skill-ux-dsystem [app]` | 디자인 시스템 시각 구성 |
+| `/u-skill-ux-designsystem [app]` | 디자인 시스템 시각 구성 |
 | `/u-skill-glossary [app]` | 용어 정의(Glossary) 문서 생성/수정 |
 | `/u-skill-workflow [app]` | 워크플로우 정의 문서 생성/수정 |
 | `/u-skill-testcase [app]` | Unit+E2E 테스트 케이스 일괄 설계 |
@@ -517,7 +517,7 @@ mv .u-maker/u-ssot.config.json .u-maker/u-maker.config.json
 | `/u-skill-screen` | 화면 상세 설계 |
 | `/u-skill-wireframe` | 와이어프레임 HTML |
 | `/u-skill-ux-figma` | pencil.dev 시각 디자인 |
-| `/u-skill-ux-dsystem` | 디자인 시스템 시각 구성 |
+| `/u-skill-ux-designsystem` | 디자인 시스템 시각 구성 |
 | `/u-skill-html-doc screen` | 설계서 HTML 변환 |
 
 ### 개발자 (Frontend / Backend)

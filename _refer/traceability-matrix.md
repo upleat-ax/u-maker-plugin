@@ -217,15 +217,15 @@ flowchart TD
 
 ### 4.3 Validation Process
 
-1. **자동 검증**: `scripts/validate-ssot.py`가 문서 파싱 후 추적성 검증
+1. **자동 검증**: `/u-skill-validate`가 SSoT 문서를 파싱하여 추적성 검증
 2. **u-RA 검수**: Phase 전환 Gate에서 `u-RA`가 문서 간 모순 검사
-3. **수동 검토**: `/u-agent-validate` 커맨드로 사용자가 직접 검증 요청 가능
+3. **수동 검토**: `/u-skill-validate` 커맨드로 사용자가 직접 검증 요청 가능
 
 ```mermaid
 flowchart LR
-    DOC[SSoT Documents] --> SCRIPT[validate-ssot.py]
+    DOC[SSoT Documents] --> VALIDATE[/u-skill-validate/]
     DOC --> RA[u-RA Agent]
-    SCRIPT --> RESULT{Validation Result}
+    VALIDATE --> RESULT{Validation Result}
     RA --> RESULT
     RESULT -->|Pass| GATE[Gate Transition]
     RESULT -->|Fail| FIX[Fix Required]

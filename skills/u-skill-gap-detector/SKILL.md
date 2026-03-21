@@ -23,8 +23,8 @@ imports:
   - ${PLUGIN_ROOT}/.u-maker/u-maker.config.json
   - ${PLUGIN_ROOT}/_refer/traceability-matrix.md
 agents:
-  - u-maker:u-agent-ra
-  - u-maker:u-agent-qa
+  u-agent-ra: u-maker:u-agent-ra
+  u-agent-qa: u-maker:u-agent-qa
 ---
 
 # Gap Detector
@@ -45,11 +45,23 @@ agents:
 1. u-agent-ra: 모든 앱의 SSoT 설계 문서 수집
 2. u-agent-ra: 구현 코드 파일 스캔
 3. u-agent-qa: 설계 항목별 구현 매칭 검사
-4. Match Rate 산출: (구현 항목 / 전체 설계 항목) x 100
-5. Gap 리포트 생성 → .u-maker/docs/{app}/04-check/
+4. Match Rate 산출: 항목 유형별 가중 평균
+   - FT 구현 여부: 가중치 40%
+   - API Endpoint 일치: 가중치 25%
+   - ERD Entity 일치: 가중치 20%
+   - Screen 구현 여부: 가중치 15%
+   - `Match Rate = Σ(유형별 일치율 × 가중치)`
+5. Gap 리포트 생성 → `{app}/04-check/4_GapReport_QA.md` + `.json`
+
+## Output
+
+- **파일명**: `4_GapReport_QA.md` (앱별 생성)
+- **경로**: `.u-maker/docs/{app}/04-check/`
+- **JSON 쌍**: `4_GapReport_QA.json` 동일 경로에 함께 생성
 
 ## Rules
 
-- Match Rate >= 90%: PASS
+- Match Rate >= 90%: PASS (config의 `gapThreshold`로 변경 가능, 기본 90)
 - Match Rate < 90%: FAIL → ACT Phase에서 Gap 항목을 백로그로 전환
+- 모든 문서 생성/갱신 시 동명의 `.json` 파일을 동일 경로에 함께 생성 (스키마: `json-export.md`)
 - Post-Execution Summary Box 출력 필수

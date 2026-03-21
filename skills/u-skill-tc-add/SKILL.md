@@ -26,7 +26,7 @@ imports:
   - ${PLUGIN_ROOT}/_refer/traceability-matrix.md
   - ${PLUGIN_ROOT}/.u-maker/u-maker.config.json
 agents:
-  - u-maker:u-agent-qa
+  u-agent-qa: u-maker:u-agent-qa
 ---
 
 # Test Case Add

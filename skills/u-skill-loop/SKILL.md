@@ -20,13 +20,13 @@ allowed-tools:
   - TaskList
   - AskUserQuestion
 agents:
-  - u-agent-pm: u-maker:u-agent-pm
-  - u-agent-ra: u-maker:u-agent-ra
-  - u-agent-sa: u-maker:u-agent-sa
-  - u-agent-ux: u-maker:u-agent-ux
-  - u-agent-dv-fe: u-maker:u-agent-dv-fe
-  - u-agent-dv-be: u-maker:u-agent-dv-be
-  - u-agent-qa: u-maker:u-agent-qa
+  u-agent-pm: u-maker:u-agent-pm
+  u-agent-ra: u-maker:u-agent-ra
+  u-agent-sa: u-maker:u-agent-sa
+  u-agent-ux: u-maker:u-agent-ux
+  u-agent-dv-fe: u-maker:u-agent-dv-fe
+  u-agent-dv-be: u-maker:u-agent-dv-be
+  u-agent-qa: u-maker:u-agent-qa
 imports:
   - ${PLUGIN_ROOT}/_refer/ssot-standard.md
   - ${PLUGIN_ROOT}/_refer/pdca-workflow.md

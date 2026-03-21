@@ -23,7 +23,7 @@ imports:
   - ${PLUGIN_ROOT}/.u-maker/u-maker.config.json
   - ${PLUGIN_ROOT}/_refer/mermaid-guide.md
 agents:
-  - u-maker:u-agent-sa
+  u-agent-sa: u-maker:u-agent-sa
 ---
 
 # u-skill-erd

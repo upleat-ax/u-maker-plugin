@@ -17,7 +17,7 @@ allowed-tools:
   - TaskList
   - AskUserQuestion
 agents:
-  - u-agent-ra: u-maker:u-agent-ra
+  u-agent-ra: u-maker:u-agent-ra
 imports:
   - ${PLUGIN_ROOT}/_refer/ssot-standard.md
   - ${PLUGIN_ROOT}/_refer/iteration-rules.md

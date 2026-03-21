@@ -7,14 +7,9 @@ user-invocable: true
 model: sonnet
 allowed-tools:
   - Read
-  - Write
-  - Edit
   - Glob
   - Grep
   - Bash
-  - TaskCreate
-  - TaskUpdate
-  - TaskList
   - AskUserQuestion
 imports:
   - ${PLUGIN_ROOT}/_refer/ssot-standard.md
@@ -23,7 +18,7 @@ imports:
   - ${PLUGIN_ROOT}/.u-maker/u-maker.config.json
   - ${PLUGIN_ROOT}/_refer/pdca-workflow.md
 agents:
-  - u-maker:u-agent-ra
+  u-agent-ra: u-maker:u-agent-ra
 ---
 
 # Status Report

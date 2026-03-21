@@ -52,7 +52,7 @@ const DOC_COMMANDS = [
   '/u-skill-help', '/u-agent-history', '/u-agent-archive', '/u-skill-storybook',
   '/u-skill-build', '/u-skill-git-pr', '/u-skill-stop', '/u-skill-resume',
   '/u-agent-summary', '/u-agent-wireframe', '/u-agent-ux-design', '/u-agent-ux-ds',
-  '/u-agent-pm', '/u-skill-report',
+  '/u-agent-pm', '/u-skill-report', '/u-skill-import',
 ];
 
 const promptLower = prompt.toLowerCase();

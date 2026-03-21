@@ -75,7 +75,7 @@ flowchart TD
 +--------------------------------------------------+
 | LOOP PAUSED                                       |
 | Iteration: 2 | Phase: DO | Progress: 45%         |
-| Resume: /u-skill-resume | Status: /u-agent-status             |
+| Resume: /u-skill-resume | Status: /u-skill-status             |
 +--------------------------------------------------+
 ```
 
@@ -112,7 +112,7 @@ flowchart TD
 ```python
 def check_exit_criteria():
     # Condition 1: All backlog items Done
-    backlog = parse_backlog(".u-maker/docs/shared/05-act/5_IterationLog_RA.md")
+    backlog = parse_backlog(".u-maker/docs/common/05-act/5_IterationLog_RA.md")
     active_items = [item for item in backlog
                     if item.status not in ("Done", "Cancelled", "Deferred")]
     cond_1 = len(active_items) == 0

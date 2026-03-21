@@ -230,7 +230,7 @@ u-maker가 Plan → Design → Do → Check → Act 전체 사이클을 자동�
 /u-skill-screen web                  # 화면 상세 설계서 작성
 /u-skill-wireframe web               # 와이어프레임 HTML 생성 (SVG 기반 레이아웃)
 /u-skill-ux-figma web                # pencil.dev로 시각적 화면 디자인 (.pen 파일)
-/u-skill-ux-dsystem web              # 디자인 시스템/컴포넌트 시각 구성
+/u-skill-ux-designsystem web              # 디자인 시스템/컴포넌트 시각 구성
 ```
 
 **설계 문서 확인:**

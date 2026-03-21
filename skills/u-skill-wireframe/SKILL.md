@@ -28,10 +28,10 @@ imports:
   - ${PLUGIN_ROOT}/_refer/html-wireframe-template.md
   - ${PLUGIN_ROOT}/.u-maker/u-maker.config.json
 agents:
-  - u-maker:u-agent-ux
+  u-agent-ux: u-maker:u-agent-ux
 ---
 
-# u-agent-wireframe
+# u-skill-wireframe
 
 `u-agent-ux` 에이전트를 호출하여 HTML 와이어프레임을 생성/갱신한다.
 

@@ -26,7 +26,7 @@ imports:
   - ${PLUGIN_ROOT}/_refer/traceability-matrix.md
   - ${PLUGIN_ROOT}/_refer/mermaid-guide.md
 agents:
-  - u-maker:u-agent-sa
+  u-agent-sa: u-maker:u-agent-sa
 ---
 
 # u-skill-srs

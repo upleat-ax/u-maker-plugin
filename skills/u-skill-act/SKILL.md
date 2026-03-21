@@ -2,9 +2,11 @@
 name: u-skill-act
 description: |
   ACT Phase 실행. 백로그 정리 → 회고 → 아카이브 → 다음 Iteration 전환.
+  Args: `[app]` — 멀티앱 프로젝트 시 특정 앱만 대상 (미지정 시 전체 앱 대상)
   Triggers: /u-skill-act, act phase, 개선, 회고, retrospective, 백로그 정리, 아카이브, archive, iteration 전환, 다음 이터레이션, improve, reflection, backlog cleanup
 model: sonnet
 user-invocable: true
+argument-hint: "[app]"
 allowed-tools:
   - Read
   - Write
@@ -35,7 +37,7 @@ agents:
 ## Execution Sequence
 
 1. `u-agent-ra`: DEF → BL 변환 및 Iteration Log에 백로그 기록 (`common/05-act/5_IterationLog_RA.md`)
-   - 모든 앱의 `4_Report_QA.md` Open DEF → BL 자동 변환 (아래 Conversion Rules 참조)
+   - `[app]` 지정 시 해당 앱의 `4_Report_QA.md`만, 미지정 시 모든 앱의 `4_Report_QA.md` Open DEF → BL 자동 변환 (아래 Conversion Rules 참조)
    - 기존 Open/InProgress 항목 우선순위 재평가
 2. `u-agent-pm`: 회고 작성 (`common/05-act/5_Retrospective_PM.md`)
    - 잘된 점, 개선할 점, 다음 Iteration 목표
