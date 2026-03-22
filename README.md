@@ -3,9 +3,9 @@
 PDCA(Plan-Design-Do-Check-Act) 기반 SSoT(Single Source of Truth) 협업 오케스트레이터.
 8개 전문 에이전트와 53개 스킬로 소프트웨어 개발 전 과정을 자동화하는 Claude Code 플러그인.
 
-- Plugin version: `1.0.3`
+- Plugin version: `1.0.4`
 - SSoT config version: `2.0.0`
-- Skills: `53` | Agents: `8` | Templates: `20` | References: `13`
+- Skills: `54` | Agents: `8` | Templates: `20` | References: `13`
 - [시작 가이드 (초보자용)](GET_STARTED.md) | [한국어 README (HTML)](README.ko.html) | [English README (HTML)](README.en.html)
 
 ---
@@ -120,7 +120,7 @@ flowchart TD
 
 ## 4. Skills & Commands
 
-전체 53개 스킬. 자연어 입력 시 `u-skill-maker` 라우터가 자동으로 적절한 스킬/에이전트로 분배한다.
+전체 54개 스킬. 자연어 입력 시 `u-skill-maker` 라우터가 자동으로 적절한 스킬/에이전트로 분배한다.
 
 ### 4.0 Router
 
@@ -211,6 +211,12 @@ flowchart TD
 | `/u-skill-fix [app] [desc]` | 버그/기능 수정 + QA 에이전트가 자동으로 TC 보강 |
 | `/u-skill-git-pr [feat-name]` | feature별 git commit + GitHub PR 생성 |
 | `/u-skill-help` | 전체 명령어 도움말 |
+
+### 4.7 Workshop
+
+| Command | Description |
+|---------|-------------|
+| `/u-workshop` | 브레인스토밍 & 아이디어 설계. 창의적 작업 전에 사용자 의도/요구사항/설계를 협업 대화로 탐색 |
 
 ---
 
@@ -387,7 +393,7 @@ u-maker-plugin/
 │   ├── u-agent-dv-fe.md
 │   ├── u-agent-dv-be.md
 │   └── u-agent-qa.md
-├── skills/                # 53개 user-invocable 스킬
+├── skills/                # 54개 user-invocable 스킬
 │   ├── u-skill-maker/     #   슬림 라우터 (자연어 -> 에이전트 라우팅)
 │   ├── u-skill-plan/      #   PLAN Phase
 │   ├── u-skill-design/    #   DESIGN Phase
@@ -405,6 +411,7 @@ u-maker-plugin/
 │   ├── u-skill-workflow/  #   워크플로우 정의
 │   ├── u-skill-html-doc/  #   SSoT 문서 HTML 변환
 │   ├── u-agent-*/         #   에이전트 직접 호출 (7개)
+│   ├── u-workshop/        #   브레인스토밍 & 아이디어 설계
 │   └── ...                #   기타 스킬
 ├── hooks/                 # Claude hook 설정
 │   ├── hooks.json
