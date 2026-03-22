@@ -48,5 +48,5 @@ jobs:
 
           # 2. upleat-ax/u-maker-plugin
           git remote add upleat https://x-access-token:${UPLEAT_PUBLISH_TOKEN}@github.com/upleat-ax/u-maker-plugin.git
-          git push upleat HEAD:main --force
+          git push upleat HEAD:refs/heads/main --force
           git push upleat "${TAG}" --force
