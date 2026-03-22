@@ -13,8 +13,8 @@ PDCA(Plan-Design-Do-Check-Act) 기반 SSoT(Single Source of Truth) 협업 오케
 ## TL;DR
 
 ```bash
-# 1. 배포
-./deploy_local.sh
+# 1. 설치 (macOS/Linux)
+curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/install.sh | bash
 
 # 2. Claude Code 재시작 후 프로젝트에서 실행
 /u-skill-create-project my-app    # 새 프로젝트
@@ -471,6 +471,22 @@ u-maker-plugin/
 
 ### Install
 
+#### 방법 A: 원클릭 설치 (권장)
+
+**macOS / Linux:**
+```bash
+curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/install.sh | bash
+```
+
+**Windows (PowerShell):**
+```powershell
+Invoke-WebRequest -Uri https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/install.bat -OutFile install.bat; .\install.bat; Remove-Item install.bat
+```
+
+> 특정 버전 설치: `./install.sh --version 1.0.7`
+
+#### 방법 B: 소스코드에서 로컬 설치
+
 ```bash
 cd /path/to/u-maker-plugin
 ./deploy_local.sh
@@ -485,6 +501,8 @@ cd /path/to/u-maker-plugin
 ./deploy_local.sh --check   # 설치 상태 확인
 ./deploy_local.sh --clean   # 완전 제거
 ```
+
+> 설치 후 반드시 **Claude Code를 재시작**해주세요.
 
 ### Config Migration (Breaking Change)
 

@@ -92,23 +92,38 @@ USR-0001 (사용자 유형: 예) 관리자, 일반 사용자)
 
 ### 설치
 
-#### 방법 A: GitHub에서 설치 (권장)
+#### 방법 A: 원클릭 설치 (권장)
 
-GitHub에 배포된 공개 레포에서 바로 설치할 수 있습니다.
+터미널에서 한 줄만 실행하면 최신 버전이 자동으로 설치됩니다.
+
+**macOS / Linux:**
+```bash
+curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/install.sh | bash
+```
+
+**Windows (PowerShell):**
+```powershell
+Invoke-WebRequest -Uri https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/install.bat -OutFile install.bat; .\install.bat; Remove-Item install.bat
+```
+
+이 스크립트가 자동으로:
+- GitHub에서 최신 릴리스 zip을 다운로드합니다
+- 플러그인을 설치합니다 (deploy_local.sh 실행)
+- 임시 파일을 정리합니다
 
 ```bash
-# 1. GitHub 레포를 마켓플레이스로 등록
-claude plugin marketplace add github:thinoo-v2/u-maker-production
+# 특정 버전 설치
+./install.sh --version 1.0.7
 
-# 2. 플러그인 설치
-claude plugin install u-maker
+# 제거
+./install.sh --uninstall
 ```
 
 > 설치 후 반드시 **Claude Code를 재시작**해주세요.
 
 #### 방법 B: 소스코드에서 로컬 설치
 
-소스코드를 직접 클론해서 로컬에 설치하는 방법입니다.
+소스코드를 직접 클론해서 로컬에 설치하는 방법입니다. (개발자용)
 
 ```bash
 cd /path/to/u-maker-plugin

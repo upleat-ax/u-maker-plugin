@@ -91,12 +91,18 @@ cmd_check() {
     echo ""
     log "Latest tags:"
     gh api "repos/${repo}/tags" --jq '.[0:5][] | "  \(.name)"' 2>/dev/null || warn "No tags found"
+
+    echo ""
+    log "Latest release:"
+    gh release view --repo "$repo" --json tagName,assets -q '"  Tag: \(.tagName)\n  Assets: \([.assets[].name] | join(", "))"' 2>/dev/null || warn "No releases found"
     echo ""
   done
 
-  log "Install commands:"
-  echo -e "  ${BOLD}claude plugin install github:${PUBLIC_REPO}${NC}"
-  echo -e "  ${BOLD}claude plugin install github:${UPLEAT_REPO}${NC}"
+  log "Install (macOS/Linux):"
+  echo -e "  ${BOLD}curl -fsSL https://raw.githubusercontent.com/${UPLEAT_REPO}/main/install.sh | bash${NC}"
+  echo ""
+  log "Install (Windows):"
+  echo -e "  ${BOLD}Invoke-WebRequest -Uri https://raw.githubusercontent.com/${UPLEAT_REPO}/main/install.bat -OutFile install.bat; .\\install.bat${NC}"
 }
 
 cmd_deploy() {
@@ -165,9 +171,11 @@ with open('$PLUGIN_JSON', 'w') as f:
       echo ""
       ok "Deploy complete! ${BOLD}v${version}${NC} → ${PUBLIC_REPO} + ${UPLEAT_REPO}"
       echo ""
-      log "Install:"
-      echo -e "  ${BOLD}claude plugin install github:${PUBLIC_REPO}${NC}"
-      echo -e "  ${BOLD}claude plugin install github:${UPLEAT_REPO}${NC}"
+      log "Install (macOS/Linux):"
+      echo -e "  ${BOLD}curl -fsSL https://raw.githubusercontent.com/${UPLEAT_REPO}/main/install.sh | bash${NC}"
+      echo ""
+      log "Install (Windows):"
+      echo -e "  ${BOLD}Invoke-WebRequest -Uri https://raw.githubusercontent.com/${UPLEAT_REPO}/main/install.bat -OutFile install.bat; .\\install.bat${NC}"
     } || {
       echo ""
       err "Workflow failed. Check: gh run view ${run_id} --repo ${PRIVATE_REPO} --log"
