@@ -29,9 +29,10 @@ jobs:
           EOF
           sed -i 's/^          //' .gitignore
 
-      - name: Push to public repo
+      - name: Push to public repos
         env:
           PUBLISH_TOKEN: ${{ secrets.PUBLISH_TOKEN }}
+          UPLEAT_PUBLISH_TOKEN: ${{ secrets.UPLEAT_PUBLISH_TOKEN }}
         run: |
           TAG="${GITHUB_REF#refs/tags/}"
           git config user.name "github-actions[bot]"
@@ -39,6 +40,13 @@ jobs:
           git add -A
           git commit -m "Release ${TAG}" --allow-empty
           git tag -f "${TAG}"
+
+          # 1. thinoo-v2/u-maker-production
           git remote add public https://x-access-token:${PUBLISH_TOKEN}@github.com/thinoo-v2/u-maker-production.git
           git push public HEAD:main --force
           git push public "${TAG}" --force
+
+          # 2. upleat-ax/u-maker-plugin
+          git remote add upleat https://x-access-token:${UPLEAT_PUBLISH_TOKEN}@github.com/upleat-ax/u-maker-plugin.git
+          git push upleat HEAD:main --force
+          git push upleat "${TAG}" --force

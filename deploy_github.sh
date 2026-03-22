@@ -18,6 +18,7 @@ PLUGIN_JSON="$SCRIPT_DIR/.claude-plugin/plugin.json"
 
 PRIVATE_REPO="thinoo-v2/u-maker-plugin"
 PUBLIC_REPO="thinoo-v2/u-maker-production"
+UPLEAT_REPO="upleat-ax/u-maker-plugin"
 
 # Colors
 RED='\033[0;31m'
@@ -74,24 +75,28 @@ cmd_status() {
 
 cmd_check() {
   ensure_gh
-  log "Public repo: ${BOLD}https://github.com/${PUBLIC_REPO}${NC}"
-  echo ""
 
-  local visibility
-  visibility="$(gh repo view "$PUBLIC_REPO" --json visibility -q '.visibility' 2>/dev/null || echo "NOT_FOUND")"
-  if [[ "$visibility" == "PUBLIC" ]]; then
-    ok "Visibility: PUBLIC"
-  else
-    err "Visibility: $visibility"
-  fi
+  for repo in "$PUBLIC_REPO" "$UPLEAT_REPO"; do
+    log "Public repo: ${BOLD}https://github.com/${repo}${NC}"
+    echo ""
 
-  echo ""
-  log "Latest tags on public repo:"
-  gh api "repos/${PUBLIC_REPO}/tags" --jq '.[0:5][] | "  \(.name)"' 2>/dev/null || warn "No tags found"
+    local visibility
+    visibility="$(gh repo view "$repo" --json visibility -q '.visibility' 2>/dev/null || echo "NOT_FOUND")"
+    if [[ "$visibility" == "PUBLIC" ]]; then
+      ok "Visibility: PUBLIC"
+    else
+      err "Visibility: $visibility"
+    fi
 
-  echo ""
-  log "Install command:"
+    echo ""
+    log "Latest tags:"
+    gh api "repos/${repo}/tags" --jq '.[0:5][] | "  \(.name)"' 2>/dev/null || warn "No tags found"
+    echo ""
+  done
+
+  log "Install commands:"
   echo -e "  ${BOLD}claude plugin install github:${PUBLIC_REPO}${NC}"
+  echo -e "  ${BOLD}claude plugin install github:${UPLEAT_REPO}${NC}"
 }
 
 cmd_deploy() {
@@ -158,9 +163,11 @@ with open('$PLUGIN_JSON', 'w') as f:
   if [[ -n "$run_id" ]]; then
     gh run watch "$run_id" --repo "$PRIVATE_REPO" --exit-status && {
       echo ""
-      ok "Deploy complete! ${BOLD}v${version}${NC} → ${PUBLIC_REPO}"
+      ok "Deploy complete! ${BOLD}v${version}${NC} → ${PUBLIC_REPO} + ${UPLEAT_REPO}"
       echo ""
-      log "Install: ${BOLD}claude plugin install github:${PUBLIC_REPO}${NC}"
+      log "Install:"
+      echo -e "  ${BOLD}claude plugin install github:${PUBLIC_REPO}${NC}"
+      echo -e "  ${BOLD}claude plugin install github:${UPLEAT_REPO}${NC}"
     } || {
       echo ""
       err "Workflow failed. Check: gh run view ${run_id} --repo ${PRIVATE_REPO} --log"
