@@ -1,14 +1,13 @@
 #!/usr/bin/env bash
 # ============================================================
-# deploy_github.sh — u-maker GitHub deployment
+# deploy_github.sh — u-maker GitHub deployment (local build)
 #
-# Creates a version tag and pushes it to trigger the GitHub Actions
-# workflow that publishes to thinoo-v2/u-maker-production (public).
+# Builds zip, pushes public repos, creates GitHub Releases.
+# All done locally — no GitHub Actions dependency.
 #
 # Usage:
 #   ./deploy_github.sh              # auto-bump patch (1.0.0 → 1.0.1)
 #   ./deploy_github.sh 1.2.0        # deploy specific version
-#   ./deploy_github.sh --status     # check latest workflow run
 #   ./deploy_github.sh --check      # verify public repo state
 # ============================================================
 set -euo pipefail
@@ -66,13 +65,6 @@ ensure_gh() {
 # Commands
 # ============================================================
 
-cmd_status() {
-  ensure_gh
-  log "Latest workflow run on ${BOLD}${PRIVATE_REPO}${NC}:"
-  echo ""
-  gh run list --repo "$PRIVATE_REPO" --workflow "publish.yml" --limit 5
-}
-
 cmd_check() {
   ensure_gh
 
@@ -95,6 +87,10 @@ cmd_check() {
     echo ""
     log "Latest release:"
     gh release view --repo "$repo" --json tagName,assets -q '"  Tag: \(.tagName)\n  Assets: \([.assets[].name] | join(", "))"' 2>/dev/null || warn "No releases found"
+
+    echo ""
+    log "Repo contents:"
+    gh api "repos/${repo}/contents" --jq '.[].name' 2>/dev/null | sed 's/^/  /' || warn "Cannot list contents"
     echo ""
   done
 
@@ -121,7 +117,9 @@ cmd_deploy() {
     log "Deploying version: ${BOLD}${version}${NC}"
   fi
 
-  # Update plugin.json version
+  local tag="v${version}"
+
+  # ── Step 1: Update plugin.json version ──
   if [[ "$version" != "$current" ]]; then
     python3 -c "
 import json
@@ -137,14 +135,12 @@ with open('$PLUGIN_JSON', 'w') as f:
     ok "Updated plugin.json: ${version}"
   fi
 
-  # Push main first
+  # ── Step 2: Push main to private repo ──
   log "Pushing main branch..."
   git push origin main
   ok "Main branch pushed"
 
-  # Create and push tag
-  local tag="v${version}"
-
+  # ── Step 3: Create and push tag ──
   if git tag -l "$tag" | grep -q "$tag"; then
     warn "Tag ${tag} already exists locally, deleting..."
     git tag -d "$tag"
@@ -153,38 +149,137 @@ with open('$PLUGIN_JSON', 'w') as f:
 
   git tag -a "$tag" -m "Release ${tag}"
   git push origin "$tag"
-  ok "Tag ${tag} pushed — workflow triggered"
+  ok "Tag ${tag} created and pushed"
 
-  echo ""
-  log "Monitoring workflow..."
-  echo ""
+  # ── Step 4: Build zip ──
+  log "Building plugin zip..."
+  local zip_file="/tmp/u-maker-plugin-${tag}.zip"
+  rm -f "$zip_file"
 
-  local run_id
-  for _ in 1 2 3 4 5; do
-    run_id="$(gh run list --repo "$PRIVATE_REPO" --workflow "publish.yml" --limit 1 --json databaseId -q '.[0].databaseId' 2>/dev/null || echo "")"
-    [[ -n "$run_id" ]] && break
-    sleep 2
+  (cd "$SCRIPT_DIR" && zip -r "$zip_file" \
+    .claude-plugin/ \
+    skills/ \
+    agents/ \
+    _refer/ \
+    templates/ \
+    scripts/ \
+    lib/ \
+    hooks/ \
+    deploy_local.sh \
+    deploy_local.bat \
+    README.md \
+    GET_STARTED.md \
+    -x "*.DS_Store" "*__pycache__*" "*.pyc" \
+  )
+  local zip_size
+  zip_size="$(du -h "$zip_file" | cut -f1 | tr -d ' ')"
+  ok "Zip created: ${zip_file} (${zip_size})"
+
+  # ── Step 5: Create Release on private repo ──
+  log "Creating release on ${BOLD}${PRIVATE_REPO}${NC}..."
+  gh release create "$tag" "$zip_file" \
+    --title "u-maker ${tag}" \
+    --notes "Release ${tag}" \
+    --repo "$PRIVATE_REPO" 2>/dev/null || {
+    warn "Release ${tag} may already exist on ${PRIVATE_REPO}, uploading asset..."
+    gh release upload "$tag" "$zip_file" --clobber --repo "$PRIVATE_REPO" 2>/dev/null || true
+  }
+  ok "Release created on ${PRIVATE_REPO}"
+
+  # ── Step 6: Push public repos (README + install scripts only) ──
+  log "Pushing to public repos..."
+
+  local tmp_dir
+  tmp_dir="$(mktemp -d)"
+
+  # Prepare public content
+  cp "$SCRIPT_DIR/README.md" "$tmp_dir/README.md"
+  cp "$SCRIPT_DIR/install.sh" "$tmp_dir/install.sh"
+  cp "$SCRIPT_DIR/install.bat" "$tmp_dir/install.bat"
+  cat > "$tmp_dir/.gitignore" << 'EOF'
+.DS_Store
+.u-maker/
+.claude/
+node_modules/
+*.log
+__pycache__
+EOF
+
+  # Init temp git repo and push to public repos
+  (
+    cd "$tmp_dir"
+    git init -q
+    git checkout -q -b main
+    git add -A
+    git commit -q -m "Release ${tag}"
+    git tag -a "$tag" -m "Release ${tag}"
+
+    # Get tokens from gh auth
+    local public_token upleat_token
+    public_token="$(gh auth token)"
+    upleat_token="$(gh auth token)"
+
+    # Push to thinoo-v2/u-maker-production
+    git remote add public "https://x-access-token:${public_token}@github.com/${PUBLIC_REPO}.git"
+    git push public main --force 2>/dev/null
+    git push public "$tag" --force 2>/dev/null
+    ok "Pushed to ${PUBLIC_REPO}"
+
+    # Push to upleat-ax/u-maker-plugin
+    git remote add upleat "https://x-access-token:${upleat_token}@github.com/${UPLEAT_REPO}.git"
+    git push upleat main --force 2>/dev/null
+    git push upleat "$tag" --force 2>/dev/null
+    ok "Pushed to ${UPLEAT_REPO}"
+  )
+
+  rm -rf "$tmp_dir"
+
+  # ── Step 7: Create Releases on public repos ──
+  local release_notes
+  release_notes="## u-maker ${tag}
+
+### Install
+
+**macOS / Linux:**
+\`\`\`bash
+curl -fsSL https://raw.githubusercontent.com/${UPLEAT_REPO}/main/install.sh | bash
+\`\`\`
+
+**Windows (PowerShell):**
+\`\`\`powershell
+Invoke-WebRequest -Uri https://raw.githubusercontent.com/${UPLEAT_REPO}/main/install.bat -OutFile install.bat; .\\install.bat; Remove-Item install.bat
+\`\`\`"
+
+  for repo in "$PUBLIC_REPO" "$UPLEAT_REPO"; do
+    log "Creating release on ${BOLD}${repo}${NC}..."
+    gh release create "$tag" "$zip_file" \
+      --title "u-maker ${tag}" \
+      --notes "$release_notes" \
+      --repo "$repo" 2>/dev/null || {
+      warn "Release may exist, uploading asset..."
+      gh release upload "$tag" "$zip_file" --clobber --repo "$repo" 2>/dev/null || true
+    }
+    ok "Release created on ${repo}"
   done
 
-  if [[ -n "$run_id" ]]; then
-    gh run watch "$run_id" --repo "$PRIVATE_REPO" --exit-status && {
-      echo ""
-      ok "Deploy complete! ${BOLD}v${version}${NC} → ${PUBLIC_REPO} + ${UPLEAT_REPO}"
-      echo ""
-      log "Install (macOS/Linux):"
-      echo -e "  ${BOLD}curl -fsSL https://raw.githubusercontent.com/${UPLEAT_REPO}/main/install.sh | bash${NC}"
-      echo ""
-      log "Install (Windows):"
-      echo -e "  ${BOLD}Invoke-WebRequest -Uri https://raw.githubusercontent.com/${UPLEAT_REPO}/main/install.bat -OutFile install.bat; .\\install.bat${NC}"
-    } || {
-      echo ""
-      err "Workflow failed. Check: gh run view ${run_id} --repo ${PRIVATE_REPO} --log"
-      exit 1
-    }
-  else
-    warn "Could not find workflow run. Check manually:"
-    echo "  gh run list --repo ${PRIVATE_REPO}"
-  fi
+  # ── Step 8: Cleanup ──
+  rm -f "$zip_file"
+
+  echo ""
+  echo -e "${BOLD}========================================${NC}"
+  echo -e "${GREEN}${BOLD}  Deploy complete!${NC}"
+  echo -e "${BOLD}========================================${NC}"
+  echo -e "  Version: ${BOLD}${tag}${NC}"
+  echo -e "  Private: https://github.com/${PRIVATE_REPO}"
+  echo -e "  Public:  https://github.com/${PUBLIC_REPO}"
+  echo -e "  Public:  https://github.com/${UPLEAT_REPO}"
+  echo ""
+  echo -e "  ${BOLD}Install (macOS/Linux):${NC}"
+  echo -e "  curl -fsSL https://raw.githubusercontent.com/${UPLEAT_REPO}/main/install.sh | bash"
+  echo ""
+  echo -e "  ${BOLD}Install (Windows):${NC}"
+  echo -e "  Invoke-WebRequest -Uri https://raw.githubusercontent.com/${UPLEAT_REPO}/main/install.bat -OutFile install.bat; .\\install.bat"
+  echo ""
 }
 
 # ============================================================
@@ -192,9 +287,6 @@ with open('$PLUGIN_JSON', 'w') as f:
 # ============================================================
 
 case "${1:-}" in
-  --status)
-    cmd_status
-    ;;
   --check)
     cmd_check
     ;;
@@ -202,7 +294,6 @@ case "${1:-}" in
     echo "Usage:"
     echo "  ./deploy_github.sh              # auto-bump patch & deploy"
     echo "  ./deploy_github.sh 1.2.0        # deploy specific version"
-    echo "  ./deploy_github.sh --status     # check workflow runs"
     echo "  ./deploy_github.sh --check      # verify public repo"
     echo "  ./deploy_github.sh --help       # show this help"
     ;;

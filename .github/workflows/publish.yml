@@ -1,5 +1,9 @@
 name: Publish to u-maker (public)
 
+# This workflow is a fallback — primary deployment is done locally via deploy_github.sh.
+# It only pushes public-facing files (README + install scripts) to public repos.
+# Releases with zip assets are created by deploy_github.sh.
+
 on:
   push:
     tags:
@@ -8,8 +12,6 @@ on:
 jobs:
   publish:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     steps:
       - name: Checkout source
         uses: actions/checkout@v4
@@ -17,42 +19,11 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
 
-      - name: Create plugin zip
-        run: |
-          TAG="${GITHUB_REF#refs/tags/}"
-
-          # Package plugin files into zip (exclude dev/CI files)
-          zip -r "/tmp/u-maker-plugin-${TAG}.zip" \
-            .claude-plugin/ \
-            skills/ \
-            agents/ \
-            _refer/ \
-            templates/ \
-            scripts/ \
-            lib/ \
-            hooks/ \
-            deploy_local.sh \
-            deploy_local.bat \
-            README.md \
-            GET_STARTED.md \
-            -x "*.DS_Store" "*__pycache__*" "*.pyc"
-
-      - name: Create Release on private repo
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          TAG="${GITHUB_REF#refs/tags/}"
-          gh release create "${TAG}" \
-            "/tmp/u-maker-plugin-${TAG}.zip" \
-            --title "u-maker ${TAG}" \
-            --notes "Release ${TAG}" \
-            --repo "${GITHUB_REPOSITORY}"
-
       - name: Prepare public repo content
         run: |
           TAG="${GITHUB_REF#refs/tags/}"
 
-          # Save files for public repos
+          # Save public files
           cp README.md /tmp/README.md
           cp install.sh /tmp/install.sh
           cp install.bat /tmp/install.bat
@@ -97,47 +68,3 @@ jobs:
           git remote add upleat https://x-access-token:${UPLEAT_PUBLISH_TOKEN}@github.com/upleat-ax/u-maker-plugin.git
           git push upleat HEAD:refs/heads/main --force
           git push upleat "${TAG}" --force
-
-      - name: Create Releases on public repos
-        env:
-          PUBLISH_TOKEN: ${{ secrets.PUBLISH_TOKEN }}
-          UPLEAT_PUBLISH_TOKEN: ${{ secrets.UPLEAT_PUBLISH_TOKEN }}
-        run: |
-          TAG="${GITHUB_REF#refs/tags/}"
-          ZIP="/tmp/u-maker-plugin-${TAG}.zip"
-          NOTES="## u-maker ${TAG}
-
-          ### Install
-
-          **macOS / Linux:**
-          \`\`\`bash
-          curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/install.sh | bash
-          \`\`\`
-
-          **Windows (PowerShell):**
-          \`\`\`powershell
-          Invoke-WebRequest -Uri https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/install.bat -OutFile install.bat; .\\install.bat; Remove-Item install.bat
-          \`\`\`"
-
-          # Remove leading whitespace from NOTES
-          NOTES=$(echo "$NOTES" | sed 's/^          //')
-
-          # thinoo-v2/u-maker-production
-          GH_TOKEN="${PUBLISH_TOKEN}" gh release create "${TAG}" \
-            "${ZIP}" \
-            --title "u-maker ${TAG}" \
-            --notes "${NOTES}" \
-            --repo "thinoo-v2/u-maker-production" 2>/dev/null || \
-          GH_TOKEN="${PUBLISH_TOKEN}" gh release upload "${TAG}" \
-            "${ZIP}" --clobber \
-            --repo "thinoo-v2/u-maker-production" 2>/dev/null || true
-
-          # upleat-ax/u-maker-plugin
-          GH_TOKEN="${UPLEAT_PUBLISH_TOKEN}" gh release create "${TAG}" \
-            "${ZIP}" \
-            --title "u-maker ${TAG}" \
-            --notes "${NOTES}" \
-            --repo "upleat-ax/u-maker-plugin" 2>/dev/null || \
-          GH_TOKEN="${UPLEAT_PUBLISH_TOKEN}" gh release upload "${TAG}" \
-            "${ZIP}" --clobber \
-            --repo "upleat-ax/u-maker-plugin" 2>/dev/null || true
