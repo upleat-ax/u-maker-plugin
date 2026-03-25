@@ -66,7 +66,7 @@ agents:
    ├── Frontend 관련 → u-agent-dv-fe 호출
    ├── Backend 관련 → u-agent-dv-be 호출
    └── 복합 → 순차 호출 (BE → FE)
-5. 수정 완료 후 빌드 검증: `bun run build`
+5. 수정 완료 후 빌드 검증: `{pm} run build` (패키지 매니저 자동 감지: lock 파일 기반)
 6. **[Background] QA TC 커버리지 확인** (Agent tool, run_in_background=true)
    ├── 4_Case_QA.md에서 해당 FT의 TC 존재 여부 확인
    ├── TC 없음 → 수정 내용 기반으로 TC 자동 추가

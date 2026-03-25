@@ -39,7 +39,7 @@ agents:
 ## Prerequisites
 
 - `4_Case_QA.md` 존재 (테스트 케이스 설계 완료)
-- `bun run build` 성공 상태
+- 빌드 성공 상태 (`package.json`의 `build` 스크립트 실행)
 
 ## App Context
 
@@ -52,8 +52,9 @@ agents:
 ## Workflow
 
 1. `4_Case_QA.md`에서 테스트 케이스 목록 읽기
-2. Unit Test 실행: `bun run test`
-3. E2E Test 실행: `bunx playwright test`
+2. 패키지 매니저 감지: `package.json`의 `packageManager` 필드 또는 lock 파일 기반 (bun.lockb→bun, pnpm-lock.yaml→pnpm, yarn.lock→yarn, package-lock.json→npm)
+3. Unit Test 실행: `{pm} run test` (예: `bun run test`, `npm run test`)
+4. E2E Test 실행: `{pmx} playwright test` (예: `bunx`, `npx`, `pnpm exec`)
 4. 결과 수집 및 `4_Report_QA.md` 생성/갱신
 5. Fail 케이스 → DEF(결함) 항목 생성
 6. Exit Criteria 평가

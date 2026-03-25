@@ -7,7 +7,7 @@ description: |
   Args: `[project-path]` — 분석할 프로젝트 경로 (생략 시 현재 디렉토리)
   Triggers: /u-skill-init, 프로젝트 초기화, 기존 프로젝트 분석, init project, reverse engineer, 리버스 엔지니어링, 문서 자동 생성, auto generate docs, 코드 분석, analyze codebase, SSoT 초기화, onboarding, 기존 코드 문서화
 user-invocable: true
-argument-hint: "[project-path]"
+argument-hint: "[project-path] [--lang ko|en|ja|zh]"
 model: sonnet
 allowed-tools:
   - Read

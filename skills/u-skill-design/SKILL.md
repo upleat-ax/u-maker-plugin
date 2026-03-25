@@ -28,6 +28,7 @@ imports:
   - ${PLUGIN_ROOT}/.u-maker/u-maker.config.json
 agents:
   u-agent-ux: u-maker:u-agent-ux
+  u-agent-ux-ds: u-maker:u-agent-ux-ds
   u-agent-sa: u-maker:u-agent-sa
   u-agent-ra: u-maker:u-agent-ra
 ---

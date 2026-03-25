@@ -69,7 +69,7 @@ agents:
 2. App context 결정
 3. target 파싱
 4. 2_Screen_Wireframes/ 내 HTML 와이어프레임 확인
-5. u-agent-ux → pencil.dev MCP 활용
+5. u-agent-ux-ds → designTool 설정에 따라 pencil.dev/Figma/Stitch MCP 활용
 6. Summary Box 출력
 
 ## Rules

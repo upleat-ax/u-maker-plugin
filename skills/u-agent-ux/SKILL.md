@@ -35,11 +35,19 @@ agents:
 
 ## Scope
 
-- 정보 구조도 (IA) — 메뉴 트리, 네비게이션 구조, 사이트맵 정의
+### PLAN Phase
+- 정보 구조도 (IA) — 메뉴 트리(Mermaid flowchart TD), 네비게이션 구조, 사용자 흐름
+
+### DESIGN Phase
 - 화면 상세 설계 (`2_Screen_UX.md`) — 화면별 레이아웃, 컴포넌트, 인터랙션 명세
 - 화면 흐름도 (`2_ScreenFlow_UX.md`) — 사용자 시나리오 기반 화면 전환 흐름
-- 디자인 시스템 (`2_UXGuide_UX.md`) — 디자인 토큰, 컬러/타이포그래피, UI 컴포넌트 가이드
-- 와이어프레임 — SVG 인라인 또는 Figma 링크 기반 저충실도 레이아웃
+- 디자인 시스템 (`2_UXGuide_UX.md`) — 3-Layer 토큰 아키텍처, 컬러/타이포, 컴포넌트 가이드
+- HTML 와이어프레임 (`2_Screen_Wireframes/`) — HTML/CSS 레이아웃 시각화, 어노테이션 패널
+
+### DO Phase
+- 화면 구현 가이드 (`3_Screen_UX.md`) — 라우팅, 데이터 로딩, 상태 관리 상세
+- UI 컴포넌트 명세 (`3_UIComponents_UX.md`) — Props, Variants, Storybook 가이드
+- 디자인 토큰 설계 (`3_DesignToken_UX.md`) — Primitive→Alias→Component 3계층, CSS 변수, 테마
 
 ## Flow
 
@@ -52,15 +60,25 @@ agents:
 
 ## Output
 
+### PLAN
+- `.u-maker/docs/{app}/01-plan/1_IA_RA.md` + `.json`
+
+### DESIGN
 - `.u-maker/docs/{app}/02-design/2_Screen_UX.md` + `.json`
 - `.u-maker/docs/{app}/02-design/2_ScreenFlow_UX.md` + `.json`
 - `.u-maker/docs/common/02-design/2_UXGuide_UX.md` + `.json`
+- `.u-maker/docs/{app}/02-design/2_Screen_Wireframes/*.html`
+
+### DO
+- `.u-maker/docs/{app}/03-dev/3_Screen_UX.md` + `.json`
+- `.u-maker/docs/common/03-dev/3_UIComponents_UX.md` + `.json`
+- `.u-maker/docs/common/03-dev/3_DesignToken_UX.md` + `.json`
 
 ## When NOT to use
 
-- Figma 파일 직접 조작 → `/u-skill-ux-figma` 사용
-- 디자인 시스템 문서만 단독 생성 → `/u-skill-ux-designsystem` 사용
+- pencil.dev/Figma/Stitch로 시각적 디자인 제작 → `/u-skill-ux-figma` 또는 `/u-skill-ux-designsystem` 사용
 - API/ERD 설계 → `/u-agent-sa` 사용
+- 코드 구현 → `/u-agent-dv-fe` 사용
 
 ## Rules
 

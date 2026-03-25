@@ -59,7 +59,7 @@ agents:
 
 ## Gate → COMPLETE
 
-Critical/Major 결함 0건 + 백로그 활성 항목 0건 + 전체 FR 구현 완료 + 빌드 성공
+Critical/Major 결함 0건 + 백로그 활성(Status=Open) 항목 0건 + 전체 FR의 FT 구현 완료 (SRS 기준) + `{pm} run build` 성공
 
 ## Gate → ACT
 

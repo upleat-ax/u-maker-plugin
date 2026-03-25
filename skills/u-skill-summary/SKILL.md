@@ -24,12 +24,19 @@ agents:
 
 > 프로젝트 개요와 개발 상태를 콘솔에 요약 출력한다.
 
+## App Context
+
+| Condition | Behavior |
+|-----------|----------|
+| Single app in config | 해당 앱의 SRS 참조 |
+| Multiple apps | 모든 앱의 SRS를 순회하여 FT 현황 통합 집계 |
+
 ## Flow
 
-1. .u-maker/u-maker.config.json에서 프로젝트 메타정보 수집
-2. 1_Roadmap_PM.md에서 프로젝트 목표, 마일스톤 추출
-3. 1_SRS_RA.md에서 FT 구현 현황 추출
-4. 1_Index_PM.md에서 문서 상태 수집
+1. `.u-maker/u-maker.config.json`에서 프로젝트 메타정보 + 앱 목록 수집
+2. `1_Roadmap_PM.md`에서 프로젝트 목표, 마일스톤 추출
+3. 각 앱의 `1_SRS_RA.md`에서 FT 구현 현황 추출 (Done/Total 카운트)
+4. `1_Index_PM.md`에서 문서 상태 수집
 5. 현재 Iteration, Phase, Loop 상태 확인
 6. 콘솔에 요약 출력
 

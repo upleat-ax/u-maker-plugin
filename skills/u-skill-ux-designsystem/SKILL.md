@@ -42,7 +42,40 @@ agents:
 - `figma`: Figma MCP → Figma 파일
 - `stitch`: Stitch MCP → `.stitch` 파일
 
+## App Context
+
+| Condition | Behavior |
+|-----------|----------|
+| Single app in config | Auto-select, no argument needed |
+| Multiple apps + argument given | Use specified app |
+| Multiple apps + no argument | Prompt user via AskUserQuestion |
+
+## Flow
+
+1. `u-maker.config.json`의 `designTool.tool` 값 확인 (pencil/figma/stitch)
+2. App context 결정 + target 파싱 (all/screen-id/component)
+3. 참조 문서 수집:
+   - IA (`1_IA_RA.md`), Screen (`2_Screen_UX.md`), UXGuide (`2_UXGuide_UX.md`)
+   - DesignToken (`3_DesignToken_UX.md`), UIComponents (`3_UIComponents_UX.md`)
+   - Wireframes (`2_Screen_Wireframes/*.html`)
+4. `u-agent-ux-ds` 호출 → 설정된 MCP로 시각적 디자인 생성/갱신
+5. 결과물을 `.u-maker/docs/{app}/02-design/`에 저장
+6. Post-Execution Summary Box 출력
+
+## Output
+
+| Target | Output Path | Content |
+|--------|-------------|---------|
+| system | `.u-maker/docs/common/02-design/design-system.pen` | 디자인 시스템 전체 |
+| all | `.u-maker/docs/{app}/02-design/{app}.pen` | 앱별 전체 화면 |
+| component | `.u-maker/docs/common/02-design/components.pen` | UI 컴포넌트 |
+| S-NNNN | `.u-maker/docs/{app}/02-design/{app}.pen` (해당 프레임) | 특정 화면 |
+
 ## Rules
 
 - 모든 문서 생성/갱신 시 동명의 `.json` 파일을 동일 경로에 함께 생성
+- 결과물은 `.u-maker/docs/{app}/02-design/`에 앱당 1개 `.pen` 파일로 저장
+- `u_design` 또는 `u-design` 폴더는 절대 사용하지 않음
+- 모든 디자인 요소는 `documentLanguage` 설정을 따름
+- 각 프레임에 wireframe 번호(S-NNNN) 명시
 - Post-Execution Summary Box 출력 필수

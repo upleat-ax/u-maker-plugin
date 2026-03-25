@@ -38,10 +38,10 @@ You MUST create a task for each of these items and complete them in order:
 3. **Ask clarifying questions** — one at a time, understand purpose/constraints/success criteria
 4. **Propose 2-3 approaches** — with trade-offs and your recommendation
 5. **Present design** — in sections scaled to their complexity, get user approval after each section
-6. **Write design doc** — save to `docs/superpowers/specs/YYYY-MM-DD-<topic>-design.md` and commit
-7. **Spec review loop** — dispatch spec-document-reviewer subagent with precisely crafted review context (never your session history); fix issues and re-dispatch until approved (max 3 iterations, then surface to human)
+6. **Write design doc** — save to `.u-maker/docs/common/specs/YYYY-MM-DD-<topic>-design.md` and commit
+7. **Spec review** — 사용자에게 설계 문서 검토 요청, 피드백 반영 (최대 3회 반복, 이후 사용자 판단)
 8. **User reviews written spec** — ask user to review the spec file before proceeding
-9. **Transition to implementation** — invoke writing-plans skill to create implementation plan
+9. **Transition to implementation** — `/u-skill-plan`을 호출하여 PDCA 루프로 진입하거나, 사용자가 직접 구현 방식을 선택
 
 ## Process Flow
 
@@ -55,10 +55,9 @@ digraph brainstorming {
     "Present design sections" [shape=box];
     "User approves design?" [shape=diamond];
     "Write design doc" [shape=box];
-    "Spec review loop" [shape=box];
-    "Spec review passed?" [shape=diamond];
+    "Spec review" [shape=box];
     "User reviews spec?" [shape=diamond];
-    "Invoke writing-plans skill" [shape=doublecircle];
+    "Transition to implementation" [shape=doublecircle];
 
     "Explore project context" -> "Visual questions ahead?";
     "Visual questions ahead?" -> "Offer Visual Companion\n(own message, no other content)" [label="yes"];
@@ -69,16 +68,14 @@ digraph brainstorming {
     "Present design sections" -> "User approves design?";
     "User approves design?" -> "Present design sections" [label="no, revise"];
     "User approves design?" -> "Write design doc" [label="yes"];
-    "Write design doc" -> "Spec review loop";
-    "Spec review loop" -> "Spec review passed?";
-    "Spec review passed?" -> "Spec review loop" [label="issues found,\nfix and re-dispatch"];
-    "Spec review passed?" -> "User reviews spec?" [label="approved"];
+    "Write design doc" -> "Spec review";
+    "Spec review" -> "User reviews spec?";
     "User reviews spec?" -> "Write design doc" [label="changes requested"];
-    "User reviews spec?" -> "Invoke writing-plans skill" [label="approved"];
+    "User reviews spec?" -> "Transition to implementation" [label="approved"];
 }
 ```
 
-**The terminal state is invoking writing-plans.** Do NOT invoke frontend-design, mcp-builder, or any other implementation skill. The ONLY skill you invoke after brainstorming is writing-plans.
+**워크숍 완료 후** `/u-skill-plan`으로 PDCA 루프에 진입하거나, 사용자가 직접 구현 방식을 결정한다.
 
 ## The Process
 
@@ -123,15 +120,15 @@ digraph brainstorming {
 
 **Documentation:**
 
-- Write the validated design (spec) to `docs/superpowers/specs/YYYY-MM-DD-<topic>-design.md`
+- Write the validated design (spec) to `.u-maker/docs/common/specs/YYYY-MM-DD-<topic>-design.md`
   - (User preferences for spec location override this default)
 - Commit the design document to git
 
-**Spec Review Loop:**
+**Spec Review:**
 After writing the spec document:
 
-1. Dispatch spec-document-reviewer subagent with precisely crafted review context (never your session history); fix issues and re-dispatch until approved
-2. If loop exceeds 3 iterations, surface to human for guidance
+1. 사용자에게 설계 문서 검토를 요청한다.
+2. 피드백이 있으면 반영 후 재검토 요청 (최대 3회, 이후 사용자 최종 판단)
 
 **User Review Gate:**
 After the spec review loop passes, ask the user to review the written spec before proceeding:
@@ -142,8 +139,8 @@ Wait for the user's response. If they request changes, make them and re-run the 
 
 **Implementation:**
 
-- Invoke the writing-plans skill to create a detailed implementation plan
-- Do NOT invoke any other skill. writing-plans is the next step.
+- `/u-skill-plan`을 호출하여 PDCA 루프로 진입하거나, 사용자가 직접 구현 방식을 선택
+- 사용자가 u-maker PDCA 워크플로우를 따르지 않는 경우, 일반 구현 플래닝으로 전환
 
 ## Key Principles
 

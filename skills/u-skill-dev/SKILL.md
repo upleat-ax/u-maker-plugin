@@ -57,11 +57,15 @@ agents:
    - API Routes 구현 (2_API_SA Contract 기반)
    - Prisma/Drizzle ORM
 4. 병렬 개발: UX/FE/BE는 API Contract를 기준으로 독립 개발
+   - 충돌 방지: BE가 API Contract 기반 엔드포인트를 먼저 구현, FE가 해당 Contract 기반 호출
 5. `{app}/03-dev/3_Code_DV.md` 갱신: 구현 현황 기록
+   - FT별 구현 상태 (Not Started / In Progress / Done)
+   - 구현 파일 목록 (경로 + FT 매핑)
+   - Gap 이력 섹션 (gap-detector 실행 시 누적)
 
 ## Gate → CHECK
 
-코드 구현 완료 + `bun run build` 성공
+코드 구현 완료 + `{pm} run build` 성공 (패키지 매니저 자동 감지)
 
 ## Rules
 

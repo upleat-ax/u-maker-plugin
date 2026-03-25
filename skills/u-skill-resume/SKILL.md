@@ -54,7 +54,8 @@ imports:
 3. **문서 상태 재검증** (`u-agent-ra`)
    - 중단 이후 문서가 외부에서 변경되었을 수 있음
    - 현재 Phase 이전까지의 Gate 조건 재확인
-   - Gate 미충족 시 AskUserQuestion: "중단 이후 문서 상태가 변경되었습니다. [변경 내역]. 이전 Phase부터 재실행하시겠습니까?"
+   - Gate 미충족 시 AskUserQuestion: "중단 이후 문서 상태가 변경되었습니다. [변경 내역]. 해당 Phase(미충족 Gate의 Phase)부터 재실행하시겠습니까?"
+   - "이전 Phase"란 **Gate가 미충족된 Phase** (예: DESIGN Gate 미충족 시 DESIGN부터 재실행)
    - 중단 Phase의 산출 문서가 Draft로 돌아간 경우 → 해당 Phase 처음부터 재실행
 
 4. **루프 상태 갱신**

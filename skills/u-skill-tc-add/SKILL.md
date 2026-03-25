@@ -173,7 +173,7 @@ SRS Feature(FT) 기반 테스트 케이스 설계
 ## Rules
 
 - u-agent-qa 에이전트가 담당
-- TC-ID: 4자리 10단위 자동 채번 (TC-0010, TC-0020, ...)
+- TC-ID: 4자리 10단위 자동 채번 (TC-0010, TC-0020, ...). 세분화 시 중간 번호 삽입은 `/u-skill-tc-refine` 참조
 - FT Mapping은 필수 — 1_SRS_RA.md에 존재하는 FT-NNNN만 허용
 - US Mapping은 FT에서 자동 추출 (SRS 또는 _links.json 참조)
 - Result 상태는 항상 `Pending`으로 생성

@@ -65,9 +65,9 @@ agents:
 |--------|---------------|-----------------|
 | PLAN | - | u-agent-ra |
 | DESIGN | - | u-agent-sa |
-| DEV/CHECK | Bug (frontend: 화면, UI, 페이지, 스타일) | u-agent-dv-fe |
-| DEV/CHECK | Bug (backend: API, DB, 서버, 인증) | u-agent-dv-be |
-| DEV/CHECK | Bug (기타) | u-agent-dv-be |
+| DEV/CHECK | Bug — FE 키워드: `화면, UI, 페이지, 스타일, 레이아웃, 컴포넌트, 버튼, 폼, CSS, 반응형` | u-agent-dv-fe |
+| DEV/CHECK | Bug — BE 키워드: `API, DB, 서버, 인증, 토큰, 쿼리, 마이그레이션, 엔드포인트, ORM, Prisma` | u-agent-dv-be |
+| DEV/CHECK | Bug (FE/BE 키워드 불명확) | u-agent-dv-be |
 | - | Enhancement (Screen/화면) | u-agent-ux |
 | - | Enhancement (API/ERD) | u-agent-sa |
 | - | Task | u-agent-ra |

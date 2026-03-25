@@ -42,9 +42,14 @@ agents:
 
 ## Flow
 
-1. u-agent-ra: 모든 앱의 SSoT 설계 문서 수집
-2. u-agent-ra: 구현 코드 파일 스캔
-3. u-agent-qa: 설계 항목별 구현 매칭 검사
+### Role Division
+- **u-agent-ra**: 설계 문서 수집 + 구현 코드 스캔 (SSoT 문서 구조를 알고 있으므로 데이터 수집 담당)
+- **u-agent-qa**: 수집된 데이터를 기반으로 설계↔구현 매칭 검사 + Gap 리포트 생성 (품질 검증 전문)
+
+### Steps
+1. u-agent-ra: 모든 앱의 SSoT 설계 문서 수집 (SRS, ERD, API, Screen)
+2. u-agent-ra: 구현 코드 파일 스캔 (소스, DB 스키마, API 라우트, 페이지)
+3. u-agent-qa: 설계 항목별 구현 매칭 검사 (FT, Entity, Endpoint, Screen)
 4. Match Rate 산출: 항목 유형별 가중 평균
    - FT 구현 여부: 가중치 40%
    - API Endpoint 일치: 가중치 25%

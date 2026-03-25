@@ -7,8 +7,8 @@
     {
       "name": "u-maker",
       "source": "./",
-      "description": "PDCA-based SSoT collaboration ecosystem with 9 specialized agents",
-      "version": "1.0.0",
+      "description": "SSoT(SDD) collaboration ecosystem by U PLEAT",
+      "version": "1.0.14",
       "category": "development",
       "tags": ["pdca", "ssot", "collaboration", "agents", "turborepo", "nextjs", "clean-architecture", "iteration"]
     }
