@@ -34,6 +34,7 @@ imports:
   - ${PLUGIN_ROOT}/_refer/post-execution-summary.md
   - ${PLUGIN_ROOT}/_refer/json-export.md
   - ${PLUGIN_ROOT}/templates/01-plan/1_Roadmap_PM.template.md
+  - ${PLUGIN_ROOT}/templates/01-plan/1_ProblemSolution_RA.template.md
   - ${PLUGIN_ROOT}/templates/01-plan/1_Index_PM.template.md
   - ${PLUGIN_ROOT}/templates/05-act/5_IterationLog_RA.template.md
   - ${PLUGIN_ROOT}/templates/05-act/5_Retrospective_PM.template.md
@@ -49,20 +50,22 @@ imports:
 ### Core Responsibilities
 
 1. **프로젝트 초기화**: `/u-agent-create-project` 시 Turborepo + .u-maker/docs 구조 생성
-2. **로드맵 생성**: `1_Roadmap_PM.md` 작성 (목표, 마일스톤, 일정)
-3. **마일스톤 관리**: Phase별 완료 기준과 일정 정의
-4. **문서 인덱스 관리**: `1_Index_PM.md` 생성 및 갱신
-5. **상태 추적**: 각 문서의 Draft/Review/Final 상태 추적
-6. **모순 검수**: 문서 간 불일치 탐지 및 보고
-7. **Phase 현황 관리**: 현재 Phase, Iteration 상태 기록
-8. **백로그 관리**: `5_IterationLog_RA.md`의 Backlog 섹션에서 관리
-9. **Iteration 로그 관리**: `5_IterationLog_RA.md` 갱신
-10. **회고 작성**: ACT Phase에서 `5_Retrospective_PM.md` 작성
+2. **문제/솔루션 정의**: `1_ProblemSolution_RA.md` 작성 (문제 정의, 솔루션 개요, 범위/제약)
+3. **로드맵 생성**: `1_Roadmap_PM.md` 작성 (목표, 마일스톤, 일정)
+4. **마일스톤 관리**: Phase별 완료 기준과 일정 정의
+5. **문서 인덱스 관리**: `1_Index_PM.md` 생성 및 갱신
+6. **상태 추적**: 각 문서의 Draft/Review/Final 상태 추적
+7. **모순 검수**: 문서 간 불일치 탐지 및 보고
+8. **Phase 현황 관리**: 현재 Phase, Iteration 상태 기록
+9. **백로그 관리**: `5_IterationLog_RA.md`의 Backlog 섹션에서 관리
+10. **Iteration 로그 관리**: `5_IterationLog_RA.md` 갱신
+11. **회고 작성**: ACT Phase에서 `5_Retrospective_PM.md` 작성
 
 ### Owned SSoT Documents
 
 | Document | Path | Scope | Phase |
 |----------|------|-------|-------|
+| 1_ProblemSolution_RA.md | `.u-maker/docs/common/01-plan/1_ProblemSolution_RA.md` | common | PLAN |
 | 1_Roadmap_PM.md | `.u-maker/docs/common/01-plan/1_Roadmap_PM.md` | common | PLAN |
 | 1_Index_PM.md | `.u-maker/docs/common/01-plan/1_Index_PM.md` | common | ALL |
 | 5_IterationLog_RA.md | `.u-maker/docs/common/05-act/5_IterationLog_RA.md` | common | ACT |
@@ -75,6 +78,7 @@ imports:
 ```json
 {
   "ownedDocuments": [
+    { "document": "1_ProblemSolution_RA.md", "path": ".u-maker/docs/common/01-plan/1_ProblemSolution_RA.md", "scope": "common", "phase": "PLAN" },
     { "document": "1_Roadmap_PM.md", "path": ".u-maker/docs/common/01-plan/1_Roadmap_PM.md", "scope": "common", "phase": "PLAN" },
     { "document": "1_Index_PM.md", "path": ".u-maker/docs/common/01-plan/1_Index_PM.md", "scope": "common", "phase": "ALL" },
     { "document": "5_IterationLog_RA.md", "path": ".u-maker/docs/common/05-act/5_IterationLog_RA.md", "scope": "common", "phase": "ACT" },
@@ -88,15 +92,16 @@ imports:
 ### PLAN Phase Workflow
 
 **단일 체인 (FR → US → FT):**
-1. 사용자 요구사항 분석 및 정리
-2. 프로젝트 목표 정의 (OKR 또는 Goal 형식)
-3. 마일스톤 정의 (Phase 단위)
-4. `1_Roadmap_PM.md` 생성 (템플릿 기반)
-5. `u-agent-sa`에게 SRS 작성 요청 (FR 먼저 정의 후 US, FT 순차 도출)
-6. SRS 완료 후 FR→US→FT 매핑 확인
-7. `u-agent-ux`에게 IA 작성 요청
-8. **PLAN Gate 검증**: FR→US→FT 매핑의 `TBD` 잔존 여부 확인 (잔존 시 Gate 차단)
-9. **[MANDATORY] JSON Export**: 모든 .md 파일 Write/Edit 완료 직후, 동일 경로에 동명의 `.json` 파일을 Write한다. ID가 부여된 모든 항목을 `json-export.md` 스키마에 따라 추출한다. **이 단계를 건너뛰면 안 된다.**
+1. `1_ProblemSolution_RA.md` 생성 (문제 정의, 솔루션 개요, 범위/제약)
+2. 사용자 요구사항 분석 및 정리
+3. 프로젝트 목표 정의 (OKR 또는 Goal 형식)
+4. 마일스톤 정의 (Phase 단위)
+5. `1_Roadmap_PM.md` 생성 (템플릿 기반)
+6. `u-agent-sa`에게 SRS 작성 요청 (FR 먼저 정의 후 US, FT 순차 도출)
+7. SRS 완료 후 FR→US→FT 매핑 확인
+8. `u-agent-ux`에게 IA 작성 요청
+9. **PLAN Gate 검증**: FR→US→FT 매핑의 `TBD` 잔존 여부 확인 (잔존 시 Gate 차단)
+10. **[MANDATORY] JSON Export**: 모든 .md 파일 Write/Edit 완료 직후, 동일 경로에 동명의 `.json` 파일을 Write한다. ID가 부여된 모든 항목을 `json-export.md` 스키마에 따라 추출한다. **이 단계를 건너뛰면 안 된다.**
 
 ### User Story Add Workflow (`/u-agent-us-add`)
 

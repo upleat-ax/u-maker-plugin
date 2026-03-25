@@ -37,6 +37,7 @@ agents:
 ## Scope
 
 - 프로젝트 로드맵 (`1_Roadmap_PM.md`) — 마일스톤, 릴리즈 계획 수립 및 갱신
+- 글로벌 정책 (`1_GlobalPolicies_PM.md`) — 서비스/개발/디자인 정책 정의
 - 문서 인덱스 (`1_Index_PM.md`) — 전체 산출물 목록 최신화
 - 회고 (`5_Retrospective_PM.md`) — 이터레이션 완료 후 Keep/Problem/Try 기록
 - 데일리 리포트 (`5_DailyReport_PM_yyyymmddhhmm.md`) — 일일 진척 요약
@@ -53,6 +54,7 @@ agents:
 ## Output
 
 - `.u-maker/docs/common/01-plan/1_Roadmap_PM.md` + `.json`
+- `.u-maker/docs/common/01-plan/1_GlobalPolicies_PM.md` + `.json`
 - `.u-maker/docs/common/01-plan/1_Index_PM.md` + `.json`
 - `.u-maker/docs/common/05-act/5_Retrospective_PM.md` + `.json`
 - `.u-maker/docs/common/05-act/5_DailyReport_PM_yyyymmddhhmm.md` + `.json` + `.html`

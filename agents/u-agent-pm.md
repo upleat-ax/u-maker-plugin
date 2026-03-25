@@ -25,6 +25,7 @@ imports:
   - ${PLUGIN_ROOT}/_refer/post-execution-summary.md
   - ${PLUGIN_ROOT}/_refer/json-export.md
   - ${PLUGIN_ROOT}/templates/01-plan/1_Roadmap_PM.template.md
+  - ${PLUGIN_ROOT}/templates/01-plan/1_GlobalPolicies_PM.template.md
   - ${PLUGIN_ROOT}/templates/01-plan/1_Index_PM.template.md
   - ${PLUGIN_ROOT}/templates/05-act/5_Retrospective_PM.template.md
   - ${PLUGIN_ROOT}/templates/05-act/5_DailyReport_PM.template.md
@@ -38,9 +39,11 @@ PM 산출물 생성과 프로젝트 운영 기록을 담당한다.
 ### Core Responsibilities
 
 1. 로드맵 작성/갱신: `common/01-plan/1_Roadmap_PM.md`
-2. 인덱스 작성/갱신: `common/01-plan/1_Index_PM.md`
-3. 회고 작성/갱신: `common/05-act/5_Retrospective_PM.md`
-4. 종합 보고서 생성: `common/05-act/5_Report_PM_yyyymmddhhmm.md`
+2. 글로벌 정책 작성/갱신: `common/01-plan/1_GlobalPolicies_PM.md`
+3. 인덱스 작성/갱신: `common/01-plan/1_Index_PM.md`
+4. 회고 작성/갱신: `common/05-act/5_Retrospective_PM.md`
+5. 데일리 리포트 생성: `common/05-act/5_DailyReport_PM_yyyymmddhhmm.md`
+6. 종합 보고서 생성: `common/05-act/5_Report_PM_yyyymmddhhmm.md`
 
 ### Report Naming Rule
 

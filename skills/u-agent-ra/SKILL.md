@@ -35,13 +35,13 @@ agents:
 
 ## Scope
 
+- 문제/솔루션 정의 — `1_ProblemSolution_RA.md` 작성
 - 프로젝트 기획/관리 — 로드맵, 마일스톤, 이터레이션 계획
 - 문서 인덱스 관리 — `1_Index_PM.md` 최신화
 - SSoT 검증 — 헤더 누락, 추적성 깨짐, 구조 위반 탐지
 - 모순 검수 — 문서 간 상충 내용 탐지 및 보고
 - 백로그 관리 — 미완료 항목 추적, 우선순위 조정
 - 이터레이션 로그 (`5_IterationLog_RA.md`) — 완료/미완료 항목 기록
-- 회고 — 이터레이션 종료 시 Keep/Problem/Try 정리
 
 ## Flow
 
@@ -54,9 +54,9 @@ agents:
 
 ## Output
 
+- `.u-maker/docs/common/01-plan/1_ProblemSolution_RA.md` + `.json`
 - `.u-maker/docs/common/01-plan/1_Common_RA.md` + `.json`
 - `.u-maker/docs/common/05-act/5_IterationLog_RA.md` + `.json`
-- `.u-maker/docs/common/05-act/5_Retrospective_PM.md` + `.json`
 
 ## When NOT to use
 

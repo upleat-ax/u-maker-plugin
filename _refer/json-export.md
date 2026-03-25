@@ -125,6 +125,148 @@
 - `nonFunctionalRequirements[]`: `id`, `category`, `requirement`, `metric`를 모두 포함한다.
 - `id`만 남기는 축약 출력은 금지한다. 값 미확정 시 키를 생략하지 말고 `null`로 기록한다.
 
+### 2.2a `1_GlobalPolicies_PM.json`
+
+```json
+{
+  "document": "1_GlobalPolicies_PM",
+  "meta": { "owner": "u-agent-pm", "status": "Draft", "version": "v0.1.0", "lastUpdated": "YYYY-MM-DD" },
+  "servicePolicies": {
+    "sla": [
+      { "metric": "Uptime", "target": "99.9%", "measurement": "..." }
+    ],
+    "support": {
+      "hours": "...",
+      "channels": ["..."],
+      "escalationPath": "..."
+    },
+    "dataPolicy": {
+      "retention": "...",
+      "classification": ["Public", "Internal", "Confidential", "Restricted"],
+      "backupStrategy": "...",
+      "sovereignty": "..."
+    },
+    "compliance": [
+      { "standard": "GDPR", "status": "Compliant", "notes": "..." }
+    ]
+  },
+  "developmentPolicies": {
+    "codingStandards": {
+      "language": "...",
+      "linter": "...",
+      "namingConvention": "...",
+      "fileStructure": "..."
+    },
+    "codeReview": {
+      "requiredApprovals": 1,
+      "reviewSLA": "24h",
+      "autoMergeConditions": "..."
+    },
+    "branchingStrategy": {
+      "strategy": "...",
+      "branchNaming": "...",
+      "protectedBranches": ["main"],
+      "mergeMethod": "..."
+    },
+    "cicd": [
+      { "stage": "Build", "tool": "...", "policy": "..." }
+    ],
+    "dependencyManagement": {
+      "packageManager": "...",
+      "updateFrequency": "...",
+      "securityAudit": "...",
+      "licensePolicy": "..."
+    }
+  },
+  "designPolicies": {
+    "principles": [
+      { "name": "...", "description": "..." }
+    ],
+    "accessibility": {
+      "wcagLevel": "AA",
+      "colorContrast": "4.5:1",
+      "keyboardNavigation": true,
+      "screenReader": true
+    },
+    "branding": {
+      "primaryColor": "...",
+      "typography": "...",
+      "iconography": "..."
+    },
+    "breakpoints": [
+      { "name": "mobile", "maxWidth": 767 },
+      { "name": "tablet", "minWidth": 768, "maxWidth": 1023 },
+      { "name": "desktop", "minWidth": 1024 }
+    ]
+  }
+}
+```
+
+### 2.2b `1_ProblemSolution_RA.json`
+
+```json
+{
+  "document": "1_ProblemSolution_RA",
+  "meta": { "owner": "u-agent-ra", "status": "Draft", "version": "v0.1.0", "lastUpdated": "YYYY-MM-DD" },
+  "problem": {
+    "summary": "...",
+    "context": {
+      "domain": "...",
+      "currentState": "...",
+      "painPoints": "...",
+      "impact": "..."
+    },
+    "targetUsers": [
+      { "usr": { "id": "USR-0010" }, "role": "...", "painPoint": "...", "priority": "Must" }
+    ],
+    "evidence": [
+      { "type": "...", "description": "...", "source": "..." }
+    ],
+    "constraints": [
+      { "type": "...", "description": "...", "impact": "..." }
+    ]
+  },
+  "solution": {
+    "summary": "...",
+    "valueProposition": {
+      "targetUser": "...",
+      "need": "...",
+      "product": "...",
+      "category": "...",
+      "keyValue": "...",
+      "alternative": "...",
+      "differentiator": "..."
+    },
+    "approach": {
+      "coreStrategy": "...",
+      "keyDifferentiator": "...",
+      "technicalApproach": "...",
+      "mvpScope": "..."
+    },
+    "featureMapping": [
+      { "problem": "...", "feature": "...", "priority": "Must", "fr": { "id": "FR-XXXX" } }
+    ],
+    "successMetrics": [
+      { "metric": "...", "current": "...", "target": "...", "measurement": "..." }
+    ]
+  },
+  "scope": {
+    "inScope": [
+      { "item": "...", "description": "..." }
+    ],
+    "outOfScope": [
+      { "item": "...", "reason": "...", "futureConsideration": "..." }
+    ],
+    "assumptions": [
+      { "assumption": "...", "riskIfWrong": "..." }
+    ],
+    "risks": [
+      { "id": "RISK-01", "risk": "...", "probability": "Medium", "impact": "High", "mitigation": "..." }
+    ]
+  }
+}
+```
+
 ### 2.3 `1_Common_RA.json`
 
 ```json
