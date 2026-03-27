@@ -1,96 +1,242 @@
 ---
 name: u-add
-description: |
-  SSoT 항목 추가. FR, NR, US, FT, Screen, TC 등 개별 항목을 문서에 추가.
-  Triggers: /u-add, 추가, add, 항목 추가, FR 추가, US 추가, FT 추가, TC 추가, Screen 추가
-version: 2.0.0
-user-invocable: true
-argument-hint: "[scope] [type] \"title\""
-model: sonnet
-allowed-tools:
-  - Read
-  - Write
-  - Edit
-  - Glob
-  - Grep
-  - Bash
-  - TaskCreate
-  - TaskUpdate
-  - TaskList
-  - AskUserQuestion
-imports:
-  - ${PLUGIN_ROOT}/shared/references/ssot-standard.md
-  - ${PLUGIN_ROOT}/shared/references/post-execution-summary.md
-agents:
-  u-agent-orchestrator: u-maker:u-agent-orchestrator
-  u-agent-planner: u-maker:u-agent-planner
-  u-agent-builder: u-maker:u-agent-builder
-  u-agent-guardian: u-maker:u-agent-guardian
+description: "SSoT 항목 추가. FR, NR, US, FT, Screen, TC 등 개별 항목을 문서에 추가하고, 백로그 자동 등록 및 인덱스 갱신을 수행한다."
+triggers:
+  - "/u-add"
+  - "add item"
+  - "항목 추가"
+  - "FR 추가"
+  - "US 추가"
 ---
 
-# u-add -- 항목 추가
+# u-add -- Add SSoT Item
 
-> SSoT 문서에 새로운 항목(FR, NR, US, FT, Screen, TC 등)을 추가한다.
+`/u-add [scope] [type] "title"` 명령으로 FR, NR, US, Screen, bug, improvement, tech-debt 항목을 적절한 위치에 추가하고, 백로그 자동 등록 및 인덱스 갱신을 수행한다.
 
-## 문법
+**Primary Agent:** u-agent-planner (FR/NR/US), u-agent-ux (Screen), u-agent-guardian (bug)
+
+---
+
+## Arguments
+
+| Argument | Required | Description |
+|----------|----------|-------------|
+| `scope` | Optional | 대상 앱 이름. 생략 시 단일 앱 자동 선택 / 다중 앱 시 질문 |
+| `type` | Required | 항목 유형: `fr`, `nr`, `us`, `screen`, `bug`, `improvement`, `tech-debt` |
+| `"title"` | Required | 항목 제목 (따옴표로 감싸기 권장) |
+
+## Flags
+
+| Flag | Description |
+|------|-------------|
+| `--priority X` | 우선순위 지정 (must/should/could/wont). 기본값: should |
+| `--parent ID` | 상위 항목 ID 지정 (US는 FR, FT는 US 필요) |
+| `--description "text"` | 상세 설명 추가 |
+| `--labels "a,b"` | 라벨 추가 (쉼표 구분) |
+
+---
+
+## Execution Flow
+
+### Step 1: Parse Arguments
+
+1. `type` 인자 파싱 → 유효한 유형인지 검증
+2. `"title"` 추출 → 따옴표 또는 마지막 인자로 처리
+3. `scope` 해석 → `u-maker.config.json` 읽어 대상 앱 결정
+4. 인자 부족 시 사용자에게 질문 (type, title 모두 필수)
+
+### Step 2: Resolve Target Location
+
+유형별 생성 위치 및 대상 문서:
+
+| Type | Target Document | Target Path |
+|------|----------------|-------------|
+| `fr` | SRS (Functional Requirements 섹션) | `docs/{app}/01-plan/srs.md` |
+| `nr` | SRS (Non-Functional Requirements 섹션) | `docs/{app}/01-plan/srs.md` |
+| `us` | SRS (User Stories 섹션) | `docs/{app}/01-plan/srs.md` |
+| `screen` | Screen 설계 문서 | `docs/{app}/02-design/screens.md` |
+| `bug` | Backlog 직접 등록 | `_backlog/` |
+| `improvement` | Backlog 직접 등록 | `_backlog/` |
+| `tech-debt` | Backlog 직접 등록 | `_backlog/` |
+
+### Step 3: Generate ID
+
+1. 대상 문서 (또는 `_backlog/_index.json`) 읽기
+2. 기존 최대 ID 조회 → +1 (zero-padded 4자리)
+3. ID 체계:
+
+| Type | ID Pattern | Example |
+|------|-----------|---------|
+| `fr` | FR-XXXX | FR-0042 |
+| `nr` | NR-XXXX | NR-0008 |
+| `us` | US-XXXX | US-0103 |
+| `screen` | SCR-XXX | SCR-045 |
+| `bug` | BL-XXX | BL-087 |
+| `improvement` | BL-XXX | BL-088 |
+| `tech-debt` | BL-XXX | BL-089 |
+
+4. ID 중복 불가 (퇴역 ID 재사용 금지)
+
+### Step 4: Create Item Record
+
+**FR/NR 항목 구조:**
+
+```markdown
+### FR-{XXXX}: {title}
+
+- **Description:** {description 또는 "TBD"}
+- **Priority:** {Must/Should/Could/Won't}
+- **Source:** manual-add
+- **Related USR:** {--parent 값 또는 TBD}
+- **Status:** Draft
+- **Added:** {ISO 8601}
+```
+
+**US 항목 구조:**
+
+```markdown
+### US-{XXXX}: "As a {USR}, I want to {title} so that {benefit}"
+
+- **Parent FR:** {--parent 값, 필수}
+- **Acceptance Criteria:**
+  1. {TBD - 사용자가 추후 보완}
+- **Priority:** {Must/Should/Could/Won't}
+- **Status:** Draft
+- **Added:** {ISO 8601}
+```
+
+- US 추가 시 `--parent FR-XXXX` 필수. 미지정 시 사용자에게 질문
+
+**Screen 항목 구조:**
+
+```markdown
+### SCR-{XXX}: {title}
+
+- **Level:** {TBD}
+- **Parent Screen:** {--parent 값 또는 --}
+- **Related FT:** {TBD}
+- **Priority:** {Must/Should/Could/Won't}
+- **Status:** Draft
+- **Added:** {ISO 8601}
+```
+
+**Bug/Improvement/Tech-debt 구조:**
+
+```json
+{
+  "id": "BL-{NNN}",
+  "type": "{bug|improvement|tech-debt}",
+  "title": "{title}",
+  "description": "{description 또는 ''}",
+  "priority": "{must|should|could|wont}",
+  "storyPoints": null,
+  "iteration": null,
+  "status": "backlog",
+  "assignee": null,
+  "source": { "type": "manual-add", "ref": null },
+  "labels": [],
+  "dependencies": [],
+  "created": "{ISO 8601}",
+  "updated": "{ISO 8601}"
+}
+```
+
+### Step 5: Append to Target Document
+
+1. 대상 .md 파일 읽기
+2. 적절한 섹션 끝에 새 항목 삽입:
+   - FR → `## 3. Functional Requirements (FR)` 섹션 끝
+   - NR → `## 4. Non-Functional Requirements (NR)` 섹션 끝
+   - US → `## 5. User Stories (US)` 섹션 끝
+   - Screen → `## Screen Hierarchy` 또는 마지막 Screen 항목 뒤
+3. 문서 헤더의 `Version` minor 증가, `Last Updated` 갱신
+4. 동반 `.json` 파일 재생성
+
+### Step 6: Register to Backlog
+
+FR/NR/US/Screen은 자동으로 백로그에도 등록:
+
+1. `_backlog/_index.json` 읽기
+2. 새 백로그 항목 추가:
+   ```json
+   {
+     "id": "BL-{NNN}",
+     "type": "feature",
+     "title": "{type} {id}: {title}",
+     "priority": "{priority}",
+     "status": "backlog",
+     "source": { "type": "{fr|nr|us|screen}", "ref": "{item-id}" },
+     "created": "{ISO 8601}",
+     "updated": "{ISO 8601}"
+   }
+   ```
+3. bug/improvement/tech-debt는 Step 4에서 직접 등록 완료
+
+### Step 7: Update Indexes and Links
+
+1. `docs/{app}/_index.json` 갱신:
+   - 대상 문서의 `lastUpdated` 갱신
+   - 항목 카운트 증가
+2. `.u-maker/_links.json` 갱신:
+   - `--parent` 관계 등록 (US→FR, FT→US 등)
+3. `_classified/` 해당 카테고리에도 등록 (requirements/, screens/):
+   - status = `validated` (수동 추가이므로 자동 검증 간주)
+
+### Step 8: Display Confirmation
 
 ```
-/u-add [scope] [type] "title"
+## Item Added
+
+**Type:** {type}
+**ID:** {id}
+**Title:** {title}
+**Location:** {file-path}
+**Backlog:** BL-{NNN}
+**Parent:** {parent-id 또는 N/A}
+
+### Next Steps
+- Edit details: /u-doc {scope} {document}
+- View backlog: /u-backlog {scope}
+- Trace chain: /u-trace {scope} {id}
 ```
 
-- `scope`: 앱 이름 | `common` (생략 시 자동 감지)
-- `type`: 추가할 항목 유형
-- `title`: 항목 제목 (큰따옴표로 감싸기)
+---
 
-## 지원 타입
+## Batch Add
 
-| Type | 대상 문서 | ID 패턴 | 설명 |
-|------|-----------|---------|------|
-| `fr` | SRS | FR-XXXX | 기능 요구사항 |
-| `nr` | SRS | NR-XXXX | 비기능 요구사항 |
-| `us` | SRS | US-XXXX | 유저 스토리 |
-| `ft` | SRS | FT-XXXX | 기능 단위 (구현 추적 기본 단위) |
-| `usr` | SRS | USR-XXXX | 사용자 유형 |
-| `screen` | Screen | SCR-XXXX | 화면 |
-| `tc` | TestCase | TC-XXXX | 테스트 케이스 |
-| `api` | API | API-XXXX | API 엔드포인트 |
-
-## 실행 흐름
-
-1. **인자 파싱** -- scope, type, title 추출
-2. **대상 문서 로드** -- engine-doc으로 해당 SSoT 문서 읽기
-3. **ID 채번** -- 기존 최대 ID + 1로 신규 ID 할당
-4. **항목 생성** -- 타입별 템플릿에 맞춰 항목 구성
-5. **문서 갱신** -- `.md` + `.json` 동시 갱신
-6. **의존성 업데이트** -- engine-dep으로 상위/하위 항목 연결
-7. **결과 보고** -- Post-Execution Summary 출력
-
-## 사용 엔진
-
-| Engine | 역할 |
-|--------|------|
-| engine-router | 스코프 해석 |
-| engine-doc | 문서 읽기/쓰기 |
-| engine-dep | 의존성 연결 갱신 |
-
-## 에이전트 시퀀스
+여러 항목을 한 번에 추가할 수 있다:
 
 ```
-orchestrator → planner (항목 생성 + 의존성 연결)
+/u-add {scope} fr "사용자 인증" --priority must
+/u-add {scope} fr "비밀번호 재설정" --priority must
+/u-add {scope} us "로그인 시 이메일+비밀번호로 인증한다" --parent FR-0001
 ```
 
-## 규칙
+각 항목은 독립적으로 처리하되, 인덱스 갱신은 마지막에 일괄 수행.
 
-- ID는 자동 채번 (수동 지정 불가)
-- 추적 체계 준수: USR → FR → US → FT
-- 중복 타이틀 경고 (동일 scope 내)
-- 추가 후 관련 문서의 `.json`도 동시 갱신
+---
 
-## 사용 예시
+## Traceability Enforcement
 
-```
-/u-add my-app fr "사용자 로그인 기능"
-/u-add my-app us "관리자가 대시보드에서 매출을 확인할 수 있다"
-/u-add common ft "공통 인증 모듈"
-/u-add tc "로그인 실패 시 에러 메시지 표시"
-```
+| Type | Required Parent | Validation |
+|------|----------------|------------|
+| FR | USR (권장) | 경고만 (orphan FR 허용) |
+| NR | -- | 독립 허용 |
+| US | FR (필수) | `--parent` 미지정 시 사용자에게 질문 |
+| Screen | -- | 독립 허용 |
+| bug | -- | 독립 허용 (TC/FT 참조 권장) |
+| improvement | -- | 독립 허용 |
+| tech-debt | -- | 독립 허용 |
+
+---
+
+## Safety Rules
+
+1. 대상 문서가 존재하지 않으면 생성 불가 → `/u-plan`으로 먼저 SRS 생성 안내
+2. ID 중복 및 재사용 금지
+3. US 추가 시 parent FR 미지정이면 진행 불가 (사용자에게 반드시 질문)
+4. Final 상태 문서에 항목 추가 시 사용자 확인 필수 (Always-Pause)
+5. `.json` 동반 파일 재생성 필수
+6. `_index.json` 갱신 필수
+7. 백로그 자동 등록 필수 (skip 불가)
+8. source metadata 필수 (manual-add + timestamp)

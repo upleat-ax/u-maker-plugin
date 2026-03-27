@@ -1,7 +1,7 @@
 {
   "name": "u-maker",
-  "version": "2.0.0",
-  "description": "PDCA-based SSoT collaboration orchestrator with 3-layer pipeline, 4 specialized agents, and intent-driven commands",
+  "version": "3.0.0",
+  "description": "PDCA-based SSoT plugin for Claude Code. 5-phase PDCA (Plan-Design-Do-Check-Act), 3-layer pipeline (_input → _classified → docs), 4 agents (Orchestrator/Planner/Builder/Guardian), 13 engine skills, 18 intent-driven commands, backlog management, monorepo mirroring.",
   "author": {
     "name": "u-plugin"
   },

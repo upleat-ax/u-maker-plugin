@@ -1,51 +1,6 @@
 {
   "hooks": {
-    "SessionStart": [
-      {
-        "once": true,
-        "hooks": [
-          {
-            "type": "command",
-            "command": "node ${CLAUDE_PLUGIN_ROOT}/hooks/session-start.js",
-            "timeout": 5000
-          }
-        ]
-      }
-    ],
-    "UserPromptSubmit": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "node ${CLAUDE_PLUGIN_ROOT}/scripts/prompt-docs-first-guard.js",
-            "timeout": 3000
-          }
-        ]
-      }
-    ],
-    "PreToolUse": [
-      {
-        "matcher": "Write|Edit",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "node ${CLAUDE_PLUGIN_ROOT}/scripts/pre-write-guard.js",
-            "timeout": 5000
-          }
-        ]
-      }
-    ],
     "PostToolUse": [
-      {
-        "matcher": "Write",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "node ${CLAUDE_PLUGIN_ROOT}/scripts/post-write-index.js",
-            "timeout": 5000
-          }
-        ]
-      },
       {
         "matcher": "Write",
         "hooks": [
@@ -53,47 +8,41 @@
             "type": "command",
             "command": "node ${CLAUDE_PLUGIN_ROOT}/hooks/on-input-added.js",
             "timeout": 3000
-          }
-        ]
-      },
-      {
-        "matcher": "Write|Edit",
-        "hooks": [
+          },
           {
             "type": "command",
             "command": "node ${CLAUDE_PLUGIN_ROOT}/hooks/on-doc-change.js",
             "timeout": 5000
-          }
-        ]
-      },
-      {
-        "matcher": "Write",
-        "hooks": [
+          },
           {
             "type": "command",
-            "command": "node ${CLAUDE_PLUGIN_ROOT}/hooks/on-gate-pass.js",
-            "timeout": 5000
-          }
-        ]
-      },
-      {
-        "matcher": "Write",
-        "hooks": [
+            "command": "node ${CLAUDE_PLUGIN_ROOT}/hooks/on-classified-validated.js",
+            "timeout": 3000
+          },
           {
             "type": "command",
             "command": "node ${CLAUDE_PLUGIN_ROOT}/hooks/on-session-wrap.js",
             "timeout": 3000
-          }
-        ]
-      }
-    ],
-    "Stop": [
-      {
-        "hooks": [
+          },
           {
             "type": "command",
-            "command": "node ${CLAUDE_PLUGIN_ROOT}/scripts/stop-state-save.js",
-            "timeout": 10000
+            "command": "node ${CLAUDE_PLUGIN_ROOT}/hooks/on-build-complete.js",
+            "timeout": 3000
+          },
+          {
+            "type": "command",
+            "command": "node ${CLAUDE_PLUGIN_ROOT}/hooks/on-check-fail.js",
+            "timeout": 3000
+          },
+          {
+            "type": "command",
+            "command": "node ${CLAUDE_PLUGIN_ROOT}/hooks/on-gate-pass.js",
+            "timeout": 5000
+          },
+          {
+            "type": "command",
+            "command": "node ${CLAUDE_PLUGIN_ROOT}/hooks/on-ship-incomplete.js",
+            "timeout": 3000
           }
         ]
       }

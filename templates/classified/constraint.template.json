@@ -1,9 +1,0 @@
-{
-  "id": "CN-{{NNNN}}",
-  "type": "tech",
-  "description": "",
-  "impact": "",
-  "source": { "file": "", "page": null, "section": "" },
-  "status": "extracted",
-  "extractedAt": "{{DATE}}"
-}

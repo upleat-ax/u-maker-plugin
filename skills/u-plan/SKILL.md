@@ -1,103 +1,237 @@
 ---
 name: u-plan
-description: |
-  PLAN Phase 문서 연쇄 생성. classified 데이터 기반 SRS + IA + Roadmap 자동 생성.
-  Triggers: /u-plan, 계획, 기획, plan, SRS, IA, 로드맵, roadmap, 요구사항 분석
-version: 2.0.0
-user-invocable: true
-argument-hint: "[scope] [-i] [--step] [--only srs|ia|roadmap]"
-model: sonnet
-allowed-tools:
-  - Read
-  - Write
-  - Edit
-  - Glob
-  - Grep
-  - Bash
-  - TaskCreate
-  - TaskUpdate
-  - TaskList
-  - AskUserQuestion
-imports:
-  - ${PLUGIN_ROOT}/shared/references/ssot-standard.md
-  - ${PLUGIN_ROOT}/shared/references/post-execution-summary.md
-  - ${PLUGIN_ROOT}/templates/01-plan/srs.template.md
-  - ${PLUGIN_ROOT}/templates/01-plan/ia.template.md
-  - ${PLUGIN_ROOT}/templates/01-plan/roadmap.template.md
-agents:
-  u-agent-orchestrator: u-maker:u-agent-orchestrator
-  u-agent-planner: u-maker:u-agent-planner
-  u-agent-builder: u-maker:u-agent-builder
-  u-agent-guardian: u-maker:u-agent-guardian
+description: "PLAN Phase 문서 연쇄 생성. classified 데이터 기반 SRS + IA + Roadmap을 순서대로 생성하고, 4-Tier ID 계층(USR-FR-US-FT)을 수립한다."
+triggers:
+  - "/u-plan"
+  - "plan phase"
+  - "SRS 생성"
+  - "기획 문서"
 ---
 
-# u-plan -- PLAN Phase 문서 생성
+# u-plan -- Plan Phase Document Generation
 
-> classified 데이터를 기반으로 SRS, IA, Roadmap을 연쇄 생성한다.
+`/u-plan [scope] [--only X] [-i] [--step]` 명령으로 classified 데이터를 기반으로 Plan 문서를 연쇄 생성한다.
 
-## 문법
+**Primary Agent:** u-agent-planner (engine-doc, engine-estimator 사용)
 
-```
-/u-plan [scope] [-i] [--step] [--only srs|ia|roadmap]
-```
-
-- `scope`: 앱 이름 | `common` | `all` (생략 시 자동 감지)
+---
 
 ## Flags
 
-| Flag | 설명 |
-|------|------|
-| `-i` | 대화형 모드. 각 단계마다 사용자 확인 |
-| `--step` | 단계별 실행. 한 문서 생성 후 중단 |
-| `--only` | 특정 문서만 생성: `srs`, `ia`, `roadmap` |
+| Flag | Description |
+|------|-------------|
+| `--only X` | 지정 문서만 생성 (srs, ia, roadmap) |
+| `-i` | 분기점에서 사용자 확인 |
+| `--step` | 매 단계 결과 표시 후 승인 대기 |
 
-## 실행 흐름
+---
 
-1. **스코프 해석** -- engine-router로 대상 앱 결정
-2. **입력 확인** -- `_classified/` 데이터 존재 여부 검증
-3. **발산 단계** -- Problems/Solutions 도출
-4. **수렴 단계** -- FR(기능 요구사항) + NR(비기능 요구사항) 정리
-5. **SRS 생성** -- engine-doc + srs.template.md 기반
-   - USR(사용자 유형), FR, NR, US(유저 스토리), FT(기능 단위) 정의
-6. **IA 생성** -- 정보 구조도(Information Architecture) 도출
-7. **WF 생성** -- Wireframe (PLAN Phase에서 수행)
-8. **Roadmap 생성** -- 마일스톤 및 릴리스 계획
-9. **일관성 검증** -- engine-validator로 문서 간 정합성 확인
-10. **결과 보고** -- Post-Execution Summary 출력
+## Execution Flow
 
-## 사용 엔진
+### Step 1: Verify Data Availability
 
-| Engine | 역할 |
-|--------|------|
-| engine-router | 스코프 해석 |
-| engine-workflow-runner | 연쇄 생성 오케스트레이션 |
-| engine-doc | 문서 생성/갱신 |
-| engine-designer | 구조 설계 |
-| engine-estimator | 공수 산정 |
-| engine-validator | 일관성 검증 |
+1. `_classified/_summary.json` 읽기
+2. 필수 데이터 확인:
+   - `requirements/`: FR/NR 항목 >= 1
+   - `stakeholders/`: 사용자 유형 >= 1
+3. 데이터 부족 시:
+   - auto: 가정 기록 + 진행
+   - interactive/step: "/u-ingest를 먼저 실행하세요" 안내
 
-## 에이전트 시퀀스
+### Step 2: Generate SRS
+
+**입력:** `_classified/requirements/`, `_classified/constraints/`, `_classified/stakeholders/`
+
+**SRS 구조:**
+
+```markdown
+---
+Owner: u-agent-planner
+Status: Draft
+Version: 1.0.0
+Last Updated: {date}
+Related Docs: [IA, Roadmap, ERD, RTM]
+---
+
+# Software Requirements Specification
+
+## 1. Project Overview
+- Purpose, Scope, Stakeholders, Glossary references
+
+## 2. User Types (USR)
+- USR-0001: {role} - {characteristics}
+
+## 3. Functional Requirements (FR)
+- FR-0001: {title}
+  - Description, Priority (Must/Should/Could/Won't)
+  - Source reference, Related USR
+
+## 4. Non-Functional Requirements (NR)
+- NR-0001: {title}
+  - Category: Performance/Security/Accessibility/Scalability/Compliance
+
+## 5. User Stories (US)
+- US-0001: "As a {USR}, I want to {action} so that {benefit}"
+  - Parent FR(s), Acceptance Criteria
+
+## 6. Features (FT)
+- FT-0001: {title}
+  - Description, Complexity (S/M/L/XL), Parent US
+  - Acceptance Criteria
+```
+
+**4-Tier ID Hierarchy:**
 
 ```
-orchestrator → planner (문서 생성) → guardian (자동 검증)
+USR-XXXX → FR-XXXX → US-XXXX → FT-XXXX
+(User Type)  (Requirement)  (Story)    (Feature = 구현 단위)
 ```
 
-## 추적 체계
+- 모든 FT는 US로, US는 FR로, FR은 USR로 역추적 가능해야 함
+- 고아 항목(orphan) = 오류 → 플래그 표시
+- ID는 4자리 zero-padded: FR-0001, US-0042, FT-0137
+- ID는 앱 스코프 내 전역 고유 (퇴역 ID 재사용 금지)
 
-- USR-XXXX → FR-XXXX → US-XXXX → FT-XXXX (상위→하위)
-- FT가 구현 추적의 기본 단위
+**프로세스:**
+1. `requirements/_index.json` 읽기 → validated/extracted 항목 필터
+2. `stakeholders/_index.json` → USR 정의
+3. FR/NR 구조화 → priority 배정
+4. FR → US 분해 (1 FR = 1~N US)
+5. US → FT 분해 (1 US = 1~N FT)
+6. `srs.md` + `srs.json` 생성
+7. `_index.json` 갱신
+8. classified 항목 status → `adopted` + `usedIn` 필드 추가
 
-## 규칙
+### Step 3: Generate IA (Information Architecture)
 
-- `_classified/` 데이터가 없으면 `/u-ingest` 실행을 안내
-- 모든 문서는 `.md` + `.json` 동시 생성
-- SRS의 FR/NR은 반드시 `_classified/` 데이터와 연결
-- Phase Gate: PLAN 완료 조건 = SRS + IA + Roadmap 모두 Approved
+**입력:** `_classified/workflows/`, `_classified/screens/`, `_classified/domain-terms/`, SRS
 
-## 사용 예시
+**IA 구조:**
+
+```markdown
+---
+Owner: u-agent-planner
+Status: Draft
+Version: 1.0.0
+Related Docs: [SRS, Screens, ScreenFlow]
+---
+
+# Information Architecture
+
+## Screen Hierarchy
+
+| Screen ID | Name | Level | Parent | Related FT | Priority |
+|-----------|------|-------|--------|-----------|----------|
+| SCR-001 | Home | 1 | -- | FT-0001 | Must |
+| SCR-002 | Login | 1 | -- | FT-0010 | Must |
+| SCR-003 | Dashboard | 2 | SCR-001 | FT-0015 | Must |
+```
+
+**프로세스:**
+1. `workflows/_index.json` → 사용자 태스크 흐름 추출
+2. `screens/_index.json` → AS-IS 화면 → TO-BE 화면 매핑
+3. SRS USR 정의 → 사용자 유형별 내비게이션 구성
+4. 계층 정의:
+   - Level 0: 앱 진입점
+   - Level 1: 메인 내비게이션 탭/섹션
+   - Level 2: 하위 페이지
+   - Level 3+: 상세, 모달, 드로어
+5. Mermaid 다이어그램 생성 (tree 또는 mindmap)
+6. 교차 검증: IA의 모든 화면 → SRS FT와 1:1 매핑 확인
+7. `ia.md` + `ia.json` 생성
+
+### Step 4: Generate Roadmap
+
+**입력:** SRS (FR/US/FT), engine-estimator
+
+**프로세스:**
+1. FT 목록 + complexity(S/M/L/XL) 읽기
+2. engine-estimator로 공수 산정:
+   - S: 0.5일, M: 1-2일, L: 3-5일, XL: 5-10일
+   - 버퍼: 미지 20% + 통합 10%
+3. priority 기반 마일스톤 그룹핑
+4. Mermaid Gantt 또는 테이블 형식 타임라인 생성
+5. `roadmap.md` + `roadmap.json` 생성
+
+**Roadmap 구조:**
+
+```markdown
+## Milestones
+
+| Milestone | Features | Est. Days | Target Date | Priority |
+|-----------|----------|-----------|-------------|----------|
+| M1: Auth | FT-0010~FT-0015 | 12 | 2026-04-10 | Must |
+| M2: Dashboard | FT-0020~FT-0035 | 18 | 2026-04-28 | Must |
+| M3: Reports | FT-0050~FT-0060 | 8 | 2026-05-06 | Should |
+```
+
+### Step 5: Update Indexes and Links
+
+1. `_index.json` 갱신: 새로 생성된 SRS, IA, Roadmap 등록
+2. `_links.json` 갱신: 문서 간 관계 등록
+   ```json
+   {
+     "from": "{app}/srs",
+     "to": "{app}/ia",
+     "type": "derives"
+   }
+   ```
+3. classified 항목의 `adopted` + `usedIn` 필드 갱신
+
+---
+
+## --only Flag 동작
+
+| Value | Action |
+|-------|--------|
+| `--only srs` | SRS만 생성 (Step 2만 실행) |
+| `--only ia` | IA만 생성 (SRS 존재 필수, Step 3만 실행) |
+| `--only roadmap` | Roadmap만 생성 (SRS 존재 필수, Step 4만 실행) |
+
+---
+
+## JSON Export
+
+모든 .md 파일은 동일 경로에 .json 동반 생성:
 
 ```
-/u-plan my-app
-/u-plan my-app --only srs
-/u-plan -i --step
+docs/{app}/01-plan/srs.md     → docs/{app}/01-plan/srs.json
+docs/{app}/01-plan/ia.md      → docs/{app}/01-plan/ia.json
+docs/{app}/01-plan/roadmap.md → docs/{app}/01-plan/roadmap.json
 ```
+
+JSON 구조:
+```json
+{
+  "documentId": "{app}/srs",
+  "type": "srs",
+  "version": "1.0.0",
+  "status": "Draft",
+  "lastUpdated": "{ISO 8601}",
+  "owner": "u-agent-planner",
+  "data": {
+    "userTypes": [...],
+    "functionalRequirements": [...],
+    "nonFunctionalRequirements": [...],
+    "userStories": [...],
+    "features": [...]
+  },
+  "metadata": {
+    "sourceClassified": ["FR-0001", "FR-0002"],
+    "relatedDocs": ["ia", "roadmap"]
+  }
+}
+```
+
+---
+
+## Safety Rules
+
+1. classified 데이터가 부족하면 `/u-ingest` 먼저 실행 안내
+2. 기존 Final 문서 덮어쓰기 시 반드시 사용자 확인 (Always-Pause)
+3. 모든 항목에 source 역추적 보존 (classified item → raw input)
+4. 고아 항목(FT without US, US without FR) 탐지 시 경고
+5. ID 재사용 금지, 기존 ID 보존
+6. `.json` 동반 파일 생성 필수
+7. `_index.json` 갱신 필수
+8. auto mode 가정은 `_assumptions/`에 기록
