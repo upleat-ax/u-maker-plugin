@@ -33,6 +33,7 @@ description: "자연어 및 /u-* 커맨드에서 의도를 분류하고, 스코�
 | Command | Primary Agent | Engine Skills Used | Phase |
 |---------|--------------|-------------------|-------|
 | `/u-init` | orchestrator | engine-doc | -- |
+| `/u-reverse` | planner | engine-doc | Design |
 | `/u-ingest` | planner | engine-analyzer | Plan |
 | `/u-plan` | planner | engine-doc, engine-estimator | Plan |
 | `/u-design` | planner | engine-designer, engine-doc | Design |
@@ -228,6 +229,7 @@ brainstorm, review, decision, workshop, retro
 | Keywords (KO/EN) | Mapped Command |
 |-------------------|---------------|
 | 초기화, initialize, setup | `/u-init` |
+| 역공학, 코드 분석, reverse, 소스 분석, 코드에서 문서 | `/u-reverse` |
 | 자료 분석, 분석, ingest, analyze data | `/u-ingest` |
 | 기획, 요구사항, SRS, plan | `/u-plan` |
 | 설계, ERD, API 설계, design | `/u-design` |
