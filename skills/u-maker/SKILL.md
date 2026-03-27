@@ -30,11 +30,12 @@ triggers:
 
 ## Full Command Table
 
-### Lifecycle Commands (7)
+### Lifecycle Commands (8)
 
 | Command | Signature | Phase | Description |
 |---------|-----------|-------|-------------|
 | `/u-init` | `/u-init [project-name]` | -- | `.u-maker/` 구조 생성, config 초기화, 앱 등록 |
+| `/u-reverse` | `/u-reverse [scope] [--only X] [-i] [--step]` | Design | 소스 코드 → SSoT 역공학 (ERD, API, Screen, SRS 등) |
 | `/u-ingest` | `/u-ingest [scope] [--review] [--incremental]` | Plan | raw → classified 분석 적재 |
 | `/u-plan` | `/u-plan [scope] [--only X] [-i] [--step]` | Plan | classified → SRS + IA + Roadmap 연쇄 생성 |
 | `/u-design` | `/u-design [scope] [--only X] [-i] [--step]` | Design | SRS/IA → ERD + API + Screen + Flow + RTM |
@@ -124,6 +125,7 @@ u-maker.config.json에서 앱 목록 조회 후 scope 해석.
 | Command | Route To |
 |---------|----------|
 | `init` | `skills/u-init/` |
+| `reverse` | `skills/u-reverse/` |
 | `ingest` | `skills/u-ingest/` |
 | `plan` | `skills/u-plan/` |
 | `design` | `skills/u-design/` |
@@ -150,6 +152,7 @@ u-maker.config.json에서 앱 목록 조회 후 scope 해석.
 ## Quick-Start Guide
 
 ```bash
+# ── Forward Engineering (새 프로젝트) ──
 # 1. 프로젝트 초기화
 /u-init my-project
 
@@ -170,6 +173,16 @@ u-maker.config.json에서 앱 목록 조회 후 scope 해석.
 
 # 7. 최종 검증 + 배포
 /u-ship retail
+
+# ── Reverse Engineering (기존 프로젝트) ──
+# 1. 프로젝트 초기화
+/u-init my-project
+
+# 2. 소스 코드 → SSoT 역공학
+/u-reverse retail
+
+# 3. 역공학 결과 검증 + 보완
+/u-sync retail
 ```
 
 ---
