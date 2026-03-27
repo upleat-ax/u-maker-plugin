@@ -95,10 +95,39 @@ try {
     config.loopStatus = 'PAUSED';
   }
 
+  // v2: Count pending assumptions across all apps
+  let pendingAssumptions = 0;
+  try {
+    const umakerRoot = path.join(process.cwd(), '.u-maker');
+    const assumptionPaths = [
+      path.join(umakerRoot, '_assumptions', '_index.json'),
+    ];
+    // Check apps
+    const appsDir = path.join(umakerRoot, 'apps');
+    if (fs.existsSync(appsDir)) {
+      const apps = fs.readdirSync(appsDir).filter(d =>
+        fs.statSync(path.join(appsDir, d)).isDirectory()
+      );
+      for (const app of apps) {
+        assumptionPaths.push(path.join(appsDir, app, '_assumptions', '_index.json'));
+      }
+    }
+    for (const ap of assumptionPaths) {
+      if (fs.existsSync(ap)) {
+        const data = JSON.parse(fs.readFileSync(ap, 'utf8'));
+        const items = data.items || data.assumptions || [];
+        pendingAssumptions += items.filter(a => a.status === 'pending-review').length;
+      }
+    }
+  } catch {}
+
   const saved = saveConfig(config);
 
+  const assumptionNote = pendingAssumptions > 0
+    ? `, pending-assumptions=${pendingAssumptions}`
+    : '';
   const stopReason = saved
-    ? `State saved: phase=${config.currentPhase}, iteration=${config.currentIteration}, loop=${config.loopStatus}`
+    ? `State saved: phase=${config.currentPhase}, iteration=${config.currentIteration}, loop=${config.loopStatus}${assumptionNote}`
     : 'Warning: Could not save state to config file.';
 
   console.log(JSON.stringify({ stopReason }));

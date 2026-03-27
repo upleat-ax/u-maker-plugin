@@ -42,17 +42,23 @@ if (!prompt) {
 // Skip: already using a document-update slash command
 // ============================================================
 
+// v2 commands (19 lifecycle + 4 agent-direct + 1 router)
 const DOC_COMMANDS = [
-  '/u-agent-us-add', '/u-agent-fr-add', '/u-skill-srs', '/u-skill-plan', '/u-skill-design',
-  '/u-agent-backlog-add', '/u-skill-erd', '/u-skill-api', '/u-agent-screen', '/u-agent-index',
-  '/u-agent-create-project', '/u-skill-init', '/u-skill-check', '/u-skill-act',
-  '/u-skill-loop', '/u-skill-loop-from', '/u-skill-dev', '/u-agent-dv-fe', '/u-agent-dv-be',
-  '/u-agent-qa', '/u-agent-bug-report', '/u-skill-gap-detector',
-  '/u-agent-validate', '/u-agent-status', '/u-agent-docs', '/u-agent-backlog',
-  '/u-skill-help', '/u-agent-history', '/u-agent-archive', '/u-skill-storybook',
-  '/u-skill-build', '/u-skill-git-pr', '/u-skill-stop', '/u-skill-resume',
-  '/u-agent-summary', '/u-agent-wireframe', '/u-agent-ux-design', '/u-agent-ux-ds',
-  '/u-agent-pm', '/u-skill-report', '/u-skill-import',
+  // Lifecycle (7)
+  '/u-init', '/u-ingest', '/u-plan', '/u-design', '/u-build', '/u-check', '/u-ship',
+  // Operations (5)
+  '/u-add', '/u-update', '/u-doc', '/u-sync', '/u-gate',
+  // Observability (3)
+  '/u-status', '/u-coverage', '/u-trace',
+  // Collaboration + Review (2)
+  '/u-discuss', '/u-assume',
+  // Agent direct (4)
+  '/u-agent-orchestrator', '/u-agent-planner', '/u-agent-builder', '/u-agent-guardian',
+  // Meta router
+  '/u-maker',
+  // v1 legacy commands (backward compatibility)
+  '/u-skill-plan', '/u-skill-design', '/u-skill-build', '/u-skill-check',
+  '/u-skill-init', '/u-skill-srs', '/u-skill-erd', '/u-skill-api',
 ];
 
 const promptLower = prompt.toLowerCase();
@@ -150,24 +156,24 @@ if (!matched) {
 function suggestCommand(text) {
   const t = text.toLowerCase();
   if (/(?:유저|사용자)\s*스토리|user\s*story|as\s+a\s+\w+/.test(t)) {
-    return '`/u-agent-us-add` — 유저 스토리 추가 후 SRS 연계';
+    return '`/u-add [app] us "제목"` — 유저 스토리 추가';
   }
   if (/(?:api|엔드포인트|endpoint|route|라우트)/.test(t)) {
-    return '`/u-skill-api` — API Contract 문서 갱신';
+    return '`/u-design [app] --only api` — API Contract 문서 갱신';
   }
   if (/(?:페이지|화면|스크린|page|screen)/.test(t)) {
-    return '`/u-agent-screen` — 화면 설계 문서 갱신';
+    return '`/u-design [app] --only screens` — 화면 설계 문서 갱신';
   }
   if (/(?:report|리포트|보고서|daily report|daily|데일리)/.test(t)) {
-    return '`/u-skill-report` — 프로젝트 종합 보고서 생성';
+    return '`/u-status [app]` — 프로젝트 대시보드 확인';
   }
   if (/(?:erd|데이터|db|database|테이블|table|모델|model)/.test(t)) {
-    return '`/u-skill-erd` — ERD 문서 갱신';
+    return '`/u-design [app] --only erd` — ERD 문서 갱신';
   }
   if (/(?:버그|bug|오류|error|결함|defect|수정|fix)/.test(t)) {
-    return '`/u-agent-backlog-add` — 백로그에 결함/이슈 등록';
+    return '`/u-add [app] fr "제목"` — 요구사항으로 등록';
   }
-  return '`/u-agent-fr-add` — FR(기능 요구사항) 추가 또는 `/u-skill-srs` — SRS 전체 갱신';
+  return '`/u-add [app] fr "제목"` — FR(기능 요구사항) 추가 또는 `/u-plan [app]` — SRS 전체 갱신';
 }
 
 const suggestion = suggestCommand(prompt);

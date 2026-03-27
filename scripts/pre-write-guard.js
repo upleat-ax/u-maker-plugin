@@ -53,25 +53,35 @@ if (!filePath) {
 // Check 1: SSoT Document Path Enforcement
 // ============================================================
 
-// SSoT document pattern: files like 1_Roadmap_PM.md, 2_ERD_SA.md, etc.
-const SSOT_DOC_PATTERN = /^\d+_[A-Za-z]+_[A-Z]+(?:_\d{12})?\.md$/;
+// v2 SSoT document names (simplified: srs.md, erd.md, api.md, etc.)
+const V2_SSOT_DOCS = new Set([
+  'srs.md', 'ia.md', 'roadmap.md', 'problem-solution.md', 'common-policy.md',
+  'global-policies.md', 'index.md', 'erd.md', 'api.md', 'screen.md',
+  'screen-flow.md', 'ux-guide.md', 'rtm.md', 'code.md', 'screen-impl.md',
+  'ui-components.md', 'design-token.md', 'test-cases.md', 'test-report.md',
+  'iteration-log.md', 'retrospective.md', 'backlog.md',
+]);
+// v1 legacy pattern: files like 1_Roadmap_PM.md, 2_ERD_SA.md
+const V1_SSOT_PATTERN = /^\d+_[A-Za-z]+_[A-Z]+(?:_\d{12})?\.md$/;
 const basename = path.basename(filePath);
+const normalized = path.resolve(filePath);
+const umakerPath = path.resolve(path.join(process.cwd(), '.u-maker'));
 
-if (SSOT_DOC_PATTERN.test(basename)) {
-  // Must be under .u-maker/docs/
-  const normalized = path.resolve(filePath);
-  const udocsPath = path.resolve(path.join(process.cwd(), '.u-maker', 'docs'));
+const isV2SsotDoc = V2_SSOT_DOCS.has(basename);
+const isV1SsotDoc = V1_SSOT_PATTERN.test(basename);
 
-  if (!normalized.startsWith(udocsPath)) {
+if (isV2SsotDoc || isV1SsotDoc) {
+  // Must be under .u-maker/ (apps/*/docs/ or common/)
+  if (!normalized.startsWith(umakerPath)) {
     console.log(JSON.stringify({
       result: 'block',
       message: [
-        `SSoT document "${basename}" must be placed under .u-maker/docs/.`,
+        `SSoT document "${basename}" must be placed under .u-maker/.`,
         `Attempted path: ${filePath}`,
-        `Expected under: .u-maker/docs/`,
+        `Expected under: .u-maker/apps/{app}/docs/ or .u-maker/common/`,
         '',
-        'SSoT documents follow the naming pattern: [PhaseNum][Agent]_[Name].md',
-        'and must be stored in the appropriate .u-maker/docs/ subdirectory.',
+        'v2 documents use simplified names (srs.md, erd.md, api.md, etc.)',
+        'and must be stored in the appropriate .u-maker/ subdirectory.',
       ].join('\n'),
     }));
     process.exit(2);
