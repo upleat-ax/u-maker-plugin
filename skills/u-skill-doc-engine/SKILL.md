@@ -37,7 +37,37 @@ Related Docs: [srs.md, erd.md]
 
 ---
 
-## 2. CRUD Operations
+## 2. Language Setting
+
+문서 생성 시 `u-maker.config.json`의 `language.documents` 값을 참조하여 해당 언어로 문서를 작성한다.
+
+### Language Resolution
+
+```
+function resolveLanguage():
+  config = loadConfig("u-maker.config.json")
+  lang = config.language?.documents ?? "ko"   // 기본값: ko
+  return lang
+```
+
+### Language Behavior
+
+| `language.documents` | 문서 본문 언어 | 섹션 제목 | 설명/Description | ID/코드 |
+|---------------------|--------------|----------|-----------------|---------|
+| `ko` | 한국어 | 한국어 | 한국어 | 영문 유지 (FR-0001, POST /api/...) |
+| `en` | English | English | English | 영문 유지 |
+| `ja` | 日本語 | 日本語 | 日本語 | 영문 유지 |
+| `zh` | 中文 | 中文 | 中文 | 영문 유지 |
+
+**규칙:**
+- ID, 코드 스니펫, 기술 용어(API path, entity name, HTTP method 등)는 언어 설정과 무관하게 **항상 영문**
+- Mermaid 다이어그램의 노드 라벨은 `language.documents` 언어로 작성
+- JSON companion 파일의 `description`, `title` 필드는 `language.documents` 언어로 작성
+- 모든 문서 생성 스킬(`/u-plan`, `/u-design`, `/u-build`, `/u-check`, `/u-reverse` 등)은 이 설정을 따름
+
+---
+
+## 3. CRUD Operations
 
 ### create(type, scope, data)
 
@@ -45,17 +75,22 @@ Related Docs: [srs.md, erd.md]
 
 **프로세스:**
 
-1. **템플릿 로드:**
+1. **언어 설정 로드:**
+   - `u-maker.config.json` → `language.documents` 읽기
+   - 문서 본문, 제목, 설명을 해당 언어로 작성
+
+2. **템플릿 로드:**
    - `_meta/templates/{type}.template.md` 파일 읽기
    - 템플릿이 없으면 기본 구조 사용
 
-2. **템플릿 렌더링:**
+3. **템플릿 렌더링:**
    - Mustache-style `{{variable}}` 치환
    - 중첩 변수 지원: `{{data.title}}`, `{{items.length}}`
    - 반복 블록: `{{#items}}...{{/items}}`
    - 조건 블록: `{{#hasData}}...{{/hasData}}`
+   - `{{lang}}` → 현재 언어 코드 자동 주입
 
-3. **헤더 설정:**
+4. **헤더 설정:**
    ```yaml
    Owner: {agent}
    Status: Draft
@@ -160,7 +195,7 @@ function delete(scope, doc):
 
 ---
 
-## 3. Template Rendering
+## 4. Template Rendering
 
 ### Template Location
 
@@ -177,8 +212,9 @@ function delete(scope, doc):
 | `{{#section}}...{{/section}}` | 반복 블록 | 배열 항목 반복 |
 | `{{#flag}}...{{/flag}}` | 조건 블록 | flag가 truthy일 때만 |
 | `{{^flag}}...{{/flag}}` | 역조건 블록 | flag가 falsy일 때만 |
-| `{{date}}` | 현재 날짜 (자동) | 2026-03-27 |
+| `{{date}}` | 현재 날짜 (자동) | 2026-03-28 |
 | `{{scope}}` | 현재 스코프 (자동) | retail |
+| `{{lang}}` | 문서 언어 코드 (자동) | ko |
 
 ### Template Example
 
@@ -206,7 +242,7 @@ Related Docs: [{{relatedDocs}}]
 
 ---
 
-## 4. JSON Export
+## 5. JSON Export
 
 모든 `.md` 파일은 동일 경로에 `.json` 동반 생성.
 
@@ -226,6 +262,7 @@ Related Docs: [{{relatedDocs}}]
   "metadata": {
     "scope": "{scope}",
     "phase": "{phase}",
+    "language": "{lang}",
     "relatedDocs": [],
     "sourceClassified": []
   }
@@ -242,7 +279,7 @@ Related Docs: [{{relatedDocs}}]
 
 ---
 
-## 5. _index.json Management
+## 6. _index.json Management
 
 ### _index.json Structure
 
@@ -277,7 +314,7 @@ Related Docs: [{{relatedDocs}}]
 
 ---
 
-## 6. Document Path Convention
+## 7. Document Path Convention
 
 ```
 docs/{scope}/{phase-dir}/{type}.md
@@ -296,7 +333,7 @@ docs/{scope}/{phase-dir}/{type}.json
 
 ---
 
-## 7. Version Tracking
+## 8. Version Tracking
 
 ### Version Format
 
@@ -323,7 +360,7 @@ docs/{scope}/{phase-dir}/{type}.json
 
 ---
 
-## 8. Safety Rules
+## 9. Safety Rules
 
 1. 모든 문서 조작은 이 엔진을 통해 수행 (직접 파일 쓰기 금지)
 2. `.md` 생성/수정/삭제 시 `.json` 반드시 동반
@@ -333,3 +370,4 @@ docs/{scope}/{phase-dir}/{type}.json
 6. 헤더 필드 누락 금지 (5개 필수 필드)
 7. version은 자동 관리 (수동 설정 무시)
 8. 동일 scope에서 같은 type의 문서는 1개만 존재 (중복 생성 거부)
+9. 문서 본문은 `language.documents` 설정 언어로 작성 (ID/코드는 항상 영문)

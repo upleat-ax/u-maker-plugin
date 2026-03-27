@@ -130,6 +130,11 @@ apps/ 없음                    단일 앱
     "backlog": ".u-maker/_backlog"
   },
 
+  "language": {
+    "documents": "ko",
+    "supported": ["ko", "en", "ja", "zh"]
+  },
+
   "interaction": {
     "defaultMode": "interactive",
     "maxAssumptions": 20
