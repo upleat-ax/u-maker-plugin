@@ -162,7 +162,7 @@ classified 데이터를 조합하여 생성. 각 항목에 출처 링크 보존.
 - 변경 cascade 전파 및 impact 알림
 - /u-discuss 세션 퍼실리테이션
 
-**소유 Skills:** u-skill-router, u-skill-phase-detector, u-skill-dep-engine, u-skill-workflow-runner, u-skill-facilitator
+**소유 Skills:** engine-router, engine-phase-detector, engine-dep, engine-workflow-runner, engine-facilitator
 
 **활동 Phase:** All
 
@@ -179,7 +179,7 @@ classified 데이터를 조합하여 생성. 각 항목에 출처 링크 보존.
 - User Story/Feature 분해
 - Wireframe 생성
 
-**소유 Skills:** u-skill-doc-engine, u-skill-analyzer, u-skill-designer, u-skill-estimator
+**소유 Skills:** engine-doc, engine-analyzer, engine-designer, engine-estimator
 
 **활동 Phase:** Plan, Design
 
@@ -194,7 +194,7 @@ classified 데이터를 조합하여 생성. 각 항목에 출처 링크 보존.
 - Storybook 스토리 자동 생성
 - 코드 ↔ 명세 일치 검증
 
-**소유 Skills:** u-skill-code-engine, u-skill-scaffold, u-skill-spec-sync
+**소유 Skills:** engine-code
 
 **활동 Phase:** Do
 
@@ -211,7 +211,7 @@ classified 데이터를 조합하여 생성. 각 항목에 출처 링크 보존.
 - Exit criteria 판정
 - Iteration log + Retrospective
 
-**소유 Skills:** u-skill-validator, u-skill-test-engine, u-skill-diff-engine, u-skill-reporter
+**소유 Skills:** engine-validator, engine-test
 
 **활동 Phase:** Design, Do, Check, Act
 
@@ -223,28 +223,28 @@ classified 데이터를 조합하여 생성. 각 항목에 출처 링크 보존.
 
 | Skill | 역할 |
 |-------|------|
-| u-skill-router | intent 분류, agent dispatch, fallback 처리 |
-| u-skill-phase-detector | 문서 status 집계 → phase 자동 판정 |
-| u-skill-dep-engine | _links.json 기반 의존성 그래프 관리, cascade 전파 |
-| u-skill-workflow-runner | multi-step 실행, 중간 실패 rollback, progress tracking |
-| u-skill-facilitator | /u-discuss 세션 퍼실리테이션, 태깅 분류, context 직렬화/복원 |
+| engine-router | intent 분류, agent dispatch, fallback 처리 |
+| engine-phase-detector | 문서 status 집계 → phase 자동 판정 |
+| engine-dep | _links.json 기반 의존성 그래프 관리, cascade 전파 |
+| engine-workflow-runner | multi-step 실행, 중간 실패 rollback, progress tracking |
+| engine-facilitator | /u-discuss 세션 퍼실리테이션, 태깅 분류, context 직렬화/복원 |
 
 ### Domain Engines (planner 소속)
 
 | Skill | 역할 |
 |-------|------|
-| u-skill-doc-engine | 모든 문서의 CRUD. 템플릿 렌더링, JSON export, 버전 관리. 문서 종류는 _refer/templates/에서 동적 로드 |
-| u-skill-analyzer | _input/ 자료 파싱, 요약, 구조화, gap 분석. chunk 단위로 raw → classified 적재 |
-| u-skill-designer | IA/Screen/Flow/ERD/API 통합 설계. doc-engine의 쓰기 호출 |
-| u-skill-estimator | SRS 항목 수 + 복잡도 → 일정/공수 자동 산정 |
+| engine-doc | 모든 문서의 CRUD. 템플릿 렌더링, JSON export, 버전 관리. 문서 종류는 templates/에서 동적 로드 |
+| engine-analyzer | _input/ 자료 파싱, 요약, 구조화, gap 분석. chunk 단위로 raw → classified 적재 |
+| engine-designer | IA/Screen/Flow/ERD/API 통합 설계. engine-doc의 쓰기 호출 |
+| engine-estimator | SRS 항목 수 + 복잡도 → 일정/공수 자동 산정 |
 
 ### Execution Engines (builder + guardian 소속)
 
 | Skill | 역할 |
 |-------|------|
-| u-skill-code-engine | 명세 → 코드 생성 (FE/BE 통합), scaffold, spec-sync |
-| u-skill-validator | gate check, cross-doc consistency, exit criteria 판정 |
-| u-skill-test-engine | SRS/Screen → TC 자동 생성, 실행, 리포트 |
+| engine-code | 명세 → 코드 생성 (FE/BE 통합), scaffold, spec-sync |
+| engine-validator | gate check, cross-doc consistency, exit criteria 판정 |
+| engine-test | SRS/Screen → TC 자동 생성, 실행, 리포트 |
 
 ---
 
@@ -588,19 +588,19 @@ FDE의 암묵지 + Agent의 분석력을 세션 안에서 결합. 세션 결과�
 │   │   └── retro.md
 │   └── tech-rules.md
 │
-├── skills/                           # 12 skills
-│   ├── u-skill-router/SKILL.md
-│   ├── u-skill-phase-detector/SKILL.md
-│   ├── u-skill-dep-engine/SKILL.md
-│   ├── u-skill-workflow-runner/SKILL.md
-│   ├── u-skill-facilitator/SKILL.md
-│   ├── u-skill-doc-engine/SKILL.md
-│   ├── u-skill-analyzer/SKILL.md
-│   ├── u-skill-designer/SKILL.md
-│   ├── u-skill-estimator/SKILL.md
-│   ├── u-skill-code-engine/SKILL.md
-│   ├── u-skill-validator/SKILL.md
-│   └── u-skill-test-engine/SKILL.md
+├── skills/                           # 12 engine skills
+│   ├── engine-router/SKILL.md
+│   ├── engine-phase-detector/SKILL.md
+│   ├── engine-dep/SKILL.md
+│   ├── engine-workflow-runner/SKILL.md
+│   ├── engine-facilitator/SKILL.md
+│   ├── engine-doc/SKILL.md
+│   ├── engine-analyzer/SKILL.md
+│   ├── engine-designer/SKILL.md
+│   ├── engine-estimator/SKILL.md
+│   ├── engine-code/SKILL.md
+│   ├── engine-validator/SKILL.md
+│   └── engine-test/SKILL.md
 │
 ├── agents/                           # 4 agents
 │   ├── u-agent-orchestrator/AGENT.md
