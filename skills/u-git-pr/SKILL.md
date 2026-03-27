@@ -85,17 +85,29 @@ git remote get-url origin
    git diff {base}...HEAD                 # 전체 diff
    ```
 
-4. **Working tree 상태:**
+4. **Working tree 상태 확인 및 자동 커밋:**
    ```bash
    git status                             # uncommitted changes 확인
-   git stash list                         # stash 확인
    ```
 
-5. **Remote 동기화 확인:**
-   - 현재 브랜치가 remote를 추적하는지 확인
-   - push가 필요한지 판단
+   - **modified/untracked 파일이 있으면 자동으로 커밋한다:**
+     1. `git diff --stat` 및 `git status`로 변경 내용 분석
+     2. 변경 내용 기반으로 conventional commit 메시지 자동 생성
+     3. 민감 파일(`.env`, `credentials`, `secret` 등) 감지 시 해당 파일은 제외하고 경고
+     4. `git add {files}` → `git commit -m "{message}"` 실행
+     5. 커밋 완료 후 사용자에게 요약 표시:
+        ```
+        ## Auto-committed
+        ✓ {commit-hash} {commit-message} ({n} files)
+        ```
 
-> **주의:** uncommitted changes가 있으면 사용자에게 경고하고, 커밋 또는 stash를 권유한다.
+5. **Remote 동기화 확인 및 자동 푸시:**
+   - 현재 브랜치가 remote를 추적하는지 확인
+   - push가 필요하면 자동으로 `git push -u origin {branch}` 실행
+   - push 완료 후 사용자에게 표시:
+     ```
+     ✓ Pushed to origin/{branch}
+     ```
 
 ### Step 2: Commit Grouping Analysis
 
@@ -306,12 +318,12 @@ git push -u origin {original-branch}/group-{n}
 
 ## Safety Rules
 
-1. **uncommitted changes 경고:** PR/MR 생성 전 uncommitted changes가 있으면 반드시 경고
-2. **base branch 확인:** base가 main/master가 아닌 경우 사용자에게 확인
-3. **force push 금지:** PR/MR 생성 과정에서 force push 절대 사용하지 않음
-4. **빈 PR/MR 방지:** base 대비 변경사항이 없으면 PR/MR 생성하지 않음
-5. **민감 파일 경고:** `.env`, `credentials`, `secret` 등이 diff에 포함되면 경고
-6. **body HEREDOC:** body는 반드시 HEREDOC으로 전달하여 포맷 보존
-7. **push 전 확인:** remote push는 사용자 확인 후 수행 (이미 push된 경우 제외)
+1. **자동 커밋:** uncommitted changes가 있으면 자동으로 커밋한다 (민감 파일 제외)
+2. **자동 푸시:** 커밋 후 remote에 push되지 않은 변경이 있으면 자동으로 push한다
+3. **민감 파일 제외:** `.env`, `credentials`, `secret` 등은 자동 커밋에서 제외하고 경고
+4. **base branch 확인:** base가 main/master가 아닌 경우 사용자에게 확인
+5. **force push 금지:** PR/MR 생성 과정에서 force push 절대 사용하지 않음
+6. **빈 PR/MR 방지:** base 대비 변경사항이 없으면 PR/MR 생성하지 않음
+7. **body HEREDOC:** body는 반드시 HEREDOC으로 전달하여 포맷 보존
 8. **분할 시 원본 브랜치 보존:** cherry-pick 기반 분할은 원본 브랜치를 변경하지 않음
 9. **CLI 존재 확인:** `gh`(GitHub) 또는 `glab`(GitLab) CLI가 설치되어 있는지 확인. 미설치 시 안내
