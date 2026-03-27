@@ -1,6 +1,8 @@
 # u-maker 시작하기 (Get Started)
 
-u-maker를 처음 사용하시나요? 이 가이드는 u-maker의 핵심 개념부터 역할별 활용법까지 단계별로 안내합니다.
+u-maker를 처음 사용하시나요? 이 가이드는 핵심 개념부터 역할별 활용법, 실전 시나리오까지 단계별로 안내합니다.
+
+> 전체 레퍼런스는 [README.md](README.md)를 참고하세요.
 
 ---
 
@@ -8,31 +10,48 @@ u-maker를 처음 사용하시나요? 이 가이드는 u-maker의 핵심 개념�
 
 ### 한 줄 요약
 
-u-maker는 **8명의 AI 전문가 팀**과 **54개 스킬**로 소프트웨어 개발의 전 과정(기획 → 설계 → 구현 → 테스트 → 개선)을 자동화하는 **Claude Code 플러그인**입니다.
+u-maker는 **4개의 AI 에이전트**와 **3-Layer 파이프라인**으로 소프트웨어 개발의 전 과정(기획 → 설계 → 구현 → 검증 → 개선)을 자동화하는 **Claude Code 플러그인**입니다.
 
 ### 기존 개발 방식과 뭐가 다른가요?
 
 | | 기존 방식 | u-maker 방식 |
 |---|----------|-------------|
 | **문서** | 코드 먼저, 문서는 나중에 (혹은 안 씀) | 문서 먼저, 코드는 문서를 기반으로 생성 (Docs-First) |
-| **요구사항 추적** | 스프레드시트나 Jira에 따로 관리, 코드와 연결 안 됨 | ID 체계(USR→FR→US→FT)로 요구사항~코드~테스트 전 구간 자동 추적 |
-| **품질 관리** | 개발 완료 후 QA팀에 전달, 수동 테스트 | 매 사이클마다 자동 테스트 + 설계-구현 Gap 분석 |
-| **설계-구현 불일치** | "설계서와 코드가 달라요" 문제 빈번 | Match Rate 자동 측정, 90% 미만이면 자동 보완 |
-| **반복 작업** | 수동으로 Plan-Do-Check 반복 | PDCA Loop 자동화 (종료 조건 충족까지 자동 반복) |
-| **협업** | 각 역할자가 개별 도구로 작업 | 8개 AI 에이전트가 하나의 SSoT 문서 체계에서 협업 |
-| **기술 스택 통일** | 코드 리뷰에서 사후 발견 | Hook이 기술 규칙 위반을 실시간 차단 |
+| **데이터 분석** | RFP 200페이지를 한 번에 분석 → 앞부분 loss | 3-Layer 파이프라인으로 chunk 분석 → 정보 손실 없음 |
+| **요구사항 추적** | 스프레드시트에 따로 관리, 코드와 연결 안 됨 | 4-Tier ID(USR→FR→US→FT)로 요구사항~코드~테스트 전 구간 자동 추적 |
+| **품질 관리** | 개발 완료 후 QA팀에 전달, 수동 테스트 | 매 Phase마다 Gate 조건 자동 검증 |
+| **설계 변경** | SRS 수정하면 ERD, Screen, TC를 수동 갱신 | `_links.json` 의존성 그래프로 Auto-Cascade 전파 |
+| **AI 판단** | AI가 뭔가 결정해도 블랙박스 | Assumptions Log로 모든 판단 기록 + 사후 리뷰 |
+| **협업** | 각 역할자가 개별 도구로 작업 | 4개 AI 에이전트가 하나의 SSoT 문서 체계에서 협업 |
 
-### 핵심 개념 3가지
+### 핵심 개념 5가지
 
 #### 1. SSoT (Single Source of Truth) — "문서가 곧 진실"
 
-u-maker에서는 **모든 결정이 문서에 기록**됩니다. 요구사항, 설계, 구현 기록, 테스트 결과가 모두 `.u-maker/docs/` 아래 관리됩니다.
+u-maker에서는 **모든 결정이 문서에 기록**됩니다. 요구사항, 설계, 구현, 테스트 결과가 모두 `.u-maker/` 아래 관리됩니다.
 
 - 코드를 먼저 작성하려 하면 **Docs-First Guard**가 막고, 문서를 먼저 쓰라고 안내합니다
 - 문서는 `.md`(사람이 읽는 원본) + `.json`(기계가 파싱하는 데이터) 2종이 항상 함께 생성됩니다
-- 리포트 문서는 `.html`(브라우저에서 바로 열 수 있는 뷰어)도 추가로 생성됩니다
 
-#### 2. PDCA 사이클 — "계획-실행-검증-개선 반복"
+#### 2. 3-Layer 파이프라인 — "Raw → 정제 → 산출물"
+
+```
+_input/          →      _classified/        →      docs/
+(RFP, 회의록,         (requirements,              (srs.md, erd.md,
+ AS-IS 분석, ...)      pain-points,                api.md, screen.md, ...)
+                        domain-terms, ...)
+```
+
+| Layer | 위치 | 역할 |
+|-------|------|------|
+| **Layer 1: Raw** | `_input/` | 원본 데이터 (RFP, 회의록, AS-IS 분석, 스크린샷 등) |
+| **Layer 2: Classified** | `_classified/` | 원본에서 추출·정제된 구조화 데이터 (10개 카테고리) |
+| **Layer 3: Docs** | `docs/` | 최종 산출물 (SRS, ERD, API, Screen, TestCase 등) |
+
+10개 분류 카테고리:
+`requirements` · `pain-points` · `domain-terms` · `stakeholders` · `workflows` · `screens` · `data-models` · `constraints` · `decisions` · `questions`
+
+#### 3. PDCA 5-Phase — "계획→설계→구현→검증→개선 반복"
 
 ```
 Plan (기획) → Design (설계) → Do (구현) → Check (검증) → Act (개선)
@@ -45,12 +64,14 @@ Plan (기획) → Design (설계) → Do (구현) → Check (검증) → Act (�
 
 | Phase 전환 | 통과 조건 |
 |------------|-----------|
-| Plan → Design | Roadmap + SRS + IA 문서가 Final 상태 |
-| Design → Do | ERD + RTM + UXGuide + API + Screen + ScreenFlow = Final |
-| Do → Check | 빌드 성공 + 설계-구현 Match Rate >= 90% |
-| Check → Complete | Critical/Major 결함 0건, 모든 FT 구현, 빌드 성공 |
+| Plan → Design | SRS + IA + Roadmap = Final |
+| Design → Do | ERD + RTM + Screen + API = Final |
+| Do → Check | Code 문서 Final |
+| Check → Act | Test Cases + Test Report = Final |
 
-#### 3. 4-Tier ID 체계 — "왜 이 코드가 존재하는지 추적"
+> 4-Phase 옵션도 지원합니다. `u-maker.config.json`에서 `designPhase: "merged"`로 설정하면 Design이 Do에 통합됩니다.
+
+#### 4. 4-Tier ID 체계 — "왜 이 코드가 존재하는지 추적"
 
 ```
 USR-0001 (사용자 유형: 예) 관리자, 일반 사용자)
@@ -63,18 +84,30 @@ USR-0001 (사용자 유형: 예) 관리자, 일반 사용자)
 
 "이 코드가 왜 존재하는지"를 FT → US → FR → USR로 항상 추적할 수 있습니다.
 
-### AI 팀 구성 (8명의 전문가)
+#### 5. Assumptions Log — "AI가 판단한 이유를 기록"
 
-| 팀원 | 역할 | 하는 일 | 활동 Phase |
-|------|------|---------|-----------|
-| **PM** | Product Manager | 로드맵, 보고서, 회고, 인덱스 | PLAN, ACT |
-| **RA** | Requirements Analyst | 프로젝트 기획, 문서 관리, 백로그, 추적표 | ALL |
-| **SA** | Software Architect | SRS 작성, DB 설계(ERD), API 설계 | PLAN, DESIGN |
-| **UX** | UX Designer | 정보 구조도, 화면 설계, 와이어프레임, 화면 흐름도 | PLAN, DESIGN, DO |
-| **UX-DS** | Visual Designer | 디자인 도구(pencil/figma/stitch)로 시각 디자인 | DESIGN, DO |
-| **DV-FE** | Frontend Dev | Next.js App Router + react-query + Storybook | DO |
-| **DV-BE** | Backend Dev | API Routes + Prisma/Drizzle ORM | DO |
-| **QA** | QA Engineer | 테스트 설계(Unit+E2E), 실행, 결함 분석 | CHECK |
+u-maker의 에이전트가 정보가 부족할 때 **추정(assumption)**을 기록합니다.
+
+```
+A-001: "결제 수단은 신용카드만 지원한다고 가정" (confidence: 0.7)
+  → approve: 가정 확정
+  → reject: 가정 철회 + 영향받은 문서 cascade 수정
+```
+
+- `/u-status --assumptions`로 미리뷰 가능
+- `/u-assume approve A-001`로 승인, `/u-assume reject A-001`로 거부
+- `maxAssumptions` (기본 20) 초과 시 자동으로 interactive 모드 전환
+
+### AI 팀 구성 (4개 에이전트)
+
+v2에서는 8개 전문 에이전트를 4개로 통합하여 더 효율적으로 협업합니다.
+
+| 에이전트 | 역할 | 하는 일 | 모델 |
+|----------|------|---------|------|
+| **Orchestrator** | 지휘자 | 라우팅, 스코프 해석, 워크플로우 조율, 상태 관리 | opus |
+| **Planner** | 설계자 | SRS, IA, ERD, API, Screen, 문서 CRUD, 분석, 추정 | sonnet |
+| **Builder** | 개발자 | FE+BE 코드 생성, 스캐폴딩, 빌드 | sonnet |
+| **Guardian** | 검증자 | Gate 검증, TC 설계/실행, 일관성 검증, 리포트 | sonnet |
 
 ---
 
@@ -86,9 +119,6 @@ USR-0001 (사용자 유형: 예) 관리자, 일반 사용자)
 |------|------|------|
 | **Claude Code** | u-maker가 동작하는 기반 도구 | Yes |
 | **Node.js** | 내부 스크립트(Hook, Guard 등) 실행 | Yes |
-| **Python 3** | 문서 검증, 종료 조건 판정 스크립트 | Yes |
-| **bun** | 프로젝트 빌드/실행 | Yes |
-| Codex CLI / Gemini CLI | 멀티 환경 지원 | No |
 
 ### 설치
 
@@ -107,19 +137,40 @@ Invoke-WebRequest -Uri https://raw.githubusercontent.com/upleat-ax/u-maker-plugi
 ```
 
 이 스크립트가 자동으로:
+- 기존 u-maker 설치가 있으면 완전 삭제합니다 (캐시, symlink, 레지스트리)
 - GitHub에서 최신 릴리스 zip을 다운로드합니다
-- 플러그인을 설치합니다 (deploy_local.sh 실행)
+- 플러그인을 새로 설치합니다 (deploy_local.sh 실행)
 - 임시 파일을 정리합니다
 
 ```bash
 # 특정 버전 설치
-./install.sh --version 1.0.7
+./install.sh --version 2.0.0
 
 # 제거
 ./install.sh --uninstall
 ```
 
 > 설치 후 반드시 **Claude Code를 재시작**해주세요.
+
+### 업데이트
+
+이미 설치된 u-maker를 최신 버전으로 업데이트합니다.
+
+```bash
+# macOS / Linux
+curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/update.sh | bash
+
+# 특정 버전으로 업데이트
+./update.sh --version 2.1.0
+
+# 현재 vs 최신 버전 확인
+./update.sh --check
+```
+
+> 업데이트 시 삭제되는 것: 플러그인 캐시, symlink, 레지스트리 (u-maker만 해당)
+> 영향 없는 것: 프로젝트의 `.u-maker/` SSoT 문서
+
+> 업데이트 후 반드시 **Claude Code를 재시작**해주세요.
 
 #### 방법 B: 소스코드에서 로컬 설치
 
@@ -130,11 +181,6 @@ cd /path/to/u-maker-plugin
 ./deploy_local.sh
 ```
 
-이 스크립트가 자동으로:
-- Claude Code 플러그인 디렉토리에 등록합니다
-- 스킬과 에이전트 파일을 연결합니다 (심볼릭 링크)
-- Codex/Gemini가 설치되어 있으면 공유 링크도 설정합니다
-
 ```bash
 ./deploy_local.sh --check   # 설치 상태 확인
 ./deploy_local.sh --clean   # 완전 제거
@@ -142,142 +188,234 @@ cd /path/to/u-maker-plugin
 
 > 설치 후 반드시 **Claude Code를 재시작**해주세요.
 
-### 프로젝트 시작하기
+---
 
-**새 프로젝트를 처음부터 만들기:**
+## Part 3. 프로젝트 시작하기
 
-```bash
-/u-skill-create-project my-app
-```
-
-**이미 있는 프로젝트에 u-maker 적용하기:**
+### 3.1 새 프로젝트 초기화
 
 ```bash
-/u-skill-init .
+/u-init my-project
 ```
 
-기존 코드(package.json, 소스코드, DB 스키마 등)를 분석해서 SSoT 문서를 자동 역공학 생성합니다.
+이 명령어가 하는 일:
+1. `.u-maker/` 디렉토리 생성 (config, common/, apps/)
+2. `u-maker.config.json` 초기화 (프로젝트명, 기술 스택, 앱 목록)
+3. 첫 번째 앱 등록 (예: `retail`)
+4. 3-Layer 파이프라인 구조 생성 (`_input/`, `_classified/`, `docs/`)
+5. `_index.json`, `_links.json` 초기화
 
-### 가장 쉬운 시작 — 자동 루프
+### 3.2 기존 자료가 있는 경우 — 데이터 수집
 
-프로젝트가 준비되었으면, 이 한 줄이면 됩니다:
+RFP, 회의록, AS-IS 분석 자료 등이 있다면:
 
 ```bash
-/u-skill-loop
+# 1. _input/ 폴더에 원본 파일을 복사합니다
+#    .u-maker/apps/retail/_input/rfp/
+#    .u-maker/apps/retail/_input/meeting-notes/
+#    .u-maker/apps/retail/_input/as-is/
+
+# 2. 분석 적재 (Raw → Classified)
+/u-ingest retail
 ```
 
-u-maker가 Plan → Design → Do → Check → Act 전체 사이클을 자동으로 돌립니다.
-품질 기준(Critical/Major 결함 0건, 모든 FT 구현 완료, 빌드 성공)을 충족할 때까지 반복하며, 완료 시 종합 보고서가 자동 생성됩니다.
+`/u-ingest`가 원본을 chunk 단위로 분석해서 10개 카테고리로 정제합니다:
+
+```
+_input/rfp/proposal.pdf
+  → _classified/requirements/REQ-001.json   (기능 요구사항)
+  → _classified/pain-points/PP-001.json     (고객 불만)
+  → _classified/domain-terms/DT-001.json    (도메인 용어)
+  → _classified/stakeholders/SH-001.json    (이해관계자)
+  → ...
+```
+
+### 3.3 기획 → 산출물 생성
+
+```bash
+/u-plan retail           # Plan Phase 전체: SRS + IA + Roadmap 자동 생성
+```
+
+### 3.4 전체 자동 실행 (가장 쉬운 시작)
+
+```bash
+/u-plan retail           # 기획
+/u-design retail         # 설계
+/u-build retail          # 구현
+/u-check retail          # 검증
+/u-ship retail           # 배포 + 회고
+```
+
+또는 자연어로:
+
+```
+"retail 앱의 SRS를 만들어줘"           → /u-plan retail --only srs
+"ERD를 PostgreSQL로 최적화해줘"       → /u-agent-planner ...
+"테스트 케이스 만들어줘"               → /u-check retail
+```
 
 ---
 
-## Part 3. 역할별 활용 가이드
+## Part 4. Interaction Mode — 작업 방식 선택
 
-### 기획자 (PM / RA)
+u-maker는 3가지 작업 모드를 제공합니다. 상황에 맞게 선택하세요.
+
+### auto 모드 (기본)
+
+```bash
+/u-plan retail           # 아무 플래그 없으면 auto
+```
+
+- 에이전트가 **최선의 추측(best-guess)**으로 자동 진행
+- 판단이 필요하면 **Assumptions Log**에 기록하고 넘어감
+- 빠르지만, 나중에 `/u-assume`으로 가정을 리뷰해야 함
+
+**이런 때 사용하세요:**
+- 빠르게 초안을 뽑고 싶을 때
+- 전체 흐름을 한번 돌려보고 싶을 때
+- 잘 알려진 도메인(쇼핑몰, 게시판 등)을 만들 때
+
+### interactive 모드 (-i)
+
+```bash
+/u-plan retail -i        # interactive 모드
+```
+
+- 주요 분기점(요구사항 우선순위, 기술 선택 등)에서 **사용자에게 질문**
+- 가정(assumption)을 만들지 않음
+- 느리지만 정확함
+
+**이런 때 사용하세요:**
+- 도메인 지식이 특수해서 AI가 추정하면 안 될 때
+- 최초 프로젝트 세팅 시
+- 중요한 설계 결정이 포함된 Phase
+
+### step 모드 (--step)
+
+```bash
+/u-plan retail --step    # step 모드
+```
+
+- **매 문서 생성 전/후**에 확인 요청
+- 가장 느리지만 가장 세밀한 제어
+
+**이런 때 사용하세요:**
+- 학습 목적으로 u-maker의 과정을 이해하고 싶을 때
+- 특정 문서만 생성을 건너뛰고 싶을 때
+- 각 산출물의 품질을 하나씩 확인하고 싶을 때
+
+---
+
+## Part 5. 역할별 활용 가이드
+
+### 기획자 (PM / 요구사항 분석가)
 
 프로젝트를 기획하고 요구사항을 정의하는 역할입니다.
 
 #### 주요 시나리오
 
-**프로젝트 로드맵 수립:**
+**데이터 수집 & 분석:**
 ```bash
-/u-skill-plan web                    # Plan Phase 전체 실행 (Roadmap → SRS → IA → Index)
+# _input/에 RFP, 회의록 등을 넣고
+/u-ingest retail                          # Raw → Classified 분석 적재
+/u-ingest retail --review                 # 분석 결과 리뷰
+/u-ingest retail --incremental            # 신규분만 추가 분석
+```
+
+**Plan Phase 실행:**
+```bash
+/u-plan retail                            # Plan Phase 전체 (SRS + IA + Roadmap)
+/u-plan retail --only srs                 # SRS만 생성
+/u-plan retail -i                         # interactive 모드로 같이 보면서 진행
+/u-plan common                            # 공통 정책 문서 생성
 ```
 
 **요구사항 추가/관리:**
 ```bash
-/u-skill-us-add                      # 유저 스토리 추가 (대화형)
-/u-skill-fr-add web "회원가입 기능"   # 기능 요구사항 추가
-/u-skill-refine FR-0001 web          # 큰 요구사항을 하위 항목으로 세분화
-/u-skill-refine US-0001              # 유저 스토리 세분화
+/u-add retail fr "비밀번호 재설정"          # 기능 요구사항 추가
+/u-add retail us "비밀번호 재설정하고 싶다"   # 유저 스토리 추가
 ```
 
 **프로젝트 상태 파악:**
 ```bash
-/u-skill-status                      # Iteration, Phase, 완료율, 문서 상태
-/u-skill-summary                     # 프로젝트 요약 (터미널 출력)
-/u-skill-docs                        # 전체 문서 목록과 상태
-/u-skill-report                      # 종합 보고서 (.md + .html)
+/u-status                                 # 전체 프로젝트 대시보드
+/u-status retail                          # 특정 앱 상태
+/u-status retail --assumptions            # 미리뷰 assumptions 확인
+/u-doc retail srs                         # 특정 문서 조회
 ```
 
-**백로그 관리:**
+**브레인스토밍 & 협업:**
 ```bash
-/u-skill-backlog                     # 현재 Open 백로그 조회
-/u-skill-backlog-add "성능 최적화"    # 백로그 항목 추가
-/u-skill-history                     # Iteration 이력 조회
-```
-
-**문서 품질 관리:**
-```bash
-/u-skill-validate                    # 문서 무결성 검증 (헤더, 추적성, 구조)
-/u-skill-index                       # 문서 인덱스 갱신
-/u-skill-glossary web                # 도메인 용어 정의
-/u-skill-workflow web                # 비즈니스 워크플로우 정의
+/u-discuss retail brainstorm "결제 UX"     # 아이디어 발산 세션
+/u-discuss common decision "인증 방식"      # 기술 결정 세션
 ```
 
 **에이전트에게 직접 요청:**
 ```bash
-/u-agent-pm "이번 주 데일리 리포트를 생성해줘"
-/u-agent-ra "마일스톤 3의 진행 상황을 정리해줘"
+/u-agent-planner "마일스톤 3의 진행 상황을 정리해줘"
+/u-agent-orchestrator "retail 앱의 전체 현황을 요약해줘"
 ```
 
 #### 기획자가 꼭 알아야 할 것
 
-- u-maker는 **Docs-First** 원칙을 따릅니다. 새 기능을 코드로 바로 구현하려 하면 Hook이 차단합니다
-- `/u-skill-us-add` → `/u-skill-fr-add` 순서로 문서를 먼저 추가한 후 구현을 진행하세요
-- 요구사항이 너무 클 때는 `/u-skill-refine`으로 세분화하세요
+- u-maker는 **Docs-First** 원칙입니다. 새 기능을 코드로 바로 구현하려 하면 Hook이 차단합니다
+- `/u-add`로 문서를 먼저 추가한 후 구현을 진행하세요
+- Plan Phase의 Gate 조건: SRS + IA + Roadmap이 모두 **Final** 상태여야 Design으로 넘어감
+- auto 모드 사용 시 반드시 `/u-assume`로 assumptions를 리뷰하세요
 
 ---
 
-### 디자이너 (UX)
+### 디자이너 (UX / 화면 설계)
 
-화면 구조 설계, 와이어프레임, 시각 디자인을 담당합니다.
+화면 구조 설계, ERD, API 설계를 담당합니다.
 
 #### 주요 시나리오
 
-**설계 Phase 전체 실행:**
+**Design Phase 전체 실행:**
 ```bash
-/u-skill-design web                  # Design Phase (UXGuide → Screen → ScreenFlow → ERD → API → RTM)
+/u-design retail                          # ERD + API + Screen + Flow 전체
+/u-design retail --only screens           # Screen 관련만 생성
+/u-design retail -i                       # interactive 모드
 ```
 
 **개별 설계 작업:**
 ```bash
-/u-skill-screen web                  # 화면 상세 설계서 작성
-/u-skill-wireframe web               # 와이어프레임 HTML 생성 (SVG 기반 레이아웃)
-/u-skill-ux-figma web                # 디자인 도구(pencil/figma/stitch)로 화면 디자인
-/u-skill-ux-designsystem web         # 디자인 도구 기반 디자인 시스템/컴포넌트 시각 구성
+/u-design retail --only erd               # ERD만 생성
+/u-design retail --only api               # API Contract만 생성
 ```
 
-**설계 문서 확인:**
+**IA 워크숍:**
 ```bash
-/u-skill-html-doc screen             # 화면 설계서를 HTML 뷰어로 변환
-/u-skill-html-doc screenflow         # 화면 흐름도를 HTML로 변환
-/u-skill-html-doc uxguide            # UX 가이드를 HTML로 변환
+/u-discuss retail workshop "메인 IA"       # 다단계 IA 워크숍
+```
+
+**일관성 검증:**
+```bash
+/u-sync retail                            # SRS ↔ Screen ↔ ERD ↔ API 일관성 검증
 ```
 
 **에이전트에게 직접 요청:**
 ```bash
-/u-agent-ux "로그인 화면에 소셜 로그인 버튼을 넣어줘"
-/u-agent-ux "대시보드 화면의 레이아웃을 2컬럼으로 변경해줘"
+/u-agent-planner "로그인 화면에 소셜 로그인 버튼을 넣어줘"
+/u-agent-planner "대시보드 화면의 레이아웃을 2컬럼으로 변경해줘"
 ```
-
-#### 디자이너가 꼭 알아야 할 것
-
-- 화면 설계는 `IA(정보 구조도) → Screen(화면 설계) → ScreenFlow(흐름도) → Wireframe(HTML) → 시각 디자인` 순서로 진행됩니다
-- 와이어프레임은 HTML 파일로 생성되며, UI 레이아웃 영역은 SVG로 시각화됩니다
-- 시각 디자인 도구는 `u-maker.config.json`의 `designTool` 설정에 따라 pencil.dev, Figma, Stitch 중 선택됩니다
 
 #### 생성되는 문서
 
 | 문서 | 위치 | 설명 |
 |------|------|------|
-| IA (정보 구조도) | `{app}/01-plan/1_IA_RA.md` | 전체 화면 구조와 네비게이션 |
-| UX Guide | `common/02-design/2_UXGuide_UX.md` | UX 표준 가이드 + 디자인 시스템 |
-| Screen | `{app}/02-design/2_Screen_UX.md` | 화면별 상세 설계 |
-| ScreenFlow | `{app}/02-design/2_ScreenFlow_UX.md` | 화면 간 흐름도 |
-| Wireframe | `{app}/02-design/2_Screen_Wireframes/*.html` | 와이어프레임 HTML |
-| Design Token | `common/03-dev/3_DesignToken_UX.md` | 색상, 타이포, 간격 등 디자인 토큰 |
-| UI Components | `common/03-dev/3_UIComponents_UX.md` | UI 컴포넌트 명세 |
+| ERD | `apps/{app}/docs/02-design/erd.md` | 데이터 모델 설계 |
+| API Contract | `apps/{app}/docs/02-design/api.md` | OpenAPI 3.0 기반 API 설계 |
+| Screen | `apps/{app}/docs/02-design/screen.md` | 화면별 상세 설계 |
+| Screen Flow | `apps/{app}/docs/02-design/screen-flow.md` | 화면 간 흐름도 |
+| UX Guide | `common/ux/ux-guide.md` | UX 표준 가이드 (common에서 상속) |
+| RTM | `apps/{app}/rtm.md` | 요구사항 추적 매트릭스 |
+
+#### 디자이너가 꼭 알아야 할 것
+
+- 화면 설계는 `IA → Screen → Screen Flow` 순서로 진행됩니다
+- 시각 디자인 도구는 `u-maker.config.json`의 `designTool` 설정에 따라 pencil.dev, Figma, Stitch 중 선택됩니다
+- Design Phase Gate 조건: ERD + RTM + Screen + API = Final
 
 ---
 
@@ -287,53 +425,29 @@ u-maker가 Plan → Design → Do → Check → Act 전체 사이클을 자동�
 
 #### 주요 시나리오
 
-**개발 Phase 전체 실행:**
+**코드 생성:**
 ```bash
-/u-skill-dev web                     # DO Phase (UX/FE/BE 병렬 개발)
-```
-
-**개별 작업:**
-```bash
-/u-skill-build                       # 빌드 실행 (bun run build)
-/u-skill-storybook                   # Storybook 실행/생성
-/u-skill-fix web "로그인 토큰 만료 버그"  # 버그 수정 + QA가 자동 TC 보강
-```
-
-**설계-구현 일치 확인:**
-```bash
-/u-skill-gap-detector                # SRS/ERD/API/Screen vs 실제 코드 비교
+/u-build retail                           # FE + BE 코드 동시 생성
+/u-build retail --only fe                 # Frontend만 생성
+/u-build retail --only be                 # Backend만 생성
 ```
 
 **에이전트에게 직접 요청:**
 ```bash
-/u-agent-dv-fe "로그인 페이지의 폼 유효성 검사를 추가해줘"
-/u-agent-dv-be "User API에 프로필 이미지 업로드 엔드포인트를 추가해줘"
-/u-agent-sa "User 엔티티에 프로필 이미지 필드를 추가해줘"
+/u-agent-builder "로그인 페이지의 폼 유효성 검사를 추가해줘"
+/u-agent-builder "User API에 프로필 이미지 업로드 엔드포인트를 추가해줘"
 ```
 
-**Git & PR:**
+**문서 수정 + 코드 반영:**
 ```bash
-/u-skill-git-pr                      # feature별 git commit + GitHub PR
-/u-skill-git-pr feat/user-auth       # 특정 feature 이름 지정
+/u-update retail srs --cascade            # SRS 수정 + 하위 문서(ERD, Screen, TC) 자동 갱신
 ```
 
 #### 개발자가 꼭 알아야 할 것
 
-- u-maker는 **기술 스택 규칙**을 강제합니다. 위반 시 Hook이 코드를 차단합니다:
-
-| 규칙 | 위반 시 |
-|------|---------|
-| Next.js **App Router** only | `pages/` 디렉토리 거부 |
-| `react-query` only | usecase 패턴 거부 |
-| Plain `.css` only | CSS-in-JS (styled-components/emotion) 거부 |
-| `bun` only | npm/yarn/pnpm 거부 |
-| Functional Components only | Class 컴포넌트 거부 |
-| Storybook 필수 | `.stories.tsx` 없이 PR 거부 |
-| Design Token 기반 스타일링 | 하드코딩 색상/크기 거부 |
-
-- 코드를 작성하기 전에 **문서(SRS, API Contract, ERD)가 Final 상태**여야 합니다
-- `/u-skill-fix`를 사용하면 코드 수정 후 QA 에이전트가 **자동으로 테스트 케이스를 보강**합니다
-- DO Phase 완료 후 `gap-detector`가 설계-구현 Match Rate를 측정합니다. 90% 미만이면 Gap FT별로 보완합니다
+- u-maker는 **기술 스택 규칙**을 강제합니다. `pre-write-guard.js`가 위반을 실시간 검증합니다
+- 코드를 작성하기 전에 **SRS, API Contract, ERD가 Final 상태**여야 합니다
+- Do Phase Gate 조건: Code 문서 Final
 
 ---
 
@@ -343,1224 +457,382 @@ u-maker가 Plan → Design → Do → Check → Act 전체 사이클을 자동�
 
 #### 주요 시나리오
 
-**테스트 설계:**
+**Check Phase 전체 실행:**
 ```bash
-/u-skill-testcase web                # SRS FT 기반 Unit+E2E 테스트 케이스 일괄 설계
-/u-skill-tc-add web FT-0001 "로그인 성공" # 개별 TC 추가
-/u-skill-tc-add all FT-0001 "로그인 TC"  # 모든 앱에 동일 TC 일괄 추가
-/u-skill-tc-refine TC-0001 web       # TC를 하위 TC로 세분화
-```
-
-**테스트 실행:**
-```bash
-/u-skill-qa web                      # Vitest(Unit) + Playwright(E2E) 실행
-/u-skill-check web                   # CHECK Phase 전체 (설계 → 실행 → 결함 분석)
-```
-
-**품질 분석:**
-```bash
-/u-skill-gap-detector                # 설계-구현 Gap 분석
-/u-skill-validate                    # 문서 무결성 검증
-/u-skill-report                      # 종합 보고서 (TC 결과 포함)
+/u-check retail                           # TC 설계 + 테스트 실행 + 결함 분석 + 리포트
+/u-check retail -i                        # interactive 모드로 결과 확인
 ```
 
 **에이전트에게 직접 요청:**
 ```bash
-/u-agent-qa "인증 관련 테스트 케이스를 보강해줘"
-/u-agent-qa "경계값 테스트를 추가해줘"
+/u-agent-guardian "인증 관련 테스트 케이스를 보강해줘"
+/u-agent-guardian "경계값 테스트를 추가해줘"
+```
+
+**커버리지 확인:**
+```bash
+/u-coverage retail                        # classified → 산출물 커버리지 분석
+/u-trace retail FR-015                    # FR-015의 전체 추적 체인
 ```
 
 #### QA가 꼭 알아야 할 것
 
 - 테스트 케이스는 SRS의 **FT(Feature) 단위**로 설계됩니다
-- 각 TC는 **6W 스텝 구조**: Step / Screen / Element / Action / Input / Expected
-- TC 타입: **Positive**(정상), **Negative**(비정상), **Boundary**(경계값)
-- TC 레벨: **Unit**(Vitest) + **E2E**(Playwright) 모두 포함해야 합니다
-- `/u-skill-fix`로 버그 수정 시 QA 에이전트가 **백그라운드에서 자동으로 TC를 보강**합니다
-
-#### 종료 조건 (Exit Criteria)
-
-루프 종료를 위해 **모든** 조건을 충족해야 합니다:
-
-| 조건 | 확인 방법 |
-|------|----------|
-| Critical/Major 결함 0건 | `4_Report_QA.md` 파싱 |
-| SRS의 모든 FT 구현 완료 | `1_SRS_RA.md` 상태 확인 |
-| 빌드 성공 | `bun run build` 실행 |
+- Check Phase Gate 조건: Test Cases + Test Report = Final
+- `/u-trace`로 "이 요구사항이 테스트까지 빠짐없이 연결되었는지" 확인하세요
 
 ---
 
-### PM (프로젝트 매니저)
+## Part 6. 명령어 치트시트
 
-프로젝트 전반을 관리하고 보고서를 생성합니다.
+### CLI 문법
 
-#### 주요 시나리오
-
-**프로젝트 현황 파악:**
-```bash
-/u-skill-status                      # Iteration, Phase, 완료율
-/u-skill-summary                     # 프로젝트 요약 출력
-/u-skill-docs                        # 전체 문서 상태 (Draft/Review/Final)
+```
+/u-{command} [scope] [target] [flags]
 ```
 
-**보고서 생성:**
-```bash
-/u-skill-report                      # 종합 보고서 (.md + .html 동시 생성)
-/u-skill-report web                  # 특정 앱 보고서
+- **scope**: 앱 이름 (`retail`, `corporate`, `all`, `common`)
+- **target**: 문서/항목 (`srs`, `erd`, `fr`, `us`, `FR-001` 등)
+- **flags**: 동작 변경 (`-i`, `--step`, `--only`, `--cascade`, `--incremental`)
+
+### Lifecycle Commands (7개) — Phase별 실행
+
+| 명령어 | 설명 | 사용 예시 |
+|--------|------|-----------|
+| `/u-init` | 프로젝트 초기화, .u-maker/ 생성 | `/u-init my-project` |
+| `/u-ingest` | Raw 데이터 → Classified 분석 적재 | `/u-ingest retail` |
+| `/u-plan` | Plan Phase: SRS + IA + Roadmap | `/u-plan retail -i` |
+| `/u-design` | Design Phase: ERD + API + Screen + Flow | `/u-design retail --only erd` |
+| `/u-build` | Do Phase: FE + BE 코드 생성 | `/u-build retail --only fe` |
+| `/u-check` | Check Phase: TC 설계 + 테스트 + 리포트 | `/u-check retail` |
+| `/u-ship` | Act Phase: 최종 검증 + 회고 | `/u-ship retail` |
+
+### Operations Commands (5개) — 일상 작업
+
+| 명령어 | 설명 | 사용 예시 |
+|--------|------|-----------|
+| `/u-add` | 항목 추가 (FR/US/Screen 등) | `/u-add retail fr "회원가입"` |
+| `/u-update` | 문서 수정 + cascade 전파 | `/u-update retail srs --cascade` |
+| `/u-doc` | 문서 조회/편집/재생성 | `/u-doc retail screens` |
+| `/u-sync` | 전체 문서 일관성 검증 + 수정 제안 | `/u-sync retail` |
+| `/u-gate` | Phase Gate 검사 + 전환 | `/u-gate retail` |
+
+### Observability Commands (3개) — 현황 파악
+
+| 명령어 | 설명 | 사용 예시 |
+|--------|------|-----------|
+| `/u-status` | 대시보드 (phase, 진행률, impact flags) | `/u-status retail` |
+| `/u-coverage` | classified → 산출물 커버리지 | `/u-coverage all` |
+| `/u-trace` | raw → classified → docs 추적 체인 | `/u-trace retail FR-015` |
+
+### Collaboration & Review (2개)
+
+| 명령어 | 설명 | 사용 예시 |
+|--------|------|-----------|
+| `/u-discuss` | 구조화된 협업 세션 | `/u-discuss retail brainstorm "결제 UX"` |
+| `/u-assume` | Assumptions 리뷰 (approve/reject) | `/u-assume retail approve A-001` |
+
+### Agent Direct (4개) — 에이전트 직접 호출
+
+| 명령어 | 에이전트 | 사용 예시 |
+|--------|----------|-----------|
+| `/u-agent-orchestrator` | Orchestrator | `/u-agent-orchestrator "전체 현황 요약"` |
+| `/u-agent-planner` | Planner | `/u-agent-planner "ERD에 프로필 이미지 필드 추가"` |
+| `/u-agent-builder` | Builder | `/u-agent-builder "로그인 폼 유효성 검사"` |
+| `/u-agent-guardian` | Guardian | `/u-agent-guardian "경계값 TC 보강"` |
+
+### 자연어 라우터
+
+명령어를 모르겠으면 자연어로 말해도 됩니다. `u-maker` 라우터가 자동으로 적절한 명령어로 변환합니다.
+
 ```
-
-보고서에 포함되는 내용:
-- FR/NFR/US/FT/TC 전체 카운트 대시보드
-- 이전 보고서와 비교 Delta 테이블 + 트렌드 차트
-- US 상세 카드 (As a / I want to / So that)
-- TC FT별 그룹 뷰 (Pass/Fail 뱃지)
-- 3종 부채 현황 (기획/디자인/기술)
-- 기여자별 작업 내역 + Git 활동 요약
-- Dark/Light 모드 토글
-
-**문서 HTML 변환:**
-```bash
-/u-skill-html-doc                    # 모든 SSoT 문서를 HTML 뷰어로 변환
-/u-skill-html-doc srs                # SRS만 변환
-/u-skill-html-doc all                # 전체 변환
+"retail 앱의 SRS를 만들어줘"           → /u-plan retail --only srs
+"ERD를 PostgreSQL로 최적화해줘"       → /u-agent-planner ...
+"테스트 케이스 만들어줘"               → /u-check retail
+"지금 프로젝트 상태가 어때?"           → /u-status
 ```
-
-**Iteration 관리:**
-```bash
-/u-skill-act                         # ACT Phase (백로그 정리 → 회고 → 아카이브)
-/u-skill-archive                     # 현재 Iteration 아카이브
-/u-skill-history                     # Iteration 이력 조회
-```
-
-**에이전트에게 직접 요청:**
-```bash
-/u-agent-pm "이번 스프린트 회고를 작성해줘"
-/u-agent-pm "로드맵을 Q2 기준으로 갱신해줘"
-```
-
-#### PM이 꼭 알아야 할 것
-
-- 보고서는 `.md` + `.html` 2종 동시 생성됩니다 (HTML은 브라우저에서 바로 열 수 있음)
-- `/u-skill-loop` 완료 시 **Loop Report**가 자동 생성됩니다
-- `/u-skill-validate`로 문서 무결성을 주기적으로 검증하세요
 
 ---
 
-## Part 4. 실전 시나리오 모음
+## Part 7. /u-discuss 협업 세션
+
+### 세션 타입 5가지
+
+| 타입 | 용도 | 명령어 |
+|------|------|--------|
+| **brainstorm** | 아이디어 발산, 자유 토론 | `/u-discuss retail brainstorm "결제 UX"` |
+| **review** | 산출물 검토 | `/u-discuss retail review` |
+| **decision** | 기술/비즈니스 의사결정 | `/u-discuss common decision "DB 선택"` |
+| **workshop** | 다단계 작업 (설계 워크숍 등) | `/u-discuss retail workshop "메인 화면 설계"` |
+| **retro** | Iteration 회고 | `/u-discuss retail retro` |
+
+### 세션 중 micro-commands
+
+세션 진행 중 다음 명령어를 사용할 수 있습니다:
+
+| 명령어 | 설명 |
+|--------|------|
+| `@planner` / `@builder` / `@guardian` | 특정 에이전트에게 질문 |
+| `@all` | 모든 에이전트에게 의견 요청 |
+| `/idea [text]` | 아이디어 태깅 (→ `_classified/` 적재) |
+| `/decide [text]` | 결정사항 기록 (→ `_classified/decisions/`) |
+| `/concern [text]` | 우려/리스크 기록 (→ `_classified/constraints/`) |
+| `/action [who] [text]` | 액션 아이템 기록 |
+| `/wrap` | 세션 종료 + 태그된 항목 자동 분류 적재 |
+
+### 예시: 결제 UX 브레인스토밍
+
+```
+/u-discuss retail brainstorm "결제 UX"
+
+> @planner 현재 결제 플로우에서 이탈률이 높은 구간은?
+> /idea 원스텝 결제 (장바구니 → 바로 결제)
+> /idea 게스트 결제 (비회원 결제 허용)
+> @guardian 게스트 결제의 보안 리스크는?
+> /concern PCI-DSS 컴플라이언스 확인 필요
+> /decide 1단계에서는 회원 결제만, 2단계에서 게스트 결제 추가
+> /wrap
+```
+
+세션 종료 후:
+- `/idea`로 태그된 항목 → `_classified/requirements/`
+- `/decide`로 태그된 항목 → `_classified/decisions/`
+- `/concern`으로 태그된 항목 → `_classified/constraints/`
+
+---
+
+## Part 8. 실전 시나리오 모음
 
 ### Scenario 1: 새 프로젝트를 처음부터 끝까지
 
 ```bash
-/u-skill-create-project my-saas      # 프로젝트 생성
-/u-skill-loop                        # 전체 PDCA 자동 실행
+/u-init my-saas                           # 1. 프로젝트 초기화
+# → _input/에 RFP, 회의록 파일 복사
+/u-ingest retail                          # 2. 데이터 분석 적재
+/u-plan retail -i                         # 3. 기획 (interactive로 같이 진행)
+/u-gate retail                            # 4. Gate 검증 → Design 전환
+/u-design retail                          # 5. 설계
+/u-gate retail                            # 6. Gate 검증 → Do 전환
+/u-build retail                           # 7. 코드 생성
+/u-gate retail                            # 8. Gate 검증 → Check 전환
+/u-check retail                           # 9. 테스트
+/u-ship retail                            # 10. 배포 + 회고
 ```
 
-### Scenario 2: 기존 프로젝트에 SSoT 적용
+### Scenario 2: 기존 프로젝트에 u-maker 적용
 
 ```bash
-/u-skill-init .                      # 기존 코드 분석 → SSoT 문서 역공학 생성
-/u-skill-status                      # 생성된 문서 상태 확인
-/u-skill-validate                    # 문서 무결성 검증
-/u-skill-loop                        # PDCA 루프 시작
+/u-init .                                 # 기존 프로젝트 인식
+# → _input/에 기존 문서/코드 분석 자료 배치
+/u-ingest retail                          # 기존 자료 분석
+/u-status                                 # 생성된 문서 상태 확인
+/u-sync retail                            # 일관성 검증
 ```
 
-### Scenario 3: 단계별 수동 실행
+### Scenario 3: 요구사항 변경이 왔을 때
 
 ```bash
-/u-skill-plan web                    # 1. 기획
-/u-skill-design web                  # 2. 설계
-/u-skill-dev web                     # 3. 개발
-/u-skill-check web                   # 4. 테스트
-/u-skill-act                         # 5. 정리 및 회고
+# 고객이 "비밀번호 재설정 기능"을 추가 요청
+/u-add retail fr "비밀번호 재설정"          # 1. FR 추가
+/u-add retail us "비밀번호 재설정하고 싶다"   # 2. US 추가
+/u-update retail srs --cascade            # 3. SRS 수정 → ERD/Screen/TC auto-cascade
+/u-status retail                          # 4. impact flags 확인
 ```
 
-### Scenario 4: 새 기능 추가
+### Scenario 4: SRS 수정 후 영향 파악
 
 ```bash
-/u-skill-us-add                      # 1. 유저 스토리 추가
-/u-skill-fr-add web                  # 2. 기능 요구사항 추가
-/u-skill-refine FR-0010 web          # 3. 너무 크면 세분화
-/u-skill-design web                  # 4. 설계부터 재실행
-/u-skill-dev web                     # 5. 개발
-/u-skill-check web                   # 6. 테스트
+# SRS를 수정하면 hook이 자동으로 cascade 알림:
+# [u-maker] CASCADE: srs.md was modified. Impacted documents:
+#   - erd [MUST-UPDATE] (derives)
+#   - screen [MUST-UPDATE] (derives)
+#   - test-cases [REVIEW-NEEDED] (validates)
+
+/u-sync retail                            # 일관성 검증 + 수정 제안
+# 또는
+/u-update retail --cascade                # 의존 문서 자동 갱신
 ```
 
-### Scenario 5: 버그 수정
+### Scenario 5: Phase Gate가 통과 안 될 때
 
 ```bash
-/u-skill-fix web "로그인 시 토큰 만료 처리 버그"  # 코드 수정 + 자동 TC 보강
+/u-gate retail
+# → "Plan Gate FAILED: srs (Final), ia (Draft), roadmap (missing)"
+
+/u-plan retail --only ia                  # IA만 생성
+/u-doc retail ia                          # IA 문서 확인/편집
+/u-gate retail                            # 다시 검증
 ```
 
-### Scenario 6: 루프 중단 & 재개
+### Scenario 6: Assumptions 리뷰
 
 ```bash
-/u-skill-stop                        # 루프 중단 (상태 저장)
-/u-skill-status                      # 상태 확인
-/u-skill-resume                      # 재개
+/u-status retail --assumptions
+# A-001: "결제 수단은 신용카드만 지원" (confidence: 0.7)
+# A-002: "회원가입은 이메일만" (confidence: 0.9)
+
+/u-assume retail approve A-002            # 이메일만 → 확정
+/u-assume retail reject A-001 "전체취소만"  # 신용카드만 → 거부 (cascade 수정)
 ```
 
-### Scenario 7: 특정 Phase부터 루프 시작
+### Scenario 7: 멀티 앱 프로젝트
 
 ```bash
-/u-skill-loop-from design            # Design Phase부터 루프
-```
+/u-init my-platform                       # 프로젝트 초기화
+# u-maker.config.json에서 apps: ["retail", "admin", "api"] 설정
 
-### Scenario 8: 외부 소스 임포트
-
-```bash
-/u-skill-import figma https://figma.com/...   # Figma 디자인을 SSoT 문서로 변환
-/u-skill-import url https://example.com       # URL 콘텐츠를 SSoT 문서로 변환
-/u-skill-import                               # _sources.json 기반 일괄 임포트
-```
-
-### Scenario 9: 자연어로 요청하기
-
-슬래시 커맨드 대신 자연어로 말해도 됩니다. u-maker가 알아서 적절한 에이전트에게 전달합니다:
-
-```
-"로그인 기능을 추가하고 싶어"         → RA/SA가 문서 작성
-"ERD를 PostgreSQL로 최적화해줘"      → SA가 ERD 수정
-"대시보드 화면을 추가해줘"            → UX가 화면 설계
-"테스트 케이스를 보강해줘"            → QA가 TC 추가
-"이번 주 보고서를 만들어줘"           → PM이 보고서 생성
+/u-plan common                            # 공통 정책 먼저 생성
+/u-plan retail                            # retail 앱 기획
+/u-plan admin                             # admin 앱 기획
+/u-design retail,admin -i                 # 2개 앱 동시 설계 (interactive)
+/u-sync all                               # 전체 앱 일관성 검증
+/u-coverage all                           # 전체 커버리지 확인
 ```
 
 ---
 
-## Part 5. 문서 구조 한눈에 보기
+## Part 9. 폴더 구조 이해하기
+
+### .u-maker/ 프로젝트 구조
 
 ```
-.u-maker/docs/
-├── common/                     # 프로젝트 전체 공용
-│   ├── 01-plan/
-│   │   ├── 1_Roadmap_PM.md     # 로드맵
-│   │   ├── 1_Index_PM.md       # 문서 인덱스
-│   │   └── 1_Common_RA.md      # 공통 정의
-│   ├── 02-design/
-│   │   ├── 2_ERD_SA.md         # DB 설계 (Entity Relationship)
-│   │   ├── 2_RTM_RA.md         # 요구사항 추적표
-│   │   └── 2_UXGuide_UX.md     # UX 표준 가이드 + 디자인 시스템
-│   ├── 03-dev/
-│   │   ├── 3_UIComponents_UX.md # UI 컴포넌트 명세
-│   │   └── 3_DesignToken_UX.md  # 디자인 토큰
-│   └── 05-act/
-│       ├── 5_IterationLog_RA.md # 백로그 + Iteration 이력
-│       ├── 5_Retrospective_PM.md # 회고
-│       └── 5_*Report_PM_*.md/html # 보고서
-├── {app}/                      # 앱별 문서 (예: web, admin)
-│   ├── 01-plan/
-│   │   ├── 1_SRS_RA.md         # 요구사항 명세 (FR→US→FT)
-│   │   ├── 1_IA_RA.md          # 정보 구조도
-│   │   ├── 1_Glossary_RA.md    # 용어 정의
-│   │   └── 1_Workflow_RA.md    # 워크플로우 정의
-│   ├── 02-design/
-│   │   ├── 2_API_SA.md         # API Contract (OpenAPI 3.0)
-│   │   ├── 2_Screen_UX.md      # 화면 상세 설계
-│   │   ├── 2_ScreenFlow_UX.md  # 화면 흐름도
-│   │   └── 2_Screen_Wireframes/ # 와이어프레임 HTML
-│   ├── 03-dev/
-│   │   ├── 3_Code_DV.md        # 구현 기록
-│   │   └── 3_Screen_UX.md      # 화면 구현 명세
-│   └── 04-check/
-│       ├── 4_Case_QA.md        # 테스트 케이스
-│       └── 4_Report_QA.md/html  # QA 리포트
-└── iterations/                  # Iteration 아카이브
-    └── iter-N/
+.u-maker/
+├── u-maker.config.json              # 전역 설정
+├── _links.json                       # 의존성 그래프
+│
+├── common/                           # 프로젝트 공통 (모든 앱이 상속)
+│   ├── _index.json
+│   ├── policy/                       # 서비스/보안/개인정보/에러코드/용어
+│   ├── ux/                           # UX Guide, Design Token, UI Components
+│   ├── dev/                          # Coding Convention, Git Strategy
+│   ├── architecture/                 # System Overview, ERD, API
+│   └── project/                      # Roadmap, Stakeholders
+│
+├── apps/{app-name}/                  # 앱별 독립 파이프라인
+│   ├── _index.json                   # 문서 목차 + 상태
+│   ├── app.config.json               # 앱별 설정 (inherit + override)
+│   ├── _input/                       # Layer 1: Raw data
+│   │   ├── rfp/
+│   │   ├── as-is/
+│   │   └── meeting-notes/
+│   ├── _classified/                  # Layer 2: 정제 데이터
+│   │   ├── requirements/
+│   │   ├── pain-points/
+│   │   ├── domain-terms/
+│   │   └── ... (10개 카테고리)
+│   ├── _sessions/                    # 토론 세션 아카이브
+│   ├── _assumptions/                 # 가정 로그
+│   └── docs/                         # Layer 3: 산출물
+│       ├── 01-plan/                  # srs.md, ia.md, roadmap.md
+│       ├── 02-design/               # erd.md, api.md, screen.md
+│       ├── 03-dev/                  # code.md
+│       └── 04-check/               # test-cases.md, test-report.md
+│
+├── _input/                           # 프로젝트 공통 raw data
+├── _classified/                      # 공통 classified
+├── _sessions/                        # cross-app 토론
+└── _assumptions/                     # cross-app assumptions
+```
+
+### Scope-First Navigation
+
+Claude는 파일을 직접 열지 않고 **`_index.json`만 먼저 읽어서** 필요한 파일만 선택적 로드합니다. 이렇게 하면 context window를 절약할 수 있습니다.
+
+---
+
+## Part 10. Auto-Cascade — 문서 변경 자동 전파
+
+u-maker의 핵심 기능 중 하나입니다. 문서 간 의존 관계가 `_links.json`에 기록되어 있어, 상위 문서가 변경되면 하위 문서에 자동으로 영향을 알립니다.
+
+### 의존성 예시
+
+```
+SRS 변경 → ERD [MUST-UPDATE]
+         → Screen [MUST-UPDATE]
+         → Test Cases [REVIEW-NEEDED]
+         → Roadmap [INFO]
+```
+
+### 영향도 레벨
+
+| 레벨 | 의미 | 조치 |
+|------|------|------|
+| **MUST-UPDATE** | 강한 의존, 반드시 갱신 필요 | `/u-update --cascade`로 자동 갱신 |
+| **REVIEW-NEEDED** | 확인 필요 | `/u-sync`로 검증 후 판단 |
+| **INFO** | 참고 사항 | 필요 시 수동 확인 |
+
+SRS를 수정하면 `on-doc-change.js` hook이 자동으로:
+```
+[u-maker] CASCADE: srs.md was modified. Impacted documents:
+  - erd [MUST-UPDATE] (derives)
+  - screen [MUST-UPDATE] (derives)
+  - test-cases [REVIEW-NEEDED] (validates)
 ```
 
 ---
 
-## Part 6. 자주 묻는 질문
+## Part 11. Hook & Guard 시스템
 
-### Q: 명령어가 안 보여요
+u-maker는 Hook을 통해 작업 품질을 자동으로 보장합니다.
 
-1. `./deploy_local.sh --check`로 설치 상태를 확인하세요
-2. Claude Code를 재시작하세요
-3. `/u-skill-help`를 입력해 명령어 목록이 나오는지 확인하세요
+| Hook | 동작 | 당신에게 미치는 영향 |
+|------|------|---------------------|
+| **Docs-First Guard** | 새 기능 감지 시 문서 수정 먼저 요구 | "코드 작성하려면 `/u-add`로 문서 먼저 추가하세요" |
+| **Pre-Write Guard** | SSoT 문서 경로 + tech stack 위반 검증 | 잘못된 경로/기술 사용 시 차단 |
+| **Post-Write Index** | 문서 작성 후 `_index.json` 갱신 알림 | 자동 처리됨 |
+| **Input Added** | `_input/` 파일 감지 → `/u-ingest` 제안 | "새 파일이 감지되었습니다. `/u-ingest`를 실행하세요" |
+| **Doc Change** | 문서 변경 → cascade impact 알림 | "SRS가 변경됨 → ERD, Screen 갱신 필요" |
+| **Gate Pass** | Gate 조건 충족 시 phase 전환 제안 | "모든 조건 충족! `/u-gate`로 전환하세요" |
+| **Session Wrap** | 세션 완료 → classified 적재 알림 | "태그된 항목을 분류하세요" |
+| **Stop State** | 세션 종료 시 상태 저장 | 자동 처리됨 |
 
-### Q: "문서를 먼저 업데이트하세요"라는 메시지가 뜹니다
-
-u-maker의 Docs-First 원칙 때문입니다. 새 기능을 코드로 바로 구현하려 하면 이 메시지가 나옵니다.
-
-```bash
-# 먼저 문서를 추가한 후
-/u-skill-us-add
-/u-skill-fr-add web
-
-# 그 다음에 구현을 진행하세요
-/u-skill-dev web
-```
-
-### Q: 루프가 계속 돌아요
-
-기본 최대 10회까지 반복되며, 이후 자동 종료됩니다. 바로 멈추고 싶으면 `/u-skill-stop`.
-`.u-maker/u-maker.config.json`의 `pdca.maxIterations` 값을 조정할 수 있습니다.
-
-### Q: Gap Loop가 수렴하지 않아요
-
-Inner Gap Loop는 최대 `maxGapRetries`(기본 3회) 재시도 후 강제 진행됩니다.
-`.u-maker/u-maker.config.json`의 `pdca.gapThreshold`(기본 90%)와 `pdca.maxGapRetries`를 조정할 수 있습니다.
-
-### Q: 멀티앱 프로젝트는 어떻게 하나요?
-
-앱 이름을 인자로 전달합니다:
-
-```bash
-/u-skill-plan web
-/u-skill-design admin
-/u-skill-dev web
-```
-
-### Q: 설정 파일은 어디에 있나요?
-
-`.u-maker/u-maker.config.json`이 프로젝트의 핵심 설정 파일입니다.
-현재 Phase, Iteration, 앱 목록, 기술 스택 규칙 등을 관리합니다.
-
-### Q: 이전에 `u-ssot.config.json`을 쓰고 있었어요
-
-설정 파일명이 변경되었습니다:
-
-```bash
-mv .u-maker/u-ssot.config.json .u-maker/u-maker.config.json
-```
+> Hook은 **사용자를 돕기 위한 가이드**입니다. 차단이 아니라 올바른 방향을 안내합니다.
 
 ---
 
-## Part 7. 다음 단계
+## Part 12. 자주 묻는 질문 (FAQ)
 
-기본 사용법을 익혔다면, 더 깊이 활용해보세요:
+### Q: 명령어가 인식되지 않아요
 
-| 활용 | 명령어 |
-|------|--------|
-| 전체 54개 명령어 상세 도움말 | `/u-skill-help` |
-| 종합 보고서 (Dark/Light HTML) | `/u-skill-report` |
-| SSoT 문서를 HTML 뷰어로 변환 | `/u-skill-html-doc` |
-| 디자인 도구로 시각적 화면 디자인 | `/u-skill-ux-figma` |
-| 외부 소스를 SSoT 문서로 변환 | `/u-skill-import` |
-| 설계와 구현의 일치율 분석 | `/u-skill-gap-detector` |
-| Git PR 생성 | `/u-skill-git-pr` |
-| 도메인 용어 정의 | `/u-skill-glossary` |
-| 비즈니스 워크플로우 정의 | `/u-skill-workflow` |
+A: Claude Code를 재시작해보세요. 재시작 후에도 안 되면 `./deploy_local.sh --check`로 설치 상태를 확인하세요.
 
-궁금한 점이 있으면 언제든 자연어로 물어보세요. u-maker가 적절한 에이전트에게 전달해드립니다.
+### Q: 어떤 명령어를 써야 할지 모르겠어요
 
----
+A: 자연어로 말해보세요. "retail 앱의 SRS를 만들어줘"처럼 자연어를 입력하면 u-maker 라우터가 적절한 명령어로 변환합니다.
 
-## Part 8. Skill Reference — 전체 54개 스킬 시나리오 가이드
+### Q: Hook이 계속 차단해요
 
-모든 스킬의 상세 사용법을 시나리오 기반으로 정리합니다. 각 스킬은 "언제 쓰는지 → 어떻게 쓰는지 → 실전 시나리오"로 구성됩니다.
+A: Docs-First 원칙입니다. 코드를 작성하기 전에 `/u-add`로 요구사항 문서를 먼저 추가하세요.
 
----
+### Q: auto 모드에서 자꾸 interactive로 전환돼요
 
-### 8.0 Router & Orchestrator
+A: `maxAssumptions` (기본 20)이 초과되었습니다. `/u-assume`로 쌓인 assumptions를 리뷰(approve/reject)하면 다시 auto 모드로 돌아갑니다.
 
-#### `/u-skill-maker` — 자연어 라우터
+### Q: cascade 알림이 너무 많아요
 
-사용자 입력을 분석하여 적절한 스킬/에이전트로 자동 라우팅합니다. 직접 호출할 필요 없이, 자연어로 말하면 자동으로 동작합니다.
+A: `/u-sync`로 한 번에 정리하거나, `/u-update --cascade`로 의존 문서를 자동 갱신하세요.
 
-```
-"회원가입 기능을 만들어줘"        → /u-skill-fr-add로 라우팅
-"ERD를 수정해줘"                 → /u-agent-sa로 라우팅
-"현재 진행 상황을 보여줘"         → /u-skill-status로 라우팅
-"테스트 케이스를 추가해줘"        → /u-skill-tc-add로 라우팅
-```
+### Q: scope를 잘못 지정했어요
 
-#### `/u-skill-help` — 명령어 도움말
+A: `u-maker.config.json`의 `apps[]` 배열에 앱이 등록되어 있는지 확인하세요. 등록되지 않은 앱 이름은 인식되지 않습니다.
 
-```bash
-# 시나리오: 어떤 명령어가 있는지 모를 때
-/u-skill-help
+### Q: v1에서 v2로 마이그레이션하려면?
 
-# 시나리오: 특정 카테고리의 명령어만 보고 싶을 때
-/u-skill-help plan          # Plan Phase 관련 명령어만
-/u-skill-help test          # 테스트 관련 명령어만
-```
+A: v2는 새로운 폴더 구조(`.u-maker/apps/`)와 문서 이름(예: `srs.md`)을 사용합니다. v1 프로젝트는 `/u-init`으로 새로 초기화한 후 기존 문서를 `_input/`에 넣고 `/u-ingest`로 분석하는 것을 권장합니다.
 
 ---
 
-### 8.1 Project Lifecycle
+## Part 13. 다음 단계
 
-#### `/u-skill-create-project` — 새 프로젝트 생성
+u-maker에 익숙해졌다면:
 
-```bash
-# 시나리오 1: SaaS 프로젝트를 처음부터 시작
-/u-skill-create-project my-saas
-
-# 시나리오 2: 관리자 포털과 사용자 앱을 분리한 멀티앱 프로젝트
-/u-skill-create-project my-platform
-# → 이후 u-maker.config.json에서 apps: ["web", "admin"] 설정
-```
-
-#### `/u-skill-init` — 기존 프로젝트에 SSoT 적용
-
-```bash
-# 시나리오 1: 이미 코드가 있는 프로젝트에 u-maker 적용
-/u-skill-init .
-# → package.json, 소스코드, DB 스키마를 분석하여 SSoT 문서 역공학 생성
-
-# 시나리오 2: 특정 디렉토리의 프로젝트를 분석
-/u-skill-init ./my-existing-app
-
-# 시나리오 3: 레거시 프로젝트를 점진적으로 SSoT화
-/u-skill-init .
-/u-skill-validate                # 자동 생성된 문서의 무결성 확인
-/u-skill-status                  # 문서 완성도 파악
-```
-
-#### `/u-skill-plan` — PLAN Phase 실행
-
-```bash
-# 시나리오 1: 프로젝트 기획 전체를 한 번에 실행
-/u-skill-plan web
-# → Roadmap → SRS(FR→US→FT) → IA → Index 순서로 자동 생성
-
-# 시나리오 2: 멀티앱 프로젝트에서 admin 앱만 기획
-/u-skill-plan admin
-
-# 시나리오 3: 기존 Plan을 갱신 (이미 문서가 있을 때)
-/u-skill-plan web
-# → 기존 문서를 읽고 증분 업데이트
-```
-
-#### `/u-skill-design` — DESIGN Phase 실행
-
-```bash
-# 시나리오 1: 설계 전체를 한 번에 실행
-/u-skill-design web
-# → UXGuide → Screen → ScreenFlow → Wireframe → ERD → API → RTM → 모순 검수
-
-# 시나리오 2: Plan이 Final인지 확인 후 설계 진행
-/u-skill-status                  # Gate 조건 확인
-/u-skill-design web              # Plan Phase 문서가 Final이어야 진행 가능
-
-# 시나리오 3: 화면 설계 변경 후 재설계
-# (화면 추가 후 전체 설계 정합성을 재확인)
-/u-skill-design web
-```
-
-#### `/u-skill-dev` — DO Phase 실행
-
-```bash
-# 시나리오 1: FE/BE 병렬 개발 전체 실행
-/u-skill-dev web
-# → UX 화면 구현 + Frontend + Backend 병렬로 진행
-
-# 시나리오 2: 설계 변경 후 증분 개발
-/u-skill-dev web
-# → 이미 구현된 코드는 유지하고 새로운 FT만 개발
-
-# 시나리오 3: Gap Check 포함 개발
-/u-skill-dev web
-/u-skill-gap-detector            # 설계-구현 일치율 확인
-# → 90% 미만이면 Gap FT별로 보완
-```
-
-#### `/u-skill-check` — CHECK Phase 실행
-
-```bash
-# 시나리오 1: 테스트 전체 실행 (설계 → 실행 → 결함 분석)
-/u-skill-check web
-# → TC 설계 → Vitest(Unit) + Playwright(E2E) 실행 → 결함 분류/분석
-
-# 시나리오 2: 빌드 성공 확인 후 CHECK 진행
-/u-skill-build                   # 빌드 먼저 확인
-/u-skill-check web               # 빌드 OK여야 진행
-
-# 시나리오 3: 특정 기능만 집중 테스트 후 전체 CHECK
-/u-agent-qa "인증 관련 TC만 먼저 실행해줘"
-/u-skill-check web               # 전체 CHECK
-```
-
-#### `/u-skill-act` — ACT Phase 실행
-
-```bash
-# 시나리오 1: Iteration 마무리 (백로그 정리 → 회고 → 아카이브)
-/u-skill-act
-
-# 시나리오 2: 멀티앱 프로젝트에서 특정 앱 마무리
-/u-skill-act web
-
-# 시나리오 3: 회고만 먼저 진행
-/u-agent-pm "이번 Iteration 회고를 작성해줘"
-/u-skill-act                     # 이후 전체 ACT Phase 실행
-```
+1. **README.md**: 전체 아키텍처, 엔진 스킬, 스키마 등 상세 레퍼런스
+2. **`shared/references/`**: 18개 참조 문서 (PDCA 워크플로우, cascade 규칙, interaction modes 등)
+3. **`templates/`**: 72개 문서 템플릿 (phase별, classified, config, session, common)
+4. **`schemas/`**: 7개 JSON Schema (문서 구조 정의)
 
 ---
 
-### 8.2 Auto-Loop & Control
+## License
 
-#### `/u-skill-loop` — PDCA 자동 반복
-
-```bash
-# 시나리오 1: 프로젝트 생성 후 완전 자동 실행
-/u-skill-create-project my-app
-/u-skill-loop
-# → Plan→Design→Do→Check→Act를 종료 조건 충족까지 반복
-
-# 시나리오 2: 기존 프로젝트에서 자동 루프
-/u-skill-init .
-/u-skill-loop
-# → 역공학 SSoT 기반으로 자동 개선 루프 시작
-
-# 시나리오 3: 루프 중 상태 확인
-# (루프가 돌고 있을 때 별도 세션에서)
-/u-skill-status                  # 현재 Phase/Iteration 확인
-```
-
-#### `/u-skill-loop-from` — 특정 Phase부터 루프 시작
-
-```bash
-# 시나리오 1: Plan은 이미 완료, Design부터 루프
-/u-skill-loop-from design
-
-# 시나리오 2: 코드만 수정 후 Do부터 재시작
-/u-skill-loop-from dev
-
-# 시나리오 3: 테스트만 다시 돌리기
-/u-skill-loop-from check
-```
-
-#### `/u-skill-stop` — 루프 중단
-
-```bash
-# 시나리오 1: 급하게 다른 작업이 생겨서 중단
-/u-skill-stop
-# → 현재 Phase와 상태가 저장됨
-
-# 시나리오 2: 중단 후 상태 확인
-/u-skill-stop
-/u-skill-status                  # 중단된 Phase 확인
-```
-
-#### `/u-skill-resume` — 중단된 루프 재개
-
-```bash
-# 시나리오 1: 어제 중단한 루프를 이어서 진행
-/u-skill-resume
-# → 중단된 Phase부터 재개
-
-# 시나리오 2: 재개 전 상태 확인
-/u-skill-status                  # 어디서 중단되었는지 확인
-/u-skill-resume                  # 재개
-```
-
-#### `/u-skill-gap-detector` — 설계-구현 Gap 분석
-
-```bash
-# 시나리오 1: DO Phase 완료 후 설계 대비 구현 일치율 확인
-/u-skill-dev web
-/u-skill-gap-detector
-# → SRS/ERD/API/Screen vs 실제 코드 비교, Match Rate 산출
-
-# 시나리오 2: 특정 FT의 Gap만 확인
-/u-skill-gap-detector
-# → FT별 구현 상태를 보여주므로 어떤 FT가 빠졌는지 파악
-
-# 시나리오 3: Gap 보완 후 재측정
-/u-agent-dv-fe "FT-0003을 구현해줘"
-/u-skill-gap-detector            # 재측정하여 Match Rate 변화 확인
-```
-
----
-
-### 8.3 Requirement & Document Management
-
-#### `/u-skill-srs` — SRS 문서 생성/수정
-
-```bash
-# 시나리오 1: 처음부터 SRS 작성
-/u-skill-srs web
-# → FR → US → FT 계층 구조로 요구사항 명세서 생성
-
-# 시나리오 2: 기존 SRS에 새 기능 반영
-/u-skill-srs web
-# → 기존 문서를 읽고 증분 업데이트
-
-# 시나리오 3: SRS를 HTML로 확인
-/u-skill-srs web
-/u-skill-html-doc srs            # HTML 뷰어로 변환하여 확인
-```
-
-#### `/u-skill-fr-add` — 기능 요구사항(FR) 추가
-
-```bash
-# 시나리오 1: 새 기능 요구사항 추가
-/u-skill-fr-add web "회원가입 기능"
-# → 1_SRS_RA.md에 FR-XXXX 항목 + 상세 블록 생성
-
-# 시나리오 2: 대화형으로 FR 추가 (인자 없이)
-/u-skill-fr-add web
-# → 대화형으로 요구사항 내용 입력
-
-# 시나리오 3: 여러 FR을 연속 추가
-/u-skill-fr-add web "결제 기능"
-/u-skill-fr-add web "알림 기능"
-/u-skill-fr-add web "관리자 대시보드"
-```
-
-#### `/u-skill-us-add` — 유저 스토리 추가
-
-```bash
-# 시나리오 1: 대화형으로 유저 스토리 추가
-/u-skill-us-add
-# → "As a [사용자], I want to [행동], So that [목적]" 형식으로 생성
-
-# 시나리오 2: 기존 FR에 연결된 US 추가
-/u-skill-us-add
-# → FR-0001에 연결된 새로운 사용자 시나리오 추가
-
-# 시나리오 3: US 추가 후 FR과의 매핑 확인
-/u-skill-us-add
-/u-skill-validate                # 추적성(USR→FR→US→FT) 검증
-```
-
-#### `/u-skill-refine` — FR/US/FT 세분화
-
-```bash
-# 시나리오 1: 큰 FR을 하위 항목으로 분해
-/u-skill-refine FR-0001 web
-# → FR-0001을 분석하여 FR-0001-01, FR-0001-02 등으로 세분화
-
-# 시나리오 2: 유저 스토리 세분화
-/u-skill-refine US-0003 web
-# → 복잡한 US를 더 작은 단위로 분해
-
-# 시나리오 3: FT 세분화 (구현 단위가 너무 클 때)
-/u-skill-refine FT-0005 web
-# → 하나의 큰 FT를 독립적으로 구현 가능한 작은 FT들로 분해
-```
-
-#### `/u-skill-erd` — ERD 문서 생성/수정
-
-```bash
-# 시나리오 1: SRS 기반 ERD 자동 생성
-/u-skill-erd
-# → SRS의 FT를 분석하여 Entity-Relationship Diagram 생성
-
-# 시나리오 2: 기존 ERD에 새 엔티티 추가
-/u-skill-erd
-# → 새로 추가된 FR/FT를 반영하여 ERD 증분 업데이트
-
-# 시나리오 3: ERD를 PostgreSQL 기준으로 최적화
-/u-agent-sa "ERD를 PostgreSQL 기준으로 최적화해줘"
-```
-
-#### `/u-skill-api` — API Contract 생성/수정
-
-```bash
-# 시나리오 1: OpenAPI 3.0 스펙 자동 생성
-/u-skill-api web
-# → ERD와 Screen 설계를 기반으로 API 엔드포인트 명세 생성
-
-# 시나리오 2: 기존 API에 새 엔드포인트 추가
-/u-skill-api web
-# → 새 FT에 필요한 API 엔드포인트만 추가
-
-# 시나리오 3: API 설계를 HTML로 확인
-/u-skill-api web
-/u-skill-html-doc api            # OpenAPI 스펙을 HTML 뷰어로 변환
-```
-
-#### `/u-skill-glossary` — 용어 정의
-
-```bash
-# 시나리오 1: 프로젝트 도메인 용어 정의
-/u-skill-glossary web
-# → 프로젝트에서 사용하는 도메인 용어의 정의와 약어를 문서화
-
-# 시나리오 2: 새 도메인 용어 추가
-/u-skill-glossary web
-# → 기존 Glossary에 새 용어 추가
-
-# 시나리오 3: 용어 불일치 감지
-/u-skill-glossary web
-/u-skill-validate                # 문서 간 용어 사용 일관성 검증
-```
-
-#### `/u-skill-workflow` — 워크플로우 정의
-
-```bash
-# 시나리오 1: 비즈니스 프로세스 플로우 문서화
-/u-skill-workflow web
-# → 주문 처리, 결제, 환불 등 비즈니스 워크플로우 정의
-
-# 시나리오 2: 기존 워크플로우 갱신
-/u-skill-workflow web
-# → 프로세스 변경 사항 반영
-
-# 시나리오 3: 워크플로우 기반으로 화면 설계
-/u-skill-workflow web            # 워크플로우 먼저 정의
-/u-skill-screen web              # 워크플로우 기반 화면 설계
-```
-
-#### `/u-skill-import` — 외부 소스 임포트
-
-```bash
-# 시나리오 1: Figma 디자인을 SSoT 문서로 변환
-/u-skill-import figma https://figma.com/design/...
-
-# 시나리오 2: pencil.dev 디자인 임포트
-/u-skill-import pencil ./design.pen
-
-# 시나리오 3: URL 콘텐츠를 SSoT 문서로 변환
-/u-skill-import url https://example.com/api-docs
-
-# 시나리오 4: _sources.json 기반 일괄 임포트
-/u-skill-import
-# → .u-maker/docs/_sources.json에 정의된 모든 소스를 일괄 변환
-
-# 시나리오 5: 이미지(스크린샷)를 화면 설계로 변환
-/u-skill-import image ./screenshot.png
-```
-
----
-
-### 8.4 UX & Design
-
-#### `/u-skill-screen` — 화면 상세 설계
-
-```bash
-# 시나리오 1: IA 기반으로 전체 화면 설계
-/u-skill-screen web
-# → IA(정보 구조도)를 기반으로 각 화면의 상세 설계 문서 생성
-
-# 시나리오 2: 특정 화면 설계 갱신
-/u-skill-screen web
-# → 기존 화면 설계에 새 요소 추가
-
-# 시나리오 3: 화면 설계 → 와이어프레임 연계
-/u-skill-screen web              # 화면 설계서 작성
-/u-skill-wireframe web           # 설계서 기반 와이어프레임 생성
-```
-
-#### `/u-skill-wireframe` — 와이어프레임 HTML 생성
-
-```bash
-# 시나리오 1: 전체 화면의 와이어프레임 생성
-/u-skill-wireframe web
-# → 화면 설계서를 기반으로 SVG 레이아웃 HTML 생성
-
-# 시나리오 2: 특정 화면의 와이어프레임만 갱신
-/u-skill-wireframe web
-# → 변경된 화면만 재생성
-
-# 시나리오 3: 와이어프레임을 브라우저에서 확인
-/u-skill-wireframe web
-# → .u-maker/docs/{app}/02-design/2_Screen_Wireframes/*.html 을 브라우저로 열기
-```
-
-#### `/u-skill-ux-figma` — 디자인 도구 기반 화면 디자인
-
-```bash
-# 시나리오 1: pencil.dev로 화면 디자인 (기본 설정)
-/u-skill-ux-figma web
-# → u-maker.config.json의 designTool 설정에 따라 pencil MCP로 디자인
-
-# 시나리오 2: Figma로 화면 디자인
-# (u-maker.config.json에서 designTool: "figma" 설정 후)
-/u-skill-ux-figma web
-
-# 시나리오 3: 화면 설계서를 기반으로 시각 디자인
-/u-skill-screen web              # 화면 설계서 먼저 작성
-/u-skill-ux-figma web            # 설계서를 시각적 디자인으로 변환
-```
-
-#### `/u-skill-ux-designsystem` — 디자인 시스템 시각 구성
-
-```bash
-# 시나리오 1: 디자인 시스템 컴포넌트를 시각적으로 구성
-/u-skill-ux-designsystem web
-# → 디자인 도구(pencil/figma/stitch)로 컴포넌트 라이브러리 구성
-
-# 시나리오 2: 기존 디자인 시스템 업데이트
-/u-skill-ux-designsystem web
-# → 새 컴포넌트 추가, 기존 컴포넌트 수정
-
-# 시나리오 3: 디자인 토큰과 연계
-/u-skill-ux-designsystem web     # 디자인 시스템 구성
-# → 3_DesignToken_UX.md와 3_UIComponents_UX.md가 자동 갱신
-```
-
----
-
-### 8.5 Test & QA
-
-#### `/u-skill-testcase` — 테스트 케이스 일괄 설계
-
-```bash
-# 시나리오 1: SRS의 모든 FT에 대해 TC 일괄 생성
-/u-skill-testcase web
-# → 각 FT에 대해 Positive/Negative/Boundary 케이스 생성
-# → Unit Test(Vitest) + E2E Test(Playwright) 모두 포함
-
-# 시나리오 2: 새로 추가된 FT에 대해서만 TC 생성
-/u-skill-testcase web
-# → 이미 TC가 있는 FT는 스킵, 새 FT만 설계
-
-# 시나리오 3: TC 설계 후 즉시 실행
-/u-skill-testcase web            # TC 설계
-/u-skill-qa web                  # TC 실행
-```
-
-#### `/u-skill-tc-add` — 테스트 케이스 개별 추가
-
-```bash
-# 시나리오 1: 특정 FT에 대한 TC 추가
-/u-skill-tc-add web FT-0001 "로그인 성공 시나리오"
-
-# 시나리오 2: 모든 앱에 동일 TC 일괄 추가
-/u-skill-tc-add all FT-0001 "공통 인증 TC"
-
-# 시나리오 3: 경계값 테스트 추가
-/u-skill-tc-add web FT-0003 "비밀번호 최소/최대 길이 경계값"
-```
-
-#### `/u-skill-tc-refine` — 테스트 케이스 세분화
-
-```bash
-# 시나리오 1: 큰 TC를 하위 TC로 분해
-/u-skill-tc-refine TC-0001 web
-# → TC-0001을 더 작고 구체적인 하위 TC로 분해
-
-# 시나리오 2: 복잡한 시나리오를 단계별로 분해
-/u-skill-tc-refine TC-0005 web
-# → 다중 조건 시나리오를 개별 조건별 TC로 분해
-```
-
-#### `/u-skill-qa` — 테스트 실행
-
-```bash
-# 시나리오 1: Unit + E2E 테스트 전체 실행
-/u-skill-qa web
-# → Vitest(Unit) + Playwright(E2E) 실행 → 결과 리포트
-
-# 시나리오 2: 테스트 실행 후 결과 확인
-/u-skill-qa web
-# → 4_Report_QA.md/json/html 자동 생성
-
-# 시나리오 3: 실패한 TC만 재실행
-/u-skill-qa web
-# → 이전 결과를 참고하여 Fail TC만 재실행
-```
-
----
-
-### 8.6 Development & Build
-
-#### `/u-skill-dev` — DO Phase (FE/BE 병렬 개발)
-
-위 8.1 Lifecycle에서 상세 설명.
-
-#### `/u-skill-fix` — 버그/기능 수정 + 자동 TC 보강
-
-```bash
-# 시나리오 1: 특정 버그 수정
-/u-skill-fix web "로그인 시 토큰 만료 처리 버그"
-# → 코드 수정 + QA 에이전트가 백그라운드에서 해당 수정에 대한 TC 자동 추가
-
-# 시나리오 2: 기능 개선
-/u-skill-fix web "대시보드 차트에 실시간 업데이트 추가"
-
-# 시나리오 3: 인자 없이 대화형으로 수정
-/u-skill-fix web
-# → 대화형으로 수정 내용 설명
-```
-
-#### `/u-skill-build` — 프로젝트 빌드
-
-```bash
-# 시나리오 1: 빌드 실행 및 결과 확인
-/u-skill-build
-# → bun run build 실행, 성공/실패 보고
-
-# 시나리오 2: 빌드 실패 후 수정
-/u-skill-build
-# → 에러 발생 시 에러 메시지와 수정 가이드 제공
-/u-agent-dv-fe "빌드 에러를 수정해줘"
-
-# 시나리오 3: DO Phase 완료 전 빌드 확인
-/u-skill-dev web
-/u-skill-build                   # 빌드 성공해야 CHECK Phase로 진행 가능
-```
-
-#### `/u-skill-storybook` — Storybook 실행
-
-```bash
-# 시나리오 1: Storybook 서버 시작
-/u-skill-storybook
-# → Storybook 실행, 브라우저에서 컴포넌트 확인
-
-# 시나리오 2: 새 컴포넌트의 스토리 생성 확인
-/u-skill-storybook
-# → .stories.tsx 파일이 없는 컴포넌트를 감지하고 생성 안내
-
-# 시나리오 3: 컴포넌트 문서화
-/u-skill-storybook
-# → 각 컴포넌트의 Props, 상태, 변형을 시각적으로 문서화
-```
-
-#### `/u-skill-git-pr` — Git Commit + PR/MR 생성
-
-```bash
-# 시나리오 1: feature별 자동 그룹핑 + PR
-/u-skill-git-pr
-# → 변경 파일을 feature 단위로 분류, 각각 브랜치 생성 + commit + PR
-
-# 시나리오 2: 특정 feature 이름 지정
-/u-skill-git-pr feat/user-auth
-
-# 시나리오 3: GitLab MR 생성 (provider 자동 감지)
-/u-skill-git-pr
-# → remote URL에 따라 gh pr create 또는 glab mr create 자동 선택
-
-# 시나리오 4: CLI 미설치 시 (git only fallback)
-/u-skill-git-pr
-# → commit + push 후 웹에서 PR 생성할 URL 안내
-```
-
----
-
-### 8.7 Reports & HTML
-
-#### `/u-skill-report` — 종합 보고서 생성
-
-```bash
-# 시나리오 1: 프로젝트 전체 종합 보고서
-/u-skill-report
-# → .md + .json + .html 3종 동시 생성
-# → FR/NFR/US/FT/TC 카운트, 이전 보고서 비교, 3종 부채, Git 활동 포함
-
-# 시나리오 2: 특정 앱 보고서
-/u-skill-report web
-
-# 시나리오 3: Dark/Light 모드 HTML 보고서 확인
-/u-skill-report
-# → 생성된 .html 파일을 브라우저로 열면 Dark/Light 토글 가능
-```
-
-#### `/u-skill-html-doc` — SSoT 문서 HTML 변환
-
-```bash
-# 시나리오 1: 전체 문서를 HTML 뷰어로 변환
-/u-skill-html-doc all
-
-# 시나리오 2: 특정 문서만 변환
-/u-skill-html-doc srs            # SRS만
-/u-skill-html-doc erd            # ERD만
-/u-skill-html-doc api            # API Contract만
-/u-skill-html-doc screen         # 화면 설계서만
-/u-skill-html-doc screenflow     # 화면 흐름도만
-/u-skill-html-doc uxguide        # UX 가이드만
-
-# 시나리오 3: 고객 발표용 문서 준비
-/u-skill-html-doc all            # 전체 변환
-# → 인터랙티브 HTML 뷰어로 프레젠테이션 가능
-```
-
----
-
-### 8.8 Status & Utility
-
-#### `/u-skill-status` — 프로젝트 상태 보고
-
-```bash
-# 시나리오 1: 현재 진행 상황 파악
-/u-skill-status
-# → Iteration 번호, 현재 Phase, 문서 상태, 완료율 표시
-
-# 시나리오 2: Gate 조건 충족 여부 확인
-/u-skill-status
-# → 다음 Phase로 넘어갈 수 있는지 Gate 조건 표시
-
-# 시나리오 3: 루프 중단 후 재개 전 상태 확인
-/u-skill-stop
-/u-skill-status                  # 중단된 위치 확인
-/u-skill-resume                  # 재개
-```
-
-#### `/u-skill-summary` — 프로젝트 요약 출력
-
-```bash
-# 시나리오 1: 빠른 요약 확인 (파일 미생성)
-/u-skill-summary
-# → 터미널에 프로젝트 개요와 상태를 요약 출력
-
-# 시나리오 2: 새 팀원에게 프로젝트 현황 브리핑
-/u-skill-summary
-# → 기술 스택, 앱 구성, 현재 Phase, 주요 지표를 한눈에 파악
-```
-
-#### `/u-skill-docs` — 전체 문서 목록 조회
-
-```bash
-# 시나리오 1: 문서 상태(Draft/Review/Final) 확인
-/u-skill-docs
-
-# 시나리오 2: 특정 Phase 문서만 조회
-/u-skill-docs list --phase plan
-
-# 시나리오 3: 문서 갱신/재구축
-/u-skill-docs update
-/u-skill-docs rebuild
-```
-
-#### `/u-skill-validate` — 문서 무결성 검증
-
-```bash
-# 시나리오 1: 전체 SSoT 문서 검증
-/u-skill-validate
-# → 헤더 누락, 추적성 깨짐, 구조 위반 탐지
-
-# 시나리오 2: 문서 작성 후 즉시 검증
-/u-skill-srs web
-/u-skill-validate                # 방금 작성한 문서의 무결성 확인
-
-# 시나리오 3: 정기적 품질 점검
-/u-skill-validate
-/u-skill-status                  # 검증 결과와 함께 전체 상태 파악
-```
-
-#### `/u-skill-index` — 문서 인덱스 갱신
-
-```bash
-# 시나리오 1: 문서 추가/삭제 후 인덱스 업데이트
-/u-skill-index
-# → 1_Index_PM.md를 현재 문서 상태에 맞게 갱신
-
-# 시나리오 2: 자동 갱신 (PostToolUse hook)
-# → 문서 작성 시 hook이 자동으로 인덱스 갱신 알림을 표시
-```
-
-#### `/u-skill-backlog` — 백로그 조회
-
-```bash
-# 시나리오 1: 현재 Open 백로그 확인
-/u-skill-backlog
-# → 5_IterationLog_RA.md에서 미해결 항목 표시
-
-# 시나리오 2: 다음 Iteration 계획 수립용
-/u-skill-backlog                 # Open 항목 확인
-/u-skill-plan web                # 다음 Iteration Plan에 반영
-```
-
-#### `/u-skill-backlog-add` — 백로그 항목 추가
-
-```bash
-# 시나리오 1: 새 백로그 항목 추가
-/u-skill-backlog-add "성능 최적화 — 대시보드 로딩 3초 이내"
-
-# 시나리오 2: 기술 부채 기록
-/u-skill-backlog-add "리팩토링 — 인증 모듈 코드 정리"
-
-# 시나리오 3: CHECK에서 발견된 결함 등록
-/u-skill-backlog-add "버그 — 모바일에서 메뉴 드롭다운 안 닫힘"
-```
-
-#### `/u-skill-history` — Iteration 이력 조회
-
-```bash
-# 시나리오 1: 전체 Iteration 이력 확인
-/u-skill-history
-# → 5_IterationLog_RA.md 내용 표시
-
-# 시나리오 2: 이전 Iteration과 비교
-/u-skill-history                 # 이력 확인
-/u-skill-report                  # 현재 상태와 비교
-```
-
-#### `/u-skill-archive` — Iteration 아카이브
-
-```bash
-# 시나리오 1: 현재 Iteration 완료 후 아카이브
-/u-skill-archive
-# → .u-maker/docs/iterations/iter-N/ 으로 문서 복사
-
-# 시나리오 2: ACT Phase 내에서 자동 실행
-/u-skill-act                     # ACT Phase가 자동으로 archive 포함
-```
-
----
-
-### 8.9 Agent Direct — 에이전트 직접 호출
-
-자유 형식으로 특정 에이전트에게 직접 작업을 요청합니다. 정형화된 스킬 명령어 대신, 자연어로 유연하게 요청할 때 사용합니다.
-
-#### `/u-agent-pm` — Product Manager
-
-```bash
-# 시나리오 1: 데일리 리포트 생성
-/u-agent-pm "오늘의 데일리 리포트를 생성해줘"
-
-# 시나리오 2: 로드맵 갱신
-/u-agent-pm "Q2 마일스톤을 반영해서 로드맵을 갱신해줘"
-
-# 시나리오 3: 스프린트 회고 작성
-/u-agent-pm "이번 스프린트 회고를 작성해줘. 잘한 점과 개선점 포함"
-```
-
-#### `/u-agent-ra` — Requirements Analyst
-
-```bash
-# 시나리오 1: 마일스톤 진행 상황 정리
-/u-agent-ra "마일스톤 3의 진행 상황을 정리해줘"
-
-# 시나리오 2: SSoT 문서 정합성 검증
-/u-agent-ra "현재 SSoT 문서의 모순이나 누락을 찾아줘"
-
-# 시나리오 3: 백로그 우선순위 정리
-/u-agent-ra "Open 백로그 항목의 우선순위를 재정리해줘"
-```
-
-#### `/u-agent-sa` — Software Architect
-
-```bash
-# 시나리오 1: ERD 최적화
-/u-agent-sa "ERD를 PostgreSQL 기준으로 최적화해줘"
-
-# 시나리오 2: 엔티티 추가
-/u-agent-sa "User 엔티티에 프로필 이미지 필드를 추가해줘"
-
-# 시나리오 3: API 엔드포인트 설계
-/u-agent-sa "결제 모듈의 API 엔드포인트를 설계해줘"
-```
-
-#### `/u-agent-ux` — UX Designer
-
-```bash
-# 시나리오 1: 화면 요소 추가
-/u-agent-ux "로그인 화면에 소셜 로그인 버튼을 추가해줘"
-
-# 시나리오 2: 레이아웃 변경
-/u-agent-ux "대시보드를 2컬럼 레이아웃으로 변경해줘"
-
-# 시나리오 3: 디자인 시스템 업데이트
-/u-agent-ux "Alert 컴포넌트에 warning 타입을 추가해줘"
-```
-
-#### `/u-agent-dv-fe` — Frontend Developer
-
-```bash
-# 시나리오 1: 특정 화면 구현
-/u-agent-dv-fe "로그인 페이지를 구현해줘"
-
-# 시나리오 2: 폼 유효성 검사 추가
-/u-agent-dv-fe "회원가입 폼에 실시간 유효성 검사를 추가해줘"
-
-# 시나리오 3: 빌드 에러 수정
-/u-agent-dv-fe "TypeScript 빌드 에러를 수정해줘"
-```
-
-#### `/u-agent-dv-be` — Backend Developer
-
-```bash
-# 시나리오 1: API 엔드포인트 구현
-/u-agent-dv-be "User API에 프로필 이미지 업로드 엔드포인트를 구현해줘"
-
-# 시나리오 2: DB 마이그레이션
-/u-agent-dv-be "Prisma 스키마에 새 필드를 추가하고 마이그레이션해줘"
-
-# 시나리오 3: 백엔드 빌드 에러 수정
-/u-agent-dv-be "API Route 빌드 에러를 수정해줘"
-```
-
-#### `/u-agent-qa` — QA Engineer
-
-```bash
-# 시나리오 1: 테스트 케이스 보강
-/u-agent-qa "인증 관련 테스트 케이스를 보강해줘"
-
-# 시나리오 2: 경계값 테스트 추가
-/u-agent-qa "이메일 입력의 경계값 테스트를 추가해줘"
-
-# 시나리오 3: 결함 분석
-/u-agent-qa "최근 테스트 결과를 분석하고 결함을 분류해줘"
-```
-
----
-
-### 8.10 Workshop — 브레인스토밍
-
-#### `/u-workshop` — 아이디어 설계
-
-새로운 기능이나 컴포넌트를 만들기 전에, 사용자 의도와 요구사항을 대화로 탐색하고 설계를 확정하는 스킬입니다. **구현 전에 반드시 설계를 먼저 확정**합니다.
-
-```bash
-# 시나리오 1: 새 기능 아이디어 설계
-/u-workshop
-# → "어떤 기능을 만들고 싶으세요?" → 대화형으로 요구사항 탐색
-# → 2-3가지 접근 방식 제안 → 설계 확정 → 구현 계획으로 전환
-
-# 시나리오 2: 복잡한 아키텍처 결정
-/u-workshop
-# → "마이크로서비스 vs 모놀리스?" 같은 기술 결정을 체계적으로 탐색
-
-# 시나리오 3: UI/UX 설계 토론 (비주얼 컴패니언 포함)
-/u-workshop
-# → 시각적 질문이 예상되면 브라우저 기반 비주얼 컴패니언 제안
-# → 와이어프레임, 레이아웃 비교 등을 브라우저에서 시각적으로 확인
-
-# 시나리오 4: 대규모 프로젝트 분해
-/u-workshop
-# → 여러 독립 서브시스템으로 분해하고 첫 번째 서브프로젝트부터 설계
-```
-
----
-
-### Quick Reference — 스킬 전체 목록
-
-| Category | Command | 한줄 설명 |
-|----------|---------|----------|
-| **Router** | `/u-skill-maker` | 자연어 → 스킬/에이전트 자동 라우팅 |
-| **Router** | `/u-skill-help` | 전체 명령어 도움말 |
-| **Lifecycle** | `/u-skill-create-project` | 새 프로젝트 생성 |
-| **Lifecycle** | `/u-skill-init` | 기존 프로젝트 SSoT 역공학 |
-| **Lifecycle** | `/u-skill-plan` | PLAN Phase 실행 |
-| **Lifecycle** | `/u-skill-design` | DESIGN Phase 실행 |
-| **Lifecycle** | `/u-skill-dev` | DO Phase (FE/BE 병렬) |
-| **Lifecycle** | `/u-skill-check` | CHECK Phase 실행 |
-| **Lifecycle** | `/u-skill-act` | ACT Phase 실행 |
-| **Loop** | `/u-skill-loop` | PDCA 자동 반복 |
-| **Loop** | `/u-skill-loop-from` | 특정 Phase부터 루프 |
-| **Loop** | `/u-skill-stop` | 루프 중단 |
-| **Loop** | `/u-skill-resume` | 루프 재개 |
-| **Loop** | `/u-skill-gap-detector` | 설계-구현 Gap 분석 |
-| **Docs** | `/u-skill-srs` | SRS 생성/수정 |
-| **Docs** | `/u-skill-fr-add` | FR 추가 |
-| **Docs** | `/u-skill-us-add` | US 추가 |
-| **Docs** | `/u-skill-refine` | FR/US/FT 세분화 |
-| **Docs** | `/u-skill-erd` | ERD 생성/수정 |
-| **Docs** | `/u-skill-api` | API Contract 생성/수정 |
-| **Docs** | `/u-skill-glossary` | 용어 정의 |
-| **Docs** | `/u-skill-workflow` | 워크플로우 정의 |
-| **Docs** | `/u-skill-import` | 외부 소스 임포트 |
-| **UX** | `/u-skill-screen` | 화면 상세 설계 |
-| **UX** | `/u-skill-wireframe` | 와이어프레임 HTML |
-| **UX** | `/u-skill-ux-figma` | 디자인 도구 기반 화면 디자인 |
-| **UX** | `/u-skill-ux-designsystem` | 디자인 시스템 시각 구성 |
-| **Test** | `/u-skill-testcase` | TC 일괄 설계 |
-| **Test** | `/u-skill-tc-add` | TC 개별 추가 |
-| **Test** | `/u-skill-tc-refine` | TC 세분화 |
-| **Test** | `/u-skill-qa` | 테스트 실행 (Vitest+Playwright) |
-| **Dev** | `/u-skill-fix` | 버그 수정 + 자동 TC 보강 |
-| **Dev** | `/u-skill-build` | 빌드 실행 |
-| **Dev** | `/u-skill-storybook` | Storybook 실행 |
-| **Dev** | `/u-skill-git-pr` | Git commit + PR/MR 생성 |
-| **Report** | `/u-skill-report` | 종합 보고서 (.md+.html) |
-| **Report** | `/u-skill-html-doc` | SSoT 문서 HTML 변환 |
-| **Status** | `/u-skill-status` | 프로젝트 상태 보고 |
-| **Status** | `/u-skill-summary` | 프로젝트 요약 출력 |
-| **Status** | `/u-skill-docs` | 문서 목록/상태 조회 |
-| **Status** | `/u-skill-validate` | 문서 무결성 검증 |
-| **Status** | `/u-skill-index` | 문서 인덱스 갱신 |
-| **Status** | `/u-skill-backlog` | 백로그 Open 항목 조회 |
-| **Status** | `/u-skill-backlog-add` | 백로그 항목 추가 |
-| **Status** | `/u-skill-history` | Iteration 이력 |
-| **Status** | `/u-skill-archive` | Iteration 아카이브 |
-| **Agent** | `/u-agent-pm` | PM 직접 요청 |
-| **Agent** | `/u-agent-ra` | RA 직접 요청 |
-| **Agent** | `/u-agent-sa` | SA 직접 요청 |
-| **Agent** | `/u-agent-ux` | UX 직접 요청 |
-| **Agent** | `/u-agent-dv-fe` | FE 개발자 직접 요청 |
-| **Agent** | `/u-agent-dv-be` | BE 개발자 직접 요청 |
-| **Agent** | `/u-agent-qa` | QA 직접 요청 |
-| **Workshop** | `/u-workshop` | 브레인스토밍 & 아이디어 설계 |
+MIT
