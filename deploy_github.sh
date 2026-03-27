@@ -16,7 +16,6 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PLUGIN_JSON="$SCRIPT_DIR/.claude-plugin/plugin.json"
 
 PRIVATE_REPO="thinoo-v2/u-maker-plugin"
-PUBLIC_REPO="thinoo-v2/u-maker-production"
 UPLEAT_REPO="upleat-ax/u-maker-plugin"
 
 # Colors
@@ -68,7 +67,7 @@ ensure_gh() {
 cmd_check() {
   ensure_gh
 
-  for repo in "$PUBLIC_REPO" "$UPLEAT_REPO"; do
+  for repo in "$UPLEAT_REPO"; do
     log "Public repo: ${BOLD}https://github.com/${repo}${NC}"
     echo ""
 
@@ -218,16 +217,9 @@ EOF
     git commit -q -m "Release ${tag}"
     git tag -a "$tag" -m "Release ${tag}"
 
-    # Get tokens from gh auth
-    local public_token upleat_token
-    public_token="$(gh auth token)"
-    upleat_token="$(gh auth token)"
-
-    # Push to thinoo-v2/u-maker-production
-    git remote add public "https://x-access-token:${public_token}@github.com/${PUBLIC_REPO}.git"
-    git push public main --force 2>/dev/null
-    git push public "$tag" --force 2>/dev/null
-    ok "Pushed to ${PUBLIC_REPO}"
+    # Get token for upleat repo (use UPLEAT_TOKEN env var, fallback to gh auth)
+    local upleat_token
+    upleat_token="${UPLEAT_TOKEN:-$(gh auth token)}"
 
     # Push to upleat-ax/u-maker-plugin
     git remote add upleat "https://x-access-token:${upleat_token}@github.com/${UPLEAT_REPO}.git"
@@ -254,7 +246,7 @@ curl -fsSL https://raw.githubusercontent.com/${UPLEAT_REPO}/main/install.sh | ba
 Invoke-WebRequest -Uri https://raw.githubusercontent.com/${UPLEAT_REPO}/main/install.bat -OutFile install.bat; .\\install.bat; Remove-Item install.bat
 \`\`\`"
 
-  for repo in "$PUBLIC_REPO" "$UPLEAT_REPO"; do
+  for repo in "$UPLEAT_REPO"; do
     log "Creating release on ${BOLD}${repo}${NC}..."
     gh release create "$tag" "$zip_file" \
       --title "u-maker ${tag}" \
@@ -286,7 +278,6 @@ Invoke-WebRequest -Uri https://raw.githubusercontent.com/${UPLEAT_REPO}/main/ins
   echo -e "${BOLD}========================================${NC}"
   echo -e "  Version: ${BOLD}${tag}${NC}"
   echo -e "  Private: https://github.com/${PRIVATE_REPO}"
-  echo -e "  Public:  https://github.com/${PUBLIC_REPO}"
   echo -e "  Public:  https://github.com/${UPLEAT_REPO}"
   echo -e "  Local:   ${GREEN}clean reinstalled${NC}"
   echo ""
