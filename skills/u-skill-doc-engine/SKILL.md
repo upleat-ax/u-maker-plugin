@@ -63,7 +63,7 @@ function resolveLanguage():
 - ID, 코드 스니펫, 기술 용어(API path, entity name, HTTP method 등)는 언어 설정과 무관하게 **항상 영문**
 - Mermaid 다이어그램의 노드 라벨은 `language.documents` 언어로 작성
 - JSON companion 파일의 `description`, `title` 필드는 `language.documents` 언어로 작성
-- 모든 문서 생성 스킬(`/u-plan`, `/u-design`, `/u-dev`, `/u-check`, `/u-reverse` 등)은 이 설정을 따름
+- 모든 문서 생성 스킬(`/u-plan`, `/u-design`, `/u-dev`, `/u-qa`, `/u-reverse` 등)은 이 설정을 따름
 
 ---
 

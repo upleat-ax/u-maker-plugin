@@ -392,7 +392,7 @@ Gemfile                              Ruby framework 감지
 ### Next Steps
 1. `/u-doc {app} srs --edit` — SRS 검토 및 비즈니스 의도 보완
 2. `/u-sync {app}` — 문서 간 정합성 검증
-3. `/u-check {app}` — 테스트 케이스 생성
+3. `/u-qa {app}` — 테스트 케이스 생성
 ```
 
 ---

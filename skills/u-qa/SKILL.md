@@ -1,17 +1,17 @@
 ---
-name: u-check
-description: "CHECK Phase. TC 설계 + 테스트 실행 + Report + exit criteria 판정. SRS Feature(FT) 기반 TestCase 자동 생성, Vitest/Playwright 실행, 결함 분류, 백로그 자동 등록까지 수행한다."
+name: u-qa
+description: "QA Phase. TC 설계 + 테스트 실행 + Report + exit criteria 판정. SRS Feature(FT) 기반 TestCase 자동 생성, Vitest/Playwright 실행, 결함 분류, 백로그 자동 등록까지 수행한다."
 triggers:
-  - "/u-check"
-  - "check phase"
+  - "/u-qa"
+  - "qa phase"
   - "QA"
   - "테스트"
   - "검증"
 ---
 
-# u-check -- Check Phase QA Verification
+# u-qa -- QA Phase Verification
 
-`/u-check [scope] [-i] [--step]` 명령으로 Do phase 산출물을 검증한다. TestCase 설계, 테스트 실행, 결함 분석, exit criteria 판정을 수행한다.
+`/u-qa [scope] [-i] [--step]` 명령으로 Do phase 산출물을 검증한다. TestCase 설계, 테스트 실행, 결함 분석, exit criteria 판정을 수행한다.
 
 **Primary Agent:** u-agent-guardian (engine-validator, engine-test 사용)
 
@@ -206,7 +206,7 @@ triggers:
 - 실패 항목 상세 보고
 - 차단 이슈 목록 제시
 - 수정 예상 공수 표시
-- "결함 수정 후 /u-check를 다시 실행하세요." 안내
+- "결함 수정 후 /u-qa를 다시 실행하세요." 안내
 - 심각한 실패 시: "/u-ship은 Act(회고) 경로로 전환됩니다." 고지
 
 ---

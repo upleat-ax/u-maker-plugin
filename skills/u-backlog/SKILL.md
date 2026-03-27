@@ -252,7 +252,7 @@ blocked → (previous status)
 | Source Event | Type | Source.type | Trigger |
 |-------------|------|------------|---------|
 | classified requirements validated | feature | fr/us | `/u-ingest --review` 또는 `/u-assume approve` |
-| Test failure → defect | bug | defect | `/u-check` Step 4 |
+| Test failure → defect | bug | defect | `/u-qa` Step 4 |
 | `/u-discuss` /action 태그 | improvement | discuss | `/u-discuss --wrap` |
 | Retrospective "Try" 항목 | improvement | retro | `/u-ship` Step 4-P |
 | Guardian tech-debt detection | tech-debt | guardian | `/u-dev` Step 9 |

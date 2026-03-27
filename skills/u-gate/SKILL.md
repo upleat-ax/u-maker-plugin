@@ -173,7 +173,7 @@ Gate PASS 시:
 
    ### Next Steps
    - plan→do: Run /u-design or /u-dev
-   - do→check: Run /u-check
+   - do→check: Run /u-qa
    - check→act: Run /u-ship
    - act→plan: Run /u-plan (new iteration)
    ```

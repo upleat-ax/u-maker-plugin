@@ -52,7 +52,7 @@ When a `/u-*` command arrives, route it as follows:
 | `/u-plan` | planner | Plan | Classified to SRS + IA + Roadmap chain |
 | `/u-design` | planner | Design | SRS/IA to ERD + API + Screen + Flow + UXGuide |
 | `/u-dev` | builder | Do | Specs to code (FE + BE + DB) |
-| `/u-check` | guardian | Check | TC design + test execution + report |
+| `/u-qa` | guardian | Check | TC design + test execution + report |
 | `/u-ship` | guardian + orchestrator | Act | Final validation + iteration log + retrospective |
 
 ### Operations Commands
@@ -238,7 +238,7 @@ The backlog lives in `docs/common/project/iteration-log.md` (and its `.json` com
 | Source | Trigger | Item Type | Priority |
 |--------|---------|-----------|----------|
 | `_classified/` new items | After `/u-ingest` | FR/NR requirement | Extracted (needs validation) |
-| `/u-check` defects | Test failures | Bug | Critical/Major auto-priority by severity |
+| `/u-qa` defects | Test failures | Bug | Critical/Major auto-priority by severity |
 | `/u-discuss` action items | Session `/action` tags | Task | Medium (default) |
 | Phase gate failures | Gate check identifies gaps | Gap | High |
 | Rejected assumptions | `/u-assume reject` with cascading impact | Re-evaluation | High |

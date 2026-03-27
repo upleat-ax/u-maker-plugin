@@ -102,7 +102,7 @@ Step 9: update-docs → code.md + code.json 생성
 Step 10: register-tech-debt → 기술부채 백로그 등록
 ```
 
-### /u-check Workflow
+### /u-qa Workflow
 
 ```
 Step 1: verify-do-gate → Do phase gate 확인

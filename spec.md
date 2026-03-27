@@ -286,7 +286,7 @@ classified 데이터를 조합하여 생성. 각 항목에 출처 링크 보존.
 | /u-plan | `/u-plan [scope]` | classified → SRS + IA + Roadmap 연쇄 생성 |
 | /u-design | `/u-design [scope]` | SRS/IA 기반 → ERD + API + Screen + Flow + UXGuide |
 | /u-dev | `/u-dev [scope]` | 명세 기반 코드 생성 (FE + BE + DB) |
-| /u-check | `/u-check [scope]` | TC 설계 + 테스트 + Report + exit criteria 판정 |
+| /u-qa | `/u-qa [scope]` | TC 설계 + 테스트 + Report + exit criteria 판정 |
 | /u-ship | `/u-ship [scope]` | 최종 검증 + iteration log + retrospective |
 
 #### Operations (5)
@@ -737,8 +737,8 @@ FDE의 암묵지 + Agent의 분석력을 세션 안에서 결합. 세션 결과�
 /u-dev landing                          # landing은 auto
 
 ## ── Check phase ──
-/u-check retail                           # TC 생성 + 테스트
-/u-check retail -i                        # 결과 같이 보면서
+/u-qa retail                           # TC 생성 + 테스트
+/u-qa retail -i                        # 결과 같이 보면서
 
 ## ── Ship phase ──
 /u-ship retail                            # 최종 검증 + 배포 + 회고
@@ -787,7 +787,7 @@ FDE의 암묵지 + Agent의 분석력을 세션 안에서 결합. 세션 결과�
 
 1단계 (MVP): `/u-init`, `/u-ingest`, `/u-plan`, `/u-status`, `/u-doc` + orchestrator + planner + doc-engine + analyzer
 2단계: `/u-design`, `/u-dev`, `/u-gate`, `/u-sync` + builder + guardian + validator + code-engine
-3단계: `/u-discuss`, `/u-check`, `/u-ship`, `/u-assume` + facilitator + test-engine + workflow-runner
+3단계: `/u-discuss`, `/u-qa`, `/u-ship`, `/u-assume` + facilitator + test-engine + workflow-runner
 4단계: `/u-coverage`, `/u-trace`, `/u-add`, `/u-update` + dep-engine + diff-engine + estimator
 
 ### 핵심 제약

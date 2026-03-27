@@ -169,10 +169,10 @@ function delete(id):
 
 | Source | Trigger | Item Type | Priority Mapping |
 |--------|---------|-----------|-----------------|
-| `/u-check` defects | 결함 발견 시 자동 | bug | Critical→must, Major→must, Minor→should, Trivial→could |
+| `/u-qa` defects | 결함 발견 시 자동 | bug | Critical→must, Major→must, Minor→should, Trivial→could |
 | `/u-discuss` actions | session wrap 시 | improvement | Medium (기본) |
 | `/u-ingest` requirements | validated requirements | feature | 추출된 priority 유지 |
-| `/u-check` tech-debt | 코드 분석 시 | tech-debt | should (기본) |
+| `/u-qa` tech-debt | 코드 분석 시 | tech-debt | should (기본) |
 
 **프로세스:**
 

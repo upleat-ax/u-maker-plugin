@@ -3,7 +3,7 @@
 /**
  * Hook: on-build-complete
  * Trigger: PostToolUse(Write)
- * Purpose: Detect generated code files and suggest running /u-check
+ * Purpose: Detect generated code files and suggest running /u-qa
  */
 
 const input = JSON.parse(process.env.CLAUDE_TOOL_INPUT || '{}');
@@ -17,5 +17,5 @@ const isNotTest = !filePath.includes('.test.') && !filePath.includes('.spec.');
 
 if (isCodeFile && isInSrc && isNotHook && isNotTest) {
   const fileName = filePath.split('/').pop();
-  console.log(`[u-maker] Code file generated: ${fileName}. Run /u-check to validate build and tests.`);
+  console.log(`[u-maker] Code file generated: ${fileName}. Run /u-qa to validate build and tests.`);
 }

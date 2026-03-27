@@ -40,7 +40,7 @@ triggers:
 | `/u-plan` | `/u-plan [scope] [--only X] [-i] [--step]` | Plan | classified → SRS + IA + Roadmap 연쇄 생성 |
 | `/u-design` | `/u-design [scope] [--only X] [-i] [--step]` | Design | SRS/IA → ERD + API + Screen + Flow + RTM |
 | `/u-dev` | `/u-dev [scope] [--only X] [-i] [--step]` | Do | 명세 → FE + BE + DB 코드 생성 |
-| `/u-check` | `/u-check [scope] [-i] [--step]` | Check | TC 설계 + 테스트 실행 + Report + exit criteria |
+| `/u-qa` | `/u-qa [scope] [-i] [--step]` | Check | TC 설계 + 테스트 실행 + Report + exit criteria |
 | `/u-ship` | `/u-ship [scope] [-i] [--step]` | Act | 최종 검증 + iteration log + retrospective |
 
 ### Operations Commands (5)
@@ -131,7 +131,7 @@ u-maker.config.json에서 앱 목록 조회 후 scope 해석.
 | `plan` | `skills/u-plan/` |
 | `design` | `skills/u-design/` |
 | `build` | `skills/u-dev/` |
-| `check` | `skills/u-check/` |
+| `check` | `skills/u-qa/` |
 | `ship` | `skills/u-ship/` |
 | `add` | `skills/u-add/` |
 | `status` | `skills/u-status/` |
@@ -170,7 +170,7 @@ u-maker.config.json에서 앱 목록 조회 후 scope 해석.
 /u-dev retail
 
 # 6. QA 검증
-/u-check retail
+/u-qa retail
 
 # 7. 최종 검증 + 배포
 /u-ship retail

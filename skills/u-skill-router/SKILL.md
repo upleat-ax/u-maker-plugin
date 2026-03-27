@@ -38,7 +38,7 @@ description: "자연어 및 /u-* 커맨드에서 의도를 분류하고, 스코�
 | `/u-plan` | planner | engine-doc, engine-estimator | Plan |
 | `/u-design` | planner | engine-designer, engine-doc | Design |
 | `/u-dev` | builder | engine-code | Do |
-| `/u-check` | guardian | engine-validator, engine-test | Check |
+| `/u-qa` | guardian | engine-validator, engine-test | Check |
 | `/u-ship` | orchestrator | engine-validator, engine-workflow-runner | Act |
 
 ### Operations Commands
@@ -235,7 +235,7 @@ brainstorm, review, decision, workshop, retro
 | 기획, 요구사항, SRS, plan | `/u-plan` |
 | 설계, ERD, API 설계, design | `/u-design` |
 | 개발, 코드 생성, build, code | `/u-dev` |
-| 테스트, QA, 검증, check, test | `/u-check` |
+| 테스트, QA, 검증, check, test | `/u-qa` |
 | 배포, 출시, ship, deploy | `/u-ship` |
 | 추가, add | `/u-add` |
 | 수정, 갱신, update | `/u-update` |
