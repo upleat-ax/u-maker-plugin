@@ -17,7 +17,8 @@ PDCA 기반 SSoT(Single Source of Truth) 협업 오케스트레이터.
 curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/install.sh | bash
 
 # 2. Claude Code 재시작 후 프로젝트에서 실행
-/u-init my-project        # 새 프로젝트 초기화
+/u-skill-create-project my-app    # 새 프로젝트
+/u-skill-init .                   # 기존 프로젝트 역공학
 
 # 3. 데이터 수집 → 분석 → 계획
 /u-ingest retail          # raw data → classified 분석
@@ -28,8 +29,8 @@ curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/insta
 /u-build retail           # FE + BE 코드 생성
 /u-check retail           # TC 설계 + 테스트 + 리포트
 
-# 5. 배포 + 회고
-/u-ship retail            # 최종 검증 + iteration log + 회고
+# 5. 자동 PDCA 루프
+/u-skill-loop             # Plan→Do→Check→Act 자동 반복
 
 # 또는 자연어로
 "retail 앱의 SRS를 만들어줘"   # u-maker 라우터가 자동 분배
