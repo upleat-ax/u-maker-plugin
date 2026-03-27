@@ -269,6 +269,17 @@ Invoke-WebRequest -Uri https://raw.githubusercontent.com/${UPLEAT_REPO}/main/ins
   # ── Step 8: Cleanup ──
   rm -f "$zip_file"
 
+  # ── Step 9: Clean & reinstall locally ──
+  log "Clean & reinstalling locally..."
+  local deploy_local="$SCRIPT_DIR/deploy_local.sh"
+  if [[ -x "$deploy_local" ]]; then
+    bash "$deploy_local" --clean
+    bash "$deploy_local"
+    ok "Local reinstall complete"
+  else
+    warn "deploy_local.sh not found, skipping local reinstall"
+  fi
+
   echo ""
   echo -e "${BOLD}========================================${NC}"
   echo -e "${GREEN}${BOLD}  Deploy complete!${NC}"
@@ -277,6 +288,7 @@ Invoke-WebRequest -Uri https://raw.githubusercontent.com/${UPLEAT_REPO}/main/ins
   echo -e "  Private: https://github.com/${PRIVATE_REPO}"
   echo -e "  Public:  https://github.com/${PUBLIC_REPO}"
   echo -e "  Public:  https://github.com/${UPLEAT_REPO}"
+  echo -e "  Local:   ${GREEN}clean reinstalled${NC}"
   echo ""
   echo -e "  ${BOLD}Install (macOS/Linux):${NC}"
   echo -e "  curl -fsSL https://raw.githubusercontent.com/${UPLEAT_REPO}/main/install.sh | bash"
