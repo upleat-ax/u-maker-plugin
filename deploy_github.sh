@@ -160,13 +160,16 @@ with open('$PLUGIN_JSON', 'w') as f:
     .claude-plugin/ \
     skills/ \
     agents/ \
-    _refer/ \
+    shared/ \
     templates/ \
     scripts/ \
-    lib/ \
+    schemas/ \
     hooks/ \
+    lib/ \
     deploy_local.sh \
     deploy_local.bat \
+    install.sh \
+    install.bat \
     README.md \
     GET_STARTED.md \
     -x "*.DS_Store" "*__pycache__*" "*.pyc" \
@@ -196,6 +199,7 @@ with open('$PLUGIN_JSON', 'w') as f:
   cp "$SCRIPT_DIR/README.md" "$tmp_dir/README.md"
   cp "$SCRIPT_DIR/install.sh" "$tmp_dir/install.sh"
   cp "$SCRIPT_DIR/install.bat" "$tmp_dir/install.bat"
+  cp "$SCRIPT_DIR/update.sh" "$tmp_dir/update.sh"
   cat > "$tmp_dir/.gitignore" << 'EOF'
 .DS_Store
 .u-maker/

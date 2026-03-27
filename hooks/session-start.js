@@ -12,83 +12,102 @@ const fs = require('fs');
 const path = require('path');
 
 const cwd = process.cwd();
-const udocsRoot = path.join(cwd, '.u-maker', 'docs');
+const umakerRoot = path.join(cwd, '.u-maker');
 
-// Required common directory structure
-const UDOCS_DIRS = [
-  'common/01-plan',
-  'common/02-design',
-  'common/03-dev',
-  'common/05-act',
-  'common/assets/diagrams',
-  'common/assets/screenshots',
-  'iterations',
+// v2 common directory structure
+const COMMON_DIRS = [
+  'common/policy',
+  'common/ux',
+  'common/dev',
+  'common/architecture',
+  'common/project',
 ];
 
-// Per-app phase directories
-const APP_PHASE_DIRS = ['01-plan', '02-design', '03-dev', '04-check'];
+// v2 per-app directory structure (3-layer pipeline)
+const APP_DIRS = [
+  '_input/rfp',
+  '_input/as-is',
+  '_input/meeting-notes',
+  '_classified/requirements',
+  '_classified/pain-points',
+  '_classified/domain-terms',
+  '_classified/stakeholders',
+  '_classified/workflows',
+  '_classified/screens',
+  '_classified/data-models',
+  '_classified/constraints',
+  '_classified/decisions',
+  '_classified/questions',
+  '_sessions',
+  '_assumptions',
+  'docs/01-plan',
+  'docs/02-design',
+  'docs/03-dev',
+  'docs/04-check',
+];
+
+// v2 root-level shared directories
+const ROOT_DIRS = [
+  '_input',
+  '_classified/requirements',
+  '_classified/domain-terms',
+  '_classified/stakeholders',
+  '_classified/constraints',
+  '_classified/decisions',
+  '_sessions',
+  '_assumptions',
+];
 
 /**
- * Read app list from config.
+ * Read app list from v2 config.
  * @returns {string[]}
  */
 function getAppsFromConfig() {
-  const configPath = path.join(cwd, '.u-maker/u-maker.config.json');
-  let apps = ['web'];
+  const configPath = path.join(umakerRoot, 'u-maker.config.json');
+  let apps = [];
   try {
     if (fs.existsSync(configPath)) {
       const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
-      apps = (config.techStack && config.techStack.monorepo && config.techStack.monorepo.structure && config.techStack.monorepo.structure.apps) || ['web'];
+      apps = config.apps || [];
     }
   } catch {}
   return apps;
 }
 
 /**
- * Create .u-maker/docs/ directory structure if it doesn't exist.
+ * Create .u-maker/ v2 directory structure if it doesn't exist.
  */
-function ensureUdocsStructure() {
+function ensureStructure() {
   const created = [];
-  const apps = getAppsFromConfig();
 
   // Create common directories
-  for (const dir of UDOCS_DIRS) {
-    const fullPath = path.join(udocsRoot, dir);
+  for (const dir of COMMON_DIRS) {
+    const fullPath = path.join(umakerRoot, dir);
     if (!fs.existsSync(fullPath)) {
       fs.mkdirSync(fullPath, { recursive: true });
-      created.push(dir);
+      created.push(`common: ${dir}`);
+    }
+  }
+
+  // Create root-level shared directories
+  for (const dir of ROOT_DIRS) {
+    const fullPath = path.join(umakerRoot, dir);
+    if (!fs.existsSync(fullPath)) {
+      fs.mkdirSync(fullPath, { recursive: true });
+      created.push(`root: ${dir}`);
     }
   }
 
   // Create per-app directories
+  const apps = getAppsFromConfig();
   for (const app of apps) {
-    for (const dir of APP_PHASE_DIRS) {
-      const fullPath = path.join(udocsRoot, app, dir);
+    for (const dir of APP_DIRS) {
+      const fullPath = path.join(umakerRoot, 'apps', app, dir);
       if (!fs.existsSync(fullPath)) {
         fs.mkdirSync(fullPath, { recursive: true });
         created.push(`${app}/${dir}`);
       }
     }
-  }
-
-  // Create README.md if missing
-  const readmePath = path.join(udocsRoot, 'README.md');
-  if (!fs.existsSync(readmePath)) {
-    fs.writeFileSync(readmePath, [
-      '# .u-maker/docs: SSoT Document Repository',
-      '',
-      'Managed by the u-maker plugin.',
-      '',
-      '| Directory | Scope | Phase |',
-      '|-----------|-------|-------|',
-      '| `common/01-plan/` | Shared | PLAN |',
-      '| `common/02-design/` | Shared | DESIGN |',
-      '| `common/03-dev/` | Shared | DO |',
-      '| `common/05-act/` | Shared | ACT |',
-      ...apps.map(app => `| \`${app}/01-plan/\` ~ \`${app}/04-check/\` | ${app} | PLAN~CHECK |`),
-      '',
-    ].join('\n'), 'utf8');
-    created.push('README.md');
   }
 
   return created;
@@ -99,39 +118,38 @@ function ensureUdocsStructure() {
 // ============================================================
 
 try {
-  if (!fs.existsSync(udocsRoot)) {
-    const created = ensureUdocsStructure();
-    const response = {
+  if (!fs.existsSync(umakerRoot)) {
+    // No .u-maker/ at all — just report, /u-init will create it
+    console.log(JSON.stringify({
       result: 'success',
       hookSpecificOutput: {
         hookEventName: 'SessionStart',
         additionalContext: [
-          '# u-maker: Session Start',
+          '# u-maker v2: Session Start',
           '',
-          `.u-maker/docs/ structure created at ${udocsRoot}`,
-          `Created directories: ${created.join(', ')}`,
-          '',
-          'Ready for PDCA workflow. Use /u-skill-plan to start.',
+          'No .u-maker/ directory found.',
+          'Use `/u-init [project-name]` to initialize a new project.',
         ].join('\n'),
       },
-    };
-    console.log(JSON.stringify(response));
+    }));
   } else {
-    // .u-maker/docs/ exists, verify structure completeness
-    const created = ensureUdocsStructure();
+    // .u-maker/ exists, verify and repair structure
+    const created = ensureStructure();
+    const apps = getAppsFromConfig();
     const response = {
       result: 'success',
       hookSpecificOutput: {
         hookEventName: 'SessionStart',
         additionalContext: [
-          '# u-maker: Session Start',
+          '# u-maker v2: Session Start',
           '',
-          `.u-maker/docs/ found at ${udocsRoot}`,
+          `.u-maker/ found at ${umakerRoot}`,
+          `Apps: ${apps.length > 0 ? apps.join(', ') : '(none registered)'}`,
           created.length > 0
-            ? `Repaired missing directories: ${created.join(', ')}`
+            ? `Repaired missing directories: ${created.length} dirs`
             : 'All directories intact.',
           '',
-          'PDCA workflow ready.',
+          'PDCA workflow ready. Commands: /u-plan, /u-design, /u-build, /u-check, /u-ship',
         ].join('\n'),
       },
     };

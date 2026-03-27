@@ -45,53 +45,56 @@ if (!filePath) {
 }
 
 const normalized = path.resolve(filePath);
-const udocsPath = path.resolve(path.join(process.cwd(), '.u-maker', 'docs'));
+const umakerPath = path.resolve(path.join(process.cwd(), '.u-maker'));
 
-if (!normalized.startsWith(udocsPath)) {
-  // Not a .u-maker/docs file, skip
+if (!normalized.startsWith(umakerPath)) {
+  // Not a .u-maker/ file, skip
   console.log(JSON.stringify({ result: 'success' }));
   process.exit(0);
 }
 
 // ============================================================
-// Log index update notification
+// Log index update notification (v2)
 // ============================================================
 
-const relPath = path.relative(udocsPath, normalized);
+const relPath = path.relative(umakerPath, normalized);
 const basename = path.basename(filePath);
 
-// Detect SSoT document pattern
-const SSOT_DOC_PATTERN = /^\d+_[A-Za-z]+_[A-Z]+\.md$/;
-const isSsotDoc = SSOT_DOC_PATTERN.test(basename);
+// v2 SSoT document names
+const V2_SSOT_DOCS = new Set([
+  'srs.md', 'ia.md', 'roadmap.md', 'erd.md', 'api.md', 'screen.md',
+  'screen-flow.md', 'ux-guide.md', 'rtm.md', 'code.md', 'test-cases.md',
+  'test-report.md', 'iteration-log.md', 'retrospective.md', 'backlog.md',
+]);
 
 let contextMessage = '';
 
-if (isSsotDoc) {
-  // Determine scope and phase from path
-  // v2: relPath = "common/01-plan/1_Roadmap_PM.md" or "web/01-plan/1_SRS_RA.md"
-  // v1: relPath = "01-plan/1_SRS_RA.md"
+if (V2_SSOT_DOCS.has(basename)) {
+  // Determine scope from v2 path: apps/{app}/docs/{phase}/file.md or common/*/file.md
   const parts = relPath.split(path.sep);
   let scope = '';
   let phaseDir = '';
 
-  if (parts.length >= 3) {
-    // v2 structure: parts[0] = scope (common or app name), parts[1] = phaseDir
-    scope = parts[0];
-    phaseDir = parts[1];
-  } else {
-    // v1 flat structure: parts[0] = phaseDir
-    phaseDir = parts[0] || '';
+  if (parts[0] === 'apps' && parts.length >= 4) {
+    scope = parts[1]; // app name
+    phaseDir = parts[3]; // phase dir
+  } else if (parts[0] === 'common') {
+    scope = 'common';
+    phaseDir = parts[1] || '';
   }
 
-  const scopeLabel = scope ? `Scope: ${scope}` : '';
   contextMessage = [
     `SSoT document written: ${relPath}`,
-    `Consider updating 1_Index_PM.md to reflect this change.`,
-    `Phase: ${phaseDir}`,
-    scopeLabel,
+    `Update _index.json in the same directory to reflect this change.`,
+    scope ? `Scope: ${scope}` : '',
+    phaseDir ? `Phase: ${phaseDir}` : '',
   ].filter(Boolean).join(' | ');
+} else if (basename === '_index.json') {
+  contextMessage = `Index updated: ${relPath}`;
+} else if (basename.endsWith('.json') && relPath.includes('_classified')) {
+  contextMessage = `Classified item written: ${relPath} | Update _index.json in the category folder.`;
 } else {
-  contextMessage = `Document written to .u-maker/docs/: ${relPath}`;
+  contextMessage = `File written to .u-maker/: ${relPath}`;
 }
 
 console.log(JSON.stringify({

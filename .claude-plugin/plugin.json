@@ -1,7 +1,7 @@
 {
   "name": "u-maker",
-  "version": "1.0.15",
-  "description": "SSoT(SDD) collaboration ecosystem by U PLEAT",
+  "version": "2.0.0",
+  "description": "PDCA-based SSoT collaboration orchestrator with 3-layer pipeline, 4 specialized agents, and intent-driven commands",
   "author": {
     "name": "u-plugin"
   },
@@ -12,9 +12,11 @@
     "ssot",
     "collaboration",
     "agents",
-    "turborepo",
-    "nextjs",
-    "clean-architecture",
+    "3-layer-pipeline",
+    "orchestrator",
+    "intent-driven",
+    "monorepo",
+    "enterprise",
     "iteration"
   ]
 }
