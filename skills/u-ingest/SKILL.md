@@ -33,7 +33,65 @@ triggers:
 2. scope 해석 → 대상 앱의 `_input/` 경로 결정
 3. scope 생략 + 앱 1개: 자동 선택 / 앱 2개+: 사용자에게 질문
 
-### Step 2: Scan _input/
+### Step 2: Sort Raw Files (Auto-Classification)
+
+`_input/raw/` 디렉토리에 파일이 존재하면, 분석 전에 자동으로 적절한 서브폴더로 이동한다.
+
+1. `_input/raw/` 스캔 → 파일 목록 수집 (빈 디렉토리면 이 단계 skip)
+2. 각 파일의 내용/파일명/확장자를 분석하여 카테고리 판정:
+
+   ```
+   판정 기준                                          대상 폴더
+   ─────────────────────────────────────────────────  ──────────────
+   RFP, 제안요청서, 요구사항 정의서, SOW, 사양서       rfp/
+   AS-IS 문서, 현행 시스템, 기존 화면, DB 스키마        as-is/
+   회의록, 인터뷰, 워크숍 기록, 미팅 노트               meeting-notes/
+   벤치마킹, 경쟁사 분석, 시장 조사, 레퍼런스           benchmarks/
+   URL 목록, 외부 링크 모음, 참고 사이트                links/
+   ```
+
+3. 판정 로직:
+   - **파일명 키워드 매칭** (우선): 파일명에 `rfp`, `제안`, `as-is`, `현행`, `회의록`, `meeting`, `benchmark`, `link` 등 키워드 포함 시 즉시 분류
+   - **내용 분석** (fallback): 키워드로 판별 불가 시 파일 첫 2-3페이지(또는 ~5KB)를 읽어 문맥 기반 분류
+   - **판별 불가**: 분류 불가한 파일은 `raw/`에 그대로 유지하고, `_input/_sort-log.json`에 `"unresolved"` 상태로 기록
+
+4. 분류 결과 처리:
+   - 파일을 해당 서브폴더로 **이동** (`raw/` → `rfp/`, `as-is/` 등)
+   - 동일 파일명 충돌 시: `{filename}_{timestamp}.{ext}` 형식으로 rename
+   - `_input/_sort-log.json`에 이동 이력 기록:
+     ```json
+     {
+       "sortedAt": "{ISO 8601}",
+       "results": [
+         {
+           "original": "_input/raw/프로젝트_RFP_v2.pdf",
+           "destination": "_input/rfp/프로젝트_RFP_v2.pdf",
+           "category": "rfp",
+           "method": "filename-keyword",
+           "confidence": "high"
+         },
+         {
+           "original": "_input/raw/unknown_doc.docx",
+           "destination": null,
+           "category": null,
+           "method": "content-analysis",
+           "confidence": "low",
+           "reason": "문서 내용이 여러 카테고리에 해당하여 자동 분류 불가"
+         }
+       ]
+     }
+     ```
+
+5. 사용자에게 분류 결과 요약 표시:
+   ```
+   ## Raw File Sort Results
+   ✓ 프로젝트_RFP_v2.pdf → rfp/ (filename-keyword)
+   ✓ 현행시스템_분석.xlsx → as-is/ (filename-keyword)
+   ✓ 3월_킥오프_회의록.md → meeting-notes/ (content-analysis)
+   ✗ unknown_doc.docx → 분류 불가 (raw/에 유지)
+   ```
+
+### Step 3: Scan _input/
 
 1. `_input/_manifest.json` 읽기
 2. `_input/` 하위 전체 파일 스캔 (rfp/, as-is/, meeting-notes/, benchmarks/, links/)
@@ -43,7 +101,7 @@ triggers:
 4. `_manifest.json` 갱신 (파일 목록, 크기, 타임스탬프)
 5. `--incremental`: 변경된 파일만 대상 목록에 포함
 
-### Step 3: Analyze Each File (engine-analyzer)
+### Step 4: Analyze Each File (engine-analyzer)
 
 파일별 분석 프로세스:
 
@@ -70,7 +128,7 @@ triggers:
    }
    ```
 
-### Step 4: Classify into 10 Categories
+### Step 5: Classify into 10 Categories
 
 | Category | File Pattern | Key Fields | Input Sources |
 |----------|-------------|------------|---------------|
@@ -85,7 +143,7 @@ triggers:
 | `decisions/` | DC-nnn.json | id, date, participants[], decision, rationale, source | 회의록, 토론 세션 |
 | `questions/` | QS-nnn.json | id, question, context, status(open/resolved), answer, source | 분석 중 발생 |
 
-### Step 5: Update Index Files
+### Step 6: Update Index Files
 
 각 카테고리의 `_index.json` 갱신:
 
@@ -107,7 +165,7 @@ triggers:
 }
 ```
 
-### Step 6: Review Mode (--review)
+### Step 7: Review Mode (--review)
 
 `--review` 플래그 사용 시:
 
@@ -118,7 +176,7 @@ triggers:
    - **제외**: status → `rejected`, 사유 기록
 3. 미확인 항목은 `extracted` 상태 유지
 
-### Step 7: Update Summary
+### Step 8: Update Summary
 
 `_classified/_summary.json` 갱신:
 
@@ -141,7 +199,7 @@ triggers:
 }
 ```
 
-### Step 8: Auto-Register to Backlog
+### Step 9: Auto-Register to Backlog
 
 검증된 requirements(`validated` status) 중 backlog에 미등록된 항목:
 1. `_backlog/_index.json`에 등록
@@ -177,9 +235,11 @@ extracted → validated → adopted | rejected
 
 ## Safety Rules
 
-1. `_input/` 파일은 절대 수정하지 않음 (READ-ONLY)
-2. 모든 추출 항목에 source metadata 필수 (미부착 항목은 신뢰할 수 없음)
-3. 기존 ID 재사용 금지 (삭제된 항목의 ID도 재할당하지 않음)
-4. 대용량 파일은 반드시 청크 분할 (context window 보호)
-5. `--incremental` 시 기존 분류 데이터 보존, 신규 항목만 추가
-6. 분석 가정(auto mode)은 `_assumptions/`에 기록
+1. `_input/` 파일은 절대 수정하지 않음 (READ-ONLY) — 단, `raw/` → 서브폴더 이동은 예외
+2. `raw/` 파일 이동 시 원본 파일 내용은 변경하지 않음 (이동만 수행)
+3. 자동 분류 불가한 파일은 `raw/`에 그대로 유지 (강제 분류 금지)
+4. 모든 추출 항목에 source metadata 필수 (미부착 항목은 신뢰할 수 없음)
+5. 기존 ID 재사용 금지 (삭제된 항목의 ID도 재할당하지 않음)
+6. 대용량 파일은 반드시 청크 분할 (context window 보호)
+7. `--incremental` 시 기존 분류 데이터 보존, 신규 항목만 추가
+8. 분석 가정(auto mode)은 `_assumptions/`에 기록

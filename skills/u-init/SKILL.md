@@ -71,6 +71,7 @@ apps/ 없음                    단일 앱
 │           └── .gitkeep
 │
 ├── _input/                      # 원시 자료 (READ-ONLY)
+│   ├── raw/                     # 미분류 파일 드롭존 (자동 분류 대상)
 │   ├── rfp/
 │   ├── as-is/
 │   ├── meeting-notes/
@@ -200,8 +201,8 @@ apps/ 없음                    단일 앱
   _backlog/ ............ created
 
 ### Next Steps
-1. Place raw data (RFP, AS-IS docs, meeting notes) into `.u-maker/_input/`
-2. Run `/u-ingest {app}` to analyze and classify raw data
+1. Place raw data (RFP, AS-IS docs, meeting notes) into `.u-maker/_input/raw/`
+2. Run `/u-ingest {app}` to auto-sort raw files and analyze/classify data
 3. Run `/u-plan {app}` to generate SRS + IA + Roadmap
 ```
 
