@@ -1,0 +1,23 @@
+{
+  "scope": "{{SCOPE}}",
+  "lastUpdated": "{{DATE}}",
+  "documents": [
+    {
+      "id": "{{DOC_ID}}",
+      "name": "{{DOC_NAME}}",
+      "path": "{{DOC_PATH}}",
+      "owner": "{{OWNER}}",
+      "status": "Draft",
+      "version": "v0.1.0",
+      "phase": "{{PHASE}}",
+      "impactFlag": false,
+      "lastUpdated": "{{DATE}}"
+    }
+  ],
+  "stats": {
+    "total": 0,
+    "draft": 0,
+    "review": 0,
+    "final": 0
+  }
+}

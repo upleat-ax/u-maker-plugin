@@ -1,0 +1,85 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "u-maker/_index",
+  "title": "Folder Index Schema",
+  "description": "모든 폴더의 _index.json 공통 스키마. Claude의 scope-first navigation에 사용.",
+  "type": "object",
+  "required": ["scope", "documents"],
+  "properties": {
+    "scope": {
+      "type": "string",
+      "description": "이 인덱스의 범위 (예: retail, common, requirements)"
+    },
+    "lastUpdated": {
+      "type": "string",
+      "format": "date-time",
+      "description": "인덱스 최종 갱신 시각"
+    },
+    "documents": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "path", "status"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "문서/항목 식별자"
+          },
+          "path": {
+            "type": "string",
+            "description": "상대 파일 경로"
+          },
+          "title": {
+            "type": "string",
+            "description": "문서 제목"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["Draft", "Review", "Final", "extracted", "validated", "adopted", "rejected"],
+            "description": "문서/항목 상태"
+          },
+          "owner": {
+            "type": "string",
+            "description": "담당 에이전트"
+          },
+          "version": {
+            "type": "string",
+            "description": "문서 버전"
+          },
+          "impactFlag": {
+            "type": ["object", "null"],
+            "properties": {
+              "level": {
+                "type": "string",
+                "enum": ["must-update", "review-needed", "info"]
+              },
+              "source": {
+                "type": "string",
+                "description": "변경 원인 문서 ID"
+              },
+              "changedAt": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "description": {
+                "type": "string"
+              }
+            },
+            "description": "cascade로 인한 영향 플래그"
+          }
+        }
+      },
+      "description": "이 폴더의 문서 목록"
+    },
+    "stats": {
+      "type": "object",
+      "properties": {
+        "total": { "type": "integer" },
+        "draft": { "type": "integer" },
+        "review": { "type": "integer" },
+        "final": { "type": "integer" }
+      },
+      "description": "문서 상태 통계"
+    }
+  }
+}

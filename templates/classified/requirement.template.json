@@ -1,0 +1,18 @@
+{
+  "id": "FR-{{NNNN}}",
+  "type": "functional",
+  "title": "",
+  "description": "",
+  "priority": "Must",
+  "source": {
+    "file": "",
+    "page": null,
+    "section": ""
+  },
+  "related": [],
+  "status": "extracted",
+  "tags": [],
+  "extractedAt": "{{DATE}}",
+  "validatedAt": null,
+  "adoptedIn": null
+}

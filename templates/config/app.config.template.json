@@ -1,0 +1,26 @@
+{
+  "app": "{{APP_NAME}}",
+  "displayName": "",
+  "type": "web-app",
+  "team": {
+    "planner": "",
+    "designer": "",
+    "fe": [],
+    "be": [],
+    "qa": ""
+  },
+  "inherits": "common",
+  "overrides": {
+    "ux": null,
+    "dev": null
+  },
+  "techStack": {
+    "framework": "Next.js",
+    "stateManagement": "react-query",
+    "apiClient": "react-query",
+    "styling": "css",
+    "packageManager": "bun"
+  },
+  "phase": "plan",
+  "iteration": 1
+}

@@ -1,0 +1,93 @@
+{
+  "version": "3.0.0",
+  "project": {
+    "name": "{{PROJECT_NAME}}",
+    "description": "",
+    "type": "monorepo",
+    "language": "ko"
+  },
+  "apps": [],
+  "pdca": {
+    "phases": ["plan", "design", "do", "check", "act"],
+    "designPhase": "standalone",
+    "autoIterate": true,
+    "maxIterations": 10,
+    "gapThreshold": 90
+  },
+  "interaction": {
+    "defaultMode": "auto",
+    "alwaysPause": ["gate-failure", "destructive-change", "scope-change"],
+    "assumptionsLog": true,
+    "maxAssumptions": 20
+  },
+  "conventions": {
+    "naming": {
+      "components": "PascalCase",
+      "functions": "camelCase",
+      "constants": "UPPER_SNAKE_CASE",
+      "files": "kebab-case"
+    },
+    "documentHeader": {
+      "required": ["Owner", "Status", "Version", "Last Updated", "Related Docs"]
+    },
+    "statusValues": ["Draft", "Review", "Final"]
+  },
+  "jsonExport": {
+    "enabled": true,
+    "description": "마크다운 문서 생성/갱신 시 동명의 .json 파일을 함께 생성"
+  },
+  "documentPaths": {
+    "root": ".u-maker",
+    "common": ".u-maker/common",
+    "apps": ".u-maker/apps"
+  },
+  "agents": {
+    "u-agent-orchestrator": {
+      "model": "opus",
+      "phases": ["plan", "design", "do", "check", "act"],
+      "triggers": ["route", "phase", "gate", "discuss", "status", "roadmap", "index", "iteration", "retrospective", "backlog", "assume"]
+    },
+    "u-agent-planner": {
+      "model": "sonnet",
+      "phases": ["plan", "design"],
+      "triggers": ["srs", "ia", "erd", "api", "screen", "screen-flow", "ux-guide", "design-token", "ui-components", "analyze", "ingest", "estimate", "wireframe", "fr", "us", "ft", "nfr"]
+    },
+    "u-agent-builder": {
+      "model": "sonnet",
+      "phases": ["do"],
+      "triggers": ["code", "build", "scaffold", "component", "storybook", "frontend", "backend", "migration"]
+    },
+    "u-agent-guardian": {
+      "model": "sonnet",
+      "phases": ["design", "do", "check", "act"],
+      "triggers": ["validate", "test", "qa", "rtm", "consistency", "gate-check", "coverage", "defect", "report"]
+    }
+  },
+  "phaseGates": {
+    "plan-to-design": {
+      "conditions": ["SRS Final", "IA Final", "Roadmap approved"],
+      "validator": "u-agent-guardian"
+    },
+    "design-to-do": {
+      "conditions": ["ERD Final", "RTM Final", "Screen Final", "API Final", "consistency review passed"],
+      "validator": "u-agent-guardian"
+    },
+    "do-to-check": {
+      "conditions": ["Code complete", "Build success"],
+      "validator": "u-agent-guardian"
+    },
+    "check-to-complete": {
+      "conditions": ["Critical/Major defects = 0", "All FR implemented", "Build success"],
+      "validator": "u-agent-guardian"
+    },
+    "act-to-plan": {
+      "conditions": ["Retrospective complete", "Archive complete"],
+      "validator": "u-agent-orchestrator"
+    }
+  },
+  "reservedWords": {
+    "scopes": ["common", "all"],
+    "targets": ["srs", "ia", "erd", "api", "screens", "screen-flow", "roadmap", "rtm", "ux-guide", "design-token", "test-cases", "test-report", "code"],
+    "types": ["brainstorm", "review", "decision", "workshop", "retro", "approve", "reject"]
+  }
+}
