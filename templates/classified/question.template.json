@@ -1,9 +1,0 @@
-{
-  "id": "QS-{{NNNN}}",
-  "question": "",
-  "context": "",
-  "status": "open",
-  "answer": null,
-  "source": { "file": "", "page": null, "section": "" },
-  "extractedAt": "{{DATE}}"
-}

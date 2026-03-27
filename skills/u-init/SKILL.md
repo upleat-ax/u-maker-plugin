@@ -1,93 +1,255 @@
 ---
 name: u-init
-description: |
-  프로젝트 초기화. .u-maker/ 전체 구조 생성, u-maker.config.json 초기화, 앱 등록.
-  Triggers: /u-init, 프로젝트 초기화, 새 프로젝트, init project, create project, 프로젝트 시작
-version: 2.0.0
-user-invocable: true
-argument-hint: "[project-name]"
-model: sonnet
-allowed-tools:
-  - Read
-  - Write
-  - Edit
-  - Glob
-  - Grep
-  - Bash
-  - TaskCreate
-  - TaskUpdate
-  - TaskList
-  - AskUserQuestion
-imports:
-  - ${PLUGIN_ROOT}/shared/references/ssot-standard.md
-  - ${PLUGIN_ROOT}/shared/references/post-execution-summary.md
-  - ${PLUGIN_ROOT}/templates/config/u-maker.config.template.json
-  - ${PLUGIN_ROOT}/templates/config/app.config.template.json
-agents:
-  u-agent-orchestrator: u-maker:u-agent-orchestrator
-  u-agent-planner: u-maker:u-agent-planner
-  u-agent-builder: u-maker:u-agent-builder
-  u-agent-guardian: u-maker:u-agent-guardian
+description: "프로젝트 초기화. .u-maker/ 전체 구조 생성, u-maker.config.json 초기화, 모노레포 감지, 앱 등록까지 수행한다."
+triggers:
+  - "/u-init"
+  - "initialize project"
+  - "프로젝트 초기화"
 ---
 
-# u-init -- 프로젝트 초기화
+# u-init -- Project Initialization
 
-> .u-maker/ 전체 구조를 생성하고 프로젝트 설정을 초기화한다.
+`/u-init [project-name]` 명령으로 `.u-maker/` SSoT 디렉토리 구조를 생성하고, 프로젝트 설정을 초기화한다.
 
-## 문법
+---
+
+## Execution Flow
+
+### Step 1: Gather Project Info
+
+1. `project-name` 인자가 없으면 사용자에게 질문
+2. 현재 디렉토리의 기존 `.u-maker/` 유무 확인
+   - 이미 존재하면: "기존 설정 덮어쓸까요?" 확인 (Always-Pause)
+3. `package.json`, `turbo.json` 읽어 모노레포 여부 판별
+
+### Step 2: Detect Monorepo Structure
 
 ```
-/u-init [project-name]
+조건                          판정
+────────────────────────────  ──────────
+turbo.json 존재               Turborepo 모노레포
+apps/ + packages/ 존재        모노레포 (non-turbo)
+apps/ 없음                    단일 앱
 ```
 
-- `project-name`: 프로젝트 이름 (생략 시 AskUserQuestion으로 입력 요청)
+- 모노레포: `apps/` 하위 각 디렉토리를 앱 후보로 인식
+- 단일 앱: 프로젝트 루트 = 앱 하나
 
-## 실행 흐름
+### Step 3: Create Directory Tree
 
-1. **프로젝트 이름 확정** -- 인자 또는 대화형 입력
-2. **디렉토리 구조 생성** -- `.u-maker/` 하위 전체 트리
+```
+.u-maker/
+├── u-maker.config.json          # 프로젝트 설정 (Single Source of Truth)
+├── _links.json                  # 글로벌 의존성 그래프 (empty)
+│
+├── docs/
+│   ├── common/                  # 공통 문서 (모든 앱이 상속)
+│   │   ├── policy/
+│   │   │   └── .gitkeep
+│   │   ├── ux/
+│   │   │   ├── ux-guide.md      # placeholder
+│   │   │   └── design-token.md  # placeholder
+│   │   ├── dev/
+│   │   │   └── coding-convention.md  # placeholder
+│   │   ├── architecture/
+│   │   │   ├── erd-common.md    # placeholder
+│   │   │   └── api-common.md    # placeholder
+│   │   └── project/
+│   │       ├── glossary.md      # placeholder
+│   │       └── iteration-log.md # placeholder
+│   │
+│   └── {app}/                   # 앱별 문서 (앱 등록 시 생성)
+│       ├── _index.json          # 문서 인벤토리
+│       ├── app.config.json      # 앱별 설정
+│       ├── 01-plan/
+│       │   └── .gitkeep
+│       ├── 02-design/
+│       │   └── .gitkeep
+│       ├── 03-dev/
+│       │   └── .gitkeep
+│       └── 04-check/
+│           └── .gitkeep
+│
+├── _input/                      # 원시 자료 (READ-ONLY)
+│   ├── rfp/
+│   ├── as-is/
+│   ├── meeting-notes/
+│   ├── benchmarks/
+│   ├── links/
+│   └── _manifest.json           # 입력 파일 인벤토리
+│
+├── _classified/                 # 정제 데이터
+│   ├── requirements/
+│   │   └── _index.json
+│   ├── pain-points/
+│   │   └── _index.json
+│   ├── domain-terms/
+│   │   └── _index.json
+│   ├── stakeholders/
+│   │   └── _index.json
+│   ├── workflows/
+│   │   └── _index.json
+│   ├── screens/
+│   │   └── _index.json
+│   ├── data-models/
+│   │   └── _index.json
+│   ├── constraints/
+│   │   └── _index.json
+│   ├── decisions/
+│   │   └── _index.json
+│   ├── questions/
+│   │   └── _index.json
+│   └── _summary.json            # 분류 요약
+│
+├── _sessions/                   # 토론 세션 기록
+├── _assumptions/                # 자동 가정 로그
+│   └── _index.json
+└── _backlog/                    # 백로그 임시 저장
+    └── _index.json
+```
+
+### Step 4: Generate u-maker.config.json
+
+```json
+{
+  "projectName": "{project-name}",
+  "version": "1.0.0",
+  "createdAt": "{ISO 8601}",
+  "updatedAt": "{ISO 8601}",
+
+  "apps": [],
+
+  "documentPaths": {
+    "root": ".u-maker/docs",
+    "common": ".u-maker/docs/common",
+    "input": ".u-maker/_input",
+    "classified": ".u-maker/_classified",
+    "sessions": ".u-maker/_sessions",
+    "assumptions": ".u-maker/_assumptions",
+    "backlog": ".u-maker/_backlog"
+  },
+
+  "interaction": {
+    "defaultMode": "interactive",
+    "maxAssumptions": 20
+  },
+
+  "designTool": {
+    "tool": "pencil",
+    "supportedTools": ["pencil", "figma", "stitch"]
+  },
+
+  "iteration": {
+    "current": 1,
+    "phase": "init"
+  }
+}
+```
+
+### Step 5: Register Detected Apps
+
+모노레포에서 감지된 각 앱에 대해:
+
+1. `apps[]` 배열에 앱 엔트리 추가:
+   ```json
+   {
+     "name": "{app-dir-name}",
+     "path": "apps/{app-dir-name}",
+     "description": "",
+     "techStack": {}
+   }
    ```
-   .u-maker/
-   ├── docs/
-   │   └── common/
-   ├── scripts/
-   ├── templates/
-   └── u-ssot.config.json
+2. `docs/{app}/` 디렉토리 구조 생성 (Step 3의 `{app}` 부분)
+3. `docs/{app}/_index.json` 초기화 (빈 문서 목록)
+4. `docs/{app}/app.config.json` 생성:
+   ```json
+   {
+     "name": "{app-name}",
+     "phase": "plan",
+     "techStack": {},
+     "team": []
+   }
    ```
-3. **Config 초기화** -- `u-maker.config.template.json` 기반 `u-ssot.config.json` 생성
-4. **앱 등록** -- `app.config.template.json` 기반 첫 앱 등록
-5. **Phase 설정** -- 초기 Phase를 `PLAN`으로 설정
-6. **결과 보고** -- Post-Execution Summary 출력
 
-## 사용 엔진
+단일 앱 모드:
+- 앱 이름 = 프로젝트 이름
+- `apps[]`에 단일 엔트리 등록
 
-| Engine | 역할 |
-|--------|------|
-| engine-router | 스코프 해석 및 경로 결정 |
-| engine-doc | 초기 문서 템플릿 배치 |
-| engine-phase-detector | 초기 Phase 설정 |
-
-## 에이전트 시퀀스
+### Step 6: Display Status Summary
 
 ```
-orchestrator → planner (구조 설계 + config 초기화)
+## u-init Complete
+
+**Project:** {project-name}
+**Type:** {monorepo | single-app}
+**Apps registered:** {count}
+
+### Apps
+- {app-name} (apps/{path})
+
+### Directory Structure
+.u-maker/ .............. created
+  u-maker.config.json .. initialized
+  _links.json .......... initialized
+  docs/common/ ......... created (7 placeholders)
+  docs/{app}/ .......... created ({count} apps)
+  _input/ .............. created (ready for raw data)
+  _classified/ ......... created (10 categories)
+  _sessions/ ........... created
+  _assumptions/ ........ created
+  _backlog/ ............ created
+
+### Next Steps
+1. Place raw data (RFP, AS-IS docs, meeting notes) into `.u-maker/_input/`
+2. Run `/u-ingest {app}` to analyze and classify raw data
+3. Run `/u-plan {app}` to generate SRS + IA + Roadmap
 ```
 
-## Flags
+---
 
-| Flag | 설명 |
-|------|------|
-| (없음) | 기본 초기화만 수행 |
+## _index.json Initial Structure
 
-## 규칙
+각 분류 카테고리의 `_index.json`:
 
-- 이미 `.u-maker/` 존재 시 덮어쓰기 여부를 AskUserQuestion으로 확인
-- `u-ssot.config.json`의 `documentPaths.root`는 `.u-maker/docs`로 고정
-- 초기 Phase는 반드시 `PLAN`
-
-## 사용 예시
-
+```json
+{
+  "category": "{category-name}",
+  "items": [],
+  "lastUpdated": "{ISO 8601}",
+  "totalCount": 0
+}
 ```
-/u-init my-saas-app
-/u-init
+
+앱 문서의 `_index.json`:
+
+```json
+{
+  "app": "{app-name}",
+  "documents": [],
+  "lastUpdated": "{ISO 8601}",
+  "phase": "plan"
+}
 ```
+
+---
+
+## _manifest.json Initial Structure
+
+```json
+{
+  "files": [],
+  "lastScanned": null,
+  "totalFiles": 0,
+  "totalSizeBytes": 0
+}
+```
+
+---
+
+## Safety Rules
+
+1. 기존 `.u-maker/` 발견 시 반드시 사용자 확인 후 진행
+2. `_input/` 폴더는 생성만 하고 내용을 절대 수정하지 않음
+3. 모노레포 감지 실패 시 단일 앱으로 fallback (사용자에게 고지)
+4. 설정 파일(`u-maker.config.json`)은 항상 UTF-8, 2-space indent JSON으로 저장
+5. 모든 placeholder 파일에 최소 frontmatter 포함 (Owner, Status: Draft)
