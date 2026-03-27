@@ -30,7 +30,7 @@ triggers:
 
 ## Full Command Table
 
-### Lifecycle Commands (8)
+### Lifecycle Commands (9)
 
 | Command | Signature | Phase | Description |
 |---------|-----------|-------|-------------|
@@ -42,6 +42,7 @@ triggers:
 | `/u-dev` | `/u-dev [scope] [--only X] [-i] [--step]` | Do | 명세 → FE + BE + DB 코드 생성 |
 | `/u-qa` | `/u-qa [scope] [-i] [--step]` | Check | TC 설계 + 테스트 실행 + Report + exit criteria |
 | `/u-ship` | `/u-ship [scope] [-i] [--step]` | Act | 최종 검증 + iteration log + retrospective |
+| `/u-loop` | `/u-loop [scope] [--from X] [--to Y] [--resume]` | ALL | 무인 자동 실행 (밤새 돌려놓기) |
 
 ### Operations Commands (5)
 
@@ -174,6 +175,9 @@ u-maker.config.json에서 앱 목록 조회 후 scope 해석.
 
 # 7. 최종 검증 + 배포
 /u-ship retail
+
+# ── 또는 한 줄로 밤새 돌리기 ──
+/u-loop retail                    # ingest → plan → design → dev → qa → ship 무인 실행
 
 # ── Reverse Engineering (기존 프로젝트) ──
 # 1. 프로젝트 초기화

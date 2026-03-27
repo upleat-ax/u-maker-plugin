@@ -40,6 +40,7 @@ description: "자연어 및 /u-* 커맨드에서 의도를 분류하고, 스코�
 | `/u-dev` | builder | engine-code | Do |
 | `/u-qa` | guardian | engine-validator, engine-test | Check |
 | `/u-ship` | orchestrator | engine-validator, engine-workflow-runner | Act |
+| `/u-loop` | orchestrator | engine-workflow-runner | ALL |
 
 ### Operations Commands
 
@@ -237,6 +238,7 @@ brainstorm, review, decision, workshop, retro
 | 개발, 코드 생성, build, code | `/u-dev` |
 | 테스트, QA, 검증, check, test | `/u-qa` |
 | 배포, 출시, ship, deploy | `/u-ship` |
+| 루프, 자동 실행, 밤새, 무인, loop, run all | `/u-loop` |
 | 추가, add | `/u-add` |
 | 수정, 갱신, update | `/u-update` |
 | 문서 조회, doc | `/u-doc` |
