@@ -76,7 +76,7 @@ auto-generated → pending-review → approved | rejected
 | `/u-ingest` (auto mode) | classified 데이터 해석 시 불확실한 판단 | "이 요구사항의 scope에 부분 취소 포함?" |
 | `/u-plan` (auto mode) | SRS 작성 시 미확인 요건에 대한 판단 | "FR-012는 Must priority로 추정" |
 | `/u-design` (auto mode) | 설계 시 명시되지 않은 기술 결정 | "JWT 토큰 만료 시간 30분으로 설정" |
-| `/u-build` (auto mode) | 코드 생성 시 구현 세부사항 결정 | "파일 업로드 최대 크기 10MB" |
+| `/u-dev` (auto mode) | 코드 생성 시 구현 세부사항 결정 | "파일 업로드 최대 크기 10MB" |
 | `/u-check` (auto mode) | 테스트 시 기대 동작 추정 | "동시 접속 100명 기준 성능 테스트" |
 
 ---

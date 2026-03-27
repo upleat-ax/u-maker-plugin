@@ -64,6 +64,7 @@ apps/ 없음                    단일 앱
 │       ├── 01-plan/
 │       │   └── .gitkeep
 │       ├── 02-design/
+│       │   ├── wireframes/        # 와이어프레임 파일 + index.html 뷰어
 │       │   └── .gitkeep
 │       ├── 03-dev/
 │       │   └── .gitkeep

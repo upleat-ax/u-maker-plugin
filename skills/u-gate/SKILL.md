@@ -172,7 +172,7 @@ Gate PASS 시:
    {phase} → {next-phase}
 
    ### Next Steps
-   - plan→do: Run /u-design or /u-build
+   - plan→do: Run /u-design or /u-dev
    - do→check: Run /u-check
    - check→act: Run /u-ship
    - act→plan: Run /u-plan (new iteration)
@@ -199,7 +199,7 @@ Gate FAIL 시:
    ### Suggested Actions
    - /u-add {scope} us --parent FR-0042  (for G-04)
    - /u-sync {scope} --fix              (for consistency)
-   - /u-build {scope}                    (for code-complete)
+   - /u-dev {scope}                    (for code-complete)
    ```
 
 2. Phase 전환 실행하지 않음

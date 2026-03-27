@@ -51,7 +51,7 @@ When a `/u-*` command arrives, route it as follows:
 | `/u-ingest` | planner | Plan | Raw to classified. Uses engine-analyzer |
 | `/u-plan` | planner | Plan | Classified to SRS + IA + Roadmap chain |
 | `/u-design` | planner | Design | SRS/IA to ERD + API + Screen + Flow + UXGuide |
-| `/u-build` | builder | Do | Specs to code (FE + BE + DB) |
+| `/u-dev` | builder | Do | Specs to code (FE + BE + DB) |
 | `/u-check` | guardian | Check | TC design + test execution + report |
 | `/u-ship` | guardian + orchestrator | Act | Final validation + iteration log + retrospective |
 

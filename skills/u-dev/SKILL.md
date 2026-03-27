@@ -1,16 +1,16 @@
 ---
-name: u-build
-description: "BUILD Phase. 명세 기반 FE + BE + DB 코드 생성. Screen → 컴포넌트, API Contract → Route Handler, ERD → DB Schema를 각각 생성하고 spec-sync 검증을 수행한다."
+name: u-dev
+description: "DEV Phase. 명세 기반 FE + BE + DB 코드 생성. Screen → 컴포넌트, API Contract → Route Handler, ERD → DB Schema를 각각 생성하고 spec-sync 검증을 수행한다."
 triggers:
-  - "/u-build"
-  - "build phase"
+  - "/u-dev"
+  - "dev phase"
   - "코드 생성"
   - "개발"
 ---
 
-# u-build -- Build Phase Code Generation
+# u-dev -- Dev Phase Code Generation
 
-`/u-build [scope] [--only X] [-i] [--step]` 명령으로 Design 명세를 기반으로 FE + BE + DB 코드를 생성한다.
+`/u-dev [scope] [--only X] [-i] [--step]` 명령으로 Design 명세를 기반으로 FE + BE + DB 코드를 생성한다.
 
 **Primary Agent:** u-agent-builder (engine-code 사용)
 

@@ -37,7 +37,7 @@ triggers:
 3. Gate 미통과 시:
    - 미완성 FT 목록 표시
    - 빌드 에러 표시
-   - "/u-build를 먼저 완료하세요" 안내
+   - "/u-dev를 먼저 완료하세요" 안내
 
 ### Step 1: Auto-Generate TestCases from SRS Features
 

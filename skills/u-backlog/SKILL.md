@@ -255,7 +255,7 @@ blocked → (previous status)
 | Test failure → defect | bug | defect | `/u-check` Step 4 |
 | `/u-discuss` /action 태그 | improvement | discuss | `/u-discuss --wrap` |
 | Retrospective "Try" 항목 | improvement | retro | `/u-ship` Step 4-P |
-| Guardian tech-debt detection | tech-debt | guardian | `/u-build` Step 9 |
+| Guardian tech-debt detection | tech-debt | guardian | `/u-dev` Step 9 |
 | Gap detector findings | improvement | gap-detector | `/u-skill-gap-detector` |
 
 각 자동 생성 항목에는 `source.ref`로 원본 추적 가능.

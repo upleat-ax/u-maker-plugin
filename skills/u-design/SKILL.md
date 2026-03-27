@@ -105,6 +105,7 @@ Related Docs: [SRS, API, RTM]
 3. `srs.json` → 화면별 관련 FT 매핑
 4. 화면별 컴포넌트 구성, 레이아웃, 인터랙션 패턴 정의
 5. `screens.md` + `screens.json` 생성
+6. `wireframes/index.html` 자동 생성 (engine-doc의 Wireframe Viewer 기능 호출)
 
 ### Step 4: Generate Screen Flow
 

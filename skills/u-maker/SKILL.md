@@ -39,7 +39,7 @@ triggers:
 | `/u-ingest` | `/u-ingest [scope] [--review] [--incremental]` | Plan | raw → classified 분석 적재 |
 | `/u-plan` | `/u-plan [scope] [--only X] [-i] [--step]` | Plan | classified → SRS + IA + Roadmap 연쇄 생성 |
 | `/u-design` | `/u-design [scope] [--only X] [-i] [--step]` | Design | SRS/IA → ERD + API + Screen + Flow + RTM |
-| `/u-build` | `/u-build [scope] [--only X] [-i] [--step]` | Do | 명세 → FE + BE + DB 코드 생성 |
+| `/u-dev` | `/u-dev [scope] [--only X] [-i] [--step]` | Do | 명세 → FE + BE + DB 코드 생성 |
 | `/u-check` | `/u-check [scope] [-i] [--step]` | Check | TC 설계 + 테스트 실행 + Report + exit criteria |
 | `/u-ship` | `/u-ship [scope] [-i] [--step]` | Act | 최종 검증 + iteration log + retrospective |
 
@@ -61,10 +61,11 @@ triggers:
 | `/u-coverage` | `/u-coverage [scope]` | classified → docs 커버리지 리포트 |
 | `/u-trace` | `/u-trace [scope] [item-id]` | raw → classified → docs 추적 체인 |
 
-### Collaboration Commands (3)
+### Collaboration Commands (4)
 
 | Command | Signature | Description |
 |---------|-----------|-------------|
+| `/u-ask` | `/u-ask {질문}` | 가벼운 Q&A — 질문, 제안, 의견에 맥락 있는 답변 |
 | `/u-discuss` | `/u-discuss [type] [topic]` | 구조화된 토론 세션 (brainstorm/review/decision/retro) |
 | `/u-assume` | `/u-assume [approve\|reject] [id]` | 가정 검토/채택/기각 |
 | `/u-backlog` | `/u-backlog [scope]` | 백로그 조회/관리 |
@@ -129,7 +130,7 @@ u-maker.config.json에서 앱 목록 조회 후 scope 해석.
 | `ingest` | `skills/u-ingest/` |
 | `plan` | `skills/u-plan/` |
 | `design` | `skills/u-design/` |
-| `build` | `skills/u-build/` |
+| `build` | `skills/u-dev/` |
 | `check` | `skills/u-check/` |
 | `ship` | `skills/u-ship/` |
 | `add` | `skills/u-add/` |
@@ -166,7 +167,7 @@ u-maker.config.json에서 앱 목록 조회 후 scope 해석.
 /u-design retail
 
 # 5. 코드 생성
-/u-build retail
+/u-dev retail
 
 # 6. QA 검증
 /u-check retail

@@ -19,7 +19,7 @@ triggers:
 **Primary Agent:** u-agent-planner (코드 분석 + 문서 생성)
 
 > **용도:** 이미 개발된 프로젝트에 u-maker를 도입할 때, 코드에서 SSoT를 구성한다.
-> Forward engineering(`/u-plan → /u-design → /u-build`)의 역방향이다.
+> Forward engineering(`/u-plan → /u-design → /u-dev`)의 역방향이다.
 
 ---
 

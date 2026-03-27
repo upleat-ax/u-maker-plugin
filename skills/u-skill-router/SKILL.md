@@ -37,7 +37,7 @@ description: "자연어 및 /u-* 커맨드에서 의도를 분류하고, 스코�
 | `/u-ingest` | planner | engine-analyzer | Plan |
 | `/u-plan` | planner | engine-doc, engine-estimator | Plan |
 | `/u-design` | planner | engine-designer, engine-doc | Design |
-| `/u-build` | builder | engine-code | Do |
+| `/u-dev` | builder | engine-code | Do |
 | `/u-check` | guardian | engine-validator, engine-test | Check |
 | `/u-ship` | orchestrator | engine-validator, engine-workflow-runner | Act |
 
@@ -63,6 +63,7 @@ description: "자연어 및 /u-* 커맨드에서 의도를 분류하고, 스코�
 
 | Command | Primary Agent | Engine Skills Used |
 |---------|--------------|-------------------|
+| `/u-ask` | orchestrator | -- (context read only) |
 | `/u-discuss` | orchestrator | engine-facilitator |
 | `/u-assume` | orchestrator | engine-doc |
 | `/u-backlog` | orchestrator | u-skill-backlog |
@@ -233,7 +234,7 @@ brainstorm, review, decision, workshop, retro
 | 자료 분석, 분석, ingest, analyze data | `/u-ingest` |
 | 기획, 요구사항, SRS, plan | `/u-plan` |
 | 설계, ERD, API 설계, design | `/u-design` |
-| 개발, 코드 생성, build, code | `/u-build` |
+| 개발, 코드 생성, build, code | `/u-dev` |
 | 테스트, QA, 검증, check, test | `/u-check` |
 | 배포, 출시, ship, deploy | `/u-ship` |
 | 추가, add | `/u-add` |
@@ -242,6 +243,7 @@ brainstorm, review, decision, workshop, retro
 | 동기화, 일관성, sync | `/u-sync` |
 | 게이트, 전환, gate | `/u-gate` |
 | 상태, 현황, status | `/u-status` |
+| 질문, 물어볼게, 어때, 의견, ask, question | `/u-ask` |
 | 토론, 브레인스토밍, discuss | `/u-discuss` |
 | 백로그, backlog | `/u-backlog` |
 | 추적, trace | `/u-trace` |

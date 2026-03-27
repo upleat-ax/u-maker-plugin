@@ -241,7 +241,7 @@ _input/rfp/proposal.pdf
 ```bash
 /u-plan retail           # 기획
 /u-design retail         # 설계
-/u-build retail          # 구현
+/u-dev retail          # 구현
 /u-check retail          # 검증
 /u-ship retail           # 배포 + 회고
 ```
@@ -427,9 +427,9 @@ u-maker는 3가지 작업 모드를 제공합니다. 상황에 맞게 선택하�
 
 **코드 생성:**
 ```bash
-/u-build retail                           # FE + BE 코드 동시 생성
-/u-build retail --only fe                 # Frontend만 생성
-/u-build retail --only be                 # Backend만 생성
+/u-dev retail                           # FE + BE 코드 동시 생성
+/u-dev retail --only fe                 # Frontend만 생성
+/u-dev retail --only be                 # Backend만 생성
 ```
 
 **에이전트에게 직접 요청:**
@@ -503,7 +503,7 @@ u-maker는 3가지 작업 모드를 제공합니다. 상황에 맞게 선택하�
 | `/u-ingest` | Raw 데이터 → Classified 분석 적재 | `/u-ingest retail` |
 | `/u-plan` | Plan Phase: SRS + IA + Roadmap | `/u-plan retail -i` |
 | `/u-design` | Design Phase: ERD + API + Screen + Flow | `/u-design retail --only erd` |
-| `/u-build` | Do Phase: FE + BE 코드 생성 | `/u-build retail --only fe` |
+| `/u-dev` | Do Phase: FE + BE 코드 생성 | `/u-dev retail --only fe` |
 | `/u-check` | Check Phase: TC 설계 + 테스트 + 리포트 | `/u-check retail` |
 | `/u-ship` | Act Phase: 최종 검증 + 회고 | `/u-ship retail` |
 
@@ -613,7 +613,7 @@ u-maker는 3가지 작업 모드를 제공합니다. 상황에 맞게 선택하�
 /u-gate retail                            # 4. Gate 검증 → Design 전환
 /u-design retail                          # 5. 설계
 /u-gate retail                            # 6. Gate 검증 → Do 전환
-/u-build retail                           # 7. 코드 생성
+/u-dev retail                           # 7. 코드 생성
 /u-gate retail                            # 8. Gate 검증 → Check 전환
 /u-check retail                           # 9. 테스트
 /u-ship retail                            # 10. 배포 + 회고

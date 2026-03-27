@@ -285,7 +285,7 @@ classified 데이터를 조합하여 생성. 각 항목에 출처 링크 보존.
 | /u-ingest | `/u-ingest [scope]` | raw → classified 분석 적재 |
 | /u-plan | `/u-plan [scope]` | classified → SRS + IA + Roadmap 연쇄 생성 |
 | /u-design | `/u-design [scope]` | SRS/IA 기반 → ERD + API + Screen + Flow + UXGuide |
-| /u-build | `/u-build [scope]` | 명세 기반 코드 생성 (FE + BE + DB) |
+| /u-dev | `/u-dev [scope]` | 명세 기반 코드 생성 (FE + BE + DB) |
 | /u-check | `/u-check [scope]` | TC 설계 + 테스트 + Report + exit criteria 판정 |
 | /u-ship | `/u-ship [scope]` | 최종 검증 + iteration log + retrospective |
 
@@ -732,9 +732,9 @@ FDE의 암묵지 + Agent의 분석력을 세션 안에서 결합. 세션 결과�
 /u-sync retail                            # 일관성 검증
 
 ## ── Build phase ──
-/u-build retail                           # FE + BE 코드 생성
-/u-build retail --only fe                 # FE만
-/u-build landing                          # landing은 auto
+/u-dev retail                           # FE + BE 코드 생성
+/u-dev retail --only fe                 # FE만
+/u-dev landing                          # landing은 auto
 
 ## ── Check phase ──
 /u-check retail                           # TC 생성 + 테스트
@@ -786,7 +786,7 @@ FDE의 암묵지 + Agent의 분석력을 세션 안에서 결합. 세션 결과�
 ### 우선순위
 
 1단계 (MVP): `/u-init`, `/u-ingest`, `/u-plan`, `/u-status`, `/u-doc` + orchestrator + planner + doc-engine + analyzer
-2단계: `/u-design`, `/u-build`, `/u-gate`, `/u-sync` + builder + guardian + validator + code-engine
+2단계: `/u-design`, `/u-dev`, `/u-gate`, `/u-sync` + builder + guardian + validator + code-engine
 3단계: `/u-discuss`, `/u-check`, `/u-ship`, `/u-assume` + facilitator + test-engine + workflow-runner
 4단계: `/u-coverage`, `/u-trace`, `/u-add`, `/u-update` + dep-engine + diff-engine + estimator
 

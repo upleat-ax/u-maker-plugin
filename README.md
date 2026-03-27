@@ -26,7 +26,7 @@ curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/insta
 
 # 4. 설계 → 구현 → 검증
 /u-design retail          # ERD + API + Screen + Flow
-/u-build retail           # FE + BE 코드 생성
+/u-dev retail           # FE + BE 코드 생성
 /u-check retail           # TC 설계 + 테스트 + 리포트
 
 # 5. 자동 PDCA 루프
@@ -208,7 +208,7 @@ _input/ (Raw)  →  _classified/ (Structured JSON)  →  docs/ (Deliverables)
 | `/u-ingest [scope]` | _input/ raw data → _classified/ 분석 적재 |
 | `/u-plan [scope]` | classified → SRS + IA + Roadmap 연쇄 생성 |
 | `/u-design [scope]` | SRS/IA → ERD + API + Screen + Flow + UXGuide |
-| `/u-build [scope]` | 명세 기반 코드 생성 (FE + BE + DB) |
+| `/u-dev [scope]` | 명세 기반 코드 생성 (FE + BE + DB) |
 | `/u-check [scope]` | TC 설계 + 테스트 실행 + Report + exit criteria |
 | `/u-ship [scope]` | 최종 검증 + iteration log + retrospective |
 
@@ -478,8 +478,8 @@ u-maker-plugin/
 
 | 상황 | 명령어 |
 |------|--------|
-| FE+BE 코드 생성 | `/u-build retail` |
-| FE만 생성 | `/u-build retail --only fe` |
+| FE+BE 코드 생성 | `/u-dev retail` |
+| FE만 생성 | `/u-dev retail --only fe` |
 | 에이전트에게 직접 요청 | `/u-agent-builder "로그인 폼 유효성 검사 추가"` |
 
 ### 검증 (Check Phase)

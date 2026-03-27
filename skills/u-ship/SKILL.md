@@ -243,7 +243,7 @@ u-agent-guardian에게 최종 검증 요청:
 ### Next Steps
 - Iteration {n+1} initialized with carried-over items
 - Run /u-plan to incorporate fixes into next plan
-- Or run /u-build to fix specific items directly
+- Or run /u-dev to fix specific items directly
 ```
 
 ---

@@ -87,7 +87,7 @@ Step 9: update-index → _index.json 갱신
 Step 10: update-links → _links.json 갱신
 ```
 
-### /u-build Workflow
+### /u-dev Workflow
 
 ```
 Step 1: verify-design-gate → Design phase gate 확인
