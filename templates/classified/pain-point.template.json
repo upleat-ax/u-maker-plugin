@@ -1,0 +1,11 @@
+{
+  "id": "PP-{{NNNN}}",
+  "description": "",
+  "severity": "medium",
+  "affectedUsers": [],
+  "currentWorkaround": "",
+  "source": { "file": "", "page": null, "section": "" },
+  "status": "extracted",
+  "tags": [],
+  "extractedAt": "{{DATE}}"
+}

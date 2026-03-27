@@ -1,0 +1,11 @@
+{
+  "id": "SC-{{NNNN}}",
+  "name": "",
+  "url": "",
+  "functions": [],
+  "issues": [],
+  "screenshotPath": null,
+  "source": { "file": "", "page": null, "section": "" },
+  "status": "extracted",
+  "extractedAt": "{{DATE}}"
+}

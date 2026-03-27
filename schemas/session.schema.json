@@ -1,0 +1,83 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "u-maker/session",
+  "title": "Discussion Session Schema",
+  "description": "/u-discuss 세션 레코드 스키마",
+  "type": "object",
+  "required": ["id", "type", "topic", "scope", "status", "startedAt"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^S-\\d{3,}$",
+      "description": "세션 고유 ID"
+    },
+    "type": {
+      "type": "string",
+      "enum": ["brainstorm", "review", "decision", "workshop", "retro"],
+      "description": "세션 타입"
+    },
+    "topic": {
+      "type": "string",
+      "description": "세션 주제"
+    },
+    "scope": {
+      "type": "string",
+      "description": "대상 앱 (common | app-name | all)"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["active", "paused", "completed"],
+      "description": "세션 상태"
+    },
+    "startedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "pausedAt": {
+      "type": ["string", "null"],
+      "format": "date-time"
+    },
+    "completedAt": {
+      "type": ["string", "null"],
+      "format": "date-time"
+    },
+    "participants": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "참여자 목록 (FDE, agent names)"
+    },
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["type", "text", "createdAt"],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": ["idea", "decision", "concern", "action", "comment"]
+          },
+          "text": { "type": "string" },
+          "author": { "type": "string" },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "assignee": { "type": ["string", "null"] },
+          "rationale": { "type": ["string", "null"] }
+        }
+      },
+      "description": "세션 항목 (micro-commands로 생성)"
+    },
+    "currentPhase": {
+      "type": ["string", "null"],
+      "enum": ["diverge", "group", "prioritize", "decide", null],
+      "description": "워크숍 현재 단계"
+    },
+    "summary": {
+      "type": ["string", "null"],
+      "description": "세션 요약 (종료 시 생성)"
+    },
+    "classifiedItems": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "세션에서 _classified로 적재된 항목 ID 목록"
+    }
+  }
+}

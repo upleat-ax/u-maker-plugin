@@ -1,0 +1,105 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "u-maker/_links",
+  "title": "Dependency Graph Schema",
+  "description": "문서 간 의존성 그래프 (_links.json) 스키마. engine-dep이 관리.",
+  "type": "object",
+  "required": ["version", "nodes", "edges"],
+  "properties": {
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "description": "스키마 버전"
+    },
+    "lastUpdated": {
+      "type": "string",
+      "format": "date-time",
+      "description": "최종 갱신 시각"
+    },
+    "nodes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "path", "type"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "노드 고유 ID (문서명 또는 항목 ID)"
+          },
+          "path": {
+            "type": "string",
+            "description": "파일 상대 경로"
+          },
+          "type": {
+            "type": "string",
+            "enum": ["document", "classified", "code", "test"],
+            "description": "노드 유형"
+          },
+          "status": {
+            "type": "string",
+            "description": "현재 상태"
+          },
+          "app": {
+            "type": ["string", "null"],
+            "description": "소속 앱 (null이면 common)"
+          }
+        }
+      },
+      "description": "그래프 노드 목록"
+    },
+    "edges": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["from", "to", "type"],
+        "properties": {
+          "from": {
+            "type": "string",
+            "description": "출발 노드 ID"
+          },
+          "to": {
+            "type": "string",
+            "description": "도착 노드 ID"
+          },
+          "type": {
+            "type": "string",
+            "enum": ["derives", "source", "references", "validates", "implements"],
+            "description": "관계 유형"
+          },
+          "strength": {
+            "type": "string",
+            "enum": ["strong", "moderate", "weak"],
+            "default": "strong",
+            "description": "의존 강도"
+          },
+          "description": {
+            "type": ["string", "null"],
+            "description": "관계 설명"
+          }
+        }
+      },
+      "description": "그래프 엣지 목록"
+    },
+    "cascadeRules": {
+      "type": "object",
+      "properties": {
+        "strong": {
+          "type": "string",
+          "const": "must-update",
+          "description": "strong 의존 변경 시 impact flag"
+        },
+        "moderate": {
+          "type": "string",
+          "const": "review-needed",
+          "description": "moderate 의존 변경 시 impact flag"
+        },
+        "weak": {
+          "type": "string",
+          "const": "info",
+          "description": "weak 의존 변경 시 impact flag"
+        }
+      },
+      "description": "cascade 전파 규칙"
+    }
+  }
+}

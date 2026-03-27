@@ -1,0 +1,84 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "u-maker/gate-rules",
+  "title": "Phase Gate Rules Schema",
+  "description": "Phase 전환 gate 검증 규칙 정의",
+  "type": "object",
+  "required": ["gates"],
+  "properties": {
+    "gates": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["from", "to", "conditions", "validator"],
+        "properties": {
+          "from": {
+            "type": "string",
+            "enum": ["plan", "design", "do", "check", "act"],
+            "description": "현재 phase"
+          },
+          "to": {
+            "type": "string",
+            "enum": ["plan", "design", "do", "check", "act", "complete"],
+            "description": "다음 phase"
+          },
+          "conditions": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["check", "description"],
+              "properties": {
+                "check": {
+                  "type": "string",
+                  "description": "검증 조건 식별자 (예: srs-final, erd-final, build-success)"
+                },
+                "description": {
+                  "type": "string",
+                  "description": "조건 설명"
+                },
+                "required": {
+                  "type": "boolean",
+                  "default": true,
+                  "description": "필수 여부"
+                }
+              }
+            },
+            "description": "gate 통과 조건 목록"
+          },
+          "validator": {
+            "type": "string",
+            "enum": ["u-agent-orchestrator", "u-agent-guardian"],
+            "description": "검증 담당 에이전트"
+          },
+          "onFail": {
+            "type": "string",
+            "enum": ["pause", "iterate"],
+            "description": "실패 시 동작"
+          }
+        }
+      }
+    },
+    "defaultGates": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "from": { "type": "string" },
+          "to": { "type": "string" },
+          "conditions": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "check": { "type": "string" },
+                "description": { "type": "string" }
+              }
+            }
+          },
+          "validator": { "type": "string" }
+        }
+      },
+      "description": "기본 gate 규칙 프리셋"
+    }
+  }
+}
