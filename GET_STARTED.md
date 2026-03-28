@@ -39,7 +39,7 @@ _input/          →      _classified/        →      docs/
  AS-IS 분석, ...)      pain-points, ...)           api.md, screen.md, ...)
 ```
 
-`_input/raw/`에 파일을 넣으면 `/u-ingest` 실행 시 자동으로 `rfp/`, `as-is/` 등으로 분류합니다.
+프로젝트 루트의 `_dropzone/`에 파일을 넣으면 `/u-ingest` 실행 시 자동으로 `rfp/`, `as-is/` 등으로 분류합니다. (`_input/raw/`도 fallback으로 지원)
 
 #### 3. PDCA 5-Phase
 
@@ -110,8 +110,8 @@ curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/updat
 # 1. 프로젝트 초기화
 /u-init my-saas
 
-# 2. _input/raw/에 RFP, 회의록, AS-IS 자료 드롭
-#    → /u-ingest가 자동으로 rfp/, as-is/, meeting-notes/ 등으로 분류
+# 2. _dropzone/에 RFP, 회의록, AS-IS 자료 드롭
+#    → /u-ingest가 자동으로 분류하여 .u-maker/_input/rfp/, as-is/, meeting-notes/ 등으로 이동
 
 # 3. 데이터 분석
 /u-ingest [app]
@@ -266,7 +266,7 @@ curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/updat
 
 #### `/u-ingest` — 원시 데이터 분석 및 분류
 
-`_input/raw/` 디렉토리에 드롭된 원시 파일(RFP, 회의록, AS-IS 분석서 등)을 자동으로 파싱하여 10개 카테고리(requirements, pain-points, constraints, user-flows, data-models, integrations, non-functional, assumptions, glossary, out-of-scope)로 분류합니다. 청크 기반 분석으로 대용량 문서도 손실 없이 처리하며, 분류 결과는 `_classified/`에 구조화된 JSON으로 적재됩니다.
+프로젝트 루트의 `_dropzone/`에 드롭된 원시 파일(RFP, 회의록, AS-IS 분석서 등)을 자동으로 파싱하여 10개 카테고리(requirements, pain-points, constraints, user-flows, data-models, integrations, non-functional, assumptions, glossary, out-of-scope)로 분류합니다. 파일은 `.u-maker/_input/{category}/`로 이동되고, 처리 후 `_dropzone/`는 비워집니다. 청크 기반 분석으로 대용량 문서도 손실 없이 처리하며, 분류 결과는 `_classified/`에 구조화된 JSON으로 적재됩니다. (`_input/raw/`도 fallback으로 지원)
 
 **생성 파일:** `_classified/*.json` (카테고리별), `_input/_manifest.json`, 자동 분류된 `_input/rfp/`, `_input/as-is/`, `_input/meeting-notes/` 등
 
@@ -617,7 +617,7 @@ AI가 정보 부족 시 추정한 가정(Assumption)을 approve/reject로 리뷰
 
 ```bash
 /u-init my-saas
-# → _input/raw/에 RFP, 회의록 드롭
+# → _dropzone/에 RFP, 회의록 드롭
 /u-ingest [app]                          # 분석
 /u-plan [app] -i                         # 기획 (interactive)
 /u-gate [app]                            # → Design

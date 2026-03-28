@@ -33,9 +33,22 @@ triggers:
 2. scope 해석 → 대상 앱의 `_input/` 경로 결정
 3. scope 생략 + 앱 1개: 자동 선택 / 앱 2개+: 사용자에게 질문
 
+### Step 1.5: Collect Files from _dropzone/
+
+`/u-ingest` 실행 시, 프로젝트 루트의 `_dropzone/` 디렉토리를 먼저 확인한다.
+
+1. `_dropzone/` 스캔 → 파일 목록 수집 (빈 디렉토리면 이 단계 skip)
+2. 각 파일의 내용/파일명/확장자를 분석하여 카테고리 판정 (Step 2와 동일한 기준)
+3. 분류된 파일을 `_input/{category}/`로 **이동** (복사가 아닌 이동)
+4. 분류 불가한 파일은 `_input/raw/`로 이동
+5. 처리 완료 후 `_dropzone/`는 비워짐 (.gitkeep만 잔존)
+6. `_input/_sort-log.json`에 이동 이력 기록 (source를 `_dropzone/`로 표기)
+
+> **Fallback:** `_dropzone/`가 비어 있거나 없는 경우, `_input/raw/`도 확인한다 (하위 호환).
+
 ### Step 2: Sort Raw Files (Auto-Classification)
 
-`_input/raw/` 디렉토리에 파일이 존재하면, 분석 전에 자동으로 적절한 서브폴더로 이동한다.
+`_input/raw/` 디렉토리에 파일이 존재하면 (fallback 또는 직접 배치된 경우), 분석 전에 자동으로 적절한 서브폴더로 이동한다.
 
 1. `_input/raw/` 스캔 → 파일 목록 수집 (빈 디렉토리면 이 단계 skip)
 2. 각 파일의 내용/파일명/확장자를 분석하여 카테고리 판정:
@@ -251,9 +264,9 @@ extracted → validated → adopted | rejected
 
 ## Safety Rules
 
-1. `_input/` 파일은 절대 수정하지 않음 (READ-ONLY) — 단, `raw/` → 서브폴더 이동은 예외
-2. `raw/` 파일 이동 시 원본 파일 내용은 변경하지 않음 (이동만 수행)
-3. 자동 분류 불가한 파일은 `raw/`에 그대로 유지 (강제 분류 금지)
+1. `_input/` 파일은 절대 수정하지 않음 (READ-ONLY) — 단, `_dropzone/` → `_input/` 이동 및 `raw/` → 서브폴더 이동은 예외
+2. `_dropzone/` 및 `raw/` 파일 이동 시 원본 파일 내용은 변경하지 않음 (이동만 수행)
+3. 자동 분류 불가한 파일은 `_input/raw/`에 이동하여 유지 (강제 분류 금지)
 4. 모든 추출 항목에 source metadata 필수 (미부착 항목은 신뢰할 수 없음)
 5. 기존 ID 재사용 금지 (삭제된 항목의 ID도 재할당하지 않음)
 6. 대용량 파일은 반드시 청크 분할 (context window 보호)

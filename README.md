@@ -21,7 +21,7 @@ curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/insta
 /u-init my-app                # .u-maker/ 구조 생성 + 앱 등록
 
 # 3. 데이터 수집 → 분석 → 계획
-# → _input/raw/에 RFP, 회의록, AS-IS 자료 드롭 (자동 분류)
+# → _dropzone/에 RFP, 회의록, AS-IS 자료 드롭 (자동 분류)
 /u-ingest [app]              # raw → classified 분석
 /u-plan [app]                # SRS + IA + Roadmap 자동 생성
 
@@ -87,7 +87,7 @@ U-MAKER는 **Intent-driven 문서 중심 개발(SSoT)**을 구현하는 협업 �
 | 요구사항 추적 불가 | 4-Tier ID(USR→FR→US→FT)로 전 구간 추적 |
 | SRS 수정 시 ERD/Screen/TC 수동 갱신 | `_links.json` 의존성 그래프로 Auto-Cascade |
 | 단계 건너뛰기로 품질 저하 | Phase Gate 자동 검증 후에만 다음 Phase 진행 |
-| 파일 분류가 번거로움 | `_input/raw/`에 드롭하면 자동 분류 (rfp/, as-is/ 등) |
+| 파일 분류가 번거로움 | `_dropzone/`에 드롭하면 자동 분류 (rfp/, as-is/ 등) |
 | 문서와 코드 버전 불일치 | `.md` + `.json` 동시 생성 |
 | 앱마다 다른 규칙 | common/ 정책 상속 + 앱별 override |
 | AI 판단이 블랙박스 | Assumptions Log로 모든 판단 기록 + 사후 리뷰 |
@@ -158,9 +158,9 @@ _input/ (Raw)  →  _classified/ (Structured JSON)  →  docs/ (Deliverables)
   interviews/        domain-terms/, stakeholders/       wireframes/index.html
 ```
 
-### _input/raw/ 자동 분류
+### _dropzone/ 자동 분류
 
-`_input/raw/`에 파일을 드롭하면 `/u-ingest` 실행 시 파일명/내용을 분석하여 `rfp/`, `as-is/`, `meeting-notes/` 등 적절한 하위 폴더로 자동 분류한다.
+프로젝트 루트의 `_dropzone/`에 파일을 드롭하면 `/u-ingest` 실행 시 파일명/내용을 분석하여 `.u-maker/_input/rfp/`, `as-is/`, `meeting-notes/` 등 적절한 하위 폴더로 자동 분류한다. 처리 후 `_dropzone/`는 비워진다. (`_input/raw/`도 fallback으로 지원)
 
 ### _classified 10개 카테고리
 
@@ -214,7 +214,7 @@ _input/ (Raw)  →  _classified/ (Structured JSON)  →  docs/ (Deliverables)
 |---------|-------------|---------|
 | `/u-init [project-name]` | .u-maker/ 구조 생성, config 초기화, 앱 등록 | `/u-init my-project` |
 | `/u-reverse [scope] [--only X]` | 소스 코드 → SSoT 역공학 (ERD, API, Screen, SRS 등) | `/u-reverse [app] --only erd` |
-| `/u-ingest [scope] [--review] [--incremental]` | raw → classified 분석 적재. `_input/raw/` 자동 분류 지원 | `/u-ingest [app] --review` |
+| `/u-ingest [scope] [--review] [--incremental]` | `_dropzone/` → `_input/` 자동 분류 + classified 분석 적재 | `/u-ingest [app] --review` |
 | `/u-plan [scope] [--only X] [-i] [--step]` | classified → SRS + IA + Roadmap 연쇄 생성 | `/u-plan [app] -i` |
 | `/u-design [scope] [--only X] [-i] [--step]` | SRS/IA → ERD + API + Screen + Flow + RTM + wireframes/index.html | `/u-design [app] --only screens` |
 | `/u-dev [scope] [--only X] [-i] [--step]` | 명세 → FE + BE + DB 코드 생성 | `/u-dev [app] --only fe` |
@@ -338,6 +338,16 @@ USR-0001 (User Type: 관리자, 일반 사용자)
 
 ## 10. Folder Structure
 
+### 프로젝트 루트
+
+```
+project-root/
+├── _dropzone/                        # 파일 드롭존 (RFP, 회의록, AS-IS 자료 드롭 → /u-ingest 시 자동 분류)
+├── .u-maker/                         # SSoT 디렉토리
+├── src/                              # 소스 코드
+└── ...
+```
+
 ### .u-maker/ (프로젝트)
 
 ```
@@ -356,8 +366,8 @@ USR-0001 (User Type: 관리자, 일반 사용자)
 ├── apps/{app-name}/                  # 앱별 독립 파이프라인
 │   ├── _index.json                   # 앱 문서 목차 + 상태
 │   ├── app.config.json               # 앱별 설정
-│   ├── _input/                       # Layer 1: Raw data
-│   │   ├── raw/                      # 자동 분류 대기 (드롭 폴더)
+│   ├── _input/                       # Layer 1: Raw data (분류된 저장소)
+│   │   ├── raw/                      # fallback 드롭존 (_dropzone/ 권장)
 │   │   ├── rfp/                      # RFP, 제안서
 │   │   ├── as-is/                    # AS-IS 분석 자료
 │   │   ├── meeting-notes/            # 회의록
@@ -387,7 +397,7 @@ USR-0001 (User Type: 관리자, 일반 사용자)
 │   └── rtm.md                       # 추적 매트릭스
 │
 ├── _input/                           # 프로젝트 공통 raw data
-│   └── raw/                          # 공통 자동 분류 대기 폴더
+│   └── raw/                          # 공통 fallback 드롭존
 ├── _classified/                      # 공통 classified
 ├── _sessions/                        # cross-app 토론
 └── _assumptions/                     # cross-app assumptions
@@ -490,7 +500,7 @@ u-maker-plugin/
 | 상황 | 명령어 |
 |------|--------|
 | 완전히 새로운 프로젝트 시작 | `/u-init my-project` |
-| 기존 RFP/회의록 자료가 있음 | `/u-init` → `_input/raw/`에 파일 드롭 → `/u-ingest [app]` |
+| 기존 RFP/회의록 자료가 있음 | `/u-init` → `_dropzone/`에 파일 드롭 → `/u-ingest [app]` |
 | 분석된 데이터 리뷰하고 싶음 | `/u-ingest [app] --review` |
 | 신규분만 추가 분석 | `/u-ingest [app] --incremental` |
 
@@ -649,7 +659,7 @@ cd /path/to/u-maker-plugin && ./deploy_local.sh
 | scope 해석이 틀림 | `u-maker.config.json`의 `apps[]`에 앱이 등록되었는지 확인 |
 | auto 모드에서 자꾸 interactive로 전환됨 | `maxAssumptions` 초과. `/u-assume`로 리뷰하세요 |
 | cascade 알림이 많음 | `/u-sync`로 한 번에 정리하거나 `/u-update --cascade`로 자동 갱신 |
-| `_input/raw/` 파일이 분류 안 됨 | `/u-ingest [scope]` 실행하여 자동 분류 트리거 |
+| `_dropzone/` 파일이 분류 안 됨 | `/u-ingest [scope]` 실행하여 자동 분류 트리거 |
 | wireframes/index.html이 없음 | `/u-design [scope]`를 실행하면 자동 생성됨 |
 | 문서 언어를 변경하고 싶음 | `u-maker.config.json`의 `language.documents`를 ko/en/ja/zh로 변경 |
 | `/u-reverse` 결과가 불완전 | `--only` 플래그로 범위를 좁혀서 재실행 |
