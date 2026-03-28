@@ -65,6 +65,25 @@ function resolveLanguage():
 - JSON companion 파일의 `description`, `title` 필드는 `language.documents` 언어로 작성
 - 모든 문서 생성 스킬(`/u-plan`, `/u-design`, `/u-dev`, `/u-qa`, `/u-reverse` 등)은 이 설정을 따름
 
+### License & Copyright Resolution
+
+HTML 생성 시 `u-maker.config.json`의 `license` 설정을 참조하여 footer에 자동 삽입한다.
+
+```
+function resolveLicense():
+  config = loadConfig("u-maker.config.json")
+  type = config.license?.type ?? "GPL-3.0"
+  owner = config.license?.owner ?? ""
+  copyright = config.license?.copyright ?? ""
+  return { type, owner, copyright }
+```
+
+**HTML footer 삽입 규칙:**
+- 모든 HTML 리포트(`/u-report`), wireframe viewer(`index.html`), GET_STARTED.html 등의 footer에 적용
+- 삽입 형식: `{license.type} · © {license.owner}` (예: `GPL-3.0 · © U PLEAT`)
+- `.md` 문서 footer에도 동일하게 적용: `License: {license.type} | Copyright (c) {year} {license.owner}`
+- `{{license}}` 템플릿 변수로 접근 가능
+
 ---
 
 ## 3. UML Diagram Policy
@@ -291,6 +310,9 @@ function delete(scope, doc):
 | `{{date}}` | 현재 날짜 (자동) | 2026-03-28 |
 | `{{scope}}` | 현재 스코프 (자동) | retail |
 | `{{lang}}` | 문서 언어 코드 (자동) | ko |
+| `{{license}}` | 라이선스 타입 (자동) | GPL-3.0 |
+| `{{copyright}}` | Copyright 문구 (자동) | Copyright (c) 2026 U PLEAT. All rights reserved. |
+| `{{licenseOwner}}` | 저작권자 (자동) | U PLEAT |
 
 ### Template Example
 

@@ -224,6 +224,7 @@ function renderMermaidToSVG(htmlContent):
 | 다이어그램 | SVG 인라인, 클릭 zoom |
 | 반응형 | 768px 미만에서 sidebar 접기 + 햄버거 메뉴 |
 | 인쇄 | `@media print` 지원 (sidebar 숨김, 전체 너비) |
+| Footer | `{license.type} · © {license.owner}` (`u-maker.config.json`의 `license` 설정 참조) |
 
 ### Step 6: Notify Completion
 
