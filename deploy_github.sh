@@ -17,6 +17,7 @@ PLUGIN_JSON="$SCRIPT_DIR/.claude-plugin/plugin.json"
 
 PRIVATE_REPO="thinoo-v2/u-maker-plugin"
 UPLEAT_REPO="upleat-ax/u-maker-plugin"
+TERMINAL_REPO="upleat-ax/u-maker-terminal"
 
 # Colors
 RED='\033[0;31m'
@@ -196,6 +197,7 @@ with open('$PLUGIN_JSON', 'w') as f:
 
   # Prepare public content
   cp "$SCRIPT_DIR/README.md" "$tmp_dir/README.md"
+  cp "$SCRIPT_DIR/GET_STARTED.html" "$tmp_dir/GET_STARTED.html" 2>/dev/null || true
   cp "$SCRIPT_DIR/install.sh" "$tmp_dir/install.sh"
   cp "$SCRIPT_DIR/install.bat" "$tmp_dir/install.bat"
   cp "$SCRIPT_DIR/update.sh" "$tmp_dir/update.sh"
@@ -229,6 +231,27 @@ EOF
   )
 
   rm -rf "$tmp_dir"
+
+  # ── Step 6.1: Push GET_STARTED.html to u-maker-terminal ──
+  if [[ -f "$SCRIPT_DIR/GET_STARTED.html" ]]; then
+    log "Pushing GET_STARTED.html to ${BOLD}${TERMINAL_REPO}${NC}..."
+    local term_dir
+    term_dir="$(mktemp -d)"
+    (
+      cd "$term_dir"
+      local upleat_token
+      upleat_token="${UPLEAT_TOKEN:-$(gh auth token)}"
+      git clone -q "https://x-access-token:${upleat_token}@github.com/${TERMINAL_REPO}.git" . 2>/dev/null
+      cp "$SCRIPT_DIR/GET_STARTED.html" ./GET_STARTED.html
+      git add GET_STARTED.html
+      git diff --cached --quiet || {
+        git commit -q -m "docs: update GET_STARTED.html (${tag})"
+        git push -q origin main 2>/dev/null
+      }
+      ok "Pushed GET_STARTED.html to ${TERMINAL_REPO}"
+    )
+    rm -rf "$term_dir"
+  fi
 
   # ── Step 7: Create Releases on public repos ──
   local release_notes

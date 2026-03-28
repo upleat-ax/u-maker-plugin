@@ -67,7 +67,83 @@ function resolveLanguage():
 
 ---
 
-## 3. CRUD Operations
+## 3. UML Diagram Policy
+
+모든 SSoT 문서에 관련 UML/다이어그램을 **최대한 포함**한다. 시각화는 이해도를 높이고 리뷰 효율을 극대화한다.
+
+### 문서별 필수/권장 다이어그램
+
+| 문서 | 필수 다이어그램 | 권장 다이어그램 |
+|------|--------------|--------------|
+| **SRS** | Use Case Diagram (USR-FR 관계) | Activity Diagram (주요 워크플로우) |
+| **IA** | Tree/Mindmap (화면 계층) | - |
+| **ERD** | ER Diagram (엔티티-관계) | - |
+| **API** | Sequence Diagram (주요 API 흐름) | State Diagram (리소스 상태 전이) |
+| **Screens** | Component Diagram (레이아웃 구조) | Wireframe (ASCII or HTML) |
+| **Screen Flow** | Flowchart (화면 간 내비게이션) | - |
+| **RTM** | - | Traceability Matrix Heatmap |
+| **Test Cases** | - | State Diagram (테스트 시나리오 흐름) |
+| **Code** | Class Diagram (주요 모듈 구조) | Package Diagram (디렉토리 구조) |
+
+### Mermaid 문법 (Markdown 문서용)
+
+`.md` 문서에서는 Mermaid 코드 블록으로 다이어그램을 작성한다:
+
+````markdown
+```mermaid
+erDiagram
+    User ||--o{ Order : places
+    Order ||--|{ OrderItem : contains
+    OrderItem }o--|| Product : references
+```
+
+```mermaid
+sequenceDiagram
+    Client->>+API: POST /auth/login
+    API->>+DB: SELECT user
+    DB-->>-API: user record
+    API-->>-Client: { token, user }
+```
+
+```mermaid
+flowchart LR
+    Login --> Dashboard
+    Dashboard --> Profile
+    Dashboard --> Orders
+    Orders --> OrderDetail
+```
+````
+
+### SVG 렌더링 (HTML 문서용)
+
+`.html` 문서 생성 시 Mermaid 다이어그램은 **인라인 SVG로 렌더링**한다:
+
+1. Mermaid 코드 블록을 감지
+2. Mermaid.js로 SVG 문자열 생성
+3. `<div class="diagram">` 안에 SVG를 인라인 삽입
+4. SVG에 `viewBox` 설정으로 반응형 스케일링
+5. 외부 이미지 파일 생성 금지 (모든 SVG는 HTML 내 인라인)
+
+```html
+<!-- HTML 내 SVG 인라인 렌더링 예시 -->
+<div class="diagram" data-type="erDiagram" data-title="User-Order ERD">
+  <svg viewBox="0 0 800 400" xmlns="http://www.w3.org/2000/svg">
+    <!-- Mermaid가 생성한 SVG 내용 -->
+  </svg>
+</div>
+```
+
+### 다이어그램 스타일 규칙
+
+- Mermaid 곡선 커넥터 사용 (`curve: basis`), 직선 화살표 금지
+- 노드 라벨은 `language.documents` 설정 언어로 작성
+- ID/기술 용어(테이블명, API path 등)는 항상 영문
+- 다이어그램 위에 제목 표시: `### {Diagram Title}`
+- 다이어그램 아래에 범례(legend) 포함 (관계 유형, 색상 의미 등)
+
+---
+
+## 4. CRUD Operations
 
 ### create(type, scope, data)
 
@@ -195,7 +271,7 @@ function delete(scope, doc):
 
 ---
 
-## 4. Template Rendering
+## 5. Template Rendering
 
 ### Template Location
 
@@ -242,7 +318,7 @@ Related Docs: [{{relatedDocs}}]
 
 ---
 
-## 5. JSON Export
+## 6. JSON Export
 
 모든 `.md` 파일은 동일 경로에 `.json` 동반 생성.
 
@@ -279,7 +355,7 @@ Related Docs: [{{relatedDocs}}]
 
 ---
 
-## 6. _index.json Management
+## 7. _index.json Management
 
 ### _index.json Structure
 
@@ -314,7 +390,7 @@ Related Docs: [{{relatedDocs}}]
 
 ---
 
-## 7. Document Path Convention
+## 8. Document Path Convention
 
 ```
 docs/{scope}/{phase-dir}/{type}.md
@@ -333,9 +409,9 @@ docs/{scope}/{phase-dir}/{type}.json
 
 ---
 
-## 8. Wireframe Viewer (index.html)
+## 9. Wireframe & Document Viewer (index.html)
 
-와이어프레임 및 SSoT 문서를 브라우저에서 탐색할 수 있는 `index.html`을 자동 생성한다.
+와이어프레임 및 **전체 SSoT 문서**를 브라우저에서 탐색할 수 있는 `index.html`을 자동 생성한다. Sidebar에는 와이어프레임뿐 아니라 전체 문서 인덱스를 포함한다.
 
 ### 생성 시점
 
@@ -352,23 +428,32 @@ docs/{scope}/02-design/wireframes/index.html
 
 ### index.html 구조
 
-단일 HTML 파일(SPA)로 외부 의존성 없이 동작한다.
+단일 HTML 파일(SPA)로 외부 의존성 없이 동작한다. Mermaid 다이어그램은 **인라인 SVG**로 렌더링한다.
 
 ```
 ┌─────────────────────────────────────────────────────┐
-│  {ProjectName} Wireframes v{version}                │
-│  {appName} — 화면 기획서                              │
+│  {ProjectName} v{version}                           │
+│  {appName} — SSoT Document Viewer                   │
 ├──────────────┬──────────────────────────────────────┤
 │  Sidebar     │  Main Content                        │
 │              │                                      │
-│  ─ {Group1}  │  (선택된 와이어프레임 렌더링)            │
-│    SCR-001   │                                      │
-│    SCR-002   │  .html → iframe 또는 innerHTML        │
-│    SCR-003   │  .md   → Markdown → HTML 렌더링       │
+│  ─ 문서 인덱스│  (선택된 문서/와이어프레임 렌더링)       │
+│    SRS       │                                      │
+│    IA        │  .html → innerHTML                    │
+│    Roadmap   │  .md   → Markdown → HTML + SVG 렌더링  │
+│    ERD       │                                      │
+│    API       │  Mermaid 코드 블록 → 인라인 SVG         │
+│    Screens   │                                      │
+│    RTM       │                                      │
 │              │                                      │
-│  ─ {Group2}  │                                      │
-│    SCR-004   │                                      │
-│    SCR-005   │                                      │
+│  ─ 와이어프레임│                                      │
+│    SCR-001   │                                      │
+│    SCR-002   │                                      │
+│    SCR-003   │                                      │
+│              │                                      │
+│  ─ 테스트    │                                      │
+│    TestCases │                                      │
+│    TestReport│                                      │
 │              │                                      │
 └──────────────┴──────────────────────────────────────┘
 ```
@@ -376,18 +461,33 @@ docs/{scope}/02-design/wireframes/index.html
 ### 핵심 기능
 
 #### Sidebar Navigation
-- `screens.json`의 화면 목록을 그룹별로 표시
-- 그룹핑 기준: IA의 Level 1 화면 (Parent가 없는 화면) 하위로 묶음
+
+3개 그룹으로 구성된 전체 문서 인덱스:
+
+**1. 문서 인덱스 (Phase별)**
+- `_index.json`에서 문서 목록 로드
+- Phase별 그룹핑: Plan (SRS, IA, Roadmap) → Design (ERD, API, Screens, RTM) → Dev (Code) → Check (TC, Report)
+- 각 문서 옆에 Status 배지 (Draft/Review/Final)
+- 클릭 시 Main Content에 해당 `.md` 문서를 HTML로 렌더링
+
+**2. 와이어프레임**
+- `screens.json`의 화면 목록을 IA 그룹별로 표시
 - 각 그룹 옆에 화면 개수 배지 표시
 - 화면 ID + 이름 표시 (예: `0901 벌초 접수 내역`)
-- 클릭 시 오른쪽 Main Content에 해당 와이어프레임 로드
-- 그룹 접기/펴기(collapse/expand) 지원
+- 클릭 시 해당 와이어프레임 로드
+
+**3. 공통**
+- Collapse/Expand 지원
+- Scroll Spy: 현재 보고 있는 문서 하이라이트
+- 검색 필터 (문서명/ID 키워드 검색)
 
 #### Main Content Area
-- **`.html` 파일:** `<iframe>` 또는 `innerHTML`로 직접 렌더링
+- **`.html` 파일:** `innerHTML`로 직접 렌더링
 - **`.md` 파일:** 내장 Markdown 파서로 HTML 변환 후 렌더링
   - 지원: headings, paragraphs, lists, tables, code blocks, bold/italic, links, images
-  - Mermaid 코드 블록 → Mermaid.js CDN으로 다이어그램 렌더링
+  - **Mermaid 코드 블록 → 인라인 SVG로 렌더링** (Mermaid.js CDN 사용)
+  - SVG는 `viewBox` 기반 반응형, 확대/축소 가능
+  - 다이어그램 위에 제목, 아래에 범례 자동 표시
 - 와이어프레임 미선택 시 안내 메시지 표시:
   ```
   와이어프레임을 선택하세요
@@ -415,30 +515,45 @@ docs/{scope}/02-design/wireframes/
 ### index.html 생성 프로세스
 
 ```
-function generateWireframeViewer(scope):
+function generateDocumentViewer(scope):
   config = loadConfig()
+  indexJson = read("docs/{scope}/_index.json")
   screensJson = read("docs/{scope}/02-design/screens.json")
   iaJson = read("docs/{scope}/01-plan/ia.json")
 
-  // 1. 화면 목록 + 그룹핑 데이터 구성
-  groups = groupScreensByIA(screensJson, iaJson)
+  // 1. 전체 문서 인덱스 구성 (Phase별 그룹핑)
+  docIndex = groupDocumentsByPhase(indexJson)
 
-  // 2. wireframes/ 디렉토리 스캔 → 파일 매핑
+  // 2. 화면 목록 + 그룹핑 데이터 구성
+  screenGroups = groupScreensByIA(screensJson, iaJson)
+
+  // 3. wireframes/ 디렉토리 스캔 → 파일 매핑
   files = scanDir("docs/{scope}/02-design/wireframes/")
   mapping = mapScreensToFiles(screensJson, files)
 
-  // 3. index.html 생성 (인라인 CSS + JS, 외부 의존성 없음)
+  // 4. 전체 .md 문서 읽기 + Mermaid → SVG 변환
+  documents = {}
+  for doc in indexJson.documents:
+    mdContent = readFile(doc.path)
+    htmlContent = markdownToHtml(mdContent)
+    htmlContent = renderMermaidToSVG(htmlContent)  // Mermaid → 인라인 SVG
+    documents[doc.id] = htmlContent
+
+  // 5. index.html 생성 (인라인 CSS + JS, Mermaid.js CDN)
   html = renderViewerTemplate({
     projectName: config.projectName,
     appName: scope,
-    version: screensJson.version,
-    groups: groups,
+    version: indexJson.version ?? "1.0",
+    docIndex: docIndex,
+    screenGroups: screenGroups,
     mapping: mapping,
-    totalScreens: screensJson.screens.length,
+    documents: documents,
+    totalDocs: indexJson.documents.length,
+    totalScreens: screensJson?.screens?.length ?? 0,
     language: config.language?.documents ?? "ko"
   })
 
-  // 4. 파일 쓰기
+  // 6. 파일 쓰기
   write("docs/{scope}/02-design/wireframes/index.html", html)
 ```
 
@@ -456,12 +571,12 @@ function generateWireframeViewer(scope):
 | 안내 메시지 | 중앙 정렬, `#64748b` 텍스트 |
 | 반응형 | 768px 미만에서 sidebar 접기 + 햄버거 메뉴 |
 
-### Markdown 렌더링 사양
+### Markdown 렌더링 + SVG 다이어그램 사양
 
-index.html에 인라인으로 경량 Markdown 파서를 포함한다:
+index.html에 인라인으로 경량 Markdown 파서 + Mermaid SVG 렌더러를 포함한다:
 
 ```
-지원 문법:
+Markdown 지원 문법:
 - # ~ ###### headings
 - **bold**, *italic*, ~~strikethrough~~
 - - / * / 1. lists (nested)
@@ -470,7 +585,21 @@ index.html에 인라인으로 경량 Markdown 파서를 포함한다:
 - [link](url), ![image](url)
 - > blockquote
 - --- horizontal rule
-- ```mermaid 블록 → <div class="mermaid"> 변환 (Mermaid.js CDN 로드)
+
+다이어그램 렌더링 (Mermaid → SVG):
+- ```mermaid 블록 감지 → Mermaid.js CDN으로 SVG 생성
+- SVG는 인라인 삽입 (<svg> 태그 직접 embed)
+- viewBox 기반 반응형 스케일링
+- 지원 다이어그램 타입:
+  - erDiagram (ERD)
+  - sequenceDiagram (API 흐름)
+  - flowchart / graph (Screen Flow, 워크플로우)
+  - classDiagram (코드 구조)
+  - stateDiagram (상태 전이)
+  - mindmap (IA 계층)
+  - pie (통계)
+  - gantt (Roadmap)
+- 다이어그램 클릭 시 확대 모달 표시 (zoom)
 ```
 
 ### 자동 재생성 트리거
@@ -484,7 +613,7 @@ index.html에 인라인으로 경량 Markdown 파서를 포함한다:
 
 ---
 
-## 9. Version Tracking
+## 10. Version Tracking
 
 
 ### Version Format
@@ -512,7 +641,7 @@ index.html에 인라인으로 경량 Markdown 파서를 포함한다:
 
 ---
 
-## 10. Safety Rules
+## 11. Safety Rules
 
 1. 모든 문서 조작은 이 엔진을 통해 수행 (직접 파일 쓰기 금지)
 2. `.md` 생성/수정/삭제 시 `.json` 반드시 동반
@@ -523,3 +652,5 @@ index.html에 인라인으로 경량 Markdown 파서를 포함한다:
 7. version은 자동 관리 (수동 설정 무시)
 8. 동일 scope에서 같은 type의 문서는 1개만 존재 (중복 생성 거부)
 9. 문서 본문은 `language.documents` 설정 언어로 작성 (ID/코드는 항상 영문)
+10. 모든 문서에 관련 UML 다이어그램을 최대한 포함 (Section 3 필수/권장 테이블 참조)
+11. HTML 생성 시 Mermaid 다이어그램은 반드시 인라인 SVG로 렌더링 (외부 이미지 파일 금지)
