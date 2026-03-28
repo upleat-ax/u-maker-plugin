@@ -389,8 +389,7 @@ sequenceDiagram
 │  │          │  Pagination         │     │  설명 텍스트...       │
 │  │          │                     │     │  ...                  │
 │  └──────────┴─────────────────────┘     │                      │
-│                                          │  [비즈니스 규칙]      │
-│                                          │  (있는 경우에만 표시)  │
+│                                          │                      │
 └─────────────────────────────────────────┴──────────────────────┘
 ```
 
@@ -399,7 +398,6 @@ sequenceDiagram
 1. **App Frame은 실제 앱처럼 렌더링.** IA의 사이드바 메뉴, 페이지 헤더, 탭, 필터, 테이블, 페이지네이션 등 실제 데이터가 포함된 풀 UI를 구성한다.
 2. **어노테이션 마커 `<span class="mk">N</span>`** 를 UI 요소 옆에 인라인으로 배치한다. 마커 번호는 우측 어노테이션 패널의 설명과 1:1 대응한다.
 3. **어노테이션 패널**은 각 마커에 대해 `컴포넌트명 + 동작 설명 + API 호출(있으면) + 네비게이션(있으면)`을 기술한다.
-4. **비즈니스 규칙**은 해당 화면에 특별한 규칙이 있는 경우에만 어노테이션 패널 하단에 표시한다. 없으면 생략.
 
 **Grid Layout:** `grid-template-columns: 1fr 300px`
 
@@ -409,12 +407,12 @@ sequenceDiagram
 <div class="spec-wrap">
   <div class="spec-title">컴포넌트 명세</div>
   <table class="spec-tbl">
-    <thead><tr><th>#</th><th>컴포넌트</th><th>타입</th><th>Props / 설명</th><th>API</th></tr></thead>
+    <thead><tr><th>#</th><th>컴포넌트</th><th>타입</th><th>Props / 설명</th><th>Validation</th><th>API</th></tr></thead>
     <tbody>
-      <!-- 어노테이션 마커 번호 순서대로 모든 컴포넌트 나열 -->
-      <tr><td>1</td><td>PageTitle</td><td>Layout</td><td>title="화면제목"</td><td>-</td></tr>
-      <tr><td>2</td><td>SearchButton</td><td>Action</td><td>variant=primary</td><td>GET /v1/resource</td></tr>
-      <!-- ... -->
+      <tr><td>1</td><td>PageTitle</td><td>Layout</td><td>title="화면제목"</td><td>-</td><td>-</td></tr>
+      <tr><td>2</td><td>EmailInput</td><td>Input</td><td>placeholder="이메일" | required</td><td>email 형식 | 최대 255자</td><td>-</td></tr>
+      <tr><td>3</td><td>PasswordInput</td><td>Input</td><td>type=password | required</td><td>최소 8자 | 영문+숫자+특수문자</td><td>-</td></tr>
+      <tr><td>4</td><td>LoginButton</td><td>Action</td><td>variant=primary | disabled: form invalid</td><td>전체 form valid 시 활성화</td><td>POST /v1/auth/login</td></tr>
     </tbody>
   </table>
 </div>
@@ -425,7 +423,64 @@ sequenceDiagram
 - `컴포넌트`: 컴포넌트명 (PascalCase)
 - `타입`: Layout / Display / Input / Filter / Action / Navigation 중 택 1
 - `Props / 설명`: 주요 props, placeholder, 기본값, 동작 설명
+- `Validation`: Input/Filter 타입의 유효성 검증 규칙. 형식, 최소/최대 길이, 필수 여부, 정규식 패턴 등. 해당 없으면 `-`
 - `API`: 이 컴포넌트가 트리거하는 API 엔드포인트 (없으면 `-`)
+
+**섹션 3-2: 버튼 액션 상세 테이블**
+
+```html
+<div class="spec-wrap">
+  <div class="spec-title">버튼 액션 상세</div>
+  <table class="spec-tbl">
+    <thead><tr><th>버튼</th><th>트리거</th><th>API 호출</th><th>성공 시</th><th>실패 시</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>로그인</td><td>click</td>
+        <td><code>POST /v1/auth/login</code></td>
+        <td>→ SCR-002 Dashboard 이동, 토큰 저장</td>
+        <td>→ 에러 토스트 표시 ("이메일 또는 비밀번호 확인")</td>
+      </tr>
+      <tr>
+        <td>소셜 로그인 (Google)</td><td>click</td>
+        <td><code>GET /v1/auth/google</code></td>
+        <td>→ OAuth 팝업 → 콜백 → SCR-002</td>
+        <td>→ 에러 모달 표시</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+```
+
+**섹션 3-3: 팝업 & 모달 정의 테이블**
+
+```html
+<div class="spec-wrap">
+  <div class="spec-title">팝업 & 모달</div>
+  <table class="spec-tbl">
+    <thead><tr><th>이름</th><th>트리거 조건</th><th>내용</th><th>버튼</th><th>후속 동작</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>로그인 실패</td><td>401 응답</td>
+        <td>"이메일 또는 비밀번호가 올바르지 않습니다"</td>
+        <td>[확인]</td>
+        <td>이메일 입력 포커스</td>
+      </tr>
+      <tr>
+        <td>계정 잠금</td><td>5회 실패 시 (429 응답)</td>
+        <td>"계정이 10분간 잠겼습니다. 비밀번호 찾기를 이용해주세요."</td>
+        <td>[비밀번호 찾기] [닫기]</td>
+        <td>[비밀번호 찾기] → SCR-015</td>
+      </tr>
+      <tr>
+        <td>로딩 오버레이</td><td>API 호출 중</td>
+        <td>스피너 + "로그인 중..."</td>
+        <td>-</td>
+        <td>API 응답 시 자동 닫힘</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+```
 
 **섹션 3-1: 유사 화면 대비 차이점 테이블 (선택 — 비슷한 화면이 있을 때만)**
 
@@ -444,6 +499,48 @@ sequenceDiagram
 **섹션 4: 로직 흐름 다이어그램 (diagrams-section)**
 
 SVG 다이어그램으로 화면의 로직 흐름을 시각화한다. **Mermaid가 아닌 인라인 SVG로 직접 그린다.**
+
+**다이어그램 표시 규칙:**
+- **축소 상태가 기본.** 각 다이어그램은 `max-height: 280px; overflow: hidden`으로 축소 표시한다.
+- **확대 버튼 🔍** 을 다이어그램 우상단에 배치. 클릭 시 모달 오버레이로 전체 크기 표시.
+- 모달은 `position: fixed; inset: 0; background: rgba(0,0,0,.6); z-index: 200`으로 배경 딤 처리.
+- 모달 내 SVG는 `max-width: 95vw; max-height: 90vh`로 제한, 닫기 버튼(✕) 우상단.
+
+```html
+<!-- 다이어그램 블록 패턴 -->
+<div class="diag-block">
+  <h3>A. Condition Flow Chart</h3>
+  <div class="diag-container" style="max-height:280px;overflow:hidden;position:relative">
+    <button class="diag-zoom" onclick="openDiagModal(this)" title="확대">🔍</button>
+    <svg class="diag" viewBox="0 0 820 460"><!-- ... --></svg>
+  </div>
+</div>
+
+<style>
+.diag-container { position: relative; border: 1px solid #e2e8f0; border-radius: 8px; background: #f8fafc; }
+.diag-zoom { position: absolute; top: 8px; right: 8px; z-index: 5; background: #fff; border: 1px solid #d1d9e0; border-radius: 6px; width: 32px; height: 32px; cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; }
+.diag-zoom:hover { background: #f1f5f9; }
+.diag-modal { position: fixed; inset: 0; background: rgba(0,0,0,.6); z-index: 200; display: flex; align-items: center; justify-content: center; }
+.diag-modal svg { max-width: 95vw; max-height: 90vh; background: #fff; border-radius: 12px; padding: 16px; }
+.diag-modal-close { position: fixed; top: 16px; right: 24px; z-index: 210; background: #fff; border: none; width: 36px; height: 36px; border-radius: 50%; font-size: 18px; cursor: pointer; }
+</style>
+
+<script>
+function openDiagModal(btn) {
+  const svg = btn.parentElement.querySelector('svg').cloneNode(true);
+  svg.style.maxWidth = '95vw'; svg.style.maxHeight = '90vh';
+  const modal = document.createElement('div');
+  modal.className = 'diag-modal';
+  modal.onclick = () => modal.remove();
+  const close = document.createElement('button');
+  close.className = 'diag-modal-close'; close.textContent = '✕';
+  close.onclick = () => modal.remove();
+  modal.appendChild(close);
+  modal.appendChild(svg);
+  document.body.appendChild(modal);
+}
+</script>
+```
 
 3가지 다이어그램을 생성한다:
 
@@ -510,8 +607,10 @@ SVG 다이어그램으로 화면의 로직 흐름을 시각화한다. **Mermaid�
    - 동작 설명 (1~2줄)
    - API 호출이면 `<code>GET /v1/...</code>` 포함
    - 네비게이션이면 대상 화면 ID 포함
-5. **Component Spec Table** — 모든 컴포넌트를 마커 번호 순서대로 테이블 작성
-6. **Diagrams** — 화면의 주요 API 호출과 조건 분기를 분석하여 3가지 SVG 다이어그램 생성
+5. **Component Spec Table** — 모든 컴포넌트를 마커 번호 순서대로 테이블 작성. **Validation 컬럼 포함** (Input 타입: 형식, min/max 길이, 필수 여부, 패턴 등)
+6. **Button Action Table** — Action/Navigation 타입 컴포넌트의 트리거, API 호출, 성공/실패 시 동작 상세
+7. **Popup & Modal Table** — 화면에서 발생 가능한 모든 팝업/모달/토스트 정의 (트리거 조건, 내용, 버튼, 후속 동작)
+8. **Diagrams** — 화면의 주요 API 호출과 조건 분기를 분석하여 3가지 SVG 다이어그램 생성 (축소 표시 + 🔍 확대 모달)
 7. **Annotation Legend** — 모든 마커의 빠른 참조 목록
 
 **어노테이션 마커 CSS:**
