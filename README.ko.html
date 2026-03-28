@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>U-MAKER Plugin Documentation</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--sidebar-w:280px;--bg:#0f172a;--sidebar-bg:#1e293b;--main-bg:#f1f5f9;--text:#e2e8f0;--text-main:#1e293b;--accent:#3b82f6;--accent-hover:#2563eb;--code-bg:#1e293b;--border:#334155;--active-bg:#334155;--badge-bg:#475569;--badge-text:#94a3b8;--table-stripe:#f8fafc;--table-border:#cbd5e1;--table-header:#e2e8f0}
+html{scroll-behavior:smooth}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Noto Sans KR',sans-serif;display:flex;min-height:100vh;background:var(--main-bg);color:var(--text-main)}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+
+/* Sidebar */
+.sidebar{width:var(--sidebar-w);background:var(--sidebar-bg);color:var(--text);position:fixed;top:0;left:0;height:100vh;overflow-y:auto;z-index:100;transition:transform .3s ease}
+.sidebar::-webkit-scrollbar{width:6px}
+.sidebar::-webkit-scrollbar-thumb{background:var(--badge-bg);border-radius:3px}
+.sidebar-header{padding:24px 20px 16px;border-bottom:1px solid var(--border)}
+.sidebar-header h1{font-size:20px;font-weight:700;color:#fff;letter-spacing:1px}
+.sidebar-header p{font-size:12px;color:var(--badge-text);margin-top:4px}
+.sidebar-nav{padding:12px 0}
+.nav-group{margin-bottom:4px}
+.nav-group-title{display:flex;align-items:center;justify-content:space-between;padding:10px 20px;font-size:12px;font-weight:700;color:var(--badge-text);text-transform:uppercase;letter-spacing:.5px;user-select:none}
+.nav-group-title .badge{background:var(--badge-bg);color:var(--badge-text);font-size:10px;padding:2px 8px;border-radius:10px;font-weight:500}
+.nav-item{display:block;padding:6px 20px 6px 28px;font-size:13px;color:var(--text);cursor:pointer;transition:all .15s ease;border-left:3px solid transparent}
+.nav-item:hover{background:rgba(255,255,255,.05);text-decoration:none;border-left-color:var(--accent)}
+.nav-item.active{background:var(--active-bg);color:#fff;font-weight:600;border-left-color:var(--accent)}
+.nav-item .num{display:inline-block;background:rgba(255,255,255,.08);color:var(--badge-text);font-size:10px;padding:1px 6px;border-radius:3px;margin-right:6px;font-family:'SF Mono',Monaco,monospace;min-width:22px;text-align:center}
+.sidebar-footer{padding:16px 20px;border-top:1px solid var(--border);font-size:11px;color:var(--badge-text);text-align:center}
+
+/* Main */
+.main{margin-left:var(--sidebar-w);flex:1;padding:40px 60px 80px;max-width:960px}
+.main h2{font-size:26px;font-weight:700;margin:48px 0 16px;padding-bottom:10px;border-bottom:2px solid #cbd5e1;color:var(--text-main)}
+.main h2:first-child{margin-top:0}
+.main h3{font-size:18px;font-weight:600;margin:28px 0 12px;color:#334155}
+.main h4{font-size:15px;font-weight:600;margin:20px 0 8px;color:#475569}
+.main p{line-height:1.8;margin-bottom:12px;font-size:15px}
+.main ul,.main ol{margin:8px 0 16px 24px;line-height:1.8}
+.main li{margin-bottom:4px;font-size:15px}
+.main strong{font-weight:600}
+.main blockquote{border-left:3px solid var(--accent);padding:10px 16px;margin:12px 0;background:#e0f2fe;border-radius:0 6px 6px 0;font-size:14px;color:#1e40af}
+.main hr{border:none;border-top:1px solid #e2e8f0;margin:36px 0}
+.main code{background:#e2e8f0;padding:2px 6px;border-radius:4px;font-size:13px;font-family:'SF Mono',Monaco,'Cascadia Code',monospace;color:#be185d}
+.main pre{background:var(--code-bg);color:#e2e8f0;padding:20px 24px;border-radius:8px;overflow-x:auto;margin:12px 0 20px;font-size:13px;line-height:1.7;border:1px solid #334155}
+.main pre code{background:none;padding:0;color:inherit}
+
+/* Tables */
+.main table{width:100%;border-collapse:collapse;margin:12px 0 20px;font-size:14px;border-radius:8px;overflow:hidden;border:1px solid var(--table-border)}
+.main thead th{background:var(--table-header);padding:10px 14px;text-align:left;font-weight:600;border:1px solid var(--table-border);font-size:13px}
+.main tbody td{padding:10px 14px;border:1px solid var(--table-border);vertical-align:top}
+.main tbody tr:nth-child(even){background:var(--table-stripe)}
+.main tbody tr:hover{background:#e0f2fe}
+
+/* Hero */
+.hero{background:linear-gradient(135deg,#1e293b 0%,#334155 100%);color:#fff;padding:32px;border-radius:12px;margin-bottom:32px}
+.hero h2{color:#fff;border-bottom:none;margin:0 0 8px;font-size:28px}
+.hero p{color:#94a3b8;margin:0;font-size:15px}
+.hero .stats{display:flex;gap:24px;margin-top:20px;flex-wrap:wrap}
+.hero .stat{background:rgba(255,255,255,.06);padding:12px 20px;border-radius:8px;border:1px solid rgba(255,255,255,.1)}
+.hero .stat-val{font-size:22px;font-weight:700;color:var(--accent)}
+.hero .stat-label{font-size:12px;color:var(--badge-text);margin-top:2px}
+
+/* Comment highlight in code */
+.cmd{color:var(--accent);font-weight:500}
+.comment{color:#64748b}
+
+/* Footer */
+.footer{margin-top:60px;padding:24px 0;border-top:2px solid #e2e8f0;text-align:center;font-size:13px;color:#64748b}
+.footer strong{color:var(--text-main)}
+
+/* Mobile */
+.hamburger{display:none;position:fixed;top:12px;left:12px;z-index:200;background:var(--sidebar-bg);color:#fff;border:none;padding:10px 14px;border-radius:8px;font-size:20px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.2)}
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:50}
+@media(max-width:768px){
+  .sidebar{transform:translateX(-100%)}
+  .sidebar.open{transform:translateX(0)}
+  .hamburger{display:block}
+  .overlay.open{display:block}
+  .main{margin-left:0;padding:60px 20px 40px}
+  .hero .stats{flex-direction:column;gap:8px}
+  .main table{font-size:12px}
+  .main thead th,.main tbody td{padding:6px 8px}
+  .main pre{padding:12px 14px;font-size:12px}
+}
+</style>
+</head>
+<body>
+
+<button class="hamburger" onclick="toggleSidebar()" aria-label="Toggle menu">&#9776;</button>
+<div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+<nav class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <h1>U-MAKER</h1>
+    <p>v3.0.10 &mdash; Plugin Documentation</p>
+  </div>
+  <div class="sidebar-nav">
+
+    <div class="nav-group">
+      <div class="nav-group-title">Quick Start <span class="badge">2</span></div>
+      <a class="nav-item active" href="#tldr" onclick="nav(this)"><span class="num">00</span> TL;DR</a>
+      <a class="nav-item" href="#sec1" onclick="nav(this)"><span class="num">01</span> 문제 해결</a>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-group-title">Architecture <span class="badge">3</span></div>
+      <a class="nav-item" href="#sec2" onclick="nav(this)"><span class="num">02</span> 아키텍처</a>
+      <a class="nav-item" href="#sec3" onclick="nav(this)"><span class="num">03</span> PDCA 5-Phase</a>
+      <a class="nav-item" href="#sec4" onclick="nav(this)"><span class="num">04</span> 3-Layer 파이프라인</a>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-group-title">Components <span class="badge">4</span></div>
+      <a class="nav-item" href="#sec5" onclick="nav(this)"><span class="num">05</span> Agents</a>
+      <a class="nav-item" href="#sec6" onclick="nav(this)"><span class="num">06</span> Commands</a>
+      <a class="nav-item" href="#sec7" onclick="nav(this)"><span class="num">07</span> Engine Skills</a>
+      <a class="nav-item" href="#sec8" onclick="nav(this)"><span class="num">08</span> Interaction Modes</a>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-group-title">Data Model <span class="badge">3</span></div>
+      <a class="nav-item" href="#sec9" onclick="nav(this)"><span class="num">09</span> 4-Tier ID</a>
+      <a class="nav-item" href="#sec10" onclick="nav(this)"><span class="num">10</span> 폴더 구조</a>
+      <a class="nav-item" href="#sec11" onclick="nav(this)"><span class="num">11</span> 문서 출력 규칙</a>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-group-title">Reference <span class="badge">5</span></div>
+      <a class="nav-item" href="#sec12" onclick="nav(this)"><span class="num">12</span> 플러그인 구조</a>
+      <a class="nav-item" href="#sec13" onclick="nav(this)"><span class="num">13</span> Hooks &amp; Guardrails</a>
+      <a class="nav-item" href="#sec14" onclick="nav(this)"><span class="num">14</span> 시나리오 가이드</a>
+      <a class="nav-item" href="#sec15" onclick="nav(this)"><span class="num">15</span> 설치</a>
+      <a class="nav-item" href="#sec16" onclick="nav(this)"><span class="num">16</span> 트러블슈팅</a>
+    </div>
+
+  </div>
+  <div class="sidebar-footer">MIT License &middot; v3.0.10</div>
+</nav>
+
+<main class="main">
+
+<!-- Hero -->
+<div class="hero">
+  <h2>U-MAKER Plugin</h2>
+  <p>PDCA 기반 SSoT(Single Source of Truth) 협업 오케스트레이터.<br>
+  4개 전문 에이전트와 3-Layer 파이프라인으로 소프트웨어 개발 전 과정을 자동화하는 Claude Code 플러그인.</p>
+  <div class="stats">
+    <div class="stat"><div class="stat-val">35</div><div class="stat-label">Skills (12 engine + 21 cmd + 1 router + 1 NL)</div></div>
+    <div class="stat"><div class="stat-val">4</div><div class="stat-label">Agents</div></div>
+    <div class="stat"><div class="stat-val">5</div><div class="stat-label">PDCA Phases</div></div>
+  </div>
+</div>
+
+<!-- TL;DR -->
+<h2 id="tldr">TL;DR</h2>
+
+<h3>Forward Engineering (새 프로젝트)</h3>
+<pre><code><span class="comment"># 1. 설치 (macOS/Linux)</span>
+curl -fsSL https://raw.githubusercontent.com/thinoo-v2/u-maker-plugin/main/install.sh | bash
+
+<span class="comment"># 2. Claude Code 재시작 후 프로젝트에서 실행</span>
+<span class="cmd">/u-init my-app</span>                <span class="comment"># .u-maker/ 구조 생성 + 앱 등록</span>
+
+<span class="comment"># 3. 데이터 수집 → 분석 → 계획</span>
+<span class="comment"># → _input/raw/에 RFP, 회의록, AS-IS 자료 드롭 (자동 분류)</span>
+<span class="cmd">/u-ingest [app]</span>              <span class="comment"># raw → classified 분석</span>
+<span class="cmd">/u-plan [app]</span>                <span class="comment"># SRS + IA + Roadmap 자동 생성</span>
+
+<span class="comment"># 4. 설계 → 구현 → 검증</span>
+<span class="cmd">/u-design [app]</span>              <span class="comment"># ERD + API + Screen + Flow + RTM + wireframes</span>
+<span class="cmd">/u-dev [app]</span>                 <span class="comment"># FE + BE + DB 코드 생성</span>
+<span class="cmd">/u-qa [app]</span>               <span class="comment"># TC 설계 + 테스트 + 리포트</span>
+
+<span class="comment"># 5. 배포 + 회고</span>
+<span class="cmd">/u-ship [app]</span>                <span class="comment"># 최종 검증 + iteration log + retrospective</span></code></pre>
+
+<h3>Reverse Engineering (기존 프로젝트)</h3>
+<pre><code><span class="cmd">/u-init my-app</span>                <span class="comment"># 프로젝트 초기화</span>
+<span class="cmd">/u-reverse [app]</span>             <span class="comment"># 소스 코드 → SSoT 역공학 (ERD, API, Screen, SRS 등)</span>
+<span class="cmd">/u-sync [app]</span>                <span class="comment"># 문서 간 정합성 검증</span></code></pre>
+
+<h3>자연어로도 가능</h3>
+<pre><code><span class="comment">"[app] 앱의 SRS를 만들어줘"</span>      <span class="comment"># u-maker 라우터가 자동 분배</span></code></pre>
+
+<hr>
+
+<!-- Section 1 -->
+<h2 id="sec1">1. What This Plugin Solves</h2>
+
+<p>u-maker는 <strong>Intent-driven 문서 중심 개발(SSoT)</strong>을 구현하는 협업 오케스트레이터이다.</p>
+
+<h3>기존 방식 vs U-MAKER v3</h3>
+<table>
+<thead><tr><th>기존 방식</th><th>U-MAKER v3 방식</th></tr></thead>
+<tbody>
+<tr><td>코드 먼저, 문서는 나중에</td><td>문서 먼저, 코드는 문서 기반 생성 (Docs-First)</td></tr>
+<tr><td>기존 프로젝트에 문서가 없음</td><td><code>/u-reverse</code>로 소스 코드 → SSoT 자동 역공학</td></tr>
+<tr><td>RFP 200페이지를 한 번에 분석 → 앞부분 loss</td><td>3-Layer 파이프라인으로 chunk 분석 → 정보 손실 없음</td></tr>
+<tr><td>"무슨 문서를 만들어야 하지?"</td><td><code>/u-plan [app]</code> 한 번이면 SRS+IA+Roadmap 연쇄 생성</td></tr>
+<tr><td>요구사항 추적 불가</td><td>4-Tier ID(USR→FR→US→FT)로 전 구간 추적</td></tr>
+<tr><td>SRS 수정 시 ERD/Screen/TC 수동 갱신</td><td><code>_links.json</code> 의존성 그래프로 Auto-Cascade</td></tr>
+<tr><td>단계 건너뛰기로 품질 저하</td><td>Phase Gate 자동 검증 후에만 다음 Phase 진행</td></tr>
+<tr><td>파일 분류가 번거로움</td><td><code>_input/raw/</code>에 드롭하면 자동 분류 (rfp/, as-is/ 등)</td></tr>
+<tr><td>문서와 코드 버전 불일치</td><td><code>.md</code> + <code>.json</code> 동시 생성</td></tr>
+<tr><td>앱마다 다른 규칙</td><td>common/ 정책 상속 + 앱별 override</td></tr>
+<tr><td>AI 판단이 블랙박스</td><td>Assumptions Log로 모든 판단 기록 + 사후 리뷰</td></tr>
+<tr><td>문서 언어가 고정</td><td><code>language.documents</code> 설정으로 ko/en/ja/zh 지원</td></tr>
+<tr><td>설계 산출물 시각화 어려움</td><td><code>wireframes/index.html</code> SPA 뷰어 자동 생성</td></tr>
+<tr><td>PR/MR 작성이 반복 노동</td><td><code>/u-git-pr</code>로 구조화된 PR/MR 자동 생성</td></tr>
+<tr><td>궁금한 점을 어디에 물어봐야 할지 모름</td><td><code>/u-ask</code>로 가볍게 Q&amp;A</td></tr>
+</tbody>
+</table>
+
+<hr>
+
+<!-- Section 2 -->
+<h2 id="sec2">2. Architecture Overview</h2>
+
+<pre><code>USER INPUT
+    |
+    +-- /u-{cmd} [scope] [target] [flags]     &lt;- slash command
+    |       +--&gt; u-{cmd}/SKILL.md
+    |               +--&gt; u-skill-router (scope 해석)
+    |               +--&gt; u-skill-* (필요한 엔진)
+    |               +--&gt; u-agent-* (에이전트 dispatch)
+    |
+    +-- 자연어 요청                             &lt;- natural language
+            +--&gt; u-maker (NL router) → /u-* command 변환</code></pre>
+
+<h3>Skill Naming Convention</h3>
+<table>
+<thead><tr><th>Prefix</th><th>용도</th><th>User-invocable</th><th>수</th></tr></thead>
+<tbody>
+<tr><td><code>u-*</code></td><td>Command (slash command)</td><td>Yes</td><td>21</td></tr>
+<tr><td><code>u-skill-*</code></td><td>Internal engine</td><td>No</td><td>12</td></tr>
+<tr><td><code>u-skill-router</code></td><td>Intent router</td><td>No</td><td>1</td></tr>
+<tr><td><code>u-maker</code></td><td>NL router + help</td><td>Yes</td><td>1</td></tr>
+</tbody>
+</table>
+
+<hr>
+
+<!-- Section 3 -->
+<h2 id="sec3">3. PDCA 5-Phase Process</h2>
+
+<pre><code>Plan → Design → Do → Check → Act
+  ^                              |
+  +-------- iteration -----------+</code></pre>
+
+<blockquote>Config에서 4-Phase(Design을 Do에 통합) 선택 가능: <code>designPhase: "merged"</code></blockquote>
+
+<h3>Phase 정의</h3>
+<table>
+<thead><tr><th>Phase</th><th>산출물</th><th>담당 Agent</th><th>Gate 조건</th></tr></thead>
+<tbody>
+<tr><td><strong>01 Plan</strong></td><td>SRS, IA, Roadmap</td><td>orchestrator→planner→guardian</td><td>SRS+IA+Roadmap = Final</td></tr>
+<tr><td><strong>02 Design</strong></td><td>ERD, API, Screen, ScreenFlow, UXGuide, RTM, wireframes/index.html</td><td>planner→guardian</td><td>ERD+RTM+Screen+API = Final</td></tr>
+<tr><td><strong>03 Do</strong></td><td>Code, UIComponents, Screen(impl)</td><td>builder</td><td>Code complete + build success</td></tr>
+<tr><td><strong>04 Check</strong></td><td>TestCase, TestReport</td><td>guardian</td><td>Critical/Major=0, all FR impl</td></tr>
+<tr><td><strong>05 Act</strong></td><td>IterationLog, Retrospective</td><td>orchestrator→guardian</td><td>Retro + archive 완료</td></tr>
+</tbody>
+</table>
+
+<hr>
+
+<!-- Section 4 -->
+<h2 id="sec4">4. 3-Layer Data Pipeline</h2>
+
+<p>raw data를 한 번에 처리하면 context window 한계로 앞부분이 loss된다. 중간 정제 레이어를 두어 해결:</p>
+
+<pre><code>_input/ (Raw)  →  _classified/ (Structured JSON)  →  docs/ (Deliverables)
+  raw/               requirements/, workflows/          SRS, ERD, Screen
+  rfp/               pain-points/, screens/             API, TestCase
+  as-is/             decisions/, constraints/           Roadmap, RTM
+  interviews/        domain-terms/, stakeholders/       wireframes/index.html</code></pre>
+
+<h3>_input/raw/ 자동 분류</h3>
+<p><code>_input/raw/</code>에 파일을 드롭하면 <code>/u-ingest</code> 실행 시 파일명/내용을 분석하여 <code>rfp/</code>, <code>as-is/</code>, <code>meeting-notes/</code> 등 적절한 하위 폴더로 자동 분류한다.</p>
+
+<h3>_classified 10개 카테고리</h3>
+<table>
+<thead><tr><th>카테고리</th><th>ID 패턴</th><th>입력 소스</th></tr></thead>
+<tbody>
+<tr><td>requirements/</td><td>FR-nnn, NR-nnn</td><td>RFP, 회의록</td></tr>
+<tr><td>pain-points/</td><td>PP-nnn</td><td>인터뷰</td></tr>
+<tr><td>domain-terms/</td><td>DT-nnn</td><td>RFP, AS-IS</td></tr>
+<tr><td>stakeholders/</td><td>SH-nnn</td><td>RFP</td></tr>
+<tr><td>workflows/</td><td>WF-nnn</td><td>AS-IS workflows</td></tr>
+<tr><td>screens/</td><td>SC-nnn</td><td>AS-IS screens</td></tr>
+<tr><td>data-models/</td><td>DM-nnn</td><td>AS-IS DB</td></tr>
+<tr><td>constraints/</td><td>CN-nnn</td><td>RFP, 법규</td></tr>
+<tr><td>decisions/</td><td>DC-nnn</td><td>회의록, /u-discuss</td></tr>
+<tr><td>questions/</td><td>QS-nnn</td><td>분석 중 발생</td></tr>
+</tbody>
+</table>
+
+<h3>항목 Lifecycle</h3>
+<p><code>extracted</code> → <code>validated</code> → <code>adopted</code> / <code>rejected</code></p>
+
+<hr>
+
+<!-- Section 5 -->
+<h2 id="sec5">5. Agents</h2>
+
+<p>4개 전문 에이전트가 Phase별 역할을 분담한다.</p>
+
+<table>
+<thead><tr><th>Agent</th><th>Model</th><th>Role</th><th>Phase</th></tr></thead>
+<tbody>
+<tr><td><code>u-agent-orchestrator</code></td><td>opus</td><td>Command router, Phase controller, State machine, _links.json 관리</td><td>ALL</td></tr>
+<tr><td><code>u-agent-planner</code></td><td>sonnet</td><td>분석 + 설계 (SRS, IA, ERD, API, Screen, UX)</td><td>Plan, Design</td></tr>
+<tr><td><code>u-agent-builder</code></td><td>sonnet</td><td>FE + BE 통합 구현</td><td>Do</td></tr>
+<tr><td><code>u-agent-guardian</code></td><td>sonnet</td><td>Gate 검증, TestCase, 일관성 검증, RTM</td><td>Design, Do, Check, Act</td></tr>
+</tbody>
+</table>
+
+<hr>
+
+<!-- Section 6 -->
+<h2 id="sec6">6. Commands</h2>
+
+<h3>Grammar</h3>
+<pre><code>/u-{command} [scope] [target] [flags]</code></pre>
+
+<ul>
+<li><strong>scope</strong>: 앱 이름 | <code>common</code> | <code>all</code> | 생략 (자동 선택)</li>
+<li><strong>target</strong>: 문서/항목 이름</li>
+<li><strong>flags</strong>: <code>-i</code> (interactive) | <code>--step</code> | <code>--only X</code> | <code>--cascade</code> | <code>--dry-run</code> | <code>--json</code></li>
+</ul>
+
+<h3>6.1 Lifecycle (8)</h3>
+<table>
+<thead><tr><th>Command</th><th>Description</th><th>Example</th></tr></thead>
+<tbody>
+<tr><td><code>/u-init [project-name]</code></td><td>.u-maker/ 구조 생성, config 초기화, 앱 등록</td><td><code>/u-init my-project</code></td></tr>
+<tr><td><code>/u-reverse [scope] [--only X]</code></td><td>소스 코드 → SSoT 역공학 (ERD, API, Screen, SRS 등)</td><td><code>/u-reverse [app] --only erd</code></td></tr>
+<tr><td><code>/u-ingest [scope] [--review] [--incremental]</code></td><td>raw → classified 분석 적재. <code>_input/raw/</code> 자동 분류 지원</td><td><code>/u-ingest [app] --review</code></td></tr>
+<tr><td><code>/u-plan [scope] [--only X] [-i] [--step]</code></td><td>classified → SRS + IA + Roadmap 연쇄 생성</td><td><code>/u-plan [app] -i</code></td></tr>
+<tr><td><code>/u-design [scope] [--only X] [-i] [--step]</code></td><td>SRS/IA → ERD + API + Screen + Flow + RTM + wireframes/index.html</td><td><code>/u-design [app] --only screens</code></td></tr>
+<tr><td><code>/u-dev [scope] [--only X] [-i] [--step]</code></td><td>명세 → FE + BE + DB 코드 생성</td><td><code>/u-dev [app] --only fe</code></td></tr>
+<tr><td><code>/u-qa [scope] [-i] [--step]</code></td><td>TC 설계 + 테스트 실행 + Report + exit criteria</td><td><code>/u-qa [app]</code></td></tr>
+<tr><td><code>/u-ship [scope] [-i] [--step]</code></td><td>최종 검증 + iteration log + retrospective</td><td><code>/u-ship [app]</code></td></tr>
+</tbody>
+</table>
+
+<h3>6.2 Operations (5)</h3>
+<table>
+<thead><tr><th>Command</th><th>Description</th><th>Example</th></tr></thead>
+<tbody>
+<tr><td><code>/u-add [scope] [type] "title"</code></td><td>항목 추가 (FR/NR/US/FT/Screen/TC 등)</td><td><code>/u-add [app] fr "비밀번호 재설정"</code></td></tr>
+<tr><td><code>/u-update [scope] [doc]</code></td><td>문서 수정 + cascade 자동 전파</td><td><code>/u-update [app] srs --cascade</code></td></tr>
+<tr><td><code>/u-doc [scope] [doc]</code></td><td>특정 문서 조회/편집/재생성</td><td><code>/u-doc [app] screens</code></td></tr>
+<tr><td><code>/u-sync [scope]</code></td><td>전체 문서 일관성 검증 + 수정 제안</td><td><code>/u-sync [app]</code></td></tr>
+<tr><td><code>/u-gate [scope]</code></td><td>Phase gate 검사 + 전환</td><td><code>/u-gate [app]</code></td></tr>
+</tbody>
+</table>
+
+<h3>6.3 Observability (3)</h3>
+<table>
+<thead><tr><th>Command</th><th>Description</th><th>Example</th></tr></thead>
+<tbody>
+<tr><td><code>/u-status [scope]</code></td><td>대시보드 (phase, 진행률, impact flags)</td><td><code>/u-status [app]</code></td></tr>
+<tr><td><code>/u-coverage [scope]</code></td><td>classified → 산출물 커버리지 리포트</td><td><code>/u-coverage all</code></td></tr>
+<tr><td><code>/u-trace [scope] [id]</code></td><td>raw → classified → docs 추적 체인</td><td><code>/u-trace [app] FR-015</code></td></tr>
+</tbody>
+</table>
+
+<h3>6.4 Collaboration (5)</h3>
+<table>
+<thead><tr><th>Command</th><th>Description</th><th>Example</th></tr></thead>
+<tbody>
+<tr><td><code>/u-ask {질문}</code></td><td>Q&amp;A — 질문, 제안, 의견에 맥락 있는 답변</td><td><code>/u-ask ERD에서 soft delete를 쓰는 이유가 뭐야?</code></td></tr>
+<tr><td><code>/u-discuss [type] [topic]</code></td><td>구조화된 토론 세션 (brainstorm/review/decision/workshop/retro)</td><td><code>/u-discuss brainstorm "결제 UX"</code></td></tr>
+<tr><td><code>/u-assume [approve|reject] [id]</code></td><td>가정 검토 (approve/reject)</td><td><code>/u-assume approve A-001</code></td></tr>
+<tr><td><code>/u-backlog [scope]</code></td><td>백로그 관리 (조회, 추가, 스프린트 할당, 우선순위, 번다운)</td><td><code>/u-backlog [app]</code></td></tr>
+<tr><td><code>/u-git-pr [base] [flags]</code></td><td>PR/MR 자동 생성 (커밋 분석, 분할/통합, 리뷰 가이드)</td><td><code>/u-git-pr main --draft</code></td></tr>
+</tbody>
+</table>
+
+<h3>Global Flags</h3>
+<table>
+<thead><tr><th>Flag</th><th>설명</th></tr></thead>
+<tbody>
+<tr><td><code>-i</code></td><td>interactive mode — 판단 분기에서만 pause</td></tr>
+<tr><td><code>--step</code></td><td>step mode — 매 단계마다 확인</td></tr>
+<tr><td><code>--only X</code></td><td>특정 산출물만 (srs, erd, fe, be...)</td></tr>
+<tr><td><code>--cascade</code></td><td>변경 시 의존 문서 자동 갱신</td></tr>
+<tr><td><code>--dry-run</code></td><td>실행 안 하고 계획만 표시</td></tr>
+<tr><td><code>--json</code></td><td>JSON 형식 출력</td></tr>
+<tr><td><code>--incremental</code></td><td>(/u-ingest) 신규분만 처리</td></tr>
+<tr><td><code>--review</code></td><td>(/u-ingest) extracted 항목 리뷰</td></tr>
+</tbody>
+</table>
+
+<hr>
+
+<!-- Section 7 -->
+<h2 id="sec7">7. Engine Skills</h2>
+
+<p>12개 횡단 엔진. user-invocable이 아니며, command skill이 내부적으로 호출한다.</p>
+
+<h3>Core Engines (orchestrator 소속)</h3>
+<table>
+<thead><tr><th>Engine</th><th>역할</th></tr></thead>
+<tbody>
+<tr><td><code>u-skill-router</code></td><td>Intent 분류, scope 해석, agent dispatch</td></tr>
+<tr><td><code>u-skill-phase-detector</code></td><td>문서 status 집계 → phase 자동 판정</td></tr>
+<tr><td><code>u-skill-dep-engine</code></td><td><code>_links.json</code> 의존성 그래프, cascade 전파</td></tr>
+<tr><td><code>u-skill-workflow-runner</code></td><td>Multi-step 실행, rollback, progress</td></tr>
+<tr><td><code>u-skill-facilitator</code></td><td>/u-discuss 세션 퍼실리테이션</td></tr>
+</tbody>
+</table>
+
+<h3>Domain Engines (planner 소속)</h3>
+<table>
+<thead><tr><th>Engine</th><th>역할</th></tr></thead>
+<tbody>
+<tr><td><code>u-skill-doc-engine</code></td><td>모든 문서 CRUD, 템플릿 렌더링, JSON export, wireframe viewer 생성, 언어 설정 반영</td></tr>
+<tr><td><code>u-skill-analyzer</code></td><td>Raw 파싱, chunk 분석, classified 적재</td></tr>
+<tr><td><code>u-skill-designer</code></td><td>IA/Screen/ERD/API 통합 설계</td></tr>
+<tr><td><code>u-skill-estimator</code></td><td>SRS 기반 일정/공수 산정</td></tr>
+</tbody>
+</table>
+
+<h3>Execution Engines (builder+guardian 소속)</h3>
+<table>
+<thead><tr><th>Engine</th><th>역할</th></tr></thead>
+<tbody>
+<tr><td><code>u-skill-code-engine</code></td><td>명세 → 코드 생성 (FE+BE), scaffold</td></tr>
+<tr><td><code>u-skill-validator</code></td><td>Gate check, cross-doc 일관성</td></tr>
+<tr><td><code>u-skill-test</code></td><td>TC 자동 생성, 실행, 리포트</td></tr>
+<tr><td><code>u-skill-backlog</code></td><td>백로그 CRUD, 우선순위, 스프린트, 번다운</td></tr>
+</tbody>
+</table>
+
+<hr>
+
+<!-- Section 8 -->
+<h2 id="sec8">8. Interaction Modes</h2>
+
+<table>
+<thead><tr><th>Mode</th><th>Flag</th><th>동작</th></tr></thead>
+<tbody>
+<tr><td><strong>auto</strong></td><td>(default)</td><td>질문 없이 실행. 판단은 Assumptions Log에 기록</td></tr>
+<tr><td><strong>interactive</strong></td><td><code>-i</code></td><td>판단 분기에서만 pause. 나머지는 auto 속도</td></tr>
+<tr><td><strong>step</strong></td><td><code>--step</code></td><td>매 단계에서 pause + 승인</td></tr>
+</tbody>
+</table>
+
+<h3>Assumptions Log</h3>
+<p>auto 모드에서 agent가 "질문 대신 판단"할 때마다 기록하는 안전장치.</p>
+
+<pre><code><span class="cmd">/u-status [app] --assumptions</span>    <span class="comment"># 미리뷰 assumptions 확인</span>
+<span class="cmd">/u-assume approve A-001</span>           <span class="comment"># 승인</span>
+<span class="cmd">/u-assume reject A-001 "전체취소만"</span>  <span class="comment"># 거부 → cascade 수정</span></code></pre>
+
+<p><code>maxAssumptions</code> (default: 20) 초과 시 자동으로 interactive 전환.</p>
+
+<hr>
+
+<!-- Section 9 -->
+<h2 id="sec9">9. 4-Tier ID Hierarchy</h2>
+
+<pre><code>USR-0001 (User Type: 관리자, 일반 사용자)
+  +-- FR-0001 (Functional Req: 회원가입 기능)
+        +-- US-0001 (User Story: 이메일로 회원가입하고 싶다)
+              +-- FT-0001 (Feature = 구현 단위: 이메일 인증 구현)</code></pre>
+
+<blockquote>FT = <strong>Feature</strong> (구현 단위). <del>Functional Test</del> 절대 아님.</blockquote>
+
+<hr>
+
+<!-- Section 10 -->
+<h2 id="sec10">10. Folder Structure</h2>
+
+<h3>.u-maker/ (프로젝트)</h3>
+<pre><code>.u-maker/
++-- u-maker.config.json              # 전역 설정 (language, designTool, iteration 등)
++-- _links.json                       # 의존성 그래프
+|
++-- common/                           # 프로젝트 전체 공통
+|   +-- _index.json
+|   +-- policy/                       # 서비스/보안/개인정보/에러코드/용어
+|   +-- ux/                           # UX Guide, Design Token, UI Components
+|   +-- dev/                          # Coding Convention, Git Strategy, Testing
+|   +-- architecture/                 # System Overview, ERD, API, Infra
+|   +-- project/                      # Roadmap, Stakeholders, Iteration Log
+|
++-- apps/{app-name}/                  # 앱별 독립 파이프라인
+|   +-- _index.json                   # 앱 문서 목차 + 상태
+|   +-- app.config.json               # 앱별 설정
+|   +-- _input/                       # Layer 1: Raw data
+|   |   +-- raw/                      # 자동 분류 대기 (드롭 폴더)
+|   |   +-- rfp/                      # RFP, 제안서
+|   |   +-- as-is/                    # AS-IS 분석 자료
+|   |   +-- meeting-notes/            # 회의록
+|   |   +-- interviews/               # 인터뷰 노트
+|   |   +-- _manifest.json            # 입력 파일 매니페스트
+|   +-- _classified/                  # Layer 2: 정제 데이터 (10 categories)
+|   |   +-- requirements/             # FR-nnn, NR-nnn
+|   |   +-- pain-points/             # PP-nnn
+|   |   +-- domain-terms/            # DT-nnn
+|   |   +-- stakeholders/            # SH-nnn
+|   |   +-- workflows/               # WF-nnn
+|   |   +-- screens/                 # SC-nnn
+|   |   +-- data-models/             # DM-nnn
+|   |   +-- constraints/             # CN-nnn
+|   |   +-- decisions/               # DC-nnn
+|   |   +-- questions/               # QS-nnn
+|   |   +-- _summary.json            # 분류 요약
+|   +-- _sessions/                    # 토론 세션 아카이브
+|   +-- _assumptions/                 # 가정 로그
+|   +-- _backlog/                     # 백로그
+|   +-- docs/                         # Layer 3: 산출물
+|   |   +-- 01-plan/                  # srs.md, ia.md, roadmap.md
+|   |   +-- 02-design/               # erd.md, api.md, screen.md, screen-flow.md
+|   |   |   +-- wireframes/          # index.html (SPA 뷰어) + SCR-*.html/md
+|   |   +-- 03-dev/                  # code.md, spec-sync-report.md
+|   |   +-- 04-check/               # test-cases.md, test-report.md
+|   +-- rtm.md                       # 추적 매트릭스
+|
++-- _input/                           # 프로젝트 공통 raw data
+|   +-- raw/                          # 공통 자동 분류 대기 폴더
++-- _classified/                      # 공통 classified
++-- _sessions/                        # cross-app 토론
++-- _assumptions/                     # cross-app assumptions</code></pre>
+
+<h3>Config 설정</h3>
+<pre><code>{
+  "language": {
+    "documents": "ko",
+    "supported": ["ko", "en", "ja", "zh"]
+  }
+}</code></pre>
+
+<p><code>language.documents</code>로 산출물 문서 언어를 설정한다. ko(한국어), en(영어), ja(일본어), zh(중국어)를 지원한다. ID와 코드는 항상 영문.</p>
+
+<h3>wireframes/index.html</h3>
+<p><code>/u-design</code> 실행 시 자동 생성되는 SPA 뷰어. 사이드바 네비게이션으로 Screen 문서를 탐색하고, MD 렌더링으로 와이어프레임을 시각화한다.</p>
+
+<h3>Scope-First Navigation</h3>
+<p>Claude는 파일을 직접 열지 않고 <code>_index.json</code>만 먼저 읽어서 필요한 파일만 선택적 로드 → context window 절약.</p>
+
+<hr>
+
+<!-- Section 11 -->
+<h2 id="sec11">11. Document Output Rules</h2>
+
+<table>
+<thead><tr><th>Extension</th><th>Purpose</th><th>생성 조건</th></tr></thead>
+<tbody>
+<tr><td><code>.md</code></td><td>사람이 읽는 마크다운 (SSoT 원본)</td><td>모든 문서</td></tr>
+<tr><td><code>.json</code></td><td>기계가 파싱하는 구조화 데이터</td><td>모든 문서와 동시 생성</td></tr>
+<tr><td><code>.html</code></td><td>시각화 뷰어 (wireframes/index.html)</td><td>/u-design 실행 시</td></tr>
+</tbody>
+</table>
+
+<h3>Document Status Lifecycle</h3>
+<pre><code>Draft → Review → Final</code></pre>
+
+<h3>Auto-Cascade</h3>
+<p>SRS 변경 시 <code>_links.json</code> 기반으로 ERD, Screen, TestCase에 impact flag 자동 전파.<br>
+<code>/u-update --cascade</code>로 의존 문서 자동 갱신.</p>
+
+<hr>
+
+<!-- Section 12 -->
+<h2 id="sec12">12. Plugin Repository Layout</h2>
+
+<pre><code>u-maker-plugin/
++-- .claude-plugin/plugin.json        # v3.0.10
++-- agents/                           # 4 agent definitions
+|   +-- u-agent-orchestrator.md
+|   +-- u-agent-planner.md
+|   +-- u-agent-builder.md
+|   +-- u-agent-guardian.md
++-- skills/
+|   +-- u-skill-*/SKILL.md            # 12 internal engines
+|   +-- u-*/SKILL.md                  # 21 command skills (user-invocable)
+|   +-- u-maker/SKILL.md              # NL router
++-- hooks/                            # Event hooks
+|   +-- hooks.json
+|   +-- on-input-added.js
+|   +-- on-doc-change.js
+|   +-- on-classified-validated.js
+|   +-- on-session-wrap.js
+|   +-- on-build-complete.js
+|   +-- on-check-fail.js
+|   +-- on-gate-pass.js
+|   +-- on-ship-incomplete.js
++-- shared/references/                # 참조 문서</code></pre>
+
+<hr>
+
+<!-- Section 13 -->
+<h2 id="sec13">13. Hooks &amp; Guardrails</h2>
+
+<p>모든 Hook은 <code>PostToolUse(Write)</code> 이벤트에 바인딩되어, 파일 쓰기 후 자동으로 실행된다.</p>
+
+<table>
+<thead><tr><th>Script</th><th>동작</th></tr></thead>
+<tbody>
+<tr><td><code>on-input-added.js</code></td><td>_input/ 파일 감지 → /u-ingest 제안</td></tr>
+<tr><td><code>on-doc-change.js</code></td><td>_links.json 기반 cascade impact 알림</td></tr>
+<tr><td><code>on-classified-validated.js</code></td><td>_classified/ 항목 validated → 다음 단계 제안</td></tr>
+<tr><td><code>on-session-wrap.js</code></td><td>세션 완료 → _classified 적재 알림</td></tr>
+<tr><td><code>on-build-complete.js</code></td><td>빌드 완료 감지 → /u-qa 제안</td></tr>
+<tr><td><code>on-check-fail.js</code></td><td>테스트 실패 감지 → 백로그 등록 제안</td></tr>
+<tr><td><code>on-gate-pass.js</code></td><td>Gate 조건 충족 → phase 전환 제안</td></tr>
+<tr><td><code>on-ship-incomplete.js</code></td><td>Ship 미완료 항목 → 다음 iteration 이월 제안</td></tr>
+</tbody>
+</table>
+
+<hr>
+
+<!-- Section 14 -->
+<h2 id="sec14">14. Scenario Guide &mdash; 언제 어떤 명령어를?</h2>
+
+<h3>프로젝트 시작 (Forward Engineering)</h3>
+<table>
+<thead><tr><th>상황</th><th>명령어</th></tr></thead>
+<tbody>
+<tr><td>완전히 새로운 프로젝트 시작</td><td><code>/u-init my-project</code></td></tr>
+<tr><td>기존 RFP/회의록 자료가 있음</td><td><code>/u-init</code> → <code>_input/raw/</code>에 파일 드롭 → <code>/u-ingest [app]</code></td></tr>
+<tr><td>분석된 데이터 리뷰하고 싶음</td><td><code>/u-ingest [app] --review</code></td></tr>
+<tr><td>신규분만 추가 분석</td><td><code>/u-ingest [app] --incremental</code></td></tr>
+</tbody>
+</table>
+
+<h3>프로젝트 시작 (Reverse Engineering)</h3>
+<table>
+<thead><tr><th>상황</th><th>명령어</th></tr></thead>
+<tbody>
+<tr><td>기존 소스 코드 → SSoT 전체 역공학</td><td><code>/u-reverse [app]</code></td></tr>
+<tr><td>ERD만 역공학</td><td><code>/u-reverse [app] --only erd</code></td></tr>
+<tr><td>API만 역공학</td><td><code>/u-reverse [app] --only api</code></td></tr>
+<tr><td>Screen만 역공학</td><td><code>/u-reverse [app] --only screen</code></td></tr>
+<tr><td>SRS만 역공학</td><td><code>/u-reverse [app] --only srs</code></td></tr>
+</tbody>
+</table>
+
+<h3>기획 (Plan Phase)</h3>
+<table>
+<thead><tr><th>상황</th><th>명령어</th></tr></thead>
+<tbody>
+<tr><td>Plan Phase 전체 실행</td><td><code>/u-plan [app]</code></td></tr>
+<tr><td>SRS만 생성</td><td><code>/u-plan [app] --only srs</code></td></tr>
+<tr><td>같이 보면서 만들고 싶음</td><td><code>/u-plan [app] -i</code></td></tr>
+<tr><td>매 단계 확인하면서 진행</td><td><code>/u-plan [app] --step</code></td></tr>
+<tr><td>공통 정책 문서 생성</td><td><code>/u-plan common</code></td></tr>
+<tr><td>기능 요구사항 추가</td><td><code>/u-add [app] fr "비밀번호 재설정"</code></td></tr>
+<tr><td>유저 스토리 추가</td><td><code>/u-add [app] us "비밀번호 재설정하고 싶다"</code></td></tr>
+<tr><td>브레인스토밍</td><td><code>/u-discuss brainstorm "결제 UX"</code></td></tr>
+<tr><td>Plan→Design gate 검증</td><td><code>/u-gate [app]</code></td></tr>
+</tbody>
+</table>
+
+<h3>설계 (Design Phase)</h3>
+<table>
+<thead><tr><th>상황</th><th>명령어</th></tr></thead>
+<tbody>
+<tr><td>Design Phase 전체 실행</td><td><code>/u-design [app]</code></td></tr>
+<tr><td>Screen만 생성</td><td><code>/u-design [app] --only screens</code></td></tr>
+<tr><td>ERD만 생성</td><td><code>/u-design [app] --only erd</code></td></tr>
+<tr><td>2개 앱 interactive</td><td><code>/u-design [app],[app2] -i</code></td></tr>
+<tr><td>IA 워크숍</td><td><code>/u-discuss workshop "메인 IA"</code></td></tr>
+<tr><td>공통 인증 방식 결정</td><td><code>/u-discuss decision "인증 방식"</code></td></tr>
+<tr><td>일관성 검증</td><td><code>/u-sync [app]</code></td></tr>
+</tbody>
+</table>
+
+<h3>구현 (Do Phase)</h3>
+<table>
+<thead><tr><th>상황</th><th>명령어</th></tr></thead>
+<tbody>
+<tr><td>FE+BE+DB 코드 생성</td><td><code>/u-dev [app]</code></td></tr>
+<tr><td>FE만 생성</td><td><code>/u-dev [app] --only fe</code></td></tr>
+<tr><td>BE만 생성</td><td><code>/u-dev [app] --only be</code></td></tr>
+</tbody>
+</table>
+
+<h3>검증 (Check Phase)</h3>
+<table>
+<thead><tr><th>상황</th><th>명령어</th></tr></thead>
+<tbody>
+<tr><td>TC 설계 + 테스트</td><td><code>/u-qa [app]</code></td></tr>
+<tr><td>interactive로 결과 확인</td><td><code>/u-qa [app] -i</code></td></tr>
+</tbody>
+</table>
+
+<h3>배포 + 회고 (Act Phase)</h3>
+<table>
+<thead><tr><th>상황</th><th>명령어</th></tr></thead>
+<tbody>
+<tr><td>최종 검증 + 배포 + 회고</td><td><code>/u-ship [app]</code></td></tr>
+<tr><td>회고 세션</td><td><code>/u-discuss retro</code></td></tr>
+</tbody>
+</table>
+
+<h3>일상 운영</h3>
+<table>
+<thead><tr><th>상황</th><th>명령어</th></tr></thead>
+<tbody>
+<tr><td>전체 프로젝트 대시보드</td><td><code>/u-status</code></td></tr>
+<tr><td>특정 앱 상태</td><td><code>/u-status [app]</code></td></tr>
+<tr><td>미리뷰된 assumptions 확인</td><td><code>/u-status [app] --assumptions</code></td></tr>
+<tr><td>assumption 승인</td><td><code>/u-assume approve A-001</code></td></tr>
+<tr><td>assumption 거부 (cascade)</td><td><code>/u-assume reject A-001 "전체취소만"</code></td></tr>
+<tr><td>SRS 수정 + 하위 문서 갱신</td><td><code>/u-update [app] srs --cascade</code></td></tr>
+<tr><td>특정 문서 조회</td><td><code>/u-doc [app] screens</code></td></tr>
+<tr><td>FR-015 전체 추적</td><td><code>/u-trace [app] FR-015</code></td></tr>
+<tr><td>전체 커버리지</td><td><code>/u-coverage all</code></td></tr>
+<tr><td>전체 일관성 검증</td><td><code>/u-sync all</code></td></tr>
+</tbody>
+</table>
+
+<h3>Q&amp;A &amp; 토론</h3>
+<table>
+<thead><tr><th>상황</th><th>명령어</th></tr></thead>
+<tbody>
+<tr><td>가벼운 질문/제안</td><td><code>/u-ask screens.json 구조를 바꾸면 영향이?</code></td></tr>
+<tr><td>u-maker 사용법 질문</td><td><code>/u-ask u-maker에서 reverse는 어떻게 동작하나요?</code></td></tr>
+<tr><td>아이디어 발산</td><td><code>/u-discuss brainstorm "결제 UX"</code></td></tr>
+<tr><td>산출물 리뷰</td><td><code>/u-discuss review</code></td></tr>
+<tr><td>기술 결정</td><td><code>/u-discuss decision "DB 선택"</code></td></tr>
+<tr><td>다단계 워크숍</td><td><code>/u-discuss workshop "메인 화면 설계"</code></td></tr>
+<tr><td>Iteration 회고</td><td><code>/u-discuss retro</code></td></tr>
+</tbody>
+</table>
+
+<p>세션 중 사용 가능한 micro-commands:</p>
+<table>
+<thead><tr><th>Command</th><th>설명</th></tr></thead>
+<tbody>
+<tr><td><code>@planner</code> / <code>@builder</code> / <code>@guardian</code></td><td>특정 에이전트에게 질문</td></tr>
+<tr><td><code>@all</code></td><td>모든 에이전트에게 의견 요청</td></tr>
+<tr><td><code>/idea [text]</code></td><td>아이디어 태깅</td></tr>
+<tr><td><code>/decide [text]</code></td><td>결정사항 기록</td></tr>
+<tr><td><code>/concern [text]</code></td><td>우려/리스크 기록</td></tr>
+<tr><td><code>/action [who] [text]</code></td><td>액션 아이템 기록</td></tr>
+<tr><td><code>/wrap</code></td><td>세션 종료 + _classified 적재</td></tr>
+</tbody>
+</table>
+
+<h3>백로그 &amp; PR</h3>
+<table>
+<thead><tr><th>상황</th><th>명령어</th></tr></thead>
+<tbody>
+<tr><td>백로그 조회</td><td><code>/u-backlog [app]</code></td></tr>
+<tr><td>백로그 항목 추가</td><td><code>/u-backlog [app] add "로그인 개선"</code></td></tr>
+<tr><td>스프린트 할당</td><td><code>/u-backlog [app] assign S-001 sprint-2</code></td></tr>
+<tr><td>PR 자동 생성</td><td><code>/u-git-pr main</code></td></tr>
+<tr><td>PR (draft)</td><td><code>/u-git-pr main --draft</code></td></tr>
+<tr><td>PR 분할 생성</td><td><code>/u-git-pr main --split</code></td></tr>
+</tbody>
+</table>
+
+<h3>자연어로도 가능</h3>
+<p>명령어를 모르겠으면 자연어로 말해도 된다:</p>
+<pre><code>"[app] 앱의 SRS를 만들어줘"           → /u-plan [app] --only srs
+"ERD를 PostgreSQL로 최적화해줘"       → /u-design [app] --only erd
+"테스트 케이스 만들어줘"               → /u-qa [app]
+"지금 프로젝트 상태가 어때?"           → /u-status
+"기존 소스에서 API 문서 뽑아줘"        → /u-reverse [app] --only api
+"PR 만들어줘"                         → /u-git-pr main</code></pre>
+
+<hr>
+
+<!-- Section 15 -->
+<h2 id="sec15">15. Prerequisites &amp; Install</h2>
+
+<table>
+<thead><tr><th>도구</th><th>용도</th><th>필수</th></tr></thead>
+<tbody>
+<tr><td><strong>Claude Code</strong></td><td>u-maker 기반 환경</td><td>Yes</td></tr>
+<tr><td><strong>Node.js</strong></td><td>Hook 스크립트 실행</td><td>Yes</td></tr>
+</tbody>
+</table>
+
+<h3>설치</h3>
+<pre><code><span class="comment"># macOS / Linux</span>
+curl -fsSL https://raw.githubusercontent.com/thinoo-v2/u-maker-plugin/main/install.sh | bash
+
+<span class="comment"># 업데이트</span>
+curl -fsSL https://raw.githubusercontent.com/thinoo-v2/u-maker-plugin/main/update.sh | bash
+
+<span class="comment"># 로컬 개발</span>
+cd /path/to/u-maker-plugin && ./deploy_local.sh</code></pre>
+
+<blockquote>설치/업데이트 후 반드시 <strong>Claude Code를 재시작</strong>하세요.</blockquote>
+
+<hr>
+
+<!-- Section 16 -->
+<h2 id="sec16">16. Troubleshooting</h2>
+
+<table>
+<thead><tr><th>증상</th><th>해결</th></tr></thead>
+<tbody>
+<tr><td><code>/u-plan</code>이 인식 안 됨</td><td>Claude Code 재시작 후 재시도</td></tr>
+<tr><td>scope 해석이 틀림</td><td><code>u-maker.config.json</code>의 <code>apps[]</code>에 앱이 등록되었는지 확인</td></tr>
+<tr><td>auto 모드에서 자꾸 interactive로 전환됨</td><td><code>maxAssumptions</code> 초과. <code>/u-assume</code>로 리뷰하세요</td></tr>
+<tr><td>cascade 알림이 많음</td><td><code>/u-sync</code>로 한 번에 정리하거나 <code>/u-update --cascade</code>로 자동 갱신</td></tr>
+<tr><td><code>_input/raw/</code> 파일이 분류 안 됨</td><td><code>/u-ingest [scope]</code> 실행하여 자동 분류 트리거</td></tr>
+<tr><td>wireframes/index.html이 없음</td><td><code>/u-design [scope]</code>를 실행하면 자동 생성됨</td></tr>
+<tr><td>문서 언어를 변경하고 싶음</td><td><code>u-maker.config.json</code>의 <code>language.documents</code>를 ko/en/ja/zh로 변경</td></tr>
+<tr><td><code>/u-reverse</code> 결과가 불완전</td><td><code>--only</code> 플래그로 범위를 좁혀서 재실행</td></tr>
+<tr><td>Hook이 동작하지 않음</td><td><code>hooks/hooks.json</code>의 매칭 설정 확인 + Node.js 설치 확인</td></tr>
+</tbody>
+</table>
+
+<hr>
+
+<!-- Footer -->
+<div class="footer">
+  <strong>U-MAKER Plugin</strong> v3.0.10 &middot; MIT License<br>
+  PDCA 기반 SSoT 협업 오케스트레이터
+</div>
+
+</main>
+
+<script>
+// Toggle sidebar (mobile)
+function toggleSidebar(){
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('overlay').classList.toggle('open');
+}
+
+// Navigation click
+function nav(el){
+  document.querySelectorAll('.nav-item').forEach(function(item){item.classList.remove('active')});
+  el.classList.add('active');
+  // Close sidebar on mobile
+  if(window.innerWidth<=768){toggleSidebar()}
+}
+
+// Scroll Spy
+(function(){
+  var sections=[];
+  var navItems=[];
+
+  function init(){
+    navItems=document.querySelectorAll('.nav-item');
+    sections=[];
+    navItems.forEach(function(item){
+      var href=item.getAttribute('href');
+      if(href){
+        var target=document.querySelector(href);
+        if(target){sections.push({el:target,nav:item})}
+      }
+    });
+  }
+
+  function onScroll(){
+    var scrollPos=window.scrollY+100;
+    var current=null;
+    for(var i=0;i<sections.length;i++){
+      if(sections[i].el.offsetTop<=scrollPos){current=sections[i]}
+    }
+    if(current){
+      navItems.forEach(function(item){item.classList.remove('active')});
+      current.nav.classList.add('active');
+      // Scroll sidebar to keep active item visible
+      var sidebar=document.getElementById('sidebar');
+      var activeTop=current.nav.offsetTop;
+      var sidebarH=sidebar.clientHeight;
+      if(activeTop>sidebarH*0.7){
+        sidebar.scrollTop=activeTop-sidebarH*0.4;
+      }
+    }
+  }
+
+  window.addEventListener('load',function(){init();onScroll()});
+  window.addEventListener('scroll',onScroll);
+  window.addEventListener('resize',function(){init()});
+})();
+</script>
+
+</body>
+</html>
