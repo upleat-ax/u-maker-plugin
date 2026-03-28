@@ -255,7 +255,6 @@ EOF
     ok "Pushed HTML docs to ${TERMINAL_REPO}"
   )
   rm -rf "$term_dir"
-  fi
 
   # ── Step 7: Create Releases on public repos ──
   local release_notes
