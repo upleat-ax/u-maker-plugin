@@ -1,11 +1,11 @@
-# u-maker Plugin
+# U-MAKER Plugin
 
 PDCA 기반 SSoT(Single Source of Truth) 협업 오케스트레이터.
 4개 전문 에이전트와 3-Layer 파이프라인으로 소프트웨어 개발 전 과정을 자동화하는 Claude Code 플러그인.
 
-- Plugin version: `3.0.5`
-- SSoT config version: `3.0.0`
-- Skills: `35` (12 engine + 21 command + 1 router + 1 NL router) | Agents: `4`
+- Plugin version: `3.0.10`
+- Skills: `37` (13 engine + 23 command + 1 NL router) | Agents: `4`
+- [시작 가이드 (초보자용)](GET_STARTED.md) | [한국어 HTML](README.ko.html) | [English HTML](README.en.html)
 
 ---
 
@@ -22,30 +22,30 @@ curl -fsSL https://raw.githubusercontent.com/thinoo-v2/u-maker-plugin/main/insta
 
 # 3. 데이터 수집 → 분석 → 계획
 # → _input/raw/에 RFP, 회의록, AS-IS 자료 드롭 (자동 분류)
-/u-ingest retail              # raw → classified 분석
-/u-plan retail                # SRS + IA + Roadmap 자동 생성
+/u-ingest [app]              # raw → classified 분석
+/u-plan [app]                # SRS + IA + Roadmap 자동 생성
 
 # 4. 설계 → 구현 → 검증
-/u-design retail              # ERD + API + Screen + Flow + RTM + wireframes
-/u-dev retail                 # FE + BE + DB 코드 생성
-/u-qa retail               # TC 설계 + 테스트 + 리포트
+/u-design [app]              # ERD + API + Screen + Flow + RTM + wireframes
+/u-dev [app]                 # FE + BE + DB 코드 생성
+/u-qa [app]               # TC 설계 + 테스트 + 리포트
 
 # 5. 배포 + 회고
-/u-ship retail                # 최종 검증 + iteration log + retrospective
+/u-ship [app]                # 최종 검증 + iteration log + retrospective
 ```
 
 ### Reverse Engineering (기존 프로젝트)
 
 ```bash
 /u-init my-app                # 프로젝트 초기화
-/u-reverse retail             # 소스 코드 → SSoT 역공학 (ERD, API, Screen, SRS 등)
-/u-sync retail                # 문서 간 정합성 검증
+/u-reverse [app]             # 소스 코드 → SSoT 역공학 (ERD, API, Screen, SRS 등)
+/u-sync [app]                # 문서 간 정합성 검증
 ```
 
 ### 자연어로도 가능
 
 ```bash
-"retail 앱의 SRS를 만들어줘"      # u-maker 라우터가 자동 분배
+"[app] 앱의 SRS를 만들어줘"      # U-MAKER 라우터가 자동 분배
 ```
 
 ---
@@ -74,16 +74,16 @@ curl -fsSL https://raw.githubusercontent.com/thinoo-v2/u-maker-plugin/main/insta
 
 ## 1. What This Plugin Solves
 
-u-maker는 **Intent-driven 문서 중심 개발(SSoT)**을 구현하는 협업 오케스트레이터이다.
+U-MAKER는 **Intent-driven 문서 중심 개발(SSoT)**을 구현하는 협업 오케스트레이터이다.
 
-### 기존 방식 vs u-maker v3
+### 기존 방식 vs U-MAKER v3
 
-| 기존 방식 | u-maker v3 방식 |
+| 기존 방식 | U-MAKER v3 방식 |
 |----------|----------------|
 | 코드 먼저, 문서는 나중에 | 문서 먼저, 코드는 문서 기반 생성 (Docs-First) |
 | 기존 프로젝트에 문서가 없음 | `/u-reverse`로 소스 코드 → SSoT 자동 역공학 |
 | RFP 200페이지를 한 번에 분석 → 앞부분 loss | 3-Layer 파이프라인으로 chunk 분석 → 정보 손실 없음 |
-| "무슨 문서를 만들어야 하지?" | `/u-plan retail` 한 번이면 SRS+IA+Roadmap 연쇄 생성 |
+| "무슨 문서를 만들어야 하지?" | `/u-plan [app]` 한 번이면 SRS+IA+Roadmap 연쇄 생성 |
 | 요구사항 추적 불가 | 4-Tier ID(USR→FR→US→FT)로 전 구간 추적 |
 | SRS 수정 시 ERD/Screen/TC 수동 갱신 | `_links.json` 의존성 그래프로 Auto-Cascade |
 | 단계 건너뛰기로 품질 저하 | Phase Gate 자동 검증 후에만 다음 Phase 진행 |
@@ -213,31 +213,31 @@ _input/ (Raw)  →  _classified/ (Structured JSON)  →  docs/ (Deliverables)
 | Command | Description | Example |
 |---------|-------------|---------|
 | `/u-init [project-name]` | .u-maker/ 구조 생성, config 초기화, 앱 등록 | `/u-init my-project` |
-| `/u-reverse [scope] [--only X]` | 소스 코드 → SSoT 역공학 (ERD, API, Screen, SRS 등) | `/u-reverse retail --only erd` |
-| `/u-ingest [scope] [--review] [--incremental]` | raw → classified 분석 적재. `_input/raw/` 자동 분류 지원 | `/u-ingest retail --review` |
-| `/u-plan [scope] [--only X] [-i] [--step]` | classified → SRS + IA + Roadmap 연쇄 생성 | `/u-plan retail -i` |
-| `/u-design [scope] [--only X] [-i] [--step]` | SRS/IA → ERD + API + Screen + Flow + RTM + wireframes/index.html | `/u-design retail --only screens` |
-| `/u-dev [scope] [--only X] [-i] [--step]` | 명세 → FE + BE + DB 코드 생성 | `/u-dev retail --only fe` |
-| `/u-qa [scope] [-i] [--step]` | TC 설계 + 테스트 실행 + Report + exit criteria | `/u-qa retail` |
-| `/u-ship [scope] [-i] [--step]` | 최종 검증 + iteration log + retrospective | `/u-ship retail` |
+| `/u-reverse [scope] [--only X]` | 소스 코드 → SSoT 역공학 (ERD, API, Screen, SRS 등) | `/u-reverse [app] --only erd` |
+| `/u-ingest [scope] [--review] [--incremental]` | raw → classified 분석 적재. `_input/raw/` 자동 분류 지원 | `/u-ingest [app] --review` |
+| `/u-plan [scope] [--only X] [-i] [--step]` | classified → SRS + IA + Roadmap 연쇄 생성 | `/u-plan [app] -i` |
+| `/u-design [scope] [--only X] [-i] [--step]` | SRS/IA → ERD + API + Screen + Flow + RTM + wireframes/index.html | `/u-design [app] --only screens` |
+| `/u-dev [scope] [--only X] [-i] [--step]` | 명세 → FE + BE + DB 코드 생성 | `/u-dev [app] --only fe` |
+| `/u-qa [scope] [-i] [--step]` | TC 설계 + 테스트 실행 + Report + exit criteria | `/u-qa [app]` |
+| `/u-ship [scope] [-i] [--step]` | 최종 검증 + iteration log + retrospective | `/u-ship [app]` |
 
 ### 6.2 Operations (5)
 
 | Command | Description | Example |
 |---------|-------------|---------|
-| `/u-add [scope] [type] "title"` | 항목 추가 (FR/NR/US/FT/Screen/TC 등) | `/u-add retail fr "비밀번호 재설정"` |
-| `/u-update [scope] [doc]` | 문서 수정 + cascade 자동 전파 | `/u-update retail srs --cascade` |
-| `/u-doc [scope] [doc]` | 특정 문서 조회/편집/재생성 | `/u-doc retail screens` |
-| `/u-sync [scope]` | 전체 문서 일관성 검증 + 수정 제안 | `/u-sync retail` |
-| `/u-gate [scope]` | Phase gate 검사 + 전환 | `/u-gate retail` |
+| `/u-add [scope] [type] "title"` | 항목 추가 (FR/NR/US/FT/Screen/TC 등) | `/u-add [app] fr "비밀번호 재설정"` |
+| `/u-update [scope] [doc]` | 문서 수정 + cascade 자동 전파 | `/u-update [app] srs --cascade` |
+| `/u-doc [scope] [doc]` | 특정 문서 조회/편집/재생성 | `/u-doc [app] screens` |
+| `/u-sync [scope]` | 전체 문서 일관성 검증 + 수정 제안 | `/u-sync [app]` |
+| `/u-gate [scope]` | Phase gate 검사 + 전환 | `/u-gate [app]` |
 
 ### 6.3 Observability (3)
 
 | Command | Description | Example |
 |---------|-------------|---------|
-| `/u-status [scope]` | 대시보드 (phase, 진행률, impact flags) | `/u-status retail` |
+| `/u-status [scope]` | 대시보드 (phase, 진행률, impact flags) | `/u-status [app]` |
 | `/u-coverage [scope]` | classified → 산출물 커버리지 리포트 | `/u-coverage all` |
-| `/u-trace [scope] [id]` | raw → classified → docs 추적 체인 | `/u-trace retail FR-015` |
+| `/u-trace [scope] [id]` | raw → classified → docs 추적 체인 | `/u-trace [app] FR-015` |
 
 ### 6.4 Collaboration (5)
 
@@ -246,7 +246,7 @@ _input/ (Raw)  →  _classified/ (Structured JSON)  →  docs/ (Deliverables)
 | `/u-ask {질문}` | Q&A — 질문, 제안, 의견에 맥락 있는 답변 | `/u-ask ERD에서 soft delete를 쓰는 이유가 뭐야?` |
 | `/u-discuss [type] [topic]` | 구조화된 토론 세션 (brainstorm/review/decision/workshop/retro) | `/u-discuss brainstorm "결제 UX"` |
 | `/u-assume [approve\|reject] [id]` | 가정 검토 (approve/reject) | `/u-assume approve A-001` |
-| `/u-backlog [scope]` | 백로그 관리 (조회, 추가, 스프린트 할당, 우선순위, 번다운) | `/u-backlog retail` |
+| `/u-backlog [scope]` | 백로그 관리 (조회, 추가, 스프린트 할당, 우선순위, 번다운) | `/u-backlog [app]` |
 | `/u-git-pr [base] [flags]` | PR/MR 자동 생성 (커밋 분석, 분할/통합, 리뷰 가이드) | `/u-git-pr main --draft` |
 
 ### Global Flags
@@ -311,7 +311,7 @@ _input/ (Raw)  →  _classified/ (Structured JSON)  →  docs/ (Deliverables)
 auto 모드에서 agent가 "질문 대신 판단"할 때마다 기록하는 안전장치.
 
 ```bash
-/u-status retail --assumptions    # 미리뷰 assumptions 확인
+/u-status [app] --assumptions    # 미리뷰 assumptions 확인
 /u-assume approve A-001           # 승인
 /u-assume reject A-001 "전체취소만"  # 거부 → cascade 수정
 ```
@@ -487,66 +487,66 @@ u-maker-plugin/
 | 상황 | 명령어 |
 |------|--------|
 | 완전히 새로운 프로젝트 시작 | `/u-init my-project` |
-| 기존 RFP/회의록 자료가 있음 | `/u-init` → `_input/raw/`에 파일 드롭 → `/u-ingest retail` |
-| 분석된 데이터 리뷰하고 싶음 | `/u-ingest retail --review` |
-| 신규분만 추가 분석 | `/u-ingest retail --incremental` |
+| 기존 RFP/회의록 자료가 있음 | `/u-init` → `_input/raw/`에 파일 드롭 → `/u-ingest [app]` |
+| 분석된 데이터 리뷰하고 싶음 | `/u-ingest [app] --review` |
+| 신규분만 추가 분석 | `/u-ingest [app] --incremental` |
 
 ### 프로젝트 시작 (Reverse Engineering)
 
 | 상황 | 명령어 |
 |------|--------|
-| 기존 소스 코드 → SSoT 전체 역공학 | `/u-reverse retail` |
-| ERD만 역공학 | `/u-reverse retail --only erd` |
-| API만 역공학 | `/u-reverse retail --only api` |
-| Screen만 역공학 | `/u-reverse retail --only screen` |
-| SRS만 역공학 | `/u-reverse retail --only srs` |
+| 기존 소스 코드 → SSoT 전체 역공학 | `/u-reverse [app]` |
+| ERD만 역공학 | `/u-reverse [app] --only erd` |
+| API만 역공학 | `/u-reverse [app] --only api` |
+| Screen만 역공학 | `/u-reverse [app] --only screen` |
+| SRS만 역공학 | `/u-reverse [app] --only srs` |
 
 ### 기획 (Plan Phase)
 
 | 상황 | 명령어 |
 |------|--------|
-| Plan Phase 전체 실행 | `/u-plan retail` |
-| SRS만 생성 | `/u-plan retail --only srs` |
-| 같이 보면서 만들고 싶음 | `/u-plan retail -i` |
-| 매 단계 확인하면서 진행 | `/u-plan retail --step` |
+| Plan Phase 전체 실행 | `/u-plan [app]` |
+| SRS만 생성 | `/u-plan [app] --only srs` |
+| 같이 보면서 만들고 싶음 | `/u-plan [app] -i` |
+| 매 단계 확인하면서 진행 | `/u-plan [app] --step` |
 | 공통 정책 문서 생성 | `/u-plan common` |
-| 기능 요구사항 추가 | `/u-add retail fr "비밀번호 재설정"` |
-| 유저 스토리 추가 | `/u-add retail us "비밀번호 재설정하고 싶다"` |
+| 기능 요구사항 추가 | `/u-add [app] fr "비밀번호 재설정"` |
+| 유저 스토리 추가 | `/u-add [app] us "비밀번호 재설정하고 싶다"` |
 | 브레인스토밍 | `/u-discuss brainstorm "결제 UX"` |
-| Plan→Design gate 검증 | `/u-gate retail` |
+| Plan→Design gate 검증 | `/u-gate [app]` |
 
 ### 설계 (Design Phase)
 
 | 상황 | 명령어 |
 |------|--------|
-| Design Phase 전체 실행 | `/u-design retail` |
-| Screen만 생성 | `/u-design retail --only screens` |
-| ERD만 생성 | `/u-design retail --only erd` |
-| 2개 앱 interactive | `/u-design retail,corporate -i` |
+| Design Phase 전체 실행 | `/u-design [app]` |
+| Screen만 생성 | `/u-design [app] --only screens` |
+| ERD만 생성 | `/u-design [app] --only erd` |
+| 2개 앱 interactive | `/u-design [app],corporate -i` |
 | IA 워크숍 | `/u-discuss workshop "메인 IA"` |
 | 공통 인증 방식 결정 | `/u-discuss decision "인증 방식"` |
-| 일관성 검증 | `/u-sync retail` |
+| 일관성 검증 | `/u-sync [app]` |
 
 ### 구현 (Do Phase)
 
 | 상황 | 명령어 |
 |------|--------|
-| FE+BE+DB 코드 생성 | `/u-dev retail` |
-| FE만 생성 | `/u-dev retail --only fe` |
-| BE만 생성 | `/u-dev retail --only be` |
+| FE+BE+DB 코드 생성 | `/u-dev [app]` |
+| FE만 생성 | `/u-dev [app] --only fe` |
+| BE만 생성 | `/u-dev [app] --only be` |
 
 ### 검증 (Check Phase)
 
 | 상황 | 명령어 |
 |------|--------|
-| TC 설계 + 테스트 | `/u-qa retail` |
-| interactive로 결과 확인 | `/u-qa retail -i` |
+| TC 설계 + 테스트 | `/u-qa [app]` |
+| interactive로 결과 확인 | `/u-qa [app] -i` |
 
 ### 배포 + 회고 (Act Phase)
 
 | 상황 | 명령어 |
 |------|--------|
-| 최종 검증 + 배포 + 회고 | `/u-ship retail` |
+| 최종 검증 + 배포 + 회고 | `/u-ship [app]` |
 | 회고 세션 | `/u-discuss retro` |
 
 ### 일상 운영
@@ -554,13 +554,13 @@ u-maker-plugin/
 | 상황 | 명령어 |
 |------|--------|
 | 전체 프로젝트 대시보드 | `/u-status` |
-| 특정 앱 상태 | `/u-status retail` |
-| 미리뷰된 assumptions 확인 | `/u-status retail --assumptions` |
+| 특정 앱 상태 | `/u-status [app]` |
+| 미리뷰된 assumptions 확인 | `/u-status [app] --assumptions` |
 | assumption 승인 | `/u-assume approve A-001` |
 | assumption 거부 (cascade) | `/u-assume reject A-001 "전체취소만"` |
-| SRS 수정 + 하위 문서 갱신 | `/u-update retail srs --cascade` |
-| 특정 문서 조회 | `/u-doc retail screens` |
-| FR-015 전체 추적 | `/u-trace retail FR-015` |
+| SRS 수정 + 하위 문서 갱신 | `/u-update [app] srs --cascade` |
+| 특정 문서 조회 | `/u-doc [app] screens` |
+| FR-015 전체 추적 | `/u-trace [app] FR-015` |
 | 전체 커버리지 | `/u-coverage all` |
 | 전체 일관성 검증 | `/u-sync all` |
 
@@ -592,9 +592,9 @@ u-maker-plugin/
 
 | 상황 | 명령어 |
 |------|--------|
-| 백로그 조회 | `/u-backlog retail` |
-| 백로그 항목 추가 | `/u-backlog retail add "로그인 개선"` |
-| 스프린트 할당 | `/u-backlog retail assign S-001 sprint-2` |
+| 백로그 조회 | `/u-backlog [app]` |
+| 백로그 항목 추가 | `/u-backlog [app] add "로그인 개선"` |
+| 스프린트 할당 | `/u-backlog [app] assign S-001 sprint-2` |
 | PR 자동 생성 | `/u-git-pr main` |
 | PR (draft) | `/u-git-pr main --draft` |
 | PR 분할 생성 | `/u-git-pr main --split` |
@@ -604,11 +604,11 @@ u-maker-plugin/
 명령어를 모르겠으면 자연어로 말해도 된다:
 
 ```
-"retail 앱의 SRS를 만들어줘"           → /u-plan retail --only srs
-"ERD를 PostgreSQL로 최적화해줘"       → /u-design retail --only erd
-"테스트 케이스 만들어줘"               → /u-qa retail
+"[app] 앱의 SRS를 만들어줘"           → /u-plan [app] --only srs
+"ERD를 PostgreSQL로 최적화해줘"       → /u-design [app] --only erd
+"테스트 케이스 만들어줘"               → /u-qa [app]
 "지금 프로젝트 상태가 어때?"           → /u-status
-"기존 소스에서 API 문서 뽑아줘"        → /u-reverse retail --only api
+"기존 소스에서 API 문서 뽑아줘"        → /u-reverse [app] --only api
 "PR 만들어줘"                         → /u-git-pr main
 ```
 
