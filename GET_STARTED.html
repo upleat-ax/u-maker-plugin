@@ -265,7 +265,7 @@ td code,th code{background:#e2e8f0;font-size:.85em}
 <pre><code>_input/          &rarr;      _classified/        &rarr;      docs/
 (RFP, 회의록,         (requirements,              (srs.md, erd.md,
  AS-IS 분석, ...)      pain-points, ...)           api.md, screen.md, ...)</code></pre>
-<p>프로젝트 루트의 <code>_dropzone/</code>에 파일을 넣으면 <code>/u-ingest</code> 실행 시 자동으로 <code>rfp/</code>, <code>as-is/</code> 등으로 분류합니다. (<code>_input/raw/</code>도 fallback으로 지원)</p>
+<p><code>.u-maker/_dropzone/</code>에 파일을 넣으면 <code>/u-ingest</code> 실행 시 자동으로 <code>rfp/</code>, <code>as-is/</code> 등으로 분류합니다. (<code>_input/raw/</code>도 fallback으로 지원)</p>
 
 <h4>3. PDCA 5-Phase</h4>
 <pre><code>Plan &rarr; Design &rarr; Do &rarr; Check &rarr; Act &rarr; 다음 Iteration</code></pre>
@@ -326,7 +326,7 @@ td code,th code{background:#e2e8f0;font-size:.85em}
 <pre><code><span class="cmt"># 1. 프로젝트 초기화</span>
 <span class="cmd">/u-init my-saas</span>
 
-<span class="cmt"># 2. _dropzone/에 RFP, 회의록, AS-IS 자료 드롭</span>
+<span class="cmt"># 2. .u-maker/_dropzone/에 RFP, 회의록, AS-IS 자료 드롭</span>
 <span class="cmt">#    &rarr; /u-ingest가 자동으로 분류하여 .u-maker/_input/rfp/, as-is/, meeting-notes/ 등으로 이동</span>
 
 <span class="cmt"># 3. 데이터 분석</span>
@@ -443,7 +443,7 @@ td code,th code{background:#e2e8f0;font-size:.85em}
 <!-- /u-ingest -->
 <h4><code>/u-ingest</code> &mdash; 원시 데이터 분석 및 분류</h4>
 <div class="desc">
-<p>프로젝트 루트의 <code>_dropzone/</code>에 드롭된 원시 파일(RFP, 회의록, AS-IS 분석서 등)을 자동으로 파싱하여 10개 카테고리(requirements, pain-points, constraints, user-flows, data-models, integrations, non-functional, assumptions, glossary, out-of-scope)로 분류합니다. 파일은 <code>.u-maker/_input/{category}/</code>로 이동되고, 처리 후 <code>_dropzone/</code>는 비워집니다. 청크 기반 분석으로 대용량 문서도 손실 없이 처리하며, 분류 결과는 <code>_classified/</code>에 구조화된 JSON으로 적재됩니다. (<code>_input/raw/</code>도 fallback으로 지원)</p>
+<p><code>.u-maker/_dropzone/</code>에 드롭된 원시 파일(RFP, 회의록, AS-IS 분석서 등)을 자동으로 파싱하여 10개 카테고리(requirements, pain-points, constraints, user-flows, data-models, integrations, non-functional, assumptions, glossary, out-of-scope)로 분류합니다. 파일은 <code>.u-maker/_input/{category}/</code>로 이동되고, 처리 후 <code>.u-maker/_dropzone/</code>는 비워집니다. 청크 기반 분석으로 대용량 문서도 손실 없이 처리하며, 분류 결과는 <code>_classified/</code>에 구조화된 JSON으로 적재됩니다. (<code>_input/raw/</code>도 fallback으로 지원)</p>
 <p><span class="file-tag">생성 파일</span> <code>_classified/*.json</code> (카테고리별), <code>_input/_manifest.json</code>, 자동 분류된 <code>_input/rfp/</code>, <code>_input/as-is/</code>, <code>_input/meeting-notes/</code> 등</p>
 </div>
 <pre><code><span class="cmd">/u-ingest [app]</span>                         <span class="cmt"># raw 데이터 전체 분석 + 분류</span>
@@ -726,7 +726,7 @@ td code,th code{background:#e2e8f0;font-size:.85em}
 
 <h3>Scenario 1: 새 프로젝트 &mdash; 처음부터 끝까지</h3>
 <pre><code><span class="cmd">/u-init my-saas</span>
-<span class="cmt"># &rarr; _dropzone/에 RFP, 회의록 드롭</span>
+<span class="cmt"># &rarr; .u-maker/_dropzone/에 RFP, 회의록 드롭</span>
 <span class="cmd">/u-ingest [app]</span>                          <span class="cmt"># 분석</span>
 <span class="cmd">/u-plan [app] -i</span>                         <span class="cmt"># 기획 (interactive)</span>
 <span class="cmd">/u-gate [app]</span>                            <span class="cmt"># &rarr; Design</span>

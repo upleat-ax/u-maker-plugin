@@ -159,7 +159,7 @@ u-maker.config.json에서 앱 목록 조회 후 scope 해석.
 # 1. 프로젝트 초기화
 /u-init my-project
 
-# 2. _dropzone/에 RFP, 회의록, AS-IS 자료 드롭 → 원시 자료 분석
+# 2. .u-maker/_dropzone/에 RFP, 회의록, AS-IS 자료 드롭 → 원시 자료 분석
 /u-ingest retail
 
 # 3. Plan 문서 생성 (SRS + IA + Roadmap)

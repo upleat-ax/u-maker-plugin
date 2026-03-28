@@ -168,7 +168,7 @@ curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/insta
 <span class="cmd">/u-init my-app</span>                <span class="comment"># .u-maker/ 구조 생성 + 앱 등록</span>
 
 <span class="comment"># 3. 데이터 수집 → 분석 → 계획</span>
-<span class="comment"># → _dropzone/에 RFP, 회의록, AS-IS 자료 드롭 (자동 분류)</span>
+<span class="comment"># → .u-maker/_dropzone/에 RFP, 회의록, AS-IS 자료 드롭 (자동 분류)</span>
 <span class="cmd">/u-ingest [app]</span>              <span class="comment"># raw → classified 분석</span>
 <span class="cmd">/u-plan [app]</span>                <span class="comment"># SRS + IA + Roadmap 자동 생성</span>
 
@@ -206,7 +206,7 @@ curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/insta
 <tr><td>요구사항 추적 불가</td><td>4-Tier ID(USR→FR→US→FT)로 전 구간 추적</td></tr>
 <tr><td>SRS 수정 시 ERD/Screen/TC 수동 갱신</td><td><code>_links.json</code> 의존성 그래프로 Auto-Cascade</td></tr>
 <tr><td>단계 건너뛰기로 품질 저하</td><td>Phase Gate 자동 검증 후에만 다음 Phase 진행</td></tr>
-<tr><td>파일 분류가 번거로움</td><td><code>_dropzone/</code>에 드롭하면 자동 분류 (rfp/, as-is/ 등)</td></tr>
+<tr><td>파일 분류가 번거로움</td><td><code>.u-maker/_dropzone/</code>에 드롭하면 자동 분류 (rfp/, as-is/ 등)</td></tr>
 <tr><td>문서와 코드 버전 불일치</td><td><code>.md</code> + <code>.json</code> 동시 생성</td></tr>
 <tr><td>앱마다 다른 규칙</td><td>common/ 정책 상속 + 앱별 override</td></tr>
 <tr><td>AI 판단이 블랙박스</td><td>Assumptions Log로 모든 판단 기록 + 사후 리뷰</td></tr>
@@ -346,7 +346,7 @@ curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/insta
   <!-- Layer 1: Raw -->
   <rect x="20" y="30" width="180" height="140" rx="10" fill="#fee2e2" stroke="#f87171" stroke-width="2"/>
   <text x="110" y="55" text-anchor="middle" fill="#991b1b" font-size="13" font-weight="700">Layer 1: _input/</text>
-  <text x="110" y="75" text-anchor="middle" fill="#7f1d1d" font-size="10">_dropzone/ (드롭 폴더)</text>
+  <text x="110" y="75" text-anchor="middle" fill="#7f1d1d" font-size="10">.u-maker/_dropzone/</text>
   <text x="110" y="92" text-anchor="middle" fill="#7f1d1d" font-size="10">rfp/ · as-is/</text>
   <text x="110" y="109" text-anchor="middle" fill="#7f1d1d" font-size="10">meeting-notes/</text>
   <text x="110" y="126" text-anchor="middle" fill="#7f1d1d" font-size="10">interviews/</text>
@@ -377,8 +377,8 @@ curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/insta
 </svg>
 </div>
 
-<h3>_dropzone/ 자동 분류</h3>
-<p>프로젝트 루트의 <code>_dropzone/</code>에 파일을 드롭하면 <code>/u-ingest</code> 실행 시 파일명/내용을 분석하여 <code>.u-maker/_input/rfp/</code>, <code>as-is/</code>, <code>meeting-notes/</code> 등 적절한 하위 폴더로 자동 분류한다. 처리 후 <code>_dropzone/</code>는 비워진다. (<code>_input/raw/</code>도 fallback으로 지원)</p>
+<h3>.u-maker/_dropzone/ 자동 분류</h3>
+<p><code>.u-maker/_dropzone/</code>에 파일을 드롭하면 <code>/u-ingest</code> 실행 시 파일명/내용을 분석하여 <code>.u-maker/_input/rfp/</code>, <code>as-is/</code>, <code>meeting-notes/</code> 등 적절한 하위 폴더로 자동 분류한다. 처리 후 <code>.u-maker/_dropzone/</code>는 비워진다. (<code>_input/raw/</code>도 fallback으로 지원)</p>
 
 <h3>_classified 12개 카테고리</h3>
 <table>
@@ -439,7 +439,7 @@ curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/insta
 <tbody>
 <tr><td><code>/u-init [project-name]</code></td><td>.u-maker/ 구조 생성, config 초기화, 앱 등록</td><td><code>/u-init my-project</code></td></tr>
 <tr><td><code>/u-reverse [scope] [--only X]</code></td><td>소스 코드 → SSoT 역공학 (ERD, API, Screen, SRS 등)</td><td><code>/u-reverse [app] --only erd</code></td></tr>
-<tr><td><code>/u-ingest [scope] [--review] [--incremental]</code></td><td><code>_dropzone/</code> → <code>_input/</code> 자동 분류 + classified 분석 적재</td><td><code>/u-ingest [app] --review</code></td></tr>
+<tr><td><code>/u-ingest [scope] [--review] [--incremental]</code></td><td><code>.u-maker/_dropzone/</code> → <code>_input/</code> 자동 분류 + classified 분석 적재</td><td><code>/u-ingest [app] --review</code></td></tr>
 <tr><td><code>/u-plan [scope] [--only X] [-i] [--step]</code></td><td>classified → SRS + IA + Roadmap 연쇄 생성</td><td><code>/u-plan [app] -i</code></td></tr>
 <tr><td><code>/u-design [scope] [--only X] [-i] [--step]</code></td><td>SRS/IA → ERD + API + Screen + Flow + RTM + wireframes/index.html</td><td><code>/u-design [app] --only screens</code></td></tr>
 <tr><td><code>/u-dev [scope] [--only X] [-i] [--step]</code></td><td>명세 → FE + BE + DB 코드 생성</td><td><code>/u-dev [app] --only fe</code></td></tr>
@@ -608,7 +608,6 @@ curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/insta
 
 <h3>프로젝트 루트</h3>
 <pre><code>project-root/
-+-- _dropzone/                        # 파일 드롭존 (RFP, 회의록, AS-IS 자료 드롭 → /u-ingest 시 자동 분류)
 +-- .u-maker/                         # SSoT 디렉토리
 +-- src/                              # 소스 코드
 +-- ...</code></pre>
@@ -617,6 +616,7 @@ curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/insta
 <pre><code>.u-maker/
 +-- u-maker.config.json              # 전역 설정 (language, designTool, iteration 등)
 +-- _links.json                       # 의존성 그래프
++-- _dropzone/                        # 파일 드롭존 (RFP, 회의록, AS-IS 자료 드롭 → /u-ingest 시 자동 분류)
 |
 +-- common/                           # 프로젝트 전체 공통
 |   +-- _index.json
@@ -630,7 +630,7 @@ curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/insta
 |   +-- _index.json                   # 앱 문서 목차 + 상태
 |   +-- app.config.json               # 앱별 설정
 |   +-- _input/                       # Layer 1: Raw data (분류된 저장소)
-|   |   +-- raw/                      # fallback 드롭존 (_dropzone/ 권장)
+|   |   +-- raw/                      # fallback 드롭존 (.u-maker/_dropzone/ 권장)
 |   |   +-- rfp/                      # RFP, 제안서
 |   |   +-- as-is/                    # AS-IS 분석 자료
 |   |   +-- meeting-notes/            # 회의록
@@ -775,7 +775,7 @@ curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/insta
 <thead><tr><th>상황</th><th>명령어</th></tr></thead>
 <tbody>
 <tr><td>완전히 새로운 프로젝트 시작</td><td><code>/u-init my-project</code></td></tr>
-<tr><td>기존 RFP/회의록 자료가 있음</td><td><code>/u-init</code> → <code>_dropzone/</code>에 파일 드롭 → <code>/u-ingest [app]</code></td></tr>
+<tr><td>기존 RFP/회의록 자료가 있음</td><td><code>/u-init</code> → <code>.u-maker/_dropzone/</code>에 파일 드롭 → <code>/u-ingest [app]</code></td></tr>
 <tr><td>분석된 데이터 리뷰하고 싶음</td><td><code>/u-ingest [app] --review</code></td></tr>
 <tr><td>신규분만 추가 분석</td><td><code>/u-ingest [app] --incremental</code></td></tr>
 </tbody>
@@ -955,7 +955,7 @@ cd /path/to/u-maker-plugin && ./deploy_local.sh</code></pre>
 <tr><td>scope 해석이 틀림</td><td><code>u-maker.config.json</code>의 <code>apps[]</code>에 앱이 등록되었는지 확인</td></tr>
 <tr><td>auto 모드에서 자꾸 interactive로 전환됨</td><td><code>maxAssumptions</code> 초과. <code>/u-assume</code>로 리뷰하세요</td></tr>
 <tr><td>cascade 알림이 많음</td><td><code>/u-sync</code>로 한 번에 정리하거나 <code>/u-update --cascade</code>로 자동 갱신</td></tr>
-<tr><td><code>_dropzone/</code> 파일이 분류 안 됨</td><td><code>/u-ingest [scope]</code> 실행하여 자동 분류 트리거</td></tr>
+<tr><td><code>.u-maker/_dropzone/</code> 파일이 분류 안 됨</td><td><code>/u-ingest [scope]</code> 실행하여 자동 분류 트리거</td></tr>
 <tr><td>wireframes/index.html이 없음</td><td><code>/u-design [scope]</code>를 실행하면 자동 생성됨</td></tr>
 <tr><td>문서 언어를 변경하고 싶음</td><td><code>u-maker.config.json</code>의 <code>language.documents</code>를 ko/en/ja/zh로 변경</td></tr>
 <tr><td><code>/u-reverse</code> 결과가 불완전</td><td><code>--only</code> 플래그로 범위를 좁혀서 재실행</td></tr>

@@ -382,7 +382,7 @@ curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/insta
 <span class="cmd">/u-init</span> my-app                <span class="comment"># Create .u-maker/ structure + register app</span>
 
 <span class="comment"># 3. Collect data &rarr; Analyze &rarr; Plan</span>
-<span class="comment"># &rarr; Drop RFP, meeting notes, AS-IS materials into _dropzone/ (auto-classified)</span>
+<span class="comment"># &rarr; Drop RFP, meeting notes, AS-IS materials into .u-maker/_dropzone/ (auto-classified)</span>
 <span class="cmd">/u-ingest</span> <span class="string">[app]</span>              <span class="comment"># raw &rarr; classified analysis</span>
 <span class="cmd">/u-plan</span> <span class="string">[app]</span>                <span class="comment"># Auto-generate SRS + IA + Roadmap</span>
 
@@ -420,7 +420,7 @@ curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/insta
 <tr><td>Requirements are untraceable</td><td>4-Tier IDs (USR&rarr;FR&rarr;US&rarr;FT) enable end-to-end traceability</td></tr>
 <tr><td>Editing SRS requires manual ERD/Screen/TC updates</td><td><code>_links.json</code> dependency graph enables Auto-Cascade</td></tr>
 <tr><td>Skipping phases degrades quality</td><td>Phase Gate auto-verification before proceeding to next phase</td></tr>
-<tr><td>File classification is tedious</td><td>Drop into <code>_dropzone/</code> for auto-classification (rfp/, as-is/, etc.)</td></tr>
+<tr><td>File classification is tedious</td><td>Drop into <code>.u-maker/_dropzone/</code> for auto-classification (rfp/, as-is/, etc.)</td></tr>
 <tr><td>Document and code versions diverge</td><td><code>.md</code> + <code>.json</code> generated simultaneously</td></tr>
 <tr><td>Different rules per app</td><td>common/ policy inheritance + per-app overrides</td></tr>
 <tr><td>AI decisions are a black box</td><td>Assumptions Log records every decision + post-review</td></tr>
@@ -491,8 +491,8 @@ curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/insta
   as-is/             decisions/, constraints/           Roadmap, RTM
   interviews/        domain-terms/, stakeholders/       wireframes/index.html</div>
 
-<h3>Auto-Classification via _dropzone/</h3>
-<p>When files are dropped into <code>_dropzone/</code> at the project root, running <code>/u-ingest</code> analyzes filenames and content, automatically classifying and moving them into <code>.u-maker/_input/rfp/</code>, <code>as-is/</code>, <code>meeting-notes/</code>, etc. After processing, <code>_dropzone/</code> is emptied. (<code>_input/raw/</code> is also supported as a fallback)</p>
+<h3>Auto-Classification via .u-maker/_dropzone/</h3>
+<p>When files are dropped into <code>.u-maker/_dropzone/</code>, running <code>/u-ingest</code> analyzes filenames and content, automatically classifying and moving them into <code>.u-maker/_input/rfp/</code>, <code>as-is/</code>, <code>meeting-notes/</code>, etc. After processing, <code>.u-maker/_dropzone/</code> is emptied. (<code>_input/raw/</code> is also supported as a fallback)</p>
 
 <h3>10 _classified Categories</h3>
 
@@ -548,7 +548,7 @@ curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/insta
 <tr><th>Command</th><th>Description</th><th>Example</th></tr>
 <tr><td><code>/u-init [project-name]</code></td><td>Create .u-maker/ structure, initialize config, register app</td><td><code>/u-init my-project</code></td></tr>
 <tr><td><code>/u-reverse [scope] [--only X]</code></td><td>Source code &rarr; SSoT reverse engineering (ERD, API, Screen, SRS, etc.)</td><td><code>/u-reverse [app] --only erd</code></td></tr>
-<tr><td><code>/u-ingest [scope] [--review] [--incremental]</code></td><td><code>_dropzone/</code> &rarr; <code>_input/</code> auto-classification + classified analysis &amp; loading</td><td><code>/u-ingest [app] --review</code></td></tr>
+<tr><td><code>/u-ingest [scope] [--review] [--incremental]</code></td><td><code>.u-maker/_dropzone/</code> &rarr; <code>_input/</code> auto-classification + classified analysis &amp; loading</td><td><code>/u-ingest [app] --review</code></td></tr>
 <tr><td><code>/u-plan [scope] [--only X] [-i] [--step]</code></td><td>classified &rarr; SRS + IA + Roadmap chain generation</td><td><code>/u-plan [app] -i</code></td></tr>
 <tr><td><code>/u-design [scope] [--only X] [-i] [--step]</code></td><td>SRS/IA &rarr; ERD + API + Screen + Flow + RTM + wireframes/index.html</td><td><code>/u-design [app] --only screens</code></td></tr>
 <tr><td><code>/u-dev [scope] [--only X] [-i] [--step]</code></td><td>Spec &rarr; FE + BE + DB code generation</td><td><code>/u-dev [app] --only fe</code></td></tr>
@@ -683,7 +683,6 @@ curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/insta
 
 <h3>Project Root</h3>
 <pre>project-root/
-+-- _dropzone/                        <span class="comment"># File drop zone (RFP, meeting notes, AS-IS materials &rarr; auto-classified by /u-ingest)</span>
 +-- .u-maker/                         <span class="comment"># SSoT directory</span>
 +-- src/                              <span class="comment"># Source code</span>
 +-- ...</pre>
@@ -693,6 +692,7 @@ curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/insta
 <pre>.u-maker/
 +-- u-maker.config.json              <span class="comment"># Global settings (language, designTool, iteration, etc.)</span>
 +-- _links.json                       <span class="comment"># Dependency graph</span>
++-- _dropzone/                        <span class="comment"># File drop zone (RFP, meeting notes, AS-IS materials &rarr; auto-classified by /u-ingest)</span>
 |
 +-- common/                           <span class="comment"># Project-wide shared</span>
 |   +-- _index.json
@@ -706,7 +706,7 @@ curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/insta
 |   +-- _index.json                   <span class="comment"># App document index + status</span>
 |   +-- app.config.json               <span class="comment"># Per-app settings</span>
 |   +-- _input/                       <span class="comment"># Layer 1: Raw data (classified storage)</span>
-|   |   +-- raw/                      <span class="comment"># Fallback drop zone (_dropzone/ recommended)</span>
+|   |   +-- raw/                      <span class="comment"># Fallback drop zone (.u-maker/_dropzone/ recommended)</span>
 |   |   +-- rfp/                      <span class="comment"># RFP, proposals</span>
 |   |   +-- as-is/                    <span class="comment"># AS-IS analysis materials</span>
 |   |   +-- meeting-notes/            <span class="comment"># Meeting notes</span>
@@ -833,7 +833,7 @@ curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/insta
 <div class="table-wrap"><table>
 <tr><th>Situation</th><th>Command</th></tr>
 <tr><td>Starting a completely new project</td><td><code>/u-init my-project</code></td></tr>
-<tr><td>Have existing RFP/meeting note materials</td><td><code>/u-init</code> &rarr; drop files in <code>_dropzone/</code> &rarr; <code>/u-ingest [app]</code></td></tr>
+<tr><td>Have existing RFP/meeting note materials</td><td><code>/u-init</code> &rarr; drop files in <code>.u-maker/_dropzone/</code> &rarr; <code>/u-ingest [app]</code></td></tr>
 <tr><td>Want to review analyzed data</td><td><code>/u-ingest [app] --review</code></td></tr>
 <tr><td>Analyze only new additions</td><td><code>/u-ingest [app] --incremental</code></td></tr>
 </table></div>
@@ -1002,7 +1002,7 @@ cd /path/to/u-maker-plugin && ./deploy_local.sh</pre>
 <tr><td>Scope resolution is incorrect</td><td>Check that the app is registered in <code>u-maker.config.json</code> <code>apps[]</code></td></tr>
 <tr><td>Auto mode keeps switching to interactive</td><td><code>maxAssumptions</code> exceeded. Review with <code>/u-assume</code></td></tr>
 <tr><td>Too many cascade notifications</td><td>Clean up at once with <code>/u-sync</code> or auto-update with <code>/u-update --cascade</code></td></tr>
-<tr><td><code>_dropzone/</code> files not classified</td><td>Run <code>/u-ingest [scope]</code> to trigger auto-classification</td></tr>
+<tr><td><code>.u-maker/_dropzone/</code> files not classified</td><td>Run <code>/u-ingest [scope]</code> to trigger auto-classification</td></tr>
 <tr><td>wireframes/index.html missing</td><td>Run <code>/u-design [scope]</code> to auto-generate it</td></tr>
 <tr><td>Want to change document language</td><td>Change <code>language.documents</code> in <code>u-maker.config.json</code> to ko/en/ja/zh</td></tr>
 <tr><td><code>/u-reverse</code> results are incomplete</td><td>Narrow the scope with <code>--only</code> flag and re-run</td></tr>

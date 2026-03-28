@@ -91,7 +91,7 @@ apps/ 없음                    단일 앱
 │           └── .gitkeep
 │
 ├── _input/                      # 원시 자료 (READ-ONLY)
-│   ├── raw/                     # fallback 드롭존 (_dropzone/ 권장)
+│   ├── raw/                     # fallback 드롭존 (.u-maker/_dropzone/ 권장)
 │   ├── rfp/
 │   ├── as-is/
 │   ├── meeting-notes/
@@ -129,22 +129,22 @@ apps/ 없음                    단일 앱
     └── _index.json
 ```
 
-### Step 3-1: Create _dropzone/ at Project Root
+### Step 3-1: Create _dropzone/ inside .u-maker/
 
-프로젝트 루트(`.u-maker/`와 동일 레벨)에 `_dropzone/` 디렉토리를 생성한다.
+`.u-maker/` 내부에 `_dropzone/` 디렉토리를 생성한다.
 
 ```
-project-root/
+.u-maker/
 ├── _dropzone/                   # 파일 드롭존 (RFP, 회의록, AS-IS 자료 드롭)
 │   └── .gitkeep
-├── .u-maker/
-├── src/
+├── _input/
+├── _classified/
 └── ...
 ```
 
-- `_dropzone/`는 사용자가 원시 자료를 드롭하는 진입점
-- `/u-ingest` 실행 시 `_dropzone/*` 파일을 분석/분류하여 `.u-maker/_input/{category}/`로 이동
-- 처리 완료 후 `_dropzone/`는 비워짐 (파일 이동, 복사 아님)
+- `.u-maker/_dropzone/`는 사용자가 원시 자료를 드롭하는 진입점
+- `/u-ingest` 실행 시 `.u-maker/_dropzone/*` 파일을 분석/분류하여 `.u-maker/_input/{category}/`로 이동
+- 처리 완료 후 `.u-maker/_dropzone/`는 비워짐 (파일 이동, 복사 아님)
 
 ### Step 4: Generate u-maker.config.json
 
@@ -244,14 +244,14 @@ project-root/
   docs/common/ ......... created (7 placeholders)
   docs/{app}/ .......... created ({count} apps)
   _input/ .............. created (classified storage)
-_dropzone/ .............. created (file drop zone)
+  _dropzone/ ........... created (file drop zone)
   _classified/ ......... created (10 categories)
   _sessions/ ........... created
   _assumptions/ ........ created
   _backlog/ ............ created
 
 ### Next Steps
-1. Place raw data (RFP, AS-IS docs, meeting notes) into `_dropzone/`
+1. Place raw data (RFP, AS-IS docs, meeting notes) into `.u-maker/_dropzone/`
 2. Run `/u-ingest {app}` to auto-classify and move files to `.u-maker/_input/`, then analyze
 3. Run `/u-plan {app}` to generate SRS + IA + Roadmap
 ```
