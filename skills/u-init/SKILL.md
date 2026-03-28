@@ -15,12 +15,31 @@ triggers:
 
 ## Execution Flow
 
-### Step 1: Gather Project Info
+### Step 1: Gather Project Info & Version Check
 
 1. `project-name` 인자가 없으면 사용자에게 질문
 2. 현재 디렉토리의 기존 `.u-maker/` 유무 확인
-   - 이미 존재하면: "기존 설정 덮어쓸까요?" 확인 (Always-Pause)
-3. `package.json`, `turbo.json` 읽어 모노레포 여부 판별
+3. **SSoT 버전 체크:**
+   - `.u-maker/u-maker.config.json` 읽기
+   - `ssotVersion` 필드 확인:
+
+   ```
+   조건                                    동작
+   ──────────────────────────────────────  ──────────────────────
+   ssotVersion == "3.0" (현재 버전)        기존 구조 유지, 설정만 갱신
+   ssotVersion 없음 또는 < "3.0"          구 버전 → docs/ 삭제 후 재생성
+   .u-maker/ 자체가 없음                   신규 초기화
+   ```
+
+   - **구 버전 감지 시:**
+     1. 사용자에게 경고: "구 버전(v{old}) SSoT가 감지되었습니다. 현재 버전(v3.0)과 호환되지 않아 docs/ 를 삭제하고 재생성합니다."
+     2. 사용자 확인 (Always-Pause)
+     3. `.u-maker/docs/` 디렉토리 전체 삭제
+     4. `.u-maker/_classified/` 디렉토리 전체 삭제 (구 스키마 호환 문제)
+     5. `_input/`은 보존 (원본 데이터)
+     6. `u-maker.config.json`은 마이그레이션 (기존 설정 유지 + 신규 필드 추가)
+
+4. `package.json`, `turbo.json` 읽어 모노레포 여부 판별
 
 ### Step 2: Detect Monorepo Structure
 
@@ -115,6 +134,7 @@ apps/ 없음                    단일 앱
 ```json
 {
   "projectName": "{project-name}",
+  "ssotVersion": "3.0",
   "version": "1.0.0",
   "createdAt": "{ISO 8601}",
   "updatedAt": "{ISO 8601}",

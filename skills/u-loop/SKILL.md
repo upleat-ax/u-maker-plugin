@@ -104,6 +104,23 @@ Starting in 3 seconds... (Ctrl+C to cancel)
 | **gate-3** | `/u-gate {scope}` | Do → Check PASS | 자동 재시도 1회 |
 | **qa** | `/u-qa {scope}` | TC + Test Report 생성 | 테스트 실패는 에러 아님 (결과 기록) |
 
+### Step 1.1: Auto Review Report (per step)
+
+각 단계 완료 후 `/u-report`를 자동 호출하여 중간 리뷰 리포트 HTML을 생성한다.
+
+```
+[ingest 완료] → /u-report {scope} --only ingest
+[plan 완료]   → /u-report {scope} --only plan
+[design 완료] → /u-report {scope} --only design
+[dev 완료]    → /u-report {scope} --only dev
+[qa 완료]     → /u-report {scope} --only qa
+[루프 종료]   → /u-report {scope} --only dashboard
+```
+
+루프용 리포트는 `.u-maker/_reports/loop-{loopId}/`에 저장되며, 루프 메타데이터(소요 시간, 에러, 가정)가 대시보드에 추가 포함된다.
+
+아침에 `index.html`을 브라우저에서 열면 전체 결과를 한눈에 확인할 수 있다. `/u-report` 스킬의 상세 사양을 참조.
+
 ### Step 2: Checkpoint Management
 
 매 단계 완료 시 체크포인트를 저장한다.
@@ -291,6 +308,8 @@ Iteration 3: ...
 4. 결과 확인 후 배포 + 회고: `/u-ship retail`
 
 ### Files
+- **Review dashboard: `.u-maker/_reports/loop-{loopId}/index.html`** ← 브라우저에서 열기
+- Step reports: `.u-maker/_reports/loop-{loopId}/01-ingest-report.html` ~ `05-qa-report.html`
 - Execution log: `.u-maker/_loop-log.md`
 - State file: `.u-maker/_loop-state.json`
 ```

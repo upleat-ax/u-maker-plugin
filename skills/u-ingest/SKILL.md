@@ -176,6 +176,14 @@ triggers:
    - **제외**: status → `rejected`, 사유 기록
 3. 미확인 항목은 `extracted` 상태 유지
 
+### Step 7.1: Generate Ingest Review Report
+
+`--review` 사용 여부와 관계없이, ingest 완료 시 `/u-report {scope} --only ingest`를 자동 호출하여 HTML 리뷰 리포트를 생성한다.
+
+**출력 경로:** `.u-maker/_reports/{scope}/ingest-report.html`
+
+리포트 상세 사양은 `/u-report` 스킬을 참조.
+
 ### Step 8: Update Summary
 
 `_classified/_summary.json` 갱신:

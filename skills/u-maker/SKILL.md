@@ -54,13 +54,14 @@ triggers:
 | `/u-sync` | `/u-sync [scope]` | 문서 일관성 검증 + 불일치 수정 제안 |
 | `/u-gate` | `/u-gate [scope]` | Phase gate 검증 + 전환 |
 
-### Observability Commands (3)
+### Observability Commands (4)
 
 | Command | Signature | Description |
 |---------|-----------|-------------|
 | `/u-status` | `/u-status [scope]` | 대시보드: phase, 진행률, blockers, impact flags |
 | `/u-coverage` | `/u-coverage [scope]` | classified → docs 커버리지 리포트 |
 | `/u-trace` | `/u-trace [scope] [item-id]` | raw → classified → docs 추적 체인 |
+| `/u-report` | `/u-report [scope] [--only X]` | SSoT → HTML 리포트 생성 (sidebar nav + SVG 다이어그램) |
 
 ### Collaboration Commands (4)
 

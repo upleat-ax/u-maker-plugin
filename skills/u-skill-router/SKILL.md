@@ -59,6 +59,7 @@ description: "자연어 및 /u-* 커맨드에서 의도를 분류하고, 스코�
 | `/u-status` | orchestrator | engine-phase-detector, engine-dep |
 | `/u-coverage` | guardian | engine-validator |
 | `/u-trace` | orchestrator | engine-dep |
+| `/u-report` | orchestrator | engine-doc |
 
 ### Collaboration Commands
 
@@ -245,6 +246,7 @@ brainstorm, review, decision, workshop, retro
 | 동기화, 일관성, sync | `/u-sync` |
 | 게이트, 전환, gate | `/u-gate` |
 | 상태, 현황, status | `/u-status` |
+| 리포트, HTML, report, 보고서 | `/u-report` |
 | 질문, 물어볼게, 어때, 의견, ask, question | `/u-ask` |
 | 토론, 브레인스토밍, discuss | `/u-discuss` |
 | 백로그, backlog | `/u-backlog` |
