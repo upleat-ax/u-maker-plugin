@@ -1,772 +1,162 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>u-maker Plugin v1.0.4</title>
-<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<title>U-MAKER Plugin &mdash; Documentation</title>
 <style>
-:root {
-  --primary: #2563eb;
-  --primary-light: #dbeafe;
-  --bg: #f8fafc;
-  --sidebar-bg: #1e293b;
-  --sidebar-text: #cbd5e1;
-  --sidebar-active: #3b82f6;
-  --card-bg: #ffffff;
-  --border: #e2e8f0;
-  --text: #1e293b;
-  --text-secondary: #64748b;
-  --tag-bg: #f1f5f9;
-  --code-bg: #f1f5f9;
-  --code-color: #7c3aed;
-  --th-bg: #f1f5f9;
-  --th-color: #475569;
-  --hover-bg: #f8fafc;
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { height: 100%; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Noto Sans KR', sans-serif;
+  background: #0f172a;
+  color: #e2e8f0;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-[data-theme="dark"] {
-  --primary: #60a5fa;
-  --primary-light: #1e3a5f;
-  --bg: #0f172a;
-  --sidebar-bg: #020617;
-  --sidebar-text: #94a3b8;
-  --sidebar-active: #60a5fa;
-  --card-bg: #1e293b;
-  --border: #334155;
-  --text: #e2e8f0;
-  --text-secondary: #94a3b8;
-  --tag-bg: #334155;
-  --code-bg: #0f172a;
-  --code-color: #a78bfa;
-  --th-bg: #0f172a;
-  --th-color: #94a3b8;
-  --hover-bg: #1e293b;
+.container {
+  text-align: center;
+  max-width: 560px;
+  padding: 40px 24px;
 }
-*{box-sizing:border-box;margin:0;padding:0}
-body{display:flex;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:14px;line-height:1.6}
-/* Sidebar */
-#sidebar{width:280px;min-width:280px;background:var(--sidebar-bg);height:100vh;position:sticky;top:0;display:flex;flex-direction:column;overflow:hidden}
-.sidebar-header{padding:20px 16px 12px;border-bottom:1px solid rgba(255,255,255,0.08)}
-.sidebar-header h1{font-size:15px;font-weight:700;color:#f1f5f9;line-height:1.3}
-.sidebar-header .ver{font-size:11px;color:#64748b;margin-top:4px}
-.sidebar-search{padding:10px 12px}
-.sidebar-search input{width:100%;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1);border-radius:6px;padding:6px 10px;color:var(--sidebar-text);font-size:12px;outline:none}
-.sidebar-search input::placeholder{color:#475569}
-nav{flex:1;overflow-y:auto;padding:8px 0}
-nav a{display:flex;align-items:center;gap:8px;padding:7px 16px;color:var(--sidebar-text);text-decoration:none;font-size:12.5px;transition:background 0.15s;border-left:3px solid transparent}
-nav a:hover{background:rgba(255,255,255,0.05);color:#f1f5f9}
-nav a.active{background:rgba(59,130,246,0.15);color:var(--sidebar-active);border-left-color:var(--sidebar-active)}
-nav a .num{font-size:10px;color:#475569;min-width:20px}
-/* Main */
-#main{flex:1;overflow-y:auto;padding:0}
-/* Header */
-.doc-header{background:linear-gradient(135deg,#1e40af 0%,#2563eb 60%,#7c3aed 100%);padding:36px 40px 28px;color:#fff}
-.doc-header h2{font-size:26px;font-weight:800;letter-spacing:-0.5px}
-.doc-header p{margin-top:8px;font-size:14px;opacity:0.85;max-width:600px;line-height:1.5}
-.stats-row{display:flex;gap:12px;margin-top:20px;flex-wrap:wrap}
-.stat-card{background:rgba(255,255,255,0.15);border-radius:8px;padding:10px 16px;text-align:center;min-width:80px}
-.stat-card .num{font-size:22px;font-weight:800;display:block}
-.stat-card .label{font-size:11px;opacity:0.8;margin-top:2px}
-.version-badge{display:inline-block;background:rgba(255,255,255,0.2);border-radius:12px;padding:3px 10px;font-size:12px;margin-top:10px}
-/* Sections */
-#content{padding:32px 40px;max-width:900px}
-.section{background:var(--card-bg);border:1px solid var(--border);border-radius:10px;padding:24px 28px;margin-bottom:24px}
-.section h2{font-size:18px;font-weight:700;color:var(--text);margin-bottom:16px;padding-bottom:10px;border-bottom:2px solid var(--primary-light)}
-.section h3{font-size:15px;font-weight:600;color:var(--text);margin:20px 0 10px}
-.section h4{font-size:13px;font-weight:600;color:var(--text-secondary);margin:14px 0 6px}
-p{margin-bottom:12px;color:var(--text)}
-/* Tables */
-.table-wrap{overflow-x:auto;margin:14px 0}
-table{width:100%;border-collapse:collapse;font-size:13px}
-th{background:var(--th-bg);color:var(--th-color);padding:8px 12px;text-align:left;font-weight:600;border:1px solid var(--border)}
-td{padding:8px 12px;border:1px solid var(--border);vertical-align:top}
-tr:hover td{background:var(--hover-bg)}
-/* Code */
-pre,code{font-family:'JetBrains Mono','Fira Code','Cascadia Code',monospace}
-pre{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:16px;overflow-x:auto;font-size:12.5px;margin:12px 0;line-height:1.6}
-code{background:var(--code-bg);color:var(--code-color);padding:2px 6px;border-radius:4px;font-size:12px}
-pre code{background:none;color:var(--text);padding:0}
-/* Lists */
-ul,ol{margin:10px 0 10px 20px}
-li{margin-bottom:4px}
-/* Mermaid */
-.mermaid{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:20px;margin:14px 0;text-align:center;overflow:auto}
-/* Tags / badges */
-.badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:600}
-.badge-blue{background:#dbeafe;color:#1e40af}
-.badge-green{background:#dcfce7;color:#15803d}
-.badge-orange{background:#fff7ed;color:#c2410c}
-[data-theme="dark"] .badge-blue{background:#1e3a5f;color:#93c5fd}
-[data-theme="dark"] .badge-green{background:#14532d;color:#86efac}
-[data-theme="dark"] .badge-orange{background:#431407;color:#fb923c}
-/* Theme toggle */
-#theme-btn{position:fixed;top:16px;right:16px;background:var(--card-bg);border:1px solid var(--border);border-radius:20px;padding:6px 14px;cursor:pointer;font-size:12px;color:var(--text-secondary);z-index:999;transition:all 0.2s}
-#theme-btn:hover{border-color:var(--primary);color:var(--primary)}
-/* Scroll */
-nav::-webkit-scrollbar{width:4px}
-nav::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1);border-radius:2px}
+.logo {
+  font-size: 48px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  color: #f8fafc;
+  margin-bottom: 8px;
+}
+.version {
+  display: inline-block;
+  background: rgba(59, 130, 246, 0.2);
+  color: #60a5fa;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 4px 14px;
+  border-radius: 20px;
+  margin-bottom: 20px;
+}
+.tagline {
+  font-size: 16px;
+  color: #94a3b8;
+  line-height: 1.6;
+  margin-bottom: 40px;
+}
+.lang-grid {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.lang-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 200px;
+  padding: 32px 24px;
+  background: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 12px;
+  text-decoration: none;
+  color: #e2e8f0;
+  transition: all 0.2s ease;
+}
+.lang-card:hover {
+  border-color: #3b82f6;
+  background: #1e3a5f;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(59, 130, 246, 0.15);
+  text-decoration: none;
+}
+.lang-flag {
+  font-size: 36px;
+  margin-bottom: 12px;
+}
+.lang-name {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+.lang-native {
+  font-size: 13px;
+  color: #94a3b8;
+}
+.stats {
+  display: flex;
+  gap: 24px;
+  justify-content: center;
+  margin-bottom: 40px;
+  flex-wrap: wrap;
+}
+.stat {
+  text-align: center;
+}
+.stat-val {
+  font-size: 28px;
+  font-weight: 800;
+  color: #3b82f6;
+}
+.stat-label {
+  font-size: 12px;
+  color: #64748b;
+  margin-top: 2px;
+}
+.footer {
+  margin-top: 48px;
+  font-size: 12px;
+  color: #475569;
+}
+.footer a {
+  color: #64748b;
+  text-decoration: none;
+}
+.footer a:hover {
+  color: #94a3b8;
+}
+@media (max-width: 480px) {
+  .lang-grid { flex-direction: column; align-items: center; }
+  .stats { gap: 16px; }
+  .stat-val { font-size: 22px; }
+}
 </style>
 </head>
 <body>
-<div id="sidebar">
-  <div class="sidebar-header">
-    <h1>u-maker Plugin</h1>
-    <div class="ver">v1.0.4 &middot; SSoT Config v2.0.0</div>
+
+<div class="container">
+  <div class="logo">U-MAKER</div>
+  <div class="version">v3.0.26</div>
+  <p class="tagline">
+    PDCA-based SSoT collaboration orchestrator for Claude Code.<br>
+    4 Agents &middot; 38 Skills &middot; 5 PDCA Phases
+  </p>
+
+  <div class="stats">
+    <div class="stat"><div class="stat-val">38</div><div class="stat-label">Skills</div></div>
+    <div class="stat"><div class="stat-val">4</div><div class="stat-label">Agents</div></div>
+    <div class="stat"><div class="stat-val">5</div><div class="stat-label">Phases</div></div>
   </div>
-  <div class="sidebar-search">
-    <input type="text" id="search" placeholder="섹션 검색..." oninput="filterNav(this.value)">
+
+  <div class="lang-grid">
+    <a class="lang-card" href="README.ko.html">
+      <div class="lang-flag">&#127472;&#127479;</div>
+      <div class="lang-name">Korean</div>
+      <div class="lang-native">한국어 문서</div>
+    </a>
+    <a class="lang-card" href="README.en.html">
+      <div class="lang-flag">&#127468;&#127463;</div>
+      <div class="lang-name">English</div>
+      <div class="lang-native">English Documentation</div>
+    </a>
   </div>
-  <nav id="nav">
-    <a href="#s1"><span class="num">01</span>What This Plugin Solves</a>
-    <a href="#s2"><span class="num">02</span>Architecture Overview</a>
-    <a href="#s3"><span class="num">03</span>Agents</a>
-    <a href="#s4"><span class="num">04</span>Skills &amp; Commands</a>
-    <a href="#s5"><span class="num">05</span>PDCA Workflow</a>
-    <a href="#s6"><span class="num">06</span>4-Tier ID Hierarchy</a>
-    <a href="#s7"><span class="num">07</span>SSoT Document Structure</a>
-    <a href="#s8"><span class="num">08</span>Document Output Pipeline</a>
-    <a href="#s9"><span class="num">09</span>Repository Layout</a>
-    <a href="#s10"><span class="num">10</span>Prerequisites &amp; Install</a>
-    <a href="#s11"><span class="num">11</span>Role-Based Guide</a>
-    <a href="#s12"><span class="num">12</span>Scenario Guide</a>
-    <a href="#s13"><span class="num">13</span>Hooks &amp; Guardrails</a>
-    <a href="#s14"><span class="num">14</span>Tech Stack Policy</a>
-    <a href="#s15"><span class="num">15</span>Validation &amp; Scripts</a>
-    <a href="#s16"><span class="num">16</span>Troubleshooting</a>
-    <a href="#s17"><span class="num">17</span>Contributor Notes</a>
-    <a href="#s18"><span class="num">18</span>License</a>
-  </nav>
+
+  <div class="footer">
+    GPL-3.0 &copy; U PLEAT &middot;
+    <a href="https://github.com/upleat-ax/u-maker-plugin">GitHub</a>
+  </div>
 </div>
 
-<div id="main">
-  <div class="doc-header">
-    <div class="version-badge">v1.0.4</div>
-    <h2>u-maker Plugin</h2>
-    <p>PDCA(Plan-Design-Do-Check-Act) 기반 SSoT(Single Source of Truth) 협업 오케스트레이터.<br>8개 전문 에이전트와 54개 스킬로 소프트웨어 개발 전 과정을 자동화하는 Claude Code 플러그인.</p>
-    <div class="stats-row">
-      <div class="stat-card"><span class="num">54</span><div class="label">Skills</div></div>
-      <div class="stat-card"><span class="num">8</span><div class="label">Agents</div></div>
-      <div class="stat-card"><span class="num">20</span><div class="label">Templates</div></div>
-      <div class="stat-card"><span class="num">13</span><div class="label">References</div></div>
-    </div>
-  </div>
-
-  <div id="content">
-
-    <!-- TL;DR -->
-    <div class="section" style="border-left:4px solid var(--primary)">
-      <h3 style="margin-top:0">TL;DR</h3>
-      <pre><code># 1. 배포
-./deploy_local.sh
-
-# 2. Claude Code 재시작 후 프로젝트에서 실행
-/u-skill-create-project my-app    # 새 프로젝트
-/u-skill-init .                   # 기존 프로젝트 역공학
-
-# 3. 자동 PDCA 루프
-/u-skill-loop</code></pre>
-    </div>
-
-    <!-- S1 -->
-    <div class="section" id="s1">
-      <h2>1. What This Plugin Solves</h2>
-      <p>u-maker는 <strong>문서 중심 개발(SSoT)</strong>을 강제하는 협업 오케스트레이터입니다.</p>
-      <div class="table-wrap">
-        <table>
-          <tr><th>기존 방식</th><th>u-maker 방식</th></tr>
-          <tr><td>코드 먼저, 문서는 나중에</td><td>문서 먼저, 코드는 문서 기반 생성 (Docs-First)</td></tr>
-          <tr><td>요구사항과 코드가 따로 놀아 추적 불가</td><td>4-Tier ID(<code>USR→FR→US→FT</code>)로 요구사항~테스트 전 구간 추적</td></tr>
-          <tr><td>설계서와 코드가 달라지는 문제</td><td>Match Rate 자동 측정, 90% 미만이면 자동 보완</td></tr>
-          <tr><td>단계 건너뛰기로 품질 저하</td><td>Phase Gate로 전 단계 문서 Final 확인 후에만 다음 단계 진행</td></tr>
-          <tr><td>반복적인 수정-테스트 사이클</td><td>PDCA Loop 자동화 (최대 10회 반복, 종료 조건 자동 판정)</td></tr>
-          <tr><td>기술 스택 규칙 위반</td><td>Hook 기반 실시간 차단 (CSS-in-JS, Pages Router 등 10개 규칙)</td></tr>
-          <tr><td>문서와 코드 버전 불일치</td><td><code>.md</code> + <code>.json</code> 동시 생성, 리포트는 <code>.html</code>도 추가 생성</td></tr>
-          <tr><td>각 역할자가 개별 도구로 작업</td><td>8개 AI 에이전트가 하나의 SSoT 체계에서 협업</td></tr>
-        </table>
-      </div>
-    </div>
-
-    <!-- S2 -->
-    <div class="section" id="s2">
-      <h2>2. Architecture Overview</h2>
-      <div class="mermaid">
-flowchart TD
-    A["User Input<br/>(slash command / natural language)"] --> B["u-skill-maker<br/>Natural Language Router"]
-    B -->|Slash Command| C["u-skill-*<br/>Self-contained Skill"]
-    B -->|Natural Language| D[Keyword Analysis]
-    D --> E["u-agent-*<br/>Specialized Agent"]
-    C --> F["SSoT Documents<br/>(.md + .json + .html)"]
-    E --> F
-    F --> G[Post-Execution Summary Box]
-      </div>
-      <h3>Token Architecture</h3>
-      <ul>
-        <li><strong>u-skill-maker</strong>: ~5KB 슬림 라우터 (자연어 분석 + Command-Skill 매핑만)</li>
-        <li><strong>각 u-skill-*</strong>: 1~3KB 자립형 (필요한 <code>_refer/</code> import만 + agent 직접 선언)</li>
-        <li><strong>명령당 토큰</strong>: ~11K (이전 ~26K 대비 55-60% 절감)</li>
-      </ul>
-    </div>
-
-    <!-- S3 -->
-    <div class="section" id="s3">
-      <h2>3. Agents</h2>
-      <p>8개 전문 에이전트가 Phase별 역할을 분담합니다.</p>
-      <div class="table-wrap">
-        <table>
-          <tr><th>Agent</th><th>Role</th><th>Phase</th><th>Key Outputs</th></tr>
-          <tr><td><code>u-agent-pm</code></td><td>Product Manager</td><td>PLAN, ACT</td><td>Roadmap, Index, Retrospective, Daily Report, Loop Report</td></tr>
-          <tr><td><code>u-agent-ra</code></td><td>Requirements Analyst</td><td>ALL</td><td>Milestone, Validation, Backlog, Iteration Log, RTM, Glossary, Workflow</td></tr>
-          <tr><td><code>u-agent-sa</code></td><td>Software Architect</td><td>PLAN, DESIGN</td><td>SRS, ERD, API Contract</td></tr>
-          <tr><td><code>u-agent-ux</code></td><td>UX Designer</td><td>PLAN, DESIGN, DO</td><td>IA, Screen, ScreenFlow, Wireframe, UX Guide, Design Token</td></tr>
-          <tr><td><code>u-agent-ux-ds</code></td><td>Visual Designer</td><td>DESIGN, DO</td><td>디자인 도구(pencil/figma/stitch) 기반 시각 디자인</td></tr>
-          <tr><td><code>u-agent-dv-fe</code></td><td>Frontend Developer</td><td>DO</td><td>Next.js App Router + react-query + Storybook</td></tr>
-          <tr><td><code>u-agent-dv-be</code></td><td>Backend Developer</td><td>DO</td><td>API Routes + Prisma/Drizzle ORM</td></tr>
-          <tr><td><code>u-agent-qa</code></td><td>QA Engineer</td><td>CHECK</td><td>Test Cases (Vitest+Playwright), Test Execution, Defect Analysis</td></tr>
-        </table>
-      </div>
-      <h3>Agent Invocation</h3>
-      <pre><code># 1. Skill을 통한 정형화된 호출 (특정 문서/태스크)
-/u-skill-srs web          # u-agent-sa가 SRS 문서를 생성
-
-# 2. Agent Direct 호출 (자유 형식 작업 요청)
-/u-agent-sa ERD를 PostgreSQL 기준으로 최적화해줘</code></pre>
-    </div>
-
-    <!-- S4 -->
-    <div class="section" id="s4">
-      <h2>4. Skills &amp; Commands</h2>
-      <p>전체 <strong>54개 스킬</strong>. 자연어 입력 시 <code>u-skill-maker</code> 라우터가 자동으로 적절한 스킬/에이전트로 분배합니다.</p>
-
-      <h3>4.0 Router</h3>
-      <div class="table-wrap"><table>
-        <tr><th>Command</th><th>Description</th></tr>
-        <tr><td><code>/u-skill-maker</code></td><td>자연어 라우터. 자동 라우팅 (직접 호출 불필요)</td></tr>
-      </table></div>
-
-      <h3>4.1 Lifecycle</h3>
-      <div class="table-wrap"><table>
-        <tr><th>Command</th><th>Description</th></tr>
-        <tr><td><code>/u-skill-create-project &lt;name&gt;</code></td><td>새 프로젝트 초기화 (Turborepo + SSoT 문서 구조)</td></tr>
-        <tr><td><code>/u-skill-init [path]</code></td><td>기존 프로젝트 분석 후 SSoT 문서 자동 역공학 생성</td></tr>
-        <tr><td><code>/u-skill-plan [app]</code></td><td>PLAN Phase: Roadmap → SRS → IA → Index</td></tr>
-        <tr><td><code>/u-skill-design [app]</code></td><td>DESIGN Phase: UXGuide → Screen → ScreenFlow → ERD → API → RTM</td></tr>
-        <tr><td><code>/u-skill-dev [app]</code></td><td>DO Phase: UX/FE/BE 병렬 개발</td></tr>
-        <tr><td><code>/u-skill-check [app]</code></td><td>CHECK Phase: 테스트 케이스 설계 → 실행 → 결함 분석</td></tr>
-        <tr><td><code>/u-skill-act</code></td><td>ACT Phase: 백로그 정리 → 회고 → 아카이브</td></tr>
-      </table></div>
-
-      <h3>4.2 Auto-Loop</h3>
-      <div class="table-wrap"><table>
-        <tr><th>Command</th><th>Description</th></tr>
-        <tr><td><code>/u-skill-loop</code></td><td>PDCA 사이클을 종료 조건 충족까지 자동 반복</td></tr>
-        <tr><td><code>/u-skill-loop-from &lt;phase&gt;</code></td><td>지정 Phase부터 루프 시작 (plan/design/dev/check/act)</td></tr>
-        <tr><td><code>/u-skill-stop</code></td><td>실행 중인 루프를 즉시 중단 (상태 저장)</td></tr>
-        <tr><td><code>/u-skill-resume</code></td><td>중단된 루프를 재개</td></tr>
-        <tr><td><code>/u-skill-gap-detector</code></td><td>설계-구현 Gap 분석 (Match Rate 산출)</td></tr>
-      </table></div>
-
-      <h3>4.3 Agent Direct</h3>
-      <div class="table-wrap"><table>
-        <tr><th>Command</th><th>Description</th></tr>
-        <tr><td><code>/u-agent-pm [task]</code></td><td>PM에게 자유 형식 작업 요청</td></tr>
-        <tr><td><code>/u-agent-ra [task]</code></td><td>RA에게 자유 형식 작업 요청</td></tr>
-        <tr><td><code>/u-agent-sa [task]</code></td><td>SA에게 자유 형식 작업 요청</td></tr>
-        <tr><td><code>/u-agent-ux [task]</code></td><td>UX에게 자유 형식 작업 요청</td></tr>
-        <tr><td><code>/u-agent-dv-fe [task]</code></td><td>FE 개발자에게 자유 형식 작업 요청</td></tr>
-        <tr><td><code>/u-agent-dv-be [task]</code></td><td>BE 개발자에게 자유 형식 작업 요청</td></tr>
-        <tr><td><code>/u-agent-qa [task]</code></td><td>QA에게 자유 형식 작업 요청</td></tr>
-      </table></div>
-
-      <h3>4.4 Document &amp; Requirement Management</h3>
-      <div class="table-wrap"><table>
-        <tr><th>Command</th><th>Description</th></tr>
-        <tr><td><code>/u-skill-srs [app]</code></td><td>SRS 생성/수정 (FR → US → FT)</td></tr>
-        <tr><td><code>/u-skill-erd</code></td><td>ERD 생성/수정</td></tr>
-        <tr><td><code>/u-skill-api [app]</code></td><td>API Contract (OpenAPI 3.0) 생성/수정</td></tr>
-        <tr><td><code>/u-skill-screen [app]</code></td><td>화면 상세 설계</td></tr>
-        <tr><td><code>/u-skill-wireframe [app]</code></td><td>와이어프레임 HTML 생성</td></tr>
-        <tr><td><code>/u-skill-ux-figma [app]</code></td><td>디자인 도구(pencil/figma/stitch) 기반 화면 디자인</td></tr>
-        <tr><td><code>/u-skill-ux-designsystem [app]</code></td><td>디자인 도구 기반 디자인 시스템/컴포넌트 시각 구성</td></tr>
-        <tr><td><code>/u-skill-import [source] [path]</code></td><td>외부 소스(문서/Figma/pencil/Stitch/URL/이미지)를 SSoT 문서로 변환</td></tr>
-        <tr><td><code>/u-skill-glossary [app]</code></td><td>용어 정의(Glossary) 문서 생성/수정</td></tr>
-        <tr><td><code>/u-skill-workflow [app]</code></td><td>워크플로우 정의 문서 생성/수정</td></tr>
-        <tr><td><code>/u-skill-testcase [app]</code></td><td>Unit+E2E 테스트 케이스 일괄 설계</td></tr>
-        <tr><td><code>/u-skill-tc-add [app] [FT] [desc]</code></td><td>테스트 케이스 개별 추가 (<code>all</code> 지원)</td></tr>
-        <tr><td><code>/u-skill-tc-refine &lt;TC&gt; [app]</code></td><td>테스트 케이스 세분화 (하위 TC로 분해)</td></tr>
-        <tr><td><code>/u-skill-qa [app]</code></td><td>테스트 실행 (Vitest + Playwright)</td></tr>
-        <tr><td><code>/u-skill-us-add [desc]</code></td><td>유저 스토리 추가</td></tr>
-        <tr><td><code>/u-skill-fr-add [app] [desc]</code></td><td>기능 요구사항(FR) 추가</td></tr>
-        <tr><td><code>/u-skill-refine &lt;ID&gt; [app]</code></td><td>FR/US/FT 세분화 (하위 항목으로 분해)</td></tr>
-        <tr><td><code>/u-skill-backlog-add [desc]</code></td><td>백로그 항목 추가</td></tr>
-      </table></div>
-
-      <h3>4.5 Reports &amp; HTML</h3>
-      <p>모든 리포트는 <code>.md</code> + <code>.html</code> 2종 파일을 동시에 생성합니다.</p>
-      <div class="table-wrap"><table>
-        <tr><th>Command</th><th>Description</th></tr>
-        <tr><td><code>/u-skill-report [app]</code></td><td>프로젝트 종합 보고서 (FR/NFR/US/FT/TC 카운트 + Delta 비교 + 부채 + Git 활동). Dark/Light HTML</td></tr>
-        <tr><td><code>/u-skill-html-doc [doc-type]</code></td><td>SSoT 문서를 인터랙티브 HTML 뷰어로 변환. <code>all</code>로 전체 변환</td></tr>
-      </table></div>
-
-      <h3>4.6 Status &amp; Utility</h3>
-      <div class="table-wrap"><table>
-        <tr><th>Command</th><th>Description</th></tr>
-        <tr><td><code>/u-skill-status</code></td><td>현재 Iteration, Phase, 완료율, 문서 상태 보고</td></tr>
-        <tr><td><code>/u-skill-docs</code></td><td>SSoT 문서 목록과 상태(Draft/Review/Final) 표시</td></tr>
-        <tr><td><code>/u-skill-validate</code></td><td>문서 무결성 검증 (헤더, 추적성, 구조)</td></tr>
-        <tr><td><code>/u-skill-backlog</code></td><td>백로그 Open 항목 조회</td></tr>
-        <tr><td><code>/u-skill-index</code></td><td>문서 인덱스 갱신</td></tr>
-        <tr><td><code>/u-skill-history</code></td><td>Iteration 이력 조회</td></tr>
-        <tr><td><code>/u-skill-archive</code></td><td>현재 Iteration 아카이브</td></tr>
-        <tr><td><code>/u-skill-summary</code></td><td>프로젝트 요약 (터미널 출력만, 파일 미생성)</td></tr>
-        <tr><td><code>/u-skill-build</code></td><td><code>bun run build</code> 실행</td></tr>
-        <tr><td><code>/u-skill-storybook</code></td><td>Storybook 실행</td></tr>
-        <tr><td><code>/u-skill-fix [app] [desc]</code></td><td>버그/기능 수정 + QA 에이전트가 자동으로 TC 보강</td></tr>
-        <tr><td><code>/u-skill-git-pr [feat-name]</code></td><td>feature별 git commit + GitHub PR 생성</td></tr>
-        <tr><td><code>/u-skill-help</code></td><td>전체 명령어 도움말</td></tr>
-      </table></div>
-
-      <h3>4.7 Workshop</h3>
-      <div class="table-wrap"><table>
-        <tr><th>Command</th><th>Description</th></tr>
-        <tr><td><code>/u-workshop</code></td><td>브레인스토밍 &amp; 아이디어 설계. 창의적 작업 전에 사용자 의도/요구사항/설계를 협업 대화로 탐색</td></tr>
-      </table></div>
-    </div>
-
-    <!-- S5 -->
-    <div class="section" id="s5">
-      <h2>5. PDCA Workflow</h2>
-      <div class="mermaid">
-flowchart TD
-    PLAN["PLAN"] -->|Gate| DESIGN["DESIGN"]
-    DESIGN -->|Gate| DO["DO"]
-    DO --> GAP{"Gap Check<br/>Match >= 90%?"}
-    GAP -->|No| INNER["Inner Gap Loop<br/>Gap FT별 DO 재실행<br/>(최대 maxGapRetries)"]
-    INNER --> GAP
-    GAP -->|Yes| CHECK["CHECK"]
-    CHECK --> EXIT{"Exit Criteria<br/>충족?"}
-    EXIT -->|Yes| COMPLETE["COMPLETE<br/>+ Loop Report"]
-    EXIT -->|No| ACT["ACT"]
-    ACT -->|Next Iteration| PLAN
-      </div>
-      <h3>Phase Details</h3>
-      <div class="table-wrap"><table>
-        <tr><th>Phase</th><th>Agents</th><th>Key Activities</th><th>Gate to Next</th></tr>
-        <tr><td><strong>PLAN</strong></td><td>PM, SA, UX</td><td>Roadmap, SRS(FR→US→FT), IA, Index</td><td>Roadmap + SRS + IA = Final</td></tr>
-        <tr><td><strong>DESIGN</strong></td><td>UX, SA, RA</td><td>UXGuide, Screen, ScreenFlow, Wireframe, ERD, API, RTM, 모순 검수</td><td>ERD + RTM + UXGuide + API + Screen + ScreenFlow = Final</td></tr>
-        <tr><td><strong>DO</strong></td><td>UX, DV-FE, DV-BE</td><td>Screen 구현, Frontend, Backend, Code Doc, Gap Check</td><td>bun run build 성공 + Match Rate &ge; 90%</td></tr>
-        <tr><td><strong>CHECK</strong></td><td>QA</td><td>Test Case 설계, 실행 (Vitest+Playwright), 결함 분석</td><td>Critical/Major=0, All FT Implemented, Build OK</td></tr>
-        <tr><td><strong>ACT</strong></td><td>RA, PM</td><td>Backlog 정리, Archive, Retrospective, Daily Report</td><td>Log + Retro 완료</td></tr>
-      </table></div>
-      <h3>Exit Criteria</h3>
-      <div class="table-wrap"><table>
-        <tr><th>#</th><th>Condition</th><th>Check Method</th></tr>
-        <tr><td>1</td><td>Critical/Major 결함 0건</td><td><code>4_Report_QA.md</code> 파싱</td></tr>
-        <tr><td>2</td><td>SRS의 모든 FT 구현 완료</td><td><code>1_SRS_RA.md</code> 상태 확인</td></tr>
-        <tr><td>3</td><td>빌드 성공</td><td><code>bun run build</code> 실행</td></tr>
-      </table></div>
-      <h3>Inner Gap Loop</h3>
-      <div class="table-wrap"><table>
-        <tr><th>Match Rate</th><th>Action</th></tr>
-        <tr><td>&ge; 90%</td><td>CHECK Phase로 진행</td></tr>
-        <tr><td>&lt; 90%</td><td>Gap FT 목록 추출 → FT별 DO 재실행 → 재측정 (최대 maxGapRetries회, 기본 3)</td></tr>
-      </table></div>
-    </div>
-
-    <!-- S6 -->
-    <div class="section" id="s6">
-      <h2>6. 4-Tier ID Hierarchy</h2>
-      <div class="mermaid">
-flowchart TD
-    USR["USR-XXXX<br/>User Type<br/><i>관리자, 일반 사용자</i>"]
-    FR["FR-XXXX<br/>Functional Req.<br/><i>고객 요구사항 (계약/RFP 기반)</i>"]
-    US["US-XXXX<br/>User Story<br/><i>FR을 사용자 관점으로 분해</i>"]
-    FT["FT-XXXX<br/>Feature<br/><i>★ 구현 추적 기본 단위</i>"]
-    USR --> FR --> US --> FT
-      </div>
-      <p><strong>FT = Feature (구현 단위).</strong> <del>Functional Test</del> 절대 아님.</p>
-      <h3>Traceability Matrix (RTM)</h3>
-      <div class="mermaid">
-flowchart LR
-    FR --> US --> FT --> Screen --> API["API Endpoint"] --> DB["DB Entity"] --> TC["Test Case"]
-      </div>
-    </div>
-
-    <!-- S7 -->
-    <div class="section" id="s7">
-      <h2>7. SSoT Document Structure</h2>
-      <pre><code>.u-maker/docs/
-├── common/                              # 프로젝트 공용
-│   ├── 01-plan/
-│   │   ├── 1_Roadmap_PM.md (.json)      # 로드맵
-│   │   ├── 1_Index_PM.md (.json)        # 문서 인덱스
-│   │   └── 1_Common_RA.md (.json)       # 공통 정의
-│   ├── 02-design/
-│   │   ├── 2_ERD_SA.md (.json)          # Entity Relationship Diagram
-│   │   ├── 2_RTM_RA.md (.json)          # 요구사항 추적표
-│   │   └── 2_UXGuide_UX.md (.json)      # UX 표준가이드 + 디자인 시스템
-│   ├── 03-dev/
-│   │   ├── 3_UIComponents_UX.md (.json)
-│   │   └── 3_DesignToken_UX.md (.json)
-│   └── 05-act/
-│       ├── 5_IterationLog_RA.md (.json)
-│       ├── 5_Retrospective_PM.md (.json)
-│       ├── 5_DailyReport_PM_*.md/json/html
-│       └── 5_LoopReport_PM_*.md/json/html
-├── {app}/                               # 앱별 문서
-│   ├── 01-plan/
-│   │   ├── 1_SRS_RA.md (.json)          # Software Requirements Spec
-│   │   ├── 1_IA_RA.md (.json)
-│   │   ├── 1_Glossary_RA.md (.json)
-│   │   └── 1_Workflow_RA.md (.json)
-│   ├── 02-design/
-│   │   ├── 2_API_SA.md (.json)
-│   │   ├── 2_Screen_UX.md (.json)
-│   │   ├── 2_ScreenFlow_UX.md (.json)
-│   │   └── 2_Screen_Wireframes/
-│   ├── 03-dev/
-│   │   ├── 3_Code_DV.md (.json)
-│   │   └── 3_Screen_UX.md (.json)
-│   └── 04-check/
-│       ├── 4_Case_QA.md (.json)
-│       └── 4_Report_QA.md/json/html
-└── iterations/
-    └── iter-N/</code></pre>
-      <h3>File Export Rule</h3>
-      <div class="table-wrap"><table>
-        <tr><th>Extension</th><th>Purpose</th><th>생성 조건</th></tr>
-        <tr><td><code>.md</code></td><td>사람이 읽는 마크다운 문서 (SSoT 원본)</td><td>모든 문서</td></tr>
-        <tr><td><code>.json</code></td><td>기계가 파싱하는 구조화 데이터 (ID 기반 배열)</td><td>모든 문서</td></tr>
-        <tr><td><code>.html</code></td><td>브라우저 인터랙티브 뷰어/리포트</td><td>리포트 자동 + <code>/u-skill-html-doc</code>으로 전체 변환</td></tr>
-      </table></div>
-    </div>
-
-    <!-- S8 -->
-    <div class="section" id="s8">
-      <h2>8. Document Output Pipeline</h2>
-      <div class="mermaid">
-flowchart LR
-    SRS["SRS<br/>(FR→US→FT)"] --> IA["IA<br/>정보 구조도"]
-    IA --> UXGuide["UXGuide<br/>디자인 시스템"]
-    UXGuide --> Screen["Screen<br/>화면 상세 설계"]
-    Screen --> ScreenFlow["ScreenFlow<br/>화면 흐름도"]
-    ScreenFlow --> Wireframe["Wireframe<br/>HTML"]
-    Wireframe --> Design["Design<br/>.pen"]
-    Design --> ERD
-    ERD --> API["API Contract"]
-    API --> Dev["Dev<br/>(FE + BE)"]
-    Dev --> Test
-      </div>
-    </div>
-
-    <!-- S9 -->
-    <div class="section" id="s9">
-      <h2>9. Repository Layout</h2>
-      <pre><code>u-maker-plugin/
-├── .claude-plugin/        # plugin.json, marketplace.json
-├── agents/                # 8개 전문 에이전트 프롬프트
-│   ├── u-agent-pm.md
-│   ├── u-agent-ra.md
-│   ├── u-agent-sa.md
-│   ├── u-agent-ux.md
-│   ├── u-agent-ux-ds.md
-│   ├── u-agent-dv-fe.md
-│   ├── u-agent-dv-be.md
-│   └── u-agent-qa.md
-├── skills/                # 54개 user-invocable 스킬
-│   ├── u-skill-maker/     #   슬림 라우터 (자연어 → 에이전트 라우팅)
-│   ├── u-skill-plan/      #   PLAN Phase
-│   ├── u-skill-design/    #   DESIGN Phase
-│   ├── u-skill-dev/       #   DO Phase
-│   ├── u-skill-check/     #   CHECK Phase
-│   ├── u-skill-act/       #   ACT Phase
-│   ├── u-skill-loop/      #   PDCA 자동 반복
-│   ├── u-skill-fix/       #   버그/기능 수정 + 자동 TC 보강
-│   ├── u-skill-import/    #   외부 소스 → SSoT 문서 변환
-│   ├── u-skill-html-doc/  #   SSoT 문서 HTML 변환
-│   ├── u-agent-*/         #   에이전트 직접 호출 (7개)
-│   ├── u-workshop/        #   브레인스토밍 & 아이디어 설계
-│   └── ...                #   기타 스킬
-├── hooks/                 # Claude hook 설정
-├── scripts/               # guard/검증/초기화 스크립트
-│   ├── prompt-docs-first-guard.js
-│   ├── pre-write-guard.js
-│   ├── validate-ssot.py
-│   └── check-exit-criteria.py
-├── lib/                   # 상태/게이트/문서추적 라이브러리
-├── templates/             # SSoT 문서 템플릿 (20개)
-├── _refer/                # 표준/정책/명령어 레퍼런스 (13개)
-├── .u-maker/              # 프로젝트 설정
-│   └── u-maker.config.json
-└── deploy_local.sh        # 로컬 배포/검증/정리</code></pre>
-    </div>
-
-    <!-- S10 -->
-    <div class="section" id="s10">
-      <h2>10. Prerequisites &amp; Install</h2>
-      <div class="table-wrap"><table>
-        <tr><th>Tool</th><th>Purpose</th><th>Required</th></tr>
-        <tr><td><code>bash</code></td><td>macOS/Linux/WSL/Git Bash</td><td><span class="badge badge-green">Yes</span></td></tr>
-        <tr><td><code>node</code></td><td>Hook 스크립트 실행</td><td><span class="badge badge-green">Yes</span></td></tr>
-        <tr><td><code>python3</code></td><td>validate-ssot.py, check-exit-criteria.py</td><td><span class="badge badge-green">Yes</span></td></tr>
-        <tr><td><code>bun</code></td><td>관리 대상 프로젝트 빌드/개발</td><td><span class="badge badge-green">Yes</span></td></tr>
-        <tr><td>Claude Code</td><td>플러그인 호스트</td><td><span class="badge badge-green">Yes</span></td></tr>
-        <tr><td>Codex CLI / Gemini CLI</td><td><code>~/.codex</code> / <code>~/.gemini</code> 공유 링크</td><td><span class="badge badge-orange">No</span></td></tr>
-      </table></div>
-      <h3>Install</h3>
-      <pre><code>cd /path/to/u-maker-plugin
-./deploy_local.sh
-
-./deploy_local.sh --check   # 설치 상태 확인
-./deploy_local.sh --clean   # 완전 제거</code></pre>
-      <h3>Config Migration (Breaking Change)</h3>
-      <pre><code>mv .u-maker/u-ssot.config.json .u-maker/u-maker.config.json</code></pre>
-    </div>
-
-    <!-- S11 -->
-    <div class="section" id="s11">
-      <h2>11. Role-Based Guide</h2>
-      <p>각 역할별 상세 가이드는 <a href="GET_STARTED.html">GET_STARTED.html</a> Part 3을 참고하세요.</p>
-      <h3>기획자 (PM / RA)</h3>
-      <div class="table-wrap"><table>
-        <tr><th>핵심 명령어</th><th>용도</th></tr>
-        <tr><td><code>/u-skill-plan</code></td><td>Plan Phase 전체 실행</td></tr>
-        <tr><td><code>/u-skill-us-add</code></td><td>유저 스토리 추가</td></tr>
-        <tr><td><code>/u-skill-fr-add</code></td><td>기능 요구사항 추가</td></tr>
-        <tr><td><code>/u-skill-refine</code></td><td>항목 세분화</td></tr>
-        <tr><td><code>/u-skill-status</code></td><td>프로젝트 현황</td></tr>
-        <tr><td><code>/u-skill-report</code></td><td>종합 보고서</td></tr>
-        <tr><td><code>/u-skill-validate</code></td><td>문서 무결성 검증</td></tr>
-      </table></div>
-      <h3>디자이너 (UX)</h3>
-      <div class="table-wrap"><table>
-        <tr><th>핵심 명령어</th><th>용도</th></tr>
-        <tr><td><code>/u-skill-design</code></td><td>Design Phase 전체 실행</td></tr>
-        <tr><td><code>/u-skill-screen</code></td><td>화면 상세 설계</td></tr>
-        <tr><td><code>/u-skill-wireframe</code></td><td>와이어프레임 HTML</td></tr>
-        <tr><td><code>/u-skill-ux-figma</code></td><td>디자인 도구 기반 화면 디자인</td></tr>
-        <tr><td><code>/u-skill-ux-designsystem</code></td><td>디자인 도구 기반 디자인 시스템</td></tr>
-      </table></div>
-      <h3>개발자 (Frontend / Backend)</h3>
-      <div class="table-wrap"><table>
-        <tr><th>핵심 명령어</th><th>용도</th></tr>
-        <tr><td><code>/u-skill-dev</code></td><td>DO Phase 전체 실행</td></tr>
-        <tr><td><code>/u-skill-fix</code></td><td>버그 수정 + 자동 TC 보강</td></tr>
-        <tr><td><code>/u-skill-build</code></td><td>빌드 실행</td></tr>
-        <tr><td><code>/u-skill-gap-detector</code></td><td>설계-구현 Gap 분석</td></tr>
-        <tr><td><code>/u-skill-git-pr</code></td><td>Git PR 생성</td></tr>
-      </table></div>
-      <h3>QA (테스터)</h3>
-      <div class="table-wrap"><table>
-        <tr><th>핵심 명령어</th><th>용도</th></tr>
-        <tr><td><code>/u-skill-testcase</code></td><td>TC 일괄 설계</td></tr>
-        <tr><td><code>/u-skill-tc-add</code></td><td>TC 개별 추가</td></tr>
-        <tr><td><code>/u-skill-qa</code></td><td>테스트 실행</td></tr>
-        <tr><td><code>/u-skill-check</code></td><td>CHECK Phase 전체</td></tr>
-      </table></div>
-    </div>
-
-    <!-- S12 -->
-    <div class="section" id="s12">
-      <h2>12. Scenario Guide</h2>
-      <h3>Scenario 1: 새 프로젝트 처음부터 끝까지</h3>
-      <pre><code>/u-skill-create-project my-saas
-/u-skill-loop</code></pre>
-      <h3>Scenario 2: 기존 프로젝트에 SSoT 적용</h3>
-      <pre><code>/u-skill-init .
-/u-skill-status
-/u-skill-validate
-/u-skill-loop</code></pre>
-      <h3>Scenario 3: 단계별 수동 실행</h3>
-      <pre><code>/u-skill-plan web
-/u-skill-design web
-/u-skill-dev web
-/u-skill-check web
-/u-skill-act</code></pre>
-      <h3>Scenario 4: 새 기능 추가</h3>
-      <pre><code>/u-skill-us-add
-/u-skill-fr-add web
-/u-skill-refine FR-0010 web
-/u-skill-design web
-/u-skill-dev web
-/u-skill-check web</code></pre>
-      <h3>Scenario 5: 버그 수정</h3>
-      <pre><code>/u-skill-fix web "로그인 시 토큰 만료 처리 버그"</code></pre>
-      <h3>Scenario 6: 루프 중단 &amp; 재개</h3>
-      <pre><code>/u-skill-stop
-/u-skill-status
-/u-skill-resume</code></pre>
-      <h3>Scenario 7: 특정 Phase부터 루프 시작</h3>
-      <pre><code>/u-skill-loop-from design</code></pre>
-      <h3>Scenario 8: 자연어로 요청하기</h3>
-      <pre><code>"로그인 기능을 추가하고 싶어"         → RA/SA가 문서 작성
-"ERD를 PostgreSQL로 최적화해줘"      → SA가 ERD 수정
-"대시보드 화면을 추가해줘"            → UX가 화면 설계
-"테스트 케이스를 보강해줘"            → QA가 TC 추가
-"이번 주 보고서를 만들어줘"           → PM이 보고서 생성</code></pre>
-    </div>
-
-    <!-- S13 -->
-    <div class="section" id="s13">
-      <h2>13. Hooks &amp; Guardrails</h2>
-      <div class="table-wrap"><table>
-        <tr><th>Event</th><th>Script</th><th>Purpose</th></tr>
-        <tr><td><code>SessionStart</code></td><td><code>hooks/session-start.js</code></td><td><code>.u-maker/docs/</code> 구조 자동 생성/복구</td></tr>
-        <tr><td><code>UserPromptSubmit</code></td><td><code>scripts/prompt-docs-first-guard.js</code></td><td>새 요구사항/기능 감지 시 문서 업데이트 우선 유도 (Docs-First)</td></tr>
-        <tr><td><code>PreToolUse(Write|Edit)</code></td><td><code>scripts/pre-write-guard.js</code></td><td>문서 경로 정책 + 기술스택 규칙 위반 차단</td></tr>
-        <tr><td><code>PostToolUse(Write)</code></td><td><code>scripts/post-write-index.js</code></td><td>문서 작성 후 인덱스 업데이트 힌트 출력</td></tr>
-        <tr><td><code>Stop</code></td><td><code>scripts/stop-state-save.js</code></td><td>세션 종료 시 phase/iteration/loop 상태 저장</td></tr>
-      </table></div>
-      <h3>Docs-First Guard</h3>
-      <p>새 기능/요구사항을 코드로 바로 구현하려 하면 hook이 감지하여 차단합니다:</p>
-      <pre><code>"먼저 /u-skill-us-add 또는 /u-skill-fr-add로 문서를 업데이트한 후 구현을 진행하세요."</code></pre>
-    </div>
-
-    <!-- S14 -->
-    <div class="section" id="s14">
-      <h2>14. Tech Stack Policy</h2>
-      <p>u-maker가 강제하는 10가지 기술 스택 규칙:</p>
-      <div class="table-wrap"><table>
-        <tr><th>#</th><th>Rule</th><th>Violation</th></tr>
-        <tr><td>1</td><td>Clean Architecture (<code>apps/</code>, <code>packages/</code>)</td><td>잘못된 폴더 구조 거부</td></tr>
-        <tr><td>2</td><td><code>react-query</code> only (usecase 패턴 금지)</td><td>usecase import 거부</td></tr>
-        <tr><td>3</td><td>Plain <code>.css</code> only (CSS-in-JS 금지)</td><td>styled-components/emotion 거부</td></tr>
-        <tr><td>4</td><td>Next.js App Router (Pages Router 금지)</td><td><code>pages/</code> 디렉토리 거부</td></tr>
-        <tr><td>5</td><td><code>eslint-plugin-header</code> 사용 금지</td><td>해당 플러그인 거부</td></tr>
-        <tr><td>6</td><td>Turborepo 모노레포</td><td>단일 패키지 구조 거부</td></tr>
-        <tr><td>7</td><td>Functional Components only</td><td>Class 컴포넌트 거부</td></tr>
-        <tr><td>8</td><td>Storybook 필수</td><td><code>.stories.tsx</code> 없이 PR 거부</td></tr>
-        <tr><td>9</td><td>Design Token 기반 스타일링</td><td>하드코딩 색상/크기 거부</td></tr>
-        <tr><td>10</td><td><code>bun</code> only (npm/yarn/pnpm 금지)</td><td>package-lock.json/yarn.lock 거부</td></tr>
-      </table></div>
-    </div>
-
-    <!-- S15 -->
-    <div class="section" id="s15">
-      <h2>15. Validation &amp; Scripts</h2>
-      <h3>SSoT Validation</h3>
-      <pre><code>python3 scripts/validate-ssot.py
-python3 scripts/validate-ssot.py .u-maker/docs</code></pre>
-      <p>검증 항목: 헤더 필수 필드, Status 값, 추적성 깨짐, 구조 위반</p>
-      <h3>Exit Criteria Check</h3>
-      <pre><code>python3 scripts/check-exit-criteria.py</code></pre>
-      <p>판정 항목: Critical/Major 결함 0, FT 구현 완료, 빌드 성공</p>
-      <h3>Project Scaffold</h3>
-      <pre><code>./scripts/init-project.sh my-new-app</code></pre>
-      <p>Turborepo + Next.js App Router + Storybook + Design Token 구조를 자동 생성합니다.</p>
-    </div>
-
-    <!-- S16 -->
-    <div class="section" id="s16">
-      <h2>16. Troubleshooting</h2>
-      <h3>배포 후 명령어가 안 보일 때</h3>
-      <ol>
-        <li><code>./deploy_local.sh --check</code> 실행</li>
-        <li>Claude Code 재시작</li>
-        <li><code>~/.claude/plugins/cache/u-maker/</code> 경로 확인</li>
-        <li><code>~/.claude/skills/u-maker__*</code> 심볼릭 링크 확인</li>
-      </ol>
-      <h3>문서 작성이 차단될 때</h3>
-      <p><code>PreToolUse</code> 또는 Docs-First guard에 의한 차단입니다. 먼저 <code>/u-skill-us-add</code>, <code>/u-skill-fr-add</code>, <code>/u-skill-srs</code> 등 문서 스킬을 실행한 후 구현을 진행하세요.</p>
-      <h3>Build gate 실패 시</h3>
-      <pre><code>/u-skill-build                      # 빌드 로그 확인
-/u-agent-dv-fe 빌드 에러 수정해줘   # FE 에러 수정
-/u-agent-dv-be 빌드 에러 수정해줘   # BE 에러 수정</code></pre>
-      <h3>루프가 무한 반복될 때</h3>
-      <p>최대 반복 제한 (기본 10회)에 도달하면 자동 종료됩니다. <code>.u-maker/u-maker.config.json</code>의 <code>pdca.maxIterations</code> 값을 조정하세요.</p>
-      <h3>Gap Loop가 수렴하지 않을 때</h3>
-      <p>Inner Gap Loop는 최대 <code>maxGapRetries</code> (기본 3회) 재시도 후 강제 진행됩니다. <code>pdca.gapThreshold</code> (기본 90%)와 <code>pdca.maxGapRetries</code>를 조정하세요.</p>
-    </div>
-
-    <!-- S17 -->
-    <div class="section" id="s17">
-      <h2>17. Contributor Notes</h2>
-      <h3>새 스킬 추가</h3>
-      <ol>
-        <li><code>skills/&lt;skill-name&gt;/SKILL.md</code> 생성 (frontmatter: name, description, model, allowed-tools, imports, agents)</li>
-        <li><code>skills/u-skill-maker/SKILL.md</code>의 Command-Skill 매핑 테이블에 등록</li>
-        <li><code>_refer/slash-commands.md</code>에 커맨드 정의 추가</li>
-        <li><code>_refer/post-execution-summary.md</code> 커맨드 목록에 추가</li>
-        <li>필요 시 <code>templates/</code>에 문서 템플릿 추가</li>
-        <li><code>./deploy_local.sh</code> 재실행</li>
-      </ol>
-      <h3>스킬 구조 (Self-contained Pattern)</h3>
-      <pre><code>---
-name: u-skill-xxx
-description: |
-  설명. Triggers: /u-skill-xxx, 키워드1, 키워드2
-model: sonnet
-user-invocable: true
-argument-hint: "[app]"
-allowed-tools:
-  - Read
-  - Write
-  - Edit
-  - Bash
-  - Agent
-imports:
-  - _refer/ssot-standard.md
-  - _refer/tech-stack-rules.md
-agents:
-  - u-agent-xxx
----</code></pre>
-    </div>
-
-    <!-- S18 -->
-    <div class="section" id="s18">
-      <h2>18. License</h2>
-      <p>GPL-3.0 License. Copyright &copy; 2026 U PLEAT. All rights reserved.</p>
-      <p style="margin-top:16px;color:var(--text-secondary);font-size:12px">
-        u-maker Plugin v1.0.4 &middot; SSoT Config v2.0.0 &middot; 54 Skills &middot; 8 Agents<br>
-        GitHub: <a href="https://github.com/upleat-ax/u-maker-plugin" style="color:var(--primary)">upleat-ax/u-maker-plugin</a>
-      </p>
-    </div>
-
-  </div><!-- /content -->
-</div><!-- /main -->
-
-<button id="theme-btn" onclick="toggleTheme()">🌙 Dark</button>
-
-<script>
-// Theme
-const saved = localStorage.getItem('u-maker-theme');
-if (saved === 'dark') { document.documentElement.setAttribute('data-theme','dark'); document.getElementById('theme-btn').textContent = '☀️ Light'; }
-
-function toggleTheme() {
-  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-  document.documentElement.setAttribute('data-theme', isDark ? '' : 'dark');
-  document.getElementById('theme-btn').textContent = isDark ? '🌙 Dark' : '☀️ Light';
-  localStorage.setItem('u-maker-theme', isDark ? 'light' : 'dark');
-  mermaid.initialize({ startOnLoad: false, theme: isDark ? 'default' : 'dark' });
-  mermaid.run();
-}
-
-// Mermaid
-mermaid.initialize({ startOnLoad: true, theme: (saved === 'dark') ? 'dark' : 'default', securityLevel: 'loose' });
-
-// Scroll spy
-const sections = document.querySelectorAll('.section[id]');
-const navLinks = document.querySelectorAll('nav a');
-const main = document.getElementById('main');
-main.addEventListener('scroll', () => {
-  let cur = '';
-  sections.forEach(s => { if (s.offsetTop - main.scrollTop <= 80) cur = s.id; });
-  navLinks.forEach(a => { a.classList.toggle('active', a.getAttribute('href') === '#' + cur); });
-});
-
-// Search filter
-function filterNav(q) {
-  navLinks.forEach(a => {
-    a.style.display = a.textContent.toLowerCase().includes(q.toLowerCase()) ? '' : 'none';
-  });
-}
-
-// Smooth scroll
-navLinks.forEach(a => a.addEventListener('click', e => {
-  e.preventDefault();
-  const target = document.querySelector(a.getAttribute('href'));
-  if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-}));
-</script>
 </body>
 </html>

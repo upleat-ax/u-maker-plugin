@@ -3,7 +3,7 @@
 PDCA 기반 SSoT(Single Source of Truth) 협업 오케스트레이터.
 4개 전문 에이전트와 3-Layer 파이프라인으로 소프트웨어 개발 전 과정을 자동화하는 Claude Code 플러그인.
 
-- Plugin version: `3.0.20`
+- Plugin version: `3.0.26`
 - Skills: `38` (13 engine + 24 command + 1 NL router) | Agents: `4`
 - [시작 가이드 (초보자용)](GET_STARTED.md) | [한국어 HTML](README.ko.html) | [English HTML](README.en.html)
 
