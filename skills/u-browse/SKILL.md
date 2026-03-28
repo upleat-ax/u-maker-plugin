@@ -313,6 +313,12 @@ erDiagram
     User ||--o{ Order : "places"
 ```
 
+> **주의 — Mermaid 제약조건 마커 규칙:**
+> 속성(attribute)당 **하나의 마커만** 허용된다 (`PK`, `FK`, `UK` 중 택 1).
+> `PK_FK`, `FK_UK` 등 결합 표기는 **Mermaid 구문 오류**를 발생시킨다.
+> 복합 제약조건 컬럼은 우선순위: `PK` > `FK` > `UK` 중 하나만 표기.
+> (예: PK이면서 FK → `PK`, FK이면서 UK → `FK`)
+
 ---
 
 #### 2-4. API → `api.html`
@@ -912,6 +918,178 @@ function openDiagModal(btn) {
       width:17px; height:17px; background:#2563eb; color:#fff;
       border-radius:50%; font-size:9px; font-weight:700; }
 ```
+
+---
+
+### Step 3.5: Page-level Side Navigation (모든 개별 HTML 공통)
+
+**모든 개별 문서 HTML** (srs.html, erd.html, api.html, screens.html, screen-flow.html, rtm.html, design-token.html, ui-components.html)에 **페이지 내 섹션 네비게이션 사이드바**를 포함한다.
+
+index.html의 sidebar는 문서 간 이동용이고, 이 page-nav는 **문서 내 섹션 간 이동용**이다.
+
+**레이아웃 구조:**
+
+```
+┌─────────────────────────────────────────────────┬──────────────┐
+│                                                 │  Page Nav    │
+│  Main Content (기존 문서 섹션들)                   │              │
+│                                                 │  ● Overview  │
+│  [Overview]                                     │  ○ Entities  │
+│  [Entity Cards]                                 │  ○ Relations │
+│  [Relationships]                                │  ○ API Usage │
+│  [API Usage]                                    │  ○ Statistics│
+│  [Statistics]                                   │              │
+│                                                 │              │
+└─────────────────────────────────────────────────┴──────────────┘
+```
+
+**HTML 구조:**
+
+```html
+<body>
+  <div class="page-layout">
+    <!-- Main content -->
+    <main class="page-main">
+      <section id="sec-overview"><h2>Overview</h2>...</section>
+      <section id="sec-entities"><h2>Entity Cards</h2>...</section>
+      <section id="sec-relations"><h2>Relationships</h2>...</section>
+      <!-- ... -->
+    </main>
+
+    <!-- Page-level side navigation -->
+    <nav class="page-nav">
+      <div class="page-nav-title">On this page</div>
+      <ul class="page-nav-list">
+        <li><a href="#sec-overview" class="page-nav-link active">Overview</a></li>
+        <li><a href="#sec-entities" class="page-nav-link">Entity Cards</a></li>
+        <li><a href="#sec-relations" class="page-nav-link">Relationships</a></li>
+        <li><a href="#sec-api-usage" class="page-nav-link">API Usage</a></li>
+        <li><a href="#sec-statistics" class="page-nav-link">Statistics</a></li>
+      </ul>
+    </nav>
+  </div>
+</body>
+```
+
+**CSS:**
+
+```css
+.page-layout {
+  display: grid;
+  grid-template-columns: 1fr 200px;
+  gap: 24px;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.page-nav {
+  position: sticky;
+  top: 24px;
+  align-self: start;
+  max-height: calc(100vh - 48px);
+  overflow-y: auto;
+}
+
+.page-nav-title {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-dim, #94a3b8);
+  margin-bottom: 12px;
+  padding-left: 12px;
+}
+
+.page-nav-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  border-left: 2px solid var(--border, #334155);
+}
+
+.page-nav-link {
+  display: block;
+  padding: 6px 12px;
+  font-size: 0.8rem;
+  color: var(--text-dim, #94a3b8);
+  text-decoration: none;
+  border-left: 2px solid transparent;
+  margin-left: -2px;
+  transition: all 0.15s;
+}
+
+.page-nav-link:hover {
+  color: var(--text, #e2e8f0);
+}
+
+.page-nav-link.active {
+  color: #38bdf8;
+  border-left-color: #38bdf8;
+  font-weight: 600;
+}
+
+/* 반응형: 768px 미만에서 page-nav 숨김 */
+@media (max-width: 768px) {
+  .page-layout { grid-template-columns: 1fr; }
+  .page-nav { display: none; }
+}
+```
+
+**Scroll Spy (JS):**
+
+```javascript
+document.addEventListener('DOMContentLoaded', () => {
+  const sections = document.querySelectorAll('main section[id]');
+  const navLinks = document.querySelectorAll('.page-nav-link');
+
+  if (!sections.length || !navLinks.length) return;
+
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        navLinks.forEach(link => link.classList.remove('active'));
+        const activeLink = document.querySelector(
+          '.page-nav-link[href="#' + entry.target.id + '"]'
+        );
+        if (activeLink) activeLink.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-20% 0px -60% 0px', threshold: 0 });
+
+  sections.forEach(section => observer.observe(section));
+
+  // Smooth scroll on click
+  navLinks.forEach(link => {
+    link.addEventListener('click', e => {
+      e.preventDefault();
+      const target = document.querySelector(link.getAttribute('href'));
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+});
+```
+
+**문서 타입별 page-nav 항목:**
+
+| 문서 | 섹션 목록 |
+|------|-----------|
+| **SRS** | Overview, Requirements, NF Requirements, User Stories, Features, Hierarchy, Coverage |
+| **IA** | Visual Sitemap, Screen Hierarchy, Navigation Patterns, User Flows |
+| **ERD** | ER Diagram, Entity Cards, Relationships, API Usage, Screen Binding |
+| **API** | Overview, Endpoints, Endpoint Detail, Error Codes, Screen Mapping |
+| **Screens** | Screen List, Screen Cards (각 SCR-NNN 서브링크), Responsive |
+| **Screen Flow** | Navigation Map, Journey Flows, Transition Rules |
+| **RTM** | Traceability Matrix, Coverage Dashboard, Gaps, Statistics |
+| **Design Token** | Color Palette, Typography, Spacing, Design Principles |
+| **UI Components** | Component Catalog, Usage Matrix |
+
+**구현 규칙:**
+
+1. 각 문서 HTML의 주요 섹션(`<h2>` 기준)마다 `<section id="sec-{kebab-name}">` 래퍼를 추가한다.
+2. page-nav 항목은 해당 문서의 실제 생성된 섹션 목록에서 동적으로 구성한다 (빈 섹션은 제외).
+3. index.html의 iframe 내에서 독립적으로 동작해야 한다 (iframe 내부 스크롤 기준).
+4. 와이어프레임 HTML (`SCR-NNN.html`)에는 page-nav를 적용하지 않는다 (자체 레이아웃 사용).
 
 ---
 

@@ -31,6 +31,7 @@ App: {{app}}
 
 ## 3. ERD Diagram
 
+<!-- constraints: PK, FK, UK 중 하나만 사용 (PK_FK, FK_UK 등 결합 표기 금지 — Mermaid 구문 오류 발생) -->
 ```mermaid
 erDiagram
 {{#entities}}
