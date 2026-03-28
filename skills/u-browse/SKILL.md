@@ -481,8 +481,68 @@ sequenceDiagram
 **핵심 규칙:**
 
 1. **App Frame은 실제 앱처럼 렌더링.** IA의 사이드바 메뉴, 페이지 헤더, 탭, 필터, 테이블, 페이지네이션 등 실제 데이터가 포함된 풀 UI를 구성한다.
-2. **어노테이션 마커 `<span class="mk">N</span>`** 를 UI 요소 옆에 인라인으로 배치한다. 마커 번호는 우측 어노테이션 패널의 설명과 1:1 대응한다.
-3. **어노테이션 패널**은 각 마커에 대해 `컴포넌트명 + 동작 설명 + API 호출(있으면) + 네비게이션(있으면)`을 기술한다.
+2. **와이어프레임의 테이블/폼에는 ERD 엔티티의 실제 데이터 필드를 모두 표시한다.** 예: 테이블 컬럼은 `접수번호(id)`, `고객명(customer_name)`, `상태(status)` 등 실제 필드명을 반영. 폼 입력도 `email`, `password`, `name` 등 실제 필드에 대응.
+3. **어노테이션 마커 `<span class="mk">N</span>`** 를 UI 요소 옆에 인라인으로 배치한다. 마커 번호는 우측 어노테이션 패널의 설명과 1:1 대응한다.
+4. **어노테이션 패널은 Design과 Develop 두 섹션으로 구분한다:**
+
+```html
+<div class="anno-panel">
+  <div class="anno-title">화면 어노테이션</div>
+
+  <!-- Design 관점 (기획/UX) -->
+  <div class="anno-section">
+    <div class="anno-section-title" style="color:#8b5cf6">🎨 Design</div>
+    <div class="anno-item"><div class="an">1</div><div class="ad">
+      <b>PageTitle</b>
+      "묘역관리 접수 내역" — 사이드바 활성 항목과 연동. 브레드크럼 표시.
+    </div></div>
+    <div class="anno-item"><div class="an">3</div><div class="ad">
+      <b>StatusTabFilter</b>
+      전체/접수완료/견적완료/주문완료/작업완료/진행완료.
+      탭 전환 시 필터 값 유지. Empty state: "해당 상태의 접수가 없습니다."
+    </div></div>
+    <!-- ... 각 마커별 UX/기획 관점 설명 -->
+  </div>
+
+  <!-- Develop 관점 (개발) -->
+  <div class="anno-section">
+    <div class="anno-section-title" style="color:#0891b2">🔧 Develop</div>
+    <div class="anno-item"><div class="an">3</div><div class="ad">
+      <b>StatusTabFilter</b>
+      <code>query param: status</code> | enum: received, quoted, ordered, work_completed, completed
+      상태 변경 시 <code>GET /v1/orders?status={value}</code> 재호출. Debounce 불필요 (탭 클릭).
+    </div></div>
+    <div class="anno-item"><div class="an">7</div><div class="ad">
+      <b>SearchButton</b>
+      <code>GET /v1/cemetery-care/orders?status=&workType=&q=&startDate=&endDate=&page=1&size=20</code>
+      Response: <code>{ data: Order[], total: number, page: number }</code>
+      Error 처리: 네트워크 에러 → 토스트, 빈 결과 → Empty state 컴포넌트.
+    </div></div>
+    <!-- ... 각 마커별 개발 관점 설명 (API 상세, 데이터 타입, 에러 처리, 상태 관리) -->
+  </div>
+
+  <!-- 비즈니스 규칙 (해당 시에만) -->
+  <div class="br-section">
+    <div class="br-title">비즈니스 규칙</div>
+    <div class="br-item">상태 탭 전환 시 기간/검색어 필터 값 유지</div>
+  </div>
+</div>
+```
+
+**Design 섹션에 포함할 내용:**
+- 화면 목적, 사용자 시나리오
+- 컴포넌트 동작 설명 (사용자 관점)
+- UX 규칙 (빈 상태, 로딩, 에러 표시 방식)
+- 접근성 요구사항
+- 반응형 동작
+
+**Develop 섹션에 포함할 내용:**
+- API 엔드포인트 + 파라미터 + 응답 스키마
+- 데이터 타입, enum 값
+- 상태 관리 방식 (Zustand/Redux store key)
+- 에러 처리 로직 (HTTP status별)
+- 캐싱 전략 (TanStack Query key)
+- DB 쿼리 힌트 (인덱스, 정렬)
 
 **Grid Layout:** `grid-template-columns: 1fr 300px`
 
@@ -536,36 +596,48 @@ sequenceDiagram
 </div>
 ```
 
-**섹션 3-3: 팝업 & 모달 정의 테이블**
+**섹션 3-3: 팝업 & 모달 와이어프레임**
+
+팝업과 모달은 테이블이 아닌 **실제 와이어프레임 목업**으로 작성한다. 각 팝업/모달에 대해 메인 화면과 동일한 수준의 UI를 구성한다.
 
 ```html
 <div class="spec-wrap">
   <div class="spec-title">팝업 & 모달</div>
-  <table class="spec-tbl">
-    <thead><tr><th>이름</th><th>트리거 조건</th><th>내용</th><th>버튼</th><th>후속 동작</th></tr></thead>
-    <tbody>
-      <tr>
-        <td>로그인 실패</td><td>401 응답</td>
-        <td>"이메일 또는 비밀번호가 올바르지 않습니다"</td>
-        <td>[확인]</td>
-        <td>이메일 입력 포커스</td>
-      </tr>
-      <tr>
-        <td>계정 잠금</td><td>5회 실패 시 (429 응답)</td>
-        <td>"계정이 10분간 잠겼습니다. 비밀번호 찾기를 이용해주세요."</td>
-        <td>[비밀번호 찾기] [닫기]</td>
-        <td>[비밀번호 찾기] → SCR-015</td>
-      </tr>
-      <tr>
-        <td>로딩 오버레이</td><td>API 호출 중</td>
-        <td>스피너 + "로그인 중..."</td>
-        <td>-</td>
-        <td>API 응답 시 자동 닫힘</td>
-      </tr>
-    </tbody>
-  </table>
+
+  <!-- 모달 1: 로그인 실패 -->
+  <div style="margin:16px 0;padding:16px;border:2px solid #e2e8f0;border-radius:12px;background:#fff">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+      <strong style="font-size:13px">⚠️ 로그인 실패 모달</strong>
+      <span style="font-size:10px;color:#64748b;background:#f1f5f9;padding:2px 8px;border-radius:4px">트리거: 401 응답</span>
+    </div>
+    <!-- 모달 와이어프레임 -->
+    <div style="max-width:360px;margin:0 auto;background:#fff;border:1px solid #d1d9e0;border-radius:10px;box-shadow:0 4px 12px rgba(0,0,0,.15);overflow:hidden">
+      <div style="padding:20px 24px;text-align:center">
+        <div style="font-size:32px;margin-bottom:8px">⚠️</div>
+        <div style="font-weight:700;font-size:15px;margin-bottom:6px">로그인 실패</div>
+        <div style="font-size:13px;color:#64748b">이메일 또는 비밀번호가 올바르지 않습니다.</div>
+      </div>
+      <div style="padding:12px 24px 20px;text-align:center">
+        <span style="display:inline-block;padding:8px 32px;background:#0891b2;color:#fff;border-radius:6px;font-size:13px;font-weight:700">확인</span>
+      </div>
+    </div>
+    <!-- 어노테이션 -->
+    <div style="margin-top:12px;font-size:11px;color:#64748b;display:grid;grid-template-columns:1fr 1fr;gap:8px">
+      <div><b style="color:#8b5cf6">🎨 Design:</b> [확인] 클릭 시 이메일 입력에 포커스. 흔들림 애니메이션 추가 권장.</div>
+      <div><b style="color:#0891b2">🔧 Develop:</b> HTTP 401 응답 시 표시. 5회 연속 실패 시 → 계정 잠금 모달로 전환 (429).</div>
+    </div>
+  </div>
+
+  <!-- 모달 2: 확인 다이얼로그, 로딩 오버레이 등도 동일 패턴 -->
 </div>
 ```
+
+**팝업/모달 와이어프레임 규칙:**
+1. 각 팝업/모달을 **실제 UI 모습**으로 렌더링 (border + shadow + 내용 + 버튼)
+2. 트리거 조건 배지를 우상단에 표시
+3. 와이어프레임 아래에 **Design/Develop 어노테이션**을 그리드로 표시
+4. 폼이 포함된 모달은 **ERD 필드와 매핑된 입력 필드**를 모두 표시
+5. 확인/취소 버튼의 후속 동작을 명시
 
 **섹션 3-1: 유사 화면 대비 차이점 테이블 (선택 — 비슷한 화면이 있을 때만)**
 
@@ -660,18 +732,35 @@ function openDiagModal(btn) {
 - 데이터 스토어(양쪽 열린 사각형): 상태 관리(Zustand/Redux), API 캐시(TanStack Query)
 - 화살표로 데이터 흐름 방향 표시
 
-**섹션 5: 어노테이션 범례 (하단)**
+**섹션 5: 데이터 모델 (data-model-section)**
+
+이 화면에서 사용하는 ERD 엔티티의 상세 필드 정보를 표시한다.
 
 ```html
 <div class="spec-wrap">
-  <div class="spec-title">어노테이션 범례</div>
-  <div style="display:flex;flex-wrap:wrap;gap:8px;font-size:11px">
-    <span><span class="mk">1</span> PageTitle</span>
-    <span><span class="mk">2</span> CountBadge</span>
-    <!-- 모든 마커 나열 -->
-  </div>
+  <div class="spec-title">데이터 모델 — {EntityName}</div>
+  <table class="spec-tbl">
+    <thead><tr><th>필드명</th><th>타입</th><th>제약조건</th><th>UI 매핑</th><th>설명</th></tr></thead>
+    <tbody>
+      <tr><td><code>id</code></td><td>int</td><td>PK, AUTO_INCREMENT</td><td>-</td><td>고유 식별자</td></tr>
+      <tr><td><code>email</code></td><td>varchar(255)</td><td>UK, NOT NULL</td><td>① EmailInput</td><td>로그인 이메일</td></tr>
+      <tr><td><code>password</code></td><td>varchar(255)</td><td>NOT NULL</td><td>② PasswordInput</td><td>bcrypt 해시</td></tr>
+      <tr><td><code>name</code></td><td>varchar(100)</td><td>NOT NULL</td><td>프로필 표시</td><td>사용자 이름</td></tr>
+      <tr><td><code>status</code></td><td>enum</td><td>DEFAULT 'active'</td><td>⑩ StatusBadge</td><td>active/inactive/locked</td></tr>
+      <tr><td><code>created_at</code></td><td>datetime</td><td>DEFAULT NOW()</td><td>테이블 컬럼</td><td>가입일시</td></tr>
+    </tbody>
+  </table>
 </div>
 ```
+
+각 엔티티에 대해:
+- `필드명`: ERD의 column name
+- `타입`: DB 타입 (varchar, int, datetime, enum 등)
+- `제약조건`: PK, FK, UK, NOT NULL, DEFAULT 등
+- `UI 매핑`: 이 필드가 와이어프레임의 어떤 컴포넌트(마커 번호)에 표시되는지
+- `설명`: 필드 용도
+
+**여러 엔티티가 사용되는 경우** 각 엔티티별로 테이블을 반복한다. 엔티티 간 FK 관계도 표시.
 
 ---
 
@@ -680,31 +769,23 @@ function openDiagModal(btn) {
 각 `SCR-NNN`에 대해:
 
 1. **Screen Info** — `screens.json`에서 id, name, route, description, tracedFrom 추출
-2. **App Sidebar** — `ia.json`의 `siteMap`에서 사이드바 메뉴 구조 생성. 현재 화면에 `.active` 클래스 적용
-3. **Page Body** — `screens.json`의 `components` 배열을 분석하여 실제 UI 요소 생성:
-   - type=table → `<table>` (3~5행의 샘플 데이터 포함)
-   - type=input → `<input>` 또는 `<select>`
+2. **Data Fields 수집** — `erd.json`에서 이 화면이 사용하는 엔티티의 **모든 필드**를 추출. 테이블 컬럼, 폼 입력, 상세 표시에 사용할 필드 목록을 확정.
+3. **App Sidebar** — `ia.json`의 `siteMap`에서 사이드바 메뉴 구조 생성. 현재 화면에 `.active` 클래스 적용
+4. **Page Body** — `screens.json`의 `components` 배열 + ERD 필드를 조합하여 실제 UI 요소 생성:
+   - type=table → `<table>` — **ERD 엔티티의 모든 표시 가능 필드를 컬럼으로 포함** (3~5행의 샘플 데이터). 컬럼 헤더에 `필드 라벨 (field_name)` 형식 표시.
+   - type=input → `<input>` — **ERD 필드의 타입/제약조건 반영** (varchar→text, enum→select, date→datepicker). placeholder에 필드명 표시.
    - type=button → `<button>`
-   - type=card → `<div>` 카드
+   - type=card → `<div>` 카드 — 카드 내 ERD 필드들을 라벨+값으로 나열
    - 각 요소 옆에 `<span class="mk">N</span>` 어노테이션 마커 배치
-4. **Annotation Panel** — 각 마커에 대해:
-   - 컴포넌트명 (bold)
-   - 동작 설명 (1~2줄)
-   - API 호출이면 `<code>GET /v1/...</code>` 포함
-   - 네비게이션이면 대상 화면 ID 포함
-   - 어노테이션 패널 하단에 **비즈니스 규칙** 섹션 (해당 화면에 특별한 규칙이 있을 때만 표시):
-     ```html
-     <div class="br-section">
-       <div class="br-title">비즈니스 규칙</div>
-       <div class="br-item">상태 탭 전환 시 기간/검색어 필터 값 유지</div>
-       <div class="br-item">기본 정렬 접수일 내림차순</div>
-     </div>
-     ```
-5. **Component Spec Table** — 모든 컴포넌트를 마커 번호 순서대로 테이블 작성. **Validation 컬럼 포함** (Input 타입: 형식, min/max 길이, 필수 여부, 패턴 등)
-6. **Button Action Table** — Action/Navigation 타입 컴포넌트의 트리거, API 호출, 성공/실패 시 동작 상세
-7. **Popup & Modal Table** — 화면에서 발생 가능한 모든 팝업/모달/토스트 정의 (트리거 조건, 내용, 버튼, 후속 동작)
-8. **Diagrams** — 화면의 주요 API 호출과 조건 분기를 분석하여 3가지 SVG 다이어그램 생성 (축소 표시 + 🔍 확대 모달)
-7. **Annotation Legend** — 모든 마커의 빠른 참조 목록
+5. **Annotation Panel (Design / Develop 분리):**
+   - **🎨 Design 섹션**: 각 마커별 UX/기획 관점 (화면 목적, 사용자 시나리오, Empty/Loading/Error 상태, 접근성)
+   - **🔧 Develop 섹션**: 각 마커별 개발 관점 (API endpoint + params + response, enum 값, 상태 관리, 에러 처리, 캐싱)
+   - **비즈니스 규칙** (해당 시에만)
+6. **Component Spec Table** — 모든 컴포넌트를 마커 번호 순서대로 테이블 작성. **Validation 컬럼 포함**
+7. **Button Action Table** — Action/Navigation 타입 컴포넌트의 트리거, API 호출, 성공/실패 시 동작 상세
+8. **Popup & Modal 와이어프레임** — 화면에서 발생하는 모든 팝업/모달을 **실제 UI 와이어프레임 목업**으로 작성. 각 팝업 아래에 Design/Develop 어노테이션 포함. 폼 모달은 ERD 필드 매핑 입력 포함.
+9. **Data Model Table** — 이 화면이 사용하는 ERD 엔티티별로 (필드명, 타입, 제약조건, UI 매핑 마커, 설명) 테이블 작성
+10. **Diagrams** — 3가지 SVG 다이어그램 (축소 + 🔍 확대 모달)
 
 **어노테이션 마커 CSS:**
 
