@@ -49,6 +49,7 @@ triggers:
 │   │   ├── screen-flow.html           # Screen Flow 리치 HTML (네비게이션 플로우차트)
 │   │   ├── rtm.html                   # RTM 리치 HTML (커버리지 히트맵)
 │   │   ├── design-token.html          # Design Token 리치 HTML (컬러 스워치, 타이포)
+│   │   ├── ui-components.html         # UI 컴포넌트 카탈로그 (Storybook 연결)
 │   │   └── wireframes/
 │   │       ├── index.html             # 와이어프레임 뷰어 인덱스
 │   │       ├── SCR-001.html           # 와이어프레임 + 어노테이션 + 비즈니스 로직
@@ -419,6 +420,123 @@ sequenceDiagram
 | **Typography** | 타이포 스케일 (실제 폰트 크기/두께로 렌더링) |
 | **Spacing** | 스페이싱 시스템 (실제 크기 박스 시각화) |
 | **Design Principles** | 원칙 카드 (Do / Don't) |
+
+---
+
+#### 2-9. UI Components → `ui-components.html`
+
+**입력:** `screens.json` (전체 화면의 components 집계) + `design-token.json` + `ux-guide.md`
+**교차 참조:** Screens(사용처), Design Token(스타일), Storybook(있으면 연결)
+
+**sidebar에서 Design Tokens 바로 아래에 위치한다.**
+
+**생성할 HTML 섹션:**
+
+| 섹션 | 내용 |
+|------|------|
+| **Component Catalog** | 전체 화면에서 사용된 컴포넌트를 타입별로 그룹핑하여 카탈로그 표시 |
+| **Component Card** | 각 컴포넌트별: 이름, 타입 배지, 용도 설명, 사용 화면 목록, 시각적 미리보기, Storybook 링크 |
+| **Usage Matrix** | 컴포넌트 × 화면 매트릭스 (어떤 컴포넌트가 어떤 화면에서 사용되는지) |
+
+**Component Catalog 생성 알고리즘:**
+
+1. `screens.json`의 모든 화면에서 `components` 배열을 수집
+2. 컴포넌트명(PascalCase)으로 중복 제거 + 사용 횟수 카운트
+3. 타입별 그룹핑 (Layout / Input / Display / Action / Navigation / Filter)
+4. 각 컴포넌트에 대해:
+
+```html
+<!-- 컴포넌트 카드 -->
+<div class="comp-card">
+  <div class="comp-card-header">
+    <span class="comp-type-badge input">Input</span>
+    <h3>DateRangePicker</h3>
+    <span class="usage-count">5개 화면에서 사용</span>
+  </div>
+  <div class="comp-card-body">
+    <!-- 시각적 미리보기 -->
+    <div class="comp-preview">
+      <input type="text" placeholder="2026-01-01 ~ 2026-03-29" readonly
+             style="border:1px solid #d1d9e0;padding:6px 10px;border-radius:6px;font-size:12px;width:200px">
+    </div>
+    <!-- Props -->
+    <div class="comp-props">
+      <div><b>Props:</b> value: [Date, Date] | defaultRange: last30d | onChange: fn</div>
+      <div><b>Validation:</b> startDate ≤ endDate, 최대 범위 1년</div>
+    </div>
+    <!-- 사용처 -->
+    <div class="comp-usage">
+      <b>사용 화면:</b>
+      <a href="wireframes/SCR-001.html">SCR-001 접수내역</a>,
+      <a href="wireframes/SCR-010.html">SCR-010 정산내역</a>, ...
+    </div>
+    <!-- Design Token 연결 -->
+    <div class="comp-tokens">
+      <b>Design Token:</b> border: <code>var(--border)</code>, bg: <code>var(--input-bg)</code>, radius: <code>6px</code>
+    </div>
+    <!-- Storybook 링크 (있으면) -->
+    <div class="comp-storybook">
+      <a href="{{STORYBOOK_URL}}/iframe.html?id=components-daterangepicker" target="_blank">
+        📖 Storybook에서 보기
+      </a>
+    </div>
+  </div>
+</div>
+```
+
+**Storybook 연결:**
+
+1. `u-maker.config.json`에서 `storybook.url` 설정을 확인:
+   ```json
+   {
+     "storybook": {
+       "url": "http://localhost:6006",
+       "deployed": "https://storybook.example.com"
+     }
+   }
+   ```
+2. 설정이 있으면 각 컴포넌트 카드에 Storybook 링크를 생성:
+   - URL 패턴: `{storybook.url}/?path=/story/components-{component-name-kebab}`
+   - `deployed` URL이 있으면 우선 사용, 없으면 `url` 사용
+3. 설정이 없으면 Storybook 링크 섹션을 생략
+4. 프로젝트에 `.storybook/` 디렉토리가 존재하면 자동 감지하여 `storybook.url` 미설정이라도 `http://localhost:6006` 기본값 사용
+
+**컴포넌트 타입별 시각적 미리보기:**
+
+| 타입 | 미리보기 렌더링 |
+|------|----------------|
+| **Input** | `<input>` 또는 `<select>` 실제 HTML 요소 (placeholder 포함) |
+| **Button/Action** | `<button>` 실제 렌더링 (primary/secondary/danger 스타일) |
+| **Display** | 배지, 태그, 아이콘 등 실제 렌더링 |
+| **Filter** | 탭바, 셀렉트, 체크박스 그룹 등 실제 렌더링 |
+| **Layout** | 간략 박스 레이아웃 (header/sidebar/content 구조) |
+| **Navigation** | 링크, 브레드크럼 등 실제 렌더링 |
+| **Table** | 2~3행 미니 테이블 미리보기 |
+| **Card** | 카드 레이아웃 미리보기 |
+| **Modal** | 미니 모달 박스 미리보기 |
+
+**Usage Matrix 생성:**
+
+```html
+<table class="usage-matrix">
+  <thead>
+    <tr>
+      <th>컴포넌트</th>
+      <th>SCR-001</th><th>SCR-002</th><th>SCR-010</th><th>...</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>DateRangePicker</td>
+      <td>●</td><td></td><td>●</td><td>...</td>
+    </tr>
+    <tr>
+      <td>StatusBadge</td>
+      <td>●</td><td>●</td><td>●</td><td>...</td>
+    </tr>
+  </tbody>
+</table>
+```
 
 ---
 
@@ -812,6 +930,8 @@ const FILES = [
   { path: "hjw/02-design/screens.html", type: "doc", name: "Screens", dir: "hjw/02-design", icon: "📱", docType: "screens" },
   { path: "hjw/02-design/screen-flow.html", type: "doc", name: "Screen Flow", dir: "hjw/02-design", icon: "🔀", docType: "screen-flow" },
   { path: "hjw/02-design/rtm.html", type: "doc", name: "RTM", dir: "hjw/02-design", icon: "📊", docType: "rtm" },
+  { path: "hjw/02-design/design-token.html", type: "doc", name: "Design Tokens", dir: "hjw/02-design", icon: "🎨", docType: "design-token" },
+  { path: "hjw/02-design/ui-components.html", type: "doc", name: "UI Components", dir: "hjw/02-design", icon: "🧩", docType: "ui-components" },
   { path: "hjw/02-design/wireframes/SCR-001.html", type: "wireframe", name: "SCR-001: 로그인", dir: "hjw/02-design/wireframes", icon: "🖼️" },
   { path: "hjw/02-design/wireframes/SCR-002.html", type: "wireframe", name: "SCR-002: 대시보드", dir: "hjw/02-design/wireframes", icon: "🖼️" },
   // ...
