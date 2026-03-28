@@ -93,7 +93,7 @@ a:hover{text-decoration:underline}
 <nav class="sidebar" id="sidebar">
   <div class="sidebar-header">
     <h1>U-MAKER</h1>
-    <p>v3.0.10 &mdash; Plugin Documentation</p>
+    <p>v3.0.20 &mdash; Plugin Documentation</p>
   </div>
   <div class="sidebar-nav">
 
@@ -135,7 +135,7 @@ a:hover{text-decoration:underline}
     </div>
 
   </div>
-  <div class="sidebar-footer">GPL-3.0 &copy; U PLEAT &middot; v3.0.10</div>
+  <div class="sidebar-footer">GPL-3.0 &copy; U PLEAT &middot; v3.0.20</div>
 </nav>
 
 <main class="main">
@@ -146,7 +146,7 @@ a:hover{text-decoration:underline}
   <p>PDCA 기반 SSoT(Single Source of Truth) 협업 오케스트레이터.<br>
   4개 전문 에이전트와 3-Layer 파이프라인으로 소프트웨어 개발 전 과정을 자동화하는 Claude Code 플러그인.</p>
   <div class="stats">
-    <div class="stat"><div class="stat-val">35</div><div class="stat-label">Skills (12 engine + 21 cmd + 1 router + 1 NL)</div></div>
+    <div class="stat"><div class="stat-val">38</div><div class="stat-label">Skills (13 engine + 24 command + 1 NL router)</div></div>
     <div class="stat"><div class="stat-val">4</div><div class="stat-label">Agents</div></div>
     <div class="stat"><div class="stat-val">5</div><div class="stat-label">PDCA Phases</div></div>
   </div>
@@ -232,8 +232,8 @@ curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/insta
 <table>
 <thead><tr><th>Prefix</th><th>용도</th><th>User-invocable</th><th>수</th></tr></thead>
 <tbody>
-<tr><td><code>u-*</code></td><td>Command (slash command)</td><td>Yes</td><td>21</td></tr>
-<tr><td><code>u-skill-*</code></td><td>Internal engine</td><td>No</td><td>12</td></tr>
+<tr><td><code>u-*</code></td><td>Command (slash command)</td><td>Yes</td><td>24</td></tr>
+<tr><td><code>u-skill-*</code></td><td>Internal engine</td><td>No</td><td>13</td></tr>
 <tr><td><code>u-skill-router</code></td><td>Intent router</td><td>No</td><td>1</td></tr>
 <tr><td><code>u-maker</code></td><td>NL router + help</td><td>Yes</td><td>1</td></tr>
 </tbody>
@@ -329,7 +329,7 @@ curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/insta
 <li><strong>flags</strong>: <code>-i</code> (interactive) | <code>--step</code> | <code>--only X</code> | <code>--cascade</code> | <code>--dry-run</code> | <code>--json</code></li>
 </ul>
 
-<h3>6.1 Lifecycle (8)</h3>
+<h3>6.1 Lifecycle (9)</h3>
 <table>
 <thead><tr><th>Command</th><th>Description</th><th>Example</th></tr></thead>
 <tbody>
@@ -341,6 +341,7 @@ curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/insta
 <tr><td><code>/u-dev [scope] [--only X] [-i] [--step]</code></td><td>명세 → FE + BE + DB 코드 생성</td><td><code>/u-dev [app] --only fe</code></td></tr>
 <tr><td><code>/u-qa [scope] [-i] [--step]</code></td><td>TC 설계 + 테스트 실행 + Report + exit criteria</td><td><code>/u-qa [app]</code></td></tr>
 <tr><td><code>/u-ship [scope] [-i] [--step]</code></td><td>최종 검증 + iteration log + retrospective</td><td><code>/u-ship [app]</code></td></tr>
+<tr><td><code>/u-loop [scope] [--from X] [--to Y]</code></td><td>PDCA 파이프라인 무인 자동 실행. 체크포인트 기반 재개 지원</td><td><code>/u-loop [app] --from plan --to check</code></td></tr>
 </tbody>
 </table>
 
@@ -356,13 +357,15 @@ curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/insta
 </tbody>
 </table>
 
-<h3>6.3 Observability (3)</h3>
+<h3>6.3 Observability (5)</h3>
 <table>
 <thead><tr><th>Command</th><th>Description</th><th>Example</th></tr></thead>
 <tbody>
 <tr><td><code>/u-status [scope]</code></td><td>대시보드 (phase, 진행률, impact flags)</td><td><code>/u-status [app]</code></td></tr>
 <tr><td><code>/u-coverage [scope]</code></td><td>classified → 산출물 커버리지 리포트</td><td><code>/u-coverage all</code></td></tr>
 <tr><td><code>/u-trace [scope] [id]</code></td><td>raw → classified → docs 추적 체인</td><td><code>/u-trace [app] FR-015</code></td></tr>
+<tr><td><code>/u-browse [scope] [--only path] [--open]</code></td><td>SSoT 문서를 분석·교차참조하여 리치 HTML 뷰어 생성. 와이어프레임에 어노테이션·화면흐름·비즈니스로직 포함</td><td><code>/u-browse [app] --open</code></td></tr>
+<tr><td><code>/u-report [scope] [--only X]</code></td><td>SSoT 문서를 Phase별 HTML 리포트로 변환. Done/Remaining/Improve 진행률 추적</td><td><code>/u-report [app] --only plan</code></td></tr>
 </tbody>
 </table>
 
@@ -398,7 +401,7 @@ curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/insta
 <!-- Section 7 -->
 <h2 id="sec7">7. Engine Skills</h2>
 
-<p>12개 횡단 엔진. user-invocable이 아니며, command skill이 내부적으로 호출한다.</p>
+<p>13개 횡단 엔진. user-invocable이 아니며, command skill이 내부적으로 호출한다.</p>
 
 <h3>Core Engines (orchestrator 소속)</h3>
 <table>
@@ -569,15 +572,15 @@ curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/insta
 <h2 id="sec12">12. Plugin Repository Layout</h2>
 
 <pre><code>u-maker-plugin/
-+-- .claude-plugin/plugin.json        # v3.0.10
++-- .claude-plugin/plugin.json        # v3.0.20
 +-- agents/                           # 4 agent definitions
 |   +-- u-agent-orchestrator.md
 |   +-- u-agent-planner.md
 |   +-- u-agent-builder.md
 |   +-- u-agent-guardian.md
 +-- skills/
-|   +-- u-skill-*/SKILL.md            # 12 internal engines
-|   +-- u-*/SKILL.md                  # 21 command skills (user-invocable)
+|   +-- u-skill-*/SKILL.md            # 13 internal engines
+|   +-- u-*/SKILL.md                  # 24 command skills (user-invocable)
 |   +-- u-maker/SKILL.md              # NL router
 +-- hooks/                            # Event hooks
 |   +-- hooks.json
@@ -814,7 +817,7 @@ cd /path/to/u-maker-plugin && ./deploy_local.sh</code></pre>
 
 <!-- Footer -->
 <div class="footer">
-  <strong>U-MAKER Plugin</strong> v3.0.10 &middot; GPL-3.0 &copy; U PLEAT<br>
+  <strong>U-MAKER Plugin</strong> v3.0.20 &middot; GPL-3.0 &copy; U PLEAT<br>
   PDCA 기반 SSoT 협업 오케스트레이터
 </div>
 

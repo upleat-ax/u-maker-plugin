@@ -3,8 +3,8 @@
 PDCA 기반 SSoT(Single Source of Truth) 협업 오케스트레이터.
 4개 전문 에이전트와 3-Layer 파이프라인으로 소프트웨어 개발 전 과정을 자동화하는 Claude Code 플러그인.
 
-- Plugin version: `3.0.10`
-- Skills: `37` (13 engine + 23 command + 1 NL router) | Agents: `4`
+- Plugin version: `3.0.20`
+- Skills: `38` (13 engine + 24 command + 1 NL router) | Agents: `4`
 - [시작 가이드 (초보자용)](GET_STARTED.md) | [한국어 HTML](README.ko.html) | [English HTML](README.en.html)
 
 ---
@@ -57,7 +57,7 @@ curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/insta
 3. [PDCA 5-Phase Process](#3-pdca-5-phase-process)
 4. [3-Layer Data Pipeline](#4-3-layer-data-pipeline)
 5. [Agents (4개)](#5-agents)
-6. [Commands (21개)](#6-commands)
+6. [Commands (22개)](#6-commands)
 7. [Engine Skills (12개)](#7-engine-skills)
 8. [Interaction Modes](#8-interaction-modes)
 9. [4-Tier ID Hierarchy](#9-4-tier-id-hierarchy)
@@ -117,7 +117,7 @@ USER INPUT
 
 | Prefix | 용도 | User-invocable | 수 |
 |--------|------|----------------|-----|
-| `u-*` | Command (slash command) | Yes | 21 |
+| `u-*` | Command (slash command) | Yes | 22 |
 | `u-skill-*` | Internal engine | No | 12 |
 | `u-skill-router` | Intent router | No | 1 |
 | `u-maker` | NL router + help | Yes | 1 |
@@ -208,7 +208,7 @@ _input/ (Raw)  →  _classified/ (Structured JSON)  →  docs/ (Deliverables)
 - **target**: 문서/항목 이름
 - **flags**: `-i` (interactive) | `--step` | `--only X` | `--cascade` | `--dry-run` | `--json`
 
-### 6.1 Lifecycle (8)
+### 6.1 Lifecycle (9)
 
 | Command | Description | Example |
 |---------|-------------|---------|
@@ -220,6 +220,7 @@ _input/ (Raw)  →  _classified/ (Structured JSON)  →  docs/ (Deliverables)
 | `/u-dev [scope] [--only X] [-i] [--step]` | 명세 → FE + BE + DB 코드 생성 | `/u-dev [app] --only fe` |
 | `/u-qa [scope] [-i] [--step]` | TC 설계 + 테스트 실행 + Report + exit criteria | `/u-qa [app]` |
 | `/u-ship [scope] [-i] [--step]` | 최종 검증 + iteration log + retrospective | `/u-ship [app]` |
+| `/u-loop [scope] [--from X] [--to Y]` | PDCA 파이프라인 무인 자동 실행 | `/u-loop [app] --from plan --to qa` |
 
 ### 6.2 Operations (5)
 
@@ -231,13 +232,15 @@ _input/ (Raw)  →  _classified/ (Structured JSON)  →  docs/ (Deliverables)
 | `/u-sync [scope]` | 전체 문서 일관성 검증 + 수정 제안 | `/u-sync [app]` |
 | `/u-gate [scope]` | Phase gate 검사 + 전환 | `/u-gate [app]` |
 
-### 6.3 Observability (3)
+### 6.3 Observability (5)
 
 | Command | Description | Example |
 |---------|-------------|---------|
 | `/u-status [scope]` | 대시보드 (phase, 진행률, impact flags) | `/u-status [app]` |
 | `/u-coverage [scope]` | classified → 산출물 커버리지 리포트 | `/u-coverage all` |
 | `/u-trace [scope] [id]` | raw → classified → docs 추적 체인 | `/u-trace [app] FR-015` |
+| `/u-browse [scope] [--only path] [--open]` | SSoT 문서를 분석·교차참조하여 리치 HTML 뷰어 생성. 와이어프레임에 어노테이션·화면흐름·비즈니스로직 포함 | `/u-browse [app] --open` |
+| `/u-report [scope] [--only X]` | Phase별 HTML 리포트 생성 (Done/Remaining/Improve 추적) | `/u-report [app]` |
 
 ### 6.4 Collaboration (5)
 
@@ -446,7 +449,7 @@ u-maker-plugin/
 │   └── u-agent-guardian.md
 ├── skills/
 │   ├── u-skill-*/SKILL.md            # 12 internal engines
-│   ├── u-*/SKILL.md                  # 21 command skills (user-invocable)
+│   ├── u-*/SKILL.md                  # 22 command skills (user-invocable)
 │   └── u-maker/SKILL.md              # NL router
 ├── hooks/                            # Event hooks
 │   ├── hooks.json

@@ -185,7 +185,7 @@ td code,th code{background:#e2e8f0;font-size:.85em}
 <aside class="sidebar" id="sidebar">
   <div class="sidebar-header">
     <h1>U-MAKER</h1>
-    <div class="subtitle">v3.0.10 &mdash; 시작 가이드</div>
+    <div class="subtitle">v3.0.20 &mdash; 시작 가이드</div>
   </div>
   <nav class="sidebar-nav">
     <!-- Overview -->
@@ -219,7 +219,7 @@ td code,th code{background:#e2e8f0;font-size:.85em}
     </div>
   </nav>
   <div class="sidebar-footer">
-    U-MAKER v3.0.10 &middot; GPL-3.0 &copy; U PLEAT<br>
+    U-MAKER v3.0.20 &middot; GPL-3.0 &copy; U PLEAT<br>
     <a href="https://github.com/upleat-ax/u-maker-plugin" target="_blank">GitHub</a>
   </div>
 </aside>
@@ -414,7 +414,7 @@ td code,th code{background:#e2e8f0;font-size:.85em}
 <span class="cmd">/u-trace [app] FR-015</span>                    <span class="cmt"># 추적 체인</span></code></pre>
 
 <!-- ════════════════════════════════════════ Part 6 ═══════════════════════════════════════ -->
-<h2 class="part-heading" id="part6">Part 6. 명령어 치트시트 (전체 23개)</h2>
+<h2 class="part-heading" id="part6">Part 6. 명령어 치트시트 (전체 24개)</h2>
 
 <h3>Lifecycle Commands (9)</h3>
 
@@ -574,7 +574,7 @@ td code,th code{background:#e2e8f0;font-size:.85em}
 <span class="cmd">/u-gate [app] --force</span>                   <span class="cmt"># 경고 무시하고 강제 전환</span>
 <span class="cmd">/u-gate all</span>                             <span class="cmt"># 전체 앱 gate 검증</span></code></pre>
 
-<h3>Observability Commands (4)</h3>
+<h3>Observability Commands (5)</h3>
 
 <!-- /u-status -->
 <h4><code>/u-status</code> &mdash; 프로젝트 대시보드</h4>
@@ -619,6 +619,17 @@ td code,th code{background:#e2e8f0;font-size:.85em}
 <span class="cmd">/u-report all</span>                           <span class="cmt"># 전체 프로젝트 통합 리포트</span>
 <span class="cmd">/u-report [app] --only erd,api</span>          <span class="cmt"># ERD + API만 리포트 생성</span>
 <span class="cmd">/u-report [app] --open</span>                  <span class="cmt"># 생성 후 브라우저에서 바로 열기</span></code></pre>
+
+<!-- /u-browse -->
+<h4><code>/u-browse</code> &mdash; SSoT 리치 HTML 뷰어 생성</h4>
+<div class="desc">
+<p>SSoT 문서를 분석&middot;교차참조하여 리치 HTML 뷰어를 생성합니다. 문서 간 링크, 다이어그램, 통계를 포함한 브라우저 기반 인터랙티브 뷰어를 만들어 팀 전체가 SSoT를 쉽게 탐색할 수 있습니다.</p>
+<p><span class="file-tag">생성 파일</span> <code>browse/index.html</code> (인터랙티브 뷰어), 임베디드 다이어그램 및 교차참조 링크</p>
+</div>
+<pre><code><span class="cmd">/u-browse [app]</span>                         <span class="cmt"># [app] 앱 SSoT 리치 뷰어 생성</span>
+<span class="cmd">/u-browse all</span>                           <span class="cmt"># 전체 프로젝트 통합 뷰어</span>
+<span class="cmd">/u-browse [app] --only erd,screens</span>      <span class="cmt"># ERD + Screen만 뷰어 생성</span>
+<span class="cmd">/u-browse [app] --open</span>                  <span class="cmt"># 생성 후 브라우저에서 바로 열기</span></code></pre>
 
 <h3>Collaboration Commands (5)</h3>
 
@@ -862,14 +873,14 @@ td code,th code{background:#e2e8f0;font-size:.85em}
 <hr class="section-hr">
 
 <h3>License</h3>
-<p>MIT</p>
+<p>GPL-3.0</p>
 
 </div><!-- .content -->
 </div><!-- .main -->
 
 <!-- Footer -->
 <footer style="margin-left:var(--sidebar-w);text-align:center;padding:24px 20px 32px;color:var(--text-light);font-size:.82rem;border-top:1px solid var(--border);background:var(--content-bg)">
-  U-MAKER v3.0.10 &middot; GPL-3.0 &copy; U PLEAT &middot; <a href="https://github.com/upleat-ax/u-maker-plugin" target="_blank" style="color:var(--accent);text-decoration:none">GitHub</a>
+  U-MAKER v3.0.20 &middot; GPL-3.0 &copy; U PLEAT &middot; <a href="https://github.com/upleat-ax/u-maker-plugin" target="_blank" style="color:var(--accent);text-decoration:none">GitHub</a>
 </footer>
 
 <!-- Back to top -->
