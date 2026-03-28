@@ -339,7 +339,7 @@ sequenceDiagram
 
 ### ★ Step 3: Generate Wireframe HTML (가장 중요)
 
-**각 SCR-NNN 와이어프레임은 단순 UI 목업이 아니라, 분석된 컨텍스트가 포함된 리치 문서이다.**
+**각 SCR-NNN 와이어프레임은 단순 UI 목업이 아니라, 풀 앱 프레임 + 인라인 어노테이션 + 컴포넌트 명세 + 로직 다이어그램이 포함된 종합 설계 문서이다.**
 
 **입력 소스 (교차 참조):**
 - `screens.json` → 해당 화면의 components, interactions, states
@@ -347,274 +347,180 @@ sequenceDiagram
 - `api.json` → 해당 화면에서 호출하는 API 엔드포인트
 - `srs.json` → 해당 화면에 매핑된 Feature(FT)의 비즈니스 로직
 - `erd.json` → 해당 화면에 바인딩된 데이터 엔티티
-- `rtm.json` → 해당 화면의 추적성 매핑
+- `ia.json` → 사이드바 메뉴 구조, 화면 계층
 
-**와이어프레임 HTML 레이아웃:**
+---
 
-```
-┌──────────────────────────────────────────────────────────────────┐
-│ SCR-001: 로그인 화면                               [← Prev] [Next →] │
-│ Route: /login  |  FT: FT-0010, FT-0011  |  Status: Final        │
-├──────────────────────────────────┬───────────────────────────────┤
-│                                  │  📋 Description                │
-│                                  │  사용자가 이메일/비밀번호 또는   │
-│    ┌─────────────────────┐      │  소셜 계정으로 로그인하는 화면   │
-│    │                     │      │                               │
-│    │   🏢 Logo           │      ├───────────────────────────────┤
-│    │                     │      │  🔘 Components                 │
-│    │  ┌───────────────┐  │      │  • TextInput: email (필수)     │
-│    │  │ Email         │  │      │  • TextInput: password (필수)  │
-│    │  └───────────────┘  │      │  • Button: login (primary)    │
-│    │  ┌───────────────┐  │      │  • Button: socialLogin        │
-│    │  │ Password      │  │      │  • Link: forgotPassword       │
-│    │  └───────────────┘  │      │  • Link: register             │
-│    │                     │      │                               │
-│    │  [  🔵 로그인  ]    │      ├───────────────────────────────┤
-│    │                     │      │  ⚡ Button Actions             │
-│    │  ── 또는 ──         │      │                               │
-│    │                     │      │  🔵 로그인 버튼:               │
-│    │  [G] [K] [N]       │      │    → POST /api/auth/login     │
-│    │  소셜 로그인        │      │    → 성공: SCR-002 (Dashboard)│
-│    │                     │      │    → 실패: 에러 메시지 표시    │
-│    │  비밀번호 찾기       │      │    → Validation: email format,│
-│    │  회원가입            │      │      password min 8자         │
-│    │                     │      │                               │
-│    └─────────────────────┘      │  🔗 소셜 로그인:              │
-│                                  │    → GET /api/auth/{provider} │
-│    (와이어프레임 영역)            │    → 성공: SCR-002            │
-│                                  │    → 실패: 에러 모달          │
-│                                  │                               │
-│                                  │  📎 비밀번호 찾기:            │
-│                                  │    → navigate: SCR-015        │
-│                                  │                               │
-│                                  │  📎 회원가입:                 │
-│                                  │    → navigate: SCR-020        │
-│                                  │                               │
-├──────────────────────────────────┼───────────────────────────────┤
-│  🔀 Screen Flow                  │  💬 Popups & Modals           │
-│                                  │                               │
-│  ┌─────┐    ┌─────────┐        │  ⚠️ 로그인 실패 모달:          │
-│  │Splash│───▶│SCR-001 │        │    조건: 401 응답              │
-│  │      │    │ Login   │        │    내용: "이메일 또는 비밀번호가│
-│  └─────┘    └────┬────┘        │           올바르지 않습니다"    │
-│                   │              │    버튼: [확인] → 포커스 email │
-│              ┌────▼────┐        │                               │
-│              │SCR-002  │        │  🔄 로딩 오버레이:             │
-│              │Dashboard│        │    조건: API 호출 중           │
-│              └─────────┘        │    내용: 스피너 + "로그인 중..." │
-│                                  │                               │
-├──────────────────────────────────┼───────────────────────────────┤
-│  📊 Business Logic               │  🗃️ Data Entities             │
-│                                  │                               │
-│  FT-0010: 이메일/비밀번호 인증    │  User                         │
-│  • email + password 입력          │  ├ id (PK)                   │
-│  • 서버 인증 → JWT 발급           │  ├ email (UK)                │
-│  • 토큰 로컬 스토리지 저장         │  ├ password (hashed)         │
-│  • 5회 실패 시 10분 잠금           │  ├ name                     │
-│                                  │  └ lastLoginAt               │
-│  FT-0011: 소셜 로그인             │                               │
-│  • Google/Kakao/Naver OAuth       │  Session                     │
-│  • 미가입 사용자 자동 회원가입      │  ├ id (PK)                   │
-│  • 기존 계정 연동                  │  ├ userId (FK → User)        │
-│                                  │  ├ token                     │
-│                                  │  └ expiresAt                 │
-└──────────────────────────────────┴───────────────────────────────┘
+#### 와이어프레임 HTML 구조 (5개 섹션)
+
+와이어프레임 HTML은 다음 5개 섹션으로 구성된다. **이 순서와 구조를 반드시 따른다.**
+
+**섹션 1: doc-header (상단 고정 바)**
+
+```html
+<div class="doc-header">
+  <div class="dh-left">
+    <span class="sid">S-APP-NNNN</span>          <!-- Screen ID 배지 -->
+    <span class="dh-name">화면 제목</span>        <!-- 화면명 -->
+    <span class="dh-path">/route/path</span>      <!-- 라우트 경로 -->
+  </div>
+  <div class="dh-right">
+    <a href="index.html">전체 목록</a>            <!-- 인덱스 링크 -->
+    <span>FT-XXXX</span>                          <!-- 관련 Feature -->
+    <span>FR-XXXX</span>                          <!-- 관련 Requirement -->
+    <span>YYYY-MM-DD</span>                       <!-- 생성일 -->
+  </div>
+</div>
 ```
 
-**와이어프레임 HTML 생성 알고리즘:**
+**섹션 2: stage (앱 프레임 + 어노테이션 패널)**
+
+```
+┌─────────────────────────────────────────┬──────────────────────┐
+│  App Frame (실제 앱 UI 모습)              │  어노테이션 패널       │
+│  ┌──────────┬─────────────────────┐     │                      │
+│  │ Sidebar  │  Page Header        │     │  ① PageTitle         │
+│  │ (메뉴)   │  ────────────────   │     │  설명 텍스트...       │
+│  │          │  Tabs ③             │     │                      │
+│  │          │  Filters ④⑤⑥⑦      │     │  ② CountBadge        │
+│  │          │  ────────────────   │     │  설명 텍스트...       │
+│  │          │  Table ⑧⑨⑩⑪       │     │                      │
+│  │          │  ────────────────   │     │  ③ StatusTab         │
+│  │          │  Pagination         │     │  설명 텍스트...       │
+│  │          │                     │     │  ...                  │
+│  └──────────┴─────────────────────┘     │                      │
+│                                          │  [비즈니스 규칙]      │
+│                                          │  (있는 경우에만 표시)  │
+└─────────────────────────────────────────┴──────────────────────┘
+```
+
+**핵심 규칙:**
+
+1. **App Frame은 실제 앱처럼 렌더링.** IA의 사이드바 메뉴, 페이지 헤더, 탭, 필터, 테이블, 페이지네이션 등 실제 데이터가 포함된 풀 UI를 구성한다.
+2. **어노테이션 마커 `<span class="mk">N</span>`** 를 UI 요소 옆에 인라인으로 배치한다. 마커 번호는 우측 어노테이션 패널의 설명과 1:1 대응한다.
+3. **어노테이션 패널**은 각 마커에 대해 `컴포넌트명 + 동작 설명 + API 호출(있으면) + 네비게이션(있으면)`을 기술한다.
+4. **비즈니스 규칙**은 해당 화면에 특별한 규칙이 있는 경우에만 어노테이션 패널 하단에 표시한다. 없으면 생략.
+
+**Grid Layout:** `grid-template-columns: 1fr 300px`
+
+**섹션 3: 컴포넌트 명세 테이블 (spec-wrap)**
+
+```html
+<div class="spec-wrap">
+  <div class="spec-title">컴포넌트 명세</div>
+  <table class="spec-tbl">
+    <thead><tr><th>#</th><th>컴포넌트</th><th>타입</th><th>Props / 설명</th><th>API</th></tr></thead>
+    <tbody>
+      <!-- 어노테이션 마커 번호 순서대로 모든 컴포넌트 나열 -->
+      <tr><td>1</td><td>PageTitle</td><td>Layout</td><td>title="화면제목"</td><td>-</td></tr>
+      <tr><td>2</td><td>SearchButton</td><td>Action</td><td>variant=primary</td><td>GET /v1/resource</td></tr>
+      <!-- ... -->
+    </tbody>
+  </table>
+</div>
+```
+
+각 컴포넌트에 대해:
+- `#`: 어노테이션 마커 번호
+- `컴포넌트`: 컴포넌트명 (PascalCase)
+- `타입`: Layout / Display / Input / Filter / Action / Navigation 중 택 1
+- `Props / 설명`: 주요 props, placeholder, 기본값, 동작 설명
+- `API`: 이 컴포넌트가 트리거하는 API 엔드포인트 (없으면 `-`)
+
+**섹션 3-1: 유사 화면 대비 차이점 테이블 (선택 — 비슷한 화면이 있을 때만)**
+
+```html
+<div class="spec-wrap">
+  <div class="spec-title">{유사화면 ID} 대비 차이점</div>
+  <table class="spec-tbl">
+    <thead><tr><th>컴포넌트</th><th>차이 내용</th><th>API</th></tr></thead>
+    <tbody>
+      <tr><td>WorkTypeSelect</td><td>추가 필터: 봉분정비/석물보수/...</td><td>query param: workType</td></tr>
+    </tbody>
+  </table>
+</div>
+```
+
+**섹션 4: 로직 흐름 다이어그램 (diagrams-section)**
+
+SVG 다이어그램으로 화면의 로직 흐름을 시각화한다. **Mermaid가 아닌 인라인 SVG로 직접 그린다.**
+
+3가지 다이어그램을 생성한다:
+
+**A. Condition Flow Chart — 조건 분기 흐름**
+
+화면 진입부터 데이터 표시까지의 조건 분기를 시각화:
+- 시작(둥근 사각형, 청록) → 기본 파라미터 설정(사각형, 하늘) → API 호출(사각형, 초록) → 결과 분기(마름모, 노랑) → 렌더링/Empty State
+- 필터 변경 시 API 재호출 루프
+
+**SVG 스타일 규칙:**
+| 요소 | 색상 | 용도 |
+|---|---|---|
+| 시작/종료 노드 | `#0891b2` (청록) | 진입/종료점 |
+| 프로세스 노드 | `#e0f2fe` stroke `#38bdf8` | 기본 처리 단계 |
+| API 호출 노드 | `#10b981` (초록) | API 요청 |
+| 분기 다이아몬드 | `#f59e0b` (노랑) | 조건 판단 |
+| 에러/Empty | `#fee2e2` stroke `#f87171` | 실패/빈 상태 |
+| 화살표 | `#6b7280` | 흐름 연결 |
+
+**B. Sequential Diagram — 시퀀스 다이어그램**
+
+사용자 → 프론트엔드 → Backend API → DB 간의 상호작용 시퀀스:
+- 4개 actor 라이프라인: 사용자(보라) / 프론트엔드(파랑) / Backend(초록) / DB(노랑)
+- 화면 진입 → 기본 조회 → 응답 → 렌더링 → 필터 변경 → 재조회 흐름
+- 실선 화살표(요청), 점선 화살표(응답)
+
+**C. Data Flow Diagram — 데이터 흐름**
+
+화면의 상태 관리와 데이터 흐름을 시각화:
+- 외부 엔티티(사각형): 사용자, DB
+- 프로세스(원): 페이지 컴포넌트, Backend API
+- 데이터 스토어(양쪽 열린 사각형): 상태 관리(Zustand/Redux), API 캐시(TanStack Query)
+- 화살표로 데이터 흐름 방향 표시
+
+**섹션 5: 어노테이션 범례 (하단)**
+
+```html
+<div class="spec-wrap">
+  <div class="spec-title">어노테이션 범례</div>
+  <div style="display:flex;flex-wrap:wrap;gap:8px;font-size:11px">
+    <span><span class="mk">1</span> PageTitle</span>
+    <span><span class="mk">2</span> CountBadge</span>
+    <!-- 모든 마커 나열 -->
+  </div>
+</div>
+```
+
+---
+
+#### 와이어프레임 생성 알고리즘
 
 각 `SCR-NNN`에 대해:
 
-1. **Screen Info** — `screens.json`에서 해당 SCR의 `name`, `route`, `description`, `tracedFrom` 추출
-2. **Components** — `screens.json`의 `components` 배열에서 name, type, interaction 추출
-3. **Button Actions** — `components`에서 type=button/link인 항목의 `interaction`을 분석:
-   - API 호출이면 → `api.json`에서 해당 엔드포인트의 request/response 정보 포함
-   - 네비게이션이면 → `screen-flow.json`에서 대상 화면 정보 포함
-   - 상태 변경이면 → `screens.json`의 `states`에서 조건/표시 정보 포함
-4. **Screen Flow** — `screen-flow.json`의 `navigationMap`에서 이 화면의 진입/이탈 경로 추출 → Mermaid `flowchart` 생성
-5. **Business Logic** — `srs.json`에서 `tracedFrom` FT의 상위 US, FR 추출하여 비즈니스 규칙 표시
-6. **Popups & Modals** — `screens.json`의 `interactions`에서 action에 "modal", "popup", "alert", "confirm", "toast" 포함된 항목 추출
-7. **Data Entities** — `erd.json`에서 이 화면이 사용하는 엔티티 추출 (API response schema의 엔티티명으로 매핑)
-8. **Wireframe Area** — 기존 wireframe HTML이 있으면 `<iframe>`으로 임베드, 없으면 `components`를 기반으로 간략 UI 목업 생성
-9. **Navigation** — 이전/다음 화면 링크 (IA의 screenHierarchy 순서)
+1. **Screen Info** — `screens.json`에서 id, name, route, description, tracedFrom 추출
+2. **App Sidebar** — `ia.json`의 `siteMap`에서 사이드바 메뉴 구조 생성. 현재 화면에 `.active` 클래스 적용
+3. **Page Body** — `screens.json`의 `components` 배열을 분석하여 실제 UI 요소 생성:
+   - type=table → `<table>` (3~5행의 샘플 데이터 포함)
+   - type=input → `<input>` 또는 `<select>`
+   - type=button → `<button>`
+   - type=card → `<div>` 카드
+   - 각 요소 옆에 `<span class="mk">N</span>` 어노테이션 마커 배치
+4. **Annotation Panel** — 각 마커에 대해:
+   - 컴포넌트명 (bold)
+   - 동작 설명 (1~2줄)
+   - API 호출이면 `<code>GET /v1/...</code>` 포함
+   - 네비게이션이면 대상 화면 ID 포함
+5. **Component Spec Table** — 모든 컴포넌트를 마커 번호 순서대로 테이블 작성
+6. **Diagrams** — 화면의 주요 API 호출과 조건 분기를 분석하여 3가지 SVG 다이어그램 생성
+7. **Annotation Legend** — 모든 마커의 빠른 참조 목록
 
-**와이어프레임 페이지 HTML 구조:**
+**어노테이션 마커 CSS:**
 
-```html
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>{{SCR_ID}}: {{SCR_NAME}} — Wireframe</title>
-<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
-<style>
-  /* --- 와이어프레임 페이지 전용 스타일 --- */
-  * { margin:0; padding:0; box-sizing:border-box; }
-  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #1e293b; background: #f8fafc; }
-
-  .wf-header { background: #1e293b; color: #f1f5f9; padding: 12px 24px; display: flex; justify-content: space-between; align-items: center; }
-  .wf-header h1 { font-size: 16px; font-weight: 600; }
-  .wf-header .meta { font-size: 12px; color: #94a3b8; }
-  .wf-header .nav-btns a { color: #38bdf8; text-decoration: none; font-size: 13px; margin-left: 12px; }
-
-  .wf-tags { padding: 8px 24px; background: #f1f5f9; display: flex; gap: 8px; flex-wrap: wrap; border-bottom: 1px solid #e2e8f0; }
-  .tag { display: inline-block; padding: 2px 10px; border-radius: 9999px; font-size: 11px; font-weight: 600; }
-  .tag.ft { background: #dbeafe; color: #1d4ed8; }
-  .tag.route { background: #f0fdf4; color: #166534; }
-  .tag.status { background: #fef3c7; color: #92400e; }
-
-  .wf-body { display: grid; grid-template-columns: 1fr 360px; min-height: calc(100vh - 100px); }
-  .wf-main { padding: 24px; display: flex; flex-direction: column; gap: 24px; }
-  .wf-sidebar { background: #ffffff; border-left: 1px solid #e2e8f0; overflow-y: auto; }
-
-  /* Wireframe preview area */
-  .wf-preview { background: #ffffff; border: 2px dashed #cbd5e1; border-radius: 12px; min-height: 400px; padding: 24px; display: flex; align-items: center; justify-content: center; }
-  .wf-preview iframe { width: 100%; min-height: 500px; border: none; border-radius: 8px; }
-
-  /* Bottom panels */
-  .wf-panels { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-  .panel { background: #ffffff; border-radius: 12px; border: 1px solid #e2e8f0; overflow: hidden; }
-  .panel-header { padding: 10px 16px; background: #f8fafc; border-bottom: 1px solid #e2e8f0; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 6px; }
-  .panel-body { padding: 12px 16px; font-size: 13px; line-height: 1.6; }
-
-  /* Sidebar sections */
-  .sb-section { border-bottom: 1px solid #f1f5f9; }
-  .sb-section-title { padding: 10px 16px; font-size: 12px; font-weight: 700; text-transform: uppercase; color: #64748b; background: #f8fafc; cursor: pointer; display: flex; justify-content: space-between; }
-  .sb-section-title::after { content: '▼'; font-size: 9px; }
-  .sb-section.collapsed .sb-section-title::after { content: '▶'; }
-  .sb-section.collapsed .sb-section-body { display: none; }
-  .sb-section-body { padding: 12px 16px; font-size: 13px; }
-
-  /* Component list */
-  .comp-item { display: flex; align-items: center; gap: 8px; padding: 4px 0; }
-  .comp-type { font-size: 10px; padding: 1px 6px; border-radius: 4px; font-weight: 600; }
-  .comp-type.button { background: #dbeafe; color: #1d4ed8; }
-  .comp-type.input { background: #fef3c7; color: #92400e; }
-  .comp-type.link { background: #f0fdf4; color: #166534; }
-  .comp-type.modal { background: #fce7f3; color: #9d174d; }
-  .comp-type.table { background: #e0e7ff; color: #3730a3; }
-  .comp-type.card { background: #f5f3ff; color: #6d28d9; }
-
-  /* Action items */
-  .action-item { padding: 8px 0; border-bottom: 1px solid #f1f5f9; }
-  .action-trigger { font-weight: 600; color: #1e293b; }
-  .action-detail { font-size: 12px; color: #64748b; margin-top: 2px; }
-  .action-api { display: inline-block; font-family: monospace; font-size: 11px; background: #1e293b; color: #e2e8f0; padding: 1px 6px; border-radius: 3px; }
-  .action-nav { color: #2563eb; text-decoration: none; }
-
-  /* Entity mini card */
-  .entity-card { background: #f8fafc; border-radius: 6px; padding: 8px; margin: 4px 0; border: 1px solid #e2e8f0; }
-  .entity-name { font-weight: 600; font-size: 13px; }
-  .entity-cols { font-size: 11px; color: #64748b; }
-
-  /* Mermaid */
-  .mermaid { text-align: center; margin: 8px 0; }
-
-  /* Popup list */
-  .popup-item { padding: 8px 0; border-bottom: 1px solid #f1f5f9; }
-  .popup-condition { font-size: 11px; color: #f59e0b; }
-  .popup-content { font-size: 12px; margin-top: 2px; }
-
-  /* Responsive */
-  @media (max-width: 900px) {
-    .wf-body { grid-template-columns: 1fr; }
-    .wf-sidebar { border-left: none; border-top: 1px solid #e2e8f0; }
-    .wf-panels { grid-template-columns: 1fr; }
-  }
-  @media print { .wf-header { background: #fff; color: #000; } }
-</style>
-</head>
-<body>
-<header class="wf-header">
-  <div>
-    <h1>{{SCR_ID}}: {{SCR_NAME}}</h1>
-    <div class="meta">Route: {{ROUTE}} | {{DESCRIPTION_SHORT}}</div>
-  </div>
-  <div class="nav-btns">
-    <a href="{{PREV_LINK}}">← {{PREV_NAME}}</a>
-    <a href="{{NEXT_LINK}}">{{NEXT_NAME}} →</a>
-    <a href="{{INDEX_PATH}}" target="_top">☰ Index</a>
-  </div>
-</header>
-<div class="wf-tags">
-  {{#FEATURES}}<span class="tag ft">{{FT_ID}}</span>{{/FEATURES}}
-  <span class="tag route">{{ROUTE}}</span>
-  <span class="tag status">{{STATUS}}</span>
-</div>
-
-<div class="wf-body">
-  <div class="wf-main">
-    <!-- Wireframe Preview -->
-    <div class="wf-preview">
-      {{WIREFRAME_CONTENT}}
-      <!-- iframe으로 기존 wireframe 임베드, 또는 컴포넌트 기반 목업 -->
-    </div>
-
-    <!-- Bottom Panels: Screen Flow + Business Logic -->
-    <div class="wf-panels">
-      <div class="panel">
-        <div class="panel-header">🔀 Screen Flow</div>
-        <div class="panel-body">
-          <div class="mermaid">{{SCREEN_FLOW_MERMAID}}</div>
-        </div>
-      </div>
-      <div class="panel">
-        <div class="panel-header">📊 Business Logic</div>
-        <div class="panel-body">{{BUSINESS_LOGIC_HTML}}</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Right Sidebar -->
-  <div class="wf-sidebar">
-    <div class="sb-section">
-      <div class="sb-section-title" onclick="this.parentElement.classList.toggle('collapsed')">📋 Description</div>
-      <div class="sb-section-body">{{DESCRIPTION_FULL}}</div>
-    </div>
-    <div class="sb-section">
-      <div class="sb-section-title" onclick="this.parentElement.classList.toggle('collapsed')">🔘 Components ({{COMP_COUNT}})</div>
-      <div class="sb-section-body">{{COMPONENTS_HTML}}</div>
-    </div>
-    <div class="sb-section">
-      <div class="sb-section-title" onclick="this.parentElement.classList.toggle('collapsed')">⚡ Button Actions</div>
-      <div class="sb-section-body">{{ACTIONS_HTML}}</div>
-    </div>
-    <div class="sb-section">
-      <div class="sb-section-title" onclick="this.parentElement.classList.toggle('collapsed')">💬 Popups & Modals</div>
-      <div class="sb-section-body">{{POPUPS_HTML}}</div>
-    </div>
-    <div class="sb-section">
-      <div class="sb-section-title" onclick="this.parentElement.classList.toggle('collapsed')">🗃️ Data Entities</div>
-      <div class="sb-section-body">{{ENTITIES_HTML}}</div>
-    </div>
-  </div>
-</div>
-
-<script>
-  mermaid.initialize({ startOnLoad: true, theme: 'default' });
-</script>
-</body>
-</html>
+```css
+.mk { display:inline-flex; align-items:center; justify-content:center;
+      width:17px; height:17px; background:#2563eb; color:#fff;
+      border-radius:50%; font-size:9px; font-weight:700; }
 ```
-
-**플레이스홀더 생성 규칙:**
-
-| 플레이스홀더 | 소스 | 생성 방법 |
-|---|---|---|
-| `{{SCR_ID}}` | screens.json → id | 직접 사용 |
-| `{{SCR_NAME}}` | screens.json → name | 직접 사용 |
-| `{{ROUTE}}` | screens.json → route | 직접 사용 |
-| `{{DESCRIPTION_FULL}}` | screens.json → description | 직접 사용 |
-| `{{FEATURES}}` | screens.json → tracedFrom | FT ID 배열 → 태그 반복 |
-| `{{COMPONENTS_HTML}}` | screens.json → components | 각 컴포넌트를 `.comp-item`로 렌더링 |
-| `{{ACTIONS_HTML}}` | screens.json → interactions (type=button/link) + api.json | 각 액션을 `.action-item`로 렌더링. API 호출이면 메서드+경로+응답 포함 |
-| `{{POPUPS_HTML}}` | screens.json → interactions에서 modal/popup/alert 필터 | 각 팝업을 `.popup-item`로 렌더링. 트리거 조건 + 내용 + 버튼 |
-| `{{SCREEN_FLOW_MERMAID}}` | screen-flow.json → navigationMap에서 이 SCR 관련 전이만 추출 | `flowchart TD` 코드 생성. 현재 화면은 강조 스타일 |
-| `{{BUSINESS_LOGIC_HTML}}` | srs.json → features에서 tracedFrom FT 매핑된 항목 | FT별 제목 + 설명 + acceptance criteria |
-| `{{ENTITIES_HTML}}` | erd.json → 이 화면의 API 응답 스키마에 포함된 엔티티 | `.entity-card`로 렌더링 (엔티티명 + 주요 컬럼) |
-| `{{WIREFRAME_CONTENT}}` | 기존 wireframes/*.html이 있으면 iframe, 없으면 components 기반 목업 | `<iframe src="...">` 또는 컴포넌트 div 생성 |
-| `{{PREV_LINK}}`, `{{NEXT_LINK}}` | IA screenHierarchy 순서에서 이전/다음 | 상대 경로 href |
 
 ---
 
