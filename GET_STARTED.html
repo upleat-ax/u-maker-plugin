@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>u-maker 시작하기 (Get Started)</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--sidebar-w:280px;--bg:#0f172a;--sidebar-bg:#1e293b;--main-bg:#f1f5f9;--text:#e2e8f0;--text-main:#1e293b;--accent:#3b82f6;--accent-hover:#2563eb;--code-bg:#334155;--border:#334155;--active-bg:#334155;--badge-bg:#475569;--badge-text:#94a3b8}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;display:flex;min-height:100vh;background:var(--main-bg);color:var(--text-main)}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+
+/* Sidebar */
+.sidebar{width:var(--sidebar-w);background:var(--sidebar-bg);color:var(--text);position:fixed;top:0;left:0;height:100vh;overflow-y:auto;z-index:100;transition:transform .3s}
+.sidebar-header{padding:24px 20px 16px;border-bottom:1px solid var(--border)}
+.sidebar-header h1{font-size:18px;font-weight:700;color:#fff}
+.sidebar-header p{font-size:12px;color:var(--badge-text);margin-top:4px}
+.sidebar-nav{padding:12px 0}
+.nav-group{margin-bottom:4px}
+.nav-group-title{display:flex;align-items:center;justify-content:space-between;padding:8px 20px;font-size:13px;font-weight:600;color:var(--badge-text);cursor:pointer;user-select:none}
+.nav-group-title:hover{color:var(--text)}
+.nav-group-title .badge{background:var(--badge-bg);color:var(--badge-text);font-size:11px;padding:2px 8px;border-radius:10px;font-weight:500}
+.nav-item{display:block;padding:6px 20px 6px 28px;font-size:13px;color:var(--text);cursor:pointer;transition:background .15s}
+.nav-item:hover{background:rgba(255,255,255,.05);text-decoration:none}
+.nav-item.active{background:var(--active-bg);color:#fff;font-weight:500}
+.nav-item .id{display:inline-block;background:var(--code-bg);color:var(--badge-text);font-size:11px;padding:1px 6px;border-radius:3px;margin-right:6px;font-family:'SF Mono',Monaco,monospace}
+
+/* Main */
+.main{margin-left:var(--sidebar-w);flex:1;padding:40px 60px 80px;max-width:900px}
+.main h2{font-size:24px;font-weight:700;margin:40px 0 16px;padding-bottom:8px;border-bottom:2px solid #e2e8f0;color:var(--text-main)}
+.main h2:first-child{margin-top:0}
+.main h3{font-size:18px;font-weight:600;margin:28px 0 12px;color:#334155}
+.main h4{font-size:15px;font-weight:600;margin:20px 0 8px;color:#475569}
+.main p{line-height:1.7;margin-bottom:12px}
+.main ul,.main ol{margin:8px 0 16px 24px;line-height:1.7}
+.main li{margin-bottom:4px}
+.main strong{font-weight:600}
+.main blockquote{border-left:3px solid var(--accent);padding:8px 16px;margin:12px 0;background:#e0f2fe;border-radius:0 4px 4px 0;font-size:14px;color:#1e40af}
+.main hr{border:none;border-top:1px solid #e2e8f0;margin:32px 0}
+.main code{background:#e2e8f0;padding:2px 6px;border-radius:3px;font-size:13px;font-family:'SF Mono',Monaco,'Cascadia Code',monospace}
+.main pre{background:#1e293b;color:#e2e8f0;padding:16px 20px;border-radius:8px;overflow-x:auto;margin:12px 0 20px;font-size:13px;line-height:1.6}
+.main pre code{background:none;padding:0;color:inherit}
+.main table{width:100%;border-collapse:collapse;margin:12px 0 20px;font-size:14px}
+.main th{background:#e2e8f0;padding:8px 12px;text-align:left;font-weight:600;border:1px solid #cbd5e1}
+.main td{padding:8px 12px;border:1px solid #cbd5e1;vertical-align:top}
+.main tr:nth-child(even){background:#f8fafc}
+.cmd{color:#3b82f6;font-weight:500}
+.comment{color:#64748b}
+
+/* Mobile */
+.hamburger{display:none;position:fixed;top:12px;left:12px;z-index:200;background:var(--sidebar-bg);color:#fff;border:none;padding:8px 12px;border-radius:6px;font-size:18px;cursor:pointer}
+@media(max-width:768px){
+  .sidebar{transform:translateX(-100%)}
+  .sidebar.open{transform:translateX(0)}
+  .hamburger{display:block}
+  .main{margin-left:0;padding:20px}
+  .overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:50}
+  .overlay.open{display:block}
+}
+</style>
+</head>
+<body>
+
+<button class="hamburger" onclick="toggleSidebar()">&#9776;</button>
+<div class="overlay" onclick="toggleSidebar()"></div>
+
+<nav class="sidebar">
+  <div class="sidebar-header">
+    <h1>u-maker</h1>
+    <p>v3.0.8 — 시작 가이드</p>
+  </div>
+  <div class="sidebar-nav">
+
+    <div class="nav-group">
+      <div class="nav-group-title">개요 <span class="badge">3</span></div>
+      <a class="nav-item active" href="#part1" onclick="nav(this)"><span class="id">01</span> u-maker란?</a>
+      <a class="nav-item" href="#part2" onclick="nav(this)"><span class="id">02</span> 설치</a>
+      <a class="nav-item" href="#part3" onclick="nav(this)"><span class="id">03</span> 프로젝트 시작</a>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-group-title">사용법 <span class="badge">4</span></div>
+      <a class="nav-item" href="#part4" onclick="nav(this)"><span class="id">04</span> Interaction Mode</a>
+      <a class="nav-item" href="#part5" onclick="nav(this)"><span class="id">05</span> 역할별 활용</a>
+      <a class="nav-item" href="#part6" onclick="nav(this)"><span class="id">06</span> 명령어 치트시트</a>
+      <a class="nav-item" href="#part7" onclick="nav(this)"><span class="id">07</span> /u-discuss 세션</a>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-group-title">실전 <span class="badge">3</span></div>
+      <a class="nav-item" href="#part8" onclick="nav(this)"><span class="id">08</span> 실전 시나리오</a>
+      <a class="nav-item" href="#part9" onclick="nav(this)"><span class="id">09</span> 폴더 구조</a>
+      <a class="nav-item" href="#part10" onclick="nav(this)"><span class="id">10</span> Auto-Cascade</a>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-group-title">부록 <span class="badge">3</span></div>
+      <a class="nav-item" href="#part11" onclick="nav(this)"><span class="id">11</span> Wireframe Viewer</a>
+      <a class="nav-item" href="#part12" onclick="nav(this)"><span class="id">12</span> FAQ</a>
+      <a class="nav-item" href="#part13" onclick="nav(this)"><span class="id">13</span> 다음 단계</a>
+    </div>
+
+  </div>
+</nav>
+
+<main class="main">
+
+<!-- Part 1 -->
+<h2 id="part1">Part 1. u-maker란?</h2>
+
+<h3>한 줄 요약</h3>
+<p>u-maker는 <strong>4개의 AI 에이전트</strong>와 <strong>3-Layer 파이프라인</strong>으로 소프트웨어 개발의 전 과정(기획 → 설계 → 구현 → 검증 → 개선)을 자동화하는 <strong>Claude Code 플러그인</strong>입니다.</p>
+
+<h3>기존 방식 vs u-maker</h3>
+<table>
+<tr><th></th><th>기존 방식</th><th>u-maker 방식</th></tr>
+<tr><td><strong>문서</strong></td><td>코드 먼저, 문서는 나중에</td><td>문서 먼저, 코드는 문서 기반 생성 (Docs-First)</td></tr>
+<tr><td><strong>기존 프로젝트</strong></td><td>문서 없이 코드만 존재</td><td><code>/u-reverse</code>로 코드에서 SSoT 역공학</td></tr>
+<tr><td><strong>데이터 분석</strong></td><td>200페이지 RFP → 앞부분 loss</td><td>3-Layer 파이프라인으로 chunk 분석 → 손실 없음</td></tr>
+<tr><td><strong>요구사항 추적</strong></td><td>스프레드시트 수동 관리</td><td>4-Tier ID(USR→FR→US→FT)로 자동 추적</td></tr>
+<tr><td><strong>설계 변경</strong></td><td>SRS 수정 시 수동 갱신</td><td>Auto-Cascade 자동 전파</td></tr>
+<tr><td><strong>품질 관리</strong></td><td>개발 후 수동 QA</td><td>Phase Gate 자동 검증</td></tr>
+<tr><td><strong>AI 판단</strong></td><td>블랙박스</td><td>Assumptions Log로 모든 판단 기록</td></tr>
+<tr><td><strong>문서 언어</strong></td><td>고정</td><td><code>language.documents</code> (ko/en/ja/zh)</td></tr>
+</table>
+
+<h3>핵심 개념 5가지</h3>
+
+<h4>1. SSoT (Single Source of Truth)</h4>
+<p>모든 결정이 <code>.u-maker/</code> 아래 문서에 기록됩니다. <code>.md</code>(사람용) + <code>.json</code>(기계용) 2종이 항상 함께 생성됩니다.</p>
+
+<h4>2. 3-Layer 파이프라인</h4>
+<pre><code>_input/          →      _classified/        →      docs/
+(RFP, 회의록,         (requirements,              (srs.md, erd.md,
+ AS-IS 분석, ...)      pain-points, ...)           api.md, screen.md, ...)</code></pre>
+<p><code>_input/raw/</code>에 파일을 넣으면 <code>/u-ingest</code> 실행 시 자동으로 <code>rfp/</code>, <code>as-is/</code> 등으로 분류합니다.</p>
+
+<h4>3. PDCA 5-Phase</h4>
+<pre><code>Plan → Design → Do → Check → Act → 다음 Iteration</code></pre>
+<table>
+<tr><th>Phase 전환</th><th>Gate 조건</th></tr>
+<tr><td>Plan → Design</td><td>SRS + IA + Roadmap = Final</td></tr>
+<tr><td>Design → Do</td><td>ERD + RTM + Screen + API = Final</td></tr>
+<tr><td>Do → Check</td><td>Code 문서 Final</td></tr>
+<tr><td>Check → Act</td><td>Test Cases + Test Report = Final</td></tr>
+</table>
+
+<h4>4. 4-Tier ID 체계</h4>
+<pre><code>USR-0001 (사용자 유형)
+  └── FR-0001 (기능 요구사항)
+        └── US-0001 (유저 스토리)
+              └── FT-0001 (Feature = 구현 단위)</code></pre>
+
+<h4>5. Assumptions Log</h4>
+<p>AI가 정보 부족 시 추정한 내용을 기록. <code>/u-assume approve/reject</code>로 리뷰.</p>
+
+<h3>AI 팀 구성 (4개 에이전트)</h3>
+<table>
+<tr><th>에이전트</th><th>역할</th><th>모델</th></tr>
+<tr><td><strong>Orchestrator</strong></td><td>라우팅, 워크플로우 조율, 상태 관리</td><td>opus</td></tr>
+<tr><td><strong>Planner</strong></td><td>SRS, IA, ERD, API, Screen, 분석</td><td>sonnet</td></tr>
+<tr><td><strong>Builder</strong></td><td>FE+BE 코드 생성, 빌드</td><td>sonnet</td></tr>
+<tr><td><strong>Guardian</strong></td><td>Gate 검증, TC 설계/실행, 일관성 검증</td><td>sonnet</td></tr>
+</table>
+
+<hr>
+
+<!-- Part 2 -->
+<h2 id="part2">Part 2. 설치</h2>
+
+<h3>macOS / Linux</h3>
+<pre><code>curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/install.sh | bash</code></pre>
+
+<h3>Windows (PowerShell)</h3>
+<pre><code>Invoke-WebRequest -Uri https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/install.bat -OutFile install.bat; .\install.bat; Remove-Item install.bat</code></pre>
+
+<h3>업데이트</h3>
+<pre><code>curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/update.sh | bash</code></pre>
+
+<blockquote>설치/업데이트 후 반드시 <strong>Claude Code를 재시작</strong>해주세요.</blockquote>
+
+<hr>
+
+<!-- Part 3 -->
+<h2 id="part3">Part 3. 프로젝트 시작하기</h2>
+
+<h3>3.1 Forward Engineering — 새 프로젝트</h3>
+<pre><code><span class="comment"># 1. 프로젝트 초기화</span>
+<span class="cmd">/u-init my-saas</span>
+
+<span class="comment"># 2. _input/raw/에 RFP, 회의록, AS-IS 자료 드롭
+#    → /u-ingest가 자동으로 rfp/, as-is/ 등으로 분류</span>
+
+<span class="comment"># 3. 전체 파이프라인</span>
+<span class="cmd">/u-ingest retail</span>            <span class="comment"># 분석</span>
+<span class="cmd">/u-plan retail</span>              <span class="comment"># SRS + IA + Roadmap</span>
+<span class="cmd">/u-gate retail</span>              <span class="comment"># → Design</span>
+<span class="cmd">/u-design retail</span>            <span class="comment"># ERD + API + Screen + RTM</span>
+<span class="cmd">/u-gate retail</span>              <span class="comment"># → Do</span>
+<span class="cmd">/u-dev retail</span>               <span class="comment"># FE + BE + DB 코드</span>
+<span class="cmd">/u-gate retail</span>              <span class="comment"># → Check</span>
+<span class="cmd">/u-qa retail</span>                <span class="comment"># TC + 테스트 + 리포트</span>
+<span class="cmd">/u-ship retail</span>              <span class="comment"># 배포 + 회고</span>
+
+<span class="comment"># 또는 한 줄로 밤새 돌리기</span>
+<span class="cmd">/u-loop retail</span>              <span class="comment"># ingest → qa 무인 실행</span></code></pre>
+
+<h3>3.2 Reverse Engineering — 기존 프로젝트</h3>
+<pre><code><span class="cmd">/u-init my-existing-app</span>
+<span class="cmd">/u-reverse retail</span>                    <span class="comment"># 소스 코드 → SSoT 역공학</span>
+<span class="cmd">/u-reverse retail --only erd</span>         <span class="comment"># ERD만 추출</span>
+<span class="cmd">/u-sync retail</span>                       <span class="comment"># 정합성 검증</span>
+<span class="cmd">/u-doc retail srs --edit</span>             <span class="comment"># 비즈니스 의도 보완</span></code></pre>
+
+<h3>3.3 자연어로도 가능</h3>
+<pre><code>"retail 앱의 SRS를 만들어줘"     → /u-plan retail --only srs
+"ERD를 PostgreSQL로 최적화해줘" → planner에게 직접 전달
+"테스트 케이스 만들어줘"         → /u-qa retail</code></pre>
+
+<hr>
+
+<!-- Part 4 -->
+<h2 id="part4">Part 4. Interaction Mode</h2>
+
+<h3>auto (기본)</h3>
+<pre><code><span class="cmd">/u-plan retail</span>           <span class="comment"># 플래그 없으면 auto</span></code></pre>
+<p>빠르게 진행. 판단은 Assumptions Log에 기록.</p>
+
+<h3>interactive (-i)</h3>
+<pre><code><span class="cmd">/u-plan retail -i</span>        <span class="comment"># 분기점에서 질문</span></code></pre>
+<p>정확하지만 느림. 중요한 설계 결정이 있을 때 사용.</p>
+
+<h3>step (--step)</h3>
+<pre><code><span class="cmd">/u-plan retail --step</span>    <span class="comment"># 매 단계 확인</span></code></pre>
+<p>가장 세밀한 제어. 학습 목적이나 품질 확인 시 사용.</p>
+
+<hr>
+
+<!-- Part 5 -->
+<h2 id="part5">Part 5. 역할별 활용</h2>
+
+<h3>기획자 (PM)</h3>
+<pre><code><span class="cmd">/u-ingest retail</span>                          <span class="comment"># 자료 분석</span>
+<span class="cmd">/u-ingest retail --review</span>                 <span class="comment"># 분석 결과 리뷰</span>
+<span class="cmd">/u-plan retail -i</span>                         <span class="comment"># Plan (interactive)</span>
+<span class="cmd">/u-plan retail --only srs</span>                 <span class="comment"># SRS만</span>
+<span class="cmd">/u-add retail fr "비밀번호 재설정"</span>          <span class="comment"># FR 추가</span>
+<span class="cmd">/u-add retail us "비밀번호 재설정하고 싶다"</span>   <span class="comment"># US 추가</span>
+<span class="cmd">/u-status retail</span>                          <span class="comment"># 상태 확인</span>
+<span class="cmd">/u-ask ERD에서 soft delete를 쓰는 이유?</span>     <span class="comment"># Q&amp;A</span>
+<span class="cmd">/u-discuss retail brainstorm "결제 UX"</span>     <span class="comment"># 브레인스토밍</span></code></pre>
+
+<h3>디자이너 (UX)</h3>
+<pre><code><span class="cmd">/u-design retail</span>                          <span class="comment"># Design 전체</span>
+<span class="cmd">/u-design retail --only screens</span>           <span class="comment"># Screen만</span>
+<span class="cmd">/u-design retail --only erd</span>               <span class="comment"># ERD만</span>
+<span class="cmd">/u-discuss retail workshop "메인 IA"</span>       <span class="comment"># IA 워크숍</span>
+<span class="cmd">/u-sync retail</span>                            <span class="comment"># 일관성 검증</span></code></pre>
+
+<h3>개발자 (Dev)</h3>
+<pre><code><span class="cmd">/u-dev retail</span>                             <span class="comment"># FE + BE</span>
+<span class="cmd">/u-dev retail --only fe</span>                   <span class="comment"># Frontend만</span>
+<span class="cmd">/u-dev retail --only be</span>                   <span class="comment"># Backend만</span>
+<span class="cmd">/u-reverse retail</span>                         <span class="comment"># 기존 코드 → SSoT</span>
+<span class="cmd">/u-git-pr</span>                                 <span class="comment"># PR 자동 생성</span>
+<span class="cmd">/u-git-pr --draft</span>                         <span class="comment"># Draft PR</span>
+<span class="cmd">/u-loop retail</span>                            <span class="comment"># 밤새 무인 실행</span></code></pre>
+
+<h3>QA (테스터)</h3>
+<pre><code><span class="cmd">/u-qa retail</span>                              <span class="comment"># TC + 테스트 + 리포트</span>
+<span class="cmd">/u-qa retail -i</span>                           <span class="comment"># interactive</span>
+<span class="cmd">/u-coverage retail</span>                        <span class="comment"># 커버리지</span>
+<span class="cmd">/u-trace retail FR-015</span>                    <span class="comment"># 추적 체인</span></code></pre>
+
+<hr>
+
+<!-- Part 6 -->
+<h2 id="part6">Part 6. 명령어 치트시트 (22개)</h2>
+
+<h3>Lifecycle Commands (9)</h3>
+<table>
+<tr><th>명령어</th><th>설명</th><th>예시</th></tr>
+<tr><td><code>/u-init</code></td><td>프로젝트 초기화</td><td><code>/u-init my-project</code></td></tr>
+<tr><td><code>/u-reverse</code></td><td>소스 코드 → SSoT 역공학</td><td><code>/u-reverse retail --only erd</code></td></tr>
+<tr><td><code>/u-ingest</code></td><td>Raw → Classified 분석</td><td><code>/u-ingest retail --review</code></td></tr>
+<tr><td><code>/u-plan</code></td><td>SRS + IA + Roadmap</td><td><code>/u-plan retail -i</code></td></tr>
+<tr><td><code>/u-design</code></td><td>ERD + API + Screen + RTM</td><td><code>/u-design retail --only screens</code></td></tr>
+<tr><td><code>/u-dev</code></td><td>FE + BE + DB 코드 생성</td><td><code>/u-dev retail --only fe</code></td></tr>
+<tr><td><code>/u-qa</code></td><td>TC + 테스트 + 리포트</td><td><code>/u-qa retail -i</code></td></tr>
+<tr><td><code>/u-ship</code></td><td>최종 검증 + 회고</td><td><code>/u-ship retail</code></td></tr>
+<tr><td><code>/u-loop</code></td><td>무인 자동 실행 (밤새 돌리기)</td><td><code>/u-loop retail --from plan</code></td></tr>
+</table>
+
+<h3>Operations Commands (5)</h3>
+<table>
+<tr><th>명령어</th><th>설명</th><th>예시</th></tr>
+<tr><td><code>/u-add</code></td><td>항목 추가</td><td><code>/u-add retail fr "비밀번호 재설정"</code></td></tr>
+<tr><td><code>/u-update</code></td><td>문서 수정 + cascade</td><td><code>/u-update retail srs --cascade</code></td></tr>
+<tr><td><code>/u-doc</code></td><td>문서 조회/편집</td><td><code>/u-doc retail screens</code></td></tr>
+<tr><td><code>/u-sync</code></td><td>일관성 검증</td><td><code>/u-sync all</code></td></tr>
+<tr><td><code>/u-gate</code></td><td>Phase gate 검증</td><td><code>/u-gate retail</code></td></tr>
+</table>
+
+<h3>Observability Commands (3)</h3>
+<table>
+<tr><th>명령어</th><th>설명</th><th>예시</th></tr>
+<tr><td><code>/u-status</code></td><td>대시보드</td><td><code>/u-status retail</code></td></tr>
+<tr><td><code>/u-coverage</code></td><td>커버리지 리포트</td><td><code>/u-coverage all</code></td></tr>
+<tr><td><code>/u-trace</code></td><td>추적 체인</td><td><code>/u-trace retail FR-015</code></td></tr>
+</table>
+
+<h3>Collaboration Commands (5)</h3>
+<table>
+<tr><th>명령어</th><th>설명</th><th>예시</th></tr>
+<tr><td><code>/u-ask</code></td><td>Q&A (질문, 제안)</td><td><code>/u-ask ERD에서 soft delete를 쓰는 이유?</code></td></tr>
+<tr><td><code>/u-discuss</code></td><td>구조화된 토론</td><td><code>/u-discuss retail brainstorm "결제 UX"</code></td></tr>
+<tr><td><code>/u-assume</code></td><td>Assumptions 리뷰</td><td><code>/u-assume retail approve A-001</code></td></tr>
+<tr><td><code>/u-backlog</code></td><td>백로그 관리</td><td><code>/u-backlog retail</code></td></tr>
+<tr><td><code>/u-git-pr</code></td><td>PR/MR 자동 생성</td><td><code>/u-git-pr main --draft</code></td></tr>
+</table>
+
+<hr>
+
+<!-- Part 7 -->
+<h2 id="part7">Part 7. /u-discuss 협업 세션</h2>
+
+<h3>세션 타입</h3>
+<table>
+<tr><th>타입</th><th>용도</th><th>예시</th></tr>
+<tr><td>brainstorm</td><td>아이디어 발산</td><td><code>/u-discuss retail brainstorm "결제 UX"</code></td></tr>
+<tr><td>review</td><td>산출물 검토</td><td><code>/u-discuss retail review</code></td></tr>
+<tr><td>decision</td><td>기술/비즈니스 결정</td><td><code>/u-discuss common decision "DB 선택"</code></td></tr>
+<tr><td>workshop</td><td>다단계 작업</td><td><code>/u-discuss retail workshop "메인 화면 설계"</code></td></tr>
+<tr><td>retro</td><td>Iteration 회고</td><td><code>/u-discuss retail retro</code></td></tr>
+</table>
+
+<h3>세션 중 micro-commands</h3>
+<table>
+<tr><th>명령어</th><th>설명</th></tr>
+<tr><td><code>@planner</code> / <code>@builder</code> / <code>@guardian</code></td><td>특정 에이전트에게 질문</td></tr>
+<tr><td><code>@all</code></td><td>모든 에이전트에게 의견 요청</td></tr>
+<tr><td><code>/idea [text]</code></td><td>아이디어 태깅</td></tr>
+<tr><td><code>/decide [text]</code></td><td>결정사항 기록</td></tr>
+<tr><td><code>/concern [text]</code></td><td>우려/리스크 기록</td></tr>
+<tr><td><code>/action [who] [text]</code></td><td>액션 아이템 기록</td></tr>
+<tr><td><code>/wrap</code></td><td>세션 종료 + 적재</td></tr>
+</table>
+
+<hr>
+
+<!-- Part 8 -->
+<h2 id="part8">Part 8. 실전 시나리오</h2>
+
+<h3>Scenario 1: 새 프로젝트 — 처음부터 끝까지</h3>
+<pre><code><span class="cmd">/u-init my-saas</span>
+<span class="comment"># → _input/raw/에 RFP, 회의록 드롭</span>
+<span class="cmd">/u-ingest retail</span>          <span class="comment"># 분석</span>
+<span class="cmd">/u-plan retail -i</span>         <span class="comment"># 기획</span>
+<span class="cmd">/u-gate retail</span>            <span class="comment"># → Design</span>
+<span class="cmd">/u-design retail</span>          <span class="comment"># 설계</span>
+<span class="cmd">/u-gate retail</span>            <span class="comment"># → Do</span>
+<span class="cmd">/u-dev retail</span>             <span class="comment"># 구현</span>
+<span class="cmd">/u-gate retail</span>            <span class="comment"># → Check</span>
+<span class="cmd">/u-qa retail</span>              <span class="comment"># 검증</span>
+<span class="cmd">/u-ship retail</span>            <span class="comment"># 배포 + 회고</span></code></pre>
+
+<h3>Scenario 2: 기존 프로젝트에 SSoT 도입</h3>
+<pre><code><span class="cmd">/u-init my-legacy-app</span>
+<span class="cmd">/u-reverse retail</span>         <span class="comment"># 코드 → SSoT</span>
+<span class="cmd">/u-sync retail</span>            <span class="comment"># 정합성 검증</span>
+<span class="cmd">/u-doc retail srs --edit</span>  <span class="comment"># 비즈니스 의도 보완</span></code></pre>
+
+<h3>Scenario 3: 밤새 무인 실행</h3>
+<pre><code><span class="cmd">/u-loop retail</span>
+<span class="comment"># → ingest → plan → design → dev → qa 자동 실행
+# → 에러 자동 복구, 체크포인트 저장
+# → 아침에 결과 확인 후 /u-ship retail</span></code></pre>
+
+<h3>Scenario 4: 요구사항 변경</h3>
+<pre><code><span class="cmd">/u-add retail fr "비밀번호 재설정"</span>
+<span class="cmd">/u-update retail srs --cascade</span>   <span class="comment"># SRS 수정 → auto-cascade</span>
+<span class="cmd">/u-status retail</span>                 <span class="comment"># impact flags 확인</span></code></pre>
+
+<h3>Scenario 5: Phase Gate 미통과</h3>
+<pre><code><span class="cmd">/u-gate retail</span>
+<span class="comment"># → "Plan Gate FAILED: ia (Draft), roadmap (missing)"</span>
+<span class="cmd">/u-plan retail --only ia</span>
+<span class="cmd">/u-plan retail --only roadmap</span>
+<span class="cmd">/u-gate retail</span>            <span class="comment"># → PASS</span></code></pre>
+
+<hr>
+
+<!-- Part 9 -->
+<h2 id="part9">Part 9. 폴더 구조</h2>
+<pre><code>.u-maker/
+├── u-maker.config.json         <span class="comment"># 전역 설정 (language, designTool 등)</span>
+├── _links.json                  <span class="comment"># 의존성 그래프</span>
+│
+├── docs/
+│   ├── common/                  <span class="comment"># 프로젝트 공통 (모든 앱 상속)</span>
+│   │   ├── policy/, ux/, dev/, architecture/, project/
+│   └── {app}/                   <span class="comment"># 앱별 문서</span>
+│       ├── 01-plan/             <span class="comment"># srs.md, ia.md, roadmap.md</span>
+│       ├── 02-design/          <span class="comment"># erd.md, api.md, screens.md, rtm.md</span>
+│       │   └── wireframes/     <span class="comment"># index.html (뷰어) + SCR-*.html/md</span>
+│       ├── 03-dev/             <span class="comment"># code.md</span>
+│       └── 04-check/          <span class="comment"># test-cases.md, test-report.md</span>
+│
+├── _input/                      <span class="comment"># Raw data</span>
+│   ├── raw/                     <span class="comment"># 미분류 파일 드롭존 (자동 분류)</span>
+│   ├── rfp/, as-is/, meeting-notes/, benchmarks/, links/
+│   └── _manifest.json
+│
+├── _classified/                 <span class="comment"># 10개 카테고리</span>
+├── _sessions/                   <span class="comment"># 토론 기록</span>
+├── _assumptions/                <span class="comment"># 가정 로그</span>
+└── _backlog/                    <span class="comment"># 백로그</span></code></pre>
+
+<hr>
+
+<!-- Part 10 -->
+<h2 id="part10">Part 10. Auto-Cascade</h2>
+
+<p>SRS 변경 시 <code>_links.json</code> 기반으로 하위 문서에 자동 전파:</p>
+<pre><code>SRS 변경 → ERD [MUST-UPDATE]
+         → Screen [MUST-UPDATE]
+         → Test Cases [REVIEW-NEEDED]</code></pre>
+
+<table>
+<tr><th>레벨</th><th>의미</th><th>조치</th></tr>
+<tr><td>MUST-UPDATE</td><td>반드시 갱신</td><td><code>/u-update --cascade</code></td></tr>
+<tr><td>REVIEW-NEEDED</td><td>확인 필요</td><td><code>/u-sync</code>로 검증</td></tr>
+<tr><td>INFO</td><td>참고</td><td>필요 시 수동 확인</td></tr>
+</table>
+
+<hr>
+
+<!-- Part 11 -->
+<h2 id="part11">Part 11. Wireframe Viewer</h2>
+
+<p><code>/u-design</code>으로 Screen을 생성하면 <code>wireframes/index.html</code>이 자동 생성됩니다. 브라우저에서 열면:</p>
+<ul>
+<li><strong>사이드바</strong>: IA 기반 그룹별 화면 목록 + 클릭 네비게이션</li>
+<li><strong>메인 영역</strong>: <code>.html</code> 와이어프레임 직접 렌더링, <code>.md</code> 파일은 Markdown → HTML 변환 (Mermaid 지원)</li>
+<li>외부 의존성 없는 단일 HTML (오프라인 동작)</li>
+</ul>
+
+<hr>
+
+<!-- Part 12 -->
+<h2 id="part12">Part 12. FAQ</h2>
+
+<h4>Q: 명령어가 인식되지 않아요</h4>
+<p>A: Claude Code를 재시작해보세요.</p>
+
+<h4>Q: 어떤 명령어를 써야 할지 모르겠어요</h4>
+<p>A: 자연어로 말하세요. 또는 <code>/u-ask</code>로 물어보세요.</p>
+
+<h4>Q: 기존 프로젝트에 적용하려면?</h4>
+<p>A: <code>/u-init</code> → <code>/u-reverse</code>로 코드에서 SSoT를 역공학하세요.</p>
+
+<h4>Q: 문서 언어를 바꾸고 싶어요</h4>
+<p>A: <code>u-maker.config.json</code>의 <code>language.documents</code>를 <code>"en"</code>, <code>"ja"</code>, <code>"zh"</code> 등으로 변경하세요.</p>
+
+<h4>Q: auto 모드에서 자꾸 interactive로 전환돼요</h4>
+<p>A: <code>maxAssumptions</code> 초과. <code>/u-assume</code>으로 리뷰하세요.</p>
+
+<h4>Q: 밤새 자동으로 돌리고 싶어요</h4>
+<p>A: <code>/u-loop retail</code> — ingest부터 qa까지 무인 실행. ship은 결과 확인 후 직접.</p>
+
+<h4>Q: PR을 빠르게 만들고 싶어요</h4>
+<p>A: <code>/u-git-pr</code> — uncommitted changes 자동 커밋 + push + PR body 자동 작성.</p>
+
+<hr>
+
+<!-- Part 13 -->
+<h2 id="part13">Part 13. 다음 단계</h2>
+
+<ol>
+<li><strong>README.md</strong>: 전체 아키텍처, 엔진 스킬 상세 레퍼런스</li>
+<li><code>/u-ask</code>: u-maker에 대한 궁금한 점을 자유롭게 질문하세요</li>
+<li><code>/u-status</code>: 현재 프로젝트 상태를 언제든 확인하세요</li>
+<li><code>/u-loop</code>: 밤새 돌려놓고 아침에 결과를 확인하세요</li>
+</ol>
+
+<hr>
+<p style="text-align:center;color:#94a3b8;font-size:13px;margin-top:40px">u-maker v3.0.8 &middot; MIT License &middot; <a href="https://github.com/upleat-ax/u-maker-plugin">GitHub</a></p>
+
+</main>
+
+<script>
+function nav(el){
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  el.classList.add('active');
+  if(window.innerWidth<769){toggleSidebar()}
+}
+function toggleSidebar(){
+  document.querySelector('.sidebar').classList.toggle('open');
+  document.querySelector('.overlay').classList.toggle('open');
+}
+// Scroll spy
+const sections=document.querySelectorAll('h2[id]');
+const navItems=document.querySelectorAll('.nav-item');
+window.addEventListener('scroll',()=>{
+  let current='';
+  sections.forEach(s=>{if(window.scrollY>=s.offsetTop-100)current=s.id});
+  navItems.forEach(n=>{
+    n.classList.remove('active');
+    if(n.getAttribute('href')==='#'+current)n.classList.add('active');
+  });
+});
+</script>
+</body>
+</html>
