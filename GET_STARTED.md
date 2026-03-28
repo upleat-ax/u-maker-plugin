@@ -784,4 +784,6 @@ A: `/u-git-pr` — uncommitted changes 자동 커밋 + push + PR body 자동 작
 
 ## License
 
-MIT
+GPL-3.0
+
+Copyright (c) 2026 U PLEAT. All rights reserved.

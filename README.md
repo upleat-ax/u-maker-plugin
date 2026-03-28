@@ -656,4 +656,6 @@ cd /path/to/u-maker-plugin && ./deploy_local.sh
 
 ## 17. License
 
-MIT
+GPL-3.0
+
+Copyright (c) 2026 U PLEAT. All rights reserved.
