@@ -34,13 +34,16 @@ triggers:
 2. 필수 데이터 확인:
    - `requirements/`: FR/NR 항목 >= 1
    - `stakeholders/`: 사용자 유형 >= 1
+   - `standards/`: 존재 시 SRS NR/constraints에 반영 (선택, 없어도 진행 가능)
 3. 데이터 부족 시:
    - auto: 가정 기록 + 진행
    - interactive/step: "/u-ingest를 먼저 실행하세요" 안내
 
 ### Step 2: Generate SRS
 
-**입력:** `_classified/requirements/`, `_classified/constraints/`, `_classified/stakeholders/`
+**입력:** `_classified/requirements/`, `_classified/constraints/`, `_classified/stakeholders/`, `_classified/standards/`
+
+> **Standards 반영 규칙:** `standards/_index.json`에서 `appliesTo`에 `"srs"`를 포함하는 STD 항목을 읽어, NR(Non-Functional Requirements) 또는 constraints로 자동 반영한다. enforcement가 `must`인 항목은 NR에 직접 등록하고, `should`인 항목은 constraints 참조로 기록한다.
 
 **SRS 구조:**
 
@@ -95,12 +98,13 @@ USR-XXXX → FR-XXXX → US-XXXX → FT-XXXX
 **프로세스:**
 1. `requirements/_index.json` 읽기 → validated/extracted 항목 필터
 2. `stakeholders/_index.json` → USR 정의
-3. FR/NR 구조화 → priority 배정
-4. FR → US 분해 (1 FR = 1~N US)
-5. US → FT 분해 (1 US = 1~N FT)
-6. `srs.md` + `srs.json` 생성
-7. `_index.json` 갱신
-8. classified 항목 status → `adopted` + `usedIn` 필드 추가
+3. `standards/_index.json` 읽기 → `appliesTo` 포함 `"srs"` 항목 필터 → NR/constraints로 병합
+4. FR/NR 구조화 → priority 배정 (standards 기반 NR 포함)
+5. FR → US 분해 (1 FR = 1~N US)
+6. US → FT 분해 (1 US = 1~N FT)
+7. `srs.md` + `srs.json` 생성
+8. `_index.json` 갱신
+9. classified 항목 status → `adopted` + `usedIn` 필드 추가 (standards 항목 포함)
 
 ### Step 3: Generate IA (Information Architecture)
 

@@ -1,11 +1,11 @@
 ---
 name: u-skill-analyzer
-description: "_input/ 원시 자료(RFP, 회의록, AS-IS 문서)를 파싱하여 청크 기반 분석 후 10개 카테고리로 분류하고, _classified/에 구조화 JSON으로 적재하는 내부 엔진."
+description: "_input/ 원시 자료(RFP, 회의록, AS-IS 문서)를 파싱하여 청크 기반 분석 후 12개 카테고리로 분류하고, _classified/에 구조화 JSON으로 적재하는 내부 엔진."
 ---
 
 # u-skill-analyzer -- Raw Data Analysis & Classification Engine
 
-`_input/` 디렉토리의 원시 자료(RFP, 회의록, AS-IS 문서 등)를 청크 단위로 분석하여 10개 카테고리로 분류하고, `_classified/`에 구조화된 JSON으로 적재하는 내부 엔진이다.
+`_input/` 디렉토리의 원시 자료(RFP, 회의록, AS-IS 문서 등)를 청크 단위로 분석하여 12개 카테고리로 분류하고, `_classified/`에 구조화된 JSON으로 적재하는 내부 엔진이다.
 
 **Owner Agent:** u-agent-planner
 
@@ -99,7 +99,7 @@ _input/
 
 ### classify(item)
 
-추출된 항목을 10개 카테고리 중 하나에 분류한다.
+추출된 항목을 12개 카테고리 중 하나에 분류한다.
 
 ### dedup(newItem, existingIndex)
 
@@ -140,7 +140,7 @@ _input/
 
 ---
 
-## 2. 10 Categories
+## 2. 12 Categories
 
 ### Category Schema Table
 
@@ -156,6 +156,8 @@ _input/
 | 8 | `constraints/` | CN-nnn | id, type(tech/policy/legal), description, impact, source |
 | 9 | `decisions/` | DC-nnn | id, date, participants[], decision, rationale, source |
 | 10 | `questions/` | QS-nnn | id, question, context, status(open/resolved), answer, source |
+| 11 | `standards/` | STD-nnnn | id, category, title, description, type(naming/process/approval/form/data/security/performance/other), scope(global/app-specific), priority(mandatory/recommended/optional), appliesTo[], source, status |
+| 12 | `ux-standards/` | UXS-nnnn | id, category, title, description, type(component/layout/typography/color/spacing/interaction/accessibility/responsive/animation/icon/other), scope(global/app-specific), priority(mandatory/recommended/optional), appliesTo[], source, status |
 
 ### Category-Specific Field Schemas
 
@@ -207,6 +209,48 @@ _input/
   ],
   "issues": ["인덱스 누락", "정규화 부족"],
   "source": { "file": "...", "section": "ERD" }
+}
+```
+
+#### standards/ (STD-nnnn)
+
+기획 표준정책 -- 네이밍 규칙, 프로세스 규칙, 승인 절차, 폼 표준, 데이터 규칙, 보안 정책, 성능 기준
+
+**Source keywords:** 표준, 정책, 규칙, 가이드라인, 규정, 기준, convention, policy, standard, guideline
+
+```json
+{
+  "id": "STD-0001",
+  "category": "standards",
+  "title": "엔티티 네이밍 규칙",
+  "description": "모든 테이블명은 snake_case, 컬럼명은 camelCase로 작성",
+  "type": "naming",
+  "scope": "global",
+  "priority": "mandatory",
+  "appliesTo": ["srs", "erd"],
+  "source": { "file": "_input/rfp/standards.pdf", "page": 5, "section": "2.1 네이밍 규칙", "extractedAt": "{ISO 8601}", "confidence": "high" },
+  "status": "extracted"
+}
+```
+
+#### ux-standards/ (UXS-nnnn)
+
+UX 표준정책 -- 컴포넌트 규칙, 레이아웃 규칙, 타이포그래피, 컬러 시스템, 간격, 인터랙션 패턴, 접근성, 반응형
+
+**Source keywords:** 디자인 시스템, UI 가이드, UX 표준, 컴포넌트, 타이포, 색상, 간격, 접근성, design system, UI guide, component library
+
+```json
+{
+  "id": "UXS-0001",
+  "category": "ux-standards",
+  "title": "버튼 컴포넌트 규칙",
+  "description": "Primary 버튼은 파란색(#1976D2), 높이 40px, border-radius 8px",
+  "type": "component",
+  "scope": "global",
+  "priority": "mandatory",
+  "appliesTo": ["screens", "design-token"],
+  "source": { "file": "_input/rfp/ux-guide.pdf", "page": 12, "section": "3.1 버튼", "extractedAt": "{ISO 8601}", "confidence": "high" },
+  "status": "extracted"
 }
 ```
 
@@ -263,6 +307,12 @@ _classified/
   questions/
     _index.json
     QS-001.json
+  standards/
+    _index.json
+    STD-0001.json
+  ux-standards/
+    _index.json
+    UXS-0001.json
 ```
 
 ### _summary.json

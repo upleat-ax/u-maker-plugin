@@ -40,7 +40,7 @@ triggers:
 
 ### Step 1: Generate ERD
 
-**입력:** `_classified/data-models/`, SRS requirements
+**입력:** `_classified/data-models/`, `_classified/standards/`, SRS requirements
 
 **프로세스:**
 1. `data-models/_index.json` → AS-IS 테이블 구조
@@ -97,15 +97,20 @@ Related Docs: [SRS, API, RTM]
 
 ### Step 3: Generate Screen Designs
 
-**입력:** IA, `_classified/screens/`, SRS
+**입력:** IA, `_classified/screens/`, `_classified/ux-standards/`, `_classified/standards/`, SRS
+
+> **UX Standards 반영:** `ux-standards/_index.json`에서 `appliesTo`에 `"screens"`를 포함하는 UXS 항목을 읽어, 화면 컴포넌트 규격(레이아웃, 인터랙션 패턴, 컴포넌트 사용 규칙)에 반영한다.
+> **Standards 반영:** `standards/_index.json`에서 폼 표준, 네이밍 컨벤션 등 화면 관련 항목을 참조하여 일관된 UI 규칙을 적용한다.
 
 **프로세스:**
 1. `ia.json` → 화면 계층 구조
 2. `screens/_index.json` → AS-IS 화면 참조
-3. `srs.json` → 화면별 관련 FT 매핑
-4. 화면별 컴포넌트 구성, 레이아웃, 인터랙션 패턴 정의
-5. `screens.md` + `screens.json` 생성
-6. `wireframes/index.html` 자동 생성 (engine-doc의 Wireframe Viewer 기능 호출)
+3. `ux-standards/_index.json` → `appliesTo` 포함 `"screens"` 항목 필터 → 컴포넌트 규격 적용
+4. `standards/_index.json` → 폼 표준, 네이밍 컨벤션 등 화면 관련 항목 참조
+5. `srs.json` → 화면별 관련 FT 매핑
+6. 화면별 컴포넌트 구성, 레이아웃, 인터랙션 패턴 정의 (UX standards 준수)
+7. `screens.md` + `screens.json` 생성
+8. `wireframes/index.html` 자동 생성 (engine-doc의 Wireframe Viewer 기능 호출)
 
 ### Step 4: Generate Screen Flow
 
@@ -120,22 +125,26 @@ Related Docs: [SRS, API, RTM]
 
 ### Step 5: Generate UX Override (app-specific)
 
-**입력:** `common/ux/ux-guide.md`, 앱별 UX 요구사항
+**입력:** `common/ux/ux-guide.md`, `_classified/ux-standards/`, 앱별 UX 요구사항
 
 앱별 공통 UX와 다른 점이 있을 때만 생성:
 1. common UX guide 읽기
-2. 앱 특화 UX 요구사항 식별
-3. 차이점만 선언적으로 기록
-4. `ux-override.md` 생성
+2. `ux-standards/_index.json` → `appliesTo` 포함 `"ux-guide"` 항목 필터 → UX 가이드 보완
+3. 앱 특화 UX 요구사항 식별
+4. 차이점만 선언적으로 기록 (UX standards 기반 항목 포함)
+5. `ux-override.md` 생성
 
 ### Step 6: Generate Design Token (app-specific)
 
-**입력:** `common/ux/design-token.md`, UX Override
+**입력:** `common/ux/design-token.md`, `_classified/ux-standards/`, UX Override
+
+> **UX Standards 반영:** `ux-standards/_index.json`에서 `appliesTo`에 `"design-token"`을 포함하는 UXS 항목을 읽어, 디자인 토큰 값(색상, 타이포그래피, 간격 등)에 반영한다.
 
 앱별 디자인 토큰 커스터마이즈:
 1. common design token 읽기
-2. 앱 override 적용
-3. `design-token.md` + `design-token.json` 생성
+2. `ux-standards/_index.json` → `appliesTo` 포함 `"design-token"` 항목 필터 → 토큰 값 반영
+3. 앱 override 적용
+4. `design-token.md` + `design-token.json` 생성
 
 ### Step 7: Generate RTM
 

@@ -1,6 +1,6 @@
 ---
 name: u-ingest
-description: "외부 입력 데이터를 분석하여 정제/분류한다. _input/ raw data를 _classified/ 구조화 JSON으로 변환하고, 10개 카테고리로 분류한다."
+description: "외부 입력 데이터를 분석하여 정제/분류한다. _input/ raw data를 _classified/ 구조화 JSON으로 변환하고, 12개 카테고리로 분류한다."
 triggers:
   - "/u-ingest"
   - "ingest data"
@@ -10,7 +10,7 @@ triggers:
 
 # u-ingest -- Raw to Classified Analysis
 
-`/u-ingest [scope] [--review] [--incremental]` 명령으로 `_input/` 원시 자료를 분석하여 `_classified/` 구조화 데이터로 변환한다.
+`/u-ingest [scope] [--review] [--incremental]` 명령으로 `_input/` 원시 자료를 분석하여 `_classified/` 구조화 데이터(12개 카테고리)로 변환한다.
 
 **Primary Agent:** u-agent-planner (engine-analyzer 사용)
 
@@ -48,15 +48,19 @@ triggers:
    회의록, 인터뷰, 워크숍 기록, 미팅 노트               meeting-notes/
    벤치마킹, 경쟁사 분석, 시장 조사, 레퍼런스           benchmarks/
    URL 목록, 외부 링크 모음, 참고 사이트                links/
+   표준, 정책, 가이드라인, 규정, convention,            standards/
+     standard, policy, guideline
+   디자인시스템, UI가이드, design-system,               ux-standards/
+     UX 가이드라인, 컴포넌트 규격
    ```
 
 3. 판정 로직:
-   - **파일명 키워드 매칭** (우선): 파일명에 `rfp`, `제안`, `as-is`, `현행`, `회의록`, `meeting`, `benchmark`, `link` 등 키워드 포함 시 즉시 분류
+   - **파일명 키워드 매칭** (우선): 파일명에 `rfp`, `제안`, `as-is`, `현행`, `회의록`, `meeting`, `benchmark`, `link`, `표준`, `정책`, `가이드라인`, `규정`, `convention`, `standard`, `policy`, `guideline`, `디자인시스템`, `UI가이드`, `design-system` 등 키워드 포함 시 즉시 분류
    - **내용 분석** (fallback): 키워드로 판별 불가 시 파일 첫 2-3페이지(또는 ~5KB)를 읽어 문맥 기반 분류
    - **판별 불가**: 분류 불가한 파일은 `raw/`에 그대로 유지하고, `_input/_sort-log.json`에 `"unresolved"` 상태로 기록
 
 4. 분류 결과 처리:
-   - 파일을 해당 서브폴더로 **이동** (`raw/` → `rfp/`, `as-is/` 등)
+   - 파일을 해당 서브폴더로 **이동** (`raw/` → `rfp/`, `as-is/`, `standards/`, `ux-standards/` 등)
    - 동일 파일명 충돌 시: `{filename}_{timestamp}.{ext}` 형식으로 rename
    - `_input/_sort-log.json`에 이동 이력 기록:
      ```json
@@ -94,7 +98,7 @@ triggers:
 ### Step 3: Scan _input/
 
 1. `_input/_manifest.json` 읽기
-2. `_input/` 하위 전체 파일 스캔 (rfp/, as-is/, meeting-notes/, benchmarks/, links/)
+2. `_input/` 하위 전체 파일 스캔 (rfp/, as-is/, meeting-notes/, benchmarks/, links/, standards/, ux-standards/)
 3. 새 파일 또는 수정된 파일 식별:
    - `_manifest.json`에 없는 파일 → 신규
    - `_manifest.json` 타임스탬프 < 파일 mtime → 수정됨
@@ -112,7 +116,7 @@ triggers:
 
 2. **청크별 분석**:
    - 텍스트 파싱 + 구조 인식
-   - 10개 카테고리로 항목 추출
+   - 12개 카테고리로 항목 추출
    - 각 항목에 source metadata 필수 부착
 
 3. **소스 메타데이터** (MANDATORY):
@@ -128,7 +132,7 @@ triggers:
    }
    ```
 
-### Step 5: Classify into 10 Categories
+### Step 5: Classify into 12 Categories
 
 | Category | File Pattern | Key Fields | Input Sources |
 |----------|-------------|------------|---------------|
@@ -142,6 +146,8 @@ triggers:
 | `constraints/` | CN-nnn.json | id, type(tech/policy/legal), description, impact, source | RFP, 법규, 기술검토 |
 | `decisions/` | DC-nnn.json | id, date, participants[], decision, rationale, source | 회의록, 토론 세션 |
 | `questions/` | QS-nnn.json | id, question, context, status(open/resolved), answer, source | 분석 중 발생 |
+| `standards/` | STD-nnn.json | id, title, description, type(naming/process/policy/legal), appliesTo[], enforcement(must/should), source | 표준, 정책, 가이드라인, 규정 |
+| `ux-standards/` | UXS-nnn.json | id, title, description, type(component/layout/token/interaction), appliesTo[], enforcement(must/should), source | 디자인시스템, UI가이드, UX 규격 |
 
 ### Step 6: Update Index Files
 
@@ -196,7 +202,9 @@ triggers:
   "totalItems": 156,
   "byCategory": {
     "requirements": { "total": 42, "extracted": 30, "validated": 12, "adopted": 0, "rejected": 0 },
-    "pain-points": { "total": 18, "extracted": 15, "validated": 3, "adopted": 0, "rejected": 0 }
+    "pain-points": { "total": 18, "extracted": 15, "validated": 3, "adopted": 0, "rejected": 0 },
+    "standards": { "total": 8, "extracted": 6, "validated": 2, "adopted": 0, "rejected": 0 },
+    "ux-standards": { "total": 5, "extracted": 4, "validated": 1, "adopted": 0, "rejected": 0 }
   },
   "byStatus": {
     "extracted": 120,

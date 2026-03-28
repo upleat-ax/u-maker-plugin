@@ -185,6 +185,44 @@
         },
         "required": ["id", "question", "status", "source"]
       }
+    },
+    "standards": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "pattern": "^STD-\\d{4}$" },
+          "category": { "type": "string", "const": "standards" },
+          "title": { "type": "string" },
+          "description": { "type": "string" },
+          "type": { "type": "string", "enum": ["naming", "process", "approval", "form", "data", "security", "performance", "other"] },
+          "scope": { "type": "string", "enum": ["global", "app-specific"] },
+          "priority": { "type": "string", "enum": ["mandatory", "recommended", "optional"] },
+          "appliesTo": { "type": "array", "items": { "type": "string", "enum": ["srs", "screens", "api", "erd"] } },
+          "source": { "$ref": "#/$defs/source" },
+          "status": { "type": "string", "enum": ["extracted", "validated", "adopted", "rejected"] }
+        },
+        "required": ["id", "category", "title", "description", "type", "scope", "priority", "appliesTo", "source", "status"]
+      }
+    },
+    "ux-standards": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "pattern": "^UXS-\\d{4}$" },
+          "category": { "type": "string", "const": "ux-standards" },
+          "title": { "type": "string" },
+          "description": { "type": "string" },
+          "type": { "type": "string", "enum": ["component", "layout", "typography", "color", "spacing", "interaction", "accessibility", "responsive", "animation", "icon", "other"] },
+          "scope": { "type": "string", "enum": ["global", "app-specific"] },
+          "priority": { "type": "string", "enum": ["mandatory", "recommended", "optional"] },
+          "appliesTo": { "type": "array", "items": { "type": "string", "enum": ["screens", "design-token", "ux-guide", "wireframes"] } },
+          "source": { "$ref": "#/$defs/source" },
+          "status": { "type": "string", "enum": ["extracted", "validated", "adopted", "rejected"] }
+        },
+        "required": ["id", "category", "title", "description", "type", "scope", "priority", "appliesTo", "source", "status"]
+      }
     }
   },
   "$defs": {
