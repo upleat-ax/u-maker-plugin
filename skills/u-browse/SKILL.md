@@ -517,14 +517,15 @@ const FILES = {{FILES_JSON}};
 
 // Build tree
 function buildTree() {
-  const tree = {};
+  const tree = { __files: [] };
   FILES.forEach(f => {
-    const parts = f.dir.split('/');
+    const parts = f.dir.split('/').filter(Boolean);
     let node = tree;
-    parts.forEach(p => { if (!node[p]) node[p] = {}; node[p].__files = node[p].__files || []; });
-    let target = tree;
-    parts.forEach(p => { target = target[p]; });
-    target.__files.push(f);
+    parts.forEach(p => {
+      if (!node[p]) node[p] = { __files: [] };
+      node = node[p];
+    });
+    node.__files.push(f);
   });
   return tree;
 }
@@ -601,8 +602,14 @@ function toggleSidebar() {
 }
 
 // Init
-const treeData = buildTree();
-renderTree(treeData, document.getElementById('tree'), 0);
+try {
+  const treeData = buildTree();
+  console.log('[u-browse] tree:', JSON.stringify(Object.keys(treeData)));
+  renderTree(treeData, document.getElementById('tree'), 0);
+} catch(e) {
+  console.error('[u-browse] buildTree error:', e);
+  document.getElementById('tree').innerHTML = '<div style="color:#f87171;padding:12px;font-size:12px;">Error building tree: ' + e.message + '</div>';
+}
 
 // Hash navigation
 if (location.hash) { loadDoc(location.hash.substring(1)); }
