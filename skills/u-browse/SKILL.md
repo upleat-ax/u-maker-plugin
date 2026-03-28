@@ -40,7 +40,7 @@ triggers:
 ├── hjw/
 │   ├── 01-plan/
 │   │   ├── srs.html                   # SRS 리치 HTML (계층 시각화, Use Case 다이어그램)
-│   │   ├── ia.html                    # IA 리치 HTML (Mindmap, 화면 계층)
+│   │   ├── ia.html                    # IA 리치 HTML (SVG Sitemap, 화면 계층)
 │   │   └── roadmap.html               # Roadmap 리치 HTML (Gantt chart)
 │   ├── 02-design/
 │   │   ├── erd.html                   # ERD 리치 HTML (ER 다이어그램, 엔티티 카드)
@@ -171,24 +171,109 @@ JSON의 `requirements`, `userStories`, `features` 배열에서 `tracedFrom` 필�
 
 | 섹션 | 내용 | 다이어그램 |
 |------|------|-----------|
-| **Site Map** | 라우트 트리 (접기/펼치기) | `mindmap` |
+| **Visual Sitemap** | 화면 계층을 **인라인 SVG**로 시각화 | SVG sitemap (아래 참고) |
 | **Screen Hierarchy** | Level별 화면 테이블 + 와이어프레임 링크 | - |
 | **Navigation Patterns** | 패턴별 적용 화면 매트릭스 | - |
-| **User Flows** | 각 플로우의 단계별 화면 전이 | `flowchart LR` (per flow) |
+| **User Flows** | 각 플로우의 단계별 화면 전이 | SVG flowchart |
 
-**다이어그램 생성 (Site Map Mindmap):**
+**★ Visual Sitemap SVG 생성 (핵심)**
 
-JSON의 `siteMap` 배열에서 `children` 재귀 순회하여:
-```mermaid
-mindmap
-  root["🏠 App"]
-    Home["SCR-001 Home"]
-    Dashboard["SCR-002 Dashboard"]
-      Analytics["SCR-003"]
-      Reports["SCR-004"]
-    Settings["SCR-010 Settings"]
-      Profile["SCR-011"]
+Mermaid mindmap이 아닌, **인라인 SVG**로 직접 사이트맵을 그린다. 아래 레퍼런스 스타일을 따른다.
+
+**SVG Sitemap 구성 요소:**
+
+1. **페이지 카드** — 각 화면을 사각형 카드로 표현
+   - 상단: 화면명 (bold, 배경색으로 Level 구분)
+   - 하단: 간략 와이어프레임 아이콘 (회색 라인으로 헤더/콘텐츠/사이드바 표현)
+   - 카드 크기: `width="120" height="90"` (대략)
+
+2. **Level 색상 코딩:**
+   | Level | 배경색 | 설명 |
+   |-------|--------|------|
+   | L1 (최상위) | `#0891b2` (청록) 흰 텍스트 | Home, 메인 랜딩 |
+   | L2 (메인 내비) | `#dbeafe` (연파랑) | 주요 메뉴 항목 |
+   | L3 (서브 내비) | `#ffffff` border `#d1d9e0` | 서브 페이지 |
+   | L4 (상세) | `#fef9c3` (연노랑) | 상세/편집 화면 |
+
+3. **연결선** — 부모→자식 화면 연결
+   - 수직/수평 직각 연결선 (stroke: `#9ca3af`, width: 1.5)
+   - 화살촉 마커 (삼각형)
+
+4. **어노테이션 마커** — 빨간 원형 번호 배지
+   - 각 주요 화면 옆에 `<circle fill="#ef4444">` + 흰 숫자
+   - 주요 포인트가 있는 화면에 callout 텍스트 연결
+
+5. **어노테이션 callout** — 빨간 점선으로 연결된 텍스트 블록
+   - "Main points for {화면명}:"
+   - 핵심 UX 포인트 bullet 목록
+
+**SVG 레이아웃 알고리즘:**
+
 ```
+Level 1:     [  Homepage  ]
+              |    |    |
+Level 2:   [Cat] [About] [Forum] [Login] [SignUp]
+              |           |    |
+Level 3:   children    [Category] [Profile]
+                          |         |
+Level 4:              [Thread]  [EditProfile]
+```
+
+- L1은 중앙 상단에 1개
+- L2는 L1 아래에 수평 배열 (간격: 140px)
+- L3은 각 L2 아래에 수직 또는 수평 배열
+- L4은 L3 아래에 수직 배열
+- SVG viewBox는 전체 트리 크기에 맞게 동적 계산
+
+**SVG 생성 코드 패턴:**
+
+```html
+<div class="diag-container" style="max-height:400px;overflow:hidden;position:relative">
+  <button class="diag-zoom" onclick="openDiagModal(this)" title="확대">🔍</button>
+  <svg class="diag" viewBox="0 0 {{WIDTH}} {{HEIGHT}}" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <marker id="arrow" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+        <polygon points="0 0, 10 3.5, 0 7" fill="#9ca3af"/>
+      </marker>
+    </defs>
+
+    <!-- L1: Homepage card -->
+    <rect x="350" y="20" width="120" height="90" rx="4" fill="#0891b2" stroke="#0891b2"/>
+    <text x="410" y="42" text-anchor="middle" fill="#fff" font-size="11" font-weight="700">HOMEPAGE</text>
+    <!-- wireframe icon inside card -->
+    <rect x="370" y="50" width="80" height="4" rx="1" fill="rgba(255,255,255,.3)"/>
+    <rect x="370" y="58" width="50" height="3" rx="1" fill="rgba(255,255,255,.2)"/>
+    <rect x="370" y="64" width="80" height="30" rx="2" fill="rgba(255,255,255,.15)"/>
+
+    <!-- Annotation marker -->
+    <circle cx="475" cy="25" r="10" fill="#ef4444"/>
+    <text x="475" y="29" text-anchor="middle" fill="#fff" font-size="9" font-weight="700">1</text>
+
+    <!-- Annotation callout -->
+    <line x1="485" y1="25" x2="520" y2="25" stroke="#ef4444" stroke-dasharray="3"/>
+    <text x="525" y="22" fill="#374151" font-size="10" font-weight="700">Main points for homepage:</text>
+    <text x="525" y="34" fill="#6b7280" font-size="9">- 카테고리별 콘텐츠 강조</text>
+    <text x="525" y="44" fill="#6b7280" font-size="9">- 사용자 인터랙션 증가</text>
+
+    <!-- Connection line to L2 -->
+    <line x1="410" y1="110" x2="410" y2="140" stroke="#9ca3af" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+    <!-- L2: Categories card -->
+    <rect x="80" y="150" width="120" height="80" rx="4" fill="#dbeafe" stroke="#93c5fd"/>
+    <text x="140" y="170" text-anchor="middle" fill="#1e40af" font-size="10" font-weight="700">CATEGORIES</text>
+    <!-- ... 더 많은 카드 -->
+
+    <!-- L3: Sub-pages as smaller text items -->
+    <text x="100" y="260" fill="#6b7280" font-size="9">→ Clients</text>
+    <text x="100" y="275" fill="#6b7280" font-size="9">→ Portfolios</text>
+    <!-- ... -->
+  </svg>
+</div>
+```
+
+JSON의 `siteMap` 배열에서 `children` 재귀 순회하여 위 패턴으로 SVG를 생성한다. 화면 수가 많으면 L3 이하는 텍스트 목록으로 간략화한다.
+
+**축소 표시 + 확대:** `max-height: 400px; overflow: hidden` + 🔍 확대 버튼 (모달로 전체 SVG 표시)
 
 ---
 
@@ -607,6 +692,14 @@ function openDiagModal(btn) {
    - 동작 설명 (1~2줄)
    - API 호출이면 `<code>GET /v1/...</code>` 포함
    - 네비게이션이면 대상 화면 ID 포함
+   - 어노테이션 패널 하단에 **비즈니스 규칙** 섹션 (해당 화면에 특별한 규칙이 있을 때만 표시):
+     ```html
+     <div class="br-section">
+       <div class="br-title">비즈니스 규칙</div>
+       <div class="br-item">상태 탭 전환 시 기간/검색어 필터 값 유지</div>
+       <div class="br-item">기본 정렬 접수일 내림차순</div>
+     </div>
+     ```
 5. **Component Spec Table** — 모든 컴포넌트를 마커 번호 순서대로 테이블 작성. **Validation 컬럼 포함** (Input 타입: 형식, min/max 길이, 필수 여부, 패턴 등)
 6. **Button Action Table** — Action/Navigation 타입 컴포넌트의 트리거, API 호출, 성공/실패 시 동작 상세
 7. **Popup & Modal Table** — 화면에서 발생 가능한 모든 팝업/모달/토스트 정의 (트리거 조건, 내용, 버튼, 후속 동작)
