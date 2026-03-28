@@ -59,12 +59,40 @@ triggers:
 
 각 Phase별 `.md` + `.json`을 읽어 HTML로 변환한다.
 
+#### 공통: 각 리포트의 Progress Summary 섹션
+
+모든 phase별 리포트에는 상단에 **Progress Summary** 블록을 포함한다:
+
+```
+┌─────────────────────────────────────────────────────┐
+│  ✅ Done (12)    │  ⏳ Remaining (5)   │  💡 Improve (3)  │
+├─────────────────┼────────────────────┼─────────────────┤
+│ FR-0001 Login   │ FR-0015 알림       │ FR-0003 결제     │
+│ FR-0002 회원가입 │ FR-0016 통계       │   → API 응답 최적화│
+│ ...              │ ...                │ ...              │
+└─────────────────┴────────────────────┴─────────────────┘
+```
+
+| 섹션 | 아이콘 | 내용 | 소스 |
+|------|--------|------|------|
+| **Done** | ✅ | 완료된 항목 (status: Final, validated, passed) | `_index.json` status, test results |
+| **Remaining** | ⏳ | 미완료 항목 (status: Draft, extracted, todo) | `_index.json`, `_backlog/` |
+| **Improve** | 💡 | 개선 필요 항목 (리뷰 코멘트, 실패 테스트, tech debt, assumptions) | test-report, spec-sync, `_assumptions/`, `_backlog/` |
+
+각 항목에는:
+- ID + Title
+- 현재 Status 배지
+- Improve인 경우: 개선 사유 1줄 설명 (예: "→ API 응답 시간 2초 초과", "→ ERD와 API 타입 불일치")
+
+---
+
 #### 2-1. ingest-report.html
 
 **입력:** `_classified/_summary.json`, `_classified/*/​_index.json`
 
 | 섹션 | 내용 |
 |------|------|
+| **Progress** | Done: validated 항목 / Remaining: extracted 항목 / Improve: rejected 사유 + 미분류(raw/) 파일 |
 | Summary | 처리 파일 수, 총 항목 수, Status 분포 pie chart (SVG) |
 | Screens | Design System 컴포넌트 테이블 + 화면 그룹별 목록 (소계) |
 | Requirements | FR 테이블 (ID, Title, Priority, Status) + NR 테이블. Priority 분포 bar chart |
@@ -82,6 +110,7 @@ triggers:
 
 | 섹션 | 내용 | 다이어그램 |
 |------|------|-----------|
+| **Progress** | Done: Final 문서 / Remaining: Draft 문서, 미작성 문서 / Improve: 누락 FR↔classified 매핑, 미해결 questions | - |
 | SRS Overview | USR → FR → US → FT 계층 통계 | Use Case Diagram (SVG) |
 | FR 목록 | 전체 FR 테이블 (ID, Title, Priority, US 수, FT 수) | Priority 분포 pie chart |
 | US 목록 | 전체 US 테이블 (관련 FR, FT 수) | - |
@@ -96,6 +125,7 @@ triggers:
 
 | 섹션 | 내용 | 다이어그램 |
 |------|------|-----------|
+| **Progress** | Done: Final 설계 문서 / Remaining: Draft 문서, 미생성 RTM / Improve: ERD↔API 타입 불일치, Screen↔FT 미매핑, 고아 엔드포인트 | - |
 | ERD | 엔티티 목록 + 컬럼 상세 | ER Diagram (SVG) |
 | API | 엔드포인트 목록 (method, path, auth, related FT) | Sequence Diagram (주요 흐름, SVG) |
 | Screens | 화면별 컴포넌트 구성, API 연결, 상태 | Component Diagram (SVG) |
@@ -110,6 +140,7 @@ triggers:
 
 | 섹션 | 내용 | 다이어그램 |
 |------|------|-----------|
+| **Progress** | Done: 생성 완료 + build pass 파일 / Remaining: 미생성 Screen/API 코드 / Improve: spec-sync 위반, build 에러, tech debt 목록 | - |
 | Generated Files | FE/BE/DB 분류별 파일 목록 | Package Diagram (SVG) |
 | Spec-Sync | 검증 결과 테이블 (Rule, Check, Severity, Status) | 커버리지 bar chart |
 | Build Result | TypeScript/Lint/Build 통과 여부 | pass/fail 배지 |
@@ -122,6 +153,7 @@ triggers:
 
 | 섹션 | 내용 | 다이어그램 |
 |------|------|-----------|
+| **Progress** | Done: passed TC / Remaining: 미작성 TC (FT 대비), skip된 TC / Improve: failed TC + 결함 목록 + 커버리지 미달 FT | - |
 | TC Overview | 총 TC 수, FT별 TC 수, 커버리지 | 커버리지 pie chart (SVG) |
 | TC 목록 | 전체 TC 테이블 (ID, FT, Description, Type, Status) | - |
 | Test Results | pass/fail/skip 분포 | bar chart (SVG) |
@@ -179,8 +211,30 @@ triggers:
 5. 검색 필터 (문서명/ID 키워드)
 6. Phase별 리포트 링크 (→ `plan-report.html` 등)
 
-**Main Content:**
-- Dashboard 선택 시: 통계 카드 + Phase별 요약
+**Main Content — Dashboard:**
+
+1. **전체 Progress Summary** (최상단):
+   ```
+   ✅ Done: 45건  |  ⏳ Remaining: 12건  |  💡 Improve: 8건
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 69% Complete
+   ```
+   - Done: 전체 Phase에서 Final/passed/validated 항목 합계
+   - Remaining: Draft/extracted/todo/미생성 항목 합계
+   - Improve: failed TC, spec-sync 위반, tech debt, 미리뷰 assumptions 합계
+   - Progress bar (전체 완료율)
+
+2. **Phase별 요약 카드** (클릭 → 상세 리포트)
+3. **Remaining Items** 테이블: 미완료 항목 전체 목록 (Phase, ID, Title, Status, 담당)
+4. **Improve Items** 테이블: 개선 필요 항목 전체 목록 (Phase, ID, 사유, Severity, 제안 액션)
+5. **Assumptions** 미리뷰 목록 (ID, 내용, confidence)
+6. **Backlog** 요약 (todo/in-progress/done 분포)
+7. **Next Steps** 체크리스트:
+   - [ ] Remaining {n}건 완료
+   - [ ] Improve {n}건 수정
+   - [ ] Assumptions {n}건 리뷰 (`/u-assume`)
+   - [ ] 결과 확인 후 배포 (`/u-ship`)
+
+**Main Content — 문서/와이어프레임:**
 - 문서 선택 시: `.md` → HTML 렌더링 (Mermaid → 인라인 SVG)
 - 와이어프레임 선택 시: `.html` 직접 렌더링 / `.md` → HTML 변환
 
