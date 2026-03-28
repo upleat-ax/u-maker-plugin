@@ -15,7 +15,7 @@ PDCA 기반 SSoT(Single Source of Truth) 협업 오케스트레이터.
 
 ```bash
 # 1. 설치 (macOS/Linux)
-curl -fsSL https://raw.githubusercontent.com/thinoo-v2/u-maker-plugin/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/install.sh | bash
 
 # 2. Claude Code 재시작 후 프로젝트에서 실행
 /u-init my-app                # .u-maker/ 구조 생성 + 앱 등록
@@ -625,10 +625,10 @@ u-maker-plugin/
 
 ```bash
 # macOS / Linux
-curl -fsSL https://raw.githubusercontent.com/thinoo-v2/u-maker-plugin/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/install.sh | bash
 
 # 업데이트
-curl -fsSL https://raw.githubusercontent.com/thinoo-v2/u-maker-plugin/main/update.sh | bash
+curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/update.sh | bash
 
 # 로컬 개발
 cd /path/to/u-maker-plugin && ./deploy_local.sh

@@ -15,7 +15,7 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PLUGIN_JSON="$SCRIPT_DIR/.claude-plugin/plugin.json"
 
-PRIVATE_REPO="thinoo-v2/u-maker-plugin"
+PRIVATE_REPO="upleat-ax/u-maker-plugin"
 UPLEAT_REPO="upleat-ax/u-maker-plugin"
 TERMINAL_REPO="upleat-ax/u-maker-terminal"
 
