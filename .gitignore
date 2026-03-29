@@ -1,0 +1,6 @@
+.DS_Store
+.u-maker/
+.claude/
+node_modules/
+*.log
+__pycache__
