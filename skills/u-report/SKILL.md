@@ -26,7 +26,7 @@ triggers:
 |------|---------|-------------|
 | `--only X` | - | 특정 리포트만 생성 (ingest, plan, design, dev, qa, dashboard) |
 | `--open` | - | 생성 후 브라우저에서 자동 열기 |
-| `--clean` | - | 기존 `_reports/` 삭제 후 재생성 |
+| `--clean` | - | 오늘 날짜의 `_reports/{scope}/{date}/` 삭제 후 재생성. `--clean all` 시 전체 이력 삭제 |
 
 ---
 
@@ -34,14 +34,21 @@ triggers:
 
 ```
 .u-maker/_reports/{scope}/
-├── index.html                  # 대시보드 (전체 문서 인덱스 + 통계)
-├── ingest-report.html          # classified 항목 요약
-├── plan-report.html            # SRS + IA + Roadmap
-├── design-report.html          # ERD + API + Screen + ScreenFlow + RTM
-├── dev-report.html             # Code + Spec-Sync + Build 결과
-├── qa-report.html              # TestCase + TestReport + 커버리지
-└── wireframes/                 # 와이어프레임 뷰어 (기존 index.html)
+├── latest -> 2026-03-29         # 최신 리포트 심볼릭 링크
+├── 2026-03-29/
+│   ├── index.html               # 대시보드 (전체 문서 인덱스 + 통계)
+│   ├── ingest-report.html       # classified 항목 요약
+│   ├── plan-report.html         # SRS + IA + Roadmap
+│   ├── design-report.html       # ERD + API + Screen + ScreenFlow + RTM
+│   ├── dev-report.html          # Code + Spec-Sync + Build 결과
+│   ├── qa-report.html           # TestCase + TestReport + 커버리지
+│   └── wireframes/              # 와이어프레임 뷰어
+├── 2026-03-28/
+│   └── ...                      # 이전 날짜 리포트 (이력 보존)
+└── ...
 ```
+
+> **날짜 기반 스냅샷:** 리포트는 `YYYY-MM-DD` 날짜 디렉토리에 생성된다. 같은 날짜에 재생성 시 해당 날짜 디렉토리를 덮어쓴다. `latest` 심볼릭 링크는 항상 최신 날짜를 가리킨다.
 
 ---
 
@@ -53,7 +60,13 @@ triggers:
 2. `_index.json` → 문서 목록 + 상태 로드
 3. `_classified/_summary.json` → 분류 통계 로드
 4. `--only` 플래그 → 대상 리포트 결정. 생략 시 전체 생성
-5. `_reports/{scope}/` 디렉토리 생성 (없으면)
+5. 오늘 날짜(`YYYY-MM-DD`)를 구하고 `_reports/{scope}/{date}/` 디렉토리 생성
+6. `_reports/{scope}/latest` 심볼릭 링크를 오늘 날짜 디렉토리로 갱신:
+   ```bash
+   DATE=$(date +%Y-%m-%d)
+   mkdir -p .u-maker/_reports/{scope}/${DATE}
+   ln -sfn ${DATE} .u-maker/_reports/{scope}/latest
+   ```
 
 ### Step 2: Generate Per-Phase Reports
 
@@ -286,8 +299,9 @@ function renderMermaidToSVG(htmlContent):
 ## u-report Complete
 
 **Scope:** {scope}
+**Date:** {YYYY-MM-DD}
 **Reports:** {n} HTML files generated
-**Location:** .u-maker/_reports/{scope}/
+**Location:** .u-maker/_reports/{scope}/{date}/
 
 ### Generated Files
 | File | Size | Sections |
@@ -300,7 +314,7 @@ function renderMermaidToSVG(htmlContent):
 | qa-report.html | 18KB | 24 TC, 20 passed |
 
 Open in browser:
-  open .u-maker/_reports/{scope}/index.html
+  open .u-maker/_reports/{scope}/latest/index.html
 ```
 
 ---
@@ -332,7 +346,7 @@ Open in browser:
 [루프 종료]   → /u-report {scope} --only dashboard
 ```
 
-루프용 리포트는 `.u-maker/_reports/loop-{loopId}/`에 저장되며, 루프 메타데이터(소요 시간, 에러, 가정)가 추가로 포함된다.
+루프용 리포트는 `.u-maker/_reports/loop-{loopId}/{date}/`에 저장되며, 루프 메타데이터(소요 시간, 에러, 가정)가 추가로 포함된다. `latest` 심볼릭 링크도 동일하게 생성된다.
 
 ---
 
@@ -342,6 +356,6 @@ Open in browser:
 2. **`_reports/` 디렉토리만 쓰기:** HTML 파일은 `_reports/` 하위에만 생성
 3. **인라인 리소스:** 외부 의존성 없는 단일 HTML (Mermaid.js CDN만 예외)
 4. **민감 정보 제외:** `.env` 값, 하드코딩 시크릿은 리포트에 포함하지 않음
-5. **기존 리포트 덮어쓰기:** 같은 scope의 기존 리포트는 경고 없이 덮어쓰기 (스냅샷 개념)
+5. **같은 날짜 덮어쓰기:** 같은 날짜 디렉토리의 리포트는 경고 없이 덮어쓴다. 다른 날짜의 리포트는 보존된다 (이력 관리).
 6. **SVG 인라인 필수:** 다이어그램은 외부 이미지 파일이 아닌 인라인 SVG로 렌더링
 7. **`language.documents` 반영:** 리포트 본문 언어는 config 설정을 따름
