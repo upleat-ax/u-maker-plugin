@@ -140,7 +140,7 @@ Related Docs: [SRS, Screens, ScreenFlow]
    - Level 1: 메인 내비게이션 탭/섹션
    - Level 2: 하위 페이지
    - Level 3+: 상세, 모달, 드로어
-5. Mermaid 다이어그램 생성 (tree 또는 mindmap)
+5. 인라인 SVG Sitemap 생성 (페이지 카드 + 와이어프레임 썸네일 + 어노테이션 마커 스타일, Mermaid mindmap 사용 금지)
 6. 교차 검증: IA의 모든 화면 → SRS FT와 1:1 매핑 확인
 7. `ia.md` + `ia.json` 생성
 

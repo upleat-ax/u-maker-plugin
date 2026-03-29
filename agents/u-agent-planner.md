@@ -301,7 +301,7 @@ The IA document defines the app's navigation structure, screen hierarchy, and co
    - Level 1: Main navigation tabs/sections
    - Level 2: Sub-pages within each section
    - Level 3+: Detail views, modals, drawers
-5. **Generate Mermaid diagram** for visual representation (tree or mindmap)
+5. **Generate inline SVG sitemap** for visual representation (page cards + wireframe thumbnails + annotation markers, NO Mermaid mindmap)
 6. **Cross-reference**: Every screen in IA must map to at least one FT in SRS
 
 ### Output Structure

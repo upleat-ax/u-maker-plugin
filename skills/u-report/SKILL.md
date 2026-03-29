@@ -128,7 +128,7 @@ triggers:
 | FR 목록 | 전체 FR 테이블 (ID, Title, Priority, US 수, FT 수) | Priority 분포 pie chart |
 | US 목록 | 전체 US 테이블 (관련 FR, FT 수) | - |
 | FT 목록 | 전체 FT 테이블 (관련 US, Screen, API) | - |
-| IA | 화면 계층 구조 | Mindmap/Tree (SVG) |
+| IA | 화면 계층 구조 | 인라인 SVG Sitemap (페이지 카드 + 와이어프레임 썸네일) |
 | Roadmap | 마일스톤 타임라인 | Gantt chart (SVG) |
 | Coverage | classified → SRS 매핑률 | 매핑 매트릭스 heatmap |
 
@@ -271,7 +271,7 @@ function renderMermaidToSVG(htmlContent):
 - `flowchart` / `graph` → Screen Flow, 워크플로우
 - `classDiagram` → 코드 구조
 - `stateDiagram` → 상태 전이
-- `mindmap` → IA 계층
+- inline SVG sitemap → IA 계층 (Mermaid mindmap 사용 금지)
 - `pie` → 통계 분포
 - `gantt` → Roadmap 타임라인
 

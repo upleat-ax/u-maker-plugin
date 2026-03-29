@@ -34,7 +34,7 @@ Information Architecture를 생성한다.
    - Level 2: 하위 페이지
    - Level 3+: 상세, 모달, 드로어
 5. 화면 ID 배정: `SCR-{NNN}` (scope 내 전역 고유)
-6. Mermaid 다이어그램 생성 (tree 또는 mindmap, 곡선 커넥터)
+6. 인라인 SVG Sitemap 생성 (페이지 카드 + 와이어프레임 썸네일 + Level 색상 코딩 + 어노테이션 마커 스타일, Mermaid mindmap 사용 금지)
 7. 교차 검증: IA 모든 화면 → SRS FT와 매핑 확인 (고아 화면 탐지)
 8. engine-doc.create("ia", scope, data) 호출 → `ia.md` + `ia.json`
 

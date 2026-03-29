@@ -618,7 +618,7 @@ Markdown 지원 문법:
   - flowchart / graph (Screen Flow, 워크플로우)
   - classDiagram (코드 구조)
   - stateDiagram (상태 전이)
-  - mindmap (IA 계층)
+  - inline SVG sitemap (IA 계층 — Mermaid mindmap 사용 금지)
   - pie (통계)
   - gantt (Roadmap)
 - 다이어그램 클릭 시 확대 모달 표시 (zoom)
