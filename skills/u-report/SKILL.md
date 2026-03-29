@@ -8,6 +8,10 @@ triggers:
   - "HTML 생성"
   - "리포트 생성"
   - "html report"
+  - "daily report"
+  - "일일 리포트"
+  - "데일리 리포트"
+  - "IA 일정"
 ---
 
 # u-report -- SSoT to HTML Report Generator
@@ -24,9 +28,10 @@ triggers:
 
 | Flag | Default | Description |
 |------|---------|-------------|
-| `--only X` | - | 특정 리포트만 생성 (ingest, plan, design, dev, qa, dashboard) |
+| `--only X` | - | 특정 리포트만 생성 (ingest, plan, design, dev, qa, daily, dashboard) |
 | `--open` | - | 생성 후 브라우저에서 자동 열기 |
 | `--clean` | - | 오늘 날짜의 `_reports/{scope}/{date}/` 삭제 후 재생성. `--clean all` 시 전체 이력 삭제 |
+| `--milestone` | - | Daily Report에서 마일스톤 기간 직접 지정 (예: `--milestone "03.01~03.31"`) |
 
 ---
 
@@ -42,6 +47,7 @@ triggers:
 │   ├── design-report.html       # ERD + API + Screen + ScreenFlow + RTM
 │   ├── dev-report.html          # Code + Spec-Sync + Build 결과
 │   ├── qa-report.html           # TestCase + TestReport + 커버리지
+│   ├── daily-report-2026-03-29.html  # IA 일정 조율 (날짜별 Daily Report)
 │   └── wireframes/              # 와이어프레임 뷰어
 ├── 2026-03-28/
 │   └── ...                      # 이전 날짜 리포트 (이력 보존)
@@ -172,6 +178,219 @@ triggers:
 | Test Results | pass/fail/skip 분포 | bar chart (SVG) |
 | Defects | 결함 목록 (severity: Critical/Major/Minor) | severity 분포 pie chart |
 | FT Coverage | FT → TC 매핑률 (100% = 완전 커버) | heatmap |
+
+#### 2-6. daily-report-{YYYY-MM-DD}.html (IA 일정 조율 — Daily Progress Report)
+
+**파일명 규칙:** `daily-report-{YYYY-MM-DD}.html` (예: `daily-report-2026-03-29.html`). 생성 시점의 날짜가 자동 포함되며, 같은 날짜에 재생성 시 덮어쓴다.
+
+**입력:** `01-plan/ia.md` + `.json`, `01-plan/srs.md` + `.json`, `01-plan/roadmap.md` + `.json`, `_index.json`, `_classified/_summary.json`, `_backlog/`, `02-design/screens.md` + `.json`, `03-dev/code.md` + `.json`, `04-check/test-cases.md` + `.json`
+
+IA 화면 계층 기반으로 전체 개발 진행 상황을 추적하는 **프로젝트 관리 뷰**. 각 메뉴/화면이 u-maker PDCA 5단계(Ingest→Plan→Design→Dev→QA)를 거치는 과정을 한 눈에 보여준다.
+
+> **참고:** 상세 HTML 구조와 스타일링은 `skills/u-report/references/daily-report-template.md`를 참조한다.
+
+---
+
+##### u-maker PDCA 5단계
+
+| 단계 | 표시명 | Phase | 설명 | 대응 커맨드 |
+|------|--------|-------|------|------------|
+| ① | 분류 | Ingest | 원시 자료 분석 → 화면 분류 완료 | `/u-ingest` |
+| ② | 기획 | Plan | SRS FR→US→FT 매핑 + IA 정의 완료 | `/u-plan` |
+| ③ | 설계 | Design | Screen 설계 + ERD/API 연결 완료 | `/u-design` |
+| ④ | 개발 | Dev | FE 컴포넌트 + BE API 코드 생성 완료 | `/u-dev` |
+| ⑤ | 검증 | QA | TC 생성 + 테스트 실행 통과 | `/u-qa` |
+
+---
+
+##### ① Header 영역
+
+```
+┌──────────────────────────────────────────────────────────────────────┐
+│  {ProjectName} IA 일정 조율                                          │
+│  {year}년 {month}월 개발 마일스톤 - {start} ~ {end}                    │
+│                                                                      │
+│  ┌──────┐ ┌──────┐ ┌──────┐ ┌──────┐                                │
+│  │  46  │ │  37  │ │  4   │ │  2   │                                │
+│  │ 전체 │ │ 완료 │ │진행중│ │ D-day│                                │
+│  └──────┘ └──────┘ └──────┘ └──────┘                                │
+│                                                                      │
+│  완료 37 ─ QA진행 2 ─ 개발중 4 ─ 설계중 1 ─ 기획중 1 ─ 대기 1        │
+│  전체 진행률 ████████████████████░░░░ 85%                             │
+└──────────────────────────────────────────────────────────────────────┘
+```
+
+| 요소 | 내용 | 소스 |
+|------|------|------|
+| 타이틀 | `{ProjectName} IA 일정 조율` | `u-maker.config.json` → `name` |
+| 기간 | `{year}년 {month}월 개발 마일스톤 - {start} ~ {end}` | `roadmap.json` 현재 Iteration 또는 `--milestone` 플래그 |
+| KPI 뱃지 4개 | **전체** (IA 화면 수) / **완료** (5단계 모두 완료) / **진행중** (1~4단계 진행) / **D-day** (마감 임박 항목) | IA 화면 수 + 각 상태 집계 |
+| 파이프라인 바 | `완료 {n}` → `QA진행 {n}` → `개발중 {n}` → `설계중 {n}` → `기획중 {n}` → `대기 {n}` | PDCA 5단계 기준 상태 분류 |
+| 전체 진행률 | 프로그레스 바 + 퍼센트 | (완료 화면 수 / 전체 화면 수) × 100 |
+
+**파이프라인 상태 정의:**
+
+| 상태 | 조건 | 뱃지 색상 |
+|------|------|----------|
+| 완료 | 5단계(분류~검증) 모두 ✓ | `#22c55e` (green) |
+| QA진행 | ④개발 완료, ⑤검증 진행중 | `#8b5cf6` (violet) |
+| 개발중 | ③설계 완료, ④개발 진행중 | `#3b82f6` (blue) |
+| 설계중 | ②기획 완료, ③설계 진행중 | `#f59e0b` (amber) |
+| 기획중 | ①분류 완료, ②기획 진행중 | `#f97316` (orange) |
+| 대기 | 아직 시작하지 않은 항목 | `#64748b` (slate) |
+
+---
+
+##### ② Main Table — IA 진행 현황
+
+IA L1(도메인) 그룹별로 L2/L3(메뉴) 항목을 나열하고, 각 항목의 PDCA 5단계 진행 상태를 추적한다.
+
+```
+┌────┬──────────────────┬────────────┬────┬────┬────┬────┬────┬──────┬──────┬────┬──────────┬────────────────┐
+│ #  │ 도메인           │ 메뉴       │ ①  │ ②  │ ③  │ ④  │ ⑤  │진행률│ 상태 │담당│완료(예정)│ 비고           │
+│    │                  │            │분류│기획│설계│개발│검증│      │      │    │일        │                │
+├────┼──────────────────┼────────────┼────┼────┼────┼────┼────┼──────┼──────┼────┼──────────┼────────────────┤
+│    │ 현장별 메인 1/1  │            │    │    │    │    │    │ 100% │      │    │          │                │
+│ 1  │                  │ 대시보드   │ ✓  │ ✓  │ ✓  │ ✓  │ ✓  │ 100% │ 완료 │ —  │ 완료     │ —              │
+├────┼──────────────────┼────────────┼────┼────┼────┼────┼────┼──────┼──────┼────┼──────────┼────────────────┤
+│    │ 안전보건경영 2/6 │            │    │    │    │    │    │  60% │      │    │          │                │
+│ 2  │                  │ 안전보건 …│ ✓  │ ✓  │ ✓  │ ✓  │ ✓  │ 100% │ 완료 │조호순│ 완료   │                │
+│ 3  │                  │ 안전보건조…│ ✓  │ ✓  │ ✓  │ ✓  │ ✓  │ 100% │ 완료 │조호순│ 완료   │                │
+│ 4  │                  │ 법령 준수…│ ✓  │ ✓  │    │    │    │  40% │설계중│    │          │                │
+│ 5  │                  │ 산업안전…  │ ✓  │ ✓  │    │    │    │  40% │설계중│조호순│        │                │
+│…   │                  │            │    │    │    │    │    │      │      │    │          │                │
+└────┴──────────────────┴────────────┴────┴────┴────┴────┴────┴──────┴──────┴────┴──────────┴────────────────┘
+```
+
+**테이블 열 상세:**
+
+| 열 | 설명 | 소스 매핑 |
+|----|------|----------|
+| **#** | 순번 (행 번호) | 자동 생성 |
+| **도메인** | IA L1 그룹명 + `(완료/전체)` 카운트 | `ia.json` → L1 screens. 도메인 그룹 행은 노란 배경으로 시각 구분 |
+| **메뉴** | IA L2/L3 화면명 | `ia.json` → L2/L3 screens |
+| **① 분류** | Ingest: 해당 화면 분류 완료 여부 | `_classified/screens/` 존재 + `_index.json` status ∈ {validated, extracted} |
+| **② 기획** | Plan: SRS에 해당 화면의 FT 매핑 존재 여부 | `srs.json` → features[].screen이 해당 화면 ID 참조 |
+| **③ 설계** | Design: Screen 설계 + ERD/API 연결 완료 여부 | `screens.json` → 해당 화면 ID 정의 존재 AND status ∈ {Draft, Review, Final} |
+| **④ 개발** | Dev: 코드 생성 완료 여부 | `code.json` → generatedFiles[]에 해당 화면 FE 컴포넌트 존재 |
+| **⑤ 검증** | QA: 테스트 케이스 생성 + 실행 통과 여부 | `test-cases.json` → 해당 화면 관련 FT의 TC 존재 AND result = passed |
+| **진행률** | 완료 단계 수 / 5 (%) | 5단계 중 ✓ 체크 수 × 20% |
+| **상태** | 파이프라인 상태 배지 | 최신 완료 단계 기준 판정 (완료/QA진행/개발중/설계중/기획중/대기) |
+| **담당** | 할당된 담당자명 | `_backlog/` → assignee 또는 `srs.json` → owner |
+| **완료(예정)일** | 완료일(실제) 또는 예정일 | `_backlog/` → dueDate, completedDate |
+| **비고** | 특이사항, 지연 사유, 참고 정보 | `_backlog/` → notes, `_index.json` → impact flags, 미완료 사유 |
+
+**5단계 셀 표시 규칙:**
+
+| 표시 | 의미 | 셀 스타일 |
+|------|------|----------|
+| ✓ (체크마크) | 해당 단계 완료 | 배경 `#1e293b`, 체크 아이콘 white |
+| 🔵 (파란 블록) | 해당 단계 현재 진행 중 | 배경 `#3b82f6` |
+| 🔴 (빨간 블록) | 해당 단계 이슈/블로커 | 배경 `#ef4444` |
+| 빈칸 | 아직 미도달 | 배경 `#334155` (dark gray) |
+| — (대시) | 해당 단계 미해당/스킵 | 배경 transparent |
+
+**도메인 그룹 행:**
+- L1 도메인명 + `(완료수/전체수)` 카운트
+- 도메인별 전체 진행률 퍼센트 바
+- 배경색: `#fbbf24` (amber-400) 텍스트로 시각적 그룹 구분
+- 해당 도메인 소속 메뉴의 진행률 평균
+
+**진행률 프로그레스 바:**
+- 배경: `#334155` (진행률 트랙)
+- 채움: `#22c55e` (green-500, 100%) / `#3b82f6` (blue-500, 진행중) / `#f59e0b` (amber-500, 저조)
+- 텍스트: 퍼센트 수치를 바 우측에 표시
+
+---
+
+##### ③ Bottom — 기술 혁신 로드맵
+
+Roadmap 문서에서 기술 혁신/개선 관련 항목을 별도 섹션으로 표시한다.
+
+```
+┌──────────────────────────────────────────────────────────────────────┐
+│  2026 기술 혁신 로드맵   IN PROGRESS    도메인 메뉴수: 완료 0 · 진행 1│
+│                                                                      │
+│  ⚠ 체크리스트 반복 점검 — 핵심 개선 과제                               │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐                  │
+│  │    384       │  │    163       │  │     0        │                  │
+│  │ 위험요인 항목│  │ 필터 적용    │  │ 반복에서     │                  │
+│  │(1차 검토 표시)│ │해제 누적 항목│  │ 가능         │                  │
+│  └─────────────┘  └─────────────┘  └─────────────┘                  │
+│                                                                      │
+│  ┌────┬──────────┬─────────────────────┬────┬──────┬──────┬────┬────┐│
+│  │ #  │ 메뉴     │ 제목               │긴급│ 시기 │시작일│상태│비고││
+│  ├────┼──────────┼─────────────────────┼────┼──────┼──────┼────┼────┤│
+│  │ 1  │ 체크리스트│체크리스트 반복 점검…│ 1 │ 4일 │      │    │    ││
+│  │ 2  │ AI 고도화│위험성평가 AI 고도화…│ 1 │4.5일│      │    │    ││
+│  │ 3  │ AI 챗봇  │AI 안전관리 챗봇 …  │ 1 │4.5일│      │    │    ││
+│  │ 4  │ 안전보건…│안전보건교육 노사협…│    │3.4일│      │    │    ││
+│  │ 5  │ 보고서   │월간 안전보고서 자동…│    │ 5일 │      │    │    ││
+│  └────┴──────────┴─────────────────────┴────┴──────┴──────┴────┴────┘│
+└──────────────────────────────────────────────────────────────────────┘
+```
+
+**로드맵 테이블 열:**
+
+| 열 | 설명 | 소스 |
+|----|------|------|
+| **#** | 순번 | 자동 생성 |
+| **메뉴** | 로드맵 항목명 (기능/모듈) | `roadmap.json` → milestones 또는 features |
+| **제목** | 세부 설명 | `roadmap.json` → description |
+| **긴급** | 긴급도 레벨 (🔺 1~3, 숫자가 낮을수록 급함) | `roadmap.json` → priority 또는 `_backlog/` → priority |
+| **시기** | 예상 소요 기간 (일) | `roadmap.json` → estimation |
+| **시작일** | 시작 예정일 | `roadmap.json` → startDate |
+| **상태** | 상태 배지 (미시작/진행중/완료) | `roadmap.json` → status |
+| **비고** | 세부 참고사항 | `roadmap.json` → notes |
+
+**체크리스트 반복 점검 블록:**
+- 핵심 개선 과제 관련 KPI 카드 3개 표시
+- 각 KPI: 큰 숫자 + 설명 텍스트
+- 소스: `_classified/` 항목 수 집계 또는 `roadmap.json` → metrics
+
+---
+
+##### ④ 데이터 매핑 — PDCA 5단계 완료 판정 로직
+
+```
+Stage 1 (분류 — Ingest):
+  _classified/screens/_index.json에서 해당 화면 ID 존재
+  AND status ∈ {validated, extracted}
+  → ✓
+
+Stage 2 (기획 — Plan):
+  srs.json → features[] 중
+  screen 필드가 해당 화면 ID를 참조하는 FT 1개 이상 존재
+  AND 해당 FT의 status ≠ "draft"
+  → ✓
+
+Stage 3 (설계 — Design):
+  screens.json → screens[] 중
+  해당 화면 ID의 layout/component 정의 존재
+  AND status ∈ {Draft, Review, Final}
+  AND (해당 화면 관련 API endpoint가 api.json에 정의됨 OR API 불필요 화면)
+  → ✓
+
+Stage 4 (개발 — Dev):
+  code.json → generatedFiles[] 중
+  해당 화면 관련 FE 컴포넌트 파일 존재
+  AND buildStatus ≠ "error"
+  → ✓
+
+Stage 5 (검증 — QA):
+  test-cases.json → testCases[] 중
+  해당 화면 관련 FT에 대한 TC 존재
+  AND test-report.json → 해당 TC의 result = "passed"
+  → ✓
+```
+
+**예외 처리:**
+- IA에 화면이 있지만 `_classified/`에 없는 경우: 분류 미완료 (빈칸)
+- SRS에 FT가 없는 화면: 기획 미완료 (빈칸)
+- 전체 5단계 중 해당 없는 단계는 `—` 표시 (예: 정적 페이지는 QA 불필요)
+- `_backlog/`에 해당 화면 관련 항목이 있으면 담당/일정/비고를 backlog에서 가져옴
+
+---
 
 ### Step 3: Generate Dashboard (index.html)
 
@@ -312,6 +531,7 @@ function renderMermaidToSVG(htmlContent):
 | design-report.html | 52KB | ERD + API + Screen + RTM |
 | dev-report.html | 22KB | Code + Spec-Sync |
 | qa-report.html | 18KB | 24 TC, 20 passed |
+| daily-report-{date}.html | 40KB | IA 일정 조율 + 로드맵 |
 
 Open in browser:
   open .u-maker/_reports/{scope}/latest/index.html
@@ -328,6 +548,7 @@ Open in browser:
 | `--only design` | `design-report.html` |
 | `--only dev` | `dev-report.html` |
 | `--only qa` | `qa-report.html` |
+| `--only daily` | `daily-report-{YYYY-MM-DD}.html` (IA 일정 조율 Daily Report) |
 | `--only dashboard` | `index.html` (대시보드만) |
 | (생략) | 전체 생성 |
 
@@ -343,6 +564,7 @@ Open in browser:
 [design 완료] → /u-report {scope} --only design
 [dev 완료]    → /u-report {scope} --only dev
 [qa 완료]     → /u-report {scope} --only qa
+[루프 종료]   → /u-report {scope} --only daily
 [루프 종료]   → /u-report {scope} --only dashboard
 ```
 
