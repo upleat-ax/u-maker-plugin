@@ -315,7 +315,7 @@ footer {
 <aside class="sidebar" id="sidebar">
   <div class="sidebar-header">
     <h1>U-MAKER</h1>
-    <div class="subtitle">Plugin Documentation v3.0.26</div>
+    <div class="subtitle">Plugin Documentation v3.0.31</div>
   </div>
   <nav class="sidebar-nav" id="sidebar-nav">
     <div class="nav-group">Quick Start</div>
@@ -364,7 +364,7 @@ footer {
   <p>A PDCA-based SSoT (Single Source of Truth) collaboration orchestrator.</p>
   <p>A Claude Code plugin that automates the entire software development lifecycle with 4 specialized agents and a 3-layer pipeline.</p>
   <div class="badges">
-    <span class="badge">Plugin v3.0.26</span>
+    <span class="badge">Plugin v3.0.31</span>
     <span class="badge">SSoT Config v3.0.0</span>
     <span class="badge">38 Skills (13 engine + 24 command + 1 NL router)</span>
     <span class="badge">4 Agents</span>
@@ -576,7 +576,7 @@ curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/insta
 <tr><td><code>/u-coverage [scope]</code></td><td>classified &rarr; deliverable coverage report</td><td><code>/u-coverage all</code></td></tr>
 <tr><td><code>/u-trace [scope] [id]</code></td><td>raw &rarr; classified &rarr; docs traceability chain</td><td><code>/u-trace [app] FR-015</code></td></tr>
 <tr><td><code>/u-browse [scope] [--only path] [--open]</code></td><td>Generate enriched HTML viewer from SSoT docs with analysis, cross-references, diagrams. Wireframes include annotations, screen flows, business logic</td><td><code>/u-browse [app] --open</code></td></tr>
-<tr><td><code>/u-report [scope] [--only X]</code></td><td>Generate per-phase HTML reports with Done/Remaining/Improve tracking</td><td><code>/u-report [app] --only plan</code></td></tr>
+<tr><td><code>/u-report [scope] [--only X]</code></td><td>Generate per-phase HTML reports with Done/Remaining/Improve tracking. Reports are stored in <code>_reports/{scope}/YYYY-MM-DD/</code> date-based directories</td><td><code>/u-report [app] --only plan</code></td></tr>
 </table></div>
 
 <h3 id="cmd-collaboration">6.4 Collaboration (5)</h3>
@@ -782,7 +782,7 @@ curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/insta
 <h2 id="plugin-repository-layout">12. Plugin Repository Layout</h2>
 
 <pre>u-maker-plugin/
-+-- .claude-plugin/plugin.json        <span class="comment"># v3.0.26</span>
++-- .claude-plugin/plugin.json        <span class="comment"># v3.0.31</span>
 +-- agents/                           <span class="comment"># 4 agent definitions</span>
 |   +-- u-agent-orchestrator.md
 |   +-- u-agent-planner.md
@@ -1018,7 +1018,7 @@ cd /path/to/u-maker-plugin && ./deploy_local.sh</pre>
 
 <!-- Footer -->
 <footer>
-  v3.0.26 &middot; GPL-3.0 &copy; U PLEAT
+  v3.0.31 &middot; GPL-3.0 &copy; U PLEAT
 </footer>
 
 </div><!-- .content -->
