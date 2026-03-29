@@ -495,14 +495,14 @@ classified 데이터 대비 산출물의 커버리지를 분석합니다. 원시
 
 #### `/u-report` — SSoT HTML 리포트 생성
 
-SSoT 전체 문서를 기반으로 사이드바 네비게이션이 포함된 HTML 리포트를 생성합니다. SVG 다이어그램(ERD, ScreenFlow, IA 트리 등)을 포함하여 브라우저에서 바로 열 수 있는 독립형 리포트를 만듭니다. 외부 의존성 없이 오프라인에서 동작하며, 팀 공유나 문서 제출용으로 활용할 수 있습니다.
+SSoT 전체 문서를 기반으로 사이드바 네비게이션이 포함된 HTML 리포트를 생성합니다. SVG 다이어그램(ERD, ScreenFlow, IA 트리 등)을 포함하여 브라우저에서 바로 열 수 있는 독립형 리포트를 만듭니다. `--only daily`로 IA 일정 조율 Daily Report를 생성하면 각 화면이 PDCA 5단계(분류→기획→설계→개발→검증)를 거치는 진행 상황을 한눈에 확인할 수 있습니다. 외부 의존성 없이 오프라인에서 동작하며, 팀 공유나 문서 제출용으로 활용할 수 있습니다.
 
-**생성 파일:** `report/index.html` (사이드바 네비게이션 포함), SVG 다이어그램 파일, 임베디드 스타일시트
+**생성 파일:** `_reports/{scope}/{date}/` 하위 HTML 파일, `daily-report-{YYYY-MM-DD}.html` (Daily Report)
 
 ```bash
 /u-report [app]                         # [app] 앱 전체 HTML 리포트 생성
-/u-report all                           # 전체 프로젝트 통합 리포트
-/u-report [app] --only erd,api          # ERD + API만 리포트 생성
+/u-report [app] --only daily            # IA 일정 조율 Daily Report 생성
+/u-report [app] --only plan             # Plan 리포트만 생성
 /u-report [app] --open                  # 생성 후 브라우저에서 바로 열기
 ```
 

@@ -3,75 +3,76 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>U-MAKER Plugin Documentation</title>
+<title>U-MAKER Plugin Documentation (v3.0.33)</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-:root{--sidebar-w:280px;--bg:#0f172a;--sidebar-bg:#1e293b;--main-bg:#f1f5f9;--text:#e2e8f0;--text-main:#1e293b;--accent:#3b82f6;--accent-hover:#2563eb;--code-bg:#1e293b;--border:#334155;--active-bg:#334155;--badge-bg:#475569;--badge-text:#94a3b8;--table-stripe:#f8fafc;--table-border:#cbd5e1;--table-header:#e2e8f0}
+:root{--sidebar-w:280px;--bg:#ffffff;--sidebar-bg:#ffffff;--main-bg:#ffffff;--text:#334155;--text-heading:#0f172a;--accent:#3b82f6;--accent-hover:#2563eb;--code-bg:#f1f5f9;--code-text:#1e293b;--border:#e2e8f0;--active-bg:#f8fafc;--badge-bg:#e2e8f0;--badge-text:#64748b;--table-stripe:#f8fafc;--table-border:#e2e8f0;--table-header:#f1f5f9;--nav-text:#475569;--nav-hover-bg:#eff6ff;--nav-active-text:#1e40af}
 html{scroll-behavior:smooth}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Noto Sans KR',sans-serif;display:flex;min-height:100vh;background:var(--main-bg);color:var(--text-main)}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Noto Sans KR',sans-serif;display:flex;min-height:100vh;background:var(--main-bg);color:var(--text)}
 a{color:var(--accent);text-decoration:none}
 a:hover{text-decoration:underline}
 
 /* Sidebar */
-.sidebar{width:var(--sidebar-w);background:var(--sidebar-bg);color:var(--text);position:fixed;top:0;left:0;height:100vh;overflow-y:auto;z-index:100;transition:transform .3s ease}
+.sidebar{width:var(--sidebar-w);background:var(--sidebar-bg);color:var(--nav-text);position:fixed;top:0;left:0;height:100vh;overflow-y:auto;z-index:100;transition:transform .3s ease;border-right:1px solid var(--border)}
 .sidebar::-webkit-scrollbar{width:6px}
-.sidebar::-webkit-scrollbar-thumb{background:var(--badge-bg);border-radius:3px}
+.sidebar::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:3px}
+.sidebar::-webkit-scrollbar-track{background:transparent}
 .sidebar-header{padding:24px 20px 16px;border-bottom:1px solid var(--border)}
-.sidebar-header h1{font-size:20px;font-weight:700;color:#fff;letter-spacing:1px}
+.sidebar-header h1{font-size:20px;font-weight:800;color:var(--text-heading);letter-spacing:1px}
 .sidebar-header p{font-size:12px;color:var(--badge-text);margin-top:4px}
 .sidebar-nav{padding:12px 0}
 .nav-group{margin-bottom:4px}
-.nav-group-title{display:flex;align-items:center;justify-content:space-between;padding:10px 20px;font-size:12px;font-weight:700;color:var(--badge-text);text-transform:uppercase;letter-spacing:.5px;user-select:none}
+.nav-group-title{display:flex;align-items:center;justify-content:space-between;padding:10px 20px;font-size:11px;font-weight:700;color:var(--badge-text);text-transform:uppercase;letter-spacing:.5px;user-select:none}
 .nav-group-title .badge{background:var(--badge-bg);color:var(--badge-text);font-size:10px;padding:2px 8px;border-radius:10px;font-weight:500}
-.nav-item{display:block;padding:6px 20px 6px 28px;font-size:13px;color:var(--text);cursor:pointer;transition:all .15s ease;border-left:3px solid transparent}
-.nav-item:hover{background:rgba(255,255,255,.05);text-decoration:none;border-left-color:var(--accent)}
-.nav-item.active{background:var(--active-bg);color:#fff;font-weight:600;border-left-color:var(--accent)}
-.nav-item .num{display:inline-block;background:rgba(255,255,255,.08);color:var(--badge-text);font-size:10px;padding:1px 6px;border-radius:3px;margin-right:6px;font-family:'SF Mono',Monaco,monospace;min-width:22px;text-align:center}
+.nav-item{display:block;padding:6px 20px 6px 28px;font-size:13px;color:var(--nav-text);cursor:pointer;transition:all .15s ease;border-left:3px solid transparent}
+.nav-item:hover{background:var(--nav-hover-bg);text-decoration:none;border-left-color:var(--accent);color:var(--accent)}
+.nav-item.active{background:var(--active-bg);color:var(--nav-active-text);font-weight:600;border-left-color:var(--accent)}
+.nav-item .num{display:inline-block;background:var(--badge-bg);color:var(--badge-text);font-size:10px;padding:1px 6px;border-radius:3px;margin-right:6px;font-family:'SF Mono',Monaco,monospace;min-width:22px;text-align:center}
 .sidebar-footer{padding:16px 20px;border-top:1px solid var(--border);font-size:11px;color:var(--badge-text);text-align:center}
 
 /* Main */
 .main{margin-left:var(--sidebar-w);flex:1;padding:40px 60px 80px;max-width:960px}
-.main h2{font-size:26px;font-weight:700;margin:48px 0 16px;padding-bottom:10px;border-bottom:2px solid #cbd5e1;color:var(--text-main)}
+.main h2{font-size:26px;font-weight:700;margin:48px 0 16px;padding-bottom:10px;border-bottom:2px solid var(--border);color:var(--text-heading)}
 .main h2:first-child{margin-top:0}
-.main h3{font-size:18px;font-weight:600;margin:28px 0 12px;color:#334155}
+.main h3{font-size:18px;font-weight:600;margin:28px 0 12px;color:var(--text-heading)}
 .main h4{font-size:15px;font-weight:600;margin:20px 0 8px;color:#475569}
 .main p{line-height:1.8;margin-bottom:12px;font-size:15px}
 .main ul,.main ol{margin:8px 0 16px 24px;line-height:1.8}
 .main li{margin-bottom:4px;font-size:15px}
 .main strong{font-weight:600}
-.main blockquote{border-left:3px solid var(--accent);padding:10px 16px;margin:12px 0;background:#e0f2fe;border-radius:0 6px 6px 0;font-size:14px;color:#1e40af}
-.main hr{border:none;border-top:1px solid #e2e8f0;margin:36px 0}
-.main code{background:#e2e8f0;padding:2px 6px;border-radius:4px;font-size:13px;font-family:'SF Mono',Monaco,'Cascadia Code',monospace;color:#be185d}
-.main pre{background:var(--code-bg);color:#e2e8f0;padding:20px 24px;border-radius:8px;overflow-x:auto;margin:12px 0 20px;font-size:13px;line-height:1.7;border:1px solid #334155}
+.main blockquote{border-left:3px solid var(--accent);padding:10px 16px;margin:12px 0;background:#eff6ff;border-radius:0 6px 6px 0;font-size:14px;color:#1e40af}
+.main hr{border:none;border-top:1px solid var(--border);margin:36px 0}
+.main code{background:var(--code-bg);padding:2px 6px;border-radius:4px;font-size:13px;font-family:'SF Mono',Monaco,'Cascadia Code',monospace;color:#be185d}
+.main pre{background:var(--code-bg);color:var(--code-text);padding:20px 24px;border-radius:8px;overflow-x:auto;margin:12px 0 20px;font-size:13px;line-height:1.7;border:1px solid var(--border)}
 .main pre code{background:none;padding:0;color:inherit}
 
 /* Tables */
 .main table{width:100%;border-collapse:collapse;margin:12px 0 20px;font-size:14px;border-radius:8px;overflow:hidden;border:1px solid var(--table-border)}
-.main thead th{background:var(--table-header);padding:10px 14px;text-align:left;font-weight:600;border:1px solid var(--table-border);font-size:13px}
+.main thead th{background:var(--table-header);padding:10px 14px;text-align:left;font-weight:600;border:1px solid var(--table-border);font-size:13px;color:var(--text-heading)}
 .main tbody td{padding:10px 14px;border:1px solid var(--table-border);vertical-align:top}
 .main tbody tr:nth-child(even){background:var(--table-stripe)}
-.main tbody tr:hover{background:#e0f2fe}
+.main tbody tr:hover{background:#eff6ff}
 
 /* Hero */
-.hero{background:linear-gradient(135deg,#1e293b 0%,#334155 100%);color:#fff;padding:32px;border-radius:12px;margin-bottom:32px}
+.hero{background:linear-gradient(135deg,#3b82f6 0%,#2563eb 100%);color:#fff;padding:32px;border-radius:12px;margin-bottom:32px;box-shadow:0 4px 16px rgba(59,130,246,0.25)}
 .hero h2{color:#fff;border-bottom:none;margin:0 0 8px;font-size:28px}
-.hero p{color:#94a3b8;margin:0;font-size:15px}
+.hero p{color:rgba(255,255,255,0.85);margin:0;font-size:15px}
 .hero .stats{display:flex;gap:24px;margin-top:20px;flex-wrap:wrap}
-.hero .stat{background:rgba(255,255,255,.06);padding:12px 20px;border-radius:8px;border:1px solid rgba(255,255,255,.1)}
-.hero .stat-val{font-size:22px;font-weight:700;color:var(--accent)}
-.hero .stat-label{font-size:12px;color:var(--badge-text);margin-top:2px}
+.hero .stat{background:rgba(255,255,255,.15);padding:12px 20px;border-radius:8px;border:1px solid rgba(255,255,255,.2)}
+.hero .stat-val{font-size:22px;font-weight:700;color:#fff}
+.hero .stat-label{font-size:12px;color:rgba(255,255,255,0.75);margin-top:2px}
 
 /* Comment highlight in code */
 .cmd{color:var(--accent);font-weight:500}
 .comment{color:#64748b}
 
 /* Footer */
-.footer{margin-top:60px;padding:24px 0;border-top:2px solid #e2e8f0;text-align:center;font-size:13px;color:#64748b}
-.footer strong{color:var(--text-main)}
+.footer{margin-top:60px;padding:24px 0;border-top:2px solid var(--border);text-align:center;font-size:13px;color:#64748b}
+.footer strong{color:var(--text-heading)}
 
 /* Mobile */
-.hamburger{display:none;position:fixed;top:12px;left:12px;z-index:200;background:var(--sidebar-bg);color:#fff;border:none;padding:10px 14px;border-radius:8px;font-size:20px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.2)}
-.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:50}
+.hamburger{display:none;position:fixed;top:12px;left:12px;z-index:200;background:var(--accent);color:#fff;border:none;padding:10px 14px;border-radius:8px;font-size:20px;cursor:pointer;box-shadow:0 2px 8px rgba(59,130,246,.3)}
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.3);z-index:50}
 @media(max-width:768px){
   .sidebar{transform:translateX(-100%)}
   .sidebar.open{transform:translateX(0)}
@@ -84,9 +85,21 @@ a:hover{text-decoration:underline}
   .main pre{padding:12px 14px;font-size:12px}
 }
 
+/* Print */
+@media print{
+  .sidebar,.hamburger,.overlay{display:none!important}
+  .main{margin-left:0;padding:20px;max-width:100%}
+  .hero{background:#3b82f6!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .main pre{border:1px solid #ccc;background:#f8f8f8!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .main table{page-break-inside:avoid}
+  .main h2{page-break-after:avoid}
+  a{color:var(--accent)!important}
+  .footer{border-top:1px solid #ccc}
+}
+
 /* SVG Diagrams */
 .diagram-wrap{margin:20px 0;text-align:center}
-.diagram-wrap svg{max-width:100%;height:auto;border:1px solid #e2e8f0;border-radius:8px;background:#f8fafc}
+.diagram-wrap svg{max-width:100%;height:auto;border:1px solid var(--border);border-radius:8px;background:var(--table-stripe)}
 .diagram-caption{font-size:12px;color:#64748b;margin-top:6px;text-align:center}
 </style>
 </head>
@@ -98,7 +111,7 @@ a:hover{text-decoration:underline}
 <nav class="sidebar" id="sidebar">
   <div class="sidebar-header">
     <h1>U-MAKER</h1>
-    <p>v3.0.31 &mdash; Plugin Documentation</p>
+    <p>v3.0.33 &mdash; Plugin Documentation</p>
   </div>
   <div class="sidebar-nav">
 
@@ -140,7 +153,7 @@ a:hover{text-decoration:underline}
     </div>
 
   </div>
-  <div class="sidebar-footer">GPL-3.0 &copy; U PLEAT &middot; v3.0.31</div>
+  <div class="sidebar-footer">GPL-3.0 &copy; U PLEAT &middot; v3.0.33</div>
 </nav>
 
 <main class="main">
@@ -186,14 +199,14 @@ curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/insta
 <span class="cmd">/u-sync [app]</span>                <span class="comment"># 문서 간 정합성 검증</span></code></pre>
 
 <h3>자연어로도 가능</h3>
-<pre><code><span class="comment">"[app] 앱의 SRS를 만들어줘"</span>      <span class="comment"># u-maker 라우터가 자동 분배</span></code></pre>
+<pre><code><span class="comment">"[app] 앱의 SRS를 만들어줘"</span>      <span class="comment"># U-MAKER 라우터가 자동 분배</span></code></pre>
 
 <hr>
 
 <!-- Section 1 -->
 <h2 id="sec1">1. What This Plugin Solves</h2>
 
-<p>u-maker는 <strong>Intent-driven 문서 중심 개발(SSoT)</strong>을 구현하는 협업 오케스트레이터이다.</p>
+<p>U-MAKER는 <strong>Intent-driven 문서 중심 개발(SSoT)</strong>을 구현하는 협업 오케스트레이터이다.</p>
 
 <h3>기존 방식 vs U-MAKER v3</h3>
 <table>
@@ -263,8 +276,8 @@ curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/insta
   <text x="610" y="246" text-anchor="middle" fill="#5b21b6" font-size="9">orchestrator|planner|builder|guardian</text>
   <!-- Output -->
   <line x1="360" y1="262" x2="360" y2="290" stroke="#6b7280" stroke-width="1.5" marker-end="url(#ar)"/>
-  <rect x="260" y="292" width="200" height="28" rx="14" fill="#1e293b"/>
-  <text x="360" y="311" text-anchor="middle" fill="#e2e8f0" font-size="11" font-weight="600">.u-maker/docs/ (SSoT)</text>
+  <rect x="260" y="292" width="200" height="28" rx="14" fill="#1e40af"/>
+  <text x="360" y="311" text-anchor="middle" fill="#fff" font-size="11" font-weight="600">.u-maker/docs/ (SSoT)</text>
 </svg>
 </div>
 
@@ -272,8 +285,8 @@ curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/insta
 <table>
 <thead><tr><th>Prefix</th><th>용도</th><th>User-invocable</th><th>수</th></tr></thead>
 <tbody>
-<tr><td><code>u-*</code></td><td>Command (slash command)</td><td>Yes</td><td>24</td></tr>
-<tr><td><code>u-skill-*</code></td><td>Internal engine</td><td>No</td><td>13</td></tr>
+<tr><td><code>u-*</code></td><td>Command (slash command)</td><td>Yes</td><td>22</td></tr>
+<tr><td><code>u-skill-*</code></td><td>Internal engine</td><td>No</td><td>12</td></tr>
 <tr><td><code>u-skill-router</code></td><td>Intent router</td><td>No</td><td>1</td></tr>
 <tr><td><code>u-maker</code></td><td>NL router + help</td><td>Yes</td><td>1</td></tr>
 </tbody>
@@ -290,19 +303,19 @@ curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/insta
   <!-- Phase boxes -->
   <rect x="20" y="50" width="110" height="50" rx="8" fill="#3b82f6"/>
   <text x="75" y="72" text-anchor="middle" fill="#fff" font-size="11" font-weight="700">01 PLAN</text>
-  <text x="75" y="88" text-anchor="middle" fill="#bfdbfe" font-size="9">SRS · IA · Roadmap</text>
+  <text x="75" y="88" text-anchor="middle" fill="#bfdbfe" font-size="9">SRS . IA . Roadmap</text>
   <rect x="160" y="50" width="110" height="50" rx="8" fill="#8b5cf6"/>
   <text x="215" y="72" text-anchor="middle" fill="#fff" font-size="11" font-weight="700">02 DESIGN</text>
-  <text x="215" y="88" text-anchor="middle" fill="#ddd6fe" font-size="9">ERD · API · Screen</text>
+  <text x="215" y="88" text-anchor="middle" fill="#ddd6fe" font-size="9">ERD . API . Screen</text>
   <rect x="300" y="50" width="110" height="50" rx="8" fill="#10b981"/>
   <text x="355" y="72" text-anchor="middle" fill="#fff" font-size="11" font-weight="700">03 DO</text>
-  <text x="355" y="88" text-anchor="middle" fill="#a7f3d0" font-size="9">Code · Build</text>
+  <text x="355" y="88" text-anchor="middle" fill="#a7f3d0" font-size="9">Code . Build</text>
   <rect x="440" y="50" width="110" height="50" rx="8" fill="#f59e0b"/>
   <text x="495" y="72" text-anchor="middle" fill="#fff" font-size="11" font-weight="700">04 CHECK</text>
-  <text x="495" y="88" text-anchor="middle" fill="#fef3c7" font-size="9">Test · Report</text>
+  <text x="495" y="88" text-anchor="middle" fill="#fef3c7" font-size="9">Test . Report</text>
   <rect x="580" y="50" width="100" height="50" rx="8" fill="#ef4444"/>
   <text x="630" y="72" text-anchor="middle" fill="#fff" font-size="11" font-weight="700">05 ACT</text>
-  <text x="630" y="88" text-anchor="middle" fill="#fecaca" font-size="9">Ship · Retro</text>
+  <text x="630" y="88" text-anchor="middle" fill="#fecaca" font-size="9">Ship . Retro</text>
   <!-- Forward arrows -->
   <line x1="130" y1="75" x2="155" y2="75" stroke="#6b7280" stroke-width="2" marker-end="url(#ar2)"/>
   <line x1="270" y1="75" x2="295" y2="75" stroke="#6b7280" stroke-width="2" marker-end="url(#ar2)"/>
@@ -347,7 +360,7 @@ curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/insta
   <rect x="20" y="30" width="180" height="140" rx="10" fill="#fee2e2" stroke="#f87171" stroke-width="2"/>
   <text x="110" y="55" text-anchor="middle" fill="#991b1b" font-size="13" font-weight="700">Layer 1: _input/</text>
   <text x="110" y="75" text-anchor="middle" fill="#7f1d1d" font-size="10">.u-maker/_dropzone/</text>
-  <text x="110" y="92" text-anchor="middle" fill="#7f1d1d" font-size="10">rfp/ · as-is/</text>
+  <text x="110" y="92" text-anchor="middle" fill="#7f1d1d" font-size="10">rfp/ . as-is/</text>
   <text x="110" y="109" text-anchor="middle" fill="#7f1d1d" font-size="10">meeting-notes/</text>
   <text x="110" y="126" text-anchor="middle" fill="#7f1d1d" font-size="10">interviews/</text>
   <text x="110" y="155" text-anchor="middle" fill="#ef4444" font-size="9" font-weight="600">/u-ingest →</text>
@@ -356,23 +369,22 @@ curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/insta
   <!-- Layer 2: Classified -->
   <rect x="255" y="15" width="200" height="170" rx="10" fill="#dbeafe" stroke="#3b82f6" stroke-width="2"/>
   <text x="355" y="40" text-anchor="middle" fill="#1e40af" font-size="13" font-weight="700">Layer 2: _classified/</text>
-  <text x="355" y="60" text-anchor="middle" fill="#1e3a8a" font-size="9">requirements/ · pain-points/</text>
-  <text x="355" y="75" text-anchor="middle" fill="#1e3a8a" font-size="9">domain-terms/ · stakeholders/</text>
-  <text x="355" y="90" text-anchor="middle" fill="#1e3a8a" font-size="9">workflows/ · screens/</text>
-  <text x="355" y="105" text-anchor="middle" fill="#1e3a8a" font-size="9">data-models/ · constraints/</text>
-  <text x="355" y="120" text-anchor="middle" fill="#1e3a8a" font-size="9">decisions/ · questions/</text>
-  <text x="355" y="138" text-anchor="middle" fill="#2563eb" font-size="9" font-weight="700">standards/ · ux-standards/</text>
-  <text x="355" y="155" text-anchor="middle" fill="#1e40af" font-size="9">(12 categories)</text>
+  <text x="355" y="60" text-anchor="middle" fill="#1e3a8a" font-size="9">requirements/ . pain-points/</text>
+  <text x="355" y="75" text-anchor="middle" fill="#1e3a8a" font-size="9">domain-terms/ . stakeholders/</text>
+  <text x="355" y="90" text-anchor="middle" fill="#1e3a8a" font-size="9">workflows/ . screens/</text>
+  <text x="355" y="105" text-anchor="middle" fill="#1e3a8a" font-size="9">data-models/ . constraints/</text>
+  <text x="355" y="120" text-anchor="middle" fill="#1e3a8a" font-size="9">decisions/ . questions/</text>
+  <text x="355" y="155" text-anchor="middle" fill="#1e40af" font-size="9">(10 categories)</text>
   <text x="355" y="172" text-anchor="middle" fill="#3b82f6" font-size="9" font-weight="600">/u-plan →</text>
   <!-- Arrow -->
   <line x1="455" y1="100" x2="505" y2="100" stroke="#6b7280" stroke-width="2" marker-end="url(#ar3)"/>
   <!-- Layer 3: Docs -->
   <rect x="510" y="30" width="190" height="140" rx="10" fill="#dcfce7" stroke="#22c55e" stroke-width="2"/>
   <text x="605" y="55" text-anchor="middle" fill="#166534" font-size="13" font-weight="700">Layer 3: docs/</text>
-  <text x="605" y="75" text-anchor="middle" fill="#14532d" font-size="10">SRS · IA · Roadmap</text>
-  <text x="605" y="92" text-anchor="middle" fill="#14532d" font-size="10">ERD · API · Screen</text>
-  <text x="605" y="109" text-anchor="middle" fill="#14532d" font-size="10">ScreenFlow · RTM</text>
-  <text x="605" y="126" text-anchor="middle" fill="#14532d" font-size="10">Code · TestCase</text>
+  <text x="605" y="75" text-anchor="middle" fill="#14532d" font-size="10">SRS . IA . Roadmap</text>
+  <text x="605" y="92" text-anchor="middle" fill="#14532d" font-size="10">ERD . API . Screen</text>
+  <text x="605" y="109" text-anchor="middle" fill="#14532d" font-size="10">ScreenFlow . RTM</text>
+  <text x="605" y="126" text-anchor="middle" fill="#14532d" font-size="10">Code . TestCase</text>
   <text x="605" y="143" text-anchor="middle" fill="#14532d" font-size="10">wireframes/</text>
 </svg>
 </div>
@@ -380,7 +392,7 @@ curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/insta
 <h3>.u-maker/_dropzone/ 자동 분류</h3>
 <p><code>.u-maker/_dropzone/</code>에 파일을 드롭하면 <code>/u-ingest</code> 실행 시 파일명/내용을 분석하여 <code>.u-maker/_input/rfp/</code>, <code>as-is/</code>, <code>meeting-notes/</code> 등 적절한 하위 폴더로 자동 분류한다. 처리 후 <code>.u-maker/_dropzone/</code>는 비워진다. (<code>_input/raw/</code>도 fallback으로 지원)</p>
 
-<h3>_classified 12개 카테고리</h3>
+<h3>_classified 10개 카테고리</h3>
 <table>
 <thead><tr><th>카테고리</th><th>ID 패턴</th><th>입력 소스</th></tr></thead>
 <tbody>
@@ -394,8 +406,6 @@ curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/insta
 <tr><td>constraints/</td><td>CN-nnn</td><td>RFP, 법규</td></tr>
 <tr><td>decisions/</td><td>DC-nnn</td><td>회의록, /u-discuss</td></tr>
 <tr><td>questions/</td><td>QS-nnn</td><td>분석 중 발생</td></tr>
-<tr><td>standards/</td><td>STD-nnn</td><td>표준정책, 가이드라인</td></tr>
-<tr><td>ux-standards/</td><td>UXS-nnn</td><td>디자인 시스템, UI 가이드</td></tr>
 </tbody>
 </table>
 
@@ -445,7 +455,7 @@ curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/insta
 <tr><td><code>/u-dev [scope] [--only X] [-i] [--step]</code></td><td>명세 → FE + BE + DB 코드 생성</td><td><code>/u-dev [app] --only fe</code></td></tr>
 <tr><td><code>/u-qa [scope] [-i] [--step]</code></td><td>TC 설계 + 테스트 실행 + Report + exit criteria</td><td><code>/u-qa [app]</code></td></tr>
 <tr><td><code>/u-ship [scope] [-i] [--step]</code></td><td>최종 검증 + iteration log + retrospective</td><td><code>/u-ship [app]</code></td></tr>
-<tr><td><code>/u-loop [scope] [--from X] [--to Y]</code></td><td>PDCA 파이프라인 무인 자동 실행. 체크포인트 기반 재개 지원</td><td><code>/u-loop [app] --from plan --to check</code></td></tr>
+<tr><td><code>/u-loop [scope] [--from X] [--to Y]</code></td><td>PDCA 파이프라인 무인 자동 실행</td><td><code>/u-loop [app] --from plan --to qa</code></td></tr>
 </tbody>
 </table>
 
@@ -469,7 +479,7 @@ curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/insta
 <tr><td><code>/u-coverage [scope]</code></td><td>classified → 산출물 커버리지 리포트</td><td><code>/u-coverage all</code></td></tr>
 <tr><td><code>/u-trace [scope] [id]</code></td><td>raw → classified → docs 추적 체인</td><td><code>/u-trace [app] FR-015</code></td></tr>
 <tr><td><code>/u-browse [scope] [--only path] [--open]</code></td><td>SSoT 문서를 분석·교차참조하여 리치 HTML 뷰어 생성. 와이어프레임에 어노테이션·화면흐름·비즈니스로직 포함</td><td><code>/u-browse [app] --open</code></td></tr>
-<tr><td><code>/u-report [scope] [--only X]</code></td><td>Phase별 HTML 리포트 생성 (Done/Remaining/Improve 추적). 리포트는 <code>_reports/{scope}/YYYY-MM-DD/</code>에 날짜별 저장</td><td><code>/u-report [app] --only plan</code></td></tr>
+<tr><td><code>/u-report [scope] [--only X]</code></td><td>Phase별 HTML 리포트 생성 (Done/Remaining/Improve 추적). <code>--only daily</code>로 IA 일정 조율 Daily Report 생성 (PDCA 5단계 진행 추적). 리포트는 <code>_reports/{scope}/YYYY-MM-DD/</code>에 날짜별 저장</td><td><code>/u-report [app] --only daily</code></td></tr>
 </tbody>
 </table>
 
@@ -505,7 +515,7 @@ curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/insta
 <!-- Section 7 -->
 <h2 id="sec7">7. Engine Skills</h2>
 
-<p>13개 횡단 엔진. user-invocable이 아니며, command skill이 내부적으로 호출한다.</p>
+<p>12개 횡단 엔진. user-invocable이 아니며, command skill이 내부적으로 호출한다.</p>
 
 <h3>Core Engines (orchestrator 소속)</h3>
 <table>
@@ -570,27 +580,27 @@ curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/insta
 <h2 id="sec9">9. 4-Tier ID Hierarchy</h2>
 
 <div class="diagram-wrap">
-<svg viewBox="0 0 600 200" xmlns="http://www.w3.org/2000/svg" style="font-family:-apple-system,sans-serif">
+<svg viewBox="0 0 600 240" xmlns="http://www.w3.org/2000/svg" style="font-family:-apple-system,sans-serif">
   <defs><marker id="ar4" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#6b7280"/></marker></defs>
   <!-- USR -->
   <rect x="20" y="20" width="180" height="36" rx="6" fill="#8b5cf6"/>
-  <text x="110" y="43" text-anchor="middle" fill="#fff" font-size="12" font-weight="700">USR-0001 👤 일반 사용자</text>
+  <text x="110" y="43" text-anchor="middle" fill="#fff" font-size="12" font-weight="700">USR-0001 일반 사용자</text>
   <line x1="110" y1="56" x2="110" y2="75" stroke="#6b7280" stroke-width="1.5" marker-end="url(#ar4)"/>
   <!-- FR -->
   <rect x="40" y="78" width="220" height="36" rx="6" fill="#3b82f6"/>
-  <text x="150" y="101" text-anchor="middle" fill="#fff" font-size="12" font-weight="700">FR-0001 📋 회원가입 기능</text>
+  <text x="150" y="101" text-anchor="middle" fill="#fff" font-size="12" font-weight="700">FR-0001 회원가입 기능</text>
   <line x1="150" y1="114" x2="150" y2="133" stroke="#6b7280" stroke-width="1.5" marker-end="url(#ar4)"/>
   <!-- US -->
   <rect x="60" y="136" width="280" height="36" rx="6" fill="#0891b2"/>
-  <text x="200" y="159" text-anchor="middle" fill="#fff" font-size="12" font-weight="700">US-0001 📝 이메일로 회원가입하고 싶다</text>
+  <text x="200" y="159" text-anchor="middle" fill="#fff" font-size="12" font-weight="700">US-0001 이메일로 회원가입하고 싶다</text>
   <line x1="200" y1="172" x2="140" y2="192" stroke="#6b7280" stroke-width="1.5" marker-end="url(#ar4)"/>
   <line x1="200" y1="172" x2="340" y2="192" stroke="#6b7280" stroke-width="1.5" marker-end="url(#ar4)"/>
   <!-- FT 1 -->
   <rect x="30" y="195" width="220" height="30" rx="6" fill="#10b981"/>
-  <text x="140" y="215" text-anchor="middle" fill="#fff" font-size="11" font-weight="600">FT-0001 ⚙️ 이메일 인증 구현</text>
+  <text x="140" y="215" text-anchor="middle" fill="#fff" font-size="11" font-weight="600">FT-0001 이메일 인증 구현</text>
   <!-- FT 2 -->
   <rect x="280" y="195" width="220" height="30" rx="6" fill="#10b981"/>
-  <text x="390" y="215" text-anchor="middle" fill="#fff" font-size="11" font-weight="600">FT-0002 ⚙️ 소셜 로그인 구현</text>
+  <text x="390" y="215" text-anchor="middle" fill="#fff" font-size="11" font-weight="600">FT-0002 소셜 로그인 구현</text>
   <!-- Legend -->
   <text x="540" y="38" fill="#8b5cf6" font-size="10" font-weight="600">User Type</text>
   <text x="540" y="98" fill="#3b82f6" font-size="10" font-weight="600">Requirement</text>
@@ -636,7 +646,7 @@ curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/insta
 |   |   +-- meeting-notes/            # 회의록
 |   |   +-- interviews/               # 인터뷰 노트
 |   |   +-- _manifest.json            # 입력 파일 매니페스트
-|   +-- _classified/                  # Layer 2: 정제 데이터 (12 categories)
+|   +-- _classified/                  # Layer 2: 정제 데이터 (10 categories)
 |   |   +-- requirements/             # FR-nnn, NR-nnn
 |   |   +-- pain-points/             # PP-nnn
 |   |   +-- domain-terms/            # DT-nnn
@@ -647,8 +657,6 @@ curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/insta
 |   |   +-- constraints/             # CN-nnn
 |   |   +-- decisions/               # DC-nnn
 |   |   +-- questions/               # QS-nnn
-|   |   +-- standards/              # STD-nnn
-|   |   +-- ux-standards/           # UXS-nnn
 |   |   +-- _summary.json            # 분류 요약
 |   +-- _sessions/                    # 토론 세션 아카이브
 |   +-- _assumptions/                 # 가정 로그
@@ -722,15 +730,15 @@ curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/insta
 <h2 id="sec12">12. Plugin Repository Layout</h2>
 
 <pre><code>u-maker-plugin/
-+-- .claude-plugin/plugin.json        # v3.0.31
++-- .claude-plugin/plugin.json        # v3.0.33
 +-- agents/                           # 4 agent definitions
 |   +-- u-agent-orchestrator.md
 |   +-- u-agent-planner.md
 |   +-- u-agent-builder.md
 |   +-- u-agent-guardian.md
 +-- skills/
-|   +-- u-skill-*/SKILL.md            # 13 internal engines
-|   +-- u-*/SKILL.md                  # 24 command skills (user-invocable)
+|   +-- u-skill-*/SKILL.md            # 12 internal engines
+|   +-- u-*/SKILL.md                  # 22 command skills (user-invocable)
 |   +-- u-maker/SKILL.md              # NL router
 +-- hooks/                            # Event hooks
 |   +-- hooks.json
@@ -816,7 +824,7 @@ curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/insta
 <tr><td>Design Phase 전체 실행</td><td><code>/u-design [app]</code></td></tr>
 <tr><td>Screen만 생성</td><td><code>/u-design [app] --only screens</code></td></tr>
 <tr><td>ERD만 생성</td><td><code>/u-design [app] --only erd</code></td></tr>
-<tr><td>2개 앱 interactive</td><td><code>/u-design [app],[app2] -i</code></td></tr>
+<tr><td>2개 앱 interactive</td><td><code>/u-design [app],corporate -i</code></td></tr>
 <tr><td>IA 워크숍</td><td><code>/u-discuss workshop "메인 IA"</code></td></tr>
 <tr><td>공통 인증 방식 결정</td><td><code>/u-discuss decision "인증 방식"</code></td></tr>
 <tr><td>일관성 검증</td><td><code>/u-sync [app]</code></td></tr>
@@ -865,6 +873,8 @@ curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/insta
 <tr><td>FR-015 전체 추적</td><td><code>/u-trace [app] FR-015</code></td></tr>
 <tr><td>전체 커버리지</td><td><code>/u-coverage all</code></td></tr>
 <tr><td>전체 일관성 검증</td><td><code>/u-sync all</code></td></tr>
+<tr><td>IA 일정 조율 Daily Report</td><td><code>/u-report [app] --only daily</code></td></tr>
+<tr><td>HTML 리포트 전체 생성</td><td><code>/u-report [app]</code></td></tr>
 </tbody>
 </table>
 
@@ -965,9 +975,17 @@ cd /path/to/u-maker-plugin && ./deploy_local.sh</code></pre>
 
 <hr>
 
+<!-- Section 17 -->
+<h2 id="sec17">17. License</h2>
+
+<p>GPL-3.0</p>
+<p>Copyright (c) 2026 U PLEAT. All rights reserved.</p>
+
+<hr>
+
 <!-- Footer -->
 <div class="footer">
-  <strong>U-MAKER Plugin</strong> v3.0.31 &middot; GPL-3.0 &copy; U PLEAT<br>
+  <strong>U-MAKER Plugin</strong> v3.0.33 &middot; GPL-3.0 &copy; U PLEAT<br>
   PDCA 기반 SSoT 협업 오케스트레이터
 </div>
 

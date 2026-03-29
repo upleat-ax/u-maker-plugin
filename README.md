@@ -3,7 +3,7 @@
 PDCA 기반 SSoT(Single Source of Truth) 협업 오케스트레이터.
 4개 전문 에이전트와 3-Layer 파이프라인으로 소프트웨어 개발 전 과정을 자동화하는 Claude Code 플러그인.
 
-- Plugin version: `3.0.31`
+- Plugin version: `3.0.33`
 - Skills: `38` (13 engine + 24 command + 1 NL router) | Agents: `4`
 - [시작 가이드 (초보자용)](GET_STARTED.md) | [한국어 HTML](README.ko.html) | [English HTML](README.en.html)
 
@@ -240,7 +240,7 @@ _input/ (Raw)  →  _classified/ (Structured JSON)  →  docs/ (Deliverables)
 | `/u-coverage [scope]` | classified → 산출물 커버리지 리포트 | `/u-coverage all` |
 | `/u-trace [scope] [id]` | raw → classified → docs 추적 체인 | `/u-trace [app] FR-015` |
 | `/u-browse [scope] [--only path] [--open]` | SSoT 문서를 분석·교차참조하여 리치 HTML 뷰어 생성. 와이어프레임에 어노테이션·화면흐름·비즈니스로직 포함 | `/u-browse [app] --open` |
-| `/u-report [scope] [--only X]` | Phase별 HTML 리포트 생성 (Done/Remaining/Improve 추적). 리포트는 `_reports/{scope}/YYYY-MM-DD/`에 날짜별 저장 | `/u-report [app]` |
+| `/u-report [scope] [--only X]` | Phase별 HTML 리포트 생성 (Done/Remaining/Improve 추적). `--only daily`로 IA 일정 조율 Daily Report 생성 (PDCA 5단계 진행 추적). 리포트는 `_reports/{scope}/YYYY-MM-DD/`에 날짜별 저장 | `/u-report [app] --only daily` |
 
 ### 6.4 Collaboration (5)
 
@@ -451,7 +451,7 @@ SRS 변경 시 `_links.json` 기반으로 ERD, Screen, TestCase에 impact flag �
 
 ```
 u-maker-plugin/
-├── .claude-plugin/plugin.json        # v3.0.31
+├── .claude-plugin/plugin.json        # v3.0.33
 ├── agents/                           # 4 agent definitions
 │   ├── u-agent-orchestrator.md
 │   ├── u-agent-planner.md
@@ -576,6 +576,8 @@ u-maker-plugin/
 | FR-015 전체 추적 | `/u-trace [app] FR-015` |
 | 전체 커버리지 | `/u-coverage all` |
 | 전체 일관성 검증 | `/u-sync all` |
+| IA 일정 조율 Daily Report | `/u-report [app] --only daily` |
+| HTML 리포트 전체 생성 | `/u-report [app]` |
 
 ### Q&A & 토론
 
