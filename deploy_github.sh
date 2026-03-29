@@ -17,7 +17,6 @@ PLUGIN_JSON="$SCRIPT_DIR/.claude-plugin/plugin.json"
 
 PRIVATE_REPO="upleat-ax/u-maker-plugin"
 UPLEAT_REPO="upleat-ax/u-maker-plugin"
-TERMINAL_REPO="upleat-ax/u-maker-terminal"
 
 # Colors
 RED='\033[0;31m'
@@ -234,27 +233,6 @@ EOF
   )
 
   rm -rf "$tmp_dir"
-
-  # ── Step 6.1: Push HTML docs to u-maker-terminal ──
-  log "Pushing HTML docs to ${BOLD}${TERMINAL_REPO}${NC}..."
-  local term_dir
-  term_dir="$(mktemp -d)"
-  (
-    cd "$term_dir"
-    local upleat_token
-    upleat_token="${UPLEAT_TOKEN:-$(gh auth token)}"
-    git clone -q "https://x-access-token:${upleat_token}@github.com/${TERMINAL_REPO}.git" . 2>/dev/null
-    for f in GET_STARTED.html README.ko.html README.en.html; do
-      [[ -f "$SCRIPT_DIR/$f" ]] && cp "$SCRIPT_DIR/$f" "./$f"
-    done
-    git add *.html 2>/dev/null
-    git diff --cached --quiet || {
-      git commit -q -m "docs: update HTML docs (${tag})"
-      git push -q origin main 2>/dev/null
-    }
-    ok "Pushed HTML docs to ${TERMINAL_REPO}"
-  )
-  rm -rf "$term_dir"
 
   # ── Step 7: Create Releases on public repos ──
   local release_notes
