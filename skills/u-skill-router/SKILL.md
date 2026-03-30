@@ -5,7 +5,7 @@ description: "자연어 및 /u-* 커맨드에서 의도를 분류하고, 스코�
 
 # u-skill-router -- Intent Classification & Agent Dispatch Engine
 
-사용자 입력(자연어 또는 명시적 `/u-*` 커맨드)을 파싱하여 의도를 분류하고, 올바른 에이전트에 작업을 디스패치하는 내부 엔진. `u-agent-orchestrator`가 모든 진입점에서 이 엔진을 호출한다.
+사용자 입력(자연어 또는 `/u-*` 커맨드) 파싱 → 의도 분류 → 에이전트 디스패치. `u-agent-orchestrator`가 모든 진입점에서 호출.
 
 **Owner Agent:** u-agent-orchestrator
 
@@ -17,271 +17,118 @@ description: "자연어 및 /u-* 커맨드에서 의도를 분류하고, 스코�
 /u-{command} [scope] [target] [flags]
 ```
 
-| Segment | Description | Examples |
-|---------|-------------|----------|
-| `command` | 실행할 명령어 | init, ingest, plan, design, build, check, ship, add, update, ... |
-| `scope` | 앱 이름, `common`, `all`, 생략(자동) | retail, corp, common, all |
-| `target` | 문서/항목 이름 (선택적) | srs, erd, FR-0001 |
-| `flags` | 동작 변경자 | `-i`, `--step`, `--only X`, `--cascade`, `--review`, `--incremental` |
+| Segment | Examples |
+|---------|----------|
+| `command` | init, ingest, plan, design, build, check, ship, add, update, ... |
+| `scope` | retail, corp, common, all (앱 이름 또는 예약어) |
+| `target` | srs, erd, FR-0001 (문서/항목) |
+| `flags` | `-i`, `--step`, `--only X`, `--cascade`, `--review` |
 
 ---
 
 ## 2. Command → Agent Routing Table
 
-### Lifecycle Commands
+### Lifecycle
 
-| Command | Primary Agent | Engine Skills Used | Phase |
-|---------|--------------|-------------------|-------|
-| `/u-init` | orchestrator | engine-doc | -- |
-| `/u-reverse` | planner | engine-doc | Design |
-| `/u-ingest` | planner | engine-analyzer | Plan |
-| `/u-plan` | planner | engine-doc, engine-estimator | Plan |
-| `/u-design` | planner | engine-designer, engine-doc | Design |
-| `/u-dev` | builder | engine-code | Do |
-| `/u-qa` | guardian | engine-validator, engine-test | Check |
-| `/u-ship` | orchestrator | engine-validator, engine-workflow-runner | Act |
-| `/u-loop` | orchestrator | engine-workflow-runner | ALL |
+| Command | Agent | Engine Skills | Phase |
+|---------|-------|--------------|-------|
+| `/u-init` | orchestrator | doc | -- |
+| `/u-reverse` | planner | doc | Design |
+| `/u-ingest` | planner | analyzer | Plan |
+| `/u-plan` | planner | doc, estimator | Plan |
+| `/u-design` | planner | designer, doc | Design |
+| `/u-dev` | builder | code | Do |
+| `/u-qa` | guardian | validator, test | Check |
+| `/u-ship` | orchestrator | validator, workflow-runner | Act |
+| `/u-loop` | orchestrator | workflow-runner | ALL |
 
-### Operations Commands
+### Operations
 
-| Command | Primary Agent | Engine Skills Used |
-|---------|--------------|-------------------|
-| `/u-add` | planner | engine-doc |
-| `/u-update` | planner | engine-doc, engine-dep |
-| `/u-doc` | planner | engine-doc |
-| `/u-sync` | guardian | engine-validator, engine-dep |
-| `/u-gate` | orchestrator | engine-phase-detector, engine-validator |
+| Command | Agent | Engine Skills |
+|---------|-------|--------------|
+| `/u-add` | planner | doc |
+| `/u-update` | planner | doc, dep |
+| `/u-doc` | planner | doc |
+| `/u-sync` | guardian | validator, dep |
+| `/u-gate` | orchestrator | phase-detector, validator |
 
-### Observability Commands
+### Observability
 
-| Command | Primary Agent | Engine Skills Used |
-|---------|--------------|-------------------|
-| `/u-status` | orchestrator | engine-phase-detector, engine-dep |
-| `/u-coverage` | guardian | engine-validator |
-| `/u-trace` | orchestrator | engine-dep |
-| `/u-report` | orchestrator | engine-doc |
+| Command | Agent | Engine Skills |
+|---------|-------|--------------|
+| `/u-status` | orchestrator | phase-detector, dep |
+| `/u-coverage` | guardian | validator |
+| `/u-trace` | orchestrator | dep |
+| `/u-report` | orchestrator | doc |
 
-### Collaboration Commands
+### Collaboration
 
-| Command | Primary Agent | Engine Skills Used |
-|---------|--------------|-------------------|
-| `/u-ask` | orchestrator | -- (context read only) |
-| `/u-discuss` | orchestrator | engine-facilitator |
-| `/u-assume` | orchestrator | engine-doc |
-| `/u-backlog` | orchestrator | u-skill-backlog |
-
----
-
-## 3. Scope Resolution Algorithm
-
-6-Rule 순차 평가. 첫 번째 매칭 규칙에서 확정.
-
-### Rule 1: Exact App Match
-
-```
-scope가 u-maker.config.json의 apps[].name과 일치하면 → 해당 앱 스코프
-```
-
-### Rule 2: Reserved Scope -- common
-
-```
-scope === "common" → docs/common/ 스코프
-```
-
-### Rule 3: Reserved Scope -- all
-
-```
-scope === "all" → 모든 등록 앱 순차 실행 (기본) 또는 --parallel
-```
-
-### Rule 4: Comma-Separated Multi-App
-
-```
-scope에 콤마 포함 (e.g., "retail,corp") → 각 앱에 대해 순차 실행
-```
-
-### Rule 5: Auto-Detect (Omitted Scope)
-
-```
-scope 생략 시:
-  - 등록 앱 1개 → 자동 선택
-  - 등록 앱 2개+ → 사용자에게 선택 질문
-```
-
-### Rule 6: Fallback to Target
-
-```
-scope가 앱 이름도 예약어도 아님 → [target]으로 재해석
-예: /u-doc srs → scope=auto, target=srs
-```
-
-### Resolution Procedure
-
-```
-function resolveScope(args, config):
-  apps = config.apps[].name
-  word = args[0]
-
-  if word in apps           → return { scope: word, remaining: args[1:] }    // Rule 1
-  if word === "common"      → return { scope: "common", remaining: args[1:] }  // Rule 2
-  if word === "all"         → return { scope: "all", remaining: args[1:] }     // Rule 3
-  if word contains ","      → return { scope: word.split(","), remaining: args[1:] }  // Rule 4
-  if word is undefined      → return { scope: autoDetect(apps), remaining: args }  // Rule 5
-  else                      → return { scope: autoDetect(apps), remaining: args }  // Rule 6 (word → target)
-```
+| Command | Agent | Engine Skills |
+|---------|-------|--------------|
+| `/u-ask` | orchestrator | (context read only) |
+| `/u-discuss` | orchestrator | facilitator |
+| `/u-assume` | orchestrator | doc |
+| `/u-backlog` | orchestrator | backlog |
 
 ---
 
-## 4. Flag Parsing Rules
+## 3. Scope Resolution (6-Rule)
 
-### Global Flags (모든 커맨드에서 사용 가능)
+첫 번째 매칭에서 확정:
+
+1. **Exact App Match:** config apps[].name 일치 → 해당 앱
+2. **common:** `docs/common/` 스코프
+3. **all:** 모든 앱 순차 (또는 --parallel)
+4. **Comma-Separated:** "retail,corp" → 각 앱 순차
+5. **Auto-Detect:** 생략 시 앱 1개 자동 / 2개+ 사용자 질문
+6. **Fallback to Target:** 앱 이름 아님 → target으로 재해석 (예: `/u-doc srs`)
+
+---
+
+## 4. Flag Parsing
+
+### Global Flags
 
 | Flag | Type | Default | Description |
 |------|------|---------|-------------|
-| `-i` | boolean | false | Interactive mode: 분기점에서만 중단하여 사용자 확인 |
-| `--step` | boolean | false | Step mode: 매 단계 결과 표시 후 승인 대기 |
-| `--only <value>` | string | null | 지정 문서/영역만 처리 |
-| `--cascade` | boolean | false | 변경 시 하위 의존 문서 자동 갱신 |
-| `--review` | boolean | false | 추출 항목을 사용자 검증 후 반영 |
-| `--incremental` | boolean | false | 변경된 파일만 처리 |
-| `--parallel` | boolean | false | `all` 스코프에서 병렬 실행 |
+| `-i` | boolean | false | Interactive mode |
+| `--step` | boolean | false | Step mode (매 단계 승인) |
+| `--only <v>` | string | null | 지정 문서만 처리 |
+| `--cascade` | boolean | false | 하위 의존 문서 자동 갱신 |
+| `--review` | boolean | false | 사용자 검증 후 반영 |
+| `--incremental` | boolean | false | 변경 파일만 처리 |
+| `--parallel` | boolean | false | all 스코프 병렬 |
 
-### Flag Parsing Logic
-
-```
-function parseFlags(tokens):
-  flags = {}
-  i = 0
-  while i < tokens.length:
-    token = tokens[i]
-    if token === "-i"           → flags.interactive = true
-    if token === "--step"       → flags.step = true
-    if token === "--only"       → flags.only = tokens[++i]
-    if token === "--cascade"    → flags.cascade = true
-    if token === "--review"     → flags.review = true
-    if token === "--incremental" → flags.incremental = true
-    if token === "--parallel"   → flags.parallel = true
-    if token === "--wrap"       → flags.wrap = true
-    if token === "--resume"     → flags.resume = tokens[++i]  // session ID
-    if token === "--agents"     → flags.agents = tokens[++i]
-    if token === "--context"    → flags.context = tokens[++i]
-    i++
-  return flags
-```
-
-### Execution Mode Priority
-
-```
---step  →  step mode (최우선)
--i      →  interactive mode
-(none)  →  auto mode (기본)
-```
+**Mode 우선순위:** `--step` > `-i` > auto(기본)
 
 ---
 
 ## 5. Reserved Words
 
-라우터는 다음 단어들을 scope/target/type으로 특별 처리한다.
-
-### Scope Reserved Words
-
-```
-common, all
-```
-
-### Target Reserved Words (Document Types)
-
-```
-srs, ia, roadmap, erd, api, screens, screen-flow,
-ux-guide, design-token, rtm, code, test-cases,
-test-report, iteration-log, retrospective
-```
-
-### Type Reserved Words (/u-add 전용)
-
-```
-fr, nr, us, ft, screen, tc
-```
-
-### Session Types (/u-discuss 전용)
-
-```
-brainstorm, review, decision, workshop, retro
-```
+| Type | Words |
+|------|-------|
+| Scope | `common`, `all` |
+| Target (docs) | srs, ia, roadmap, erd, api, screens, screen-flow, ux-guide, design-token, rtm, code, test-cases, test-report, iteration-log, retrospective |
+| Type (/u-add) | fr, nr, us, ft, screen, tc |
+| Session (/u-discuss) | brainstorm, review, decision, workshop, retro |
 
 ---
 
 ## 6. Natural Language Intent Classification
 
-명시적 `/u-*` 커맨드가 아닌 자연어 입력 처리:
+명시적 `/u-*`가 아닌 자연어 처리:
 
-### Step 1: Intent Extraction
+**Confidence 기반 라우팅:** >=0.85 즉시 / 0.70-0.84 확인 요청 / <0.70 상위 3후보 제시
 
-사용자 메시지에서 의도 키워드와 대상을 추출한다.
+**Keyword → Command 매핑:** 초기화→init, 역공학→reverse, 분석→ingest, 기획/SRS→plan, 설계/ERD→design, 개발/코드→dev, 테스트/QA→qa, 배포→ship, 루프/자동→loop, 추가→add, 수정→update, 토론→discuss, 상태→status, 리포트→report, 질문→ask 등
 
-### Step 2: Confidence Scoring
-
-| Confidence | Action |
-|------------|--------|
-| >= 0.85 | 매칭된 커맨드로 즉시 라우팅 |
-| 0.70 - 0.84 | 매칭된 커맨드를 제시하고 사용자 확인 요청 |
-| < 0.70 | 상위 3개 후보를 제시하고 사용자 선택 |
-
-### Step 3: Keyword → Command Mapping
-
-| Keywords (KO/EN) | Mapped Command |
-|-------------------|---------------|
-| 초기화, initialize, setup | `/u-init` |
-| 역공학, 코드 분석, reverse, 소스 분석, 코드에서 문서 | `/u-reverse` |
-| 자료 분석, 분석, ingest, analyze data | `/u-ingest` |
-| 기획, 요구사항, SRS, plan | `/u-plan` |
-| 설계, ERD, API 설계, design | `/u-design` |
-| 개발, 코드 생성, build, code | `/u-dev` |
-| 테스트, QA, 검증, check, test | `/u-qa` |
-| 배포, 출시, ship, deploy | `/u-ship` |
-| 루프, 자동 실행, 밤새, 무인, loop, run all | `/u-loop` |
-| 추가, add | `/u-add` |
-| 수정, 갱신, update | `/u-update` |
-| 문서 조회, doc | `/u-doc` |
-| 동기화, 일관성, sync | `/u-sync` |
-| 게이트, 전환, gate | `/u-gate` |
-| 상태, 현황, status | `/u-status` |
-| 리포트, HTML, report, 보고서 | `/u-report` |
-| 질문, 물어볼게, 어때, 의견, ask, question | `/u-ask` |
-| 토론, 브레인스토밍, discuss | `/u-discuss` |
-| 백로그, backlog | `/u-backlog` |
-| 추적, trace | `/u-trace` |
-
-### Step 4: Non-u-maker Fallback
-
-u-maker 커맨드가 아닌 것으로 판정되면:
-1. "이 요청은 u-maker 범위 밖입니다." 안내
-2. `/u-skill-help`로 도움말 제안
+**Non-u-maker Fallback:** 범위 밖 판정 시 안내 + help 제안
 
 ---
 
 ## 7. Dispatch Protocol
 
-라우팅이 확정되면 다음 정보를 에이전트에 전달:
-
-```json
-{
-  "command": "plan",
-  "scope": "retail",
-  "target": null,
-  "flags": { "interactive": false, "step": false, "only": null },
-  "mode": "auto",
-  "resolvedPaths": {
-    "docs": ".u-maker/docs/retail/",
-    "classified": ".u-maker/docs/retail/_classified/",
-    "input": ".u-maker/docs/retail/_input/",
-    "index": ".u-maker/docs/retail/_index.json",
-    "links": ".u-maker/docs/_links.json"
-  },
-  "currentPhase": "Plan",
-  "config": { /* u-maker.config.json subset */ }
-}
-```
+확정된 라우팅 정보를 에이전트에 전달: `{ command, scope, target, flags, mode, resolvedPaths, currentPhase, config }`
 
 ---
 
@@ -289,8 +136,8 @@ u-maker 커맨드가 아닌 것으로 판정되면:
 
 | Error | Response |
 |-------|----------|
-| Unknown command | "인식되지 않는 커맨드입니다. /u-skill-help로 도움말을 확인하세요." |
-| Invalid scope | "'{scope}'는 등록된 앱이 아닙니다. 등록된 앱: {list}" |
-| Missing required argument | 해당 커맨드의 필수 인자 안내 |
-| Phase gate failure | "현재 Phase gate가 미통과입니다. /u-gate를 먼저 실행하세요." |
-| Config not found | "`u-maker.config.json`이 없습니다. /u-init을 먼저 실행하세요." |
+| Unknown command | 커맨드 안내 + help |
+| Invalid scope | 등록 앱 목록 표시 |
+| Missing argument | 필수 인자 안내 |
+| Phase gate failure | /u-gate 먼저 실행 안내 |
+| Config not found | /u-init 먼저 실행 안내 |
