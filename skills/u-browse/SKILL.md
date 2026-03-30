@@ -847,6 +847,11 @@ wireframe HTML은 리뷰용 전체 캔버스이므로 실제 앱의 내부 scrol
            background:rgba(37,99,235,.10); color:var(--text); font-size:11px; }
 ```
 
+추가 규칙:
+- 오른쪽 annotation panel과 인라인 marker 모두 `①` 같은 유니코드 원숫자에 의존하지 않는다.
+- 항상 `1`, `2`, `3` 같은 ASCII 숫자를 원형 badge 안에 렌더링한다.
+- 숫자 정렬은 문자 폭 추정치가 아니라 실제 텍스트 노드/inline-flex 중앙 정렬을 사용한다.
+
 ### Step 3.5: Page-level Side Navigation (모든 개별 HTML 공통)
 
 **모든 개별 문서 HTML** (srs.html, erd.html, api.html, screens.html, screen-flow.html, rtm.html, design-token.html, ui-components.html)에 **페이지 내 섹션 네비게이션 사이드바**를 포함한다.
