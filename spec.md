@@ -22,6 +22,8 @@ u-maker는 엔터프라이즈급 소프트웨어 프로젝트를 PDCA(Plan-Desig
 | **Monorepo mirroring** | monorepo의 apps/ 구조를 `.u-maker/apps/`가 1:1 미러링. 앱별 독립 PDCA |
 | **Inherit + override** | 공통 정책(common/)을 앱이 상속. 앱별 override 가능 |
 | **Scope-first** | Claude는 `--app` 스코프 내 `_index.json`만 먼저 읽고, 필요한 파일만 개별 로드. context window 절약 |
+| **Theme-consistent HTML** | 생성되는 모든 HTML은 light/dark 모드와 공통 theme persistence를 지원 |
+| **Context-budgeted execution** | HTML은 최후순위 입력, JSON/index 우선, delta-read와 `--only` 기본 적용 |
 
 ---
 

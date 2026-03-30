@@ -383,6 +383,13 @@ To minimize context window usage, always follow this navigation order:
 
 **Never** read all files in a directory. Always index-first, then selective load.
 
+추가 효율화 규칙:
+7. Never read generated `.html` files unless the user explicitly asks for visual review or browser QA
+8. Prefer `.json` companion files over `.md` whenever IDs, status, relations, or structured fields are enough
+9. When a task is scoped to one target, prefer `/u-* --only {target}` semantics over full-phase regeneration
+10. Pass sub-agents only changed IDs, file paths, and short summaries instead of full document bodies
+11. Reuse prior summaries (`_summary.json`, `_index.json`, assumptions, backlog) instead of rereading raw sources
+
 ---
 
 ## 14. Output Format
@@ -426,3 +433,4 @@ After every command execution, provide a structured summary:
 6. **Always generate `.json` companion** -- every `.md` document must have a `.json` export
 7. **Always record assumptions** -- in auto mode, every judgment call is logged
 8. **Never exceed context window** -- use scope-first navigation, read indexes before files
+9. **Never load generated HTML during planning/execution** -- HTML is review output, not working context

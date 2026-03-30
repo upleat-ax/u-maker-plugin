@@ -19,6 +19,8 @@ triggers:
 
 > **단순 변환이 아니다.** `.md`/`.json`을 그대로 렌더링하는 것이 아니라, 다른 문서를 교차 참조하고, JSON 데이터를 분석하여 다이어그램·통계·어노테이션을 자동 생성한 **리치 HTML**을 만든다.
 
+> **전역 HTML 규칙:** `/u-browse`가 생성하는 모든 HTML(`srs.html`, `erd.html`, `api.html`, `screens.html`, `screen-flow.html`, `rtm.html`, `design-token.html`, `ui-components.html`, `wireframes/*.html`, `_browse/index.html`)은 공통 `Light | Dark` toggle과 `localStorage['u-maker-theme']` 기반 테마 저장을 지원해야 한다.
+
 ---
 
 ## Arguments & Flags
@@ -560,331 +562,209 @@ sequenceDiagram
 
 ---
 
-#### 와이어프레임 HTML 구조 (5개 섹션)
+#### 와이어프레임 HTML 구조 (header + stage + tabbed details)
 
-와이어프레임 HTML은 다음 5개 섹션으로 구성된다. **이 순서와 구조를 반드시 따른다.**
+와이어프레임 HTML은 다음 3개 블록으로 구성된다. **이 순서와 구조를 반드시 따른다.**
 
-**섹션 1: doc-header (상단 고정 바)**
+**블록 1: doc-header (상단 고정 바 + theme toggle)**
+
+상단 바에는 다음 정보가 모두 보여야 한다:
+- 화면 아이디
+- 화면명
+- 화면 route(path)
+- 관련 FT
+- 관련 FR
+- `Light | Dark` 토글
+- `index.html` 복귀 링크
 
 ```html
-<div class="doc-header">
+<header class="doc-header">
   <div class="dh-left">
-    <span class="sid">S-APP-NNNN</span>          <!-- Screen ID 배지 -->
-    <span class="dh-name">화면 제목</span>        <!-- 화면명 -->
-    <span class="dh-path">/route/path</span>      <!-- 라우트 경로 -->
+    <span class="sid">S-FSMS-0206</span>
+    <div class="dh-meta">
+      <strong class="dh-name">추모캔버스</strong>
+      <code class="dh-path">/memorial</code>
+    </div>
   </div>
   <div class="dh-right">
-    <a href="index.html">전체 목록</a>            <!-- 인덱스 링크 -->
-    <span>FT-XXXX</span>                          <!-- 관련 Feature -->
-    <span>FR-XXXX</span>                          <!-- 관련 Requirement -->
-    <span>YYYY-MM-DD</span>                       <!-- 생성일 -->
+    <a class="dh-index" href="index.html">Index</a>
+    <span class="trace trace-ft">FT-FSMS-060101~060104</span>
+    <span class="trace trace-fr">FR-FSMS-0600</span>
+    <button class="theme-toggle" type="button" aria-label="Toggle light and dark mode">
+      <span data-mode="light">Light</span>
+      <span data-mode="dark">Dark</span>
+    </button>
   </div>
-</div>
+</header>
 ```
 
-**섹션 2: stage (앱 프레임 + 어노테이션 패널)**
+**Theme 토글 규칙:**
+1. 기본값은 `light`.
+2. 토글 시 `<html data-theme="light|dark">` 값을 변경한다.
+3. 선택값은 `localStorage['u-maker-wireframe-theme']`에 저장한다.
+4. 다크 모드에서도 annotation 번호, 상태 배지, 코드 블록 대비가 깨지지 않아야 한다.
+
+```css
+:root {
+  --bg: #f8fafc;
+  --panel: #ffffff;
+  --text: #0f172a;
+  --muted: #64748b;
+  --line: #dbe3ef;
+}
+html[data-theme="dark"] {
+  --bg: #0f172a;
+  --panel: #111827;
+  --text: #e5eef9;
+  --muted: #94a3b8;
+  --line: #334155;
+}
+```
+
+**블록 2: stage (좌측 wireframe html + 인라인 annotation / 우측 annotation panel)**
 
 ```
-┌─────────────────────────────────────────┬──────────────────────┐
-│  App Frame (실제 앱 UI 모습)              │  어노테이션 패널       │
-│  ┌──────────┬─────────────────────┐     │                      │
-│  │ Sidebar  │  Page Header        │     │  ① PageTitle         │
-│  │ (메뉴)   │  ────────────────   │     │  설명 텍스트...       │
-│  │          │  Tabs ③             │     │                      │
-│  │          │  Filters ④⑤⑥⑦      │     │  ② CountBadge        │
-│  │          │  ────────────────   │     │  설명 텍스트...       │
-│  │          │  Table ⑧⑨⑩⑪       │     │                      │
-│  │          │  ────────────────   │     │  ③ StatusTab         │
-│  │          │  Pagination         │     │  설명 텍스트...       │
-│  │          │                     │     │  ...                  │
-│  └──────────┴─────────────────────┘     │                      │
-│                                          │                      │
-└─────────────────────────────────────────┴──────────────────────┘
+┌──────────────────────────────────────────────────────┬──────────────────────────┐
+│ Left Stage                                           │ Right Panel              │
+│ ┌──────────────────────────────────────────────────┐ │ ┌──────────────────────┐ │
+│ │ App frame (실제 앱 UI)                           │ │ │ Design               │ │
+│ │ Sidebar + Header + Content + Inline markers      │ │ │ Develop              │ │
+│ │ Annotation chip / callout / marker overlay       │ │ │ 기타                 │ │
+│ └──────────────────────────────────────────────────┘ │ └──────────────────────┘ │
+└──────────────────────────────────────────────────────┴──────────────────────────┘
 ```
-
-**핵심 규칙:**
-
-1. **App Frame은 실제 앱처럼 렌더링.** IA의 사이드바 메뉴, 페이지 헤더, 탭, 필터, 테이블, 페이지네이션 등 실제 데이터가 포함된 풀 UI를 구성한다.
-2. **와이어프레임의 테이블/폼에는 ERD 엔티티의 실제 데이터 필드를 모두 표시한다.** 예: 테이블 컬럼은 `접수번호(id)`, `고객명(customer_name)`, `상태(status)` 등 실제 필드명을 반영. 폼 입력도 `email`, `password`, `name` 등 실제 필드에 대응.
-3. **어노테이션 마커 `<span class="mk">N</span>`** 를 UI 요소 옆에 인라인으로 배치한다. 마커 번호는 우측 어노테이션 패널의 설명과 1:1 대응한다.
-4. **어노테이션 패널은 Design과 Develop 두 섹션으로 구분한다:**
 
 ```html
-<div class="anno-panel">
-  <div class="anno-title">화면 어노테이션</div>
-
-  <!-- Design 관점 (기획/UX) -->
-  <div class="anno-section">
-    <div class="anno-section-title" style="color:#8b5cf6">🎨 Design</div>
-    <div class="anno-item"><div class="an">1</div><div class="ad">
-      <b>PageTitle</b>
-      "묘역관리 접수 내역" — 사이드바 활성 항목과 연동. 브레드크럼 표시.
-    </div></div>
-    <div class="anno-item"><div class="an">3</div><div class="ad">
-      <b>StatusTabFilter</b>
-      전체/접수완료/견적완료/주문완료/작업완료/진행완료.
-      탭 전환 시 필터 값 유지. Empty state: "해당 상태의 접수가 없습니다."
-    </div></div>
-    <!-- ... 각 마커별 UX/기획 관점 설명 -->
+<section class="stage">
+  <div class="stage-main">
+    <div class="app-shell">
+      <aside class="app-nav"><!-- IA 기반 실제 메뉴 구조 --></aside>
+      <main class="app-page">
+        <section class="page-canvas">
+          <!-- 실제 HTML wireframe -->
+          <div class="inline-annotation-layer">
+            <span class="mk">1</span>
+            <div class="mk-note">검색은 주문번호/고인명 기준</div>
+          </div>
+        </section>
+      </main>
+    </div>
   </div>
 
-  <!-- Develop 관점 (개발) -->
-  <div class="anno-section">
-    <div class="anno-section-title" style="color:#0891b2">🔧 Develop</div>
-    <div class="anno-item"><div class="an">3</div><div class="ad">
-      <b>StatusTabFilter</b>
-      <code>query param: status</code> | enum: received, quoted, ordered, work_completed, completed
-      상태 변경 시 <code>GET /v1/orders?status={value}</code> 재호출. Debounce 불필요 (탭 클릭).
-    </div></div>
-    <div class="anno-item"><div class="an">7</div><div class="ad">
-      <b>SearchButton</b>
-      <code>GET /v1/cemetery-care/orders?status=&workType=&q=&startDate=&endDate=&page=1&size=20</code>
-      Response: <code>{ data: Order[], total: number, page: number }</code>
-      Error 처리: 네트워크 에러 → 토스트, 빈 결과 → Empty state 컴포넌트.
-    </div></div>
-    <!-- ... 각 마커별 개발 관점 설명 (API 상세, 데이터 타입, 에러 처리, 상태 관리) -->
-  </div>
-
-  <!-- 비즈니스 규칙 (해당 시에만) -->
-  <div class="br-section">
-    <div class="br-title">비즈니스 규칙</div>
-    <div class="br-item">상태 탭 전환 시 기간/검색어 필터 값 유지</div>
-  </div>
-</div>
+  <aside class="anno-panel">
+    <section class="anno-section anno-design"><h2>Design</h2></section>
+    <section class="anno-section anno-develop"><h2>Develop</h2></section>
+    <section class="anno-section anno-other"><h2>기타</h2></section>
+  </aside>
+</section>
 ```
+
+**stage 핵심 규칙:**
+1. **왼쪽은 실제 HTML wireframe이다.** placeholder 그림이 아니라, IA 사이드바와 본문 레이아웃이 있는 풀 앱 프레임을 구성한다.
+2. **왼쪽에는 인라인 annotation도 함께 보여준다.** 마커 번호, 짧은 note chip, 상태 badge, empty/loading/error note를 wireframe 안에 배치한다.
+3. **오른쪽은 상세 annotation 전용 패널이다.** 최소 3개 그룹: `Design`, `Develop`, `기타`.
+4. `기타` 섹션에는 운영 메모, QA 포인트, 법/정책 제약, 문서 cross-reference, 미결정 사항을 넣는다.
+5. 기본 그리드는 `grid-template-columns: minmax(0, 1fr) 360px`.
+6. 1280px 미만에서는 오른쪽 패널을 stage 하단으로 내리고, 768px 미만에서는 단일 컬럼으로 전환한다.
 
 **Design 섹션에 포함할 내용:**
-- 화면 목적, 사용자 시나리오
-- 컴포넌트 동작 설명 (사용자 관점)
-- UX 규칙 (빈 상태, 로딩, 에러 표시 방식)
-- 접근성 요구사항
-- 반응형 동작
+- 화면 목적, 핵심 사용자 시나리오
+- 컴포넌트 동작 설명
+- UX 규칙 (empty/loading/error)
+- 접근성, 반응형, 상태 배지 규칙
 
 **Develop 섹션에 포함할 내용:**
-- API 엔드포인트 + 파라미터 + 응답 스키마
-- 데이터 타입, enum 값
-- 상태 관리 방식 (Zustand/Redux store key)
-- 에러 처리 로직 (HTTP status별)
-- 캐싱 전략 (TanStack Query key)
-- DB 쿼리 힌트 (인덱스, 정렬)
+- API endpoint, query/body, response schema
+- enum, validation, store/query key
+- 에러 처리, 캐시 무효화, DB/정렬 힌트
 
-**Grid Layout:** `grid-template-columns: 1fr 300px`
+**기타 섹션에 포함할 내용:**
+- 운영/정책 규칙
+- QA 확인 포인트
+- 미정 의사결정, dependency, release note
 
-**섹션 3: 컴포넌트 명세 테이블 (spec-wrap)**
+**블록 3: detail-tabs (하단 탭 세트)**
 
-```html
-<div class="spec-wrap">
-  <div class="spec-title">컴포넌트 명세</div>
-  <table class="spec-tbl">
-    <thead><tr><th>#</th><th>컴포넌트</th><th>타입</th><th>Props / 설명</th><th>Validation</th><th>API</th></tr></thead>
-    <tbody>
-      <tr><td>1</td><td>PageTitle</td><td>Layout</td><td>title="화면제목"</td><td>-</td><td>-</td></tr>
-      <tr><td>2</td><td>EmailInput</td><td>Input</td><td>placeholder="이메일" | required</td><td>email 형식 | 최대 255자</td><td>-</td></tr>
-      <tr><td>3</td><td>PasswordInput</td><td>Input</td><td>type=password | required</td><td>최소 8자 | 영문+숫자+특수문자</td><td>-</td></tr>
-      <tr><td>4</td><td>LoginButton</td><td>Action</td><td>variant=primary | disabled: form invalid</td><td>전체 form valid 시 활성화</td><td>POST /v1/auth/login</td></tr>
-    </tbody>
-  </table>
-</div>
-```
+하단에는 고정 순서의 탭을 둔다. 탭 라벨은 아래 순서를 반드시 따른다.
 
-각 컴포넌트에 대해:
-- `#`: 어노테이션 마커 번호
-- `컴포넌트`: 컴포넌트명 (PascalCase)
-- `타입`: Layout / Display / Input / Filter / Action / Navigation 중 택 1
-- `Props / 설명`: 주요 props, placeholder, 기본값, 동작 설명
-- `Validation`: Input/Filter 타입의 유효성 검증 규칙. 형식, 최소/최대 길이, 필수 여부, 정규식 패턴 등. 해당 없으면 `-`
-- `API`: 이 컴포넌트가 트리거하는 API 엔드포인트 (없으면 `-`)
-
-**섹션 3-2: 버튼 액션 상세 테이블**
+1. `Popup / BottomSheet / Dialog / Modal`
+2. `Event Actions`
+3. `Data Models`
+4. `Screen Flow`
+5. `Sequence Diagram`
+6. `Component Spec`
+7. `Global Rules`
 
 ```html
-<div class="spec-wrap">
-  <div class="spec-title">버튼 액션 상세</div>
-  <table class="spec-tbl">
-    <thead><tr><th>버튼</th><th>트리거</th><th>API 호출</th><th>성공 시</th><th>실패 시</th></tr></thead>
-    <tbody>
-      <tr>
-        <td>로그인</td><td>click</td>
-        <td><code>POST /v1/auth/login</code></td>
-        <td>→ SCR-002 Dashboard 이동, 토큰 저장</td>
-        <td>→ 에러 토스트 표시 ("이메일 또는 비밀번호 확인")</td>
-      </tr>
-      <tr>
-        <td>소셜 로그인 (Google)</td><td>click</td>
-        <td><code>GET /v1/auth/google</code></td>
-        <td>→ OAuth 팝업 → 콜백 → SCR-002</td>
-        <td>→ 에러 모달 표시</td>
-      </tr>
-    </tbody>
-  </table>
-</div>
-```
-
-**섹션 3-3: 팝업 & 모달 와이어프레임**
-
-팝업과 모달은 테이블이 아닌 **실제 와이어프레임 목업**으로 작성한다. 각 팝업/모달에 대해 메인 화면과 동일한 수준의 UI를 구성한다.
-
-```html
-<div class="spec-wrap">
-  <div class="spec-title">팝업 & 모달</div>
-
-  <!-- 모달 1: 로그인 실패 -->
-  <div style="margin:16px 0;padding:16px;border:2px solid #e2e8f0;border-radius:12px;background:#fff">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-      <strong style="font-size:13px">⚠️ 로그인 실패 모달</strong>
-      <span style="font-size:10px;color:#64748b;background:#f1f5f9;padding:2px 8px;border-radius:4px">트리거: 401 응답</span>
-    </div>
-    <!-- 모달 와이어프레임 -->
-    <div style="max-width:360px;margin:0 auto;background:#fff;border:1px solid #d1d9e0;border-radius:10px;box-shadow:0 4px 12px rgba(0,0,0,.15);overflow:hidden">
-      <div style="padding:20px 24px;text-align:center">
-        <div style="font-size:32px;margin-bottom:8px">⚠️</div>
-        <div style="font-weight:700;font-size:15px;margin-bottom:6px">로그인 실패</div>
-        <div style="font-size:13px;color:#64748b">이메일 또는 비밀번호가 올바르지 않습니다.</div>
-      </div>
-      <div style="padding:12px 24px 20px;text-align:center">
-        <span style="display:inline-block;padding:8px 32px;background:#0891b2;color:#fff;border-radius:6px;font-size:13px;font-weight:700">확인</span>
-      </div>
-    </div>
-    <!-- 어노테이션 -->
-    <div style="margin-top:12px;font-size:11px;color:#64748b;display:grid;grid-template-columns:1fr 1fr;gap:8px">
-      <div><b style="color:#8b5cf6">🎨 Design:</b> [확인] 클릭 시 이메일 입력에 포커스. 흔들림 애니메이션 추가 권장.</div>
-      <div><b style="color:#0891b2">🔧 Develop:</b> HTTP 401 응답 시 표시. 5회 연속 실패 시 → 계정 잠금 모달로 전환 (429).</div>
-    </div>
+<section class="detail-tabs">
+  <div class="tab-list" role="tablist">
+    <button role="tab" data-tab="overlays">Popup / BottomSheet / Dialog / Modal</button>
+    <button role="tab" data-tab="events">Event Actions</button>
+    <button role="tab" data-tab="data-models">Data Models</button>
+    <button role="tab" data-tab="screen-flow">Screen Flow</button>
+    <button role="tab" data-tab="sequence-diagram">Sequence Diagram</button>
+    <button role="tab" data-tab="component-spec">Component Spec</button>
+    <button role="tab" data-tab="global-rules">Global Rules</button>
   </div>
 
-  <!-- 모달 2: 확인 다이얼로그, 로딩 오버레이 등도 동일 패턴 -->
-</div>
-```
-
-**팝업/모달 와이어프레임 규칙:**
-1. 각 팝업/모달을 **실제 UI 모습**으로 렌더링 (border + shadow + 내용 + 버튼)
-2. 트리거 조건 배지를 우상단에 표시
-3. 와이어프레임 아래에 **Design/Develop 어노테이션**을 그리드로 표시
-4. 폼이 포함된 모달은 **ERD 필드와 매핑된 입력 필드**를 모두 표시
-5. 확인/취소 버튼의 후속 동작을 명시
-
-**섹션 3-1: 유사 화면 대비 차이점 테이블 (선택 — 비슷한 화면이 있을 때만)**
-
-```html
-<div class="spec-wrap">
-  <div class="spec-title">{유사화면 ID} 대비 차이점</div>
-  <table class="spec-tbl">
-    <thead><tr><th>컴포넌트</th><th>차이 내용</th><th>API</th></tr></thead>
-    <tbody>
-      <tr><td>WorkTypeSelect</td><td>추가 필터: 봉분정비/석물보수/...</td><td>query param: workType</td></tr>
-    </tbody>
-  </table>
-</div>
-```
-
-**섹션 4: 로직 흐름 다이어그램 (diagrams-section)**
-
-SVG 다이어그램으로 화면의 로직 흐름을 시각화한다. **Mermaid가 아닌 인라인 SVG로 직접 그린다.**
-
-**다이어그램 표시 규칙:**
-- **축소 상태가 기본.** 각 다이어그램은 `max-height: 280px; overflow: hidden`으로 축소 표시한다.
-- **확대 버튼 🔍** 을 다이어그램 우상단에 배치. 클릭 시 모달 오버레이로 전체 크기 표시.
-- 모달은 `position: fixed; inset: 0; background: rgba(0,0,0,.6); z-index: 200`으로 배경 딤 처리.
-- 모달 내 SVG는 `max-width: 95vw; max-height: 90vh`로 제한, 닫기 버튼(✕) 우상단.
-
-```html
-<!-- 다이어그램 블록 패턴 -->
-<div class="diag-block">
-  <h3>A. Condition Flow Chart</h3>
-  <div class="diag-container" style="max-height:280px;overflow:hidden;position:relative">
-    <button class="diag-zoom" onclick="openDiagModal(this)" title="확대">🔍</button>
-    <svg class="diag" viewBox="0 0 820 460"><!-- ... --></svg>
+  <div class="tab-panels">
+    <section id="tab-overlays" class="tab-panel is-active"></section>
+    <section id="tab-events" class="tab-panel"></section>
+    <section id="tab-data-models" class="tab-panel"></section>
+    <section id="tab-screen-flow" class="tab-panel"></section>
+    <section id="tab-sequence-diagram" class="tab-panel"></section>
+    <section id="tab-component-spec" class="tab-panel"></section>
+    <section id="tab-global-rules" class="tab-panel"></section>
   </div>
-</div>
-
-<style>
-.diag-container { position: relative; border: 1px solid #e2e8f0; border-radius: 8px; background: #f8fafc; }
-.diag-zoom { position: absolute; top: 8px; right: 8px; z-index: 5; background: #fff; border: 1px solid #d1d9e0; border-radius: 6px; width: 32px; height: 32px; cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; }
-.diag-zoom:hover { background: #f1f5f9; }
-.diag-modal { position: fixed; inset: 0; background: rgba(0,0,0,.6); z-index: 200; display: flex; align-items: center; justify-content: center; }
-.diag-modal svg { max-width: 95vw; max-height: 90vh; background: #fff; border-radius: 12px; padding: 16px; }
-.diag-modal-close { position: fixed; top: 16px; right: 24px; z-index: 210; background: #fff; border: none; width: 36px; height: 36px; border-radius: 50%; font-size: 18px; cursor: pointer; }
-</style>
-
-<script>
-function openDiagModal(btn) {
-  const svg = btn.parentElement.querySelector('svg').cloneNode(true);
-  svg.style.maxWidth = '95vw'; svg.style.maxHeight = '90vh';
-  const modal = document.createElement('div');
-  modal.className = 'diag-modal';
-  modal.onclick = () => modal.remove();
-  const close = document.createElement('button');
-  close.className = 'diag-modal-close'; close.textContent = '✕';
-  close.onclick = () => modal.remove();
-  modal.appendChild(close);
-  modal.appendChild(svg);
-  document.body.appendChild(modal);
-}
-</script>
+</section>
 ```
 
-3가지 다이어그램을 생성한다:
+**각 탭의 필수 내용:**
 
-**A. Condition Flow Chart — 조건 분기 흐름**
+**1. Popup / BottomSheet / Dialog / Modal**
+- 화면에서 파생되는 overlay를 모두 포함한다.
+- Popup, BottomSheet, Dialog, Modal을 유형별 소제목으로 구분한다.
+- 각 overlay는 **실제 UI wireframe** + 트리거 + 성공/실패 후속 동작 + Design/Develop note를 가진다.
+- 폼 overlay는 ERD 필드와 1:1 매핑된 입력을 표시한다.
 
-화면 진입부터 데이터 표시까지의 조건 분기를 시각화:
-- 시작(둥근 사각형, 청록) → 기본 파라미터 설정(사각형, 하늘) → API 호출(사각형, 초록) → 결과 분기(마름모, 노랑) → 렌더링/Empty State
-- 필터 변경 시 API 재호출 루프
-
-**SVG 스타일 규칙:**
-| 요소 | 색상 | 용도 |
-|---|---|---|
-| 시작/종료 노드 | `#0891b2` (청록) | 진입/종료점 |
-| 프로세스 노드 | `#e0f2fe` stroke `#38bdf8` | 기본 처리 단계 |
-| API 호출 노드 | `#10b981` (초록) | API 요청 |
-| 분기 다이아몬드 | `#f59e0b` (노랑) | 조건 판단 |
-| 에러/Empty | `#fee2e2` stroke `#f87171` | 실패/빈 상태 |
-| 화살표 | `#6b7280` | 흐름 연결 |
-
-**B. Sequential Diagram — 시퀀스 다이어그램**
-
-사용자 → 프론트엔드 → Backend API → DB 간의 상호작용 시퀀스:
-- 4개 actor 라이프라인: 사용자(보라) / 프론트엔드(파랑) / Backend(초록) / DB(노랑)
-- 화면 진입 → 기본 조회 → 응답 → 렌더링 → 필터 변경 → 재조회 흐름
-- 실선 화살표(요청), 점선 화살표(응답)
-
-**C. Data Flow Diagram — 데이터 흐름**
-
-화면의 상태 관리와 데이터 흐름을 시각화:
-- 외부 엔티티(사각형): 사용자, DB
-- 프로세스(원): 페이지 컴포넌트, Backend API
-- 데이터 스토어(양쪽 열린 사각형): 상태 관리(Zustand/Redux), API 캐시(TanStack Query)
-- 화살표로 데이터 흐름 방향 표시
-
-**섹션 5: 데이터 모델 (data-model-section)**
-
-이 화면에서 사용하는 ERD 엔티티의 상세 필드 정보를 표시한다.
+**2. Event Actions**
+- 컴포넌트, 트리거, API Call, Success, Failure 컬럼을 가진 표를 사용한다.
 
 ```html
-<div class="spec-wrap">
-  <div class="spec-title">데이터 모델 — {EntityName}</div>
-  <table class="spec-tbl">
-    <thead><tr><th>필드명</th><th>타입</th><th>제약조건</th><th>UI 매핑</th><th>설명</th></tr></thead>
-    <tbody>
-      <tr><td><code>id</code></td><td>int</td><td>PK, AUTO_INCREMENT</td><td>-</td><td>고유 식별자</td></tr>
-      <tr><td><code>email</code></td><td>varchar(255)</td><td>UK, NOT NULL</td><td>① EmailInput</td><td>로그인 이메일</td></tr>
-      <tr><td><code>password</code></td><td>varchar(255)</td><td>NOT NULL</td><td>② PasswordInput</td><td>bcrypt 해시</td></tr>
-      <tr><td><code>name</code></td><td>varchar(100)</td><td>NOT NULL</td><td>프로필 표시</td><td>사용자 이름</td></tr>
-      <tr><td><code>status</code></td><td>enum</td><td>DEFAULT 'active'</td><td>⑩ StatusBadge</td><td>active/inactive/locked</td></tr>
-      <tr><td><code>created_at</code></td><td>datetime</td><td>DEFAULT NOW()</td><td>테이블 컬럼</td><td>가입일시</td></tr>
-    </tbody>
-  </table>
-</div>
+<table class="spec-tbl">
+  <thead><tr><th>Component</th><th>Trigger</th><th>API Call</th><th>Success</th><th>Failure</th></tr></thead>
+  <tbody>
+    <tr>
+      <td>CreateButton</td>
+      <td>click</td>
+      <td><code>POST /v1/fsms/memorial</code></td>
+      <td>목록 재조회 + 생성 완료 토스트</td>
+      <td>필드 에러 표시 + 에러 토스트</td>
+    </tr>
+  </tbody>
+</table>
 ```
 
-각 엔티티에 대해:
-- `필드명`: ERD의 column name
-- `타입`: DB 타입 (varchar, int, datetime, enum 등)
-- `제약조건`: PK, FK, UK, NOT NULL, DEFAULT 등
-- `UI 매핑`: 이 필드가 와이어프레임의 어떤 컴포넌트(마커 번호)에 표시되는지
-- `설명`: 필드 용도
+**3. Data Models**
+- ERD, UI Mapping, Description 컬럼을 포함한다.
+- 필요 시 `타입`, `제약조건`, `sample value`를 추가한다.
+- 화면별 데이터 모델은 엔티티 단위 소제목으로 묶는다.
 
-**여러 엔티티가 사용되는 경우** 각 엔티티별로 테이블을 반복한다. 엔티티 간 FK 관계도 표시.
+**4. Screen Flow**
+- 현재 화면의 진입 경로, 이탈 경로, 전이 조건을 인라인 SVG 또는 flowchart로 표현한다.
+- 전이 근거 FT/FR를 각 edge 또는 노드 설명에 연결한다.
+
+**5. Sequence Diagram**
+- 사용자 → 프론트엔드 → API → DB 흐름을 시간 순서대로 표시한다.
+- 요청/응답/실패 분기와 invalidation 포인트를 포함한다.
+
+**6. Component Spec**
+- 사용 컴포넌트 명세 표를 제공한다.
+- 최소 컬럼: `#`, `컴포넌트`, `타입`, `Props / 설명`, `Validation`, `API`.
+
+**7. Global Rules**
+- `common/` 문서와 scope override에서 상속된 글로벌 UX/개발 규칙을 요약한다.
+- 예: 날짜 포맷, 상태색, 공통 버튼 라벨, empty state 문구, 권한 규칙, PII masking.
 
 ---
 
@@ -892,24 +772,19 @@ function openDiagModal(btn) {
 
 각 `SCR-NNN`에 대해:
 
-1. **Screen Info** — `screens.json`에서 id, name, route, description, tracedFrom 추출
-2. **Data Fields 수집** — `erd.json`에서 이 화면이 사용하는 엔티티의 **모든 필드**를 추출. 테이블 컬럼, 폼 입력, 상세 표시에 사용할 필드 목록을 확정.
-3. **App Sidebar** — `ia.json`의 `siteMap`에서 사이드바 메뉴 구조 생성. 현재 화면에 `.active` 클래스 적용
-4. **Page Body** — `screens.json`의 `components` 배열 + ERD 필드를 조합하여 실제 UI 요소 생성:
-   - type=table → `<table>` — **ERD 엔티티의 모든 표시 가능 필드를 컬럼으로 포함** (3~5행의 샘플 데이터). 컬럼 헤더에 `필드 라벨 (field_name)` 형식 표시.
-   - type=input → `<input>` — **ERD 필드의 타입/제약조건 반영** (varchar→text, enum→select, date→datepicker). placeholder에 필드명 표시.
-   - type=button → `<button>`
-   - type=card → `<div>` 카드 — 카드 내 ERD 필드들을 라벨+값으로 나열
-   - 각 요소 옆에 `<span class="mk">N</span>` 어노테이션 마커 배치
-5. **Annotation Panel (Design / Develop 분리):**
-   - **🎨 Design 섹션**: 각 마커별 UX/기획 관점 (화면 목적, 사용자 시나리오, Empty/Loading/Error 상태, 접근성)
-   - **🔧 Develop 섹션**: 각 마커별 개발 관점 (API endpoint + params + response, enum 값, 상태 관리, 에러 처리, 캐싱)
-   - **비즈니스 규칙** (해당 시에만)
-6. **Component Spec Table** — 모든 컴포넌트를 마커 번호 순서대로 테이블 작성. **Validation 컬럼 포함**
-7. **Button Action Table** — Action/Navigation 타입 컴포넌트의 트리거, API 호출, 성공/실패 시 동작 상세
-8. **Popup & Modal 와이어프레임** — 화면에서 발생하는 모든 팝업/모달을 **실제 UI 와이어프레임 목업**으로 작성. 각 팝업 아래에 Design/Develop 어노테이션 포함. 폼 모달은 ERD 필드 매핑 입력 포함.
-9. **Data Model Table** — 이 화면이 사용하는 ERD 엔티티별로 (필드명, 타입, 제약조건, UI 매핑 마커, 설명) 테이블 작성
-10. **Diagrams** — 3가지 SVG 다이어그램 (축소 + 🔍 확대 모달)
+1. **Screen Meta 수집** — `screens.json`에서 `id`, `name`, `route`, `description`, `tracedFrom`를 읽고 관련 `FT`, `FR`를 확정한다.
+2. **Theme Frame 구성** — `light/dark` 토글, CSS 변수, `localStorage` 기반 테마 스크립트를 포함한다.
+3. **Left Stage 생성** — `ia.json` 기반 앱 내비게이션 + `screens.json`의 컴포넌트 배열 + `erd.json` 필드로 실제 HTML wireframe을 만든다.
+4. **Inline Annotation 생성** — 모든 주요 컴포넌트 옆에 `<span class="mk">N</span>` 마커와 짧은 note를 배치한다.
+5. **Right Annotation Panel 생성** — 마커 번호 기준으로 `Design`, `Develop`, `기타` 3개 섹션을 채운다.
+6. **Overlay Tab 생성** — Popup, BottomSheet, Dialog, Modal을 실제 UI mockup으로 만든다.
+7. **Event Actions Tab 생성** — `interactions`와 `api.json`을 교차 참조해 `Component / Trigger / API Call / Success / Failure` 표를 만든다.
+8. **Data Models Tab 생성** — ERD 엔티티별 `ERD / UI Mapping / Description` 표를 만든다.
+9. **Screen Flow Tab 생성** — `screen-flow.json`의 진입/이탈, 분기 규칙, edge label을 사용해 흐름도를 만든다.
+10. **Sequence Diagram Tab 생성** — 사용자, FE, API, DB 라이프라인과 실패 분기를 포함한 시퀀스를 만든다.
+11. **Component Spec Tab 생성** — 모든 사용 컴포넌트를 번호 순으로 정리한다.
+12. **Global Rules Tab 생성** — `common` 문서 + app override의 공통 규칙을 추출해 요약한다.
+13. **반응형 검증** — desktop/tablet/mobile에서 header, stage, tabs가 깨지지 않도록 레이아웃을 조정한다.
 
 **어노테이션 마커 CSS:**
 
@@ -917,9 +792,9 @@ function openDiagModal(btn) {
 .mk { display:inline-flex; align-items:center; justify-content:center;
       width:17px; height:17px; background:#2563eb; color:#fff;
       border-radius:50%; font-size:9px; font-weight:700; }
+.mk-note { display:inline-flex; padding:4px 8px; border-radius:999px;
+           background:rgba(37,99,235,.10); color:var(--text); font-size:11px; }
 ```
-
----
 
 ### Step 3.5: Page-level Side Navigation (모든 개별 HTML 공통)
 
@@ -1097,6 +972,35 @@ document.addEventListener('DOMContentLoaded', () => {
 
 모든 파일 변환이 끝난 후, sidebar 파일 트리를 구성하여 index.html을 생성한다.
 
+**index.html wireframe sidebar 요구사항:**
+
+- 전체 wireframe을 탐색할 수 있는 **깔끔한 sidebar navigation**을 반드시 제공한다.
+- sidebar는 기본적으로 **2-depth까지만** 노출한다. `섹션 → 문서/도메인 → 화면` 이상으로 깊어지지 않는다.
+- 상위 섹션은 고정 순서를 사용한다: `Plan`, `Design`, `Wireframes`, `Reports`.
+- `Wireframes Index` 같은 중간 인덱스 파일을 별도 leaf로 노출하지 않는다. 앱명/로고 클릭 시 index root로 돌아가도록 한다.
+- 와이어프레임은 `도메인 grouping` 기준으로 묶되, 기본 우선순위는 `IA depth-1 menu > screen domain > route prefix > fallback: 기타`를 사용한다.
+- 도메인명은 렌더링 전에 반드시 정규화한다. 예: `주문`, `주문관리`, `주문/접수`처럼 유사한 이름은 하나의 canonical label로 병합한다.
+- 도메인 그룹은 `IA 순서 우선, 같은 레벨이면 화면 수 내림차순`으로 정렬한다.
+- 화면이 1개뿐인 도메인은 별도 대그룹을 남발하지 말고, `기타` 또는 인접 상위 도메인에 흡수해 sidebar 길이를 줄인다.
+- 각 도메인 그룹에는 화면 개수 badge만 표시한다. leaf에는 count를 반복 표시하지 않는다.
+- 그룹 내부 leaf는 `화면 ID badge + 짧은 화면명`만 보여준다. `route`는 기본 노출하지 말고 hover tooltip 또는 secondary meta로만 제공한다.
+- 현재 선택된 wireframe은 강조 표시한다.
+- 검색 필터는 도메인명, 화면 ID, 화면명, route 검색을 지원하되, 검색 결과는 **트리 대신 flat list**로 임시 표시한다.
+- 문서 인덱스와 wireframe 인덱스는 같은 sidebar 안에서 구분 섹션으로 렌더링하되, 각 섹션 기본 상태는 `핵심만 펼침`이다.
+
+**시각 정리 규칙:**
+
+1. 아이콘은 섹션 레벨에만 사용하고, leaf 행에는 기본적으로 사용하지 않는다.
+2. badge 색상은 절제한다. phase badge, active row, count badge만 강조색을 사용한다.
+3. 긴 도메인명은 한 줄 ellipsis 처리한다.
+4. sidebar 본문에는 `route`, `status`, `type`를 동시에 노출하지 않는다.
+5. 기본 펼침 상태:
+   - `Plan`: 펼침
+   - `Design`: 펼침
+   - `Wireframes`: 펼침
+   - `Reports`: 접힘
+6. `Wireframes` 내부에서는 현재 화면이 속한 도메인만 펼치고 나머지는 접는다.
+
 **FILES 배열 구성:**
 
 ```javascript
@@ -1110,15 +1014,15 @@ const FILES = [
   { path: "hjw/02-design/rtm.html", type: "doc", name: "RTM", dir: "hjw/02-design", icon: "📊", docType: "rtm" },
   { path: "hjw/02-design/design-token.html", type: "doc", name: "Design Tokens", dir: "hjw/02-design", icon: "🎨", docType: "design-token" },
   { path: "hjw/02-design/ui-components.html", type: "doc", name: "UI Components", dir: "hjw/02-design", icon: "🧩", docType: "ui-components" },
-  { path: "hjw/02-design/wireframes/SCR-001.html", type: "wireframe", name: "SCR-001: 로그인", dir: "hjw/02-design/wireframes", icon: "🖼️" },
-  { path: "hjw/02-design/wireframes/SCR-002.html", type: "wireframe", name: "SCR-002: 대시보드", dir: "hjw/02-design/wireframes", icon: "🖼️" },
+  { path: "hjw/02-design/wireframes/SCR-001.html", type: "wireframe", name: "로그인", screenId: "SCR-001", dir: "hjw/02-design/wireframes", domain: "인증", route: "/login" },
+  { path: "hjw/02-design/wireframes/SCR-002.html", type: "wireframe", name: "대시보드", screenId: "SCR-002", dir: "hjw/02-design/wireframes", domain: "운영", route: "/dashboard" },
   // ...
 ];
 ```
 
 **INDEX_TEMPLATE:**
 
-index.html은 이전 버전과 동일한 구조이되, `buildTree` 함수를 아래처럼 수정:
+index.html은 이전 버전과 동일한 구조이되, `buildTree`, `normalizeDomainLabel`, `groupWireframesByDomain`을 함께 사용한다:
 
 ```javascript
 // Build tree — 반드시 이 로직 사용
@@ -1135,14 +1039,80 @@ function buildTree() {
   });
   return tree;
 }
+
+function groupWireframesByDomain(files) {
+  const groups = {};
+  files
+    .filter(f => f.type === 'wireframe')
+    .forEach(f => {
+      const domain = normalizeDomainLabel(f.domain || '기타');
+      if (!groups[domain]) groups[domain] = [];
+      groups[domain].push(f);
+    });
+  return groups;
+}
+
+function normalizeDomainLabel(label) {
+  const value = (label || '').trim();
+  const aliases = {
+    '주문관리': '주문',
+    '주문/접수': '주문',
+    '상담/문의': '상담',
+    '상담사/모집인': '상담',
+    '업무/운영': '운영'
+  };
+  return aliases[value] || value || '기타';
+}
 ```
 
-sidebar 파일 항목에 `icon` 필드를 반영하고, wireframe 항목은 🖼️ 아이콘으로 구분:
+sidebar는 **section header → compact group header → compact leaf row** 순서로 렌더링한다. wireframe 영역은 아래와 같이 도메인 그룹을 먼저 렌더링한다:
 
 ```javascript
-const a = document.createElement('a');
-a.className = 'tree-file';
-a.innerHTML = '<span class="icon">' + f.icon + '</span> ' + f.name;
+const wireframeGroups = Object.entries(groupWireframesByDomain(FILES))
+  .sort(sortDomainGroups)
+  .map(([domain, items]) => [domain, collapseSparseDomain(domain, items)]);
+
+wireframeGroups.forEach(([domain, items]) => {
+  renderDomainHeader(domain, items.length, { collapsible: true });
+  items.forEach(f => {
+    const a = document.createElement('a');
+    a.className = 'tree-file wireframe-link compact';
+    a.title = (f.route || '') + ' · ' + f.screenId;
+    a.innerHTML =
+      '<span class="wf-id">' + f.screenId + '</span>' +
+      '<span class="wf-name">' + f.name + '</span>';
+  });
+});
+```
+
+**권장 sidebar HTML 구조:**
+
+```html
+<aside class="browse-sidebar">
+  <div class="sidebar-top">
+    <button class="home-link">hyunjin-erp</button>
+    <p class="sidebar-subtitle">HJW Browse</p>
+    <input type="search" placeholder="Search documents..." />
+  </div>
+
+  <section class="nav-section">
+    <button class="nav-section-title is-open">Plan</button>
+    <a class="nav-leaf" href="...">SRS</a>
+    <a class="nav-leaf" href="...">IA</a>
+  </section>
+
+  <section class="nav-section">
+    <button class="nav-section-title is-open">Wireframes</button>
+    <button class="domain-row is-open">
+      <span class="domain-name">주문</span>
+      <span class="count-badge">8</span>
+    </button>
+    <a class="nav-leaf wireframe current" href="...">
+      <span class="wf-id">SCR-HJW-020</span>
+      <span class="wf-name">주문 목록</span>
+    </a>
+  </section>
+</aside>
 ```
 
 ### Step 5: Verify & Open

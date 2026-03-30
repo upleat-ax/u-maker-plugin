@@ -516,6 +516,11 @@ To minimize context window usage:
 
 Prefer JSON for validation logic. Markdown is for human readability.
 
+추가 효율화 규칙:
+6. Never read generated `.html` reports during validation unless the user asks for visual QA
+7. Validate by IDs, counts, relations, and companion JSON first; open markdown only for disputed cases
+8. Reuse prior test-report and RTM snapshots to compare deltas instead of recomputing the full history
+
 ---
 
 ## 11. Safety Rules
@@ -528,5 +533,6 @@ Prefer JSON for validation logic. Markdown is for human readability.
 6. **RTM must be regenerated after any upstream change** -- if SRS changes, RTM is stale
 7. **Log all validation results** -- even passing checks should be recorded for audit trail
 8. **Test results are immutable** -- once a test report is generated, do not modify it; create a new report for re-runs
+9. **Validation should be delta-first** -- inspect affected scope before expanding to full-suite validation
 9. **Bug registration is automatic** -- every test failure becomes a defect record, no exceptions
 10. **Retrospective requires data** -- never generate a retrospective without actual iteration metrics

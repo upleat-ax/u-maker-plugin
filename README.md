@@ -3,7 +3,7 @@
 PDCA 기반 SSoT(Single Source of Truth) 협업 오케스트레이터.
 4개 전문 에이전트와 3-Layer 파이프라인으로 소프트웨어 개발 전 과정을 자동화하는 Claude Code 플러그인.
 
-- Plugin version: `3.0.33`
+- Plugin version: `3.0.34`
 - Skills: `38` (13 engine + 24 command + 1 NL router) | Agents: `4`
 - [시작 가이드 (초보자용)](GET_STARTED.md) | [한국어 HTML](README.ko.html) | [English HTML](README.en.html)
 
@@ -117,8 +117,8 @@ USER INPUT
 
 | Prefix | 용도 | User-invocable | 수 |
 |--------|------|----------------|-----|
-| `u-*` | Command (slash command) | Yes | 22 |
-| `u-skill-*` | Internal engine | No | 12 |
+| `u-*` | Command (slash command) | Yes | 24 |
+| `u-skill-*` | Internal engine | No | 13 |
 | `u-skill-router` | Intent router | No | 1 |
 | `u-maker` | NL router + help | Yes | 1 |
 
@@ -420,9 +420,22 @@ project-root/
 
 `/u-design` 실행 시 자동 생성되는 SPA 뷰어. 사이드바 네비게이션으로 Screen 문서를 탐색하고, MD 렌더링으로 와이어프레임을 시각화한다.
 
+### HTML Theme Rule
+
+u-maker가 생성하는 모든 HTML 산출물은 `Light | Dark` 모드를 지원한다. 기본값은 light이며, 선택 상태는 `localStorage['u-maker-theme']`에 저장된다.
+
 ### Scope-First Navigation
 
 Claude는 파일을 직접 열지 않고 `_index.json`만 먼저 읽어서 필요한 파일만 선택적 로드 → context window 절약.
+
+### Token Efficiency Rule
+
+토큰 소비를 줄이기 위해 다음을 기본 원칙으로 적용한다.
+
+- 생성 HTML은 브라우징/리뷰 목적일 때만 읽고, 생성/검증 중에는 `.json`과 `_index.json`을 우선 사용
+- 전체 phase 재생성보다 `--only` 기반 문서 단위 실행을 우선
+- raw source 재분석보다 `_summary.json`, `_index.json`, 기존 chunk 결과를 재사용
+- 수정 범위가 좁으면 변경된 ID/섹션만 delta-read
 
 ---
 
@@ -451,7 +464,7 @@ SRS 변경 시 `_links.json` 기반으로 ERD, Screen, TestCase에 impact flag �
 
 ```
 u-maker-plugin/
-├── .claude-plugin/plugin.json        # v3.0.33
+├── .claude-plugin/plugin.json        # v3.0.34
 ├── agents/                           # 4 agent definitions
 │   ├── u-agent-orchestrator.md
 │   ├── u-agent-planner.md

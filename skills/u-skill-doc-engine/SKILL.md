@@ -84,6 +84,58 @@ function resolveLicense():
 - `.md` 문서 footer에도 동일하게 적용: `License: {license.type} | Copyright (c) {year} {license.owner}`
 - `{{license}}` 템플릿 변수로 접근 가능
 
+### HTML Theme Policy
+
+u-maker가 생성하는 **모든 HTML 문서**는 light/dark 모드를 지원해야 한다.
+
+적용 대상:
+- `/u-browse`가 생성하는 모든 `.html`
+- `/u-report`가 생성하는 모든 `.html`
+- `wireframes/index.html` 및 `SCR-*.html`
+- `GET_STARTED.html`, `README.ko.html`, `README.en.html` 등 정적 HTML 문서
+
+필수 규칙:
+1. `<html data-theme="light|dark">` 기반 CSS 변수 구조를 사용한다.
+2. 기본 테마는 `light`.
+3. 사용자가 선택한 테마는 `localStorage['u-maker-theme']`에 저장한다.
+4. 저장값이 없으면 `prefers-color-scheme`를 참고하되, 명시적 사용자 선택이 있으면 그것이 우선한다.
+5. header 또는 상단 toolbar에 `Light | Dark` toggle을 제공한다.
+6. 코드 블록, 테이블, 배지, annotation, SVG 다이어그램의 대비는 두 테마에서 모두 유지되어야 한다.
+7. iframe 내부 문서(`_browse/index.html`에 로드되는 개별 HTML 포함)도 독립적으로 토글 동작이 가능해야 한다.
+
+권장 구현:
+
+```html
+<script>
+const key = 'u-maker-theme';
+const saved = localStorage.getItem(key);
+const preferred = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+document.documentElement.setAttribute('data-theme', saved || preferred || 'light');
+function toggleTheme() {
+  const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', next);
+  localStorage.setItem(key, next);
+}
+</script>
+```
+
+---
+
+## 2.5 Context Budget Policy
+
+u-maker는 문서 수가 많아질수록 토큰 소비가 급증할 수 있으므로, 모든 agent/skill은 아래 정책을 따른다.
+
+1. **HTML은 최후순위 입력이다.** 생성물 검토나 브라우징이 목적이 아닐 때는 `.html`을 읽지 않는다.
+2. **JSON 우선, Markdown 보조.** 구조화 판단은 `.json`, 서술 보강만 `.md`를 읽는다.
+3. **Index-first는 강제다.** `_index.json`, `_summary.json`, category index를 먼저 읽고 원문은 필요한 파일만 연다.
+4. **Delta-read 우선.** 이미 Final/Review 문서가 있으면 전체 문서를 재독하지 말고 영향받는 섹션과 관련 companion JSON만 읽는다.
+5. **`--only` 기본 사용.** 가능한 모든 생성/검증 명령은 전체 phase 대신 문서 단위 타깃을 우선 선택한다.
+6. **중간 HTML 재생성 금지.** `/u-plan`, `/u-design`, `/u-dev`, `/u-qa` 실행 중에는 최종 산출 직전까지 HTML을 만들지 않는다.
+7. **요약 재사용.** `_classified/_summary.json`, `_assumptions/`, `_backlog/`의 요약 데이터를 재사용하고 같은 raw source를 반복 파싱하지 않는다.
+8. **대용량 입력은 chunk + merge.** 원문 전체를 다시 읽지 말고 기존 chunk 결과를 증분 병합한다.
+9. **Cross-app 금지 기본.** 요청 스코프 밖 앱 문서는 읽지 않는다. 공통 정책이 필요할 때만 `common/`을 읽는다.
+10. **Prompt payload 최소화.** 하위 agent로 전달할 때는 전체 본문 대신 IDs, paths, changed sections, 요약만 넘긴다.
+
 ---
 
 ## 3. UML Diagram Policy
@@ -433,7 +485,7 @@ docs/{scope}/{phase-dir}/{type}.json
 
 ## 9. Wireframe & Document Viewer (index.html)
 
-와이어프레임 및 **전체 SSoT 문서**를 브라우저에서 탐색할 수 있는 `index.html`을 자동 생성한다. Sidebar에는 와이어프레임뿐 아니라 전체 문서 인덱스를 포함한다.
+와이어프레임 및 **전체 SSoT 문서**를 브라우저에서 탐색할 수 있는 `index.html`을 자동 생성한다. Sidebar에는 와이어프레임뿐 아니라 전체 문서 인덱스를 포함하며, 와이어프레임은 **도메인 grouping** 기준으로 탐색 가능해야 한다.
 
 ### 생성 시점
 
@@ -468,9 +520,9 @@ docs/{scope}/02-design/wireframes/index.html
 │    Screens   │                                      │
 │    RTM       │                                      │
 │              │                                      │
-│  ─ 와이어프레임│                                      │
-│    SCR-001   │                                      │
-│    SCR-002   │                                      │
+│  ─ 와이어프레임│  인증                                 │
+│    SCR-001   │  운영대시보드                          │
+│    SCR-002   │  장례행사                              │
 │    SCR-003   │                                      │
 │              │                                      │
 │  ─ 테스트    │                                      │
@@ -493,15 +545,23 @@ docs/{scope}/02-design/wireframes/index.html
 - 클릭 시 Main Content에 해당 `.md` 문서를 HTML로 렌더링
 
 **2. 와이어프레임**
-- `screens.json`의 화면 목록을 IA 그룹별로 표시
-- 각 그룹 옆에 화면 개수 배지 표시
-- 화면 ID + 이름 표시 (예: `0901 벌초 접수 내역`)
+- `screens.json`의 화면 목록을 **도메인 그룹**으로 표시
+- 그룹 기준 우선순위: `IA depth-1 menu > screen domain > route prefix > fallback: 기타`
+- 유사 도메인명은 렌더링 전에 canonical label로 병합
+- 1개 화면만 가진 소도메인은 가능한 경우 인접 상위 그룹 또는 `기타`로 흡수
+- 각 그룹 옆에 화면 개수 badge만 표시
+- 항목은 `화면 ID badge + 짧은 이름` 형식으로 렌더링
+- `route`는 기본 숨김, hover tooltip 또는 secondary meta에만 사용
 - 클릭 시 해당 와이어프레임 로드
 
 **3. 공통**
 - Collapse/Expand 지원
 - Scroll Spy: 현재 보고 있는 문서 하이라이트
 - 검색 필터 (문서명/ID 키워드 검색)
+- Light / Dark toggle 지원
+- 검색 중에는 트리 대신 flat result list 표시
+- 기본 펼침 상태는 `Plan`, `Design`, `Wireframes`만 열고 `Reports`는 접음
+- 현재 선택된 wireframe이 속한 도메인만 자동 펼침
 
 #### Main Content Area
 - **`.html` 파일:** `innerHTML`로 직접 렌더링
@@ -546,8 +606,8 @@ function generateDocumentViewer(scope):
   // 1. 전체 문서 인덱스 구성 (Phase별 그룹핑)
   docIndex = groupDocumentsByPhase(indexJson)
 
-  // 2. 화면 목록 + 그룹핑 데이터 구성
-  screenGroups = groupScreensByIA(screensJson, iaJson)
+  // 2. 화면 목록 + 도메인 그룹 구성
+  screenGroups = groupScreensByDomain(screensJson, iaJson)
 
   // 3. wireframes/ 디렉토리 스캔 → 파일 매핑
   files = scanDir("docs/{scope}/02-design/wireframes/")
@@ -586,12 +646,22 @@ function generateDocumentViewer(scope):
 | Sidebar 배경 | `#1e293b` (dark slate) |
 | Sidebar 텍스트 | `#e2e8f0` (light gray) |
 | Sidebar 너비 | `320px` (고정) |
-| 그룹 제목 | bold, 좌측에 색상 dot indicator |
+| 그룹 제목 | bold, 섹션 레벨만 아이콘 사용 |
+| Theme Toggle | Header 우측 고정, `light` 기본, `localStorage` 저장 |
 | 화면 ID 배지 | `#334155` 배경, `#94a3b8` 텍스트, border-radius 4px |
+| 화면 route | 기본 숨김, tooltip 또는 secondary meta만 허용 |
 | Main Content 배경 | `#f1f5f9` (light blue-gray) |
 | 선택된 항목 | `#334155` 배경 하이라이트 |
 | 안내 메시지 | 중앙 정렬, `#64748b` 텍스트 |
 | 반응형 | 768px 미만에서 sidebar 접기 + 햄버거 메뉴 |
+
+#### Sidebar Cleanliness Rules
+
+1. Leaf row에는 아이콘을 기본적으로 사용하지 않는다.
+2. 한 row에 `아이콘 + 이름 + route + count + status`를 동시에 넣지 않는다.
+3. `Wireframes Index` 같은 synthetic leaf는 노출하지 않는다.
+4. 그룹 collapse 아이콘은 단일 스타일로 통일한다.
+5. 긴 도메인명/화면명은 ellipsis 처리하고, 전체 문자열은 title tooltip으로 제공한다.
 
 ### Markdown 렌더링 + SVG 다이어그램 사양
 

@@ -362,10 +362,12 @@ Wireframes are HTML files that visualize the screen layout before full design:
 2. Read Screens doc for component placement
 3. Read UXGuide for layout principles and spacing
 4. Generate single-file HTML wireframes with:
-   - Tailwind CSS for layout
+   - Header metadata: screen ID, screen name, route, related FT, related FR
    - Light/dark mode toggle
-   - Responsive grid
-   - Annotated component placeholders
+   - Left stage: real HTML wireframe + inline annotations
+   - Right panel: Design / Develop / 기타 annotations
+   - Bottom tabs: Popup/BottomSheet/Dialog/Modal, Event Actions, Data Models, Screen Flow, Sequence Diagram, Component Spec, Global Rules
+   - Responsive grid and domain-aware navigation assumptions
 5. Store in `docs/01-plan/wireframes/` (since wireframes are Plan-phase artifacts)
 
 ---
@@ -430,6 +432,13 @@ To minimize context window usage:
 
 Never read entire directories. Always index-first, then selective load.
 
+추가 효율화 규칙:
+7. Never read generated `.html` outputs during analysis or design generation
+8. Prefer `_classified/*/_index.json` and companion `.json` over full markdown bodies whenever possible
+9. If only one document family is being updated, read only the affected source set and use `--only` style generation
+10. Reuse existing summaries and assumptions instead of reprocessing the same raw chunk
+11. For revisions, diff against changed IDs/sections first before reopening the entire source document
+
 ---
 
 ## 15. Safety Rules
@@ -444,3 +453,4 @@ Never read entire directories. Always index-first, then selective load.
 8. **Log assumptions** -- in auto mode, every judgment call about ambiguous requirements must be recorded in `_assumptions/`
 9. **Check common inheritance** -- always read common policies before generating app-specific documents
 10. **Respect phase boundaries** -- do not generate Design-phase documents (ERD, API) during Plan phase unless explicitly requested
+11. **Do not spend tokens on review artifacts during generation** -- generated HTML is for browsing, not source-of-truth input

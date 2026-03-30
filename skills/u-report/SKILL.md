@@ -22,6 +22,8 @@ triggers:
 
 > **역할 분담:** `.md` + `.json`은 작업 중 항상 생성되는 SSoT 원본이고, `.html`은 리뷰/공유용 시각화 산출물이다. `/u-report`는 후자만 담당한다.
 
+> **테마 규칙:** `/u-report`가 생성하는 모든 HTML(`index.html`, `*-report.html`, `daily-report-*.html`)은 공통 `Light | Dark` toggle, `localStorage['u-maker-theme']`, `prefers-color-scheme` fallback을 지원해야 한다.
+
 ---
 
 ## Flags

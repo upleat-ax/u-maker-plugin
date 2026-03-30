@@ -14,6 +14,14 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PLUGIN_JSON="$SCRIPT_DIR/.claude-plugin/plugin.json"
+DOC_SYNC_FILES=(
+  "$SCRIPT_DIR/README.md"
+  "$SCRIPT_DIR/README.html"
+  "$SCRIPT_DIR/README.ko.html"
+  "$SCRIPT_DIR/README.en.html"
+  "$SCRIPT_DIR/GET_STARTED.md"
+  "$SCRIPT_DIR/GET_STARTED.html"
+)
 
 PRIVATE_REPO="upleat-ax/u-maker-plugin"
 UPLEAT_REPO="upleat-ax/u-maker-plugin"
@@ -57,6 +65,112 @@ ensure_gh() {
   if ! command -v gh &>/dev/null; then
     err "GitHub CLI (gh) is required. Install: brew install gh"
     exit 1
+  fi
+}
+
+refresh_docs() {
+  local version="$1"
+
+  log "Refreshing README* / GET_STARTED* docs for ${BOLD}${version}${NC}..."
+
+  python3 - "$SCRIPT_DIR" "$version" <<'PY'
+from pathlib import Path
+import re
+import sys
+
+root = Path(sys.argv[1])
+version = sys.argv[2]
+
+skills = sorted(root.joinpath("skills").glob("*/SKILL.md"))
+engine = sum(1 for p in skills if p.parent.name.startswith("u-skill-"))
+command = sum(
+    1
+    for p in skills
+    if p.parent.name.startswith("u-")
+    and not p.parent.name.startswith("u-skill-")
+    and p.parent.name != "u-maker"
+)
+nl_router = sum(1 for p in skills if p.parent.name == "u-maker")
+skills_total = len(skills)
+agents = len(list(root.joinpath("agents").glob("*.md")))
+phases = 5
+parts = 13
+
+def apply(path_str, replacements):
+    path = root / path_str
+    text = path.read_text(encoding="utf-8")
+    original = text
+    for pattern, repl in replacements:
+        text = re.sub(pattern, repl, text, flags=re.MULTILINE)
+    if text != original:
+        path.write_text(text, encoding="utf-8")
+
+apply("README.md", [
+    (r"- Plugin version: `[^`]+`", f"- Plugin version: `{version}`"),
+    (
+        r"- Skills: `\d+` \(\d+ engine \+ \d+ command \+ \d+ NL router\) \| Agents: `\d+`",
+        f"- Skills: `{skills_total}` ({engine} engine + {command} command + {nl_router} NL router) | Agents: `{agents}`",
+    ),
+    (r"(\[Engine Skills \()\d+(개\]\(#7-engine-skills\))", rf"\g<1>{engine}\g<2>"),
+    (r"\| `u-\*` \| Command \(slash command\) \| Yes \| \d+ \|", f"| `u-*` | Command (slash command) | Yes | {command} |"),
+    (r"\| `u-skill-\*` \| Internal engine \| No \| \d+ \|", f"| `u-skill-*` | Internal engine | No | {engine} |"),
+    (r"(?m)(# v)\d+\.\d+\.\d+", rf"\g<1>{version}"),
+])
+
+apply("README.html", [
+    (r'<div class="version">v\d+\.\d+\.\d+</div>', f'<div class="version">v{version}</div>'),
+    (
+        r"\d+ Agents &middot; \d+ Skills &middot; \d+ PDCA Phases",
+        f"{agents} Agents &middot; {skills_total} Skills &middot; {phases} PDCA Phases",
+    ),
+    (r'(<div class="stat"><div class="stat-val">)\d+(</div><div class="stat-label">Skills</div></div>)', rf"\g<1>{skills_total}\g<2>"),
+    (r'(<div class="stat"><div class="stat-val">)\d+(</div><div class="stat-label">Agents</div></div>)', rf"\g<1>{agents}\g<2>"),
+    (r'(<div class="stat"><div class="stat-val">)\d+(</div><div class="stat-label">Phases</div></div>)', rf"\g<1>{phases}\g<2>"),
+])
+
+shared_readme_html = [
+    (r"v\d+\.\d+\.\d+", f"v{version}"),
+    (
+        r'Skills \(\d+ engine \+ \d+ command \+ \d+ NL router\)',
+        f"Skills ({engine} engine + {command} command + {nl_router} NL router)",
+    ),
+    (r'(<div class="stat"><div class="stat-val">)\d+(</div><div class="stat-label">Agents</div></div>)', rf"\g<1>{agents}\g<2>"),
+    (r'(<div class="stat"><div class="stat-val">)\d+(</div><div class="stat-label">PDCA Phases</div></div>)', rf"\g<1>{phases}\g<2>"),
+    (r"<tr><td><code>u-\*</code></td><td>Command \(slash command\)</td><td>Yes</td><td>\d+</td></tr>",
+     f"<tr><td><code>u-*</code></td><td>Command (slash command)</td><td>Yes</td><td>{command}</td></tr>"),
+    (r"<tr><td><code>u-skill-\*</code></td><td>Internal engine</td><td>No</td><td>\d+</td></tr>",
+     f"<tr><td><code>u-skill-*</code></td><td>Internal engine</td><td>No</td><td>{engine}</td></tr>"),
+]
+
+apply("README.ko.html", shared_readme_html + [
+    (r'(<div class="stat"><div class="stat-val">)\d+(</div><div class="stat-label">Skills \(\d+ engine \+ \d+ command \+ \d+ NL router\)</div></div>)',
+     rf'\g<1>{skills_total}</div><div class="stat-label">Skills ({engine} engine + {command} command + {nl_router} NL router)</div></div>'),
+])
+
+apply("README.en.html", shared_readme_html + [
+    (r'(<div class="stat"><div class="stat-val">)\d+(</div><div class="stat-label">Skills \(\d+ engine \+ \d+ command \+ \d+ NL router\)</div></div>)',
+     rf'\g<1>{skills_total}</div><div class="stat-label">Skills ({engine} engine + {command} command + {nl_router} NL router)</div></div>'),
+    (r">\d+ cross-cutting engines\.", f">{engine} cross-cutting engines."),
+    (r"# \d+ internal engines", f"# {engine} internal engines"),
+    (r"# \d+ command skills \(user-invocable\)", f"# {command} command skills (user-invocable)"),
+])
+
+apply("GET_STARTED.html", [
+    (r"v\d+\.\d+\.\d+", f"v{version}"),
+    (r'(<div class="stat"><div class="stat-val">)\d+(</div><div class="stat-label">Commands</div></div>)', rf"\g<1>{command}\g<2>"),
+    (r'(<div class="stat"><div class="stat-val">)\d+(</div><div class="stat-label">AI Agents</div></div>)', rf"\g<1>{agents}\g<2>"),
+    (r'(<div class="stat"><div class="stat-val">)\d+(</div><div class="stat-label">PDCA Phases</div></div>)', rf"\g<1>{phases}\g<2>"),
+    (r'(<div class="stat"><div class="stat-val">)\d+(</div><div class="stat-label">Parts</div></div>)', rf"\g<1>{parts}\g<2>"),
+    (r"Part 6\. 명령어 치트시트 \(전체 \d+개\)", f"Part 6. 명령어 치트시트 (전체 {command}개)"),
+])
+PY
+
+  if ! git diff --quiet -- "${DOC_SYNC_FILES[@]}"; then
+    git add "${DOC_SYNC_FILES[@]}"
+    git commit -m "docs: refresh README and GET_STARTED artifacts"
+    ok "README* / GET_STARTED* docs refreshed"
+  else
+    ok "README* / GET_STARTED* docs already up to date"
   fi
 }
 
@@ -118,6 +232,9 @@ cmd_deploy() {
 
   local tag="v${version}"
 
+  # ── Step 0: Refresh docs before deploy ──
+  refresh_docs "$version"
+
   # ── Step 1: Update plugin.json version ──
   if [[ "$version" != "$current" ]]; then
     python3 -c "
@@ -170,7 +287,11 @@ with open('$PLUGIN_JSON', 'w') as f:
     install.sh \
     install.bat \
     README.md \
+    README.html \
+    README.ko.html \
+    README.en.html \
     GET_STARTED.md \
+    GET_STARTED.html \
     -x "*.DS_Store" "*__pycache__*" "*.pyc" \
   )
   local zip_size
@@ -196,6 +317,7 @@ with open('$PLUGIN_JSON', 'w') as f:
 
   # Prepare public content
   cp "$SCRIPT_DIR/README.md" "$tmp_dir/README.md"
+  cp "$SCRIPT_DIR/README.html" "$tmp_dir/README.html" 2>/dev/null || true
   cp "$SCRIPT_DIR/GET_STARTED.md" "$tmp_dir/GET_STARTED.md" 2>/dev/null || true
   cp "$SCRIPT_DIR/GET_STARTED.html" "$tmp_dir/GET_STARTED.html" 2>/dev/null || true
   cp "$SCRIPT_DIR/README.ko.html" "$tmp_dir/README.ko.html" 2>/dev/null || true

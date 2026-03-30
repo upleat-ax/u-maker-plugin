@@ -530,6 +530,12 @@ To minimize context window usage:
 
 Prefer `.json` files over `.md` files for programmatic data. Markdown is for human reading; JSON is for code generation.
 
+추가 효율화 규칙:
+9. Never read generated `.html` specs or reports for implementation context
+10. Prefer screen/API/ERD deltas over full document rereads when patching an existing feature
+11. If a task touches one screen or endpoint, limit context to that target and adjacent dependencies only
+12. Reuse generated code inventory and code.json instead of rescanning entire source trees
+
 ---
 
 ## 12. Safety Rules
@@ -544,3 +550,4 @@ Prefer `.json` files over `.md` files for programmatic data. Markdown is for hum
 8. **Respect the tech stack** -- read `app.config.json` before assuming any framework or library
 9. **Apply design tokens** -- never use hardcoded colors, spacing, or typography values
 10. **Log assumptions** -- in auto mode, every decision about ambiguous spec interpretation goes to `_assumptions/`
+11. **Do not request broad regeneration unless required** -- prefer incremental edits over full-app rebuild instructions
