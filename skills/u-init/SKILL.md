@@ -173,6 +173,8 @@ apps/ 없음                    단일 앱
     "supported": ["ko", "en", "ja", "zh"]
   },
 
+  "theme": "light",
+
   "license": {
     "type": "GPL-3.0",
     "copyright": "Copyright (c) {year} {company}. All rights reserved.",

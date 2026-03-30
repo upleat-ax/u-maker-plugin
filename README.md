@@ -407,6 +407,7 @@ project-root/
 
 ```json
 {
+  "theme": "light",
   "language": {
     "documents": "ko",
     "supported": ["ko", "en", "ja", "zh"]
@@ -415,6 +416,7 @@ project-root/
 ```
 
 `language.documents`로 산출물 문서 언어를 설정한다. ko(한국어), en(영어), ja(일본어), zh(중국어)를 지원한다. ID와 코드는 항상 영문.
+`theme`은 u-maker가 생성하는 모든 HTML 문서의 기본 테마이며 `light | dark`를 지원한다. 지정하지 않으면 `light`.
 
 ### wireframes/index.html
 
@@ -422,7 +424,7 @@ project-root/
 
 ### HTML Theme Rule
 
-u-maker가 생성하는 모든 HTML 산출물은 `Light | Dark` 모드를 지원한다. 기본값은 light이며, 선택 상태는 `localStorage['u-maker-theme']`에 저장된다.
+u-maker가 생성하는 모든 HTML 산출물은 `Light | Dark` 모드를 지원한다. 기본값은 `u-maker.config.json.theme`이며, 설정이 없으면 `light`다. 선택 상태는 `localStorage['u-maker-theme']`에 저장된다.
 
 ### Scope-First Navigation
 

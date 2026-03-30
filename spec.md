@@ -669,6 +669,7 @@ FDE의 암묵지 + Agent의 분석력을 세션 안에서 결합. 세션 결과�
     "description": "",
     "type": "monorepo"
   },
+  "theme": "light",
   "apps": [],
   "pdca": {
     "phases": ["plan", "design", "do", "check", "act"],
@@ -705,6 +706,8 @@ FDE의 암묵지 + Agent의 분석력을 세션 안에서 결합. 세션 결과�
   }
 }
 ```
+
+`theme`은 `light | dark` 두 값만 허용하며, u-maker가 생성하는 모든 HTML 산출물의 기본 테마로 사용한다. 지정하지 않으면 기본값은 `light`다.
 
 ---
 

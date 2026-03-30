@@ -96,12 +96,35 @@ u-maker가 생성하는 **모든 HTML 문서**는 light/dark 모드를 지원해
 
 필수 규칙:
 1. `<html data-theme="light|dark">` 기반 CSS 변수 구조를 사용한다.
-2. 기본 테마는 `light`.
-3. 사용자가 선택한 테마는 `localStorage['u-maker-theme']`에 저장한다.
-4. 저장값이 없으면 `prefers-color-scheme`를 참고하되, 명시적 사용자 선택이 있으면 그것이 우선한다.
-5. header 또는 상단 toolbar에 `Light | Dark` toggle을 제공한다.
-6. 코드 블록, 테이블, 배지, annotation, SVG 다이어그램의 대비는 두 테마에서 모두 유지되어야 한다.
-7. iframe 내부 문서(`_browse/index.html`에 로드되는 개별 HTML 포함)도 독립적으로 토글 동작이 가능해야 한다.
+2. 기본 테마는 `u-maker.config.json.theme` 값을 따른다. 값이 없으면 `light`.
+3. `theme`은 `light | dark` 두 값만 허용한다.
+4. 사용자가 선택한 테마는 `localStorage['u-maker-theme']`에 저장한다.
+5. 저장값이 없으면 `config.theme ?? "light"`를 사용한다. `prefers-color-scheme`는 참고용일 뿐 기본값을 덮어쓰지 않는다.
+6. header 또는 상단 toolbar에 `Light | Dark` toggle을 제공한다.
+7. 코드 블록, 테이블, 배지, annotation, SVG 다이어그램의 대비는 두 테마에서 모두 유지되어야 한다.
+8. iframe 내부 문서(`_browse/index.html`에 로드되는 개별 HTML 포함)도 독립적으로 토글 동작이 가능해야 한다.
+
+### Theme Resolution
+
+```
+function resolveTheme():
+  config = loadConfig("u-maker.config.json")
+  baseTheme = config.theme ?? "light"
+  savedTheme = localStorage.getItem("u-maker-theme")
+  return savedTheme ?? baseTheme
+```
+
+### Config Schema
+
+```json
+{
+  "theme": "light"
+}
+```
+
+| Field | Allowed | Default | Description |
+|------|---------|---------|-------------|
+| `theme` | `light`, `dark` | `light` | HTML 문서의 기본 테마 |
 
 권장 구현:
 
@@ -109,8 +132,8 @@ u-maker가 생성하는 **모든 HTML 문서**는 light/dark 모드를 지원해
 <script>
 const key = 'u-maker-theme';
 const saved = localStorage.getItem(key);
-const preferred = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-document.documentElement.setAttribute('data-theme', saved || preferred || 'light');
+const configTheme = window.__UMAKER_CONFIG__?.theme || 'light';
+document.documentElement.setAttribute('data-theme', saved || configTheme || 'light');
 function toggleTheme() {
   const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
   document.documentElement.setAttribute('data-theme', next);

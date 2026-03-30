@@ -766,6 +766,9 @@ A: `/u-init` → `/u-reverse`로 코드에서 SSoT를 역공학하세요.
 ### Q: 문서 언어를 바꾸고 싶어요
 A: `u-maker.config.json`의 `language.documents`를 `"en"`, `"ja"`, `"zh"` 등으로 변경하세요.
 
+### Q: 기본 테마를 dark로 시작하고 싶어요
+A: `u-maker.config.json`에 `"theme": "dark"`를 넣으세요. 허용값은 `light | dark`이고, 미지정 시 기본값은 `light`입니다.
+
 ### Q: auto 모드에서 자꾸 interactive로 전환돼요
 A: `maxAssumptions` 초과. `/u-assume`로 리뷰하세요.
 

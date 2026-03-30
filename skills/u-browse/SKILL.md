@@ -599,10 +599,12 @@ sequenceDiagram
 ```
 
 **Theme 토글 규칙:**
-1. 기본값은 `light`.
+1. 기본값은 `u-maker.config.json.theme` 값을 따른다. 값이 없으면 `light`.
 2. 토글 시 `<html data-theme="light|dark">` 값을 변경한다.
-3. 선택값은 `localStorage['u-maker-wireframe-theme']`에 저장한다.
-4. 다크 모드에서도 annotation 번호, 상태 배지, 코드 블록 대비가 깨지지 않아야 한다.
+3. 허용값은 `light | dark` 두 개뿐이다.
+4. 선택값은 `localStorage['u-maker-theme']`에 저장한다.
+5. 저장값이 없으면 `window.__UMAKER_CONFIG__?.theme || 'light'`를 사용한다.
+6. 다크 모드에서도 annotation 번호, 상태 배지, 코드 블록 대비가 깨지지 않아야 한다.
 
 ```css
 :root {
@@ -724,8 +726,33 @@ html[data-theme="dark"] {
 **1. Popup / BottomSheet / Dialog / Modal**
 - 화면에서 파생되는 overlay를 모두 포함한다.
 - Popup, BottomSheet, Dialog, Modal을 유형별 소제목으로 구분한다.
+- `Popup`, `BottomSheet`, `Dialog`, `Modal` 4개 유형은 **항상 고정 슬롯으로 렌더링**한다. 해당 유형이 없으면 "사용 안 함" 상태의 축약 카드가 아니라 간단한 placeholder wireframe으로 표현한다.
 - 각 overlay는 **실제 UI wireframe** + 트리거 + 성공/실패 후속 동작 + Design/Develop note를 가진다.
+- 텍스트 요약, bullet list, 표만으로 대체하지 않는다. 탭 안에서 실제 overlay 형태가 보이도록 HTML wireframe을 그린다.
 - 폼 overlay는 ERD 필드와 1:1 매핑된 입력을 표시한다.
+
+```html
+<section id="tab-overlays" class="tab-panel is-active">
+  <div class="overlay-grid">
+    <article class="overlay-preview overlay-popup">
+      <h3>Popup</h3>
+      <div class="overlay-wireframe"><!-- popup wireframe --></div>
+    </article>
+    <article class="overlay-preview overlay-bottomsheet">
+      <h3>BottomSheet</h3>
+      <div class="overlay-wireframe"><!-- bottom sheet wireframe --></div>
+    </article>
+    <article class="overlay-preview overlay-dialog">
+      <h3>Dialog</h3>
+      <div class="overlay-wireframe"><!-- dialog wireframe --></div>
+    </article>
+    <article class="overlay-preview overlay-modal">
+      <h3>Modal</h3>
+      <div class="overlay-wireframe"><!-- modal wireframe --></div>
+    </article>
+  </div>
+</section>
+```
 
 **2. Event Actions**
 - 컴포넌트, 트리거, API Call, Success, Failure 컬럼을 가진 표를 사용한다.
@@ -785,6 +812,30 @@ html[data-theme="dark"] {
 11. **Component Spec Tab 생성** — 모든 사용 컴포넌트를 번호 순으로 정리한다.
 12. **Global Rules Tab 생성** — `common` 문서 + app override의 공통 규칙을 추출해 요약한다.
 13. **반응형 검증** — desktop/tablet/mobile에서 header, stage, tabs가 깨지지 않도록 레이아웃을 조정한다.
+
+#### No-Clipping Rendering Rules
+
+wireframe HTML은 리뷰용 전체 캔버스이므로 실제 앱의 내부 scroll viewport를 그대로 잘라서 보여주면 안 된다.
+
+필수 규칙:
+1. `page-canvas`, `tab-panels`, `tab-panel`, `overlay-preview`, `overlay-wireframe`에는 `height: auto`, `max-height: none`, `overflow: visible`을 사용한다.
+2. 실제 앱이 내부 scroll 영역을 가지더라도, 생성된 wireframe에서는 **전체 콘텐츠를 펼친 상태**로 렌더링한다.
+3. "현재 앱에서는 여기부터 스크롤" 같은 정보가 필요하면 잘라내는 대신 annotation으로 표시한다.
+4. overlay preview는 모달 viewport 안에 가두지 말고, 전체 form/body/action 영역이 한 번에 보이도록 확장한다.
+5. `iframe`, `panel`, `preview-card`에 고정 높이를 주더라도 overlay와 stage 본문에는 상속되지 않게 한다.
+
+```css
+.page-canvas,
+.tab-panels,
+.tab-panel,
+.overlay-preview,
+.overlay-wireframe,
+.overlay-wireframe .overlay-body {
+  height: auto;
+  max-height: none;
+  overflow: visible;
+}
+```
 
 **어노테이션 마커 CSS:**
 
