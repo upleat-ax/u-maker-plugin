@@ -178,7 +178,7 @@ from datetime import datetime, timezone
 
 mp_file = '$KNOWN_MP'
 name = '$PLUGIN_NAME'
-source_path = '$SCRIPT_DIR'
+cache_path = '$CACHE_DIR/$PLUGIN_NAME/$PLUGIN_NAME/$PLUGIN_VERSION'
 install_loc = '$MARKETPLACES_DIR/$MARKETPLACE_NAME'
 
 with open(mp_file, 'r') as f:
@@ -187,9 +187,9 @@ with open(mp_file, 'r') as f:
 data[name] = {
     'source': {
         'source': 'directory',
-        'path': source_path
+        'path': cache_path
     },
-    'installLocation': source_path,
+    'installLocation': cache_path,
     'lastUpdated': datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%S.000Z')
 }
 
@@ -215,7 +215,7 @@ from datetime import datetime, timezone
 
 ip_file = '$INSTALLED_PL'
 plugin_name = '$PLUGIN_NAME'
-source_path = '$SCRIPT_DIR'
+cache_path = '$CACHE_DIR/$PLUGIN_NAME/$PLUGIN_NAME/$PLUGIN_VERSION'
 version = '$PLUGIN_VERSION'
 
 with open(ip_file, 'r') as f:
@@ -229,7 +229,7 @@ now = datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%S.000Z')
 
 data['plugins'][key] = [{
     'scope': 'user',
-    'installPath': source_path,
+    'installPath': cache_path,
     'version': version,
     'installedAt': now,
     'lastUpdated': now
@@ -465,13 +465,14 @@ deploy() {
   # Ensure directories exist
   mkdir -p "$MARKETPLACES_DIR" "$CACHE_DIR"
 
-  # Step 1: Marketplace symlink
-  log "1/7  Marketplace symlink"
-  make_link "$SCRIPT_DIR" "$MARKETPLACES_DIR/$MARKETPLACE_NAME"
-
-  # Step 2: Cache sync
-  log "2/7  Cache sync"
+  # Step 1: Cache sync (must run BEFORE symlink so the target exists)
+  log "1/7  Cache sync"
   sync_to_cache
+
+  # Step 2: Marketplace symlink (points to cache, not SCRIPT_DIR — survives temp dir cleanup)
+  log "2/7  Marketplace symlink"
+  local cache_dest="$CACHE_DIR/$PLUGIN_NAME/$PLUGIN_NAME/$PLUGIN_VERSION"
+  make_link "$cache_dest" "$MARKETPLACES_DIR/$MARKETPLACE_NAME"
 
   # Step 3: known_marketplaces.json
   log "3/7  known_marketplaces.json"
@@ -619,10 +620,11 @@ check() {
   if [[ -L "$MARKETPLACES_DIR/$MARKETPLACE_NAME" ]]; then
     local target
     target="$(readlink "$MARKETPLACES_DIR/$MARKETPLACE_NAME")"
-    if [[ "$target" == "$SCRIPT_DIR" ]]; then
+    local expected_target="$CACHE_DIR/$PLUGIN_NAME/$PLUGIN_NAME/$PLUGIN_VERSION"
+    if [[ "$target" == "$expected_target" || "$target" == "$SCRIPT_DIR" ]]; then
       ok "Marketplace symlink → $target"
     else
-      warn "Marketplace symlink points to $target (expected $SCRIPT_DIR)"
+      warn "Marketplace symlink points to $target (expected $expected_target)"
       all_ok=false
     fi
   else

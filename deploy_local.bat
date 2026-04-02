@@ -89,13 +89,13 @@ echo.
 if not exist "%MARKETPLACES_DIR%" mkdir "%MARKETPLACES_DIR%"
 if not exist "%CACHE_DIR%" mkdir "%CACHE_DIR%"
 
-:: Step 1: Marketplace junction
-echo [u-maker] 1/10 Marketplace junction
-call :make_junction "%MARKETPLACES_DIR%\%MARKETPLACE_NAME%" "%SCRIPT_DIR%"
-
-:: Step 2: Cache sync
-echo [u-maker] 2/10 Cache sync
+:: Step 1: Cache sync (must run BEFORE junction so the target exists)
+echo [u-maker] 1/10 Cache sync
 call :sync_cache
+
+:: Step 2: Marketplace junction (points to cache, not SCRIPT_DIR — survives temp dir cleanup)
+echo [u-maker] 2/10 Marketplace junction
+call :make_junction "%MARKETPLACES_DIR%\%MARKETPLACE_NAME%" "%CACHE_DIR%\%PLUGIN_NAME%\%PLUGIN_NAME%\%PLUGIN_VERSION%"
 
 :: Step 3: known_marketplaces.json
 echo [u-maker] 3/10 known_marketplaces.json
@@ -366,7 +366,7 @@ goto :eof
 :update_known_marketplaces
 if not exist "%KNOWN_MP%" echo {} > "%KNOWN_MP%"
 
-call :py_exec "import json; from datetime import datetime, timezone; f=r'%KNOWN_MP%'; d=json.load(open(f)); d['%PLUGIN_NAME%']={'source':{'source':'directory','path':r'%SCRIPT_DIR%'},'installLocation':r'%SCRIPT_DIR%','lastUpdated':datetime.now(timezone.utc).strftime('%%Y-%%m-%%dT%%H:%%M:%%S.000Z')}; json.dump(d,open(f,'w'),indent=2)"
+call :py_exec "import json; from datetime import datetime, timezone; f=r'%KNOWN_MP%'; cp=r'%CACHE_DIR%\%PLUGIN_NAME%\%PLUGIN_NAME%\%PLUGIN_VERSION%'; d=json.load(open(f)); d['%PLUGIN_NAME%']={'source':{'source':'directory','path':cp},'installLocation':cp,'lastUpdated':datetime.now(timezone.utc).strftime('%%Y-%%m-%%dT%%H:%%M:%%S.000Z')}; json.dump(d,open(f,'w'),indent=2)"
 echo   [OK] known_marketplaces.json updated
 goto :eof
 
@@ -374,7 +374,7 @@ goto :eof
 :update_installed_plugins
 if not exist "%INSTALLED_PL%" echo {"plugins":{}} > "%INSTALLED_PL%"
 
-call :py_exec "import json; from datetime import datetime, timezone; f=r'%INSTALLED_PL%'; d=json.load(open(f)); d.setdefault('plugins',{}); now=datetime.now(timezone.utc).strftime('%%Y-%%m-%%dT%%H:%%M:%%S.000Z'); d['plugins']['%PLUGIN_NAME%@%PLUGIN_NAME%']=[{'scope':'user','installPath':r'%SCRIPT_DIR%','version':'%PLUGIN_VERSION%','installedAt':now,'lastUpdated':now}]; json.dump(d,open(f,'w'),indent=2)"
+call :py_exec "import json; from datetime import datetime, timezone; f=r'%INSTALLED_PL%'; cp=r'%CACHE_DIR%\%PLUGIN_NAME%\%PLUGIN_NAME%\%PLUGIN_VERSION%'; d=json.load(open(f)); d.setdefault('plugins',{}); now=datetime.now(timezone.utc).strftime('%%Y-%%m-%%dT%%H:%%M:%%S.000Z'); d['plugins']['%PLUGIN_NAME%@%PLUGIN_NAME%']=[{'scope':'user','installPath':cp,'version':'%PLUGIN_VERSION%','installedAt':now,'lastUpdated':now}]; json.dump(d,open(f,'w'),indent=2)"
 echo   [OK] installed_plugins.json updated
 goto :eof
 
