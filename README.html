@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>U-MAKER Plugin &mdash; Documentation</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { height: 100%; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Noto Sans KR', sans-serif;
+  background: #f8fafc;
+  color: #334155;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.container {
+  text-align: center;
+  max-width: 560px;
+  padding: 40px 24px;
+}
+.logo {
+  font-size: 48px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  color: #0f172a;
+  margin-bottom: 8px;
+}
+.version {
+  display: inline-block;
+  background: rgba(59, 130, 246, 0.15);
+  color: #2563eb;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 4px 14px;
+  border-radius: 20px;
+  margin-bottom: 20px;
+}
+.tagline {
+  font-size: 16px;
+  color: #94a3b8;
+  line-height: 1.6;
+  margin-bottom: 40px;
+}
+.lang-grid {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.lang-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 200px;
+  padding: 32px 24px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  text-decoration: none;
+  color: #334155;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0,0,0,.06);
+}
+.lang-card:hover {
+  border-color: #3b82f6;
+  background: #eff6ff;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(59, 130, 246, 0.15);
+  text-decoration: none;
+}
+.lang-flag {
+  font-size: 36px;
+  margin-bottom: 12px;
+}
+.lang-name {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+.lang-native {
+  font-size: 13px;
+  color: #94a3b8;
+}
+.stats {
+  display: flex;
+  gap: 24px;
+  justify-content: center;
+  margin-bottom: 40px;
+  flex-wrap: wrap;
+}
+.stat {
+  text-align: center;
+}
+.stat-val {
+  font-size: 28px;
+  font-weight: 800;
+  color: #3b82f6;
+}
+.stat-label {
+  font-size: 12px;
+  color: #64748b;
+  margin-top: 2px;
+}
+.footer {
+  margin-top: 48px;
+  font-size: 12px;
+  color: #94a3b8;
+}
+.footer a {
+  color: #94a3b8;
+  text-decoration: none;
+}
+.footer a:hover {
+  color: #94a3b8;
+}
+@media (max-width: 480px) {
+  .lang-grid { flex-direction: column; align-items: center; }
+  .stats { gap: 16px; }
+  .stat-val { font-size: 22px; }
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="logo">U-MAKER</div>
+  <div class="version">v3.1.0</div>
+  <p class="tagline">
+    PDCA-based SSoT collaboration orchestrator for Claude Code.<br>
+    4 Agents &middot; 39 Skills &middot; 5 PDCA Phases
+  </p>
+
+  <div class="stats">
+    <div class="stat"><div class="stat-val">39</div><div class="stat-label">Skills</div></div>
+    <div class="stat"><div class="stat-val">4</div><div class="stat-label">Agents</div></div>
+    <div class="stat"><div class="stat-val">5</div><div class="stat-label">Phases</div></div>
+  </div>
+
+  <div class="lang-grid">
+    <a class="lang-card" href="README.ko.html">
+      <div class="lang-flag">&#127472;&#127479;</div>
+      <div class="lang-name">Korean</div>
+      <div class="lang-native">한국어 문서</div>
+    </a>
+    <a class="lang-card" href="README.en.html">
+      <div class="lang-flag">&#127468;&#127463;</div>
+      <div class="lang-name">English</div>
+      <div class="lang-native">English Documentation</div>
+    </a>
+  </div>
+
+  <div class="footer">
+    GPL-3.0 &copy; U PLEAT &middot;
+    <a href="https://github.com/upleat-ax/u-maker-plugin">GitHub</a>
+  </div>
+</div>
+
+</body>
+</html>
