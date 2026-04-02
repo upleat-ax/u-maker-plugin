@@ -16,11 +16,42 @@ $ErrorActionPreference = "Stop"
 
 $repo = "upleat-ax/u-maker-plugin"
 $apiBase = "https://api.github.com/repos/$repo/releases"
+$rawBase = "https://raw.githubusercontent.com/$repo/main"
 $tmp = Join-Path $env:TEMP "u-maker-install-$(Get-Random)"
+$headers = @{ "User-Agent" = "u-maker-installer/1.0"; "Accept" = "application/vnd.github+json" }
 
 function Write-Step($msg) { Write-Host "  [..] $msg" -NoNewline }
 function Write-OK($msg)   { Write-Host "`r  [OK] $msg                    " -ForegroundColor Green }
 function Write-Err($msg)  { Write-Host "`r  [ERR] $msg" -ForegroundColor Red }
+
+function Invoke-GHApi($uri) {
+    try {
+        $resp = Invoke-WebRequest -Uri $uri -Headers $headers -UseBasicParsing -ErrorAction Stop
+        return ($resp.Content | ConvertFrom-Json)
+    } catch {
+        # Fallback: try curl
+        $curlOut = $null
+        try {
+            $curlOut = & curl.exe -fsSL --ssl-no-revoke -H "User-Agent: u-maker-installer" -H "Accept: application/vnd.github+json" $uri 2>$null
+        } catch {}
+        if ($curlOut) { return ($curlOut | ConvertFrom-Json) }
+        throw "API call failed: $uri — $_"
+    }
+}
+
+function Invoke-Download($uri, $outFile) {
+    try {
+        Invoke-WebRequest -Uri $uri -OutFile $outFile -Headers @{"User-Agent"="u-maker-installer"} -UseBasicParsing -ErrorAction Stop
+        return
+    } catch {
+        Write-Err "PowerShell download failed. Trying curl..."
+    }
+    try {
+        & curl.exe -fsSL --ssl-no-revoke -o $outFile $uri 2>&1
+        if ($LASTEXITCODE -eq 0 -and (Test-Path $outFile)) { return }
+    } catch {}
+    throw "Download failed: $uri"
+}
 
 try {
     New-Item -ItemType Directory -Path $tmp -Force | Out-Null
@@ -88,10 +119,11 @@ try {
     } else {
         Write-Step "Fetching latest release..."
         try {
-            $release = Invoke-RestMethod -Uri "$apiBase/latest" -UseBasicParsing
+            $release = Invoke-GHApi "$apiBase/latest"
             $version = $release.tag_name
+            if (-not $version) { throw "tag_name is empty in API response" }
         } catch {
-            Write-Err "Failed to fetch latest release from $repo"
+            Write-Err "Failed to fetch latest release: $_"
             Write-Host "         Check: https://github.com/$repo/releases" -ForegroundColor Yellow
             throw
         }
@@ -101,12 +133,13 @@ try {
     # --- Find zip download URL ---
     Write-Step "Finding download URL..."
     try {
-        $release = Invoke-RestMethod -Uri "$apiBase/tags/$version" -UseBasicParsing
+        $release = Invoke-GHApi "$apiBase/tags/$version"
         $zipAsset = $release.assets | Where-Object { $_.name -like "*.zip" } | Select-Object -First 1
-        if (-not $zipAsset) { throw "No zip asset found" }
+        if (-not $zipAsset) { throw "No zip asset found in release $version" }
         $downloadUrl = $zipAsset.browser_download_url
+        if (-not $downloadUrl) { throw "browser_download_url is empty" }
     } catch {
-        Write-Err "No zip asset found for $version"
+        Write-Err "No zip asset for $version : $_"
         Write-Host "         Check: https://github.com/$repo/releases/tag/$version" -ForegroundColor Yellow
         throw
     }
@@ -135,7 +168,7 @@ try {
     # --- Download ---
     Write-Step "Downloading..."
     $zipFile = Join-Path $tmp "u-maker-plugin.zip"
-    Invoke-WebRequest -Uri $downloadUrl -OutFile $zipFile -UseBasicParsing
+    Invoke-Download $downloadUrl $zipFile
     Write-OK "Downloaded"
 
     # --- Extract ---
