@@ -22,30 +22,31 @@ function Write-OK($msg)   { Write-Host "`r  [OK] $msg                    " -Fore
 function Write-Err($msg)  { Write-Host "`r  [ERR] $msg" -ForegroundColor Red }
 
 function Invoke-GHApi($uri) {
+    # curl.exe first (handles SSL reliably on Windows)
+    try {
+        $curlOut = & curl.exe -fsSL --ssl-no-revoke -H "User-Agent: u-maker-installer" -H "Accept: application/vnd.github+json" $uri 2>&1
+        if ($LASTEXITCODE -eq 0 -and $curlOut) {
+            return ($curlOut | ConvertFrom-Json)
+        }
+    } catch {}
+    # Fallback: PowerShell
     try {
         $resp = Invoke-WebRequest -Uri $uri -Headers $headers -UseBasicParsing -ErrorAction Stop
         return ($resp.Content | ConvertFrom-Json)
-    } catch {
-        # Fallback: try curl
-        $curlOut = $null
-        try {
-            $curlOut = & curl.exe -fsSL --ssl-no-revoke -H "User-Agent: u-maker-installer" -H "Accept: application/vnd.github+json" $uri 2>$null
-        } catch {}
-        if ($curlOut) { return ($curlOut | ConvertFrom-Json) }
-        throw "API call failed: $uri — $_"
-    }
+    } catch {}
+    throw "API call failed: $uri"
 }
 
 function Invoke-Download($uri, $outFile) {
-    try {
-        Invoke-WebRequest -Uri $uri -OutFile $outFile -Headers @{"User-Agent"="u-maker-installer"} -UseBasicParsing -ErrorAction Stop
-        return
-    } catch {
-        Write-Err "PowerShell download failed. Trying curl..."
-    }
+    # curl.exe first
     try {
         & curl.exe -fsSL --ssl-no-revoke -o $outFile $uri 2>&1
         if ($LASTEXITCODE -eq 0 -and (Test-Path $outFile)) { return }
+    } catch {}
+    # Fallback: PowerShell
+    try {
+        Invoke-WebRequest -Uri $uri -OutFile $outFile -Headers @{"User-Agent"="u-maker-installer"} -UseBasicParsing -ErrorAction Stop
+        return
     } catch {}
     throw "Download failed: $uri"
 }
