@@ -424,7 +424,7 @@
       <div class="section-divider" id="reverse"><h2>06. Reverse Engineering (기존 프로젝트)</h2></div>
       <p class="section-desc">이미 코드가 있지만 SSoT 문서가 없는 프로젝트를 위한 워크플로우.</p>
 
-      <div class="code-block"><span class="comment"># 1. 프로젝트 초기화</span>
+      <div class="code-block"><pre style="margin:0;white-space:pre;overflow-x:auto"><span class="comment"># 1. 프로젝트 초기화</span>
 <span class="cmd">/u-init</span> my-existing-app
 
 <span class="comment"># 2. 소스 코드 → SSoT 역공학</span>
@@ -434,7 +434,7 @@
 
 <span class="comment"># 3. 역공학 결과 검증 + 보완</span>
 <span class="cmd">/u-sync</span> [app]                       <span class="comment"># 문서 간 정합성 검증</span>
-<span class="cmd">/u-doc</span> [app] srs <span class="flag">--edit</span>             <span class="comment"># SRS에 비즈니스 의도 보완</span></div>
+<span class="cmd">/u-doc</span> [app] srs <span class="flag">--edit</span>             <span class="comment"># SRS에 비즈니스 의도 보완</span></pre></div>
 
       <!-- 07. INTERACTION MODES -->
       <div class="section-divider" id="modes"><h2>07. Interaction Mode</h2></div>
