@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>U-MAKER Plugin v3.1 — README (Korean)</title>
+<style>
+  @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #f6f7f9;
+    --surface: #ffffff;
+    --sidebar-bg: #ffffff;
+    --sidebar-border: #e8eaef;
+    --sidebar-text: #6b7280;
+    --sidebar-active: #1e2432;
+    --sidebar-accent: #4f8cff;
+    --sidebar-hover: #f0f4ff;
+    --text: #1e2432;
+    --text-secondary: #5a6376;
+    --border: #e2e5ea;
+    --accent: #4f8cff;
+    --accent-light: #eaf1ff;
+    --green: #22c55e;
+    --green-light: #ecfdf5;
+    --red: #ef4444;
+    --red-light: #fef2f2;
+    --yellow: #f59e0b;
+    --yellow-light: #fffbeb;
+    --purple: #8b5cf6;
+    --purple-light: #f5f3ff;
+    --gray: #6b7280;
+    --gray-light: #f3f4f6;
+    --radius: 12px;
+    --radius-sm: 8px;
+    --shadow: 0 1px 3px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
+    --shadow-lg: 0 4px 12px rgba(0,0,0,.08);
+  }
+
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    font-size: 15px;
+  }
+
+  .layout { display: flex; min-height: 100vh; }
+
+  .sidebar {
+    position: fixed; top: 0; left: 0; width: 260px; height: 100vh;
+    background: var(--sidebar-bg); border-right: 1px solid var(--sidebar-border);
+    padding: 28px 0; overflow-y: auto; z-index: 100; display: flex; flex-direction: column;
+  }
+  .sidebar-header { padding: 0 24px 24px; border-bottom: 1px solid var(--sidebar-border); margin-bottom: 8px; }
+  .sidebar-header h2 { font-size: 16px; font-weight: 800; color: var(--text); margin-bottom: 4px; }
+  .sidebar-header p { font-size: 12px; color: var(--sidebar-text); }
+  .sidebar-nav { list-style: none; flex: 1; padding: 8px 0; }
+  .sidebar-nav li a {
+    display: flex; align-items: center; gap: 10px; padding: 9px 24px;
+    color: var(--sidebar-text); text-decoration: none; font-size: 13.5px; font-weight: 500;
+    border-left: 3px solid transparent; transition: all .2s; border-radius: 0 6px 6px 0; margin-right: 12px;
+  }
+  .sidebar-nav li a:hover { color: var(--sidebar-active); background: var(--sidebar-hover); border-left-color: var(--sidebar-accent); }
+  .sidebar-nav li a.active { color: var(--sidebar-accent); background: var(--accent-light); border-left-color: var(--sidebar-accent); font-weight: 700; }
+  .sidebar-nav li a .nav-icon {
+    width: 22px; height: 22px; display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 800; color: var(--sidebar-text); background: var(--gray-light); border-radius: 6px; flex-shrink: 0;
+  }
+  .sidebar-nav li a.active .nav-icon { color: #fff; background: var(--sidebar-accent); }
+  .sidebar-footer { padding: 16px 24px; border-top: 1px solid var(--sidebar-border); font-size: 11px; color: var(--sidebar-text); }
+  .sidebar-count {
+    display: inline-flex; align-items: center; justify-content: center; min-width: 20px; height: 18px;
+    padding: 0 6px; border-radius: 9px; background: var(--gray-light); color: var(--gray); font-size: 10.5px; font-weight: 700; margin-left: auto;
+  }
+  .sidebar-nav li a.active .sidebar-count { background: rgba(79,140,255,.15); color: var(--sidebar-accent); }
+
+  .main-content { margin-left: 260px; flex: 1; padding: 36px 48px 80px; max-width: 1100px; }
+  .article-wrap { max-width: 900px; }
+
+  .doc-header {
+    background: linear-gradient(135deg, #4f8cff 0%, #6366f1 100%); border-radius: var(--radius);
+    padding: 32px 36px; color: #fff; margin-bottom: 32px; box-shadow: 0 4px 20px rgba(79,140,255,.25);
+  }
+  .doc-header h1 { font-size: 24px; font-weight: 800; margin-bottom: 8px; }
+  .doc-header p { font-size: 14px; opacity: .85; line-height: 1.6; }
+  .doc-meta { display: flex; gap: 24px; margin-top: 16px; padding-top: 16px; border-top: 1px solid rgba(255,255,255,.2); flex-wrap: wrap; }
+  .doc-meta-item { font-size: 12px; opacity: .75; }
+  .doc-meta-item strong { opacity: 1; font-weight: 700; }
+
+  .section-divider { margin: 40px 0 20px; }
+  .section-divider h2 { font-size: 18px; font-weight: 800; color: var(--text); padding-bottom: 10px; border-bottom: 2px solid var(--accent); display: inline-block; }
+  .section-desc { margin-top: 8px; color: var(--text-secondary); font-size: 14px; line-height: 1.8; }
+
+  .highlight-box {
+    background: var(--accent-light); border-left: 4px solid var(--accent); border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    padding: 16px 20px; margin: 16px 0; font-size: 13.5px; line-height: 1.8; color: var(--text);
+  }
+  .highlight-box strong { color: var(--accent); }
+  .highlight-box ul { margin: 8px 0 0 18px; }
+  .highlight-box ul li { margin-bottom: 4px; }
+
+  .feature-cards { display: grid; grid-template-columns: 1fr; gap: 20px; margin: 20px 0; }
+  .feature-cards.cols-2 { grid-template-columns: 1fr 1fr; }
+  .feature-card {
+    background: var(--surface); border-radius: var(--radius); padding: 24px 28px;
+    box-shadow: var(--shadow); border-left: 4px solid var(--accent);
+  }
+  .feature-card.green { border-left-color: var(--green); }
+  .feature-card.purple { border-left-color: var(--purple); }
+  .feature-card.yellow { border-left-color: var(--yellow); }
+  .feature-card.red { border-left-color: var(--red); }
+  .feature-card h3 { font-size: 15.5px; font-weight: 700; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+  .feature-card p, .feature-card ul { font-size: 13.5px; color: var(--text-secondary); line-height: 1.8; }
+  .feature-card ul { margin: 8px 0 0 18px; }
+  .feature-card ul li { margin-bottom: 4px; }
+
+  .badge { display: inline-block; padding: 2px 10px; border-radius: 999px; font-size: 11px; font-weight: 700; letter-spacing: .3px; vertical-align: middle; }
+  .badge-blue { background: var(--accent-light); color: var(--accent); }
+  .badge-green { background: var(--green-light); color: var(--green); }
+  .badge-red { background: var(--red-light); color: var(--red); }
+  .badge-yellow { background: var(--yellow-light); color: var(--yellow); }
+  .badge-purple { background: var(--purple-light); color: var(--purple); }
+  .badge-gray { background: var(--gray-light); color: var(--gray); }
+
+  .data-table-wrap { background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; margin: 16px 0 28px; }
+  .data-table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+  .data-table thead th {
+    background: #f8f9fb; color: var(--text); padding: 11px 16px; text-align: left;
+    font-weight: 700; font-size: 12px; letter-spacing: .3px; border-bottom: 2px solid var(--border); white-space: nowrap;
+  }
+  .data-table tbody td { padding: 10px 16px; border-bottom: 1px solid var(--border); vertical-align: top; line-height: 1.6; }
+  .data-table tbody tr:last-child td { border-bottom: none; }
+  .data-table tbody tr:hover { background: #fafbfd; }
+  .data-table .col-term { font-weight: 700; color: var(--text); white-space: nowrap; }
+  .data-table .col-abbr { font-family: 'SF Mono','Fira Code',monospace; font-size: 12px; font-weight: 600; color: var(--accent); }
+  .data-table .col-desc { color: var(--text-secondary); font-size: 13px; }
+
+  .code-block {
+    background: #1e2432; border-radius: var(--radius-sm); padding: 18px 22px; margin: 14px 0;
+    overflow-x: auto; font-family: 'SF Mono','Fira Code','Consolas',monospace; font-size: 13px; line-height: 1.7; color: #e2e8f0;
+  }
+  .code-block .comment { color: #64748b; }
+  .code-block .cmd { color: #93c5fd; }
+  .code-block .flag { color: #a78bfa; }
+
+  .annotation {
+    display: block; margin-top: 8px; padding: 10px 14px; background: var(--gray-light);
+    border-radius: var(--radius-sm); font-size: 12.5px; color: var(--text-secondary); line-height: 1.7; border-left: 3px solid var(--border);
+  }
+  .annotation strong { color: var(--text); font-weight: 600; }
+
+  .diagram-wrap {
+    background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow);
+    padding: 28px; margin: 20px 0; overflow-x: auto; text-align: center;
+  }
+  .diagram-wrap svg { max-width: 100%; height: auto; }
+  .diagram-caption { margin-top: 12px; font-size: 12px; color: var(--text-secondary); text-align: center; }
+
+  .report-footer { text-align: center; margin-top: 48px; padding-top: 24px; border-top: 1px solid var(--border); font-size: 12px; color: var(--text-secondary); }
+
+  .scroll-top {
+    position: fixed; bottom: 32px; right: 32px; width: 42px; height: 42px; border-radius: 50%;
+    background: var(--accent); color: #fff; border: none; cursor: pointer; font-size: 18px;
+    box-shadow: var(--shadow-lg); opacity: 0; transform: translateY(12px); transition: all .3s; z-index: 200;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .scroll-top.visible { opacity: 1; transform: translateY(0); }
+
+  @media print { .sidebar, .scroll-top { display: none !important; } .main-content { margin-left: 0; padding: 0; } .article-wrap { max-width: 100%; } }
+  @media (max-width: 900px) { .sidebar { display: none; } .main-content { margin-left: 0; padding: 24px 20px 60px; } .feature-cards.cols-2 { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="layout">
+
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <h2>U-MAKER v3.1</h2>
+      <p>PDCA SSoT Plugin README</p>
+    </div>
+    <ul class="sidebar-nav">
+      <li><a href="#overview"><span class="nav-icon">01</span>Overview</a></li>
+      <li><a href="#architecture"><span class="nav-icon">02</span>Architecture</a></li>
+      <li><a href="#pdca"><span class="nav-icon">03</span>PDCA 5-Phase</a></li>
+      <li><a href="#pipeline"><span class="nav-icon">04</span>3-Layer Pipeline</a></li>
+      <li><a href="#agents"><span class="nav-icon">05</span>Agents<span class="sidebar-count">4</span></a></li>
+      <li><a href="#commands"><span class="nav-icon">06</span>Commands<span class="sidebar-count">22</span></a></li>
+      <li><a href="#engines"><span class="nav-icon">07</span>Engine Skills<span class="sidebar-count">13</span></a></li>
+      <li><a href="#interaction"><span class="nav-icon">08</span>Interaction Modes</a></li>
+      <li><a href="#id-hierarchy"><span class="nav-icon">09</span>4-Tier ID</a></li>
+      <li><a href="#folder"><span class="nav-icon">10</span>Folder Structure</a></li>
+      <li><a href="#hooks"><span class="nav-icon">11</span>Hooks<span class="sidebar-count">8</span></a></li>
+      <li><a href="#scenarios"><span class="nav-icon">12</span>Scenario Guide</a></li>
+      <li><a href="#install"><span class="nav-icon">13</span>Install</a></li>
+    </ul>
+    <div class="sidebar-footer">U-MAKER Plugin v3.1.2 &middot; GPL-3.0</div>
+  </aside>
+
+  <div class="main-content">
+    <div class="article-wrap">
+
+      <!-- HEADER -->
+      <div class="doc-header">
+        <h1>U-MAKER Plugin v3.1</h1>
+        <p>PDCA 기반 SSoT(Single Source of Truth) 협업 오케스트레이터.<br>4개 전문 에이전트와 3-Layer 파이프라인으로 소프트웨어 개발 전 과정을 자동화하는 Claude Code 플러그인.</p>
+        <div class="doc-meta">
+          <div class="doc-meta-item"><strong>Version</strong> &nbsp;3.1.1</div>
+          <div class="doc-meta-item"><strong>Skills</strong> &nbsp;39 (13 engine + 25 command + 1 NL router)</div>
+          <div class="doc-meta-item"><strong>Agents</strong> &nbsp;4</div>
+          <div class="doc-meta-item"><strong>License</strong> &nbsp;GPL-3.0</div>
+        </div>
+      </div>
+
+      <!-- 01. OVERVIEW -->
+      <div class="section-divider" id="overview"><h2>01. What This Plugin Solves</h2></div>
+      <p class="section-desc">U-MAKER는 <strong>Intent-driven 문서 중심 개발(SSoT)</strong>을 구현하는 협업 오케스트레이터입니다.</p>
+
+      <div class="data-table-wrap">
+        <table class="data-table">
+          <thead><tr><th>기존 방식</th><th>U-MAKER v3 방식</th></tr></thead>
+          <tbody>
+            <tr><td>코드 먼저, 문서는 나중에</td><td class="col-desc">문서 먼저, 코드는 문서 기반 생성 <span class="badge badge-blue">Docs-First</span></td></tr>
+            <tr><td>기존 프로젝트에 문서가 없음</td><td class="col-desc"><code>/u-reverse</code>로 소스 코드 &rarr; SSoT 자동 역공학</td></tr>
+            <tr><td>RFP 200페이지를 한 번에 분석 &rarr; loss</td><td class="col-desc">3-Layer 파이프라인으로 chunk 분석 &rarr; 정보 손실 없음</td></tr>
+            <tr><td>"무슨 문서를 만들어야 하지?"</td><td class="col-desc"><code>/u-plan</code> 한 번이면 SRS+IA+Roadmap 연쇄 생성</td></tr>
+            <tr><td>요구사항 추적 불가</td><td class="col-desc">4-Tier ID(USR&rarr;FR&rarr;US&rarr;FT)로 전 구간 추적</td></tr>
+            <tr><td>SRS 수정 시 ERD/Screen/TC 수동 갱신</td><td class="col-desc"><code>_links.json</code> 의존성 그래프로 Auto-Cascade</td></tr>
+            <tr><td>단계 건너뛰기로 품질 저하</td><td class="col-desc">Phase Gate 자동 검증 후에만 다음 Phase 진행</td></tr>
+            <tr><td>AI 판단이 블랙박스</td><td class="col-desc">Assumptions Log로 모든 판단 기록 + 사후 리뷰</td></tr>
+            <tr><td>설계 산출물 시각화 어려움</td><td class="col-desc"><code>wireframes/index.html</code> SPA 뷰어 자동 생성</td></tr>
+            <tr><td>PR/MR 작성이 반복 노동</td><td class="col-desc"><code>/u-git-pr</code>로 구조화된 PR/MR 자동 생성</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="highlight-box">
+        <strong>Quick Start</strong>
+        <ul>
+          <li><code>curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/install.sh | bash</code></li>
+          <li>Claude Code 재시작 &rarr; <code>/u-init my-app</code> &rarr; <code>/u-ingest</code> &rarr; <code>/u-plan</code> &rarr; <code>/u-design</code> &rarr; <code>/u-dev</code> &rarr; <code>/u-qa</code> &rarr; <code>/u-ship</code></li>
+        </ul>
+      </div>
+
+      <!-- 02. ARCHITECTURE -->
+      <div class="section-divider" id="architecture"><h2>02. Architecture Overview</h2></div>
+      <p class="section-desc">사용자 입력(slash command 또는 자연어)이 Router를 거쳐 적절한 Agent로 전달되는 구조입니다.</p>
+
+      <div class="diagram-wrap">
+        <svg width="780" height="420" viewBox="0 0 780 420" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <marker id="aB" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="#4f8cff"/></marker>
+            <marker id="aG" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="#22c55e"/></marker>
+            <marker id="aY" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="#f59e0b"/></marker>
+            <marker id="aP" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="#8b5cf6"/></marker>
+          </defs>
+
+          <rect x="310" y="10" width="160" height="48" rx="24" fill="#4f8cff"/>
+          <text x="390" y="40" text-anchor="middle" fill="#fff" font-size="14" font-weight="700" font-family="Pretendard,sans-serif">USER INPUT</text>
+
+          <rect x="120" y="100" width="200" height="40" rx="8" fill="#eaf1ff" stroke="#4f8cff" stroke-width="1.5"/>
+          <text x="220" y="126" text-anchor="middle" fill="#4f8cff" font-size="12" font-weight="600" font-family="Pretendard,sans-serif">/u-{cmd} [scope] [flags]</text>
+
+          <rect x="460" y="100" width="200" height="40" rx="8" fill="#f5f3ff" stroke="#8b5cf6" stroke-width="1.5"/>
+          <text x="560" y="126" text-anchor="middle" fill="#8b5cf6" font-size="12" font-weight="600" font-family="Pretendard,sans-serif">Natural Language</text>
+
+          <path d="M 350 58 C 350 80, 270 80, 270 100" stroke="#4f8cff" stroke-width="1.5" fill="none" marker-end="url(#aB)"/>
+          <path d="M 430 58 C 430 80, 510 80, 510 100" stroke="#8b5cf6" stroke-width="1.5" fill="none" marker-end="url(#aP)"/>
+
+          <rect x="290" y="180" width="200" height="48" rx="12" fill="#fff" stroke="#4f8cff" stroke-width="2"/>
+          <text x="390" y="200" text-anchor="middle" fill="#4f8cff" font-size="11" font-weight="700" font-family="Pretendard,sans-serif">u-skill-router</text>
+          <text x="390" y="216" text-anchor="middle" fill="#5a6376" font-size="10" font-family="Pretendard,sans-serif">Intent &amp; Scope Resolver</text>
+
+          <path d="M 270 140 C 270 160, 340 160, 340 180" stroke="#4f8cff" stroke-width="1.5" fill="none" marker-end="url(#aB)"/>
+          <path d="M 510 140 C 510 160, 440 160, 440 180" stroke="#8b5cf6" stroke-width="1.5" fill="none" marker-end="url(#aB)"/>
+          <text x="520" y="170" fill="#8b5cf6" font-size="10" font-weight="600" font-family="Pretendard,sans-serif">u-maker (NL router)</text>
+
+          <rect x="30" y="290" width="160" height="56" rx="12" fill="#4f8cff"/>
+          <text x="110" y="314" text-anchor="middle" fill="#fff" font-size="12" font-weight="700" font-family="Pretendard,sans-serif">Orchestrator</text>
+          <text x="110" y="332" text-anchor="middle" fill="rgba(255,255,255,.7)" font-size="10" font-family="Pretendard,sans-serif">opus &middot; ALL phases</text>
+
+          <rect x="220" y="290" width="160" height="56" rx="12" fill="#22c55e"/>
+          <text x="300" y="314" text-anchor="middle" fill="#fff" font-size="12" font-weight="700" font-family="Pretendard,sans-serif">Planner</text>
+          <text x="300" y="332" text-anchor="middle" fill="rgba(255,255,255,.7)" font-size="10" font-family="Pretendard,sans-serif">sonnet &middot; Plan, Design</text>
+
+          <rect x="410" y="290" width="160" height="56" rx="12" fill="#f59e0b"/>
+          <text x="490" y="314" text-anchor="middle" fill="#fff" font-size="12" font-weight="700" font-family="Pretendard,sans-serif">Builder</text>
+          <text x="490" y="332" text-anchor="middle" fill="rgba(255,255,255,.7)" font-size="10" font-family="Pretendard,sans-serif">sonnet &middot; Do</text>
+
+          <rect x="600" y="290" width="160" height="56" rx="12" fill="#8b5cf6"/>
+          <text x="680" y="314" text-anchor="middle" fill="#fff" font-size="12" font-weight="700" font-family="Pretendard,sans-serif">Gatekeeper</text>
+          <text x="680" y="332" text-anchor="middle" fill="rgba(255,255,255,.7)" font-size="10" font-family="Pretendard,sans-serif">sonnet &middot; Check, Act</text>
+
+          <path d="M 330 228 C 330 260, 110 260, 110 290" stroke="#4f8cff" stroke-width="1.5" fill="none" marker-end="url(#aB)"/>
+          <path d="M 365 228 C 365 260, 300 260, 300 290" stroke="#22c55e" stroke-width="1.5" fill="none" marker-end="url(#aG)"/>
+          <path d="M 415 228 C 415 260, 490 260, 490 290" stroke="#f59e0b" stroke-width="1.5" fill="none" marker-end="url(#aY)"/>
+          <path d="M 450 228 C 450 260, 680 260, 680 290" stroke="#8b5cf6" stroke-width="1.5" fill="none" marker-end="url(#aP)"/>
+
+          <rect x="30" y="375" width="730" height="36" rx="8" fill="#f8f9fb" stroke="#e2e5ea" stroke-width="1"/>
+          <text x="390" y="398" text-anchor="middle" fill="#5a6376" font-size="11" font-weight="600" font-family="Pretendard,sans-serif">13 Engine Skills: router &middot; phase-detector &middot; dep-engine &middot; workflow-runner &middot; doc-engine &middot; analyzer &middot; designer &middot; estimator &middot; code-engine &middot; validator &middot; test &middot; backlog &middot; facilitator</text>
+        </svg>
+        <div class="diagram-caption">Architecture Overview: User Input &rarr; Router &rarr; 4 Agents &rarr; 13 Engine Skills</div>
+      </div>
+
+      <!-- 03. PDCA 5-PHASE -->
+      <div class="section-divider" id="pdca"><h2>03. PDCA 5-Phase Process</h2></div>
+      <p class="section-desc">Plan &rarr; Design &rarr; Do &rarr; Check &rarr; Act 순환. 각 Phase는 Gate 조건을 충족해야 다음으로 진행합니다.</p>
+
+      <div class="diagram-wrap">
+        <svg width="780" height="360" viewBox="0 0 780 360" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <marker id="aw" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="#fff"/></marker>
+            <marker id="ag" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="#9ca3af"/></marker>
+          </defs>
+
+          <!-- Command labels -->
+          <rect x="45" y="20" width="100" height="22" rx="4" fill="#eaf1ff"/>
+          <text x="95" y="35" text-anchor="middle" fill="#4f8cff" font-size="10" font-weight="600" font-family="Pretendard,sans-serif">/u-plan</text>
+          <rect x="205" y="20" width="100" height="22" rx="4" fill="#f5f3ff"/>
+          <text x="255" y="35" text-anchor="middle" fill="#6366f1" font-size="10" font-weight="600" font-family="Pretendard,sans-serif">/u-design</text>
+          <rect x="365" y="20" width="100" height="22" rx="4" fill="#ecfdf5"/>
+          <text x="415" y="35" text-anchor="middle" fill="#22c55e" font-size="10" font-weight="600" font-family="Pretendard,sans-serif">/u-dev</text>
+          <rect x="525" y="20" width="100" height="22" rx="4" fill="#fffbeb"/>
+          <text x="575" y="35" text-anchor="middle" fill="#f59e0b" font-size="10" font-weight="600" font-family="Pretendard,sans-serif">/u-qa</text>
+          <rect x="673" y="20" width="80" height="22" rx="4" fill="#fef2f2"/>
+          <text x="713" y="35" text-anchor="middle" fill="#ef4444" font-size="10" font-weight="600" font-family="Pretendard,sans-serif">/u-ship</text>
+
+          <!-- Phase boxes -->
+          <rect x="30" y="55" width="130" height="80" rx="12" fill="#4f8cff"/>
+          <text x="95" y="87" text-anchor="middle" fill="#fff" font-size="11" font-weight="800" font-family="Pretendard,sans-serif">01 PLAN</text>
+          <text x="95" y="105" text-anchor="middle" fill="rgba(255,255,255,.75)" font-size="9.5" font-family="Pretendard,sans-serif">SRS, IA, Roadmap</text>
+          <text x="95" y="121" text-anchor="middle" fill="rgba(255,255,255,.6)" font-size="9" font-family="Pretendard,sans-serif">planner</text>
+
+          <rect x="190" y="55" width="130" height="80" rx="12" fill="#6366f1"/>
+          <text x="255" y="87" text-anchor="middle" fill="#fff" font-size="11" font-weight="800" font-family="Pretendard,sans-serif">02 DESIGN</text>
+          <text x="255" y="105" text-anchor="middle" fill="rgba(255,255,255,.75)" font-size="9.5" font-family="Pretendard,sans-serif">ERD, API, Screen, RTM</text>
+          <text x="255" y="121" text-anchor="middle" fill="rgba(255,255,255,.6)" font-size="9" font-family="Pretendard,sans-serif">planner + gatekeeper</text>
+
+          <rect x="350" y="55" width="130" height="80" rx="12" fill="#22c55e"/>
+          <text x="415" y="87" text-anchor="middle" fill="#fff" font-size="11" font-weight="800" font-family="Pretendard,sans-serif">03 DO</text>
+          <text x="415" y="105" text-anchor="middle" fill="rgba(255,255,255,.75)" font-size="9.5" font-family="Pretendard,sans-serif">Code, UI Components</text>
+          <text x="415" y="121" text-anchor="middle" fill="rgba(255,255,255,.6)" font-size="9" font-family="Pretendard,sans-serif">builder</text>
+
+          <rect x="510" y="55" width="130" height="80" rx="12" fill="#f59e0b"/>
+          <text x="575" y="87" text-anchor="middle" fill="#fff" font-size="11" font-weight="800" font-family="Pretendard,sans-serif">04 CHECK</text>
+          <text x="575" y="105" text-anchor="middle" fill="rgba(255,255,255,.75)" font-size="9.5" font-family="Pretendard,sans-serif">TestCase, TestReport</text>
+          <text x="575" y="121" text-anchor="middle" fill="rgba(255,255,255,.6)" font-size="9" font-family="Pretendard,sans-serif">gatekeeper</text>
+
+          <rect x="670" y="55" width="90" height="80" rx="12" fill="#ef4444"/>
+          <text x="715" y="87" text-anchor="middle" fill="#fff" font-size="11" font-weight="800" font-family="Pretendard,sans-serif">05 ACT</text>
+          <text x="715" y="105" text-anchor="middle" fill="rgba(255,255,255,.75)" font-size="9.5" font-family="Pretendard,sans-serif">Retro, Archive</text>
+          <text x="715" y="121" text-anchor="middle" fill="rgba(255,255,255,.6)" font-size="9" font-family="Pretendard,sans-serif">orchestrator</text>
+
+          <!-- Phase arrows -->
+          <path d="M 160 95 C 172 95, 178 95, 190 95" stroke="#fff" stroke-width="2" fill="none" marker-end="url(#aw)"/>
+          <path d="M 320 95 C 332 95, 338 95, 350 95" stroke="#fff" stroke-width="2" fill="none" marker-end="url(#aw)"/>
+          <path d="M 480 95 C 492 95, 498 95, 510 95" stroke="#fff" stroke-width="2" fill="none" marker-end="url(#aw)"/>
+          <path d="M 640 95 C 652 95, 658 95, 670 95" stroke="#fff" stroke-width="2" fill="none" marker-end="url(#aw)"/>
+
+          <!-- Iteration arrow -->
+          <path d="M 715 135 C 715 200, 715 220, 660 240 C 400 290, 140 290, 95 240 C 80 220, 80 180, 95 135" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="6 4" fill="none" marker-end="url(#ag)"/>
+          <text x="390" y="275" text-anchor="middle" fill="#9ca3af" font-size="11" font-weight="600" font-family="Pretendard,sans-serif">Iteration (next cycle)</text>
+
+          <!-- Gate labels -->
+          <rect x="148" y="155" width="114" height="28" rx="6" fill="#fff" stroke="#e2e5ea" stroke-width="1"/>
+          <text x="205" y="174" text-anchor="middle" fill="#5a6376" font-size="9" font-weight="600" font-family="Pretendard,sans-serif">SRS+IA+Roadmap=Final</text>
+          <rect x="308" y="155" width="114" height="28" rx="6" fill="#fff" stroke="#e2e5ea" stroke-width="1"/>
+          <text x="365" y="174" text-anchor="middle" fill="#5a6376" font-size="9" font-weight="600" font-family="Pretendard,sans-serif">ERD+RTM+API=Final</text>
+          <rect x="468" y="155" width="114" height="28" rx="6" fill="#fff" stroke="#e2e5ea" stroke-width="1"/>
+          <text x="525" y="174" text-anchor="middle" fill="#5a6376" font-size="9" font-weight="600" font-family="Pretendard,sans-serif">Code=Final, Build OK</text>
+          <rect x="628" y="155" width="114" height="28" rx="6" fill="#fff" stroke="#e2e5ea" stroke-width="1"/>
+          <text x="685" y="174" text-anchor="middle" fill="#5a6376" font-size="9" font-weight="600" font-family="Pretendard,sans-serif">Crit/Major=0</text>
+
+          <!-- Gate command -->
+          <rect x="330" y="320" width="120" height="24" rx="4" fill="#fff" stroke="#4f8cff" stroke-width="1.5"/>
+          <text x="390" y="337" text-anchor="middle" fill="#4f8cff" font-size="10" font-weight="600" font-family="Pretendard,sans-serif">/u-gate [app]</text>
+          <text x="390" y="355" text-anchor="middle" fill="#9ca3af" font-size="9" font-family="Pretendard,sans-serif">Phase 전환 검증</text>
+        </svg>
+        <div class="diagram-caption">PDCA 5-Phase Lifecycle: 각 Phase Gate를 통과해야 다음 Phase로 전환</div>
+      </div>
+
+      <div class="data-table-wrap">
+        <table class="data-table">
+          <thead><tr><th>Phase</th><th>산출물</th><th>담당 Agent</th><th>Gate 조건</th></tr></thead>
+          <tbody>
+            <tr><td class="col-term">01 Plan</td><td>SRS, IA, Roadmap</td><td>orchestrator &rarr; planner</td><td class="col-desc">SRS+IA+Roadmap = Final</td></tr>
+            <tr><td class="col-term">02 Design</td><td>ERD, API, Screen, ScreenFlow, RTM, wireframes</td><td>planner &rarr; gatekeeper</td><td class="col-desc">ERD+RTM+Screen+API = Final</td></tr>
+            <tr><td class="col-term">03 Do</td><td>Code, UIComponents</td><td>builder</td><td class="col-desc">Code complete + build success</td></tr>
+            <tr><td class="col-term">04 Check</td><td>TestCase, TestReport</td><td>gatekeeper</td><td class="col-desc">Critical/Major = 0</td></tr>
+            <tr><td class="col-term">05 Act</td><td>IterationLog, Retrospective</td><td>orchestrator &rarr; gatekeeper</td><td class="col-desc">Retro + archive 완료</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- 04. 3-LAYER PIPELINE -->
+      <div class="section-divider" id="pipeline"><h2>04. 3-Layer Data Pipeline</h2></div>
+      <p class="section-desc">raw data를 한 번에 처리하면 context window 한계로 앞부분이 loss됩니다. 중간 정제 레이어를 두어 해결합니다.</p>
+
+      <div class="diagram-wrap">
+        <svg width="780" height="290" viewBox="0 0 780 290" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <marker id="aG2" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="#22c55e"/></marker>
+            <marker id="aP2" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="#8b5cf6"/></marker>
+          </defs>
+
+          <!-- Layer 1 -->
+          <rect x="30" y="30" width="200" height="200" rx="12" fill="#fff" stroke="#4f8cff" stroke-width="2"/>
+          <rect x="30" y="30" width="200" height="36" rx="12" fill="#4f8cff"/>
+          <rect x="30" y="54" width="200" height="12" fill="#4f8cff"/>
+          <text x="130" y="55" text-anchor="middle" fill="#fff" font-size="13" font-weight="700" font-family="Pretendard,sans-serif">Layer 1: _input/</text>
+          <text x="130" y="78" text-anchor="middle" fill="#5a6376" font-size="10" font-weight="600" font-family="Pretendard,sans-serif">Raw Data</text>
+          <text x="50" y="102" fill="#5a6376" font-size="11" font-family="Pretendard,sans-serif">rfp/</text>
+          <text x="50" y="122" fill="#5a6376" font-size="11" font-family="Pretendard,sans-serif">as-is/</text>
+          <text x="50" y="142" fill="#5a6376" font-size="11" font-family="Pretendard,sans-serif">meeting-notes/</text>
+          <text x="50" y="162" fill="#5a6376" font-size="11" font-family="Pretendard,sans-serif">interviews/</text>
+          <text x="50" y="182" fill="#5a6376" font-size="11" font-family="Pretendard,sans-serif">benchmarks/</text>
+          <text x="50" y="210" fill="#9ca3af" font-size="10" font-family="Pretendard,sans-serif">_dropzone/ &rarr; 자동 분류</text>
+
+          <!-- Layer 2 -->
+          <rect x="290" y="30" width="200" height="200" rx="12" fill="#fff" stroke="#22c55e" stroke-width="2"/>
+          <rect x="290" y="30" width="200" height="36" rx="12" fill="#22c55e"/>
+          <rect x="290" y="54" width="200" height="12" fill="#22c55e"/>
+          <text x="390" y="55" text-anchor="middle" fill="#fff" font-size="13" font-weight="700" font-family="Pretendard,sans-serif">Layer 2: _classified/</text>
+          <text x="390" y="78" text-anchor="middle" fill="#5a6376" font-size="10" font-weight="600" font-family="Pretendard,sans-serif">Structured JSON (10 categories)</text>
+          <text x="310" y="102" fill="#5a6376" font-size="11" font-family="Pretendard,sans-serif">requirements/ (FR, NR)</text>
+          <text x="310" y="122" fill="#5a6376" font-size="11" font-family="Pretendard,sans-serif">pain-points/ (PP)</text>
+          <text x="310" y="142" fill="#5a6376" font-size="11" font-family="Pretendard,sans-serif">workflows/ (WF)</text>
+          <text x="310" y="162" fill="#5a6376" font-size="11" font-family="Pretendard,sans-serif">screens/ (SC)</text>
+          <text x="310" y="182" fill="#5a6376" font-size="11" font-family="Pretendard,sans-serif">data-models/ (DM)</text>
+          <text x="310" y="210" fill="#9ca3af" font-size="10" font-family="Pretendard,sans-serif">+ 5 more categories</text>
+
+          <!-- Layer 3 -->
+          <rect x="550" y="30" width="200" height="200" rx="12" fill="#fff" stroke="#8b5cf6" stroke-width="2"/>
+          <rect x="550" y="30" width="200" height="36" rx="12" fill="#8b5cf6"/>
+          <rect x="550" y="54" width="200" height="12" fill="#8b5cf6"/>
+          <text x="650" y="55" text-anchor="middle" fill="#fff" font-size="13" font-weight="700" font-family="Pretendard,sans-serif">Layer 3: docs/</text>
+          <text x="650" y="78" text-anchor="middle" fill="#5a6376" font-size="10" font-weight="600" font-family="Pretendard,sans-serif">Deliverables (.md + .json)</text>
+          <text x="570" y="102" fill="#5a6376" font-size="11" font-family="Pretendard,sans-serif">SRS, IA, Roadmap</text>
+          <text x="570" y="122" fill="#5a6376" font-size="11" font-family="Pretendard,sans-serif">ERD, API, Screen</text>
+          <text x="570" y="142" fill="#5a6376" font-size="11" font-family="Pretendard,sans-serif">ScreenFlow, RTM</text>
+          <text x="570" y="162" fill="#5a6376" font-size="11" font-family="Pretendard,sans-serif">Code, TestCase</text>
+          <text x="570" y="182" fill="#5a6376" font-size="11" font-family="Pretendard,sans-serif">TestReport</text>
+          <text x="570" y="210" fill="#9ca3af" font-size="10" font-family="Pretendard,sans-serif">wireframes/index.html</text>
+
+          <!-- Arrows -->
+          <path d="M 230 130 C 250 130, 260 115, 275 115" stroke="#4f8cff" stroke-width="2" fill="none"/>
+          <path d="M 275 115 C 280 115, 285 130, 290 130" stroke="#22c55e" stroke-width="2" fill="none" marker-end="url(#aG2)"/>
+          <path d="M 490 130 C 510 130, 520 115, 535 115" stroke="#22c55e" stroke-width="2" fill="none"/>
+          <path d="M 535 115 C 540 115, 545 130, 550 130" stroke="#8b5cf6" stroke-width="2" fill="none" marker-end="url(#aP2)"/>
+
+          <rect x="232" y="98" width="56" height="20" rx="4" fill="#eaf1ff"/>
+          <text x="260" y="112" text-anchor="middle" fill="#4f8cff" font-size="9" font-weight="700" font-family="Pretendard,sans-serif">/u-ingest</text>
+          <rect x="495" y="98" width="52" height="20" rx="4" fill="#f5f3ff"/>
+          <text x="521" y="112" text-anchor="middle" fill="#8b5cf6" font-size="9" font-weight="700" font-family="Pretendard,sans-serif">/u-plan+</text>
+
+          <rect x="210" y="255" width="360" height="30" rx="8" fill="#f8f9fb" stroke="#e2e5ea" stroke-width="1"/>
+          <text x="390" y="275" text-anchor="middle" fill="#5a6376" font-size="11" font-weight="600" font-family="Pretendard,sans-serif">Item Lifecycle: extracted &rarr; validated &rarr; adopted / rejected</text>
+        </svg>
+        <div class="diagram-caption">3-Layer Pipeline: Raw &rarr; Classified &rarr; Deliverables (chunk 분석으로 정보 손실 없음)</div>
+      </div>
+
+      <!-- 05. AGENTS -->
+      <div class="section-divider" id="agents"><h2>05. Agents (4)</h2></div>
+      <p class="section-desc">4개 전문 에이전트가 Phase별 역할을 분담합니다.</p>
+
+      <div class="diagram-wrap">
+        <svg width="780" height="310" viewBox="0 0 780 310" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <marker id="aB3" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="#4f8cff"/></marker>
+          </defs>
+
+          <rect x="270" y="15" width="240" height="70" rx="14" fill="#4f8cff"/>
+          <text x="390" y="45" text-anchor="middle" fill="#fff" font-size="14" font-weight="800" font-family="Pretendard,sans-serif">Orchestrator</text>
+          <text x="390" y="63" text-anchor="middle" fill="rgba(255,255,255,.75)" font-size="11" font-family="Pretendard,sans-serif">opus &middot; Command router &middot; Phase controller &middot; State machine</text>
+          <text x="390" y="78" text-anchor="middle" fill="rgba(255,255,255,.55)" font-size="10" font-family="Pretendard,sans-serif">ALL phases</text>
+
+          <rect x="30" y="140" width="220" height="70" rx="14" fill="#22c55e"/>
+          <text x="140" y="170" text-anchor="middle" fill="#fff" font-size="14" font-weight="800" font-family="Pretendard,sans-serif">Planner</text>
+          <text x="140" y="188" text-anchor="middle" fill="rgba(255,255,255,.75)" font-size="11" font-family="Pretendard,sans-serif">sonnet &middot; SRS, IA, ERD, API, Screen</text>
+          <text x="140" y="203" text-anchor="middle" fill="rgba(255,255,255,.55)" font-size="10" font-family="Pretendard,sans-serif">Plan + Design</text>
+
+          <rect x="280" y="140" width="220" height="70" rx="14" fill="#f59e0b"/>
+          <text x="390" y="170" text-anchor="middle" fill="#fff" font-size="14" font-weight="800" font-family="Pretendard,sans-serif">Builder</text>
+          <text x="390" y="188" text-anchor="middle" fill="rgba(255,255,255,.75)" font-size="11" font-family="Pretendard,sans-serif">sonnet &middot; FE + BE 통합 구현</text>
+          <text x="390" y="203" text-anchor="middle" fill="rgba(255,255,255,.55)" font-size="10" font-family="Pretendard,sans-serif">Do</text>
+
+          <rect x="530" y="140" width="220" height="70" rx="14" fill="#8b5cf6"/>
+          <text x="640" y="170" text-anchor="middle" fill="#fff" font-size="14" font-weight="800" font-family="Pretendard,sans-serif">Gatekeeper</text>
+          <text x="640" y="188" text-anchor="middle" fill="rgba(255,255,255,.75)" font-size="11" font-family="Pretendard,sans-serif">sonnet &middot; Gate, TC, 일관성 검증</text>
+          <text x="640" y="203" text-anchor="middle" fill="rgba(255,255,255,.55)" font-size="10" font-family="Pretendard,sans-serif">Design + Check + Act</text>
+
+          <path d="M 320 85 C 300 112, 200 112, 180 140" stroke="#4f8cff" stroke-width="2" fill="none" marker-end="url(#aB3)"/>
+          <path d="M 390 85 C 390 105, 390 120, 390 140" stroke="#4f8cff" stroke-width="2" fill="none" marker-end="url(#aB3)"/>
+          <path d="M 460 85 C 480 112, 580 112, 600 140" stroke="#4f8cff" stroke-width="2" fill="none" marker-end="url(#aB3)"/>
+
+          <text x="230" y="108" text-anchor="middle" fill="#5a6376" font-size="9" font-weight="600" font-family="Pretendard,sans-serif">dispatch</text>
+          <text x="410" y="118" fill="#5a6376" font-size="9" font-weight="600" font-family="Pretendard,sans-serif">dispatch</text>
+          <text x="530" y="108" text-anchor="middle" fill="#5a6376" font-size="9" font-weight="600" font-family="Pretendard,sans-serif">dispatch</text>
+
+          <rect x="30" y="235" width="220" height="55" rx="8" fill="#ecfdf5" stroke="#22c55e" stroke-width="1"/>
+          <text x="140" y="256" text-anchor="middle" fill="#22c55e" font-size="10" font-weight="700" font-family="Pretendard,sans-serif">Domain Engines</text>
+          <text x="140" y="272" text-anchor="middle" fill="#5a6376" font-size="9.5" font-family="Pretendard,sans-serif">doc-engine, analyzer, designer, estimator</text>
+
+          <rect x="280" y="235" width="220" height="55" rx="8" fill="#fffbeb" stroke="#f59e0b" stroke-width="1"/>
+          <text x="390" y="256" text-anchor="middle" fill="#f59e0b" font-size="10" font-weight="700" font-family="Pretendard,sans-serif">Execution Engine</text>
+          <text x="390" y="272" text-anchor="middle" fill="#5a6376" font-size="9.5" font-family="Pretendard,sans-serif">code-engine</text>
+
+          <rect x="530" y="235" width="220" height="55" rx="8" fill="#f5f3ff" stroke="#8b5cf6" stroke-width="1"/>
+          <text x="640" y="256" text-anchor="middle" fill="#8b5cf6" font-size="10" font-weight="700" font-family="Pretendard,sans-serif">Validation Engines</text>
+          <text x="640" y="272" text-anchor="middle" fill="#5a6376" font-size="9.5" font-family="Pretendard,sans-serif">validator, test, backlog</text>
+
+          <path d="M 140 210 L 140 235" stroke="#22c55e" stroke-width="1" stroke-dasharray="4 3" fill="none"/>
+          <path d="M 390 210 L 390 235" stroke="#f59e0b" stroke-width="1" stroke-dasharray="4 3" fill="none"/>
+          <path d="M 640 210 L 640 235" stroke="#8b5cf6" stroke-width="1" stroke-dasharray="4 3" fill="none"/>
+        </svg>
+        <div class="diagram-caption">4-Agent Architecture: Orchestrator가 Planner, Builder, Gatekeeper에 작업 분배</div>
+      </div>
+
+      <div class="data-table-wrap">
+        <table class="data-table">
+          <thead><tr><th>Agent</th><th>Model</th><th>Role</th><th>Phase</th></tr></thead>
+          <tbody>
+            <tr><td class="col-term">u-agent-orchestrator</td><td class="col-abbr">opus</td><td class="col-desc">Command router, Phase controller, State machine, _links.json 관리</td><td>ALL</td></tr>
+            <tr><td class="col-term">u-agent-planner</td><td class="col-abbr">sonnet</td><td class="col-desc">분석 + 설계 (SRS, IA, ERD, API, Screen, UX)</td><td>Plan, Design</td></tr>
+            <tr><td class="col-term">u-agent-builder</td><td class="col-abbr">sonnet</td><td class="col-desc">FE + BE 통합 구현</td><td>Do</td></tr>
+            <tr><td class="col-term">u-agent-gatekeeper</td><td class="col-abbr">sonnet</td><td class="col-desc">Gate 검증, TestCase, 일관성 검증, RTM</td><td>Design, Check, Act</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- 06. COMMANDS -->
+      <div class="section-divider" id="commands"><h2>06. Commands (22)</h2></div>
+      <p class="section-desc">Grammar: <code>/u-{command} [scope] [target] [flags]</code></p>
+
+      <div class="highlight-box">
+        <strong>Scope:</strong> 앱 이름 | <code>common</code> | <code>all</code> | 생략 (자동 선택)<br>
+        <strong>Flags:</strong> <code>-i</code> (interactive) | <code>--step</code> | <code>--only X</code> | <code>--cascade</code> | <code>--dry-run</code> | <code>--json</code>
+      </div>
+
+      <h3 style="margin:20px 0 10px;font-size:15px;color:var(--text)">6.1 Lifecycle (9)</h3>
+      <div class="data-table-wrap">
+        <table class="data-table">
+          <thead><tr><th>Command</th><th>Description</th><th>Example</th></tr></thead>
+          <tbody>
+            <tr><td class="col-abbr">/u-init</td><td class="col-desc">.u-maker/ 구조 생성, config 초기화</td><td><code>/u-init my-project</code></td></tr>
+            <tr><td class="col-abbr">/u-reverse</td><td class="col-desc">소스 코드 &rarr; SSoT 역공학</td><td><code>/u-reverse [app] --only erd</code></td></tr>
+            <tr><td class="col-abbr">/u-ingest</td><td class="col-desc">_dropzone/ &rarr; _input/ 분류 + classified 분석</td><td><code>/u-ingest [app] --review</code></td></tr>
+            <tr><td class="col-abbr">/u-plan</td><td class="col-desc">SRS + IA + Roadmap 연쇄 생성</td><td><code>/u-plan [app] -i</code></td></tr>
+            <tr><td class="col-abbr">/u-design</td><td class="col-desc">ERD + API + Screen + Flow + RTM + wireframes</td><td><code>/u-design [app]</code></td></tr>
+            <tr><td class="col-abbr">/u-dev</td><td class="col-desc">명세 &rarr; FE + BE + DB 코드 생성</td><td><code>/u-dev [app] --only fe</code></td></tr>
+            <tr><td class="col-abbr">/u-qa</td><td class="col-desc">TC 설계 + 테스트 실행 + Report</td><td><code>/u-qa [app]</code></td></tr>
+            <tr><td class="col-abbr">/u-ship</td><td class="col-desc">최종 검증 + iteration log + retrospective</td><td><code>/u-ship [app]</code></td></tr>
+            <tr><td class="col-abbr">/u-loop</td><td class="col-desc">PDCA 파이프라인 무인 자동 실행</td><td><code>/u-loop [app] --from plan</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 style="margin:20px 0 10px;font-size:15px;color:var(--text)">6.2 Operations (5)</h3>
+      <div class="data-table-wrap">
+        <table class="data-table">
+          <thead><tr><th>Command</th><th>Description</th><th>Example</th></tr></thead>
+          <tbody>
+            <tr><td class="col-abbr">/u-add</td><td class="col-desc">항목 추가 (FR/NR/US/FT/Screen/TC)</td><td><code>/u-add [app] fr "비밀번호 재설정"</code></td></tr>
+            <tr><td class="col-abbr">/u-update</td><td class="col-desc">문서 수정 + cascade 자동 전파</td><td><code>/u-update [app] srs --cascade</code></td></tr>
+            <tr><td class="col-abbr">/u-doc</td><td class="col-desc">특정 문서 조회/편집/재생성</td><td><code>/u-doc [app] screens</code></td></tr>
+            <tr><td class="col-abbr">/u-sync</td><td class="col-desc">전체 문서 일관성 검증 + 수정 제안</td><td><code>/u-sync [app]</code></td></tr>
+            <tr><td class="col-abbr">/u-gate</td><td class="col-desc">Phase gate 검사 + 전환</td><td><code>/u-gate [app]</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 style="margin:20px 0 10px;font-size:15px;color:var(--text)">6.3 Observability (5)</h3>
+      <div class="data-table-wrap">
+        <table class="data-table">
+          <thead><tr><th>Command</th><th>Description</th><th>Example</th></tr></thead>
+          <tbody>
+            <tr><td class="col-abbr">/u-status</td><td class="col-desc">대시보드 (phase, 진행률, impact flags)</td><td><code>/u-status [app]</code></td></tr>
+            <tr><td class="col-abbr">/u-coverage</td><td class="col-desc">classified &rarr; 산출물 커버리지 리포트</td><td><code>/u-coverage all</code></td></tr>
+            <tr><td class="col-abbr">/u-trace</td><td class="col-desc">raw &rarr; classified &rarr; docs 추적 체인</td><td><code>/u-trace [app] FR-015</code></td></tr>
+            <tr><td class="col-abbr">/u-browse</td><td class="col-desc">SSoT 문서 리치 HTML 뷰어 생성</td><td><code>/u-browse [app] --open</code></td></tr>
+            <tr><td class="col-abbr">/u-report</td><td class="col-desc">Phase별 HTML 리포트 생성</td><td><code>/u-report [app] --only daily</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 style="margin:20px 0 10px;font-size:15px;color:var(--text)">6.4 Collaboration (5)</h3>
+      <div class="data-table-wrap">
+        <table class="data-table">
+          <thead><tr><th>Command</th><th>Description</th><th>Example</th></tr></thead>
+          <tbody>
+            <tr><td class="col-abbr">/u-ask</td><td class="col-desc">경량 Q&amp;A</td><td><code>/u-ask ERD에서 soft delete를 쓰는 이유?</code></td></tr>
+            <tr><td class="col-abbr">/u-discuss</td><td class="col-desc">구조화된 토론 세션 (5 types)</td><td><code>/u-discuss brainstorm "결제 UX"</code></td></tr>
+            <tr><td class="col-abbr">/u-assume</td><td class="col-desc">가정 검토 (approve/reject)</td><td><code>/u-assume approve A-001</code></td></tr>
+            <tr><td class="col-abbr">/u-backlog</td><td class="col-desc">백로그 관리</td><td><code>/u-backlog [app]</code></td></tr>
+            <tr><td class="col-abbr">/u-git-pr</td><td class="col-desc">PR/MR 자동 생성</td><td><code>/u-git-pr main --draft</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- 07. ENGINE SKILLS -->
+      <div class="section-divider" id="engines"><h2>07. Engine Skills (13)</h2></div>
+      <p class="section-desc">내부 횡단 엔진. user-invocable이 아니며, command skill이 내부적으로 호출합니다.</p>
+
+      <div class="feature-cards cols-2">
+        <div class="feature-card">
+          <h3><span class="badge badge-blue">Core</span> Orchestrator Engines</h3>
+          <ul>
+            <li><strong>u-skill-router</strong> &mdash; Intent 분류, scope 해석</li>
+            <li><strong>u-skill-phase-detector</strong> &mdash; 문서 status &rarr; phase 판정</li>
+            <li><strong>u-skill-dep-engine</strong> &mdash; _links.json 의존성 그래프</li>
+            <li><strong>u-skill-workflow-runner</strong> &mdash; Multi-step 실행, rollback</li>
+            <li><strong>u-skill-facilitator</strong> &mdash; /u-discuss 퍼실리테이션</li>
+            <li><strong>u-skill-backlog</strong> &mdash; 백로그 CRUD, 스프린트</li>
+          </ul>
+        </div>
+        <div class="feature-card green">
+          <h3><span class="badge badge-green">Domain</span> Planner Engines</h3>
+          <ul>
+            <li><strong>u-skill-doc-engine</strong> &mdash; 문서 CRUD, 템플릿 렌더링</li>
+            <li><strong>u-skill-analyzer</strong> &mdash; Raw 파싱, chunk 분석</li>
+            <li><strong>u-skill-designer</strong> &mdash; IA/Screen/ERD/API 설계</li>
+            <li><strong>u-skill-estimator</strong> &mdash; SRS 기반 일정/공수 산정</li>
+          </ul>
+        </div>
+        <div class="feature-card yellow">
+          <h3><span class="badge badge-yellow">Execution</span> Builder Engine</h3>
+          <ul><li><strong>u-skill-code-engine</strong> &mdash; 명세 &rarr; 코드 생성 (FE+BE)</li></ul>
+        </div>
+        <div class="feature-card purple">
+          <h3><span class="badge badge-purple">Validation</span> Gatekeeper Engines</h3>
+          <ul>
+            <li><strong>u-skill-validator</strong> &mdash; Gate check, cross-doc 일관성</li>
+            <li><strong>u-skill-test</strong> &mdash; TC 자동 생성, 실행, 리포트</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- 08. INTERACTION MODES -->
+      <div class="section-divider" id="interaction"><h2>08. Interaction Modes</h2></div>
+      <div class="feature-cards">
+        <div class="feature-card">
+          <h3>Auto <span class="badge badge-blue">default</span></h3>
+          <p>질문 없이 빠르게 실행. 판단은 Assumptions Log에 기록. <code>maxAssumptions</code> (default: 20) 초과 시 자동 interactive 전환.</p>
+        </div>
+        <div class="feature-card green">
+          <h3>Interactive <span class="badge badge-green">-i</span></h3>
+          <p>판단 분기에서만 pause. 중요 설계 결정이 있을 때 사용.</p>
+        </div>
+        <div class="feature-card purple">
+          <h3>Step <span class="badge badge-purple">--step</span></h3>
+          <p>매 단계에서 pause + 승인. 학습 목적이나 품질 확인 시 사용.</p>
+        </div>
+      </div>
+
+      <!-- 09. 4-TIER ID -->
+      <div class="section-divider" id="id-hierarchy"><h2>09. 4-Tier ID Hierarchy</h2></div>
+      <div class="diagram-wrap">
+        <svg width="500" height="195" viewBox="0 0 500 195" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="20" y="8" width="460" height="40" rx="8" fill="#4f8cff"/>
+          <text x="250" y="33" text-anchor="middle" fill="#fff" font-size="13" font-weight="700" font-family="Pretendard,sans-serif">USR-0001 (User Type: 관리자, 일반 사용자)</text>
+          <rect x="60" y="58" width="400" height="40" rx="8" fill="#6366f1"/>
+          <text x="260" y="83" text-anchor="middle" fill="#fff" font-size="13" font-weight="700" font-family="Pretendard,sans-serif">FR-0001 (Functional Req: 회원가입 기능)</text>
+          <rect x="100" y="108" width="360" height="40" rx="8" fill="#22c55e"/>
+          <text x="280" y="133" text-anchor="middle" fill="#fff" font-size="13" font-weight="700" font-family="Pretendard,sans-serif">US-0001 (User Story: 이메일로 회원가입하고 싶다)</text>
+          <rect x="140" y="158" width="320" height="30" rx="6" fill="#f59e0b"/>
+          <text x="300" y="178" text-anchor="middle" fill="#fff" font-size="11" font-weight="700" font-family="Pretendard,sans-serif">FT-0001 (Feature = 구현 단위: 이메일 인증 구현)</text>
+          <path d="M 60 48 L 60 58" stroke="#6366f1" stroke-width="2" fill="none"/>
+          <path d="M 100 98 L 100 108" stroke="#22c55e" stroke-width="2" fill="none"/>
+          <path d="M 140 148 L 140 158" stroke="#f59e0b" stroke-width="2" fill="none"/>
+        </svg>
+        <div class="diagram-caption">FT = <strong>Feature</strong> (구현 단위). Functional Test가 아닙니다.</div>
+      </div>
+
+      <!-- 10. FOLDER STRUCTURE -->
+      <div class="section-divider" id="folder"><h2>10. Folder Structure (.u-maker/)</h2></div>
+      <div class="code-block"><span class="comment"># .u-maker/ 프로젝트 구조 (v3.1)</span>
+.u-maker/
+├── <span class="cmd">u-maker.config.json</span>         <span class="comment"># 전역 설정</span>
+├── <span class="cmd">data/</span>
+│   ├── dropzone/                    <span class="comment"># 파일 드롭존 (자동 분류)</span>
+│   ├── input/                       <span class="comment"># Layer 1: Raw data</span>
+│   │   ├── rfp/, as-is/, meeting-notes/, interviews/
+│   │   └── _manifest.json
+│   ├── classified/                  <span class="comment"># Layer 2: 10 categories JSON</span>
+│   ├── assumptions/                 <span class="comment"># 가정 로그</span>
+│   ├── backlog/                     <span class="comment"># 백로그</span>
+│   └── links.json                   <span class="comment"># 의존성 그래프</span>
+├── <span class="cmd">docs/</span>
+│   ├── common/                      <span class="comment"># 공통 (policy, ux, dev, architecture, project)</span>
+│   └── {app}/                       <span class="comment"># 앱별 문서</span>
+│       ├── _index.json
+│       ├── 01-plan/                 <span class="comment"># srs.md, ia.md, roadmap.md</span>
+│       ├── 02-design/              <span class="comment"># erd.md, api.md, screens.md, rtm.md</span>
+│       │   └── wireframes/         <span class="comment"># index.html + SCR-*.html</span>
+│       ├── 03-dev/                 <span class="comment"># code.md</span>
+│       └── 04-check/              <span class="comment"># test-cases.md, test-report.md</span>
+├── <span class="cmd">out/</span>                             <span class="comment"># HTML 생성물 (browse/, reports/)</span>
+└── <span class="cmd">.state/</span>                          <span class="comment"># 런타임 (sessions/, loop-state.json)</span></div>
+
+      <!-- 11. HOOKS -->
+      <div class="section-divider" id="hooks"><h2>11. Hooks &amp; Guardrails (8)</h2></div>
+      <p class="section-desc">모든 Hook은 <code>PostToolUse(Write)</code> 이벤트에 바인딩되어 파일 쓰기 후 자동 실행됩니다.</p>
+      <div class="data-table-wrap">
+        <table class="data-table">
+          <thead><tr><th>Script</th><th>동작</th></tr></thead>
+          <tbody>
+            <tr><td class="col-abbr">on-input-added.js</td><td class="col-desc">_input/ 파일 감지 &rarr; /u-ingest 제안</td></tr>
+            <tr><td class="col-abbr">on-doc-change.js</td><td class="col-desc">_links.json 기반 cascade impact 알림</td></tr>
+            <tr><td class="col-abbr">on-classified-validated.js</td><td class="col-desc">_classified/ 항목 validated &rarr; 다음 단계 제안</td></tr>
+            <tr><td class="col-abbr">on-session-wrap.js</td><td class="col-desc">세션 완료 &rarr; _classified 적재 알림</td></tr>
+            <tr><td class="col-abbr">on-build-complete.js</td><td class="col-desc">빌드 완료 감지 &rarr; /u-qa 제안</td></tr>
+            <tr><td class="col-abbr">on-check-fail.js</td><td class="col-desc">테스트 실패 감지 &rarr; 백로그 등록 제안</td></tr>
+            <tr><td class="col-abbr">on-gate-pass.js</td><td class="col-desc">Gate 조건 충족 &rarr; phase 전환 제안</td></tr>
+            <tr><td class="col-abbr">on-ship-incomplete.js</td><td class="col-desc">Ship 미완료 항목 &rarr; 다음 iteration 이월 제안</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- 12. SCENARIOS -->
+      <div class="section-divider" id="scenarios"><h2>12. Scenario Guide</h2></div>
+      <div class="feature-cards">
+        <div class="feature-card">
+          <h3>Forward Engineering (새 프로젝트)</h3>
+          <p><code>/u-init</code> &rarr; _dropzone/에 파일 드롭 &rarr; <code>/u-ingest</code> &rarr; <code>/u-plan</code> &rarr; <code>/u-gate</code> &rarr; <code>/u-design</code> &rarr; <code>/u-gate</code> &rarr; <code>/u-dev</code> &rarr; <code>/u-gate</code> &rarr; <code>/u-qa</code> &rarr; <code>/u-ship</code></p>
+        </div>
+        <div class="feature-card green">
+          <h3>Reverse Engineering (기존 프로젝트)</h3>
+          <p><code>/u-init</code> &rarr; <code>/u-reverse</code> &rarr; <code>/u-sync</code> &rarr; <code>/u-doc srs --edit</code> &rarr; <code>/u-qa</code></p>
+        </div>
+        <div class="feature-card yellow">
+          <h3>요구사항 변경</h3>
+          <p><code>/u-add fr "..."</code> &rarr; <code>/u-update srs --cascade</code> &rarr; <code>/u-status</code> (impact flags 확인)</p>
+        </div>
+        <div class="feature-card purple">
+          <h3>무인 자동 실행</h3>
+          <p><code>/u-loop [app]</code> &mdash; ingest &rarr; plan &rarr; design &rarr; dev &rarr; qa 전체 파이프라인을 한 번에 실행.</p>
+        </div>
+      </div>
+
+      <!-- Workflow diagram -->
+      <div class="diagram-wrap">
+        <svg width="780" height="300" viewBox="0 0 780 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <marker id="aw2" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="#fff"/></marker>
+            <marker id="aB4" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="#4f8cff"/></marker>
+            <marker id="aG4" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="#22c55e"/></marker>
+            <marker id="aP4" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="#8b5cf6"/></marker>
+          </defs>
+
+          <text x="390" y="18" text-anchor="middle" fill="#1e2432" font-size="13" font-weight="700" font-family="Pretendard,sans-serif">Forward Engineering Workflow</text>
+
+          <rect x="20" y="40" width="90" height="50" rx="10" fill="#4f8cff"/>
+          <text x="65" y="62" text-anchor="middle" fill="#fff" font-size="10" font-weight="700" font-family="Pretendard,sans-serif">/u-init</text>
+          <text x="65" y="77" text-anchor="middle" fill="rgba(255,255,255,.7)" font-size="8" font-family="Pretendard,sans-serif">초기화</text>
+
+          <rect x="130" y="40" width="90" height="50" rx="10" fill="#4f8cff"/>
+          <text x="175" y="62" text-anchor="middle" fill="#fff" font-size="10" font-weight="700" font-family="Pretendard,sans-serif">/u-ingest</text>
+          <text x="175" y="77" text-anchor="middle" fill="rgba(255,255,255,.7)" font-size="8" font-family="Pretendard,sans-serif">분석</text>
+
+          <rect x="240" y="40" width="90" height="50" rx="10" fill="#4f8cff"/>
+          <text x="285" y="62" text-anchor="middle" fill="#fff" font-size="10" font-weight="700" font-family="Pretendard,sans-serif">/u-plan</text>
+          <text x="285" y="77" text-anchor="middle" fill="rgba(255,255,255,.7)" font-size="8" font-family="Pretendard,sans-serif">기획</text>
+
+          <rect x="350" y="40" width="90" height="50" rx="10" fill="#6366f1"/>
+          <text x="395" y="62" text-anchor="middle" fill="#fff" font-size="10" font-weight="700" font-family="Pretendard,sans-serif">/u-design</text>
+          <text x="395" y="77" text-anchor="middle" fill="rgba(255,255,255,.7)" font-size="8" font-family="Pretendard,sans-serif">설계</text>
+
+          <rect x="460" y="40" width="90" height="50" rx="10" fill="#22c55e"/>
+          <text x="505" y="62" text-anchor="middle" fill="#fff" font-size="10" font-weight="700" font-family="Pretendard,sans-serif">/u-dev</text>
+          <text x="505" y="77" text-anchor="middle" fill="rgba(255,255,255,.7)" font-size="8" font-family="Pretendard,sans-serif">구현</text>
+
+          <rect x="570" y="40" width="90" height="50" rx="10" fill="#f59e0b"/>
+          <text x="615" y="62" text-anchor="middle" fill="#fff" font-size="10" font-weight="700" font-family="Pretendard,sans-serif">/u-qa</text>
+          <text x="615" y="77" text-anchor="middle" fill="rgba(255,255,255,.7)" font-size="8" font-family="Pretendard,sans-serif">검증</text>
+
+          <rect x="680" y="40" width="90" height="50" rx="10" fill="#ef4444"/>
+          <text x="725" y="62" text-anchor="middle" fill="#fff" font-size="10" font-weight="700" font-family="Pretendard,sans-serif">/u-ship</text>
+          <text x="725" y="77" text-anchor="middle" fill="rgba(255,255,255,.7)" font-size="8" font-family="Pretendard,sans-serif">배포</text>
+
+          <path d="M 110 65 C 118 65, 122 65, 130 65" stroke="#fff" stroke-width="1.5" fill="none" marker-end="url(#aw2)"/>
+          <path d="M 220 65 C 228 65, 232 65, 240 65" stroke="#fff" stroke-width="1.5" fill="none" marker-end="url(#aw2)"/>
+          <path d="M 330 65 C 338 65, 342 65, 350 65" stroke="#fff" stroke-width="1.5" fill="none" marker-end="url(#aw2)"/>
+          <path d="M 440 65 C 448 65, 452 65, 460 65" stroke="#fff" stroke-width="1.5" fill="none" marker-end="url(#aw2)"/>
+          <path d="M 550 65 C 558 65, 562 65, 570 65" stroke="#fff" stroke-width="1.5" fill="none" marker-end="url(#aw2)"/>
+          <path d="M 660 65 C 668 65, 672 65, 680 65" stroke="#fff" stroke-width="1.5" fill="none" marker-end="url(#aw2)"/>
+
+          <!-- Gate checkpoints -->
+          <circle cx="335" cy="115" r="14" fill="#fff" stroke="#4f8cff" stroke-width="2"/>
+          <text x="335" y="119" text-anchor="middle" fill="#4f8cff" font-size="9" font-weight="800" font-family="Pretendard,sans-serif">G</text>
+          <path d="M 335 90 L 335 101" stroke="#4f8cff" stroke-width="1.5" fill="none" marker-end="url(#aB4)"/>
+
+          <circle cx="445" cy="115" r="14" fill="#fff" stroke="#22c55e" stroke-width="2"/>
+          <text x="445" y="119" text-anchor="middle" fill="#22c55e" font-size="9" font-weight="800" font-family="Pretendard,sans-serif">G</text>
+          <path d="M 445 90 L 445 101" stroke="#22c55e" stroke-width="1.5" fill="none" marker-end="url(#aG4)"/>
+
+          <circle cx="555" cy="115" r="14" fill="#fff" stroke="#f59e0b" stroke-width="2"/>
+          <text x="555" y="119" text-anchor="middle" fill="#f59e0b" font-size="9" font-weight="800" font-family="Pretendard,sans-serif">G</text>
+          <path d="M 555 90 L 555 101" stroke="#f59e0b" stroke-width="1.5" fill="none"/>
+
+          <text x="335" y="145" text-anchor="middle" fill="#5a6376" font-size="8" font-family="Pretendard,sans-serif">/u-gate</text>
+          <text x="445" y="145" text-anchor="middle" fill="#5a6376" font-size="8" font-family="Pretendard,sans-serif">/u-gate</text>
+          <text x="555" y="145" text-anchor="middle" fill="#5a6376" font-size="8" font-family="Pretendard,sans-serif">/u-gate</text>
+
+          <!-- Data flow -->
+          <text x="390" y="180" text-anchor="middle" fill="#1e2432" font-size="13" font-weight="700" font-family="Pretendard,sans-serif">Data Flow</text>
+
+          <rect x="30" y="198" width="140" height="35" rx="8" fill="#eaf1ff" stroke="#4f8cff" stroke-width="1"/>
+          <text x="100" y="220" text-anchor="middle" fill="#4f8cff" font-size="11" font-weight="600" font-family="Pretendard,sans-serif">_dropzone/ (files)</text>
+
+          <rect x="210" y="198" width="120" height="35" rx="8" fill="#eaf1ff" stroke="#4f8cff" stroke-width="1"/>
+          <text x="270" y="220" text-anchor="middle" fill="#4f8cff" font-size="11" font-weight="600" font-family="Pretendard,sans-serif">_input/ (raw)</text>
+
+          <rect x="370" y="198" width="140" height="35" rx="8" fill="#ecfdf5" stroke="#22c55e" stroke-width="1"/>
+          <text x="440" y="220" text-anchor="middle" fill="#22c55e" font-size="11" font-weight="600" font-family="Pretendard,sans-serif">_classified/ (JSON)</text>
+
+          <rect x="550" y="198" width="200" height="35" rx="8" fill="#f5f3ff" stroke="#8b5cf6" stroke-width="1"/>
+          <text x="650" y="220" text-anchor="middle" fill="#8b5cf6" font-size="11" font-weight="600" font-family="Pretendard,sans-serif">docs/ (.md + .json + .html)</text>
+
+          <path d="M 170 216 C 185 216, 195 216, 210 216" stroke="#4f8cff" stroke-width="1.5" fill="none" marker-end="url(#aB4)"/>
+          <path d="M 330 216 C 345 216, 355 216, 370 216" stroke="#22c55e" stroke-width="1.5" fill="none" marker-end="url(#aG4)"/>
+          <path d="M 510 216 C 525 216, 535 216, 550 216" stroke="#8b5cf6" stroke-width="1.5" fill="none" marker-end="url(#aP4)"/>
+
+          <rect x="220" y="260" width="340" height="30" rx="8" fill="#fff" stroke="#e2e5ea" stroke-width="1"/>
+          <text x="390" y="280" text-anchor="middle" fill="#5a6376" font-size="11" font-weight="600" font-family="Pretendard,sans-serif">Auto-Cascade: SRS &rarr; ERD [MUST-UPDATE] &rarr; Screen &rarr; TC [REVIEW]</text>
+        </svg>
+        <div class="diagram-caption">Forward Engineering Workflow + Gate Checkpoints + Data Flow</div>
+      </div>
+
+      <!-- 13. INSTALL -->
+      <div class="section-divider" id="install"><h2>13. Prerequisites &amp; Install</h2></div>
+      <div class="feature-cards">
+        <div class="feature-card">
+          <h3>macOS / Linux</h3>
+          <div class="code-block" style="margin-top:10px"><span class="cmd">curl</span> <span class="flag">-fsSL</span> https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/install.sh | <span class="cmd">bash</span></div>
+        </div>
+        <div class="feature-card">
+          <h3>Windows (CMD / PowerShell)</h3>
+          <div class="code-block" style="margin-top:10px"><span class="cmd">powershell</span> <span class="flag">-NoProfile -ExecutionPolicy Bypass</span> -Command <span class="flag">"irm https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/install.ps1 | iex"</span></div>
+        </div>
+        <div class="feature-card green">
+          <h3>Update</h3>
+          <div class="code-block" style="margin-top:10px"><span class="cmd">curl</span> <span class="flag">-fsSL</span> https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/update.sh | <span class="cmd">bash</span></div>
+        </div>
+      </div>
+      <div class="annotation"><strong>Note:</strong> 설치/업데이트 후 반드시 Claude Code를 재시작해주세요.</div>
+
+      <div class="report-footer">U-MAKER Plugin v3.1.2 &middot; GPL-3.0 &middot; Copyright &copy; 2026 U PLEAT</div>
+    </div>
+  </div>
+</div>
+
+<button class="scroll-top" id="scrollTopBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})">&uarr;</button>
+<script>
+  const scrollBtn=document.getElementById('scrollTopBtn');
+  window.addEventListener('scroll',()=>{scrollBtn.classList.toggle('visible',window.scrollY>400)});
+  const sections=document.querySelectorAll('.section-divider[id]');
+  const navLinks=document.querySelectorAll('.sidebar-nav a');
+  function updateActiveNav(){let c='';sections.forEach(s=>{if(s.getBoundingClientRect().top<=120)c=s.id});navLinks.forEach(l=>{l.classList.remove('active');if(l.getAttribute('href')==='#'+c)l.classList.add('active')})}
+  window.addEventListener('scroll',updateActiveNav);
+  window.addEventListener('load',updateActiveNav);
+</script>
+</body>
+</html>
