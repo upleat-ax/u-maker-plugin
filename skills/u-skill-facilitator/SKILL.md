@@ -16,7 +16,7 @@ description: "/u-discuss 세션을 관리하고, 마이크로 커맨드 파싱, 
 | Type | Purpose | Default Participants | Phase Model |
 |------|---------|---------------------|-------------|
 | `brainstorm` | 발산적 아이디어 | planner, sa, ux | Single (diverge) |
-| `review` | 수렴적 평가 | Owner + guardian | Single (evaluate) |
+| `review` | 수렴적 평가 | Owner + gatekeeper | Single (evaluate) |
 | `decision` | 트레이드오프+결정 | All | Single (decide) |
 | `workshop` | 복합 다단계 | All | 4-Phase (diverge→group→prioritize→decide) |
 | `retro` | KPT 회고 | All | 3-Phase (collect→analyze→action) |
@@ -25,7 +25,7 @@ description: "/u-discuss 세션을 관리하고, 마이크로 커맨드 파싱, 
 
 ## 2. Session Creation
 
-`DS-{NNN}` ID 생성 (`_sessions/_counter.json`) → 참여 에이전트 결정 → 컨텍스트 로드 → `_sessions/DS-{NNN}.json` 생성
+`DS-{NNN}` ID 생성 (`.state/sessions/_counter.json`) → 참여 에이전트 결정 → 컨텍스트 로드 → `.state/sessions/DS-{NNN}.json` 생성
 
 **세션 구조:** `{ id, type, topic, scope, status, startedAt, participants, context, currentPhase, transcript[], tags: { idea, decide, concern, action }, checkpoints[] }`
 
@@ -33,7 +33,7 @@ description: "/u-discuss 세션을 관리하고, 마이크로 커맨드 파싱, 
 
 ## 3. Micro-Command Parsing
 
-### Agent Opinion: `@planner`, `@builder`, `@guardian`, `@orchestrator`, `@all` + question
+### Agent Opinion: `@planner`, `@builder`, `@gatekeeper`, `@orchestrator`, `@all` + question
 
 에이전트 역할 관점 응답 → transcript에 기록
 
@@ -41,10 +41,10 @@ description: "/u-discuss 세션을 관리하고, 마이크로 커맨드 파싱, 
 
 | Pattern | Tag | Wrap Destination |
 |---------|-----|-----------------|
-| `/idea "..."` | idea | `_classified/requirements/` |
-| `/decide "..."` | decide | `_classified/decisions/` |
-| `/concern "..."` | concern | `_classified/constraints/` or `questions/` |
-| `/action "..."` | action | `_backlog/` |
+| `/idea "..."` | idea | `data/classified/requirements/` |
+| `/decide "..."` | decide | `data/classified/decisions/` |
+| `/concern "..."` | concern | `data/classified/constraints/` or `questions/` |
+| `/action "..."` | action | `data/backlog/` |
 
 ### Session Control: `/next-phase`, `/pause`, `/resume`, `/wrap`, `/transcript`, `/summary`
 
@@ -78,7 +78,7 @@ Diverge → Group → Prioritize → Decide (순방향만)
 
 1. **태그 항목 분류:** idea→requirements(extracted), decide→decisions, concern→constraints/questions, action→backlog(improvement)
 2. **Source metadata 부착:** `{ session, type, topic, taggedAt }`
-3. **인덱스 갱신:** `_classified/` 및 `_backlog/_index.json`
+3. **인덱스 갱신:** `data/classified/` 및 `data/backlog/_index.json`
 4. **아카이브:** status→archived, transcript 보존
 
 ---
@@ -92,7 +92,7 @@ Entry types: user-input, agent-opinion, tag, phase-transition, system. Append-on
 ## 8. Safety Rules
 
 1. 동시 활성 세션 최대 3개
-2. 세션 데이터 항상 `_sessions/`에 파일 저장 (메모리 유실 방지)
+2. 세션 데이터 항상 `.state/sessions/`에 파일 저장 (메모리 유실 방지)
 3. `/wrap` 전까지 SSoT 직접 수정 금지 (태그로만 수집)
 4. brainstorm 비판 감지 시 리다이렉트, decision FDE 결정 없이 종료 불가
 5. retro는 iteration 데이터 없이 진행 불가

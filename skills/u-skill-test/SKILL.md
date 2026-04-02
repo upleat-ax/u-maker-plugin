@@ -7,7 +7,7 @@ description: "SRS Feature(FT) 기반 테스트 케이스 생성, 테스트 실�
 
 SRS Feature(FT) + Screen 기반 TC 자동 생성 → Vitest/Playwright 실행 → 결함 분류 → 리포트 생성 → 백로그 등록.
 
-**Owner Agent:** u-agent-guardian
+**Owner Agent:** u-agent-gatekeeper
 
 ---
 

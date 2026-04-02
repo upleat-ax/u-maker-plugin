@@ -131,7 +131,7 @@ auto-generated → pending-review → approved | rejected
 2. status → `approved`
 3. `reviewedAt` → 현재 시각
 4. `reviewedBy` → "FDE" (사용자)
-5. `_assumptions/_index.json` 갱신
+5. `data/assumptions/_index.json` 갱신
 
 **영향 처리:**
 - impact 목록의 classified 항목: status 유지 (이미 반영됨)
@@ -259,7 +259,7 @@ No cascade needed (assumption confirmed as-is).
 | planner | 8 | 2 | 5 | 1 |
 | sa | 5 | 1 | 4 | 0 |
 | builder | 3 | 1 | 1 | 1 |
-| guardian | 2 | 0 | 2 | 0 |
+| gatekeeper | 2 | 0 | 2 | 0 |
 ```
 
 ---
@@ -283,5 +283,5 @@ No cascade needed (assumption confirmed as-is).
 4. cascade 중 실제 문서 수정은 자동 수행하지 않음 (Flag만 설정)
 5. `--all` 일괄 승인은 반드시 사용자 확인 필수 (Always-Pause)
 6. 가정 ID 재사용 금지 (삭제된 ID도 재할당 없음)
-7. `_assumptions/_index.json` 갱신 필수
+7. `data/assumptions/_index.json` 갱신 필수
 8. maxAssumptions 한도 초과 시 에이전트 자동 진행 차단

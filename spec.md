@@ -16,7 +16,7 @@ u-maker는 엔터프라이즈급 소프트웨어 프로젝트를 PDCA(Plan-Desig
 | **Intent-driven** | FDE(Full-stack Design Engineer)는 `/u-plan retail` 한 번으로 SRS + IA + Roadmap이 연쇄 생성된다. "무슨 문서?"가 아니라 "뭘 하고 싶어?" |
 | **3-layer pipeline** | `_input/`(raw) → `_classified/`(정제) → `docs/`(산출물). raw→산출물 직행 시 LLM context window 한계로 데이터 loss 방지 |
 | **Auto-cascade** | SRS가 바뀌면 RTM/Screen/TestCase에 impact flag 자동 전파 |
-| **4 Agents** | Orchestrator(두뇌) + Planner(분석+설계) + Builder(구현) + Guardian(검증). FDE가 기억할 건 orchestrator 뿐 |
+| **4 Agents** | Orchestrator(두뇌) + Planner(분석+설계) + Builder(구현) + Gatekeeper(검증). FDE가 기억할 건 orchestrator 뿐 |
 | **Engine skills** | 문서별 skill 대신 횡단 엔진: doc-engine, dep-engine, diff-engine, code-engine |
 | **Auto-phase** | 산출물 상태(Draft/Review/Final)로 현재 phase 자동 판정. Gate도 자동 트리거 |
 | **Monorepo mirroring** | monorepo의 apps/ 구조를 `.u-maker/apps/`가 1:1 미러링. 앱별 독립 PDCA |
@@ -47,7 +47,7 @@ Plan → Design → Do → Check → Act
 - 사용자 정의, 도메인 정의, 요구사항 정의, IA 설계
 
 **산출물:** SRS, FR/NR, US/FT, IA, Roadmap, Wireframe
-**담당:** u-agent-orchestrator → u-agent-planner → u-agent-guardian(auto-validate)
+**담당:** u-agent-orchestrator → u-agent-planner → u-agent-gatekeeper(auto-validate)
 
 #### 02 Design
 
@@ -55,7 +55,7 @@ Plan → Design → Do → Check → Act
 - System design: ERD, API Contract, RTM(추적 매트릭스)
 
 **산출물:** UXGuide, Screen, ScreenFlow, DesignToken, ERD, API, RTM
-**담당:** u-agent-planner, u-agent-guardian(consistency)
+**담당:** u-agent-planner, u-agent-gatekeeper(consistency)
 
 #### 03 Do (Dev)
 
@@ -71,7 +71,7 @@ Plan → Design → Do → Check → Act
 
 **산출물:** TestCase, TestReport
 **종료조건:** Critical/Major 결함 0건, 모든 FR 구현 완료, build success
-**담당:** u-agent-guardian
+**담당:** u-agent-gatekeeper
 
 #### 05 Act
 
@@ -79,16 +79,16 @@ Plan → Design → Do → Check → Act
 - 분기: Pass → Complete / Fail → Plan으로 회귀 (다음 iteration)
 
 **산출물:** IterationLog, Retrospective, DailyReport
-**담당:** u-agent-orchestrator, u-agent-guardian
+**담당:** u-agent-orchestrator, u-agent-gatekeeper
 
 ### Phase Gates
 
 | Gate | 조건 | Validator |
 |------|------|-----------|
-| plan → design | SRS Final + IA Final + Roadmap approved | u-agent-guardian |
-| design → do | ERD + RTM + Screen + API Final & consistency review | u-agent-guardian |
-| do → check | Code complete + build success | u-agent-guardian |
-| check → complete | Critical/Major 0건, all FR implemented, build success | u-agent-guardian |
+| plan → design | SRS Final + IA Final + Roadmap approved | u-agent-gatekeeper |
+| design → do | ERD + RTM + Screen + API Final & consistency review | u-agent-gatekeeper |
+| do → check | Code complete + build success | u-agent-gatekeeper |
+| check → complete | Critical/Major 0건, all FR implemented, build success | u-agent-gatekeeper |
 | check → act | check-to-complete 실패 시 | u-agent-orchestrator |
 | act → plan | Retrospective complete + archive complete | u-agent-orchestrator |
 
@@ -200,7 +200,7 @@ classified 데이터를 조합하여 생성. 각 항목에 출처 링크 보존.
 
 **활동 Phase:** Do
 
-### u-agent-guardian
+### u-agent-gatekeeper
 
 **역할:** Validation + QA + Delivery (검증 통합)
 
@@ -240,7 +240,7 @@ classified 데이터를 조합하여 생성. 각 항목에 출처 링크 보존.
 | engine-designer | IA/Screen/Flow/ERD/API 통합 설계. engine-doc의 쓰기 호출 |
 | engine-estimator | SRS 항목 수 + 복잡도 → 일정/공수 자동 산정 |
 
-### Execution Engines (builder + guardian 소속)
+### Execution Engines (builder + gatekeeper 소속)
 
 | Skill | 역할 |
 |-------|------|
@@ -414,7 +414,7 @@ FDE의 암묵지 + Agent의 분석력을 세션 안에서 결합. 세션 결과�
 |---------|------|
 | `@planner` | planner에게 직접 질문/의견 요청 |
 | `@builder` | builder에게 기술적 판단 요청 |
-| `@guardian` | guardian에게 검증/리스크 의견 요청 |
+| `@gatekeeper` | gatekeeper에게 검증/리스크 의견 요청 |
 | `@all` | 모든 agent에게 의견 요청 (라운드 로빈) |
 | `/idea [text]` | 아이디어 태깅 |
 | `/decide [text]` | 결정사항 기록. 근거 필수. |
@@ -608,7 +608,7 @@ FDE의 암묵지 + Agent의 분석력을 세션 안에서 결합. 세션 결과�
 │   ├── u-agent-orchestrator/AGENT.md
 │   ├── u-agent-planner/AGENT.md
 │   ├── u-agent-builder/AGENT.md
-│   └── u-agent-guardian/AGENT.md
+│   └── u-agent-gatekeeper/AGENT.md
 │
 └── hooks/                            # 이벤트 훅
     ├── on-input-added.sh             # _input 파일 추가 → ingest 제안
@@ -791,7 +791,7 @@ FDE의 암묵지 + Agent의 분석력을 세션 안에서 결합. 세션 결과�
 ### 우선순위
 
 1단계 (MVP): `/u-init`, `/u-ingest`, `/u-plan`, `/u-status`, `/u-doc` + orchestrator + planner + doc-engine + analyzer
-2단계: `/u-design`, `/u-dev`, `/u-gate`, `/u-sync` + builder + guardian + validator + code-engine
+2단계: `/u-design`, `/u-dev`, `/u-gate`, `/u-sync` + builder + gatekeeper + validator + code-engine
 3단계: `/u-discuss`, `/u-qa`, `/u-ship`, `/u-assume` + facilitator + test-engine + workflow-runner
 4단계: `/u-coverage`, `/u-trace`, `/u-add`, `/u-update` + dep-engine + diff-engine + estimator
 

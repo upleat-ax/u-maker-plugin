@@ -12,7 +12,7 @@ triggers:
 
 `/u-sync [scope] [--fix] [--rule N]` 명령으로 SSoT 문서 전체의 교차 일관성을 검증하고, 불일치 항목에 대해 수정 제안을 생성한다.
 
-**Primary Agent:** u-agent-guardian (engine-validator, engine-dep 사용)
+**Primary Agent:** u-agent-gatekeeper (engine-validator, engine-dep 사용)
 
 ---
 
@@ -34,10 +34,10 @@ triggers:
 1. `u-maker.config.json` 읽어 scope 해석
 2. `docs/{app}/_index.json` 읽기 → 등록된 전체 문서 목록
 3. 각 문서의 `.md` + `.json` 파일 로드
-4. `_classified/_summary.json` 로드
-5. `_backlog/_index.json` 로드
-6. `.u-maker/_links.json` 로드
-7. `_assumptions/_index.json` 로드
+4. `data/classified/_summary.json` 로드
+5. `data/backlog/_index.json` 로드
+6. `.u-maker/data/links.json` 로드
+7. `data/assumptions/_index.json` 로드
 
 ### Step 2: Execute 13 Validation Rules
 
@@ -94,9 +94,9 @@ triggers:
 - 파일 있지만 인덱스에 없음 → 미등록 파일
 - **자동 수정 가능:** 고스트 제거 + 미등록 추가 (`--fix` 시)
 
-#### C-08: _links.json references are valid
+#### C-08: data/links.json references are valid
 
-- `_links.json`의 모든 `from`/`to` 참조가 실제 존재하는 문서인지 확인
+- `data/links.json`의 모든 `from`/`to` 참조가 실제 존재하는 문서인지 확인
 - 삭제/이동된 문서에 대한 dangling reference 탐지
 - **자동 수정 가능:** dangling reference 제거 (`--fix` 시)
 
@@ -122,14 +122,14 @@ triggers:
 
 #### C-12: No orphaned classified items
 
-- `_classified/` 각 카테고리의 항목 중 status = `validated` 이상인데 어떤 문서에도 `adopted`로 표시되지 않은 항목
+- `data/classified/` 각 카테고리의 항목 중 status = `validated` 이상인데 어떤 문서에도 `adopted`로 표시되지 않은 항목
 - 장기간 미채택 항목은 잠재적 누락
 - **위반:** {category}/{id}가 validated 상태이나 미채택 (30일 이상)
 - **수정 제안:** "/u-plan으로 재생성하거나 수동으로 채택하세요"
 
 #### C-13: Backlog items have valid source references
 
-- `_backlog/_index.json`의 각 항목 `source.ref` 확인
+- `data/backlog/_index.json`의 각 항목 `source.ref` 확인
 - 참조 대상(FR, US, FT, TC, DEF)이 실제 존재하는지 검증
 - **위반:** BL-{id}의 source ref "{ref}"가 존재하지 않음
 - **자동 수정 가능:** source.ref 클리어 + source.type → "orphaned" (`--fix` 시)
@@ -250,5 +250,5 @@ triggers:
 4. 동시에 여러 앱을 검증할 수 있음 (scope = all)
 5. 결과는 항상 사용자에게 표시 (auto mode에서도 생략 불가)
 6. `.json` 재생성 시 기존 `.json`의 커스텀 필드 보존
-7. `_index.json`, `_links.json` 갱신 필수
+7. `_index.json`, `data/links.json` 갱신 필수
 8. Phase gate 판정은 Error severity 기준 (Warning/Info는 비차단)

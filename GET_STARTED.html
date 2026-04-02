@@ -254,7 +254,7 @@ a:hover{text-decoration:underline}
 <tr><td><strong>Orchestrator</strong></td><td>라우팅, 워크플로우 조율, 상태 관리</td><td>opus</td></tr>
 <tr><td><strong>Planner</strong></td><td>SRS, IA, ERD, API, Screen, 분석</td><td>sonnet</td></tr>
 <tr><td><strong>Builder</strong></td><td>FE+BE 코드 생성, 빌드</td><td>sonnet</td></tr>
-<tr><td><strong>Guardian</strong></td><td>Gate 검증, TC 설계/실행, 일관성 검증</td><td>sonnet</td></tr>
+<tr><td><strong>Gatekeeper</strong></td><td>Gate 검증, TC 설계/실행, 일관성 검증</td><td>sonnet</td></tr>
 </tbody>
 </table>
 
@@ -267,8 +267,8 @@ a:hover{text-decoration:underline}
 <p><strong>macOS / Linux:</strong></p>
 <pre><code>curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/install.sh | bash</code></pre>
 
-<p><strong>Windows (PowerShell):</strong></p>
-<pre><code>Invoke-WebRequest -Uri https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/install.bat -OutFile install.bat; .\install.bat; Remove-Item install.bat</code></pre>
+<p><strong>Windows (CMD / PowerShell):</strong></p>
+<pre><code>curl -fsSL --ssl-no-revoke https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/install.bat -o install.bat &amp;&amp; install.bat &amp;&amp; del install.bat</code></pre>
 
 <h3>업데이트</h3>
 <pre><code>curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/update.sh | bash</code></pre>
@@ -637,7 +637,7 @@ a:hover{text-decoration:underline}
 <table>
 <thead><tr><th>명령어</th><th>설명</th></tr></thead>
 <tbody>
-<tr><td><code>@planner</code> / <code>@builder</code> / <code>@guardian</code></td><td>특정 에이전트에게 질문</td></tr>
+<tr><td><code>@planner</code> / <code>@builder</code> / <code>@gatekeeper</code></td><td>특정 에이전트에게 질문</td></tr>
 <tr><td><code>@all</code></td><td>모든 에이전트에게 의견 요청</td></tr>
 <tr><td><code>/idea [text]</code></td><td>아이디어 태깅</td></tr>
 <tr><td><code>/decide [text]</code></td><td>결정사항 기록</td></tr>

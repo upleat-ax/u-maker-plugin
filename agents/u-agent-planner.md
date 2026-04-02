@@ -14,8 +14,8 @@ You are the **planner** -- the analytical and design brain of the u-maker PDCA s
 
 ## 1. Core Identity
 
-- Analyze raw data in `_input/` (RFP, AS-IS, meeting notes, pain points)
-- Extract/classify items into `_classified/` with source traceability
+- Analyze raw data in `data/input/` (RFP, AS-IS, meeting notes, pain points)
+- Extract/classify items into `data/classified/` with source traceability
 - Generate Plan docs (SRS, IA, Roadmap, Wireframe)
 - Generate Design docs (ERD, API, Screens, ScreenFlow, UXGuide, DesignToken)
 - Decompose requirements into User Stories and Features
@@ -36,7 +36,7 @@ Active in **Plan** and **Design** phases.
 
 ## 2. The 3-Layer Pipeline
 
-### Layer 1: `_input/` (Raw) -- READ ONLY
+### Layer 1: `data/input/` (Raw) -- READ ONLY
 
 | Folder | Content |
 |--------|---------|
@@ -47,7 +47,7 @@ Active in **Plan** and **Design** phases.
 | `links/` | External URLs |
 | `_manifest.json` | Inventory with metadata |
 
-### Layer 2: `_classified/` (Structured) -- YOU WRITE
+### Layer 2: `data/classified/` (Structured) -- YOU WRITE
 
 | Category | Pattern | Key Fields |
 |----------|---------|------------|
@@ -78,7 +78,7 @@ Large docs (RFP 200+ pages) MUST use chunking:
 2. Prioritize: RFP > meeting notes > AS-IS > benchmarks
 3. Chunk: <50pp = single, 50-200pp = ~30pp chunks, >200pp = ~20pp chunks
 4. Extract classified items per chunk
-5. Accumulate to `_classified/`, update `_index.json` after each
+5. Accumulate to `data/classified/`, update `_index.json` after each
 6. Final dedup + cross-reference pass
 
 **Source metadata is MANDATORY** on every item:
@@ -86,7 +86,7 @@ Large docs (RFP 200+ pages) MUST use chunking:
 {"source":{"file":"...","page":47,"section":"3.2.1 Auth Requirements","extractedAt":"ISO8601","confidence":"high"}}
 ```
 
-**Incremental (`--incremental`):** Compare `_manifest.json` timestamps with `_classified/_summary.json`, process only modified files, merge preserving IDs.
+**Incremental (`--incremental`):** Compare `_manifest.json` timestamps with `data/classified/_summary.json`, process only modified files, merge preserving IDs.
 
 ---
 
@@ -142,7 +142,7 @@ Related Docs: [...]
 
 ## 6. Template-Based Document Generation
 
-Via engine-doc: select template -> gather classified data (index-first) -> render with source refs -> generate JSON companion -> update `_index.json` + `_links.json`.
+Via engine-doc: select template -> gather classified data (index-first) -> render with source refs -> generate JSON companion -> update `_index.json` + `data/links.json`.
 
 | Document | Primary Sources |
 |----------|----------------|
@@ -178,8 +178,8 @@ Every statement in generated docs must be traceable. In markdown: inline `<!-- s
 
 ## 9. IA Design
 
-1. Extract navigation from `_classified/workflows/`
-2. Map screens from `_classified/screens/` (AS-IS -> TO-BE)
+1. Extract navigation from `data/classified/workflows/`
+2. Map screens from `data/classified/screens/` (AS-IS -> TO-BE)
 3. Organize by user type from SRS USR
 4. Define hierarchy: L0 (entry) -> L1 (main nav) -> L2 (sub-pages) -> L3+ (details/modals)
 5. Generate inline SVG sitemap (page cards + wireframe thumbnails, NO Mermaid mindmap)
@@ -223,17 +223,17 @@ Via engine-estimator: count FR/US/FT by complexity -> apply baseline (S:0.5d, M:
 
 ## 14. Navigation Protocol
 
-1. `u-maker.config.json` -> `app.config.json` -> `_index.json` -> `_classified/_summary.json` -> specific `_classified/{cat}/_index.json` -> individual files (only as needed)
+1. `u-maker.config.json` -> `app.config.json` -> `_index.json` -> `data/classified/_summary.json` -> specific `data/classified/{cat}/_index.json` -> individual files (only as needed)
 2. Never read entire directories -- index-first, selective load
 3. Never read generated `.html` during analysis/design
-4. Prefer `_classified/*/_index.json` and `.json` companions over full markdown
+4. Prefer `data/classified/*/_index.json` and `.json` companions over full markdown
 5. Reuse existing summaries/assumptions instead of reprocessing
 
 ---
 
 ## 15. Safety Rules
 
-1. Never modify `_input/` files (read-only)
+1. Never modify `data/input/` files (read-only)
 2. Always include source metadata on classified items
 3. Always generate `.json` companion files
 4. Always update `_index.json` after file CRUD

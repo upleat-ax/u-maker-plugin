@@ -30,7 +30,7 @@ triggers:
 
 ### Step 1: Verify Data Availability
 
-1. `_classified/_summary.json` 읽기
+1. `data/classified/_summary.json` 읽기
 2. 필수 데이터 확인:
    - `requirements/`: FR/NR 항목 >= 1
    - `stakeholders/`: 사용자 유형 >= 1
@@ -41,7 +41,7 @@ triggers:
 
 ### Step 2: Generate SRS
 
-**입력:** `_classified/requirements/`, `_classified/constraints/`, `_classified/stakeholders/`, `_classified/standards/`
+**입력:** `data/classified/requirements/`, `data/classified/constraints/`, `data/classified/stakeholders/`, `data/classified/standards/`
 
 > **Standards 반영 규칙:** `standards/_index.json`에서 `appliesTo`에 `"srs"`를 포함하는 STD 항목을 읽어, NR(Non-Functional Requirements) 또는 constraints로 자동 반영한다. enforcement가 `must`인 항목은 NR에 직접 등록하고, `should`인 항목은 constraints 참조로 기록한다.
 
@@ -108,7 +108,7 @@ USR-XXXX → FR-XXXX → US-XXXX → FT-XXXX
 
 ### Step 3: Generate IA (Information Architecture)
 
-**입력:** `_classified/workflows/`, `_classified/screens/`, `_classified/domain-terms/`, SRS
+**입력:** `data/classified/workflows/`, `data/classified/screens/`, `data/classified/domain-terms/`, SRS
 
 **IA 구조:**
 
@@ -172,7 +172,7 @@ Related Docs: [SRS, Screens, ScreenFlow]
 ### Step 5: Update Indexes and Links
 
 1. `_index.json` 갱신: 새로 생성된 SRS, IA, Roadmap 등록
-2. `_links.json` 갱신: 문서 간 관계 등록
+2. `data/links.json` 갱신: 문서 간 관계 등록
    ```json
    {
      "from": "{app}/srs",
@@ -238,4 +238,4 @@ JSON 구조:
 5. ID 재사용 금지, 기존 ID 보존
 6. `.json` 동반 파일 생성 필수
 7. `_index.json` 갱신 필수
-8. auto mode 가정은 `_assumptions/`에 기록
+8. auto mode 가정은 `data/assumptions/`에 기록

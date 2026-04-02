@@ -22,7 +22,7 @@ description: "자연어 및 /u-* 커맨드에서 의도를 분류하고, 스코�
 | `command` | init, ingest, plan, design, build, check, ship, add, update, ... |
 | `scope` | retail, corp, common, all (앱 이름 또는 예약어) |
 | `target` | srs, erd, FR-0001 (문서/항목) |
-| `flags` | `-i`, `--step`, `--only X`, `--cascade`, `--review` |
+| `flags` | `-i`, `--step`, `--only X`, `--cascade`, `--review`, `--loop` |
 
 ---
 
@@ -38,7 +38,7 @@ description: "자연어 및 /u-* 커맨드에서 의도를 분류하고, 스코�
 | `/u-plan` | planner | doc, estimator | Plan |
 | `/u-design` | planner | designer, doc | Design |
 | `/u-dev` | builder | code | Do |
-| `/u-qa` | guardian | validator, test | Check |
+| `/u-qa` | gatekeeper | validator, test | Check |
 | `/u-ship` | orchestrator | validator, workflow-runner | Act |
 | `/u-loop` | orchestrator | workflow-runner | ALL |
 
@@ -49,15 +49,16 @@ description: "자연어 및 /u-* 커맨드에서 의도를 분류하고, 스코�
 | `/u-add` | planner | doc |
 | `/u-update` | planner | doc, dep |
 | `/u-doc` | planner | doc |
-| `/u-sync` | guardian | validator, dep |
+| `/u-sync` | gatekeeper | validator, dep |
 | `/u-gate` | orchestrator | phase-detector, validator |
+| `/u-codereview` | gatekeeper | validator |
 
 ### Observability
 
 | Command | Agent | Engine Skills |
 |---------|-------|--------------|
 | `/u-status` | orchestrator | phase-detector, dep |
-| `/u-coverage` | guardian | validator |
+| `/u-coverage` | gatekeeper | validator |
 | `/u-trace` | orchestrator | dep |
 | `/u-report` | orchestrator | doc |
 
@@ -98,8 +99,13 @@ description: "자연어 및 /u-* 커맨드에서 의도를 분류하고, 스코�
 | `--review` | boolean | false | 사용자 검증 후 반영 |
 | `--incremental` | boolean | false | 변경 파일만 처리 |
 | `--parallel` | boolean | false | all 스코프 병렬 |
+| `--loop` | boolean | false | Quality Loop — 실행 결과를 gatekeeper이 10개 기준으로 평가, 평균 95점 초과까지 고도화 반복 |
+| `--loop-max <n>` | number | 3 | Quality Loop 최대 반복 횟수 (기본 3회) |
+| `--loop-threshold <n>` | number | 95 | Quality Loop 통과 기준 점수 (기본 95점) |
 
 **Mode 우선순위:** `--step` > `-i` > auto(기본)
+
+**`--loop` 동작:** 모든 command/skill에 공통 적용. 실행 agent가 결과를 산출하면 gatekeeper이 10개 품질 기준으로 평가(각 0-100점). 평균 점수가 threshold 이하면 gatekeeper 피드백을 기반으로 고도화된 방법으로 재수행. 평균 > threshold 또는 max 도달 시 종료.
 
 ---
 
@@ -129,6 +135,8 @@ description: "자연어 및 /u-* 커맨드에서 의도를 분류하고, 스코�
 ## 7. Dispatch Protocol
 
 확정된 라우팅 정보를 에이전트에 전달: `{ command, scope, target, flags, mode, resolvedPaths, currentPhase, config }`
+
+`--loop` 플래그 포함 시 추가 전달: `{ loop: { enabled: true, maxIterations: n, threshold: n, currentIteration: 0 } }`
 
 ---
 

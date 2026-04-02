@@ -108,7 +108,7 @@ triggers:
 
 1. 새 BL-ID 생성 (기존 최대 + 1)
 2. 항목 생성 (source.type = "manual")
-3. `_backlog/_index.json` 갱신
+3. `data/backlog/_index.json` 갱신
 4. 확인 메시지 표시
 
 추가 플래그:
@@ -155,7 +155,7 @@ Iteration N에 항목 할당:
    - 수정: 항목 추가/제거 후 재계산
    - 거부: 변경 없음
 
-3. `_backlog/_index.json` 갱신
+3. `data/backlog/_index.json` 갱신
 
 ### prioritize -- Priority Sorting
 
@@ -170,7 +170,7 @@ Iteration N에 항목 할당:
    - **Could:** 있으면 좋은 기능
    - **Won't:** 현 iteration에서 제외
 3. 사용자가 항목별로 확인/변경
-4. 최종 확정 후 `_backlog/_index.json` 갱신
+4. 최종 확정 후 `data/backlog/_index.json` 갱신
 
 ### groom -- Grooming Workshop
 
@@ -184,7 +184,7 @@ Iteration N에 항목 할당:
    - 에이전트가 복잡도 분석 + 유사 항목 비교
    - 피보나치 스케일 제안: 1, 2, 3, 5, 8, 13, 21
    - 사용자 확인/수정
-4. 추정 완료 후 `_backlog/_index.json` 갱신
+4. 추정 완료 후 `data/backlog/_index.json` 갱신
 
 ### move -- Status Change
 
@@ -255,7 +255,7 @@ blocked → (previous status)
 | Test failure → defect | bug | defect | `/u-qa` Step 4 |
 | `/u-discuss` /action 태그 | improvement | discuss | `/u-discuss --wrap` |
 | Retrospective "Try" 항목 | improvement | retro | `/u-ship` Step 4-P |
-| Guardian tech-debt detection | tech-debt | guardian | `/u-dev` Step 9 |
+| Gatekeeper tech-debt detection | tech-debt | gatekeeper | `/u-dev` Step 9 |
 | Gap detector findings | improvement | gap-detector | `/u-skill-gap-detector` |
 
 각 자동 생성 항목에는 `source.ref`로 원본 추적 가능.
@@ -278,6 +278,6 @@ iteration 완료 시 (`/u-ship`):
 3. `blocked` 전환 시 사유 필수
 4. sprint 할당 시 의존성 순환 참조 검증
 5. done 항목은 이전 상태로 되돌리기 불가 (reopen 시 새 항목 생성)
-6. `_backlog/_index.json` 갱신 필수
+6. `data/backlog/_index.json` 갱신 필수
 7. storyPoints는 양의 정수만 허용 (0 불가)
 8. auto-import 항목의 source 추적 필수

@@ -1,11 +1,11 @@
 ---
 name: u-skill-dep-engine
-description: "_links.json 글로벌 의존성 그래프를 관리하고, 문서 간 참조 추적 및 변경 시 하위 문서 impact-flag cascade를 수행하는 내부 엔진."
+description: "data/links.json 글로벌 의존성 그래프를 관리하고, 문서 간 참조 추적 및 변경 시 하위 문서 impact-flag cascade를 수행하는 내부 엔진."
 ---
 
 # u-skill-dep-engine -- Dependency Graph Management Engine
 
-`_links.json` 파일에 저장되는 글로벌 의존성 그래프를 관리한다. 문서 간 참조 관계를 추적하고, 상위 문서 변경 시 하위 문서에 impact-flag를 cascade 전파하여 일관성 유지를 지원한다.
+`data/links.json` 파일에 저장되는 글로벌 의존성 그래프를 관리한다. 문서 간 참조 관계를 추적하고, 상위 문서 변경 시 하위 문서에 impact-flag를 cascade 전파하여 일관성 유지를 지원한다.
 
 **Owner Agent:** u-agent-orchestrator
 
@@ -13,7 +13,7 @@ description: "_links.json 글로벌 의존성 그래프를 관리하고, 문서 
 
 ## 1. Graph Structure
 
-### _links.json Schema
+### data/links.json Schema
 
 ```json
 {
@@ -191,7 +191,7 @@ cascade("{app}/srs", "SRS FR-0005 modified")
      "flaggedBy": "{nodeId}"
    }
    ```
-3. `_links.json` 저장
+3. `data/links.json` 저장
 4. impact-flagged 노드 목록 반환
 
 **출력:**
@@ -262,7 +262,7 @@ scope 내 모든 impact-flagged 노드를 반환한다.
 
 ## 6. Safety Rules
 
-1. `_links.json`은 프로젝트 전역 파일 (scope별이 아님). 모든 앱의 의존 관계를 하나의 파일에서 관리
+1. `data/links.json`은 프로젝트 전역 파일 (scope별이 아님). 모든 앱의 의존 관계를 하나의 파일에서 관리
 2. 노드 제거 시 연결된 엣지도 반드시 함께 제거 (dangling edge 방지)
 3. cascade는 downstream만 (upstream으로 역전파하지 않음)
 4. Final 상태 문서에 impact-flag 설정 시 사용자 알림 (갱신 필요 경고)

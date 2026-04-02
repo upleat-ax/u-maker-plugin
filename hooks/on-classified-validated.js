@@ -9,7 +9,7 @@
 const input = JSON.parse(process.env.CLAUDE_TOOL_INPUT || '{}');
 const filePath = input.file_path || '';
 
-if (filePath.includes('_classified/') && filePath.endsWith('.json')) {
+if (filePath.includes('data/classified/') && filePath.endsWith('.json')) {
   try {
     const fs = require('fs');
     if (fs.existsSync(filePath)) {

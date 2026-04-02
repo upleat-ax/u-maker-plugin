@@ -1,11 +1,11 @@
 ---
 name: u-skill-analyzer
-description: "_input/ 원시 자료(RFP, 회의록, AS-IS 문서)를 파싱하여 청크 기반 분석 후 12개 카테고리로 분류하고, _classified/에 구조화 JSON으로 적재하는 내부 엔진."
+description: "data/input/ 원시 자료(RFP, 회의록, AS-IS 문서)를 파싱하여 청크 기반 분석 후 12개 카테고리로 분류하고, data/classified/에 구조화 JSON으로 적재하는 내부 엔진."
 ---
 
 # u-skill-analyzer -- Raw Data Analysis & Classification Engine
 
-`_input/` 원시 자료를 청크 단위 분석 → 12개 카테고리 분류 → `_classified/` 구조화 JSON 적재.
+`data/input/` 원시 자료를 청크 단위 분석 → 12개 카테고리 분류 → `data/classified/` 구조화 JSON 적재.
 
 **Owner Agent:** u-agent-planner
 
@@ -15,9 +15,9 @@ description: "_input/ 원시 자료(RFP, 회의록, AS-IS 문서)를 파싱하�
 
 ### scanInput(scope)
 
-`_input/` 파일 스캔 → `_manifest.json` 대비 상태 판정 (new/modified/processed)
+`data/input/` 파일 스캔 → `_manifest.json` 대비 상태 판정 (new/modified/processed)
 
-**입력 디렉토리:** `_input/` 하위 `rfp/`, `as-is/`, `meeting-notes/`, `benchmarks/`, `links/`
+**입력 디렉토리:** `data/input/` 하위 `rfp/`, `as-is/`, `meeting-notes/`, `benchmarks/`, `links/`
 
 **출력:** `{ scope, totalFiles, newFiles, modifiedFiles, processedFiles, files: [{ path, size, status, mtime }] }`
 
@@ -85,10 +85,10 @@ description: "_input/ 원시 자료(RFP, 회의록, AS-IS 문서)를 파싱하�
 
 ---
 
-## 4. _classified/ Output Structure
+## 4. data/classified/ Output Structure
 
 ```
-_classified/
+data/classified/
   _summary.json
   {category}/
     _index.json
@@ -101,8 +101,8 @@ _classified/
 
 ## 5. Safety Rules
 
-1. `_input/` READ-ONLY, 모든 항목에 source metadata 필수
+1. `data/input/` READ-ONLY, 모든 항목에 source metadata 필수
 2. 기존 ID 재사용 금지, 대용량 청크 분할 필수
 3. `--incremental` 시 기존 보존+신규만 추가
 4. confidence "low" → status "extracted" + 검증 필요 표시
-5. 카테고리별 `_index.json` 갱신 필수, 가정은 `_assumptions/`에 기록
+5. 카테고리별 `_index.json` 갱신 필수, 가정은 `data/assumptions/`에 기록

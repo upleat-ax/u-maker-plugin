@@ -74,7 +74,7 @@ AI가 정보 부족 시 추정한 내용을 기록. `/u-assume approve/reject`�
 | **Orchestrator** | 라우팅, 워크플로우 조율, 상태 관리 | opus |
 | **Planner** | SRS, IA, ERD, API, Screen, 분석 | sonnet |
 | **Builder** | FE+BE 코드 생성, 빌드 | sonnet |
-| **Guardian** | Gate 검증, TC 설계/실행, 일관성 검증 | sonnet |
+| **Gatekeeper** | Gate 검증, TC 설계/실행, 일관성 검증 | sonnet |
 
 ---
 
@@ -87,9 +87,9 @@ AI가 정보 부족 시 추정한 내용을 기록. `/u-assume approve/reject`�
 curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/install.sh | bash
 ```
 
-**Windows (PowerShell):**
-```powershell
-Invoke-WebRequest -Uri https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/install.bat -OutFile install.bat; .\install.bat; Remove-Item install.bat
+**Windows (CMD / PowerShell):**
+```cmd
+curl -fsSL --ssl-no-revoke https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/install.bat -o install.bat && install.bat && del install.bat
 ```
 
 ### 업데이트
@@ -601,7 +601,7 @@ AI가 정보 부족 시 추정한 가정(Assumption)을 approve/reject로 리뷰
 
 | 명령어 | 설명 |
 |--------|------|
-| `@planner` / `@builder` / `@guardian` | 특정 에이전트에게 질문 |
+| `@planner` / `@builder` / `@gatekeeper` | 특정 에이전트에게 질문 |
 | `@all` | 모든 에이전트에게 의견 요청 |
 | `/idea [text]` | 아이디어 태깅 |
 | `/decide [text]` | 결정사항 기록 |

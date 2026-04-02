@@ -41,7 +41,7 @@ triggers:
 ### Step 0: Pre-flight Check
 
 1. `.u-maker/` 존재 확인 → config 읽기 → scope 해석
-2. `--resume`: `_loop-state.json` 로드 → 마지막 체크포인트에서 재개 / 없으면 새 루프
+2. `--resume`: `.state/loop-state.json` 로드 → 마지막 체크포인트에서 재개 / 없으면 새 루프
 3. 실행 계획 생성 표시 (scope, mode, pipeline 범위, limits)
 4. `--dry-run`이면 여기서 종료
 
@@ -66,11 +66,11 @@ triggers:
 
 ### Step 1.1: Auto Review Report (per step)
 
-각 단계 완료 후 `/u-report {scope} --only {phase}` 자동 호출 → `.u-maker/_reports/loop-{loopId}/`에 저장. 루프 종료 시 `--only dashboard` 추가 생성. 브라우저에서 `index.html` 열어 전체 결과 확인.
+각 단계 완료 후 `/u-report {scope} --only {phase}` 자동 호출 → `.u-maker/out/reports/loop-{loopId}/`에 저장. 루프 종료 시 `--only dashboard` 추가 생성. 브라우저에서 `index.html` 열어 전체 결과 확인.
 
 ### Step 2: Checkpoint Management
 
-매 단계 완료 시 `.u-maker/_loop-state.json`에 체크포인트 저장:
+매 단계 완료 시 `.u-maker/.state/loop-state.json`에 체크포인트 저장:
 
 ```json
 {
@@ -101,7 +101,7 @@ triggers:
 
 ### Step 4: Progress Logging
 
-`.u-maker/_loop-log.md`에 실시간 기록 (append only): 각 단계 Status, Duration, 생성 항목 수, Assumptions 수. 완료 시 Summary 테이블 포함.
+`.u-maker/.state/loop-log.md`에 실시간 기록 (append only): 각 단계 Status, Duration, 생성 항목 수, Assumptions 수. 완료 시 Summary 테이블 포함.
 
 ### Step 5: Multi-Iteration
 
@@ -129,7 +129,7 @@ Pipeline Result 테이블, Metrics, Next Steps (사람이 직접: assumptions �
 
 ## Resume
 
-`/u-loop retail --resume` → `_loop-state.json` 로드 → `completedSteps` 이후 재개 → 에러/가정 카운트 유지 → 로그에 "RESUMED" 마커. 파일 없으면 에러.
+`/u-loop retail --resume` → `.state/loop-state.json` 로드 → `completedSteps` 이후 재개 → 에러/가정 카운트 유지 → 로그에 "RESUMED" 마커. 파일 없으면 에러.
 
 ## Multi-App
 
@@ -140,7 +140,7 @@ Pipeline Result 테이블, Metrics, Next Steps (사람이 직접: assumptions �
 ## Safety Rules
 
 1. auto 모드 강제: 모든 판단은 assumption으로 기록
-2. 소스/`_input/` 무수정, `.u-maker/` 대상 디렉토리만 쓰기
+2. 소스/`data/input/` 무수정, `.u-maker/` 대상 디렉토리만 쓰기
 3. 체크포인트 필수, 무한 루프 방지 (동일 에러 3회 시 hard stop)
 4. max-errors/max-assumptions 가드, 기존 Final 문서 보존
 5. 로그 보존 (append only), 중단 시 상태 저장 후 종료

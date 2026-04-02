@@ -13,7 +13,7 @@ triggers:
 
 `/u-add [scope] [type] "title"` 명령으로 FR, NR, US, Screen, bug, improvement, tech-debt 항목을 적절한 위치에 추가하고, 백로그 자동 등록 및 인덱스 갱신을 수행한다.
 
-**Primary Agent:** u-agent-planner (FR/NR/US), u-agent-ux (Screen), u-agent-guardian (bug)
+**Primary Agent:** u-agent-planner (FR/NR/US), u-agent-ux (Screen), u-agent-gatekeeper (bug)
 
 ---
 
@@ -55,13 +55,13 @@ triggers:
 | `nr` | SRS (Non-Functional Requirements 섹션) | `docs/{app}/01-plan/srs.md` |
 | `us` | SRS (User Stories 섹션) | `docs/{app}/01-plan/srs.md` |
 | `screen` | Screen 설계 문서 | `docs/{app}/02-design/screens.md` |
-| `bug` | Backlog 직접 등록 | `_backlog/` |
-| `improvement` | Backlog 직접 등록 | `_backlog/` |
-| `tech-debt` | Backlog 직접 등록 | `_backlog/` |
+| `bug` | Backlog 직접 등록 | `data/backlog/` |
+| `improvement` | Backlog 직접 등록 | `data/backlog/` |
+| `tech-debt` | Backlog 직접 등록 | `data/backlog/` |
 
 ### Step 3: Generate ID
 
-1. 대상 문서 (또는 `_backlog/_index.json`) 읽기
+1. 대상 문서 (또는 `data/backlog/_index.json`) 읽기
 2. 기존 최대 ID 조회 → +1 (zero-padded 4자리)
 3. ID 체계:
 
@@ -156,7 +156,7 @@ triggers:
 
 FR/NR/US/Screen은 자동으로 백로그에도 등록:
 
-1. `_backlog/_index.json` 읽기
+1. `data/backlog/_index.json` 읽기
 2. 새 백로그 항목 추가:
    ```json
    {
@@ -177,9 +177,9 @@ FR/NR/US/Screen은 자동으로 백로그에도 등록:
 1. `docs/{app}/_index.json` 갱신:
    - 대상 문서의 `lastUpdated` 갱신
    - 항목 카운트 증가
-2. `.u-maker/_links.json` 갱신:
+2. `.u-maker/data/links.json` 갱신:
    - `--parent` 관계 등록 (US→FR, FT→US 등)
-3. `_classified/` 해당 카테고리에도 등록 (requirements/, screens/):
+3. `data/classified/` 해당 카테고리에도 등록 (requirements/, screens/):
    - status = `validated` (수동 추가이므로 자동 검증 간주)
 
 ### Step 8: Display Confirmation

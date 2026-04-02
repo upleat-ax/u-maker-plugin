@@ -211,7 +211,7 @@ cmd_check() {
   echo -e "  ${BOLD}curl -fsSL https://raw.githubusercontent.com/${UPLEAT_REPO}/main/install.sh | bash${NC}"
   echo ""
   log "Install (Windows):"
-  echo -e "  ${BOLD}Invoke-WebRequest -Uri https://raw.githubusercontent.com/${UPLEAT_REPO}/main/install.bat -OutFile install.bat; .\\install.bat${NC}"
+  echo -e "  ${BOLD}curl -fsSL --ssl-no-revoke https://raw.githubusercontent.com/${UPLEAT_REPO}/main/install.bat -o install.bat && install.bat && del install.bat${NC}"
 }
 
 cmd_deploy() {
@@ -276,16 +276,14 @@ with open('$PLUGIN_JSON', 'w') as f:
     .claude-plugin/ \
     skills/ \
     agents/ \
-    shared/ \
-    templates/ \
-    scripts/ \
-    schemas/ \
     hooks/ \
-    lib/ \
+    _meta/ \
     deploy_local.sh \
     deploy_local.bat \
     install.sh \
     install.bat \
+    install.ps1 \
+    update.sh \
     README.md \
     README.html \
     README.ko.html \
@@ -324,6 +322,7 @@ with open('$PLUGIN_JSON', 'w') as f:
   cp "$SCRIPT_DIR/README.en.html" "$tmp_dir/README.en.html" 2>/dev/null || true
   cp "$SCRIPT_DIR/install.sh" "$tmp_dir/install.sh"
   cp "$SCRIPT_DIR/install.bat" "$tmp_dir/install.bat"
+  cp "$SCRIPT_DIR/install.ps1" "$tmp_dir/install.ps1"
   cp "$SCRIPT_DIR/update.sh" "$tmp_dir/update.sh"
   cat > "$tmp_dir/.gitignore" << 'EOF'
 .DS_Store
@@ -367,9 +366,9 @@ EOF
 curl -fsSL https://raw.githubusercontent.com/${UPLEAT_REPO}/main/install.sh | bash
 \`\`\`
 
-**Windows (PowerShell):**
-\`\`\`powershell
-Invoke-WebRequest -Uri https://raw.githubusercontent.com/${UPLEAT_REPO}/main/install.bat -OutFile install.bat; .\\install.bat; Remove-Item install.bat
+**Windows (CMD / PowerShell):**
+\`\`\`cmd
+curl -fsSL --ssl-no-revoke https://raw.githubusercontent.com/${UPLEAT_REPO}/main/install.bat -o install.bat && install.bat && del install.bat
 \`\`\`"
 
   for repo in "$UPLEAT_REPO"; do
@@ -411,7 +410,7 @@ Invoke-WebRequest -Uri https://raw.githubusercontent.com/${UPLEAT_REPO}/main/ins
   echo -e "  curl -fsSL https://raw.githubusercontent.com/${UPLEAT_REPO}/main/install.sh | bash"
   echo ""
   echo -e "  ${BOLD}Install (Windows):${NC}"
-  echo -e "  Invoke-WebRequest -Uri https://raw.githubusercontent.com/${UPLEAT_REPO}/main/install.bat -OutFile install.bat; .\\install.bat"
+  echo -e "  curl -fsSL --ssl-no-revoke https://raw.githubusercontent.com/${UPLEAT_REPO}/main/install.bat -o install.bat && install.bat && del install.bat"
   echo ""
 }
 

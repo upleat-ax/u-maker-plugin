@@ -53,13 +53,14 @@ triggers:
 | `screen-flow` | `docs/{app}/02-design/screen-flow.md` | u-agent-ux |
 | `rtm` | `docs/{app}/02-design/rtm.md` | u-agent-planner |
 | `code` | `docs/{app}/03-dev/code.md` | u-agent-builder |
-| `test-cases` | `docs/{app}/04-check/test-cases.md` | u-agent-guardian |
-| `test-report` | `docs/{app}/04-check/test-report.md` | u-agent-guardian |
+| `test-cases` | `docs/{app}/04-check/test-cases.md` | u-agent-gatekeeper |
+| `test-report` | `docs/{app}/04-check/test-report.md` | u-agent-gatekeeper |
 | `glossary` | `docs/common/project/glossary.md` | u-agent-planner |
 | `iteration-log` | `docs/common/project/iteration-log.md` | u-agent-orchestrator |
 | `retrospective` | `docs/common/project/retrospective.md` | u-agent-orchestrator |
 | `design-token` | `docs/common/ux/design-token.md` | u-agent-ux-ds |
 | `coding-convention` | `docs/common/dev/coding-convention.md` | u-agent-sa |
+| `code-review-rules` | `docs/common/dev/code-review-rules.md` | u-agent-gatekeeper |
 
 3. 파일 존재 확인 → 없으면 "문서가 아직 생성되지 않았습니다" + 생성 명령 안내
 
@@ -153,10 +154,10 @@ triggers:
 
    | Document | Regenerate Source |
    |----------|------------------|
-   | srs | `_classified/requirements/` + `_classified/stakeholders/` + `_classified/constraints/` |
-   | ia | SRS + `_classified/workflows/` + `_classified/screens/` |
+   | srs | `data/classified/requirements/` + `data/classified/stakeholders/` + `data/classified/constraints/` |
+   | ia | SRS + `data/classified/workflows/` + `data/classified/screens/` |
    | roadmap | SRS + engine-estimator |
-   | erd | SRS + `_classified/data-models/` |
+   | erd | SRS + `data/classified/data-models/` |
    | api | SRS + ERD |
    | screens | SRS + IA + design-token |
    | rtm | SRS + screens + api + test-cases (교차 매핑) |
@@ -174,7 +175,7 @@ triggers:
 5. **후처리:**
    - `.json` 동반 파일 재생성
    - `_index.json` 갱신
-   - `_links.json` 의존 관계 재검증
+   - `data/links.json` 의존 관계 재검증
    - Impact flags 클리어 (해당 문서에 대한)
 
 ### Regenerate 결과 표시

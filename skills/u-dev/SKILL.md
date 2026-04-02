@@ -200,12 +200,12 @@ triggers:
    - 빌드 결과
    - spec-sync 결과
 2. `_index.json` 갱신
-3. `_links.json` 갱신
+3. `data/links.json` 갱신
 
 ### Step 9: Tech Debt Auto-Registration
 
 코드 생성 중 발견된 기술 부채:
-1. `_backlog/_index.json`에 등록
+1. `data/backlog/_index.json`에 등록
 2. type = "tech-debt"
 3. 예: 하드코딩 값, TODO 주석, 미구현 에러 핸들링
 
@@ -232,4 +232,4 @@ triggers:
 7. Design Token 적용 필수 (하드코딩 색상/간격 금지)
 8. 빌드 실패 코드는 출하하지 않음
 9. `app.config.json` techStack 확인 후 프레임워크/라이브러리 결정
-10. auto mode 가정은 `_assumptions/`에 기록
+10. auto mode 가정은 `data/assumptions/`에 기록

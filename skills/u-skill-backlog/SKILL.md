@@ -32,7 +32,7 @@ description: "백로그 CRUD, 우선순위 관리, 스프린트 할당, 속도 �
 }
 ```
 
-**Storage:** `_backlog/BL-{NNN}.json` + `_backlog/_index.json` + `_backlog/_counter.json`
+**Storage:** `data/backlog/BL-{NNN}.json` + `data/backlog/_index.json` + `data/backlog/_counter.json`
 
 ---
 

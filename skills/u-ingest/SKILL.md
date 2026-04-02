@@ -1,6 +1,6 @@
 ---
 name: u-ingest
-description: "외부 입력 데이터를 분석하여 정제/분류한다. _input/ raw data를 _classified/ 구조화 JSON으로 변환하고, 12개 카테고리로 분류한다."
+description: "외부 입력 데이터를 분석하여 정제/분류한다. data/input/ raw data를 data/classified/ 구조화 JSON으로 변환하고, 12개 카테고리로 분류한다."
 triggers:
   - "/u-ingest"
   - "ingest data"
@@ -10,7 +10,7 @@ triggers:
 
 # u-ingest -- Raw to Classified Analysis
 
-`/u-ingest [scope] [--review] [--incremental]` 명령으로 `_input/` 원시 자료를 분석하여 `_classified/` 구조화 데이터(12개 카테고리)로 변환한다.
+`/u-ingest [scope] [--review] [--incremental]` 명령으로 `data/input/` 원시 자료를 분석하여 `data/classified/` 구조화 데이터(12개 카테고리)로 변환한다.
 
 **Primary Agent:** u-agent-planner (engine-analyzer 사용)
 
@@ -29,15 +29,15 @@ triggers:
 
 ### Step 1: Resolve Scope
 
-config → 앱 목록 → scope 해석 → `_input/` 경로 결정. 생략 시 앱 1개 자동선택 / 2개+ 사용자 질문.
+config → 앱 목록 → scope 해석 → `data/input/` 경로 결정. 생략 시 앱 1개 자동선택 / 2개+ 사용자 질문.
 
-### Step 1.5: Collect from _dropzone/
+### Step 1.5: Collect from data/dropzone/
 
-`.u-maker/_dropzone/` 스캔 → 파일별 카테고리 판정 → `_input/{category}/`로 이동 (복사 아님) → 분류 불가 시 `_input/raw/`로 이동 → `_sort-log.json` 기록. 빈 디렉토리면 skip.
+`.u-maker/data/dropzone/` 스캔 → 파일별 카테고리 판정 → `data/input/{category}/`로 이동 (복사 아님) → 분류 불가 시 `data/input/raw/`로 이동 → `_sort-log.json` 기록. 빈 디렉토리면 skip.
 
 ### Step 2: Sort Raw Files
 
-`_input/raw/`에 파일 존재 시 서브폴더로 자동 분류:
+`data/input/raw/`에 파일 존재 시 서브폴더로 자동 분류:
 
 | 판정 기준 | 대상 폴더 |
 |----------|----------|
@@ -49,11 +49,11 @@ config → 앱 목록 → scope 해석 → `_input/` 경로 결정. 생략 시 �
 | 표준, 정책, 가이드라인, 규정 | `standards/` |
 | 디자인시스템, UI가이드, UX 가이드라인 | `ux-standards/` |
 
-**판정 로직:** 파일명 키워드 매칭(우선) → 내용 분석(fallback, 첫 ~5KB) → 판별 불가 시 `raw/`에 유지 + `_sort-log.json`에 "unresolved" 기록. 동일 파일명 충돌 시 타임스탬프 rename.
+**판정 로직:** 파일명 키워드 매칭(우선) → 내용 분석(fallback, 첫 ~5KB) → 판별 불가 시 `raw/`에 유지 + `data/input/_sort-log.json`에 "unresolved" 기록. 동일 파일명 충돌 시 타임스탬프 rename.
 
-### Step 3: Scan _input/
+### Step 3: Scan data/input/
 
-`_manifest.json` 읽기 → 전체 파일 스캔 → 신규/수정 파일 식별 → manifest 갱신. `--incremental`: 변경 파일만 대상.
+`data/input/_manifest.json` 읽기 → 전체 파일 스캔 → 신규/수정 파일 식별 → manifest 갱신. `--incremental`: 변경 파일만 대상.
 
 ### Step 4: Analyze Each File (engine-analyzer)
 
@@ -89,15 +89,15 @@ config → 앱 목록 → scope 해석 → `_input/` 경로 결정. 생략 시 �
 
 ### Step 7.1: Generate Ingest Review Report
 
-ingest 완료 시 `/u-report {scope} --only ingest` 자동 호출 → `.u-maker/_reports/{scope}/ingest-report.html`
+ingest 완료 시 `/u-report {scope} --only ingest` 자동 호출 → `.u-maker/out/reports/{scope}/ingest-report.html`
 
 ### Step 8: Update Summary
 
-`_classified/_summary.json` 갱신: filesProcessed, totalItems, byCategory(각 status 집계), byStatus 집계.
+`data/classified/_summary.json` 갱신: filesProcessed, totalItems, byCategory(각 status 집계), byStatus 집계.
 
 ### Step 9: Auto-Register to Backlog
 
-`validated` status requirements 중 미등록 항목 → `_backlog/_index.json` 등록 (priority 유지 또는 Medium 기본, status: "todo")
+`validated` status requirements 중 미등록 항목 → `data/backlog/_index.json` 등록 (priority 유지 또는 Medium 기본, status: "todo")
 
 ---
 
@@ -124,8 +124,8 @@ extracted → validated → adopted | rejected
 
 ## Safety Rules
 
-1. `_input/` READ-ONLY (단, `_dropzone/`→`_input/` 이동 및 `raw/`→서브폴더 이동은 예외, 내용 변경 없음)
+1. `data/input/` READ-ONLY (단, `data/dropzone/`→`data/input/` 이동 및 `raw/`→서브폴더 이동은 예외, 내용 변경 없음)
 2. 자동 분류 불가 시 `raw/`에 유지 (강제 분류 금지)
 3. 모든 항목에 source metadata 필수, 기존 ID 재사용 금지
 4. 대용량 청크 분할 필수, `--incremental` 시 기존 보존+신규만 추가
-5. 분석 가정은 `_assumptions/`에 기록
+5. 분석 가정은 `data/assumptions/`에 기록

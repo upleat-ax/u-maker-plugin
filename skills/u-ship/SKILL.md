@@ -13,7 +13,7 @@ triggers:
 
 `/u-ship [scope] [-i] [--step]` 명령으로 iteration의 최종 검증, 회고, 아카이브를 수행한다. PDCA 사이클의 마지막 단계.
 
-**Primary Agent:** u-agent-guardian (최종 검증) + u-agent-orchestrator (iteration 관리)
+**Primary Agent:** u-agent-gatekeeper (최종 검증) + u-agent-orchestrator (iteration 관리)
 
 ---
 
@@ -30,7 +30,7 @@ triggers:
 
 ### Step 1: Run Final Validation
 
-u-agent-guardian에게 최종 검증 요청:
+u-agent-gatekeeper에게 최종 검증 요청:
 
 1. **Exit criteria 재평가:**
 
@@ -145,7 +145,7 @@ u-agent-guardian에게 최종 검증 요청:
      └── iteration-summary.json
    ```
 2. 현재 `docs/{app}/` 문서 status 유지 (다음 iteration 기반)
-3. `_classified/` 항목 중 `adopted` → 보존, 나머지 → 정리 대상 표시
+3. `data/classified/` 항목 중 `adopted` → 보존, 나머지 → 정리 대상 표시
 
 ### Step 6-P: Mark Iteration Complete
 
@@ -210,7 +210,7 @@ u-agent-guardian에게 최종 검증 요청:
 
 1. Open/In Progress 결함 → 다음 iteration backlog에 `carried-over` 플래그
 2. 미완성 FT → 다음 iteration backlog에 이월
-3. `_backlog/_index.json` 갱신
+3. `data/backlog/_index.json` 갱신
 4. 이월 사유 기록
 
 ### Step 5-F: Transition to Act -> Plan
@@ -269,4 +269,4 @@ u-agent-guardian에게 최종 검증 요청:
 5. 이월 항목에 반드시 `carried-over` 플래그 + 원 iteration 참조
 6. iteration 번호 rollback 금지 (항상 증가)
 7. `.json` 동반 파일 생성 필수
-8. `_index.json`, `_links.json`, `u-maker.config.json` 갱신 필수
+8. `_index.json`, `data/links.json`, `u-maker.config.json` 갱신 필수

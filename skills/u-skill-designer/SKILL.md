@@ -18,9 +18,9 @@ IA, Screen, ScreenFlow, ERD, API Contract, UX Guide, Design Token, RTM 등 설�
 Information Architecture를 생성한다.
 
 **입력:**
-- `_classified/workflows/` -- 사용자 태스크 흐름
-- `_classified/screens/` -- AS-IS 화면 목록
-- `_classified/domain-terms/` -- 도메인 용어
+- `data/classified/workflows/` -- 사용자 태스크 흐름
+- `data/classified/screens/` -- AS-IS 화면 목록
+- `data/classified/domain-terms/` -- 도메인 용어
 - `srs.json` -- USR 및 FT 목록
 
 **프로세스:**
@@ -57,7 +57,7 @@ Information Architecture를 생성한다.
 **입력:**
 - `ia.json` -- 화면 계층
 - `srs.json` -- FT 목록 (화면별 기능)
-- `_classified/screens/` -- AS-IS 화면 참조
+- `data/classified/screens/` -- AS-IS 화면 참조
 
 **프로세스:**
 
@@ -118,7 +118,7 @@ Information Architecture를 생성한다.
 Entity-Relationship Diagram을 생성한다.
 
 **입력:**
-- `_classified/data-models/` -- AS-IS 테이블 구조
+- `data/classified/data-models/` -- AS-IS 테이블 구조
 - `srs.json` -- 데이터 관련 FR/US/FT
 - `common/architecture/erd-common.md` -- 공통 테이블 (User, Auth, Audit)
 
@@ -142,7 +142,7 @@ API Contract (OpenAPI-style)를 생성한다.
 **입력:**
 - `srs.json` → FT 목록에서 API 필요 항목 식별
 - `erd.json` → 엔티티 → request/response 스키마 도출
-- `_classified/workflows/` → API 흐름 시퀀스
+- `data/classified/workflows/` → API 흐름 시퀀스
 - `common/architecture/api-common.md` → 공통 API (auth, file upload)
 
 **프로세스:**
@@ -201,7 +201,7 @@ API Contract (OpenAPI-style)를 생성한다.
 | FT orphan | SRS | -- | 어떤 Screen/API에도 매핑되지 않은 FT |
 
 검증 실패 시:
-- auto mode: 경고 + `_assumptions/`에 기록
+- auto mode: 경고 + `data/assumptions/`에 기록
 - interactive mode: 사용자에게 매핑 확인 요청
 
 ---
@@ -231,4 +231,4 @@ common/dev/coding-convention.md    → naming rules
 5. 고아 항목(FT→Screen 미매핑, Screen→API 미연결) 탐지 시 경고
 6. Design Token은 하드코딩 금지 (색상, 간격 등 모두 토큰 참조)
 7. ERD 필드명은 snake_case, API path는 kebab-case 준수
-8. `_index.json`, `_links.json` 갱신 필수
+8. `_index.json`, `data/links.json` 갱신 필수

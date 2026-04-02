@@ -12,7 +12,7 @@ triggers:
 
 `/u-coverage [scope] [--category X] [--gaps-only]` 명령으로 classified 데이터가 산출물(SRS, ERD, API 등)에 얼마나 반영되었는지 커버리지를 보고한다.
 
-**Primary Agent:** u-agent-guardian (engine-validator, engine-dep 사용)
+**Primary Agent:** u-agent-gatekeeper (engine-validator, engine-dep 사용)
 
 ---
 
@@ -37,7 +37,7 @@ triggers:
 
 ### Step 1: Load Classified Data
 
-1. `_classified/_summary.json` 읽기 → 전체 분류 현황
+1. `data/classified/_summary.json` 읽기 → 전체 분류 현황
 2. 각 카테고리의 `_index.json` 읽기:
    - `requirements/` (FR, NR)
    - `pain-points/`
@@ -81,16 +81,16 @@ triggers:
 
 | Category | Raw Source | Classified | Deliverable |
 |----------|-----------|------------|-------------|
-| requirements | `_input/rfp/` p.15 | `_classified/requirements/FR-0001` | `srs.md` FR-0001 |
-| pain-points | `_input/meeting-notes/` | `_classified/pain-points/PP-003` | `srs.md` NR-0002 (via) |
-| domain-terms | `_input/rfp/` p.3 | `_classified/domain-terms/DT-012` | `glossary.md` |
-| stakeholders | `_input/rfp/` p.8 | `_classified/stakeholders/SH-001` | `srs.md` USR-0001 |
-| workflows | `_input/as-is/` | `_classified/workflows/WF-005` | `ia.md` + `screen-flow.md` |
-| screens | `_input/as-is/` | `_classified/screens/SC-010` | `screens.md` SCR-010 |
-| data-models | `_input/as-is/` | `_classified/data-models/DM-003` | `erd.md` |
-| constraints | `_input/rfp/` p.52 | `_classified/constraints/CN-007` | `srs.md` NR + `api.md` |
-| decisions | `_sessions/` | `_classified/decisions/DC-002` | 해당 문서 반영 |
-| questions | analysis | `_classified/questions/QS-015` | 답변 → 문서 반영 |
+| requirements | `data/input/rfp/` p.15 | `data/classified/requirements/FR-0001` | `srs.md` FR-0001 |
+| pain-points | `data/input/meeting-notes/` | `data/classified/pain-points/PP-003` | `srs.md` NR-0002 (via) |
+| domain-terms | `data/input/rfp/` p.3 | `data/classified/domain-terms/DT-012` | `glossary.md` |
+| stakeholders | `data/input/rfp/` p.8 | `data/classified/stakeholders/SH-001` | `srs.md` USR-0001 |
+| workflows | `data/input/as-is/` | `data/classified/workflows/WF-005` | `ia.md` + `screen-flow.md` |
+| screens | `data/input/as-is/` | `data/classified/screens/SC-010` | `screens.md` SCR-010 |
+| data-models | `data/input/as-is/` | `data/classified/data-models/DM-003` | `erd.md` |
+| constraints | `data/input/rfp/` p.52 | `data/classified/constraints/CN-007` | `srs.md` NR + `api.md` |
+| decisions | `.state/sessions/` | `data/classified/decisions/DC-002` | 해당 문서 반영 |
+| questions | analysis | `data/classified/questions/QS-015` | 답변 → 문서 반영 |
 
 ### Step 5: Identify Gaps
 
@@ -147,7 +147,7 @@ Gap 분류:
 ### Traceability Chains
 
 ```
-Raw (_input/)          Classified (_classified/)      Deliverables (docs/)
+Raw (data/input/)          Classified (data/classified/)      Deliverables (docs/)
 ━━━━━━━━━━━━           ━━━━━━━━━━━━━━━━━━━━━           ━━━━━━━━━━━━━━━━━━
 {n} files     ──→      {n} items extracted    ──→      {n} items adopted
                │        {n} validated                   in {n} documents

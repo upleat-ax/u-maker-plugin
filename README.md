@@ -17,6 +17,9 @@ PDCA 기반 SSoT(Single Source of Truth) 협업 오케스트레이터.
 # 1. 설치 (macOS/Linux)
 curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/install.sh | bash
 
+# 1. 설치 (Windows)
+# curl -fsSL --ssl-no-revoke https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/install.bat -o install.bat && install.bat && del install.bat
+
 # 2. Claude Code 재시작 후 프로젝트에서 실행
 /u-init my-app                # .u-maker/ 구조 생성 + 앱 등록
 
@@ -138,11 +141,11 @@ Plan → Design → Do → Check → Act
 
 | Phase | 산출물 | 담당 Agent | Gate 조건 |
 |-------|--------|------------|-----------|
-| **01 Plan** | SRS, IA, Roadmap | orchestrator→planner→guardian | SRS+IA+Roadmap = Final |
-| **02 Design** | ERD, API, Screen, ScreenFlow, UXGuide, RTM, wireframes/index.html | planner→guardian | ERD+RTM+Screen+API = Final |
+| **01 Plan** | SRS, IA, Roadmap | orchestrator→planner→gatekeeper | SRS+IA+Roadmap = Final |
+| **02 Design** | ERD, API, Screen, ScreenFlow, UXGuide, RTM, wireframes/index.html | planner→gatekeeper | ERD+RTM+Screen+API = Final |
 | **03 Do** | Code, UIComponents, Screen(impl) | builder | Code complete + build success |
-| **04 Check** | TestCase, TestReport | guardian | Critical/Major=0, all FR impl |
-| **05 Act** | IterationLog, Retrospective | orchestrator→guardian | Retro + archive 완료 |
+| **04 Check** | TestCase, TestReport | gatekeeper | Critical/Major=0, all FR impl |
+| **05 Act** | IterationLog, Retrospective | orchestrator→gatekeeper | Retro + archive 완료 |
 
 ---
 
@@ -192,7 +195,7 @@ _input/ (Raw)  →  _classified/ (Structured JSON)  →  docs/ (Deliverables)
 | `u-agent-orchestrator` | opus | Command router, Phase controller, State machine, _links.json 관리 | ALL |
 | `u-agent-planner` | sonnet | 분석 + 설계 (SRS, IA, ERD, API, Screen, UX) | Plan, Design |
 | `u-agent-builder` | sonnet | FE + BE 통합 구현 | Do |
-| `u-agent-guardian` | sonnet | Gate 검증, TestCase, 일관성 검증, RTM | Design, Do, Check, Act |
+| `u-agent-gatekeeper` | sonnet | Gate 검증, TestCase, 일관성 검증, RTM | Design, Do, Check, Act |
 
 ---
 
@@ -290,7 +293,7 @@ _input/ (Raw)  →  _classified/ (Structured JSON)  →  docs/ (Deliverables)
 | u-skill-designer | IA/Screen/ERD/API 통합 설계 |
 | u-skill-estimator | SRS 기반 일정/공수 산정 |
 
-### Execution Engines (builder+guardian 소속)
+### Execution Engines (builder+gatekeeper 소속)
 
 | Engine | 역할 |
 |--------|------|
@@ -471,7 +474,7 @@ u-maker-plugin/
 │   ├── u-agent-orchestrator.md
 │   ├── u-agent-planner.md
 │   ├── u-agent-builder.md
-│   └── u-agent-guardian.md
+│   └── u-agent-gatekeeper.md
 ├── skills/
 │   ├── u-skill-*/SKILL.md            # 12 internal engines
 │   ├── u-*/SKILL.md                  # 22 command skills (user-invocable)
@@ -610,7 +613,7 @@ u-maker-plugin/
 
 | Command | 설명 |
 |---------|------|
-| `@planner` / `@builder` / `@guardian` | 특정 에이전트에게 질문 |
+| `@planner` / `@builder` / `@gatekeeper` | 특정 에이전트에게 질문 |
 | `@all` | 모든 에이전트에게 의견 요청 |
 | `/idea [text]` | 아이디어 태깅 |
 | `/decide [text]` | 결정사항 기록 |

@@ -13,7 +13,7 @@ triggers:
 
 `/u-qa [scope] [-i] [--step]` 명령으로 Do phase 산출물을 검증한다. TestCase 설계, 테스트 실행, 결함 분석, exit criteria 판정을 수행한다.
 
-**Primary Agent:** u-agent-guardian (engine-validator, engine-test 사용)
+**Primary Agent:** u-agent-gatekeeper (engine-validator, engine-test 사용)
 
 ---
 
@@ -141,7 +141,7 @@ triggers:
 
 모든 결함을 자동으로:
 1. `docs/{app}/04-check/defects/` 에 결함 레코드 저장
-2. `_backlog/_index.json`에 등록 (severity → priority 매핑)
+2. `data/backlog/_index.json`에 등록 (severity → priority 매핑)
 3. `u-agent-builder`에 수정 할당
 4. 원 TC 및 FT에 역링크
 
@@ -155,7 +155,7 @@ triggers:
 **App:** {app}
 **Iteration:** {n}
 **Date:** {ISO 8601}
-**Executor:** u-agent-guardian
+**Executor:** u-agent-gatekeeper
 
 ### Summary
 

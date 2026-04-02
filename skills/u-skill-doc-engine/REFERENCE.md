@@ -290,7 +290,7 @@ function delete(scope, doc):
   removeFile(entry.path)                           // .md
   removeFile(entry.path.replace(".md", ".json"))   // .json
   removeFromIndex(scope, entry.id)                 // _index.json
-  removeFromLinks(entry.id)                        // _links.json
+  removeFromLinks(entry.id)                        // data/links.json
 
   return { status: "deleted", files: [entry.path, jsonPath] }
 ```

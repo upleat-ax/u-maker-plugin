@@ -21,8 +21,8 @@ SKILL.md에서 참조하는 상세 구현 명세.
 | 섹션 | 아이콘 | 내용 | 소스 |
 |------|--------|------|------|
 | **Done** | ✅ | 완료된 항목 (status: Final, validated, passed) | `_index.json` status, test results |
-| **Remaining** | ⏳ | 미완료 항목 (status: Draft, extracted, todo) | `_index.json`, `_backlog/` |
-| **Improve** | 💡 | 개선 필요 항목 (리뷰 코멘트, 실패 테스트, tech debt, assumptions) | test-report, spec-sync, `_assumptions/`, `_backlog/` |
+| **Remaining** | ⏳ | 미완료 항목 (status: Draft, extracted, todo) | `_index.json`, `data/backlog/` |
+| **Improve** | 💡 | 개선 필요 항목 (리뷰 코멘트, 실패 테스트, tech debt, assumptions) | test-report, spec-sync, `data/assumptions/`, `data/backlog/` |
 
 각 항목: ID + Title + Status 배지. Improve인 경우 개선 사유 1줄 설명 (예: "→ API 응답 시간 2초 초과").
 
@@ -30,7 +30,7 @@ SKILL.md에서 참조하는 상세 구현 명세.
 
 ## ingest-report 섹션 명세
 
-**입력:** `_classified/_summary.json`, `_classified/*/_index.json`
+**입력:** `data/classified/_summary.json`, `data/classified/*/_index.json`
 
 | 섹션 | 내용 |
 |------|------|
@@ -116,7 +116,7 @@ SKILL.md에서 참조하는 상세 구현 명세.
 
 **파일명:** `daily-report-{YYYY-MM-DD}.html`. 생성 시점 날짜 자동 포함. 같은 날짜 재생성 시 덮어쓴다.
 
-**입력:** `01-plan/ia.md` + `.json`, `srs.md` + `.json`, `roadmap.md` + `.json`, `_index.json`, `_classified/_summary.json`, `_backlog/`, `02-design/screens.md` + `.json`, `03-dev/code.md` + `.json`, `04-check/test-cases.md` + `.json`
+**입력:** `01-plan/ia.md` + `.json`, `srs.md` + `.json`, `roadmap.md` + `.json`, `_index.json`, `data/classified/_summary.json`, `data/backlog/`, `02-design/screens.md` + `.json`, `03-dev/code.md` + `.json`, `04-check/test-cases.md` + `.json`
 
 IA 화면 계층 기반 프로젝트 관리 뷰. 각 메뉴/화면이 PDCA 5단계를 거치는 과정을 추적한다.
 
@@ -186,16 +186,16 @@ IA L1(도메인) 그룹별로 L2/L3(메뉴) 항목을 나열. 각 항목의 PDCA
 | **#** | 순번 | 자동 생성 |
 | **도메인** | IA L1 그룹명 + `(완료/전체)` 카운트 | `ia.json` → L1 screens. 노란 배경 시각 구분 |
 | **메뉴** | IA L2/L3 화면명 | `ia.json` → L2/L3 screens |
-| **① 분류** | 해당 화면 분류 완료 여부 | `_classified/screens/` 존재 + `_index.json` status |
+| **① 분류** | 해당 화면 분류 완료 여부 | `data/classified/screens/` 존재 + `_index.json` status |
 | **② 기획** | SRS에 해당 화면의 FT 매핑 존재 여부 | `srs.json` → features[].screen |
 | **③ 설계** | Screen 설계 + ERD/API 연결 완료 여부 | `screens.json` → 해당 화면 정의 |
 | **④ 개발** | 코드 생성 완료 여부 | `code.json` → generatedFiles[] |
 | **⑤ 검증** | TC 생성 + 테스트 통과 여부 | `test-cases.json` + `test-report.json` |
 | **진행률** | 완료 단계 수 / 5 (%) | 5단계 중 ✓ 수 x 20% |
 | **상태** | 파이프라인 상태 배지 | 최신 완료 단계 기준 |
-| **담당** | 담당자명 | `_backlog/` → assignee |
-| **완료(예정)일** | 완료일 또는 예정일 | `_backlog/` → dueDate, completedDate |
-| **비고** | 특이사항, 지연 사유 | `_backlog/` → notes, `_index.json` → impact flags |
+| **담당** | 담당자명 | `data/backlog/` → assignee |
+| **완료(예정)일** | 완료일 또는 예정일 | `data/backlog/` → dueDate, completedDate |
+| **비고** | 특이사항, 지연 사유 | `data/backlog/` → notes, `_index.json` → impact flags |
 
 **5단계 셀 표시 규칙:**
 
@@ -228,13 +228,13 @@ Roadmap에서 기술 혁신/개선 항목을 별도 섹션으로 표시.
 
 **로드맵 테이블 열:** #, 메뉴, 제목, 긴급, 시기, 시작일, 상태, 비고. 소스: `roadmap.json`.
 
-**체크리스트 반복 점검 블록:** 핵심 개선 과제 KPI 카드 3개. 소스: `_classified/` 항목 수 또는 `roadmap.json` → metrics.
+**체크리스트 반복 점검 블록:** 핵심 개선 과제 KPI 카드 3개. 소스: `data/classified/` 항목 수 또는 `roadmap.json` → metrics.
 
 ### 데이터 매핑 -- PDCA 5단계 완료 판정 로직
 
 ```
 Stage 1 (분류 — Ingest):
-  _classified/screens/_index.json에서 해당 화면 ID 존재
+  data/classified/screens/_index.json에서 해당 화면 ID 존재
   AND status ∈ {validated, extracted}
   → ✓
 
@@ -265,10 +265,10 @@ Stage 5 (검증 — QA):
 ```
 
 **예외 처리:**
-- IA에 화면이 있지만 `_classified/`에 없는 경우: 분류 미완료 (빈칸)
+- IA에 화면이 있지만 `data/classified/`에 없는 경우: 분류 미완료 (빈칸)
 - SRS에 FT가 없는 화면: 기획 미완료 (빈칸)
 - 전체 5단계 중 해당 없는 단계는 `—` 표시 (예: 정적 페이지는 QA 불필요)
-- `_backlog/`에 해당 화면 관련 항목이 있으면 담당/일정/비고를 backlog에서 가져옴
+- `data/backlog/`에 해당 화면 관련 항목이 있으면 담당/일정/비고를 backlog에서 가져옴
 
 ---
 
@@ -380,7 +380,7 @@ Stage 5 (검증 — QA):
 [루프 종료]   → /u-report {scope} --only dashboard
 ```
 
-루프용 리포트는 `.u-maker/_reports/loop-{loopId}/{date}/`에 저장. 루프 메타데이터(소요 시간, 에러, 가정)가 추가 포함. `latest` 심볼릭 링크도 동일 생성.
+루프용 리포트는 `.u-maker/out/reports/loop-{loopId}/{date}/`에 저장. 루프 메타데이터(소요 시간, 에러, 가정)가 추가 포함. `latest` 심볼릭 링크도 동일 생성.
 
 ---
 
@@ -392,7 +392,7 @@ Stage 5 (검증 — QA):
 **Scope:** {scope}
 **Date:** {YYYY-MM-DD}
 **Reports:** {n} HTML files generated
-**Location:** .u-maker/_reports/{scope}/{date}/
+**Location:** .u-maker/out/reports/{scope}/{date}/
 
 ### Generated Files
 | File | Size | Sections |
@@ -406,5 +406,5 @@ Stage 5 (검증 — QA):
 | daily-report-{date}.html | 40KB | IA 일정 조율 + 로드맵 |
 
 Open in browser:
-  open .u-maker/_reports/{scope}/latest/index.html
+  open .u-maker/out/reports/{scope}/latest/index.html
 ```

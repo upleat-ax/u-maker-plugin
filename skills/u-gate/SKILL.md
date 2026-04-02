@@ -12,7 +12,7 @@ triggers:
 
 `/u-gate [scope] [--to phase]` 명령으로 현재 Phase의 gate 조건을 평가하고, 조건 충족 시 다음 Phase로 전환한다.
 
-**Primary Agent:** u-agent-guardian (engine-validator, engine-phase-detector 사용)
+**Primary Agent:** u-agent-gatekeeper (engine-validator, engine-phase-detector 사용)
 
 ---
 
@@ -56,7 +56,7 @@ triggers:
 | G-04 | 모든 FR에 US 매핑 | C-01 규칙 실행 | Critical |
 | G-05 | 모든 US에 FT 매핑 | C-02 규칙 실행 | Critical |
 | G-06 | USR 정의 완료 | SRS User Types 섹션 비어있지 않음 | Warning |
-| G-07 | Backlog 초기화 | `_backlog/_index.json` 항목 존재 | Warning |
+| G-07 | Backlog 초기화 | `data/backlog/_index.json` 항목 존재 | Warning |
 
 #### do -> check
 
@@ -97,7 +97,7 @@ triggers:
 | G-40 | Retrospective 작성 완료 | retrospective.md 존재 + 현 iteration 데이터 포함 | Critical |
 | G-41 | Archive 완료 | `docs/iterations/{n}/` 존재 | Critical |
 | G-42 | Iteration log 갱신 | iteration-log.md에 현 iteration 기록 | Warning |
-| G-43 | Carried-over items 등록 | `_backlog/` carry-over 플래그 확인 | Warning |
+| G-43 | Carried-over items 등록 | `data/backlog/` carry-over 플래그 확인 | Warning |
 
 ### Step 3: Evaluate Each Condition
 

@@ -51,7 +51,7 @@ triggers:
 | 특정 스킬 (`/u-dev`, `/u-plan` 등) | `skills/{skill}/SKILL.md` |
 | 특정 문서 (ERD, SRS 등) | `docs/{scope}/02-design/{doc}.md` + `.json` |
 | 프로젝트 설정 | `u-maker.config.json`, `app.config.json` |
-| 문서 구조 | `_index.json`, `_links.json` |
+| 문서 구조 | `_index.json`, `data/links.json` |
 | 에이전트 | `agents/{agent}.md` |
 | 전체 구조 | `skills/u-maker/SKILL.md` (Command Table) |
 
@@ -93,7 +93,7 @@ triggers:
 
 #### 영향 분석 의도
 
-`_links.json` 의존성 그래프를 탐색하여 cascade 영향 범위를 보여준다.
+`data/links.json` 의존성 그래프를 탐색하여 cascade 영향 범위를 보여준다.
 
 #### 비교 의도
 
@@ -111,6 +111,6 @@ triggers:
 
 1. `/u-ask`는 조회/분석만 수행하며, 사용자 동의 없이 파일을 수정하지 않음
 2. 제안에 대한 결론은 항상 장단점을 균형 있게 제시
-3. 영향 분석 시 `_links.json` 의존성을 반드시 확인
+3. 영향 분석 시 `data/links.json` 의존성을 반드시 확인
 4. 불확실한 답변은 "확인이 필요합니다"로 명시하고, 확인 방법 안내
 5. 질문이 u-maker 범위 밖이면 해당 사실을 안내

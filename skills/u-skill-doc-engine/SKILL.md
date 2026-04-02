@@ -79,7 +79,7 @@ u-maker는 문서 수가 많아질수록 토큰 소비가 급증할 수 있으�
 4. **Delta-read 우선.** 이미 Final/Review 문서가 있으면 전체 문서를 재독하지 말고 영향받는 섹션과 관련 companion JSON만 읽는다.
 5. **`--only` 기본 사용.** 가능한 모든 생성/검증 명령은 전체 phase 대신 문서 단위 타깃을 우선 선택한다.
 6. **중간 HTML 재생성 금지.** `/u-plan`, `/u-design`, `/u-dev`, `/u-qa` 실행 중에는 최종 산출 직전까지 HTML을 만들지 않는다.
-7. **요약 재사용.** `_classified/_summary.json`, `_assumptions/`, `_backlog/`의 요약 데이터를 재사용하고 같은 raw source를 반복 파싱하지 않는다.
+7. **요약 재사용.** `data/classified/_summary.json`, `data/assumptions/`, `data/backlog/`의 요약 데이터를 재사용하고 같은 raw source를 반복 파싱하지 않는다.
 8. **대용량 입력은 chunk + merge.** 원문 전체를 다시 읽지 말고 기존 chunk 결과를 증분 병합한다.
 9. **Cross-app 금지 기본.** 요청 스코프 밖 앱 문서는 읽지 않는다. 공통 정책이 필요할 때만 `common/`을 읽는다.
 10. **Prompt payload 최소화.** 하위 agent로 전달할 때는 전체 본문 대신 IDs, paths, changed sections, 요약만 넘긴다.
@@ -145,7 +145,7 @@ u-maker는 문서 수가 많아질수록 토큰 소비가 급증할 수 있으�
 
 ### delete(scope, doc)
 
-문서와 관련 파일을 제거한다. `.md` + `.json` + `_index.json` entry + `_links.json` entry 제거.
+문서와 관련 파일을 제거한다. `.md` + `.json` + `_index.json` entry + `data/links.json` entry 제거.
 
 > 상세 → **REFERENCE.md § delete Pseudocode**
 
@@ -197,7 +197,7 @@ Mustache-style `{{variable}}` 치환. 지원 패턴: 단순 치환, 중첩 접�
 | Do | `02-do/` | erd, api, screens, screen-flow, ux-override, design-token, rtm, code |
 | Check | `04-check/` | test-cases, test-report |
 | Act | `05-act/` | iteration-log, retrospective |
-| Common | `common/` | glossary, coding-convention, ux-guide, design-token |
+| Common | `common/` | glossary, coding-convention, code-review-rules, ux-guide, design-token |
 
 ---
 

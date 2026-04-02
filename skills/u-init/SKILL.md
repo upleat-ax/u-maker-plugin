@@ -19,7 +19,11 @@ triggers:
 
 1. project-name 없으면 사용자 질문
 2. 기존 `.u-maker/` 유무 확인
-3. **SSoT 버전 체크:** ssotVersion == "3.0" → 설정만 갱신 / <"3.0" 또는 없음 → docs/+_classified/ 삭제 재생성 (사용자 확인 필수, _input/ 보존) / 없음 → 신규
+3. **SSoT 버전 체크:**
+   - ssotVersion == "3.1" → 설정만 갱신
+   - ssotVersion == "3.0" → 3.1 마이그레이션 실행 (폴더 재구성, 아래 Migration 참조)
+   - <"3.0" 또는 없음 → docs/+data/classified/ 삭제 재생성 (사용자 확인 필수, data/input/ 보존)
+   - 없음 → 신규
 4. `package.json`, `turbo.json` → 모노레포 판별
 
 ### Step 2: Detect Monorepo
@@ -35,16 +39,22 @@ triggers:
 ```
 .u-maker/
 ├── u-maker.config.json
-├── _links.json
-├── _dropzone/                   # 파일 드롭존 (/u-ingest가 분류+이동)
+├── data/                        # 입력·분류·관리 데이터
+│   ├── dropzone/                # 파일 드롭존 (/u-ingest가 분류+이동)
+│   ├── input/                   # raw/, rfp/, as-is/, meeting-notes/, benchmarks/, links/, _manifest.json
+│   ├── classified/              # 12 categories (각 _index.json) + _summary.json
+│   ├── assumptions/             # _index.json
+│   ├── backlog/                 # _index.json
+│   └── links.json               # 문서 간 의존성 그래프
 ├── docs/
 │   ├── common/                  # policy/, ux/, dev/, architecture/, project/
 │   └── {app}/                   # _index.json, app.config.json, 01-plan/, 02-design/(wireframes/), 03-dev/, 04-check/
-├── _input/                      # raw/, rfp/, as-is/, meeting-notes/, benchmarks/, links/, _manifest.json
-├── _classified/                 # 12 categories (각 _index.json) + _summary.json
-├── _sessions/
-├── _assumptions/                # _index.json
-└── _backlog/                    # _index.json
+├── out/                         # 생성물 출력 (열람 전용)
+│   ├── browse/                  # HTML 뷰어 (/u-browse 생성)
+│   └── reports/                 # HTML 리포트 (/u-report 생성)
+└── .state/                      # 런타임 상태
+    ├── sessions/                # 토론 세션 기록
+    └── loop-state.json          # /u-loop 체크포인트
 ```
 
 ### Step 4: Generate u-maker.config.json
@@ -52,10 +62,24 @@ triggers:
 ```json
 {
   "projectName": "{name}",
-  "ssotVersion": "3.0",
+  "ssotVersion": "3.1",
   "version": "1.0.0",
   "apps": [],
-  "documentPaths": { "root": ".u-maker/docs", "common": "...", "input": "...", "classified": "...", "sessions": "...", "assumptions": "...", "backlog": "..." },
+  "documentPaths": {
+    "root": ".u-maker/docs",
+    "common": ".u-maker/docs/common",
+    "data": ".u-maker/data",
+    "input": ".u-maker/data/input",
+    "classified": ".u-maker/data/classified",
+    "dropzone": ".u-maker/data/dropzone",
+    "assumptions": ".u-maker/data/assumptions",
+    "backlog": ".u-maker/data/backlog",
+    "links": ".u-maker/data/links.json",
+    "sessions": ".u-maker/.state/sessions",
+    "loopState": ".u-maker/.state/loop-state.json",
+    "browse": ".u-maker/out/browse",
+    "reports": ".u-maker/out/reports"
+  },
   "language": { "documents": "ko" },
   "theme": "light",
   "license": { "type": "GPL-3.0", "copyright": "..." },
@@ -73,7 +97,7 @@ triggers:
 
 ### Step 6: Display Summary
 
-프로젝트명, 타입(monorepo/single), 등록 앱, 생성 디렉토리, Next Steps(`_dropzone/`에 자료 배치 → `/u-ingest` → `/u-plan`)
+프로젝트명, 타입(monorepo/single), 등록 앱, 생성 디렉토리, Next Steps(`data/dropzone/`에 자료 배치 → `/u-ingest` → `/u-plan`)
 
 ---
 
@@ -87,10 +111,36 @@ triggers:
 
 ---
 
+## Migration: 3.0 → 3.1
+
+ssotVersion "3.0" 발견 시 자동 폴더 재구성:
+
+| 이전 경로 | 새 경로 |
+|-----------|---------|
+| `_dropzone/` | `data/dropzone/` |
+| `_input/` | `data/input/` |
+| `_classified/` | `data/classified/` |
+| `_assumptions/` | `data/assumptions/` |
+| `_backlog/` | `data/backlog/` |
+| `_links.json` | `data/links.json` |
+| `_browse/` | `out/browse/` |
+| `_reports/` | `out/reports/` |
+| `_sessions/` | `.state/sessions/` |
+| `_loop-state.json` | `.state/loop-state.json` |
+
+**절차:**
+1. `data/`, `out/`, `.state/` 디렉토리 생성
+2. 위 맵대로 `mv` (내용 보존)
+3. `u-maker.config.json`의 `documentPaths` + `ssotVersion` → "3.1" 갱신
+4. `.upgrade-pending` 파일 삭제 (있으면)
+5. 빈 이전 디렉토리 정리 (삭제)
+
+---
+
 ## Safety Rules
 
 1. 기존 `.u-maker/` 발견 시 사용자 확인 필수
-2. `_input/` 생성만, 내용 무수정
+2. `data/input/` 생성만, 내용 무수정
 3. 모노레포 감지 실패 시 단일 앱 fallback (사용자 고지)
 4. 설정 파일 UTF-8, 2-space indent JSON
 5. 모든 placeholder에 최소 frontmatter (Owner, Status: Draft)

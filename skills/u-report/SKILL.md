@@ -32,15 +32,16 @@ triggers:
 |------|---------|-------------|
 | `--only X` | - | 특정 리포트만 생성 (ingest, plan, design, dev, qa, daily, dashboard) |
 | `--open` | - | 생성 후 브라우저 자동 열기 |
-| `--clean` | - | 오늘 `_reports/{scope}/{date}/` 삭제 후 재생성. `--clean all` 전체 이력 삭제 |
+| `--clean` | - | 오늘 `out/reports/{scope}/{date}/` 삭제 후 재생성. `--clean all` 전체 이력 삭제 |
 | `--milestone` | - | Daily Report 마일스톤 기간 직접 지정 (예: `--milestone "03.01~03.31"`) |
+| `--loop` | - | Content+Style Quality Loop (QV-01~QV-10 평가, 평균 95점 초과까지 반복) |
 
 ---
 
 ## Output Structure
 
 ```
-.u-maker/_reports/{scope}/
+.u-maker/out/reports/{scope}/
 ├── latest -> 2026-03-29         # 최신 심볼릭 링크
 ├── 2026-03-29/
 │   ├── index.html               # 대시보드 (전체 인덱스 + 통계)
@@ -64,9 +65,9 @@ triggers:
 
 1. `u-maker.config.json` → scope 해석
 2. `_index.json` → 문서 목록 + 상태 로드
-3. `_classified/_summary.json` → 분류 통계 로드
+3. `data/classified/_summary.json` → 분류 통계 로드
 4. `--only` 플래그 → 대상 리포트 결정 (생략 시 전체)
-5. `_reports/{scope}/{YYYY-MM-DD}/` 디렉토리 생성 + `latest` 심볼릭 링크 갱신
+5. `out/reports/{scope}/{YYYY-MM-DD}/` 디렉토리 생성 + `latest` 심볼릭 링크 갱신
 
 ### Step 2: Generate Per-Phase Reports
 
@@ -76,7 +77,7 @@ triggers:
 
 #### 2-1. ingest-report.html
 
-`_classified/_summary.json` + `_classified/*/_index.json` 기반. 처리 파일 수, 항목 수, Status 분포, 카테고리별 테이블(Screens, Requirements, Pain Points, Workflows, Domain Terms, Stakeholders, Constraints, Decisions, Questions) 생성.
+`data/classified/_summary.json` + `data/classified/*/_index.json` 기반. 처리 파일 수, 항목 수, Status 분포, 카테고리별 테이블(Screens, Requirements, Pain Points, Workflows, Domain Terms, Stakeholders, Constraints, Decisions, Questions) 생성.
 
 > 상세 → **REFERENCE.md § ingest-report 섹션 명세**
 
@@ -128,7 +129,7 @@ Mermaid 코드 블록을 인라인 SVG로 변환. `erDiagram`, `sequenceDiagram`
 
 ### Step 6: Notify Completion
 
-생성 결과 요약 출력: scope, 날짜, 파일 수, 위치, 파일별 크기/섹션 수. `open .u-maker/_reports/{scope}/latest/index.html` 안내.
+생성 결과 요약 출력: scope, 날짜, 파일 수, 위치, 파일별 크기/섹션 수. `open .u-maker/out/reports/{scope}/latest/index.html` 안내.
 
 ---
 
@@ -145,16 +146,47 @@ Mermaid 코드 블록을 인라인 SVG로 변환. `erDiagram`, `sequenceDiagram`
 | `--only dashboard` | `index.html` |
 | (생략) | 전체 생성 |
 
-`/u-loop` 각 단계 완료 후 해당 `--only` 리포트 자동 생성. 루프 종료 시 daily + dashboard. 루프 리포트는 `_reports/loop-{loopId}/{date}/`에 저장.
+`/u-loop` 각 단계 완료 후 해당 `--only` 리포트 자동 생성. 루프 종료 시 daily + dashboard. 루프 리포트는 `out/reports/loop-{loopId}/{date}/`에 저장.
 
 > 상세 → **REFERENCE.md § /u-loop 연동 상세**
+
+---
+
+## --loop Quality Loop (Content + Style)
+
+`/u-report --loop` 실행 시, 생성된 HTML 리포트를 gatekeeper가 **Content+Style 10대 기준(QV-01~QV-10)**으로 평가.
+
+### 평가 대상
+
+| 산출물 | Content 검증 | Style 검증 |
+|--------|-------------|-----------|
+| index.html (Dashboard) | KPI 수치 정확, Phase별 카드 데이터 일치, Remaining/Improve 완전 | Sidebar 레이아웃, 카드 grid, 반응형, 테마 |
+| ingest-report.html | _summary.json 수치 일치, 카테고리별 테이블 완전 | zebra striping, 통계 카드, Status 배지 |
+| plan-report.html | SRS 계층 통계 정확, IA SVG Sitemap, Gantt 일정 | SVG 인라인, 히트맵 색상, 차트 가독성 |
+| design-report.html | ERD/API/Screen 교차 검증 결과, RTM 매트릭스 | 다이어그램 렌더링, 테이블 포맷, 링크 작동 |
+| dev-report.html | FT→File 매핑 정확, Build pass/fail, Tech Debt | 코드 블록 스타일, Spec-Sync 검증 테이블 |
+| qa-report.html | TC 커버리지 수치, pass/fail/skip 분포, 결함 목록 | 히트맵, 배지, 결함 severity 색상 코딩 |
+| daily-report.html | Header KPI 배지, 도메인×5단계 매트릭스, 기술 로드맵 | 테이블 정렬, 마일스톤 구간 표시, 인쇄 대응 |
+
+### Loop 동작
+
+```
+/u-report retail --loop
+  → orchestrator가 전체 리포트 생성
+  → gatekeeper: QV-01~QV-10 평가
+  → 평균 ≤ 95? → Content/Style 분리 Enhancement Directive
+    → orchestrator가 미달 리포트만 증분 수정
+  → 평균 > 95 또는 max 도달 → 종료
+```
+
+**재수행 시:** 전체 재생성이 아니라 **미달 리포트만 증분 수정**. 예: QV-02 미달(qa-report 수치 오류) → qa-report.html만 재생성. QV-08 미달(Dark 모드 색상 불일치) → 해당 HTML의 CSS 테마 섹션만 수정.
 
 ---
 
 ## Safety Rules
 
 1. **소스 문서 무수정:** `.md` / `.json` 읽기만 수행 (READ-ONLY)
-2. **`_reports/` 디렉토리만 쓰기:** HTML은 `_reports/` 하위에만 생성
+2. **`out/reports/` 디렉토리만 쓰기:** HTML은 `out/reports/` 하위에만 생성
 3. **인라인 리소스:** 외부 의존성 없는 단일 HTML (Mermaid.js CDN만 예외)
 4. **민감 정보 제외:** `.env`, 하드코딩 시크릿 포함 금지
 5. **같은 날짜 덮어쓰기:** 같은 날짜 리포트는 경고 없이 덮어쓴다. 다른 날짜는 보존

@@ -65,7 +65,7 @@ step.timeout 내에서 dispatch(agent, engine, action, params) 실행. 타임아
 
 ### Checkpoint Save
 
-`checkpoint: true` Step 완료 후 자동 저장 → `_sessions/workflows/WF-{id}.checkpoint.json`: completedSteps, generatedFiles, intermediateData
+`checkpoint: true` Step 완료 후 자동 저장 → `.state/sessions/workflows/WF-{id}.checkpoint.json`: completedSteps, generatedFiles, intermediateData
 
 ### Resume
 
@@ -96,7 +96,64 @@ rollbackAction 정의됨 → 완료 Step 역순 롤백. 미정의 → failed 상
 
 ---
 
-## 8. Safety Rules
+## 8. --loop Quality Loop Mode
+
+`--loop` 플래그 활성화 시, 각 workflow step(또는 전체 workflow)에 gatekeeper 품질 평가 루프를 적용.
+
+### 8.1 적용 범위
+
+| 모드 | 동작 |
+|------|------|
+| **단일 command** (`/u-plan --loop`) | 전체 workflow 완료 후 1회 loop 평가 |
+| **multi-step workflow** (`/u-loop --loop`) | 각 phase 완료 시마다 loop 평가 |
+
+### 8.2 Step 실행 with Loop
+
+```
+for each step (or workflow):
+  execute(agent, engine, action, params)
+    ↓
+  if --loop enabled:
+    loopIteration = 0
+    do:
+      loopIteration++
+      gatekeeperScore = dispatch(gatekeeper, "loop-quality-gate", results)
+      save scorecard to .state/sessions/loop-scores/
+      if gatekeeperScore.average > threshold:
+        break  // PASS
+      if loopIteration >= maxIterations:
+        break  // STOP (max reached)
+      enhancedParams = merge(params, gatekeeperScore.directive)
+      re-execute(agent, engine, action, enhancedParams)
+    while true
+    ↓
+  checkpoint + progress (include loop score)
+```
+
+### 8.3 Checkpoint 확장
+
+Loop 활성화 시 checkpoint에 loop state 포함:
+
+```json
+{
+  "stepId": "generate-srs",
+  "status": "completed",
+  "loop": {
+    "iterations": 2,
+    "finalAverage": 96.4,
+    "verdict": "PASS",
+    "scoresFile": ".state/sessions/loop-scores/LOOP-plan-20260402T120000.json"
+  }
+}
+```
+
+### 8.4 Resume with Loop
+
+체크포인트에서 재개 시 loop state도 복원. 이전 iteration 스코어 참조하여 이미 PASS한 step은 재평가 생략.
+
+---
+
+## 9. Safety Rules
 
 1. Gate 검증 실패 시 후속 Step 진행 불가
 2. 체크포인트는 파일 저장 (메모리 유실 방지)

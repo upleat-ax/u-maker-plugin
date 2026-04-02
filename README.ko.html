@@ -273,7 +273,7 @@ curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/insta
   <text x="400" y="251" text-anchor="middle" fill="#5b21b6" font-size="10" font-weight="600">u-agent-* (dispatch)</text>
   <!-- Agents -->
   <rect x="520" y="230" width="180" height="32" rx="6" fill="#ede9fe" stroke="#8b5cf6"/>
-  <text x="610" y="246" text-anchor="middle" fill="#5b21b6" font-size="9">orchestrator|planner|builder|guardian</text>
+  <text x="610" y="246" text-anchor="middle" fill="#5b21b6" font-size="9">orchestrator|planner|builder|gatekeeper</text>
   <!-- Output -->
   <line x1="360" y1="262" x2="360" y2="290" stroke="#6b7280" stroke-width="1.5" marker-end="url(#ar)"/>
   <rect x="260" y="292" width="200" height="28" rx="14" fill="#1e40af"/>
@@ -338,11 +338,11 @@ curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/insta
 <table>
 <thead><tr><th>Phase</th><th>산출물</th><th>담당 Agent</th><th>Gate 조건</th></tr></thead>
 <tbody>
-<tr><td><strong>01 Plan</strong></td><td>SRS, IA, Roadmap</td><td>orchestrator→planner→guardian</td><td>SRS+IA+Roadmap = Final</td></tr>
-<tr><td><strong>02 Design</strong></td><td>ERD, API, Screen, ScreenFlow, UXGuide, RTM, wireframes/index.html</td><td>planner→guardian</td><td>ERD+RTM+Screen+API = Final</td></tr>
+<tr><td><strong>01 Plan</strong></td><td>SRS, IA, Roadmap</td><td>orchestrator→planner→gatekeeper</td><td>SRS+IA+Roadmap = Final</td></tr>
+<tr><td><strong>02 Design</strong></td><td>ERD, API, Screen, ScreenFlow, UXGuide, RTM, wireframes/index.html</td><td>planner→gatekeeper</td><td>ERD+RTM+Screen+API = Final</td></tr>
 <tr><td><strong>03 Do</strong></td><td>Code, UIComponents, Screen(impl)</td><td>builder</td><td>Code complete + build success</td></tr>
-<tr><td><strong>04 Check</strong></td><td>TestCase, TestReport</td><td>guardian</td><td>Critical/Major=0, all FR impl</td></tr>
-<tr><td><strong>05 Act</strong></td><td>IterationLog, Retrospective</td><td>orchestrator→guardian</td><td>Retro + archive 완료</td></tr>
+<tr><td><strong>04 Check</strong></td><td>TestCase, TestReport</td><td>gatekeeper</td><td>Critical/Major=0, all FR impl</td></tr>
+<tr><td><strong>05 Act</strong></td><td>IterationLog, Retrospective</td><td>orchestrator→gatekeeper</td><td>Retro + archive 완료</td></tr>
 </tbody>
 </table>
 
@@ -425,7 +425,7 @@ curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/insta
 <tr><td><code>u-agent-orchestrator</code></td><td>opus</td><td>Command router, Phase controller, State machine, _links.json 관리</td><td>ALL</td></tr>
 <tr><td><code>u-agent-planner</code></td><td>sonnet</td><td>분석 + 설계 (SRS, IA, ERD, API, Screen, UX)</td><td>Plan, Design</td></tr>
 <tr><td><code>u-agent-builder</code></td><td>sonnet</td><td>FE + BE 통합 구현</td><td>Do</td></tr>
-<tr><td><code>u-agent-guardian</code></td><td>sonnet</td><td>Gate 검증, TestCase, 일관성 검증, RTM</td><td>Design, Do, Check, Act</td></tr>
+<tr><td><code>u-agent-gatekeeper</code></td><td>sonnet</td><td>Gate 검증, TestCase, 일관성 검증, RTM</td><td>Design, Do, Check, Act</td></tr>
 </tbody>
 </table>
 
@@ -540,7 +540,7 @@ curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/insta
 </tbody>
 </table>
 
-<h3>Execution Engines (builder+guardian 소속)</h3>
+<h3>Execution Engines (builder+gatekeeper 소속)</h3>
 <table>
 <thead><tr><th>Engine</th><th>역할</th></tr></thead>
 <tbody>
@@ -735,7 +735,7 @@ curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/insta
 |   +-- u-agent-orchestrator.md
 |   +-- u-agent-planner.md
 |   +-- u-agent-builder.md
-|   +-- u-agent-guardian.md
+|   +-- u-agent-gatekeeper.md
 +-- skills/
 |   +-- u-skill-*/SKILL.md            # 12 internal engines
 |   +-- u-*/SKILL.md                  # 22 command skills (user-invocable)
@@ -896,7 +896,7 @@ curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/insta
 <table>
 <thead><tr><th>Command</th><th>설명</th></tr></thead>
 <tbody>
-<tr><td><code>@planner</code> / <code>@builder</code> / <code>@guardian</code></td><td>특정 에이전트에게 질문</td></tr>
+<tr><td><code>@planner</code> / <code>@builder</code> / <code>@gatekeeper</code></td><td>특정 에이전트에게 질문</td></tr>
 <tr><td><code>@all</code></td><td>모든 에이전트에게 의견 요청</td></tr>
 <tr><td><code>/idea [text]</code></td><td>아이디어 태깅</td></tr>
 <tr><td><code>/decide [text]</code></td><td>결정사항 기록</td></tr>

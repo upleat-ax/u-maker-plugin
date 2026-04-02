@@ -30,14 +30,15 @@ triggers:
 | `scope` | Optional | 대상 앱 이름. 생략 시 전체 앱 |
 | `--only path` | - | 특정 경로만 변환 (예: `--only hjw/02-design`) |
 | `--open` | - | 생성 후 브라우저 자동 열기 |
-| `--clean` | - | 기존 `_browse/` 삭제 후 재생성 |
+| `--clean` | - | 기존 `out/browse/` 삭제 후 재생성 |
+| `--loop` | - | Content+Style Quality Loop (QV-01~QV-10 평가, 평균 95점 초과까지 반복) |
 
 ---
 
 ## Output Structure
 
 ```
-.u-maker/_browse/
+.u-maker/out/browse/
 ├── index.html                    # 메인 뷰어 (sidebar + iframe)
 ├── {app}/01-plan/
 │   ├── srs.html, ia.html, roadmap.html
@@ -63,7 +64,7 @@ scope 내 **모든 `.md`와 `.json`** 파일을 Read로 먼저 적재. contextMa
 
 ### Step 1: Discover Files & Create Directories
 
-`_browse/{scope}/{app}/01-plan/`, `02-design/wireframes/`, `03-dev/`, `04-check/` 생성.
+`out/browse/{scope}/{app}/01-plan/`, `02-design/wireframes/`, `03-dev/`, `04-check/` 생성.
 
 ### Step 2: Generate Enriched HTML per Document Type
 
@@ -123,10 +124,10 @@ sidebar 파일 트리를 구성하여 메인 뷰어 생성.
 ### Step 5: Verify & Open
 
 ```bash
-find .u-maker/_browse -name "*.html" | wc -l
+find .u-maker/out/browse -name "*.html" | wc -l
 ```
 
-`--open`: `open .u-maker/_browse/index.html`
+`--open`: `open .u-maker/out/browse/index.html`
 
 ---
 
@@ -139,14 +140,42 @@ find .u-maker/_browse -name "*.html" | wc -l
 5. **Write 도구로 실제 파일 생성.** 분석/설명만으로 끝내지 않음.
 6. **병렬 처리.** 독립적인 파일 변환은 여러 Write 호출 동시 수행.
 7. **소스 문서 READ-ONLY.** 원본 .md/.json 절대 수정 금지.
-8. **`_browse/` 디렉토리만 쓰기.**
+8. **`out/browse/` 디렉토리만 쓰기.**
+
+---
+
+## --loop Quality Loop (Content + Style)
+
+`/u-browse --loop` 실행 시, 생성된 HTML 산출물을 gatekeeper가 **Content+Style 10대 기준(QV-01~QV-10)**으로 평가.
+
+### 평가 대상
+
+| 산출물 | Content 검증 | Style 검증 |
+|--------|-------------|-----------|
+| index.html | sidebar 파일 트리 완전성, 검색 동작 | sidebar 레이아웃, 반응형, 테마 |
+| srs.html~rtm.html | 원본 JSON↔HTML 데이터 일치, 교차 참조 링크, 다이어그램 정확성 | 시각적 계층, 테이블 스타일, 배지, 색상 |
+| wireframes/SCR-NNN.html | 7개 탭 콘텐츠 충실도, 어노테이션 마커, Event Actions, Sequence Diagram | 3블록 레이아웃, No-Clipping, 마커 CSS, Dark/Light |
+| 다이어그램 (Mermaid/SVG) | 노드·관계 정확, 레이블 일치 | 가독성, 레이아웃 밀도, 곡선 커넥터 |
+
+### Loop 동작
+
+```
+/u-browse retail --loop
+  → orchestrator가 u-browse 실행 (전체 HTML 생성)
+  → gatekeeper: QV-01~QV-10 평가
+  → 평균 ≤ 95? → Content/Style 분리 Enhancement Directive
+    → orchestrator가 u-browse 재실행 (directive 기반 증분 수정)
+  → 평균 > 95 또는 max 도달 → 종료
+```
+
+**재수행 시:** 전체 재생성이 아니라 **미달 항목만 증분 수정**. 예: QV-07 미달 → 해당 HTML의 CSS만 수정, QV-03 미달 → 누락된 교차 참조 링크만 추가.
 
 ---
 
 ## Safety Rules
 
 1. **소스 문서 무수정:** `.md`/`.json`/`.html` 읽기만 수행
-2. **`_browse/` 디렉토리만 쓰기**
+2. **`out/browse/` 디렉토리만 쓰기**
 3. **인라인 리소스:** 외부 의존성 없는 단일 HTML (Mermaid.js CDN만 예외)
 4. **민감 정보 제외:** `.env` 값, 시크릿 포함 금지
 5. **기존 파일 덮어쓰기:** 스냅샷 개념

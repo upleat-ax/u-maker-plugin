@@ -101,7 +101,7 @@ Input             Resolution
 
 | Flag | Mode | Behavior |
 |------|------|----------|
-| (none) | auto | 끝까지 실행. 결정 사항은 `_assumptions/`에 기록 |
+| (none) | auto | 끝까지 실행. 결정 사항은 `data/assumptions/`에 기록 |
 | `-i` | interactive | 분기점(2개+ 선택지, 누락 정보, 충돌)에서만 중단 |
 | `--step` | step | 매 단계 결과 표시 후 승인 대기 |
 | `--only X` | -- | 지정 문서만 생성 (e.g., `--only srs`, `--only erd`) |
@@ -159,7 +159,7 @@ u-maker.config.json에서 앱 목록 조회 후 scope 해석.
 # 1. 프로젝트 초기화
 /u-init my-project
 
-# 2. .u-maker/_dropzone/에 RFP, 회의록, AS-IS 자료 드롭 → 원시 자료 분석
+# 2. .u-maker/data/dropzone/에 RFP, 회의록, AS-IS 자료 드롭 → 원시 자료 분석
 /u-ingest retail
 
 # 3. Plan 문서 생성 (SRS + IA + Roadmap)

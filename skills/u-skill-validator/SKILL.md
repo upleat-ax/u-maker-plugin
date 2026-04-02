@@ -7,7 +7,7 @@ description: "Phase Gate 검증, 문서 간 교차 정합성 검사(13개 규칙
 
 Phase Gate 검증, 13개 교차 정합성 규칙, Exit Criteria 판정, 문서 diff, 검증 리포트 생성.
 
-**Owner Agent:** u-agent-guardian
+**Owner Agent:** u-agent-gatekeeper
 
 ---
 
@@ -63,11 +63,11 @@ Phase Gate 검증, 13개 교차 정합성 규칙, Exit Criteria 판정, 문서 d
 | C-05 | API → ERD entity | api → erd | Major |
 | C-06 | RTM completeness | rtm → srs+screens+api | Critical |
 | C-07 | _index.json accuracy | index → 실제 파일 | Critical |
-| C-08 | _links.json validity | links → 실제 노드 | Major |
+| C-08 | data/links.json validity | links → 실제 노드 | Major |
 | C-09 | .md/.json pair | docs/ | Major |
 | C-10 | Header field presence | 각 .md (5개 필수) | Major |
 | C-11 | Status value validity | Draft/Review/Final | Minor |
-| C-12 | No orphaned classified | _classified → srs | Warning |
+| C-12 | No orphaned classified | data/classified → srs | Warning |
 | C-13 | Backlog source validity | _backlog → source ref | Warning |
 
 **출력:** `{ totalRules: 13, passed, failed, bySeverity, details[] }`

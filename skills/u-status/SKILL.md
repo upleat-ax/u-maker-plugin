@@ -39,10 +39,10 @@ triggers:
 1. `u-maker.config.json` 읽기 → 프로젝트 정보, iteration, 앱 목록
 2. 각 앱의 `app.config.json` → phase 정보
 3. 각 앱의 `_index.json` → 문서 상태 집계
-4. `_backlog/_index.json` → 백로그 항목 집계
-5. `_assumptions/_index.json` → 가정 현황
-6. `_sessions/` → 활성 토론 세션
-7. `.u-maker/_links.json` → impact flags 추출
+4. `data/backlog/_index.json` → 백로그 항목 집계
+5. `data/assumptions/_index.json` → 가정 현황
+6. `.state/sessions/` → 활성 토론 세션
+7. `.u-maker/data/links.json` → impact flags 추출
 
 ### Step 2: Compile Dashboard
 
@@ -92,7 +92,7 @@ Completion = Final / Total * 100
 | 02-design | api | Final | 1.0.0 | 03-23 | sa |
 | 02-design | screens | Draft | 0.1.0 | 03-22 | ux |
 | 03-dev | code | Draft | 0.1.0 | 03-26 | builder |
-| 04-check | test-cases | -- | -- | -- | guardian |
+| 04-check | test-cases | -- | -- | -- | gatekeeper |
 
 ### 3. Impact Flags
 

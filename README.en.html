@@ -272,7 +272,7 @@ curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/insta
   <text x="400" y="251" text-anchor="middle" fill="#5b21b6" font-size="10" font-weight="600">u-agent-* (dispatch)</text>
   <!-- Agents -->
   <rect x="520" y="230" width="180" height="32" rx="6" fill="#ede9fe" stroke="#8b5cf6"/>
-  <text x="610" y="246" text-anchor="middle" fill="#5b21b6" font-size="9">orchestrator|planner|builder|guardian</text>
+  <text x="610" y="246" text-anchor="middle" fill="#5b21b6" font-size="9">orchestrator|planner|builder|gatekeeper</text>
   <!-- Output -->
   <line x1="360" y1="262" x2="360" y2="290" stroke="#6b7280" stroke-width="1.5" marker-end="url(#ar)"/>
   <rect x="260" y="292" width="200" height="28" rx="14" fill="#1e293b"/>
@@ -337,11 +337,11 @@ curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/insta
 <table>
 <thead><tr><th>Phase</th><th>Deliverables</th><th>Responsible Agent</th><th>Gate Criteria</th></tr></thead>
 <tbody>
-<tr><td><strong>01 Plan</strong></td><td>SRS, IA, Roadmap</td><td>orchestrator&rarr;planner&rarr;guardian</td><td>SRS+IA+Roadmap = Final</td></tr>
-<tr><td><strong>02 Design</strong></td><td>ERD, API, Screen, ScreenFlow, UXGuide, RTM, wireframes/index.html</td><td>planner&rarr;guardian</td><td>ERD+RTM+Screen+API = Final</td></tr>
+<tr><td><strong>01 Plan</strong></td><td>SRS, IA, Roadmap</td><td>orchestrator&rarr;planner&rarr;gatekeeper</td><td>SRS+IA+Roadmap = Final</td></tr>
+<tr><td><strong>02 Design</strong></td><td>ERD, API, Screen, ScreenFlow, UXGuide, RTM, wireframes/index.html</td><td>planner&rarr;gatekeeper</td><td>ERD+RTM+Screen+API = Final</td></tr>
 <tr><td><strong>03 Do</strong></td><td>Code, UIComponents, Screen(impl)</td><td>builder</td><td>Code complete + build success</td></tr>
-<tr><td><strong>04 Check</strong></td><td>TestCase, TestReport</td><td>guardian</td><td>Critical/Major=0, all FR impl</td></tr>
-<tr><td><strong>05 Act</strong></td><td>IterationLog, Retrospective</td><td>orchestrator&rarr;guardian</td><td>Retro + archive complete</td></tr>
+<tr><td><strong>04 Check</strong></td><td>TestCase, TestReport</td><td>gatekeeper</td><td>Critical/Major=0, all FR impl</td></tr>
+<tr><td><strong>05 Act</strong></td><td>IterationLog, Retrospective</td><td>orchestrator&rarr;gatekeeper</td><td>Retro + archive complete</td></tr>
 </tbody>
 </table>
 
@@ -427,7 +427,7 @@ curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/insta
 <tr><td><code>u-agent-orchestrator</code></td><td>opus</td><td>Command router, Phase controller, State machine, _links.json management</td><td>ALL</td></tr>
 <tr><td><code>u-agent-planner</code></td><td>sonnet</td><td>Analysis + Design (SRS, IA, ERD, API, Screen, UX)</td><td>Plan, Design</td></tr>
 <tr><td><code>u-agent-builder</code></td><td>sonnet</td><td>Integrated FE + BE implementation</td><td>Do</td></tr>
-<tr><td><code>u-agent-guardian</code></td><td>sonnet</td><td>Gate verification, TestCase, consistency checks, RTM</td><td>Design, Do, Check, Act</td></tr>
+<tr><td><code>u-agent-gatekeeper</code></td><td>sonnet</td><td>Gate verification, TestCase, consistency checks, RTM</td><td>Design, Do, Check, Act</td></tr>
 </tbody>
 </table>
 
@@ -542,7 +542,7 @@ curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/insta
 </tbody>
 </table>
 
-<h3>Execution Engines (builder+guardian)</h3>
+<h3>Execution Engines (builder+gatekeeper)</h3>
 <table>
 <thead><tr><th>Engine</th><th>Role</th></tr></thead>
 <tbody>
@@ -739,7 +739,7 @@ Use <code>/u-update --cascade</code> for automatic dependent document updates.</
 |   +-- u-agent-orchestrator.md
 |   +-- u-agent-planner.md
 |   +-- u-agent-builder.md
-|   +-- u-agent-guardian.md
+|   +-- u-agent-gatekeeper.md
 +-- skills/
 |   +-- u-skill-*/SKILL.md            # 13 internal engines
 |   +-- u-*/SKILL.md                  # 24 command skills (user-invocable)
@@ -898,7 +898,7 @@ Use <code>/u-update --cascade</code> for automatic dependent document updates.</
 <table>
 <thead><tr><th>Command</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>@planner</code> / <code>@builder</code> / <code>@guardian</code></td><td>Ask a specific agent</td></tr>
+<tr><td><code>@planner</code> / <code>@builder</code> / <code>@gatekeeper</code></td><td>Ask a specific agent</td></tr>
 <tr><td><code>@all</code></td><td>Request opinions from all agents</td></tr>
 <tr><td><code>/idea [text]</code></td><td>Tag an idea</td></tr>
 <tr><td><code>/decide [text]</code></td><td>Record a decision</td></tr>

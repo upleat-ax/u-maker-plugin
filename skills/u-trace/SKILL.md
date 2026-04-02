@@ -12,7 +12,7 @@ triggers:
 
 `/u-trace [scope] [id] [--direction X] [--depth N]` 명령으로 특정 항목의 전체 추적성 체인을 조회한다. 원시 자료부터 최종 산출물까지의 계보를 표시한다.
 
-**Primary Agent:** u-agent-guardian (engine-dep, engine-validator 사용)
+**Primary Agent:** u-agent-gatekeeper (engine-dep, engine-validator 사용)
 
 ---
 
@@ -50,12 +50,12 @@ ID 패턴으로 항목 유형 자동 인식:
 | `US-XXXX` | User Story | `srs.json` |
 | `FT-XXXX` | Feature | `srs.json` |
 | `SCR-XXX` | Screen | `screens.json` |
-| `BL-XXX` | Backlog Item | `_backlog/_index.json` |
+| `BL-XXX` | Backlog Item | `data/backlog/_index.json` |
 | `TC-{T}-XXXX` | Test Case | `test-cases.json` |
 | `DEF-XXXX` | Defect | `defects/` |
-| `A-XXX` | Assumption | `_assumptions/_index.json` |
-| `DC-XXX` | Decision | `_classified/decisions/` |
-| `WF-XXX` | Workflow | `_classified/workflows/` |
+| `A-XXX` | Assumption | `data/assumptions/_index.json` |
+| `DC-XXX` | Decision | `data/classified/decisions/` |
+| `WF-XXX` | Workflow | `data/classified/workflows/` |
 
 ### Step 2: Load Data Sources
 
@@ -66,10 +66,10 @@ ID 패턴으로 항목 유형 자동 인식:
 5. `erd.json` → Entity-API 매핑
 6. `rtm.json` → 전체 추적 행렬
 7. `test-cases.json` → TC-FT 매핑
-8. `_backlog/_index.json` → BL source 참조
-9. `_classified/` → classified item source 메타데이터
-10. `.u-maker/_links.json` → 문서 간 의존 관계
-11. `_assumptions/_index.json` → 가정의 impact 참조
+8. `data/backlog/_index.json` → BL source 참조
+9. `data/classified/` → classified item source 메타데이터
+10. `.u-maker/data/links.json` → 문서 간 의존 관계
+11. `data/assumptions/_index.json` → 가정의 impact 참조
 
 ### Step 3: Trace UP (Source Direction)
 
@@ -81,8 +81,8 @@ FT-0007
   └── US-0003 (parent)
        └── FR-0001 (parent)
             └── USR-0001 (related)
-            └── _classified/requirements/FR-0001.json (source classified)
-                 └── _input/rfp/main-rfp.pdf p.15 §3.2.1 (raw source)
+            └── data/classified/requirements/FR-0001.json (source classified)
+                 └── data/input/rfp/main-rfp.pdf p.15 §3.2.1 (raw source)
 ```
 
 **역추적 규칙:**
@@ -92,13 +92,13 @@ FT-0007
 | FT | US | `srs.json` parentUS |
 | US | FR | `srs.json` parentFR |
 | FR | USR | `srs.json` relatedUSR |
-| FR | classified item | `srs.json` source.ref → `_classified/` |
-| classified item | raw input | `_classified/{item}.json` source.file |
+| FR | classified item | `srs.json` source.ref → `data/classified/` |
+| classified item | raw input | `data/classified/{item}.json` source.file |
 | SCR | FT | `screens.json` relatedFT → `srs.json` |
 | TC | FT | `test-cases.json` relatedFT |
 | DEF | TC | `defects/{def}.json` relatedTC |
-| BL | source ref | `_backlog/_index.json` source.ref |
-| A | impact refs | `_assumptions/_index.json` impact[] |
+| BL | source ref | `data/backlog/_index.json` source.ref |
+| A | impact refs | `data/assumptions/_index.json` impact[] |
 
 ### Step 4: Trace DOWN (Derived Direction)
 
@@ -139,15 +139,15 @@ FR-0001
 | FT | code | `code.json` file.relatedFT |
 | FT | TC | `test-cases.json` TC.relatedFT |
 | TC | DEF | `defects/` DEF.relatedTC |
-| DEF | BL | `_backlog/_index.json` source.ref = DEF |
+| DEF | BL | `data/backlog/_index.json` source.ref = DEF |
 
 ### Step 5: Assemble Full Chain
 
 양방향(both) 추적 결과를 병합:
 
 ```
-_input/rfp/main-rfp.pdf p.15 §3.2.1   ← raw source
-  └── _classified/requirements/FR-0001  ← classified
+data/input/rfp/main-rfp.pdf p.15 §3.2.1   ← raw source
+  └── data/classified/requirements/FR-0001  ← classified
        └── FR-0001: 사용자 인증          ← SRS requirement
             ├── US-0001: 이메일 로그인    ← user story
             │    ├── FT-0001: 로그인 폼 표시  ← feature
@@ -181,7 +181,7 @@ _input/rfp/main-rfp.pdf p.15 §3.2.1   ← raw source
 ## Trace Chain: FT-0007
 
 ### Upstream (← source)
-FT-0007 ← US-0003 ← FR-0001 ← USR-0001 ← _classified/FR-0001 ← rfp.pdf p.15
+FT-0007 ← US-0003 ← FR-0001 ← USR-0001 ← data/classified/FR-0001 ← rfp.pdf p.15
 
 ### Downstream (→ derived)
 FT-0007 → SCR-010 → code: dashboard/page.tsx
@@ -195,7 +195,7 @@ Mermaid 다이어그램:
 
 ```mermaid
 graph TD
-    RAW["rfp.pdf p.15"] --> CLS["_classified/FR-0001"]
+    RAW["rfp.pdf p.15"] --> CLS["data/classified/FR-0001"]
     CLS --> FR["FR-0001: 사용자 인증"]
     FR --> US1["US-0001: 이메일 로그인"]
     FR --> US2["US-0002: 소셜 로그인"]
@@ -255,7 +255,7 @@ FR-0001 referenced in:
   - rtm.md (row 1, 2)
   - ia.md (SCR mapping)
   - test-cases.md (via FT→TC)
-  - _backlog/ (BL-001 source)
+  - data/backlog/ (BL-001 source)
 ```
 
 ### Assumption Impact Trace

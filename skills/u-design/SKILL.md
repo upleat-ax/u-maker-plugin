@@ -24,6 +24,7 @@ triggers:
 | `--only X` | 지정 문서만 생성 (erd, api, screens, screen-flow, ux-guide, design-token, rtm) |
 | `-i` | 분기점에서 사용자 확인 |
 | `--step` | 매 단계 결과 표시 후 승인 대기 |
+| `--loop` | Content+Style Quality Loop (QV-01~QV-10 평가, 평균 95점 초과까지 반복) |
 
 ---
 
@@ -40,7 +41,7 @@ triggers:
 
 ### Step 1: Generate ERD
 
-**입력:** `_classified/data-models/`, `_classified/standards/`, SRS requirements
+**입력:** `data/classified/data-models/`, `data/classified/standards/`, SRS requirements
 
 **프로세스:**
 1. `data-models/_index.json` → AS-IS 테이블 구조
@@ -73,7 +74,7 @@ Related Docs: [SRS, API, RTM]
 
 ### Step 2: Generate API Contract
 
-**입력:** SRS Features (FT), ERD entities, `_classified/workflows/`
+**입력:** SRS Features (FT), ERD entities, `data/classified/workflows/`
 
 **프로세스:**
 1. `srs.json` → FT 목록에서 API 필요 항목 식별
@@ -97,7 +98,7 @@ Related Docs: [SRS, API, RTM]
 
 ### Step 3: Generate Screen Designs
 
-**입력:** IA, `_classified/screens/`, `_classified/ux-standards/`, `_classified/standards/`, SRS
+**입력:** IA, `data/classified/screens/`, `data/classified/ux-standards/`, `data/classified/standards/`, SRS
 
 > **UX Standards 반영:** `ux-standards/_index.json`에서 `appliesTo`에 `"screens"`를 포함하는 UXS 항목을 읽어, 화면 컴포넌트 규격(레이아웃, 인터랙션 패턴, 컴포넌트 사용 규칙)에 반영한다.
 > **Standards 반영:** `standards/_index.json`에서 폼 표준, 네이밍 컨벤션 등 화면 관련 항목을 참조하여 일관된 UI 규칙을 적용한다.
@@ -125,7 +126,7 @@ Related Docs: [SRS, API, RTM]
 
 ### Step 5: Generate UX Override (app-specific)
 
-**입력:** `common/ux/ux-guide.md`, `_classified/ux-standards/`, 앱별 UX 요구사항
+**입력:** `common/ux/ux-guide.md`, `data/classified/ux-standards/`, 앱별 UX 요구사항
 
 앱별 공통 UX와 다른 점이 있을 때만 생성:
 1. common UX guide 읽기
@@ -136,7 +137,7 @@ Related Docs: [SRS, API, RTM]
 
 ### Step 6: Generate Design Token (app-specific)
 
-**입력:** `common/ux/design-token.md`, `_classified/ux-standards/`, UX Override
+**입력:** `common/ux/design-token.md`, `data/classified/ux-standards/`, UX Override
 
 > **UX Standards 반영:** `ux-standards/_index.json`에서 `appliesTo`에 `"design-token"`을 포함하는 UXS 항목을 읽어, 디자인 토큰 값(색상, 타이포그래피, 간격 등)에 반영한다.
 
@@ -170,7 +171,7 @@ Related Docs: [SRS, API, RTM]
 ### Step 8: Update Indexes and Links
 
 1. `_index.json` 갱신: 모든 Design 문서 등록
-2. `_links.json` 갱신:
+2. `data/links.json` 갱신:
    ```json
    {"from": "{app}/srs", "to": "{app}/erd", "type": "derives"},
    {"from": "{app}/srs", "to": "{app}/api", "type": "derives"},
@@ -212,6 +213,38 @@ common/dev/coding-convention.md    (naming rules)
 
 ---
 
+## --loop Quality Loop (Content + Style)
+
+`/u-design --loop` 실행 시, 생성된 Design 문서를 gatekeeper가 **Content+Style 10대 기준(QV-01~QV-10)**으로 평가.
+
+### 평가 대상
+
+| 산출물 | Content 검증 | Style 검증 |
+|--------|-------------|-----------|
+| erd.md + erd.json | SRS 데이터 엔티티 전수 포함, 컬럼↔FR 역참조, FK 무결성 | Mermaid ER 다이어그램 가독성, 곡선 커넥터, 테이블 포맷 일관성 |
+| api.md + api.json | FT→endpoint 전수 매핑, req/res 스키마↔ERD 타입 일치 | OpenAPI 스타일 일관성, 메서드 배지, 에러 응답 상세 |
+| screens.md + screens.json | IA 노드→Screen 전수 매핑, 컴포넌트↔API 필드 매핑 | UX Standards 반영, 컴포넌트 규격 포맷, 인터랙션 패턴 기술 |
+| screen-flow.md + screen-flow.json | 모든 화면 incoming/outgoing 경로, 진입/분기/종단점 | Mermaid flowchart 레이아웃, 노드 레이블, 곡선 커넥터 |
+| rtm.md + rtm.json | 모든 FR의 FR→US→FT→Screen→API→ERD→TC 체인 완전 | 히트맵 매핑, Gap 하이라이트, 커버리지 비율 표시 |
+| wireframes/index.html | SCR-NNN별 HTML 어노테이션·탭 콘텐츠 충실 | 와이어프레임 뷰어 레이아웃, 반응형, 테마 |
+
+### Loop 동작
+
+```
+/u-design retail --loop
+  → planner가 ERD→API→Screens→ScreenFlow→RTM 연쇄 생성
+  → gatekeeper: QV-01~QV-10 평가
+  → 평균 ≤ 95? → Content/Style 분리 Enhancement Directive
+    → planner가 미달 문서만 증분 수정 (directive 기반)
+  → 평균 > 95 또는 max 도달 → 종료
+```
+
+**재수행 시:** 전체 재생성이 아니라 **미달 문서만 증분 수정**. 예: QV-02 미달(ERD↔API 타입 불일치) → erd.md와 api.md의 불일치 필드만 수정. QV-04 미달(다이어그램 노드 누락) → 해당 Mermaid 코드만 보정.
+
+**연쇄 영향:** 상위 문서 수정 시 하위 문서에 cascade 필요 여부를 gatekeeper가 판단. 예: ERD 수정 → API 스키마 영향 확인 → 다음 iteration에서 함께 평가.
+
+---
+
 ## Safety Rules
 
 1. Plan phase gate 미통과 시 진행 불가 (SRS + IA Final 필수)
@@ -219,6 +252,6 @@ common/dev/coding-convention.md    (naming rules)
 3. 모든 엔티티/엔드포인트/화면에 FR/FT 역참조 필수
 4. common ERD/API 참조 무결성 확인
 5. `.json` 동반 파일 생성 필수
-6. `_index.json`, `_links.json` 갱신 필수
+6. `_index.json`, `data/links.json` 갱신 필수
 7. Mermaid 다이어그램에 곡선 커넥터 사용 (직선 화살표 금지)
-8. auto mode 가정은 `_assumptions/`에 기록
+8. auto mode 가정은 `data/assumptions/`에 기록

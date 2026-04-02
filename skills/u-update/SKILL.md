@@ -123,7 +123,7 @@ triggers:
 
 `--cascade` 플래그 사용 시:
 
-1. `.u-maker/_links.json` 읽기
+1. `.u-maker/data/links.json` 읽기
 2. 수정된 문서를 기준으로 의존 그래프 탐색:
    ```
    srs → ia, erd, api, screens, rtm, roadmap, test-cases
@@ -191,7 +191,7 @@ cascade 대상 중 manual-review 항목에 Impact Flag 설정:
 1. `docs/{app}/_index.json`:
    - 수정된 문서의 `version`, `lastUpdated`, `status` 갱신
    - cascade로 수정된 문서들도 동일 갱신
-2. `.u-maker/_links.json`:
+2. `.u-maker/data/links.json`:
    - 새 의존 관계 추가 (항목 추가로 인한)
    - 삭제된 항목의 관계 제거
 
@@ -228,7 +228,7 @@ cascade 대상 중 manual-review 항목에 Impact Flag 설정:
 `--cascade` 미사용 시에도 경고 표시:
 
 ```
-⚠ This document has {n} dependents in _links.json.
+⚠ This document has {n} dependents in data/links.json.
   Run `/u-update {scope} {doc} --cascade` to propagate changes.
   Or run `/u-sync {scope}` to verify consistency.
 ```

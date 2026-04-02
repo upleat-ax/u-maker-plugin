@@ -122,7 +122,7 @@ FR → US → FT 계층 + FT → Screen + FT → API + API → ERD 매핑. 누�
 ### Step 9: Update Indexes and Links
 
 1. `_index.json` 갱신 (모든 문서 `status: "Draft"`)
-2. `_links.json` 갱신 (erd→api, ia→screens, screens→screen-flow, srs→rtm, api→srs)
+2. `data/links.json` 갱신 (erd→api, ia→screens, screens→screen-flow, srs→rtm, api→srs)
 3. `app.config.json` → `phase: "design"`
 
 ### Step 10: Display Summary
@@ -159,5 +159,5 @@ FR → US → FT 계층 + FT → Screen + FT → API + API → ERD 매핑. 누�
 2. 기존 SSoT 존재 시 덮어쓰기 전 반드시 사용자 확인
 3. 모든 산출물에 `status: "reverse-engineered"/"Draft"` + source 경로(파일+라인) 필수 부착
 4. `.env` 값, 하드코딩 API 키/시크릿 추출 금지
-5. `.json` 동반 파일 + `_index.json`/`_links.json` 갱신 필수
-6. 대용량은 청크 분할, 불확실한 분석은 `_assumptions/`에 기록
+5. `.json` 동반 파일 + `_index.json`/`data/links.json` 갱신 필수
+6. 대용량은 청크 분할, 불확실한 분석은 `data/assumptions/`에 기록
