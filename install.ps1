@@ -144,6 +144,16 @@ try {
     Expand-Archive -Path $zipFile -DestinationPath $extractDir -Force
     Write-OK "Extracted"
 
+    # --- Fix line endings (GitHub may deliver LF instead of CRLF) ---
+    Write-Step "Fixing line endings..."
+    Get-ChildItem $extractDir -Filter "*.bat" -Recurse | ForEach-Object {
+        $raw = [System.IO.File]::ReadAllText($_.FullName)
+        $fixed = $raw -replace "`r`n", "`n"
+        $fixed = $fixed -replace "`n", "`r`n"
+        [System.IO.File]::WriteAllText($_.FullName, $fixed)
+    }
+    Write-OK "Line endings fixed (CRLF)"
+
     # --- Find deploy_local.bat and run ---
     $deployBat = Get-ChildItem $extractDir -Filter "deploy_local.bat" -Recurse | Select-Object -First 1
     if (-not $deployBat) {
