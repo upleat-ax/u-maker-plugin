@@ -1,7 +1,7 @@
 {
   "name": "u-maker",
-  "version": "3.1.0",
-  "description": "PDCA-based SSoT plugin for Claude Code. 5-phase PDCA (Plan-Design-Do-Check-Act), 3-layer pipeline (data/input → data/classified → docs), 4 agents (Orchestrator/Planner/Builder/Gatekeeper), 13 engine skills, 19 intent-driven commands, backlog management, monorepo mirroring.",
+  "version": "3.1.1",
+  "description": "PDCA-based SSoT plugin for Claude Code. 5-phase PDCA (Plan-Design-Do-Check-Act), 3-layer pipeline (data/input \u2192 data/classified \u2192 docs), 4 agents (Orchestrator/Planner/Builder/Gatekeeper), 13 engine skills, 19 intent-driven commands, backlog management, monorepo mirroring.",
   "author": {
     "name": "u-plugin"
   },
