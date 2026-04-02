@@ -3,8 +3,8 @@
 PDCA 기반 SSoT(Single Source of Truth) 협업 오케스트레이터.
 4개 전문 에이전트와 3-Layer 파이프라인으로 소프트웨어 개발 전 과정을 자동화하는 Claude Code 플러그인.
 
-- Plugin version: `3.0.37`
-- Skills: `38` (13 engine + 24 command + 1 NL router) | Agents: `4`
+- Plugin version: `3.1.0`
+- Skills: `39` (13 engine + 25 command + 1 NL router) | Agents: `4`
 - [시작 가이드 (초보자용)](GET_STARTED.md) | [한국어 HTML](README.ko.html) | [English HTML](README.en.html)
 
 ---
@@ -120,7 +120,7 @@ USER INPUT
 
 | Prefix | 용도 | User-invocable | 수 |
 |--------|------|----------------|-----|
-| `u-*` | Command (slash command) | Yes | 24 |
+| `u-*` | Command (slash command) | Yes | 25 |
 | `u-skill-*` | Internal engine | No | 13 |
 | `u-skill-router` | Intent router | No | 1 |
 | `u-maker` | NL router + help | Yes | 1 |
@@ -469,7 +469,7 @@ SRS 변경 시 `_links.json` 기반으로 ERD, Screen, TestCase에 impact flag �
 
 ```
 u-maker-plugin/
-├── .claude-plugin/plugin.json        # v3.0.37
+├── .claude-plugin/plugin.json        # v3.1.0
 ├── agents/                           # 4 agent definitions
 │   ├── u-agent-orchestrator.md
 │   ├── u-agent-planner.md

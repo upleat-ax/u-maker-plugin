@@ -110,7 +110,7 @@ a:hover{text-decoration:underline}
 <nav class="sidebar" id="sidebar">
   <div class="sidebar-header">
     <h1>U-MAKER</h1>
-    <p>v3.0.37 &mdash; Plugin Documentation</p>
+    <p>v3.1.0 &mdash; Plugin Documentation</p>
   </div>
   <div class="sidebar-nav">
 
@@ -152,7 +152,7 @@ a:hover{text-decoration:underline}
     </div>
 
   </div>
-  <div class="sidebar-footer">GPL-3.0 &copy; U PLEAT &middot; v3.0.37</div>
+  <div class="sidebar-footer">GPL-3.0 &copy; U PLEAT &middot; v3.1.0</div>
 </nav>
 
 <main class="main">
@@ -163,7 +163,7 @@ a:hover{text-decoration:underline}
   <p>PDCA-based SSoT (Single Source of Truth) collaboration orchestrator.<br>
   A Claude Code plugin that automates the entire software development lifecycle with 4 specialized agents and a 3-Layer pipeline.</p>
   <div class="stats">
-    <div class="stat"><div class="stat-val">38</div><div class="stat-label">Skills (13 engine + 24 command + 1 NL router)</div></div>
+    <div class="stat"><div class="stat-val">39</div><div class="stat-label">Skills (13 engine + 25 command + 1 NL router)</div></div>
     <div class="stat"><div class="stat-val">4</div><div class="stat-label">Agents</div></div>
     <div class="stat"><div class="stat-val">5</div><div class="stat-label">PDCA Phases</div></div>
   </div>
@@ -284,7 +284,7 @@ curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/insta
 <table>
 <thead><tr><th>Prefix</th><th>Purpose</th><th>User-invocable</th><th>Count</th></tr></thead>
 <tbody>
-<tr><td><code>u-*</code></td><td>Command (slash command)</td><td>Yes</td><td>24</td></tr>
+<tr><td><code>u-*</code></td><td>Command (slash command)</td><td>Yes</td><td>25</td></tr>
 <tr><td><code>u-skill-*</code></td><td>Internal engine</td><td>No</td><td>13</td></tr>
 <tr><td><code>u-skill-router</code></td><td>Intent router</td><td>No</td><td>1</td></tr>
 <tr><td><code>u-maker</code></td><td>NL router + help</td><td>Yes</td><td>1</td></tr>
@@ -734,7 +734,7 @@ Use <code>/u-update --cascade</code> for automatic dependent document updates.</
 <h2 id="sec12">12. Plugin Repository Layout</h2>
 
 <pre><code>u-maker-plugin/
-+-- .claude-plugin/plugin.json        # v3.0.37
++-- .claude-plugin/plugin.json        # v3.1.0
 +-- agents/                           # 4 agent definitions
 |   +-- u-agent-orchestrator.md
 |   +-- u-agent-planner.md
@@ -742,7 +742,7 @@ Use <code>/u-update --cascade</code> for automatic dependent document updates.</
 |   +-- u-agent-gatekeeper.md
 +-- skills/
 |   +-- u-skill-*/SKILL.md            # 13 internal engines
-|   +-- u-*/SKILL.md                  # 24 command skills (user-invocable)
+|   +-- u-*/SKILL.md                  # 25 command skills (user-invocable)
 |   +-- u-maker/SKILL.md              # NL router
 +-- hooks/                            # Event hooks
 |   +-- hooks.json
@@ -979,7 +979,7 @@ cd /path/to/u-maker-plugin && ./deploy_local.sh</code></pre>
 
 <!-- Footer -->
 <div class="footer">
-  <strong>U-MAKER Plugin</strong> v3.0.37 &middot; GPL-3.0 &copy; U PLEAT<br>
+  <strong>U-MAKER Plugin</strong> v3.1.0 &middot; GPL-3.0 &copy; U PLEAT<br>
   PDCA-based SSoT collaboration orchestrator
 </div>
 
