@@ -18,7 +18,7 @@ PDCA 기반 SSoT(Single Source of Truth) 협업 오케스트레이터.
 curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/install.sh | bash
 
 # 1. 설치 (Windows — CMD 또는 PowerShell)
-powershell -NoProfile -ExecutionPolicy Bypass -Command "irm https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/install.ps1 | iex"
+powershell -NoProfile -ExecutionPolicy Bypass -Command "[Net.ServicePointManager]::SecurityProtocol=[Net.SecurityProtocolType]::Tls12;[Net.ServicePointManager]::CheckCertificateRevocationList=$false;iex(Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/install.ps1' -UseBasicParsing).Content"
 
 # 2. Claude Code 재시작 후 프로젝트에서 실행
 /u-init my-app                # .u-maker/ 구조 생성 + 앱 등록

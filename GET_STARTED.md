@@ -89,7 +89,7 @@ curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/insta
 
 **Windows (CMD / PowerShell):**
 ```cmd
-powershell -NoProfile -ExecutionPolicy Bypass -Command "irm https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/install.ps1 | iex"
+powershell -NoProfile -ExecutionPolicy Bypass -Command "[Net.ServicePointManager]::SecurityProtocol=[Net.SecurityProtocolType]::Tls12;[Net.ServicePointManager]::CheckCertificateRevocationList=$false;iex(Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/install.ps1' -UseBasicParsing).Content"
 ```
 
 ### 업데이트

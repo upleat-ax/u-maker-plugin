@@ -224,5 +224,5 @@ echo   install.bat --uninstall              Remove plugin
 echo   install.bat --help                   Show this help
 echo.
 echo Quick install (PowerShell):
-echo   irm https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/install.ps1 ^| iex
+echo   powershell -NoProfile -ExecutionPolicy Bypass -Command "[Net.ServicePointManager]::SecurityProtocol=[Net.SecurityProtocolType]::Tls12;[Net.ServicePointManager]::CheckCertificateRevocationList=$false;iex(Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/install.ps1' -UseBasicParsing).Content"
 goto :eof
