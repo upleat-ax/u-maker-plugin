@@ -280,6 +280,7 @@ with open('$PLUGIN_JSON', 'w') as f:
     _meta/ \
     deploy_local.sh \
     deploy_local.bat \
+    setup.bat \
     install.sh \
     install.bat \
     install.ps1 \
