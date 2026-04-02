@@ -838,7 +838,7 @@
         </div>
         <div class="feature-card">
           <h3>Windows (CMD / PowerShell)</h3>
-          <div class="code-block" style="margin-top:10px"><span class="cmd">powershell</span> <span class="flag">-NoProfile -ExecutionPolicy Bypass</span> -Command <span class="flag">"[Net.ServicePointManager]::SecurityProtocol=[Net.SecurityProtocolType]::Tls12;[Net.ServicePointManager]::CheckCertificateRevocationList=$false;iex(Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/install.ps1' -UseBasicParsing).Content"</span></div>
+          <div class="code-block" style="margin-top:10px"><span class="cmd">curl.exe</span> <span class="flag">-fsSL --ssl-no-revoke</span> -o <span class="flag">"%TEMP%\install.ps1"</span> https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/install.ps1 <span class="flag">&amp;&amp;</span> <span class="cmd">powershell</span> <span class="flag">-NoProfile -ExecutionPolicy Bypass -File</span> <span class="flag">"%TEMP%\install.ps1"</span></div>
         </div>
         <div class="feature-card green">
           <h3>Update</h3>

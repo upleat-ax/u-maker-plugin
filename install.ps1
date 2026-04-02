@@ -1,7 +1,7 @@
 # install.ps1 — u-maker plugin installer (Windows PowerShell)
 #
-# One-line install (CMD or PowerShell):
-#   powershell -NoProfile -ExecutionPolicy Bypass -Command "[Net.ServicePointManager]::SecurityProtocol=[Net.SecurityProtocolType]::Tls12;[Net.ServicePointManager]::CheckCertificateRevocationList=$false;iex(Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/install.ps1' -UseBasicParsing).Content"
+# One-line install (CMD):
+#   curl.exe -fsSL --ssl-no-revoke -o "%TEMP%\install.ps1" https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/install.ps1 && powershell -NoProfile -ExecutionPolicy Bypass -File "%TEMP%\install.ps1"
 #
 # Options (environment variables):
 #   $env:UMAKER_VERSION = "3.1.1"   # specific version

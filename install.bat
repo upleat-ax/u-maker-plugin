@@ -223,6 +223,6 @@ echo   install.bat --repo owner/repo        Use custom GitHub repo
 echo   install.bat --uninstall              Remove plugin
 echo   install.bat --help                   Show this help
 echo.
-echo Quick install (PowerShell):
-echo   powershell -NoProfile -ExecutionPolicy Bypass -Command "[Net.ServicePointManager]::SecurityProtocol=[Net.SecurityProtocolType]::Tls12;[Net.ServicePointManager]::CheckCertificateRevocationList=$false;iex(Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/install.ps1' -UseBasicParsing).Content"
+echo Quick install (CMD):
+echo   curl.exe -fsSL --ssl-no-revoke -o "%%TEMP%%\install.ps1" https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/install.ps1 ^&^& powershell -NoProfile -ExecutionPolicy Bypass -File "%%TEMP%%\install.ps1"
 goto :eof

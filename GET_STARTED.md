@@ -87,9 +87,9 @@ AI가 정보 부족 시 추정한 내용을 기록. `/u-assume approve/reject`�
 curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/install.sh | bash
 ```
 
-**Windows (CMD / PowerShell):**
+**Windows (CMD):**
 ```cmd
-powershell -NoProfile -ExecutionPolicy Bypass -Command "[Net.ServicePointManager]::SecurityProtocol=[Net.SecurityProtocolType]::Tls12;[Net.ServicePointManager]::CheckCertificateRevocationList=$false;iex(Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/install.ps1' -UseBasicParsing).Content"
+curl.exe -fsSL --ssl-no-revoke -o "%TEMP%\install.ps1" https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/install.ps1 && powershell -NoProfile -ExecutionPolicy Bypass -File "%TEMP%\install.ps1"
 ```
 
 ### 업데이트
