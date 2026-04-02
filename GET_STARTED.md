@@ -89,7 +89,7 @@ curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/insta
 
 **Windows (CMD / PowerShell):**
 ```cmd
-curl -fsSL --ssl-no-revoke https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/install.bat -o install.bat && install.bat && del install.bat
+powershell -NoProfile -ExecutionPolicy Bypass -Command "irm https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/install.ps1 | iex"
 ```
 
 ### 업데이트
