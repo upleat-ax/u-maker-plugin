@@ -187,16 +187,16 @@ The `erd.json` companion contains entity definitions:
 ```json
 {
   "id": "ENT-010",
-  "name": "User",
+  "name": "Users",
   "tableName": "users",
   "columns": [
     { "name": "id", "type": "uuid", "primary": true, "default": "gen_random_uuid()" },
     { "name": "email", "type": "varchar(255)", "unique": true, "nullable": false },
-    { "name": "passwordHash", "type": "varchar(255)", "nullable": false },
-    { "name": "createdAt", "type": "timestamptz", "default": "now()" }
+    { "name": "password_hash", "type": "varchar(255)", "nullable": false },
+    { "name": "created_at", "type": "timestamptz", "default": "now()" }
   ],
   "relations": [
-    { "type": "hasMany", "target": "ENT-020", "foreignKey": "userId" }
+    { "type": "hasMany", "target": "ENT-020", "foreignKey": "user_id" }
   ],
   "indexes": [
     { "columns": ["email"], "unique": true }
@@ -222,6 +222,7 @@ model User {
   email        String   @unique @db.VarChar(255)
   passwordHash String   @db.VarChar(255)
   createdAt    DateTime @default(now()) @db.Timestamptz
+  updatedAt    DateTime @updatedAt @db.Timestamptz
 
   // Relations
   posts        Post[]   // ENT-020
@@ -230,6 +231,8 @@ model User {
   @@index([email])
 }
 ```
+
+> **Rule:** Both Prisma model fields and DB column names use camelCase. No `@map` needed for columns. Only `@@map("pluralCamelCase")` at the model level for the table name. See `erd-spec.md § 8` for full conventions.
 
 ## 5. File Naming Conventions
 

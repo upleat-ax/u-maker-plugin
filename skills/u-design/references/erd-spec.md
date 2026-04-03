@@ -41,14 +41,14 @@ Every entity automatically includes these standard columns unless explicitly exc
 | Column | Type | Constraint | Description |
 |--------|------|-----------|-------------|
 | `id` | `bigint` | PK | Auto-increment primary key |
-| `created_at` | `timestamp` | — | Record creation timestamp |
-| `updated_at` | `timestamp` | — | Last modification timestamp |
+| `createdAt` | `timestamp` | — | Record creation timestamp |
+| `updatedAt` | `timestamp` | — | Last modification timestamp |
 
 For soft-delete enabled entities, add:
 
 | Column | Type | Constraint | Description |
 |--------|------|-----------|-------------|
-| `deleted_at` | `timestamp` | — | Soft-delete timestamp (null = active) |
+| `deletedAt` | `timestamp` | — | Soft-delete timestamp (null = active) |
 
 ## 3. Mermaid erDiagram Syntax Rules
 
@@ -58,13 +58,13 @@ The ERD diagram uses Mermaid's `erDiagram` syntax. This section documents critic
 
 ```mermaid
 erDiagram
-    USERS {
+    User {
         bigint id PK
         varchar email UK
-        varchar password_hash
+        varchar passwordHash
         varchar name
-        timestamp created_at
-        timestamp updated_at
+        timestamp createdAt
+        timestamp updatedAt
     }
 ```
 
@@ -75,14 +75,14 @@ erDiagram
 **Correct:**
 ```
 bigint id PK
-bigint category_id FK
+bigint categoryId FK
 varchar email UK
 ```
 
 **Incorrect (will break Mermaid rendering):**
 ```
 bigint id PK UK        ← FORBIDDEN: combined constraints
-bigint user_id PK FK   ← FORBIDDEN: combined constraints
+bigint userId PK FK    ← FORBIDDEN: combined constraints
 ```
 
 ### 3.3 Handling Multi-Constraint Columns
@@ -95,14 +95,14 @@ When a column logically requires multiple constraints (common in junction tables
 
 ```mermaid
 erDiagram
-    ORDER_ITEMS {
+    OrderItem {
         bigint id PK
-        bigint order_id FK
-        bigint product_id FK
+        bigint orderId FK
+        bigint productId FK
         int quantity
-        decimal unit_price
+        decimal unitPrice
     }
-    %% order_id + product_id also forms a unique composite key
+    %% orderId + productId also forms a unique composite key
 ```
 
 ### 3.4 Supported Column Types
@@ -112,6 +112,7 @@ erDiagram
 | `bigint` | Primary keys, foreign keys, large counters | `bigint id PK` |
 | `int` | Small integers, quantities, counts | `int quantity` |
 | `varchar` | Variable-length strings | `varchar email UK` |
+| `uuid` | UUIDs (alternative to bigint PK) | `uuid id PK` |
 | `text` | Long text content | `text description` |
 | `boolean` | True/false flags | `boolean is_active` |
 | `decimal` | Money, precise numbers | `decimal price` |
@@ -120,12 +121,12 @@ erDiagram
 | `json` | JSON data (flexible schema) | `json metadata` |
 | `enum` | Enumerated values | `enum status` |
 
-### 3.5 Entity Naming Convention (Mermaid Display)
+### 3.5 Entity Naming Convention
 
-- Entity names use `UPPER_SNAKE_CASE` in Mermaid diagrams: `USERS`, `ORDER_ITEMS`, `PRODUCT_CATEGORIES`.
-- **Plural form** for entity names (tables are collections): `USERS`, `ORDERS`, `USER_ROLES`.
-- Column names use `lower_snake_case`: `created_at`, `user_id`, `product_name`.
-- Foreign key columns follow the pattern `{referenced_table_singular}_id`: `user_id`, `category_id`, `order_id`.
+- Entity names use `PascalCase` (singular) in Mermaid diagrams: `User`, `OrderItem`, `ProductCategory`.
+- Column names use `camelCase`: `createdAt`, `userId`, `productName`.
+- Foreign key columns follow the pattern `{referencedEntity}Id`: `userId`, `categoryId`, `orderId`.
+- Actual DB table names use `camelCase` plural: `users`, `orderItems`, `productCategories`.
 - See § 8 for comprehensive naming conventions.
 
 ## 4. Relationship Cardinality Notation
@@ -151,28 +152,28 @@ ENTITY_A <cardinality>--<cardinality> ENTITY_B : "label"
 
 **One-to-Many (1:N):**
 ```
-USERS ||--o{ ORDERS : "places"
+User ||--o{ Order : "places"
 ```
-Read: "One USER places zero or many ORDERS."
+Read: "One User places zero or many Orders."
 
 **Many-to-Many (N:M) via junction table:**
 ```
-PRODUCTS ||--o{ ORDER_ITEMS : "included in"
-ORDERS ||--o{ ORDER_ITEMS : "contains"
+Product ||--o{ OrderItem : "included in"
+Order ||--o{ OrderItem : "contains"
 ```
-Read: "Many-to-many between PRODUCTS and ORDERS via ORDER_ITEMS junction."
+Read: "Many-to-many between Product and Order via OrderItem junction."
 
 **One-to-One (1:1):**
 ```
-USERS ||--o| PROFILES : "has"
+User ||--o| Profile : "has"
 ```
-Read: "One USER has zero or one PROFILE."
+Read: "One User has zero or one Profile."
 
 **Self-referencing:**
 ```
-CATEGORIES ||--o{ CATEGORIES : "parent of"
+Category ||--o{ Category : "parent of"
 ```
-Read: "A CATEGORY can be parent of zero or many CATEGORIES."
+Read: "A Category can be parent of zero or many Categories."
 
 ### 4.4 Relationship Label Conventions
 
@@ -186,62 +187,62 @@ Read: "A CATEGORY can be parent of zero or many CATEGORIES."
 
 ```mermaid
 erDiagram
-    USERS {
+    User {
         bigint id PK
         varchar email UK
-        varchar password_hash
+        varchar passwordHash
         varchar name
         enum role
-        boolean is_active
-        timestamp last_login_at
-        timestamp created_at
-        timestamp updated_at
+        boolean isActive
+        timestamp lastLoginAt
+        timestamp createdAt
+        timestamp updatedAt
     }
-    SESSIONS {
+    Session {
         bigint id PK
-        bigint user_id FK
+        bigint userId FK
         varchar token UK
-        timestamp expires_at
-        timestamp created_at
+        timestamp expiresAt
+        timestamp createdAt
     }
-    USERS ||--o{ SESSIONS : "has"
+    User ||--o{ Session : "has"
 ```
 
 ### 5.2 CRUD with Categories Pattern
 
 ```mermaid
 erDiagram
-    CATEGORIES {
+    Category {
         bigint id PK
         varchar name
-        bigint parent_id FK
-        int sort_order
+        bigint parentId FK
+        int sortOrder
     }
-    ITEMS {
+    Item {
         bigint id PK
-        bigint category_id FK
+        bigint categoryId FK
         varchar title
         text description
         enum status
-        timestamp created_at
-        timestamp updated_at
+        timestamp createdAt
+        timestamp updatedAt
     }
-    CATEGORIES ||--o{ ITEMS : "contains"
-    CATEGORIES ||--o{ CATEGORIES : "parent of"
+    Category ||--o{ Item : "contains"
+    Category ||--o{ Category : "parent of"
 ```
 
 ### 5.3 Audit Log Pattern
 
 ```mermaid
 erDiagram
-    AUDIT_LOGS {
+    AuditLog {
         bigint id PK
-        bigint user_id FK
-        varchar entity_type
-        bigint entity_id
+        bigint userId FK
+        varchar entityType
+        bigint entityId
         enum action
         json changes
-        timestamp created_at
+        timestamp createdAt
     }
 ```
 
@@ -249,15 +250,15 @@ erDiagram
 
 ```mermaid
 erDiagram
-    ATTACHMENTS {
+    Attachment {
         bigint id PK
-        varchar entity_type
-        bigint entity_id
-        varchar file_name
-        varchar file_path
-        varchar mime_type
-        bigint file_size
-        timestamp created_at
+        varchar entityType
+        bigint entityId
+        varchar fileName
+        varchar filePath
+        varchar mimeType
+        bigint fileSize
+        timestamp createdAt
     }
 ```
 
@@ -287,31 +288,32 @@ The `erd.json` file conforms to `_meta/schemas/doc-companion.schema.json`:
     {
       "id": "ENT-010",
       "type": "entity",
-      "title": "USERS",
-      "description": "Application user accounts",
+      "title": "User",
+      "description": "Application user account",
       "status": "Draft",
       "tracedFrom": ["FR-010"],
       "tracedTo": ["API-010", "SC-010"],
+      "tableName": "users",
       "columns": [
         { "name": "id", "type": "bigint", "constraint": "PK", "nullable": false },
         { "name": "email", "type": "varchar", "constraint": "UK", "nullable": false },
-        { "name": "password_hash", "type": "varchar", "constraint": null, "nullable": false },
+        { "name": "passwordHash", "type": "varchar", "constraint": null, "nullable": false },
         { "name": "name", "type": "varchar", "constraint": null, "nullable": false },
         { "name": "role", "type": "enum", "constraint": null, "nullable": false, "values": ["admin", "user", "manager"] },
-        { "name": "created_at", "type": "timestamp", "constraint": null, "nullable": false },
-        { "name": "updated_at", "type": "timestamp", "constraint": null, "nullable": false }
+        { "name": "createdAt", "type": "timestamp", "constraint": null, "nullable": false },
+        { "name": "updatedAt", "type": "timestamp", "constraint": null, "nullable": false }
       ]
     },
     {
       "id": "REL-010",
       "type": "relationship",
-      "title": "USERS places ORDERS",
+      "title": "User places Order",
       "description": "One user places zero or many orders",
       "status": "Draft",
       "from": "ENT-010",
       "to": "ENT-020",
       "cardinality": "1:N",
-      "fkColumn": "user_id"
+      "fkColumn": "userId"
     }
   ],
   "crossRefs": [
@@ -335,15 +337,15 @@ The `erd.json` file conforms to `_meta/schemas/doc-companion.schema.json`:
 
 Entity items include a `columns` array not present in the base doc-companion schema. Each column object contains: `name`, `type`, `constraint` (PK/FK/UK or null), `nullable`, and optionally `default` and `values` (for enum types). This extended structure enables downstream tools (API generator, code engine) to create database schemas automatically.
 
-## 8. Naming Conventions (Advanced)
+## 8. Naming Conventions (Advanced — camelCase Standard)
 
 > **Core Principle:** Consistency above all. Pick a convention and enforce it across the entire project — tables, columns, indexes, constraints, views. Mixed conventions are worse than any single choice.
 
 ### 8.1 General Rules
 
 - **English full names only** — no abbreviations (`customer`, not `cust`; `organization`, not `org`).
-- **snake_case + lowercase** exclusively — most stable across PostgreSQL, MySQL, and modern ORMs.
-- **No special characters or spaces** — only `[a-z0-9_]`.
+- **camelCase** for table names and column names — aligned with Prisma, JS/TS ecosystem, and modern ORM conventions.
+- **No special characters or spaces** — only `[a-zA-Z0-9]`.
 - **Avoid reserved words** — never use `user`, `order`, `select`, `group` as bare table names. Use plural forms (`users`, `orders`) which naturally avoids most collisions.
 - **Length guideline** — meaningful but concise, ideally ≤ 30 characters.
 
@@ -351,85 +353,90 @@ Entity items include a `columns` array not present in the base doc-companion sch
 
 | Rule | Convention | Example |
 |------|-----------|---------|
-| **Number** | **Plural** (tables are collections) | `users`, `orders`, `order_items` |
-| **Case** | **snake_case** (lowercase + `_`) | `user_profiles`, `product_categories` |
-| **Domain prefix** (large projects) | `{domain}_` prefix for grouping | `sales_orders`, `hr_employees`, `audit_logs` |
-| **Junction tables** (M:N) | Both table names, alphabetical order | `orders_products`, `roles_users` |
-| **History/log tables** | `{entity}_audit_logs` or `{entity}_history` | `user_audit_logs`, `order_history` |
-| **Mermaid display** | `UPPER_SNAKE_CASE` (Mermaid convention) | `USERS`, `ORDER_ITEMS` |
-| **Document title** | Title Case | "Order Items" |
+| **Number** | **Plural** (tables are collections) | `users`, `orders`, `orderItems` |
+| **Case** | **camelCase** (plural) | `userProfiles`, `productCategories` |
+| **Domain prefix** (large projects) | `{domain}` camelCase prefix | `salesOrders`, `hrEmployees`, `auditLogs` |
+| **Junction tables** (M:N) | Both entity names combined | `ordersProducts`, `rolesUsers` |
+| **History/log tables** | `{entity}AuditLogs` or `{entity}History` | `userAuditLogs`, `orderHistory` |
+| **Mermaid display** | `PascalCase` singular (model name) | `User`, `OrderItem` |
+| **Document title** | PascalCase singular | "OrderItem" |
 
 ### 8.3 Column Naming
 
 | Rule | Convention | Example |
 |------|-----------|---------|
-| **Number** | **Singular** always | `user_id`, `first_name` |
-| **Case** | **snake_case** | `billing_address_line1` |
+| **Number** | **Singular** always | `userId`, `firstName` |
+| **Case** | **camelCase** | `billingAddressLine1` |
 | **Primary Key** | `id` (simple) | `bigint id PK` |
-| **Foreign Key** | `{referenced_table_singular}_id` | `user_id`, `category_id`, `order_id` |
-| **Timestamps** | `created_at`, `updated_at`, `deleted_at` | `timestamp created_at` |
-| **Boolean flags** | `is_` prefix | `is_active`, `is_verified`, `is_published` |
+| **Foreign Key** | `{referencedEntity}Id` | `userId`, `categoryId`, `orderId` |
+| **Timestamps** | `createdAt`, `updatedAt`, `deletedAt` | `timestamp createdAt` |
+| **Boolean flags** | `is` prefix (camelCase) | `isActive`, `isVerified`, `isPublished` |
 | **Status fields** | `status` (enum/string) | `enum status` |
-| **Enum values** | lowercase snake_case | `active`, `in_progress`, `pending_review` |
+| **Enum values** | camelCase or lowercase | `active`, `inProgress`, `pendingReview` |
 
 ### 8.4 Constraints & Indexes
 
 | Object | Pattern | Example |
 |--------|---------|---------|
 | **Primary Key** | `pk_{table}` | `pk_users` |
-| **Foreign Key** | `fk_{table}_{referenced_table}` | `fk_orders_users` |
+| **Foreign Key** | `fk_{table}_{referenced}` | `fk_orders_users` |
 | **Unique** | `uq_{table}_{column}` | `uq_users_email` |
 | **Index** | `idx_{table}_{columns}` | `idx_users_email_status` |
-| **Check** | `ck_{table}_{column}` | `ck_orders_total_positive` |
+| **Check** | `ck_{table}_{column}` | `ck_orders_totalPositive` |
 
 ### 8.5 Other Database Objects
 
 | Object | Pattern | Example |
 |--------|---------|---------|
-| **View** | `v_{description}` or `vw_` prefix | `v_active_users`, `vw_order_summary` |
+| **View** | `v_{description}` or `vw_` prefix | `vActiveUsers`, `vwOrderSummary` |
 | **Schema** | Domain-based separation | `auth.`, `sales.`, `hr.`, `inventory.` |
-| **Trigger** | `trg_{table}_{event}` | `trg_users_before_update` |
-| **Function** | `fn_{description}` | `fn_calculate_total` |
+| **Trigger** | `trg_{table}_{event}` | `trg_users_beforeUpdate` |
+| **Function** | `fn_{description}` | `fnCalculateTotal` |
 
 ### 8.6 ORM Compatibility Notes
 
-| ORM / Framework | Preferred Convention | Notes |
-|-----------------|---------------------|-------|
-| **Laravel / Eloquent** | Plural snake_case tables, `id` PK | Auto-maps `User` model → `users` table |
-| **Django** | Plural snake_case | `app_model` prefix by default |
-| **Spring Data JPA** | snake_case with `@Table` | `naming-strategy: org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy` |
-| **Ruby on Rails** | Plural snake_case, `id` PK | Convention over configuration |
-| **Prisma** | PascalCase model → snake_case table via `@@map` | Explicit mapping recommended |
-| **Supabase** | Plural snake_case | PostgreSQL-native, snake_case essential |
+| ORM / Framework | Convention | Notes |
+|-----------------|-----------|-------|
+| **Prisma** | PascalCase model, camelCase fields | Native — no `@map` needed. `@@map("tableName")` for plural table |
+| **Drizzle ORM** | camelCase schema, camelCase columns | Direct mapping, zero friction |
+| **Supabase** | camelCase via JS client | PostgreSQL stores lowercase, JS client maps camelCase |
+| **TypeORM** | PascalCase entity, camelCase columns | `@Entity('tableName')` for plural |
+| **Sequelize** | camelCase model fields | `underscored: false` (default) |
+| **Laravel / Eloquent** | snake_case native | Needs `$snakeAttributes = false` for camelCase |
+| **Django** | snake_case native | Needs custom `db_column` for camelCase |
 
-### 8.7 Quick Reference (Copy-Paste)
+### 8.7 Quick Reference (Prisma)
 
-```sql
--- Table: plural + snake_case
-CREATE TABLE users (
-    id            BIGSERIAL PRIMARY KEY,
-    email         VARCHAR(255) UNIQUE NOT NULL,
-    first_name    VARCHAR(100),
-    last_name     VARCHAR(100),
-    is_active     BOOLEAN DEFAULT true,
-    created_at    TIMESTAMPTZ DEFAULT NOW(),
-    updated_at    TIMESTAMPTZ DEFAULT NOW()
-);
+```prisma
+// Model: PascalCase singular
+// Table: camelCase plural via @@map
+// Columns: camelCase (no @map needed)
+model User {
+  id           String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  email        String   @unique @db.VarChar(255)
+  passwordHash String   @db.VarChar(255)
+  firstName    String?  @db.VarChar(100)
+  lastName     String?  @db.VarChar(100)
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now()) @db.Timestamptz
+  updatedAt    DateTime @updatedAt @db.Timestamptz
 
--- Junction table: alphabetical combination
-CREATE TABLE roles_users (
-    user_id  BIGINT REFERENCES users(id),
-    role_id  BIGINT REFERENCES roles(id),
-    PRIMARY KEY (user_id, role_id)
-);
+  orders       Order[]
 
--- Index naming
-CREATE INDEX idx_users_email ON users(email);
+  @@map("users")
+  @@index([email])
+}
 
--- FK naming
-ALTER TABLE orders
-    ADD CONSTRAINT fk_orders_users
-    FOREIGN KEY (user_id) REFERENCES users(id);
+// Junction: camelCase plural
+model RoleUser {
+  userId String @db.Uuid
+  roleId String @db.Uuid
+  user   User   @relation(fields: [userId], references: [id])
+  role   Role   @relation(fields: [roleId], references: [id])
+
+  @@id([userId, roleId])
+  @@map("rolesUsers")
+}
 ```
 
 ### 8.8 u-maker ID Conventions
@@ -450,7 +457,7 @@ After ERD generation, the following validations are performed:
 5. **FK references valid entities:** Every FK column references an existing entity.
 6. **Relationship consistency:** Every REL item references valid entity IDs in `from` and `to`.
 7. **SRS traceability:** Every entity traces to at least one FR.
-8. **Standard columns present:** Every entity includes `id`, `created_at`, `updated_at` (warning if missing).
+8. **Standard columns present:** Every entity includes `id`, `createdAt`, `updatedAt` (warning if missing).
 9. **Mermaid syntax validity:** The erDiagram block is syntactically valid Mermaid.
 10. **JSON-Markdown sync:** Every item in `erd.json` has a corresponding entry in `erd.md`.
 11. **Link graph update:** `data/links.json` contains nodes and edges for all ERD items.
