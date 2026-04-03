@@ -4,7 +4,7 @@
 #   curl.exe -fsSL --ssl-no-revoke -o "%TEMP%\install.ps1" https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/install.ps1 && powershell -NoProfile -ExecutionPolicy Bypass -File "%TEMP%\install.ps1"
 #
 # Options (environment variables):
-#   $env:UMAKER_VERSION = "3.1.1"   # specific version
+#   $env:UMAKER_VERSION = "4.0.0"   # specific version
 #   $env:UMAKER_UNINSTALL = "1"     # uninstall mode
 
 $ErrorActionPreference = "Stop"
@@ -200,17 +200,12 @@ try {
         throw "deploy_local.bat failed"
     }
 
-    # --- Upgrade marker for existing .u-maker/ projects ---
-    $configPath = Join-Path (Get-Location) ".u-maker\u-maker.config.json"
-    if (Test-Path $configPath) {
-        try {
-            $cfg = Get-Content $configPath | ConvertFrom-Json
-            if ($cfg.ssotVersion -eq "3.0") {
-                $marker = @{ from="3.0"; to="3.1"; timestamp=(Get-Date -Format "yyyy-MM-ddTHH:mm:ssZ"); action="folder-restructure" }
-                $marker | ConvertTo-Json | Set-Content (Join-Path (Get-Location) ".u-maker\.upgrade-pending")
-                Write-OK "Upgrade marker set for v3.0 -> v3.1"
-            }
-        } catch {}
+    # --- Warn about existing .u-maker/ projects (v4.0 is a breaking change from v3.x) ---
+    $umakerDir = Join-Path (Get-Location) ".u-maker"
+    if (Test-Path $umakerDir) {
+        Write-Host ""
+        Write-Host "  [WARN] WARNING: v4.0 is not compatible with v3.x .u-maker/ folders. Please re-initialize with /u-plan." -ForegroundColor Yellow
+        Write-Host ""
     }
 
     Write-Host ""
@@ -219,7 +214,7 @@ try {
     Write-Host "  ========================================" -ForegroundColor Green
     Write-Host ""
     Write-Host "    Restart Claude Code, then run:" -ForegroundColor White
-    Write-Host "      /u-init my-project" -ForegroundColor Cyan
+    Write-Host "      /u-plan" -ForegroundColor Cyan
     Write-Host ""
 
 } catch {

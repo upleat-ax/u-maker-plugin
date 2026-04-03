@@ -251,27 +251,22 @@ do_install() {
   # Clean up temp files
   rm -rf "$tmp_dir"
 
-  # Leave upgrade marker for existing .u-maker/ projects
-  # Scans common project directories for .u-maker/ folders
-  log "Checking for existing .u-maker/ projects to mark for upgrade..."
-  local marker_count=0
+  # Warn about existing .u-maker/ projects (v4.0 is a breaking change from v3.x)
+  log "Checking for existing .u-maker/ projects..."
+  local found_count=0
   for umaker_dir in "$HOME"/*/".u-maker" "$HOME"/*/*/".u-maker" "$PWD"/".u-maker"; do
     if [[ -d "$umaker_dir" ]]; then
-      local config_file="$umaker_dir/u-maker.config.json"
-      local current_version=""
-      if [[ -f "$config_file" ]]; then
-        current_version=$(python3 -c "import json; print(json.load(open('$config_file')).get('ssotVersion',''))" 2>/dev/null || true)
-      fi
-      if [[ "$current_version" == "3.0" ]]; then
-        cat > "$umaker_dir/.upgrade-pending" <<MARKER
-{"from":"3.0","to":"3.1","timestamp":"$(date -u +%Y-%m-%dT%H:%M:%SZ)","action":"folder-restructure"}
-MARKER
-        marker_count=$((marker_count + 1))
-        ok "Upgrade marker: $umaker_dir"
-      fi
+      found_count=$((found_count + 1))
+      warn "Found: $umaker_dir"
     fi
   done
-  [[ $marker_count -eq 0 ]] && ok "No existing 3.0 projects found"
+  if [[ $found_count -gt 0 ]]; then
+    echo ""
+    warn "WARNING: v4.0 is not compatible with v3.x .u-maker/ folders. Please re-initialize with /u-plan."
+    echo ""
+  else
+    ok "No existing .u-maker/ projects found"
+  fi
 
   echo ""
   echo -e "${BOLD}========================================${NC}"
@@ -280,7 +275,7 @@ MARKER
   echo ""
   echo -e "  ${YELLOW}All previous data was removed and reinstalled fresh.${NC}"
   echo -e "  Restart Claude Code to start using u-maker."
-  echo -e "  Then run: ${BOLD}/u-skill-help${NC}"
+  echo -e "  Then run: ${BOLD}/u-plan${NC}"
   echo ""
 }
 

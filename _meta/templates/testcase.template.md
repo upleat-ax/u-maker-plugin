@@ -3,55 +3,41 @@ Owner: {{owner}}
 Status: {{status}}
 Version: {{version}}
 Last Updated: {{date}}
-Related Docs: [{{relatedDocs}}]
 App: {{app}}
+Companion: testcases.json
 ---
 
 # Test Cases
 
-## 1. TC List
+> JSON companion: `testcases.json`
+> ID Rule: TC-010, TC-020, ...
+> Traced from FT (Feature) items in SRS
 
-{{#testCases}}
-### {{id}}: {{title}}
+## 1. Test Case Summary
 
-| Item | Value |
-|------|-------|
-| Priority | {{priority}} |
-| Type | {{type}} |
-| Traced From | {{tracedFrom}} |
-| Status | {{status}} |
+| ID | Title | Type | Priority | FT | Status |
+|----|-------|------|----------|-----|--------|
+| TC-010 | {{title}} | unit/integration/e2e/a11y/perf/security | P1/P2/P3 | FT-010 | Draft |
+
+## 2. Test Case Details
+
+### TC-010: {{title}}
+
+| Field | Value |
+|-------|-------|
+| Type | unit / integration / e2e / a11y / perf / security |
+| Priority | P1 (Must) / P2 (Should) / P3 (Could) |
+| Traced From | FT-010 |
 | Precondition | {{precondition}} |
 
 **Steps:**
 
-| Step | Action | Expected Result |
-|------|--------|-----------------|
-{{#steps}}
-| {{number}} | {{action}} | {{expected}} |
-{{/steps}}
+| # | Action | Expected Result |
+|---|--------|----------------|
+| 1 | {{action}} | {{expected}} |
 
 **Test Data:**
 
-{{#testData}}
-- {{name}}: `{{value}}`
-{{/testData}}
-
----
-{{/testCases}}
-
-## 2. Coverage by FT
-
-| FT ID | FT Title | TC Count | Normal | Abnormal | Boundary | Coverage |
-|-------|----------|----------|--------|----------|----------|----------|
-{{#ftCoverage}}
-| {{ftId}} | {{ftTitle}} | {{tcCount}} | {{normal}} | {{abnormal}} | {{boundary}} | {{coverage}} |
-{{/ftCoverage}}
-
-## 3. Priority Classification
-
-| Priority | Count | Description |
-|----------|-------|-------------|
-| Critical | {{criticalCount}} | Core functionality, must pass for release |
-| High | {{highCount}} | Important features, blocking issues |
-| Medium | {{mediumCount}} | Standard functionality |
-| Low | {{lowCount}} | Edge cases, nice-to-have validations |
+| Input | Value | Notes |
+|-------|-------|-------|
+| {{field}} | {{value}} | {{notes}} |

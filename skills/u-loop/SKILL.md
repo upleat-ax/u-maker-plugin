@@ -1,146 +1,247 @@
 ---
 name: u-loop
-description: "무인 자동 실행 루프. PDCA 파이프라인을 중단 없이 연속 실행한다. 밤새 돌려놓으면 아침에 결과물을 확인할 수 있다. 체크포인트 기반 재개, 에러 자동 복구, 진행 로그를 지원한다."
+description: "Unattended PDCA auto-execution loop. Runs Plan→Design→Dev→Check→Ship phases sequentially with gatekeeper validation (--loop) at each phase. Use when automating full project pipeline or resuming from a specific phase."
+version: 3.2.0
 triggers:
   - "/u-loop"
-  - "/u-pleat"
-  - "loop"
-  - "pleat"
-  - "자동 실행"
-  - "밤새 돌려"
-  - "무인 실행"
-  - "전체 자동"
-  - "run all"
+  - "auto loop"
+  - "run all phases"
+  - "full pipeline"
+  - "unattended"
 ---
 
-# u-loop -- Unattended Continuous Execution
+# u-loop — Unattended PDCA Auto-Execution Loop
 
-`/u-loop [scope] [--from X] [--to Y] [--max-errors N] [--resume]` 명령으로 PDCA 파이프라인을 중단 없이 연속 실행한다.
+`/u-loop [--app {name}] [--from {phase}] [--to {phase}] [--dry-run] [--max-retries {n}]`
 
-**Primary Agent:** u-agent-orchestrator | **용도:** 밤새 무인 자동화. auto 모드 강제, 에러 시 자동 복구/스킵, 모든 판단을 Assumptions Log에 기록.
+Run all PDCA phases (Plan → Design → Dev → Check → Ship) sequentially. Each phase executes with `--loop` enabled so the gatekeeper validates and retries until quality passes (avg >= 95) or max retries exhausted.
 
----
+**Engine Dependencies:** All engines (doc, html, digest, dep, router)
+**State:** `.state/loop-state.json`
 
-## Flags
+## Options
 
-| Flag | Default | Description |
-|------|---------|-------------|
-| `--from X` | `ingest` | 시작 단계 (ingest/plan/design/dev/qa) |
-| `--to Y` | `qa` | 종료 단계 (ship은 루프 제외) |
-| `--max-errors N` | `10` | 누적 에러 초과 시 중단 |
-| `--max-assumptions N` | `50` | 가정 초과 시 중단 (무한 추정 방지) |
-| `--resume` | - | 이전 중단 지점에서 재개 |
-| `--dry-run` | - | 실행 계획만 표시 |
-| `--notify` | - | 완료/중단 시 알림 |
-| `--iterations N` | `1` | PDCA 반복 횟수 |
+| Option | Default | Description |
+|--------|---------|-------------|
+| `--app {name}` | required | Target app name |
+| `--from {phase}` | `plan` | Start from this phase (plan/design/dev/check/ship) |
+| `--to {phase}` | `ship` | Stop after this phase |
+| `--dry-run` | OFF | Show execution plan without running |
+| `--max-retries {n}` | `3` | Max gatekeeper retries per phase |
 
----
+## PDCA Phase Sequence
+
+```
+Phase 1: PLAN    → /u-plan --auto --loop --app {name}
+Phase 2: DESIGN  → /u-design --auto --loop --app {name}
+Phase 3: DEV     → /u-dev --auto --loop --app {name}
+Phase 4: CHECK   → /u-check --auto --loop --app {name}
+Phase 5: SHIP    → (Final gate + output packaging)
+```
+
+Each phase MUST pass its gatekeeper gate (avg >= 95) before advancing to the next phase.
 
 ## Execution Flow
 
-### Step 0: Pre-flight Check
+### Step 0: Initialize Loop State
 
-1. `.u-maker/` 존재 확인 → config 읽기 → scope 해석
-2. `--resume`: `.state/loop-state.json` 로드 → 마지막 체크포인트에서 재개 / 없으면 새 루프
-3. 실행 계획 생성 표시 (scope, mode, pipeline 범위, limits)
-4. `--dry-run`이면 여기서 종료
+1. Read or create `.state/loop-state.json`
+2. Determine starting phase (from `--from` or last incomplete phase)
+3. Validate `--app` parameter exists
+4. If `--dry-run` → print execution plan and exit
 
-### Step 1: Execute Pipeline
-
-모든 단계 auto 모드 강제 (사용자 입력 대기 없음).
-
-**Pipeline:** `[ingest] → [plan] → [gate] → [design] → [gate] → [dev] → [gate] → [qa]`
-
-> `/u-ship`은 의도적 제외. 배포는 사람이 결과 확인 후 직접 실행.
-
-| Step | 커맨드 | 성공 조건 | 실패 시 |
-|------|--------|----------|---------|
-| ingest | `/u-ingest {scope}` | classified 1개+ | 스킵 (raw data 없으면) |
-| plan | `/u-plan {scope}` | SRS+IA+Roadmap 생성 | 에러 로그 + 중단 |
-| gate-1 | `/u-gate {scope}` | Plan→Design PASS | 자동 재시도 1회 |
-| design | `/u-design {scope}` | ERD+API+Screen+RTM 생성 | 에러 로그 + 중단 |
-| gate-2 | `/u-gate {scope}` | Design→Do PASS | 자동 재시도 1회 |
-| dev | `/u-dev {scope}` | Code 생성 + build success | build 실패 시 자동 수정 3회 |
-| gate-3 | `/u-gate {scope}` | Do→Check PASS | 자동 재시도 1회 |
-| qa | `/u-qa {scope}` | TC+Report 생성 | 실패는 결과 기록 (중단 안함) |
-
-### Step 1.1: Auto Review Report (per step)
-
-각 단계 완료 후 `/u-report {scope} --only {phase}` 자동 호출 → `.u-maker/out/reports/loop-{loopId}/`에 저장. 루프 종료 시 `--only dashboard` 추가 생성. 브라우저에서 `index.html` 열어 전체 결과 확인.
-
-### Step 2: Checkpoint Management
-
-매 단계 완료 시 `.u-maker/.state/loop-state.json`에 체크포인트 저장:
+**loop-state.json schema:**
 
 ```json
 {
-  "loopId": "LOOP-{timestamp}",
-  "scope": "retail",
-  "currentStep": "design",
-  "completedSteps": ["ingest", "plan", "gate-1"],
-  "iteration": 1,
-  "status": "running",
-  "config": { "from": "ingest", "to": "qa", "maxErrors": 10, "maxAssumptions": 50 },
-  "errors": [{ "step": "plan", "error": "...", "action": "assumed Medium", "assumptionId": "A-015" }],
-  "metrics": { "totalErrors": 2, "totalAssumptions": 15, "documentsCreated": 8, "elapsedMs": 1234567 }
+  "app": "myapp",
+  "startedAt": "2026-04-04T10:00:00Z",
+  "currentPhase": "plan",
+  "maxRetries": 3,
+  "phases": {
+    "plan":   { "status": "pending", "attempts": 0, "score": null, "completedAt": null },
+    "design": { "status": "pending", "attempts": 0, "score": null, "completedAt": null },
+    "dev":    { "status": "pending", "attempts": 0, "score": null, "completedAt": null },
+    "check":  { "status": "pending", "attempts": 0, "score": null, "completedAt": null },
+    "ship":   { "status": "pending", "attempts": 0, "score": null, "completedAt": null }
+  },
+  "history": []
 }
 ```
 
-### Step 3: Error Handling
+### Step 1: Execute Phase
 
-| 에러 유형 | 자동 대응 | 최대 재시도 |
-|----------|----------|------------|
-| Gate 실패 | 누락 문서 자동 생성 시도 | 1회 |
-| Build 실패 | missing imports, type 에러 자동 수정 | 3회 |
-| Test 실패 | 정상 결과로 기록 (중단 안함) | - |
-| 문서 생성 실패 | 재시도 → 실패 시 스킵 + 로그 | 2회 |
-| 데이터 부족 | assumption 생성 후 계속 | - |
-| Unknown | 에러 로그 + 다음 단계 시도 | 1회 |
+For the current phase:
 
-**Hard Stop 조건:** max-errors 초과 / max-assumptions 초과 / `.u-maker/` 구조 손상 / 동일 에러 3회 연속 / 디스크 부족
+1. Set `phases[phase].status = "running"`
+2. Save loop-state
+3. Invoke the phase skill with `--auto --loop --app {name}`:
 
-### Step 4: Progress Logging
+| Phase | Skill | What it produces |
+|-------|-------|-----------------|
+| plan | `/u-plan` | SRS + IA (md+json+html) |
+| design | `/u-design` | ERD + API + Screens + Design System (md+json+html) |
+| dev | `/u-dev` | FE + BE + DB code |
+| check | `/u-check` | Test Cases + Test Results (md+json+html) |
+| ship | (final gate) | Output packaging, version bump, summary |
 
-`.u-maker/.state/loop-log.md`에 실시간 기록 (append only): 각 단계 Status, Duration, 생성 항목 수, Assumptions 수. 완료 시 Summary 테이블 포함.
+### Step 2: Gatekeeper Validation
 
-### Step 5: Multi-Iteration
+Each phase skill with `--loop` automatically invokes `u-agent-gatekeeper`:
 
-`--iterations N` (N>=2): 각 iteration에서 이전 QA 결과 + backlog 미완료 수집 → 다음 Plan 반영 → `iteration.current` 자동 증가
+1. Gatekeeper scores 11 criteria (GK-01 through GK-11)
+2. Calculate average score
+3. If avg >= 95 → **PASS**:
+   - Set `phases[phase].status = "passed"`
+   - Record score and completedAt
+   - Advance to next phase
+4. If avg < 95 → **FAIL**:
+   - Increment `phases[phase].attempts`
+   - Record improvement items in history
+   - If attempts < maxRetries → re-execute phase with improvements
+   - If attempts >= maxRetries → **ESCALATE** (halt loop, notify user)
 
-### Step 6: Completion Report
+### Step 3: Phase Transition
 
-Pipeline Result 테이블, Metrics, Next Steps (사람이 직접: assumptions 리뷰, 실패 테스트 확인, 백로그 정리, `/u-ship`), 리포트 파일 경로 표시.
+On PASS:
 
----
+1. Log transition in `history[]`:
+   ```json
+   {
+     "phase": "plan",
+     "action": "passed",
+     "score": 96.5,
+     "timestamp": "2026-04-04T10:15:00Z"
+   }
+   ```
+2. Update `currentPhase` to next phase
+3. Save loop-state
+4. If current phase <= `--to` phase → goto Step 1
+5. If all phases complete → goto Step 4
 
-## --from / --to 범위
+On FAIL (max retries):
 
-| 값 | 순서 |
-|----|------|
-| `ingest` | 1 |
-| `plan` | 2 |
-| `design` | 3 |
-| `dev` | 4 |
-| `qa` | 5 |
+1. Set `phases[phase].status = "failed"`
+2. Log failure with accumulated improvement items
+3. Print escalation message:
+   ```
+   LOOP HALTED at {phase} after {n} retries.
+   Last score: {score}/100
+   Blocking issues:
+   - [GK-04] Missing traceability: FR-030 → no linked US
+   - [GK-09] Mermaid syntax error in erd.md
+   Action: Fix issues manually, then run /u-loop --from {phase}
+   ```
+4. Exit loop
 
-> `ship`은 루프 제외. 배포/회고는 `/u-ship`으로 직접 실행.
+### Step 4: Completion
 
----
+When all phases pass (or `--to` phase reached):
 
-## Resume
+1. Set all completed phases to `"passed"`
+2. Print summary dashboard:
 
-`/u-loop retail --resume` → `.state/loop-state.json` 로드 → `completedSteps` 이후 재개 → 에러/가정 카운트 유지 → 로그에 "RESUMED" 마커. 파일 없으면 에러.
+```
+========================================
+  u-loop Complete: {app}
+========================================
+  Phase    | Score  | Attempts | Time
+  ---------|--------|----------|--------
+  Plan     | 97.2   | 1        | 2m 15s
+  Design   | 95.8   | 2        | 4m 30s
+  Dev      | 96.1   | 1        | 3m 45s
+  Check    | 98.0   | 1        | 1m 50s
+  Ship     | 99.0   | 1        | 0m 30s
+  ---------|--------|----------|--------
+  Overall  | 97.2   | 6 total  | 12m 50s
+========================================
+  Status: ALL PHASES PASSED
+========================================
+```
 
-## Multi-App
+3. Write summary to `.state/loop-state.json` with `"status": "completed"`
 
-`/u-loop all` 또는 `retail,admin` → common 정책 먼저 → 앱별 순차 실행 (의존성 가능하므로 병렬 안함) → 앱별 state/log 개별 생성
+## Resume Support
 
----
+If a loop was interrupted (crash, user cancel, timeout):
 
-## Safety Rules
+1. `/u-loop --app {name}` auto-detects existing loop-state
+2. Finds first phase with `status != "passed"`
+3. Resumes from that phase
+4. Previous phase results are preserved (no re-execution)
 
-1. auto 모드 강제: 모든 판단은 assumption으로 기록
-2. 소스/`data/input/` 무수정, `.u-maker/` 대상 디렉토리만 쓰기
-3. 체크포인트 필수, 무한 루프 방지 (동일 에러 3회 시 hard stop)
-4. max-errors/max-assumptions 가드, 기존 Final 문서 보존
-5. 로그 보존 (append only), 중단 시 상태 저장 후 종료
+To force restart: delete `.state/loop-state.json` or use `--from plan`
+
+## Phase Dependencies
+
+```
+plan ──────► design ──────► dev ──────► check ──────► ship
+  SRS+IA       ERD+API       Code        TC+Results    Package
+               Screens
+               DesignSys
+```
+
+Each phase reads outputs of all previous phases. If an upstream phase changes (e.g., SRS updated), downstream phases MUST re-execute. The dep-engine (`data/links.json`) tracks these dependencies.
+
+## Dry Run Output
+
+`/u-loop --app myapp --dry-run` prints:
+
+```
+u-loop Execution Plan for: myapp
+──────────────────────────────────
+Phase 1: PLAN
+  → /u-plan --auto --loop --app myapp
+  Input:  data/dropzone/
+  Output: docs/myapp/plan/ (SRS, IA)
+  Gate:   11-criteria avg >= 95
+
+Phase 2: DESIGN
+  → /u-design --auto --loop --app myapp
+  Input:  docs/myapp/plan/ (SRS, IA)
+  Output: docs/myapp/design/ (ERD, API, Screens, Design System)
+  Gate:   11-criteria avg >= 95
+
+Phase 3: DEV
+  → /u-dev --auto --loop --app myapp
+  Input:  docs/myapp/design/ (ERD, API, Screens, Design System)
+  Output: Generated code (FE, BE, DB)
+  Gate:   11-criteria avg >= 95
+
+Phase 4: CHECK
+  → /u-check --auto --loop --app myapp
+  Input:  docs/myapp/plan/srs.json (FT items) + generated code
+  Output: docs/myapp/check/ (Test Cases, Test Results)
+  Gate:   11-criteria avg >= 95
+
+Phase 5: SHIP
+  → Final gate + output packaging
+  Output: output/myapp/ (all HTML), version bump
+──────────────────────────────────
+Max retries per phase: 3
+Estimated phases: 5
+```
+
+## Error Handling
+
+| Scenario | Behavior |
+|----------|----------|
+| Missing `--app` | Error: "--app is required for /u-loop" |
+| Missing dropzone data | Error at plan phase: "No data in data/dropzone/" |
+| Phase skill not found | Error: "Skill u-{phase} not found" |
+| Gatekeeper unavailable | Retry once, then halt with warning |
+| Disk/write error | Halt loop, preserve loop-state |
+| User interrupt (Ctrl+C) | Save current loop-state, exit gracefully |
+
+## Checklist
+
+- [ ] loop-state.json created/updated at each transition
+- [ ] Each phase invoked with `--auto --loop --app {name}`
+- [ ] Gatekeeper score recorded per phase
+- [ ] Failed phases retry up to maxRetries
+- [ ] Resume from last incomplete phase on re-run
+- [ ] History array logs all transitions
+- [ ] Summary dashboard printed on completion
+- [ ] Escalation message includes actionable improvement items
+- [ ] `--dry-run` shows plan without execution
+- [ ] `--from` / `--to` correctly limits phase range

@@ -167,10 +167,12 @@ echo   [..] Cleaning up temporary files...
 rd /s /q "%TMP_DIR%" 2>nul
 echo   [OK] Temporary files removed
 
-:: Leave upgrade marker for existing .u-maker/ projects
+:: Warn about existing .u-maker/ projects (v4.0 is a breaking change from v3.x)
 echo   [..] Checking for existing projects...
-if exist "%CD%\.u-maker\u-maker.config.json" (
-    powershell -NoProfile -Command "%PS_TLS% $c=Get-Content '%CD%\.u-maker\u-maker.config.json' | ConvertFrom-Json; if($c.ssotVersion -eq '3.0'){@{from='3.0';to='3.1';timestamp=(Get-Date -Format 'yyyy-MM-ddTHH:mm:ssZ');action='folder-restructure'}|ConvertTo-Json|Set-Content '%CD%\.u-maker\.upgrade-pending'; Write-Host '  [OK] Upgrade marker set for %CD%\.u-maker'}" 2>nul
+if exist "%CD%\.u-maker" (
+    echo.
+    echo   [WARN] WARNING: v4.0 is not compatible with v3.x .u-maker/ folders. Please re-initialize with /u-plan.
+    echo.
 )
 
 echo.
@@ -179,7 +181,7 @@ echo   u-maker %VERSION% installed!
 echo ========================================
 echo.
 echo   Restart Claude Code to start using u-maker.
-echo   Then run: /u-skill-help
+echo   Then run: /u-plan
 echo.
 goto :eof
 

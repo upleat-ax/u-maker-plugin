@@ -1,0 +1,81 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Digest File",
+  "description": "Refined analysis data from raw dropzone files",
+  "type": "object",
+  "required": ["sourceFile", "sourceHash", "analyzedAt", "summary", "keywords"],
+  "properties": {
+    "sourceFile": {
+      "type": "string",
+      "description": "Relative path from data/dropzone/"
+    },
+    "sourceHash": {
+      "type": "string",
+      "description": "SHA-256 hash of source file for change detection"
+    },
+    "analyzedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "summary": {
+      "type": "string",
+      "description": "Concise summary of the source document"
+    },
+    "keywords": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "requirements": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "type": { "enum": ["functional", "non-functional"] },
+          "title": { "type": "string" },
+          "description": { "type": "string" },
+          "priority": { "enum": ["Must", "Should", "Could", "Won't"] }
+        }
+      }
+    },
+    "constraints": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "domainTerms": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "term": { "type": "string" },
+          "definition": { "type": "string" }
+        }
+      }
+    },
+    "stakeholders": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "role": { "type": "string" },
+          "needs": { "type": "string" }
+        }
+      }
+    },
+    "painPoints": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "workflows": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "steps": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    }
+  }
+}

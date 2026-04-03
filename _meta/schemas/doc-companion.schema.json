@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Document Companion JSON",
+  "description": "Structured companion for SSoT markdown documents",
+  "type": "object",
+  "required": ["docType", "app", "status", "version", "lastUpdated", "items"],
+  "properties": {
+    "docType": {
+      "enum": ["srs", "ia", "erd", "api", "screens", "design-system", "testcases", "test-results"]
+    },
+    "app": { "type": "string" },
+    "status": { "enum": ["Draft", "Review", "Final"] },
+    "version": { "type": "string" },
+    "lastUpdated": { "type": "string", "format": "date-time" },
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "type", "title", "status"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[A-Z]{2,4}-\\d{3}$",
+            "description": "ID in 10-increment format: FR-010, US-020, etc."
+          },
+          "type": { "type": "string" },
+          "title": { "type": "string" },
+          "description": { "type": "string" },
+          "status": { "enum": ["Draft", "Review", "Approved", "Implemented", "Tested"] },
+          "priority": { "enum": ["Must", "Should", "Could", "Won't"] },
+          "tracedFrom": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "IDs of parent items (e.g., FR-010 traces from USR-010)"
+          },
+          "tracedTo": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "IDs of child items"
+          }
+        }
+      }
+    },
+    "crossRefs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "from": { "type": "string" },
+          "to": { "type": "string" },
+          "relation": { "type": "string" }
+        }
+      }
+    }
+  }
+}

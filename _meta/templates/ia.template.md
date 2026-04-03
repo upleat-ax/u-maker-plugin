@@ -3,74 +3,43 @@ Owner: {{owner}}
 Status: {{status}}
 Version: {{version}}
 Last Updated: {{date}}
-Related Docs: [{{relatedDocs}}]
 App: {{app}}
+Companion: ia.json
 ---
 
 # Information Architecture (IA)
 
-## 1. Site/App Map
+> JSON companion: `ia.json`
+> ID Rule: 10-increment (IA-010, IA-020, ...)
 
-```
-{{appName}}
-{{#siteMap}}
-├── {{name}} ({{route}})
-{{#children}}
-│   ├── {{name}} ({{route}})
-{{#children}}
-│   │   └── {{name}} ({{route}})
-{{/children}}
-{{/children}}
-{{/siteMap}}
+## 1. Site Map
+
+```mermaid
+graph TD
+    ROOT[{{appName}}]
+    ROOT --> S010[IA-010: {{section}}]
+    S010 --> S020[IA-020: {{page}}]
 ```
 
-## 2. Screen Hierarchy
+## 2. Page Inventory
 
-| Level | Screen | Route | Parent | Description |
-|-------|--------|-------|--------|-------------|
-{{#screenHierarchy}}
-| {{level}} | {{name}} | {{route}} | {{parent}} | {{description}} |
-{{/screenHierarchy}}
+| ID | Page Name | Path | Parent | Description | Related FR |
+|----|-----------|------|--------|-------------|-----------|
+| IA-010 | {{pageName}} | {{path}} | — | {{description}} | FR-010 |
 
-### L1 (Top-Level)
-{{#l1Screens}}
-- **{{name}}** — {{description}}
-{{/l1Screens}}
+## 3. Navigation Structure
 
-### L2 (Sub-Level)
-{{#l2Screens}}
-- **{{name}}** (under {{parent}}) — {{description}}
-{{/l2Screens}}
-
-### L3 (Detail-Level)
-{{#l3Screens}}
-- **{{name}}** (under {{parent}}) — {{description}}
-{{/l3Screens}}
-
-## 3. Navigation Patterns
-
-| Pattern | Description | Applicable Screens |
-|---------|-------------|--------------------|
-{{#navigationPatterns}}
-| {{pattern}} | {{description}} | {{screens}} |
-{{/navigationPatterns}}
+| Level | Label | Target | Auth Required |
+|-------|-------|--------|--------------|
+| GNB | {{label}} | IA-010 | Yes/No |
 
 ## 4. User Flows
 
-{{#userFlows}}
-### {{name}}
-
-- **Actor:** {{actor}}
-- **Goal:** {{goal}}
-- **Steps:**
-{{#steps}}
-  1. {{description}} → `{{screen}}`
-{{/steps}}
+### Flow: {{flowName}}
 
 ```mermaid
-graph LR
-{{#mermaidSteps}}
-    {{from}} --> {{to}}
-{{/mermaidSteps}}
+flowchart LR
+    A[Start] --> B[IA-010]
+    B --> C[IA-020]
+    C --> D[End]
 ```
-{{/userFlows}}

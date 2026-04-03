@@ -1,36 +1,125 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "Phase Gate Rules",
-  "description": "Rules defining conditions for PDCA phase transitions",
+  "title": "Gatekeeper Validation Rules",
+  "description": "11 quality criteria for gatekeeper scoring",
+  "passThreshold": 95,
+  "maxRetries": 3,
+  "criteria": [
+    {
+      "id": "GK-01",
+      "name": "Completeness",
+      "nameKo": "완전성",
+      "description": "All required sections and items exist without omission",
+      "maxScore": 100,
+      "checks": ["required-sections-exist", "no-empty-sections", "all-mandatory-fields-filled"]
+    },
+    {
+      "id": "GK-02",
+      "name": "Accuracy",
+      "nameKo": "정확성",
+      "description": "Content matches source digest and upstream documents",
+      "maxScore": 100,
+      "checks": ["digest-alignment", "upstream-doc-consistency", "data-correctness"]
+    },
+    {
+      "id": "GK-03",
+      "name": "Consistency",
+      "nameKo": "일관성",
+      "description": "IDs, terminology, and values are consistent across documents",
+      "maxScore": 100,
+      "checks": ["id-uniqueness", "term-consistency", "value-no-contradiction"]
+    },
+    {
+      "id": "GK-04",
+      "name": "Traceability",
+      "nameKo": "추적성",
+      "description": "FR→US→FT→TC chain is complete without gaps",
+      "maxScore": 100,
+      "checks": ["chain-completeness", "no-orphan-items", "bidirectional-links"]
+    },
+    {
+      "id": "GK-05",
+      "name": "TOC Quality",
+      "nameKo": "TOC 적정성",
+      "description": "Table of contents is logical, detailed enough, correct depth, no missing entries",
+      "maxScore": 100,
+      "checks": ["toc-depth-adequate", "toc-entries-match-sections", "toc-logical-order"]
+    },
+    {
+      "id": "GK-06",
+      "name": "Content Composition",
+      "nameKo": "내용 구성",
+      "description": "Logical structure, natural section flow, key information properly placed",
+      "maxScore": 100,
+      "checks": ["section-flow-logical", "info-placement-appropriate", "no-redundancy"]
+    },
+    {
+      "id": "GK-07",
+      "name": "Visual Adequacy",
+      "nameKo": "시각 표현 적정성",
+      "description": "Stars, cards, tables, lists used appropriately for content type",
+      "maxScore": 100,
+      "checks": ["visual-element-fit", "no-over-decoration", "no-under-representation"]
+    },
+    {
+      "id": "GK-08",
+      "name": "Diagram Fitness",
+      "nameKo": "다이어그램 적정성",
+      "description": "Diagram types appropriate for subject, SVG renders correctly",
+      "maxScore": 100,
+      "checks": ["diagram-type-match", "svg-render-valid", "diagram-content-alignment"]
+    },
+    {
+      "id": "GK-09",
+      "name": "Mermaid Integrity",
+      "nameKo": "Mermaid 무결성",
+      "description": "No Mermaid syntax errors, renderable, no missing nodes/edges",
+      "maxScore": 100,
+      "checks": ["mermaid-syntax-valid", "mermaid-renderable", "nodes-edges-complete"]
+    },
+    {
+      "id": "GK-10",
+      "name": "JSON Sync",
+      "nameKo": "JSON 동기화",
+      "description": ".md and .json companion are exactly synchronized, ID 10-increment rule",
+      "maxScore": 100,
+      "checks": ["md-json-sync", "id-10-increment", "id-format-valid"]
+    },
+    {
+      "id": "GK-11",
+      "name": "Cross-Reference",
+      "nameKo": "교차참조",
+      "description": "links.json dependency graph matches actual document references",
+      "maxScore": 100,
+      "checks": ["links-json-matches-refs", "no-dangling-refs", "no-missing-edges"]
+    }
+  ],
   "gates": {
     "plan-to-design": {
       "required": [
         { "doc": "srs", "status": "Final" },
-        { "doc": "ia", "status": "Final" },
-        { "doc": "roadmap", "status": "Review" }
+        { "doc": "ia", "status": "Final" }
       ]
     },
-    "design-to-do": {
+    "design-to-dev": {
       "required": [
         { "doc": "erd", "status": "Final" },
-        { "doc": "rtm", "status": "Final" },
+        { "doc": "api", "status": "Final" },
         { "doc": "screens", "status": "Final" },
-        { "doc": "api", "status": "Final" }
-      ],
-      "checks": ["consistency-review"]
+        { "doc": "design-system", "status": "Final" }
+      ]
     },
-    "do-to-check": {
+    "dev-to-check": {
       "required": [
         { "condition": "code-complete" },
         { "condition": "build-success" }
       ]
     },
-    "check-to-complete": {
+    "check-to-done": {
       "required": [
-        { "condition": "critical-defects-zero" },
-        { "condition": "major-defects-zero" },
-        { "condition": "all-fr-implemented" },
-        { "condition": "build-success" }
+        { "doc": "testcases", "status": "Final" },
+        { "doc": "test-results", "status": "Final" },
+        { "condition": "critical-defects-zero" }
       ]
     }
   }

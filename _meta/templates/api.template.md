@@ -3,71 +3,62 @@ Owner: {{owner}}
 Status: {{status}}
 Version: {{version}}
 Last Updated: {{date}}
-Related Docs: [{{relatedDocs}}]
 App: {{app}}
+Companion: api.json
 ---
 
 # API Contract
 
-## 1. Base URL and Auth
+> JSON companion: `api.json`
+> ID Rule: API-010, API-020, ...
 
-| Item | Value |
-|------|-------|
-| Base URL | `{{baseUrl}}` |
-| API Version | {{apiVersion}} |
-| Auth Method | {{authMethod}} |
-| Auth Header | `{{authHeader}}` |
+## 1. API Summary
 
-## 2. Endpoints
+| ID | Method | Path | Description | Auth | Related FR |
+|----|--------|------|-------------|------|-----------|
+| API-010 | GET/POST/PUT/DELETE | {{path}} | {{description}} | Bearer/None | FR-010 |
 
-{{#endpoints}}
-### {{method}} `{{path}}`
+## 2. API Details
 
-- **Summary:** {{summary}}
-- **Auth Required:** {{authRequired}}
-- **Traced From:** {{tracedFrom}}
+### API-010: {{title}}
+
+**Endpoint:** `{{method}} {{path}}`
 
 **Request:**
-
-{{#requestParams}}
-| Parameter | In | Type | Required | Description |
-|-----------|-----|------|----------|-------------|
-| {{name}} | {{in}} | {{type}} | {{required}} | {{description}} |
-{{/requestParams}}
-
-{{#requestBody}}
 ```json
-{{{schema}}}
-```
-{{/requestBody}}
-
-**Response:**
-
-| Status | Description |
-|--------|-------------|
-{{#responses}}
-| {{status}} | {{description}} |
-{{/responses}}
-
-```json
-{{{responseSchema}}}
+{
+  "field": "type — description"
+}
 ```
 
----
-{{/endpoints}}
+**Response (200):**
+```json
+{
+  "field": "type — description"
+}
+```
 
-## 3. Error Codes
+**Error Responses:**
 
-| Code | Name | Description | Resolution |
-|------|------|-------------|------------|
-{{#errorCodes}}
-| {{code}} | {{name}} | {{description}} | {{resolution}} |
-{{/errorCodes}}
+| Code | Message | Condition |
+|------|---------|-----------|
+| 400 | Bad Request | {{condition}} |
+| 401 | Unauthorized | {{condition}} |
+| 404 | Not Found | {{condition}} |
 
-## 4. Common Headers
+## 3. Authentication & Authorization
 
-| Header | Value | Description |
-|--------|-------|-------------|
-{{#commonHeaders}}
-| {{name}} | {{value}} | {{description}} |
-{{/commonHeaders}}
+| Role | Endpoints | Permissions |
+|------|-----------|-------------|
+| {{role}} | API-010, API-020 | read/write/admin |
+
+## 4. Common Models
+
+```mermaid
+classDiagram
+    class {{ModelName}} {
+        +bigint id
+        +string name
+        +datetime createdAt
+    }
+```

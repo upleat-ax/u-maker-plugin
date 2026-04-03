@@ -1,16 +1,20 @@
-#!/usr/bin/env node
+// on-doc-change.js
+// Trigger: .md file changed in docs/
+// Action: flag JSON companion for sync check
+const fs = require('fs');
+const path = require('path');
 
-/**
- * Hook: on-doc-change
- * Trigger: PostToolUse(Write)
- * Purpose: Detect document changes in docs/ and remind about cascade check
- */
+module.exports = async function onDocChange({ filePath, projectRoot }) {
+  const umaker = path.join(projectRoot, '.u-maker');
+  const docsDir = path.join(umaker, 'docs');
 
-const input = JSON.parse(process.env.CLAUDE_TOOL_INPUT || '{}');
-const filePath = input.file_path || '';
+  if (!filePath.startsWith(docsDir) || !filePath.endsWith('.md')) return;
 
-if (filePath.includes('/docs/') && (filePath.endsWith('.md') || filePath.endsWith('.json'))) {
-  const fileName = filePath.split('/').pop();
-  const docDir = filePath.split('/docs/').pop();
-  console.log(`[u-maker] Document updated: ${docDir}. Consider running /u-sync to check cascade dependencies.`);
-}
+  const jsonPath = filePath.replace(/\.md$/, '.json');
+  if (fs.existsSync(jsonPath)) {
+    const companion = JSON.parse(fs.readFileSync(jsonPath, 'utf8'));
+    companion._syncRequired = true;
+    companion._lastMdChange = new Date().toISOString();
+    fs.writeFileSync(jsonPath, JSON.stringify(companion, null, 2));
+  }
+};

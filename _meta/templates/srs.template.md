@@ -3,11 +3,14 @@ Owner: {{owner}}
 Status: {{status}}
 Version: {{version}}
 Last Updated: {{date}}
-Related Docs: [{{relatedDocs}}]
 App: {{app}}
+Companion: srs.json
 ---
 
 # Software Requirements Specification (SRS)
+
+> JSON companion: `srs.json` — all items with IDs, statuses, and cross-references.
+> ID Rule: 10-increment (FR-010, FR-020, ...). Insert between: FR-015.
 
 ## 1. Project Overview
 
@@ -20,67 +23,45 @@ App: {{app}}
 
 ## 2. Stakeholders
 
-{{#stakeholders}}
 | ID | Name | Role | Department | Needs |
 |----|------|------|------------|-------|
-| {{id}} | {{name}} | {{role}} | {{department}} | {{needs}} |
-{{/stakeholders}}
+| STK-010 | {{name}} | {{role}} | {{department}} | {{needs}} |
 
 ## 3. Functional Requirements
 
-{{#requirements}}
 | ID | Title | Description | Priority | Status | Traced From |
 |----|-------|-------------|----------|--------|-------------|
-| {{id}} | {{title}} | {{description}} | {{priority}} | {{status}} | {{tracedFrom}} |
-{{/requirements}}
+| FR-010 | {{title}} | {{description}} | Must/Should/Could/Won't | Draft | — |
 
 ## 4. Non-Functional Requirements
 
-{{#nfRequirements}}
 | ID | Category | Title | Description | Priority | Metric |
 |----|----------|-------|-------------|----------|--------|
-| {{id}} | {{category}} | {{title}} | {{description}} | {{priority}} | {{metric}} |
-{{/nfRequirements}}
+| NFR-010 | {{category}} | {{title}} | {{description}} | {{priority}} | {{metric}} |
 
 ## 5. User Stories
 
-{{#userStories}}
-### {{id}}: {{title}}
+### US-010: {{title}}
 
 - **As a** {{actor}}
 - **I want to** {{action}}
 - **So that** {{benefit}}
 - **Acceptance Criteria:**
-{{#criteria}}
-  - [ ] {{.}}
-{{/criteria}}
-- **Traced From:** {{tracedFrom}}
-{{/userStories}}
+  - [ ] {{criterion}}
+- **Traced From:** FR-010
 
-## 6. Features
+## 6. Features (FT)
 
-{{#features}}
-| ID | Title | Description | Story Points | Iteration | Status | Traced From |
-|----|-------|-------------|--------------|-----------|--------|-------------|
-| {{id}} | {{title}} | {{description}} | {{storyPoints}} | {{iteration}} | {{status}} | {{tracedFrom}} |
-{{/features}}
+| ID | Title | Description | Story Points | Status | Traced From |
+|----|-------|-------------|--------------|--------|-------------|
+| FT-010 | {{title}} | {{description}} | {{sp}} | Draft | US-010 |
 
 ## 7. Constraints
 
-{{#constraints}}
 - **{{type}}**: {{description}}
-{{/constraints}}
 
-## 8. Assumptions
-
-{{#assumptions}}
-- {{description}} _(Confidence: {{confidence}})_
-{{/assumptions}}
-
-## 9. Glossary
+## 8. Glossary
 
 | Term | Definition |
 |------|-----------|
-{{#glossary}}
 | {{term}} | {{definition}} |
-{{/glossary}}

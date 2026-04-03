@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{docTitle}} — {{appName}}</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<script>mermaid.initialize({startOnLoad:true,theme:'default',flowchart:{curve:'basis'}});</script>
+<style>
+:root{--bg:#f8fafc;--surface:#fff;--text:#1a202c;--text2:#4a5568;--border:#e2e8f0;--accent:#3b82f6}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans KR',sans-serif;background:var(--bg);color:var(--text);line-height:1.7;margin:0}
+.doc-container{max-width:960px;margin:0 auto;padding:32px 24px 64px}
+h1{font-size:24px;font-weight:800;margin-bottom:8px;color:var(--text)}
+h2{font-size:18px;font-weight:700;margin:32px 0 12px;padding-bottom:6px;border-bottom:2px solid var(--accent);color:var(--text)}
+h3{font-size:15px;font-weight:700;margin:24px 0 8px;color:var(--text)}
+table{width:100%;border-collapse:collapse;margin:12px 0;font-size:13px}
+th{background:#f1f5f9;font-weight:600;text-align:left;padding:8px 12px;border:1px solid var(--border)}
+td{padding:8px 12px;border:1px solid var(--border);vertical-align:top}
+tr:hover td{background:#fafbfc}
+code{background:#f1f5f9;padding:2px 6px;border-radius:4px;font-size:12px;font-family:'Fira Code',monospace}
+pre{background:#1e293b;color:#e2e8f0;padding:16px;border-radius:8px;overflow-x:auto;font-size:12px;line-height:1.5}
+pre code{background:none;padding:0;color:inherit}
+.meta-bar{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:24px;font-size:12px;color:var(--text2)}
+.meta-bar span{background:#f1f5f9;padding:4px 10px;border-radius:4px}
+.toc{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:16px 20px;margin:16px 0 32px}
+.toc h4{font-size:13px;font-weight:700;margin-bottom:8px}
+.toc ul{list-style:none;padding-left:0}
+.toc li{font-size:12px;padding:3px 0}
+.toc a{color:var(--accent);text-decoration:none}
+.toc a:hover{text-decoration:underline}
+.mermaid{margin:16px 0;text-align:center}
+svg{max-width:100%}
+.footer{text-align:center;padding:24px;font-size:11px;color:var(--text2);border-top:1px solid var(--border);margin-top:48px}
+</style>
+</head>
+<body>
+<div class="doc-container">
+  <h1>{{docTitle}}</h1>
+  <div class="meta-bar">
+    <span>App: {{appName}}</span>
+    <span>Status: {{status}}</span>
+    <span>Version: {{version}}</span>
+    <span>Updated: {{lastUpdated}}</span>
+  </div>
+  <nav class="toc">
+    <h4>Table of Contents</h4>
+    {{toc}}
+  </nav>
+  {{content}}
+  <div class="footer">Copyright(c) 2026 U PLEAT</div>
+</div>
+</body>
+</html>

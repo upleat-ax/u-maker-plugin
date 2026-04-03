@@ -1,51 +1,25 @@
 {
-  "hooks": {
-    "PostToolUse": [
-      {
-        "matcher": "Write",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "node ${CLAUDE_PLUGIN_ROOT}/hooks/on-input-added.js",
-            "timeout": 3000
-          },
-          {
-            "type": "command",
-            "command": "node ${CLAUDE_PLUGIN_ROOT}/hooks/on-doc-change.js",
-            "timeout": 5000
-          },
-          {
-            "type": "command",
-            "command": "node ${CLAUDE_PLUGIN_ROOT}/hooks/on-classified-validated.js",
-            "timeout": 3000
-          },
-          {
-            "type": "command",
-            "command": "node ${CLAUDE_PLUGIN_ROOT}/hooks/on-session-wrap.js",
-            "timeout": 3000
-          },
-          {
-            "type": "command",
-            "command": "node ${CLAUDE_PLUGIN_ROOT}/hooks/on-build-complete.js",
-            "timeout": 3000
-          },
-          {
-            "type": "command",
-            "command": "node ${CLAUDE_PLUGIN_ROOT}/hooks/on-check-fail.js",
-            "timeout": 3000
-          },
-          {
-            "type": "command",
-            "command": "node ${CLAUDE_PLUGIN_ROOT}/hooks/on-gate-pass.js",
-            "timeout": 5000
-          },
-          {
-            "type": "command",
-            "command": "node ${CLAUDE_PLUGIN_ROOT}/hooks/on-ship-incomplete.js",
-            "timeout": 3000
-          }
-        ]
-      }
-    ]
-  }
+  "hooks": [
+    {
+      "event": "PostToolUse",
+      "tool": "Write",
+      "pattern": ".u-maker/data/dropzone/**",
+      "script": "on-dropzone-added.js",
+      "timeout": 5000
+    },
+    {
+      "event": "PostToolUse",
+      "tool": "Write",
+      "pattern": ".u-maker/docs/**/*.md",
+      "script": "on-doc-change.js",
+      "timeout": 3000
+    },
+    {
+      "event": "PostToolUse",
+      "tool": "Write",
+      "pattern": ".u-maker/.state/loop-state.json",
+      "script": "on-gate-result.js",
+      "timeout": 3000
+    }
+  ]
 }

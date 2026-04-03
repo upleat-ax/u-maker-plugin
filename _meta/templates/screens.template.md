@@ -3,58 +3,50 @@ Owner: {{owner}}
 Status: {{status}}
 Version: {{version}}
 Last Updated: {{date}}
-Related Docs: [{{relatedDocs}}]
 App: {{app}}
+Companion: screens.json
 ---
 
-# Screen Design
+# Screen Specification
 
-## 1. Screen List
+> JSON companion: `screens.json`
+> ID Rule: SC-010, SC-020, ...
 
-| ID | Name | Route | Description | Traced From |
-|----|------|-------|-------------|-------------|
-{{#screens}}
-| {{id}} | {{name}} | {{route}} | {{description}} | {{tracedFrom}} |
-{{/screens}}
+## 1. Screen Inventory
+
+| ID | Screen Name | Path | Category | Related IA | Related FR |
+|----|------------|------|----------|-----------|-----------|
+| SC-010 | {{screenName}} | {{path}} | {{category}} | IA-010 | FR-010 |
 
 ## 2. Screen Details
 
-{{#screens}}
-### {{id}}: {{name}}
+### SC-010: {{screenName}}
 
-- **Route:** `{{route}}`
-- **Description:** {{description}}
-- **Traced From:** {{tracedFrom}}
+**Layout:**
+- Header: {{headerDescription}}
+- Body: {{bodyDescription}}
+- Footer: {{footerDescription}}
 
-#### Components
+**Components:**
 
-| Component | Type | Description | Interaction |
-|-----------|------|-------------|-------------|
-{{#components}}
-| {{name}} | {{type}} | {{description}} | {{interaction}} |
-{{/components}}
+| # | Component | Type | Props/Data | Interaction |
+|---|-----------|------|-----------|-------------|
+| 1 | {{name}} | Button/Input/Card/Table/... | {{props}} | {{interaction}} |
 
-#### Interactions
+**API Calls:**
 
-{{#interactions}}
-- **{{trigger}}** on `{{element}}` → {{action}}
-{{/interactions}}
+| Trigger | API | Method | Purpose |
+|---------|-----|--------|---------|
+| onLoad | API-010 | GET | {{purpose}} |
 
-#### States
+**State:**
 
-| State | Condition | Display |
-|-------|-----------|---------|
-{{#states}}
-| {{name}} | {{condition}} | {{display}} |
-{{/states}}
+| State | Type | Default | Description |
+|-------|------|---------|-------------|
+| {{name}} | {{type}} | {{default}} | {{description}} |
 
----
-{{/screens}}
+**Validation Rules:**
 
-## 3. Responsive Breakpoints
-
-| Breakpoint | Min Width | Layout Changes |
-|------------|-----------|----------------|
-{{#breakpoints}}
-| {{name}} | {{minWidth}} | {{changes}} |
-{{/breakpoints}}
+| Field | Rule | Message |
+|-------|------|---------|
+| {{field}} | required/minLength/pattern/... | {{message}} |
