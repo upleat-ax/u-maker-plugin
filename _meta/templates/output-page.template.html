@@ -6,7 +6,14 @@
 <title>{{docTitle}} — {{appName}}</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
-<script>mermaid.initialize({startOnLoad:true,theme:'default',flowchart:{curve:'basis'}});</script>
+<script>
+(function waitForMermaid(){
+  if(typeof mermaid!=='undefined'){
+    mermaid.initialize({startOnLoad:false,theme:'default',flowchart:{curve:'basis'},er:{useMaxWidth:true},sequence:{useMaxWidth:true,mirrorActors:false}});
+    mermaid.run();
+  }else{setTimeout(waitForMermaid,50);}
+})();
+</script>
 <style>
 :root{--bg:#f8fafc;--surface:#fff;--text:#1a202c;--text2:#4a5568;--border:#e2e8f0;--accent:#3b82f6}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans KR',sans-serif;background:var(--bg);color:var(--text);line-height:1.7;margin:0}

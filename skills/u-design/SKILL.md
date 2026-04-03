@@ -68,10 +68,17 @@ Design phase: generate `docs/{app}/design/` documents (ERD, API, Screens, Design
 
 ### Step 5: Generate HTML Output
 
-1. Convert all 4 design docs → `output/{app}/design/*.html` via html-engine
-2. Render Mermaid diagrams (erDiagram, classDiagram) via CDN
-3. Embed SVG diagrams inline
-4. Update `output/{app}/index.html` navigation
+1. Convert `erd.md` → `output/{app}/design/erd.html` via html-engine
+   - Mermaid `erDiagram` (UML fallback) + inline SVG for entity grouping by domain
+2. Convert `api.md` → `output/{app}/design/api.html` via html-engine
+   - Mermaid `classDiagram` + `sequenceDiagram` (UML fallback) + inline SVG for endpoint→FR traceability
+3. Convert `screens.md` → `output/{app}/design/screens.html` via html-engine
+   - MUST include (inline SVG): screen flow navigation map, state transitions per interactive screen
+4. Convert `design-system.md` → `output/{app}/design/design-system.html` via html-engine
+   - MUST include (inline SVG): token hierarchy, color palette swatches
+5. Generate diagrams from companion `.json` data
+6. Update `output/{app}/index.html` navigation
+7. See `html-engine.md` § 2 — SVG preferred, Mermaid only for erDiagram/classDiagram/sequenceDiagram
 
 ### Step 6: Gatekeeper (if --loop)
 

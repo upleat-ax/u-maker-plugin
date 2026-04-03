@@ -60,8 +60,13 @@ For each new/changed file:
 ### Step 5: Generate HTML Output
 
 1. Convert `srs.md` → `output/{app}/plan/srs.html` via html-engine
+   - MUST include (inline SVG): FR→US→FT traceability tree, MoSCoW priority donut chart, Stakeholder-FR matrix
+   - Generate SVG diagrams from `srs.json` data
 2. Convert `ia.md` → `output/{app}/plan/ia.html` via html-engine
+   - MUST include (inline SVG): site map hierarchy, user flow diagrams, navigation structure
+   - Generate SVG diagrams from `ia.json` data
 3. Update `output/{app}/index.html` navigation
+4. See `html-engine.md` § 2 "Mandatory Diagram Requirements" — SVG preferred, Mermaid only for UML fallback
 
 ### Step 6: Gatekeeper (if --loop)
 

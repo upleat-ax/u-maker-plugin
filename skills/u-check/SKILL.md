@@ -47,9 +47,13 @@ Check phase: design test cases from SRS Features (FT), execute tests, record res
 
 ### Step 4: Generate HTML Output
 
-1. Convert test docs → `output/{app}/check/*.html` via html-engine
-2. Include coverage matrix visualization
-3. Update `output/{app}/index.html` navigation
+1. Convert `testcases.md` → `output/{app}/check/testcases.html` via html-engine
+   - MUST include (inline SVG): FT→TC coverage map, TC distribution by type donut chart
+2. Convert `test-results.md` → `output/{app}/check/test-results.html` via html-engine
+   - MUST include (inline SVG): FR→US→FT→TC→Result full traceability tree, Pass/Fail summary donut chart
+3. Generate SVG diagrams from companion `.json` data
+4. Update `output/{app}/index.html` navigation
+5. See `html-engine.md` § 2 — SVG preferred, Mermaid only for UML fallback
 
 ### Step 5: Gatekeeper (if --loop)
 

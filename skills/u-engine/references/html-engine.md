@@ -1,6 +1,6 @@
 # html-engine Reference
 
-The html-engine converts SSoT markdown documents into polished, self-contained HTML pages. It handles markdown parsing, Mermaid diagram rendering, SVG generation, base64 image embedding, Tailwind CSS styling, dark/light mode toggling, sidebar navigation, and Table of Contents generation.
+The html-engine converts SSoT markdown documents into polished, self-contained HTML pages. It handles markdown parsing, inline SVG diagram generation (primary), Mermaid fallback for UML diagrams, base64 image embedding, Tailwind CSS styling, dark/light mode toggling, sidebar navigation, and Table of Contents generation. **SVG is the preferred diagram format** — self-contained, offline-capable, instantly rendered without CDN dependencies.
 
 ## 1. MD to HTML Conversion Pipeline
 
@@ -10,8 +10,8 @@ The full conversion pipeline processes a single `.md` document into a standalone
 Step 1: Read .md source
 Step 2: Parse YAML frontmatter → extract metadata
 Step 3: Convert markdown body → HTML fragments
-Step 4: Detect and prepare Mermaid code blocks
-Step 5: Generate inline SVG diagrams (non-Mermaid)
+Step 4: Generate inline SVG diagrams from .json companion data (primary)
+Step 5: Detect and prepare Mermaid code blocks (fallback: erDiagram, classDiagram, sequenceDiagram only)
 Step 6: Scan for image references → encode as base64
 Step 7: Generate Table of Contents from headings
 Step 8: Apply output-page.template.html wrapper
@@ -42,9 +42,78 @@ Step 11: Update output/{app}/index.html sidebar navigation
 - **Bold / Italic**: `**bold**` → `<strong>`, `*italic*` → `<em>`.
 - **Links**: `[text](url)` → `<a href="url" class="text-blue-600 dark:text-blue-400 underline">text</a>`.
 
-## 2. Mermaid Rendering Configuration
+## 2. Mandatory Diagram Requirements
 
-Mermaid diagrams are rendered client-side via CDN. Code blocks with language `mermaid` are preserved as `<pre class="mermaid">` elements for Mermaid.js to process.
+Every HTML document MUST include diagrams appropriate to its document type. Diagrams are not optional — they are a core part of the HTML output that distinguishes it from the raw markdown. When converting `.md` to `.html`, the engine MUST ensure the following diagrams exist. Generate them from the companion `.json` data if not present in source `.md`.
+
+### Rendering Priority: SVG-first
+
+**Inline SVG is the preferred rendering method for all diagrams.** SVG is self-contained, works offline, renders instantly without CDN dependencies, and supports dark/light mode via CSS variables.
+
+| Priority | Method | When to Use |
+|----------|--------|-------------|
+| **1st** | Inline SVG | All diagrams by default — flowcharts, trees, pie charts, matrices, navigation maps, state diagrams |
+| **2nd** | Mermaid CDN | Only for complex UML-specific diagrams where SVG hand-generation is impractical: `erDiagram`, `classDiagram`, `sequenceDiagram` |
+
+### Diagram Requirements per Document
+
+| Document | Required Diagrams | Rendering |
+|----------|-------------------|-----------|
+| **SRS** | FR→US→FT traceability tree | SVG |
+| **SRS** | MoSCoW priority distribution (donut/bar chart) | SVG |
+| **SRS** | Stakeholder-FR responsibility matrix | SVG |
+| **IA** | Site map hierarchy | SVG |
+| **IA** | User flows (per major US) | SVG |
+| **IA** | Navigation structure | SVG |
+| **ERD** | Full entity-relationship diagram | Mermaid `erDiagram` |
+| **ERD** | Entity grouping by domain | SVG |
+| **API** | Data model class diagram | Mermaid `classDiagram` |
+| **API** | Request/response sequence per endpoint group | Mermaid `sequenceDiagram` |
+| **API** | Endpoint-to-FR traceability | SVG |
+| **Screens** | Screen flow / navigation map | SVG |
+| **Screens** | State transitions per interactive screen | SVG |
+| **Design System** | Token hierarchy (color, spacing, typography) | SVG |
+| **Design System** | Color palette swatches | SVG |
+| **Test Cases** | FT→TC coverage map | SVG |
+| **Test Cases** | TC distribution by type (donut chart) | SVG |
+| **Test Results** | FR→US→FT→TC→Result full traceability | SVG |
+| **Test Results** | Pass/Fail summary (donut chart) | SVG |
+
+### SVG Diagram Generation Rules
+
+1. **Placement:** Insert each diagram immediately after the relevant section heading.
+2. **Responsive:** Use `viewBox` + `width="100%"` on all `<svg>` elements. Never use fixed pixel widths.
+3. **Curved connectors:** All arrows/lines MUST use `<path>` with cubic Bezier curves (`C` or `Q`). NEVER use `<line>` or straight `<polyline>`.
+4. **Arrowhead markers:** Define reusable `<marker id="arrowhead">` inside `<defs>`. Use `marker-end="url(#arrowhead)"` on paths.
+5. **Node labels:** Every node must display a human-readable label. Use `<text>` inside `<g>` groups with the node shape.
+6. **Color coding:**
+   - Plan phase: `#3b82f6` (blue-500)
+   - Design phase: `#10b981` (green-500)
+   - Check phase: `#f59e0b` (amber-500)
+   - Failed/blocked: `#ef4444` (red-500)
+   - Neutral/border: `#334155` (slate-700)
+   - Background: `#f8fafc` (slate-50)
+7. **Dark mode:** Use CSS variables or `currentColor` so diagrams adapt. Wrap color-sensitive fills in `class` attributes that respond to `dark:` selectors:
+   ```svg
+   <rect class="fill-white dark:fill-gray-800" ... />
+   <text class="fill-gray-900 dark:fill-gray-100" ... />
+   ```
+8. **Node shapes by type:**
+   - Rectangles with rounded corners (`rx="8"`) for entities/screens/features
+   - Circles for status indicators
+   - Diamonds (`<polygon>`) for decision points
+   - Pill shapes (`rx="16"`) for start/end nodes
+9. **Maximum nodes:** If a diagram exceeds 30 nodes, split into sub-diagrams by logical grouping.
+10. **Chart types (SVG):**
+    - **Donut chart:** `<circle>` with `stroke-dasharray` for segments. Include center label with count/percentage.
+    - **Bar chart:** `<rect>` elements with labels. Horizontal bars for comparison.
+    - **Tree/hierarchy:** Top-down layout with curved parent→child connectors.
+    - **Matrix:** Grid of `<rect>` cells with fill color intensity indicating coverage.
+11. **Fallback:** If source data is insufficient, insert a placeholder `<div class="text-center text-gray-400 py-8">` with note: `"Diagram will be generated when {dependency} data is available."`
+
+## 3. Mermaid Rendering Configuration (Fallback Only)
+
+Mermaid is used ONLY for complex UML diagrams (`erDiagram`, `classDiagram`, `sequenceDiagram`) where inline SVG hand-generation is impractical. All other diagram types MUST use inline SVG (see § 2). Mermaid code blocks are preserved as `<pre class="mermaid">` elements for Mermaid.js to process client-side.
 
 ### CDN Script Inclusion
 
@@ -134,7 +203,7 @@ function toggleMermaidTheme(isDark) {
 }
 ```
 
-## 3. SVG Inline Generation
+## 4. SVG Inline Generation
 
 For diagrams that are not Mermaid-based (custom flow diagrams, architecture diagrams, wireframes), html-engine generates inline SVG directly in the HTML output.
 
@@ -179,7 +248,7 @@ For diagrams that are not Mermaid-based (custom flow diagrams, architecture diag
 
 5. **Text styling**: Use `font-family="Inter, system-ui, sans-serif"` and appropriate font sizes (12-16px).
 
-## 4. Base64 Image Encoding
+## 5. Base64 Image Encoding
 
 All images referenced in the markdown source MUST be embedded as base64 data URIs in the output HTML. This ensures the HTML file is completely self-contained.
 
@@ -216,7 +285,7 @@ All images referenced in the markdown source MUST be embedded as base64 data URI
 
 External images (URLs starting with `http://` or `https://`) are left as-is. They are NOT converted to base64.
 
-## 5. Tailwind CSS Integration
+## 6. Tailwind CSS Integration
 
 All generated HTML uses Tailwind CSS utility classes for styling. Tailwind is loaded via CDN to keep output files self-contained.
 
@@ -267,7 +336,7 @@ All generated HTML uses Tailwind CSS utility classes for styling. Tailwind is lo
 | `<p>` | `text-base leading-7 mb-4 text-gray-700 dark:text-gray-300` |
 | `<code>` inline | `bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded text-sm font-mono` |
 
-## 6. Dark/Light Toggle
+## 7. Dark/Light Toggle
 
 Every generated HTML page includes a dark/light mode toggle switcher in the top-right corner of the page header.
 
@@ -319,7 +388,7 @@ Light mode is the default. The `<html>` element starts without the `dark` class.
 
 Theme preference is saved in `localStorage` under the key `theme`. On page load, the saved preference is checked before the system preference.
 
-## 7. Sidebar Navigation (output-index.html)
+## 8. Sidebar Navigation (output-index.html)
 
 The `output/{app}/index.html` file serves as the project's documentation portal with a sidebar navigation listing all generated HTML documents.
 
@@ -397,7 +466,7 @@ When viewing a specific document page, the corresponding sidebar entry is highli
 </a>
 ```
 
-## 8. TOC Auto-Generation
+## 9. TOC Auto-Generation
 
 Every document HTML page includes an auto-generated Table of Contents derived from the document's headings.
 
@@ -447,7 +516,7 @@ Heading `id` attributes are derived from the heading text:
 
 Example: `## 3. Functional Requirements` → `id="3-functional-requirements"`
 
-## 9. Footer Template
+## 10. Footer Template
 
 Every generated HTML page includes a standard footer at the bottom of the main content area.
 
@@ -470,7 +539,7 @@ Every generated HTML page includes a standard footer at the bottom of the main c
 3. The footer appears inside `<main>`, after all document content and before the closing `</main>` tag.
 4. The footer border separates it visually from the document content.
 
-## 10. Complete HTML Page Structure
+## 11. Complete HTML Page Structure
 
 The final assembled HTML page follows this structure:
 
