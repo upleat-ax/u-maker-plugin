@@ -244,8 +244,8 @@
         </div>
         <div class="feature-card green">
           <h3><span class="badge badge-green">2</span> 3-Layer 파이프라인</h3>
-          <p><code>_input/</code>(Raw) &rarr; <code>_classified/</code>(Structured JSON) &rarr; <code>docs/</code>(Deliverables)<br>
-          <code>_dropzone/</code>에 파일을 넣으면 <code>/u-ingest</code> 실행 시 자동 분류합니다.</p>
+          <p><code>data/dropzone/</code>(Raw) &rarr; <code>data/digest/</code>(Structured JSON) &rarr; <code>docs/</code>(Deliverables)<br>
+          <code>data/dropzone/</code>에 파일을 넣으면 Plan 실행 시 자동 분석합니다.</p>
         </div>
         <div class="feature-card purple">
           <h3><span class="badge badge-purple">3</span> PDCA 5-Phase</h3>
@@ -290,7 +290,7 @@
           <rect x="510" y="55" width="130" height="80" rx="12" fill="#f59e0b"/>
           <text x="575" y="85" text-anchor="middle" fill="#fff" font-size="12" font-weight="800" font-family="Pretendard,sans-serif">04 CHECK</text>
           <text x="575" y="103" text-anchor="middle" fill="rgba(255,255,255,.75)" font-size="10" font-family="Pretendard,sans-serif">TC, TestReport</text>
-          <text x="575" y="120" text-anchor="middle" fill="rgba(255,255,255,.55)" font-size="9" font-family="Pretendard,sans-serif">/u-qa</text>
+          <text x="575" y="120" text-anchor="middle" fill="rgba(255,255,255,.55)" font-size="9" font-family="Pretendard,sans-serif">/u-check</text>
 
           <rect x="670" y="55" width="90" height="80" rx="12" fill="#ef4444"/>
           <text x="715" y="85" text-anchor="middle" fill="#fff" font-size="12" font-weight="800" font-family="Pretendard,sans-serif">05 SHIP</text>
@@ -317,11 +317,11 @@
           <rect x="628" y="155" width="105" height="26" rx="6" fill="#fff" stroke="#e2e5ea" stroke-width="1"/>
           <text x="680" y="173" text-anchor="middle" fill="#5a6376" font-size="8.5" font-weight="600" font-family="Pretendard,sans-serif">Crit/Major=0</text>
 
-          <!-- /u-gate label -->
-          <rect x="330" y="306" width="120" height="24" rx="4" fill="#fff" stroke="#4f8cff" stroke-width="1.5"/>
-          <text x="390" y="323" text-anchor="middle" fill="#4f8cff" font-size="10" font-weight="600" font-family="Pretendard,sans-serif">/u-gate [app]</text>
+          <!-- Gate Criteria label -->
+          <rect x="310" y="306" width="160" height="24" rx="4" fill="#fff" stroke="#4f8cff" stroke-width="1.5"/>
+          <text x="390" y="323" text-anchor="middle" fill="#4f8cff" font-size="10" font-weight="600" font-family="Pretendard,sans-serif">Gate Criteria: 11</text>
         </svg>
-        <div class="diagram-caption">PDCA 5-Phase: 각 Gate를 통과해야 다음 Phase로 진행. <code>/u-gate</code>로 검증.</div>
+        <div class="diagram-caption">PDCA 5-Phase (Plan, Design, Dev, Check, Ship): 각 Gate(11 criteria)를 통과해야 다음 Phase로 진행.</div>
       </div>
 
       <!-- 03. AI TEAM -->
@@ -358,7 +358,7 @@
 
           <rect x="200" y="175" width="160" height="55" rx="12" fill="#8b5cf6"/>
           <text x="280" y="199" text-anchor="middle" fill="#fff" font-size="13" font-weight="800" font-family="Pretendard,sans-serif">Gatekeeper</text>
-          <text x="280" y="215" text-anchor="middle" fill="rgba(255,255,255,.7)" font-size="10" font-family="Pretendard,sans-serif">Gate 검증, 일관성</text>
+          <text x="280" y="215" text-anchor="middle" fill="rgba(255,255,255,.7)" font-size="10" font-family="Pretendard,sans-serif">11항목 스코어카드 출력</text>
 
           <rect x="380" y="175" width="160" height="55" rx="12" fill="#64748b"/>
           <text x="460" y="199" text-anchor="middle" fill="#fff" font-size="13" font-weight="800" font-family="Pretendard,sans-serif">Report</text>
@@ -377,9 +377,9 @@
           <rect x="570" y="100" width="190" height="130" rx="12" fill="#fff" stroke="#e2e5ea" stroke-width="1.5"/>
           <text x="665" y="122" text-anchor="middle" fill="#1e2432" font-size="12" font-weight="700" font-family="Pretendard,sans-serif">Gate Criteria: 11</text>
           <text x="665" y="140" text-anchor="middle" fill="#5a6376" font-size="9.5" font-family="Pretendard,sans-serif">Phase 전환 시 자동 검증</text>
-          <text x="665" y="160" text-anchor="middle" fill="#5a6376" font-size="9.5" font-family="Pretendard,sans-serif">SRS, IA, ERD, API, Screens</text>
-          <text x="665" y="176" text-anchor="middle" fill="#5a6376" font-size="9.5" font-family="Pretendard,sans-serif">Design System, Code, TC</text>
-          <text x="665" y="192" text-anchor="middle" fill="#5a6376" font-size="9.5" font-family="Pretendard,sans-serif">Test Report, RTM, Deploy</text>
+          <text x="665" y="156" text-anchor="middle" fill="#5a6376" font-size="9.5" font-family="Pretendard,sans-serif">SRS, IA, ERD, API, Screens</text>
+          <text x="665" y="172" text-anchor="middle" fill="#5a6376" font-size="9.5" font-family="Pretendard,sans-serif">Design System, Code, TC</text>
+          <text x="665" y="188" text-anchor="middle" fill="#dc2626" font-size="9" font-weight="700" font-family="Pretendard,sans-serif">매 검증 스코어카드 출력</text>
         </svg>
         <div class="diagram-caption">7-Agent Architecture: PM Agent가 전체를 조율하며, 6개 전문 에이전트(plan, design, dev, qa, gatekeeper, report)에 작업 분배</div>
       </div>
@@ -443,6 +443,10 @@
 
       <div class="highlight-box">
         <strong>자동 실행:</strong> <code>/u-loop --app myapp</code>를 사용하면 Plan&rarr;Design&rarr;Dev&rarr;Check&rarr;Ship 전체를 gatekeeper 검증과 함께 자동으로 실행합니다.
+      </div>
+
+      <div class="highlight-box" style="background:#fef2f2;border-left-color:#ef4444">
+        <strong>스코어카드 필수 출력:</strong> 모든 Phase 검증 시 Gatekeeper가 <strong>11개 항목 전체 스코어카드를 화면에 출력</strong>합니다. PASS/FAIL 상태, 점수, 발견사항을 한눈에 확인할 수 있으며, FAIL 시 개선 항목이 심각도 순으로 표시됩니다.
       </div>
 
       <!-- 06. REVERSE ENGINEERING -->
@@ -575,7 +579,7 @@
       <div class="feature-cards">
         <div class="feature-card">
           <h3>Scenario 1: 새 프로젝트 처음부터 끝까지</h3>
-          <p><code>/u-init</code> &rarr; _dropzone/ 파일 드롭 &rarr; <code>/u-ingest</code> &rarr; <code>/u-plan -i</code> &rarr; <code>/u-gate</code> &rarr; <code>/u-design</code> &rarr; <code>/u-gate</code> &rarr; <code>/u-dev</code> &rarr; <code>/u-gate</code> &rarr; <code>/u-qa</code> &rarr; <code>/u-ship</code></p>
+          <p><code>/u-plan --app myapp</code> &rarr; <code>/u-design --app myapp</code> &rarr; <code>/u-wireframe --app myapp --all</code> &rarr; <code>/u-dev --app myapp</code> &rarr; <code>/u-check --app myapp</code><br>또는 <code>/u-loop --app myapp</code>으로 전체 자동 실행</p>
         </div>
         <div class="feature-card green">
           <h3>Scenario 2: 기존 프로젝트에 SSoT 도입</h3>
@@ -595,7 +599,7 @@
         </div>
         <div class="feature-card">
           <h3>Scenario 6: 무인 자동 실행</h3>
-          <p><code>/u-loop [app]</code> &mdash; ingest &rarr; plan &rarr; design &rarr; dev &rarr; qa 전체 파이프라인 자동 실행</p>
+          <p><code>/u-loop --app myapp</code> &mdash; Plan&rarr;Design&rarr;Dev&rarr;Check&rarr;Ship 전체 파이프라인 자동 실행. <code>--from design --to check</code>으로 범위 지정 가능</p>
         </div>
         <div class="feature-card green">
           <h3>Scenario 7: 멀티 앱 프로젝트</h3>

@@ -353,6 +353,24 @@ curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/insta
 </tbody>
 </table>
 
+<h3>Mandatory Scorecard Display</h3>
+<p>Every gate validation <strong>must display the full 11-criteria scorecard</strong> on screen. No abbreviation or omission allowed.</p>
+
+<pre style="background:#0f172a;color:#cbd5e1;padding:20px;border-radius:12px;font-size:12px;line-height:1.7;overflow-x:auto"><code><span style="color:#60a5fa">&boxdr;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxdl;</span>
+<span style="color:#60a5fa">&boxv;</span>  <strong style="color:#fff">GATEKEEPER REPORT</strong> &mdash; Plan Phase (myapp)                  <span style="color:#60a5fa">&boxv;</span>
+<span style="color:#60a5fa">&boxvr;&boxh;&boxh;&boxh;&boxh;&boxh;&boxhd;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxhd;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxhd;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxhd;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxvl;</span>
+<span style="color:#60a5fa">&boxv;</span>  #  <span style="color:#60a5fa">&boxv;</span> Criteria             <span style="color:#60a5fa">&boxv;</span> Score <span style="color:#60a5fa">&boxv;</span> Status <span style="color:#60a5fa">&boxv;</span> Findings      <span style="color:#60a5fa">&boxv;</span>
+<span style="color:#60a5fa">&boxvr;&boxh;&boxh;&boxh;&boxh;&boxh;&boxhu;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxhu;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxhu;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxhu;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxvl;</span>
+<span style="color:#60a5fa">&boxv;</span>  01 <span style="color:#60a5fa">&boxv;</span> Completeness         <span style="color:#60a5fa">&boxv;</span>   <span style="color:#4ade80">98</span>  <span style="color:#60a5fa">&boxv;</span>   <span style="color:#4ade80">PASS</span> <span style="color:#60a5fa">&boxv;</span> &mdash;             <span style="color:#60a5fa">&boxv;</span>
+<span style="color:#60a5fa">&boxv;</span>  04 <span style="color:#60a5fa">&boxv;</span> Traceability         <span style="color:#60a5fa">&boxv;</span>   <span style="color:#f87171">88</span>  <span style="color:#60a5fa">&boxv;</span>   <span style="color:#f87171">FAIL</span> <span style="color:#60a5fa">&boxv;</span> <span style="color:#f87171">FR-030 orphan</span> <span style="color:#60a5fa">&boxv;</span>
+<span style="color:#60a5fa">&boxv;</span>  ... (all 11 rows shown) ...                                <span style="color:#60a5fa">&boxv;</span>
+<span style="color:#60a5fa">&boxvr;&boxh;&boxh;&boxh;&boxh;&boxh;&boxhu;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxhu;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxhu;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxhu;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxvl;</span>
+<span style="color:#60a5fa">&boxv;</span> <strong style="color:#fff">AVG</strong> <span style="color:#60a5fa">&boxv;</span>                      <span style="color:#60a5fa">&boxv;</span> <strong style="color:#facc15">95.2</strong>  <span style="color:#60a5fa">&boxv;</span> <strong style="color:#4ade80">PASS</strong>   <span style="color:#60a5fa">&boxv;</span>               <span style="color:#60a5fa">&boxv;</span>
+<span style="color:#60a5fa">&boxul;&boxh;&boxh;&boxh;&boxh;&boxh;&boxhu;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxhu;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxhu;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxhu;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxur;</span>
+  Attempt: 1/3 &middot; Threshold: 95 &middot; Result: <span style="color:#4ade80">PASS &rarr; advance to Design</span></code></pre>
+
+<p><strong>On FAIL:</strong> Improvement items are appended below the scorecard, ordered by severity. <strong>After 3 retries:</strong> <code>LOOP HALTED</code> &mdash; manual intervention required.</p>
+
 <hr>
 
 <!-- Section 4 -->
@@ -437,7 +455,7 @@ curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/insta
 <tr><td><code>design</code></td><td>Design (ERD, API, Screen, UX, wireframes)</td><td>Design</td></tr>
 <tr><td><code>dev</code></td><td>Integrated FE + BE implementation</td><td>Dev</td></tr>
 <tr><td><code>qa</code></td><td>TC design, test execution, report</td><td>Check</td></tr>
-<tr><td><code>gatekeeper</code></td><td>Gate verification, consistency checks, RTM</td><td>ALL</td></tr>
+<tr><td><code>gatekeeper</code></td><td>Gate verification, consistency checks, RTM. <strong>Displays full 11-criteria scorecard on every validation</strong></td><td>ALL</td></tr>
 <tr><td><code>report</code></td><td>HTML report generation, deliverable formatting</td><td>ALL</td></tr>
 </tbody>
 </table>

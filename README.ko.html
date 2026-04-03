@@ -364,7 +364,7 @@ graph LR
               <p class="text-xs text-gray-400">Quality Gate</p>
             </div>
           </div>
-          <p class="text-sm text-gray-600">11개 검증 항목으로 산출물 품질을 평가합니다. 평균 95점 이상이어야 통과. 미달 시 개선 항목을 생성하여 최대 3회 반복합니다.</p>
+          <p class="text-sm text-gray-600">11개 검증 항목으로 산출물 품질을 평가합니다. <strong>매 검증마다 전체 스코어카드를 화면에 출력</strong>. 평균 95점 이상이어야 통과. 미달 시 개선 항목을 생성하여 최대 3회 반복합니다.</p>
         </div>
         <!-- Report -->
         <div class="bg-white rounded-xl border border-gray-100 p-5 shadow-sm">
@@ -493,6 +493,40 @@ graph LR
         <div class="bg-red-50 rounded-lg p-4 border border-red-100 text-center">
           <div class="text-lg font-extrabold text-red-700">&lt;70</div>
           <div class="text-xs text-red-600 mt-1">CRITICAL &mdash; 수동 개입 필요</div>
+        </div>
+      </div>
+
+      <!-- Mandatory Scorecard Display -->
+      <div class="mt-6">
+        <h3 class="text-sm font-extrabold text-gray-900 mb-2">스코어카드 출력 (필수)</h3>
+        <p class="text-sm text-gray-600 leading-relaxed mb-3">
+          모든 Phase 검증 시 <strong>11개 항목 전체 스코어카드가 반드시 화면에 표시</strong>됩니다. 생략이나 축약 없이 매번 전체 결과를 출력합니다.
+        </p>
+        <div class="bg-gray-900 rounded-xl p-5 overflow-x-auto">
+          <pre class="text-xs text-gray-300 font-mono leading-relaxed whitespace-pre" style="margin:0"><span class="text-blue-400">┌─────────────────────────────────────────────────────────────┐</span>
+<span class="text-blue-400">│</span>  <span class="text-white font-bold">GATEKEEPER REPORT</span> &mdash; Plan Phase (myapp)                  <span class="text-blue-400">│</span>
+<span class="text-blue-400">├─────┬──────────────────────┬───────┬────────┬───────────────┤</span>
+<span class="text-blue-400">│</span>  #  <span class="text-blue-400">│</span> Criteria             <span class="text-blue-400">│</span> Score <span class="text-blue-400">│</span> Status <span class="text-blue-400">│</span> Findings      <span class="text-blue-400">│</span>
+<span class="text-blue-400">├─────┼──────────────────────┼───────┼────────┼───────────────┤</span>
+<span class="text-blue-400">│</span>  01 <span class="text-blue-400">│</span> Completeness  <span class="text-gray-500">완전성</span> <span class="text-blue-400">│</span>   <span class="text-emerald-400">98</span>  <span class="text-blue-400">│</span>   <span class="text-emerald-400">PASS</span> <span class="text-blue-400">│</span> &mdash;             <span class="text-blue-400">│</span>
+<span class="text-blue-400">│</span>  02 <span class="text-blue-400">│</span> Accuracy      <span class="text-gray-500">정확성</span> <span class="text-blue-400">│</span>   <span class="text-emerald-400">95</span>  <span class="text-blue-400">│</span>   <span class="text-emerald-400">PASS</span> <span class="text-blue-400">│</span> &mdash;             <span class="text-blue-400">│</span>
+<span class="text-blue-400">│</span>  03 <span class="text-blue-400">│</span> Consistency   <span class="text-gray-500">일관성</span> <span class="text-blue-400">│</span>   <span class="text-emerald-400">97</span>  <span class="text-blue-400">│</span>   <span class="text-emerald-400">PASS</span> <span class="text-blue-400">│</span> &mdash;             <span class="text-blue-400">│</span>
+<span class="text-blue-400">│</span>  04 <span class="text-blue-400">│</span> Traceability  <span class="text-gray-500">추적성</span> <span class="text-blue-400">│</span>   <span class="text-red-400">88</span>  <span class="text-blue-400">│</span>   <span class="text-red-400">FAIL</span> <span class="text-blue-400">│</span> <span class="text-red-400">FR-030 orphan</span> <span class="text-blue-400">│</span>
+<span class="text-blue-400">│</span>  05 <span class="text-blue-400">│</span> TOC Quality   <span class="text-gray-500">TOC</span>    <span class="text-blue-400">│</span>   <span class="text-emerald-400">96</span>  <span class="text-blue-400">│</span>   <span class="text-emerald-400">PASS</span> <span class="text-blue-400">│</span> &mdash;             <span class="text-blue-400">│</span>
+<span class="text-blue-400">│</span>  06 <span class="text-blue-400">│</span> Composition   <span class="text-gray-500">구성</span>   <span class="text-blue-400">│</span>   <span class="text-emerald-400">95</span>  <span class="text-blue-400">│</span>   <span class="text-emerald-400">PASS</span> <span class="text-blue-400">│</span> &mdash;             <span class="text-blue-400">│</span>
+<span class="text-blue-400">│</span>  07 <span class="text-blue-400">│</span> Visual        <span class="text-gray-500">시각</span>   <span class="text-blue-400">│</span>   <span class="text-emerald-400">99</span>  <span class="text-blue-400">│</span>   <span class="text-emerald-400">PASS</span> <span class="text-blue-400">│</span> &mdash;             <span class="text-blue-400">│</span>
+<span class="text-blue-400">│</span>  08 <span class="text-blue-400">│</span> Diagram       <span class="text-gray-500">다이어</span> <span class="text-blue-400">│</span>   <span class="text-red-400">93</span>  <span class="text-blue-400">│</span>   <span class="text-red-400">FAIL</span> <span class="text-blue-400">│</span> <span class="text-red-400">SVG mismatch</span>  <span class="text-blue-400">│</span>
+<span class="text-blue-400">│</span>  09 <span class="text-blue-400">│</span> Mermaid       <span class="text-gray-500">무결성</span> <span class="text-blue-400">│</span>   <span class="text-red-400">90</span>  <span class="text-blue-400">│</span>   <span class="text-red-400">FAIL</span> <span class="text-blue-400">│</span> <span class="text-red-400">syntax L:45</span>   <span class="text-blue-400">│</span>
+<span class="text-blue-400">│</span>  10 <span class="text-blue-400">│</span> JSON Sync     <span class="text-gray-500">동기화</span> <span class="text-blue-400">│</span>  <span class="text-emerald-400">100</span>  <span class="text-blue-400">│</span>   <span class="text-emerald-400">PASS</span> <span class="text-blue-400">│</span> &mdash;             <span class="text-blue-400">│</span>
+<span class="text-blue-400">│</span>  11 <span class="text-blue-400">│</span> Cross-Ref     <span class="text-gray-500">교차</span>   <span class="text-blue-400">│</span>   <span class="text-emerald-400">96</span>  <span class="text-blue-400">│</span>   <span class="text-emerald-400">PASS</span> <span class="text-blue-400">│</span> &mdash;             <span class="text-blue-400">│</span>
+<span class="text-blue-400">├─────┼──────────────────────┼───────┼────────┼───────────────┤</span>
+<span class="text-blue-400">│</span> <span class="text-white font-bold">AVG</span> <span class="text-blue-400">│</span>                      <span class="text-blue-400">│</span> <span class="text-yellow-400 font-bold">95.2</span>  <span class="text-blue-400">│</span> <span class="text-emerald-400 font-bold">PASS</span>   <span class="text-blue-400">│</span>               <span class="text-blue-400">│</span>
+<span class="text-blue-400">└─────┴──────────────────────┴───────┴────────┴───────────────┘</span>
+  Attempt: 1/3 &middot; Threshold: 95 &middot; Result: <span class="text-emerald-400">PASS &rarr; advance to Design</span></pre>
+        </div>
+        <div class="bg-amber-50 border-l-4 border-amber-400 rounded-r-lg p-3 mt-3 text-xs text-gray-700">
+          <strong>FAIL 시:</strong> 스코어카드 하단에 <em>Improvement Items</em> 블록이 추가되며, 심각도 순으로 개선 항목이 나열됩니다.<br>
+          <strong>최종 실패 (3/3):</strong> <code>LOOP HALTED</code> 경고와 함께 수동 개입을 요청합니다.
         </div>
       </div>
     </section>

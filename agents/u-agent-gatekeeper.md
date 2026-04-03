@@ -49,23 +49,60 @@ For each criterion:
    - 0-69: Critical issues (broken references, syntax errors, missing sections)
 4. Record detailed findings per criterion
 
-## 4. Scoring Output Format
+## 4. Scoring Output — MANDATORY Display
 
-```markdown
-## Gatekeeper Report
+**RULE: Every gatekeeper invocation MUST print the full scorecard to the user. Never skip, summarize, or abbreviate.**
 
-| # | Criteria | Score | Status | Findings |
-|---|----------|-------|--------|----------|
-| GK-01 | Completeness | 98 | PASS | 1 optional section missing |
-| GK-02 | Accuracy | 95 | PASS | — |
-| ... | ... | ... | ... | ... |
-| **AVG** | | **96.2** | **PASS** | |
+Print this exact format after every validation:
 
-### Improvement Items (if FAIL)
+```
+┌─────────────────────────────────────────────────────────────┐
+│  GATEKEEPER REPORT — {phase} Phase ({app})                  │
+│  Target: {document list}                                    │
+│  Date: {YYYY-MM-DD HH:mm}                                  │
+├─────┬──────────────────────┬───────┬────────┬───────────────┤
+│  #  │ Criteria             │ Score │ Status │ Findings      │
+├─────┼──────────────────────┼───────┼────────┼───────────────┤
+│  01 │ Completeness  완전성 │   98  │   ✅   │ —             │
+│  02 │ Accuracy      정확성 │   95  │   ✅   │ —             │
+│  03 │ Consistency   일관성 │   97  │   ✅   │ —             │
+│  04 │ Traceability  추적성 │   88  │   ❌   │ FR-030 orphan │
+│  05 │ TOC Quality   TOC    │   96  │   ✅   │ —             │
+│  06 │ Composition   구성   │   95  │   ✅   │ —             │
+│  07 │ Visual        시각   │   99  │   ✅   │ —             │
+│  08 │ Diagram       다이어 │   93  │   ❌   │ SVG mismatch  │
+│  09 │ Mermaid       무결성 │   90  │   ❌   │ syntax L:45   │
+│  10 │ JSON Sync     동기화 │  100  │   ✅   │ —             │
+│  11 │ Cross-Ref     교차   │   96  │   ✅   │ —             │
+├─────┼──────────────────────┼───────┼────────┼───────────────┤
+│ AVG │                      │  95.2 │ ✅PASS │               │
+└─────┴──────────────────────┴───────┴────────┴───────────────┘
+  Attempt: 1/3 │ Threshold: 95 │ Result: PASS → advance to next phase
+```
 
-1. [GK-04] Missing traceability: FR-030 has no linked US
-2. [GK-09] Mermaid syntax error in erd.md line 45: invalid cardinality
-3. ...
+### Display Rules
+
+1. **Always show all 11 rows** — never collapse or hide passing criteria
+2. **Status column**: `✅` for score >= 95, `❌` for score < 95
+3. **Findings column**: dash `—` when clean, concise issue summary when not
+4. **Bottom row**: AVG score, overall PASS/FAIL, attempt count
+5. **Footer line**: attempt N/max, threshold, and resulting action
+6. **On FAIL** — append improvement items block:
+
+```
+┌─ IMPROVEMENT ITEMS (ordered by severity) ──────────────────┐
+│ 1. [GK-04] FR-030 → no linked US. Add US in srs.json      │
+│ 2. [GK-09] erd.md L:45 — invalid cardinality "one-many"   │
+│ 3. [GK-08] SVG class diagram missing 2 entities            │
+└─ Fix above items, then re-run phase ───────────────────────┘
+```
+
+7. **On final FAIL (attempt 3/3)** — append escalation:
+
+```
+⚠️  LOOP HALTED at {phase} after 3 retries.
+    Last score: {avg}/100
+    Action required: Fix issues manually, then /u-loop --from {phase}
 ```
 
 ## 5. Loop Behavior
