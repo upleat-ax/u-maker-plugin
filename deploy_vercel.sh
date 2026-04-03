@@ -28,7 +28,7 @@ warn() { echo -e "${YELLOW}  [WARN]${NC} $*"; }
 err()  { echo -e "${RED}  [ERR]${NC} $*"; }
 
 DOMAIN="umaker.upleat.ai"
-PROJECT_NAME="u-maker-docs"
+PROJECT_NAME="u-maker-plugin"
 
 # ============================================================
 # Helpers
@@ -98,9 +98,12 @@ cmd_deploy() {
   # Step 1: Build
   build_site "$site_dir"
 
-  # Step 2: Write vercel.json
-  cat > "$site_dir/vercel.json" << 'VJSON'
+  # Step 2: Write vercel.json with project name
+  cat > "$site_dir/vercel.json" << VJSON
 {
+  "projectSettings": {
+    "framework": null
+  },
   "headers": [
     {
       "source": "/(.*)",
@@ -110,27 +113,44 @@ cmd_deploy() {
       ]
     }
   ],
-  "cleanUrls": true
+  "cleanUrls": false
 }
 VJSON
   ok "vercel.json written"
 
-  # Step 3: Deploy
-  log "Deploying to Vercel..."
+  # Step 3: Link to existing project and deploy
+  log "Deploying to Vercel (project: ${PROJECT_NAME})..."
+
+  # Link to existing project by creating .vercel/project.json
+  mkdir -p "$site_dir/.vercel"
+
+  # Get org and project IDs from existing deployment
+  local project_info
+  project_info="$(vercel project ls --json 2>/dev/null || echo "")"
+
+  # Use vercel link to connect to existing project
+  (cd "$site_dir" && vercel link --yes --project "$PROJECT_NAME" 2>&1) || {
+    warn "Link failed, deploying as new..."
+  }
+
+  local deploy_log="$tmp_dir/deploy.log"
 
   local deploy_args=("--yes")
   if [[ "$prod" == "true" ]]; then
     deploy_args+=("--prod")
   fi
 
+  (cd "$site_dir" && vercel "${deploy_args[@]}" 2>&1) | tee "$deploy_log"
+
+  # Extract deploy URL from output (last https:// URL on its own line)
   local deploy_url
-  deploy_url="$(cd "$site_dir" && vercel "${deploy_args[@]}" 2>&1)" || {
-    err "Deploy failed:"
-    echo "$deploy_url"
-    rm -rf "$tmp_dir"
-    exit 1
-  }
-  ok "Deployed: ${deploy_url}"
+  deploy_url="$(grep -oE 'https://[a-zA-Z0-9._-]+\.vercel\.app' "$deploy_log" | tail -1 || echo "")"
+
+  if [[ -z "$deploy_url" ]]; then
+    deploy_url="$(grep -oE 'https://[^ ]+' "$deploy_log" | tail -1 || echo "unknown")"
+  fi
+
+  ok "Deploy URL: ${deploy_url}"
 
   # Cleanup
   rm -rf "$tmp_dir"
@@ -157,8 +177,6 @@ VJSON
 # ============================================================
 
 cmd_check() {
-  ensure_vercel
-
   echo ""
   log "Checking deployment status..."
   echo ""
