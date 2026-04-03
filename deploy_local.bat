@@ -579,7 +579,7 @@ echo   Checking prerequisites...
 echo ========================================
 echo.
 
-set "PREREQ_FAIL=0"
+set "PREREQ_WARN=0"
 
 :: --- winget ---
 call :check_winget
@@ -588,21 +588,25 @@ call :check_winget
 call :check_tool "node" "--version" "Node.js"
 if !errorlevel! neq 0 (
     call :install_with_winget "OpenJS.NodeJS.LTS" "Node.js LTS"
-    if !errorlevel! neq 0 set "PREREQ_FAIL=1"
+    if !errorlevel! neq 0 set "PREREQ_WARN=1"
 )
 
-:: --- Python ---
+:: --- Python (optional — PowerShell fallback exists) ---
 call :check_python
 if !errorlevel! neq 0 (
     call :install_with_winget "Python.Python.3.12" "Python 3.12"
-    if !errorlevel! neq 0 set "PREREQ_FAIL=1"
+    if !errorlevel! neq 0 (
+        echo   [WARN] Python not available. PowerShell will be used as fallback.
+    )
 )
 
-:: --- bun ---
+:: --- bun (optional) ---
 call :check_tool "bun" "--version" "bun"
 if !errorlevel! neq 0 (
     call :install_bun
-    if !errorlevel! neq 0 set "PREREQ_FAIL=1"
+    if !errorlevel! neq 0 (
+        echo   [WARN] bun not available. Not required for plugin install.
+    )
 )
 
 :: --- Claude Code (npm package) ---
@@ -616,32 +620,18 @@ if !errorlevel! neq 0 (
 :: Refresh PATH after installs
 call :refresh_path
 
-:: Final verification
+:: Final verification (warn-only, not fatal)
 echo.
 echo ----------------------------------------
 echo   Final verification
 echo ----------------------------------------
-set "FINAL_FAIL=0"
 
 call :verify_tool "node" "Node.js"
-if !errorlevel! neq 0 set "FINAL_FAIL=1"
-
 call :verify_python
-if !errorlevel! neq 0 set "FINAL_FAIL=1"
-
 call :verify_tool "bun" "bun"
-if !errorlevel! neq 0 set "FINAL_FAIL=1"
-
-if "!FINAL_FAIL!"=="1" (
-    echo.
-    echo   [WARN] Some tools may require a new terminal window to be detected.
-    echo          Close this window, open a new cmd, and run deploy_local.bat again.
-    echo.
-    exit /b 1
-)
 
 echo.
-echo   [OK] All prerequisites satisfied.
+echo   [OK] Prerequisites check complete. Proceeding with install...
 echo.
 exit /b 0
 
@@ -730,8 +720,8 @@ set "PKG_ID=%~1"
 set "PKG_NAME=%~2"
 
 if "!HAS_WINGET!"=="0" (
-    echo   [ERR] Cannot auto-install %PKG_NAME%: winget not available.
-    echo        Please install %PKG_NAME% manually and retry.
+    echo   [WARN] Cannot auto-install %PKG_NAME%: winget not available.
+    echo          Please install %PKG_NAME% manually.
     exit /b 1
 )
 
@@ -748,8 +738,9 @@ if !errorlevel! neq 0 (
         echo   [OK] %PKG_NAME% is already installed
         exit /b 0
     )
-    echo   [ERR] Failed to install %PKG_NAME% via winget.
-    echo        Please install manually and retry.
+    echo   [WARN] Failed to install %PKG_NAME% via winget.
+    echo          If winget sources are broken, run: winget source reset --force
+    echo          Then retry, or install %PKG_NAME% manually.
     exit /b 1
 )
 echo   [OK] %PKG_NAME% installed successfully

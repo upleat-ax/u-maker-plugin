@@ -200,11 +200,11 @@ try {
         throw "deploy_local.bat failed"
     }
 
-    # --- Warn about existing .u-maker/ projects (v4.0 is a breaking change from v3.x) ---
+    # --- Warn about existing .u-maker/ projects ---
     $umakerDir = Join-Path (Get-Location) ".u-maker"
     if (Test-Path $umakerDir) {
         Write-Host ""
-        Write-Host "  [WARN] WARNING: v4.0 is not compatible with v3.x .u-maker/ folders. Please re-initialize with /u-plan." -ForegroundColor Yellow
+        Write-Host "  [WARN] Existing .u-maker/ folder detected. If upgrading from an older version, re-initialize with /u-plan." -ForegroundColor Yellow
         Write-Host ""
     }
 
@@ -222,7 +222,7 @@ try {
     Write-Host "  Installation failed: $_" -ForegroundColor Red
     Write-Host "  Try manual install:" -ForegroundColor Yellow
     Write-Host "    1. Download: https://github.com/$repo/releases" -ForegroundColor Yellow
-    Write-Host "    2. Extract zip -> double-click setup.bat" -ForegroundColor Yellow
+    Write-Host "    2. Extract zip -> run deploy_local.bat" -ForegroundColor Yellow
     Write-Host ""
 } finally {
     if (Test-Path $tmp) { Remove-Item -Recurse -Force $tmp -ErrorAction SilentlyContinue }
