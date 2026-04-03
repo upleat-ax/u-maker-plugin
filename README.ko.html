@@ -9,15 +9,21 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <script>
-tailwind.config = {
-  theme: {
-    extend: {
-      fontFamily: {
-        sans: ['Noto Sans KR', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+(function waitForTailwind() {
+  if (typeof tailwind !== 'undefined') {
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Noto Sans KR', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+          }
+        }
       }
-    }
+    };
+  } else {
+    setTimeout(waitForTailwind, 50);
   }
-}
+})();
 </script>
 <style>
   html { scroll-behavior: smooth; }
@@ -773,7 +779,14 @@ window.addEventListener('scroll', updateActiveLink);
 updateActiveLink();
 
 // Mermaid init
-mermaid.initialize({ startOnLoad: true, theme: 'default', securityLevel: 'loose' });
+(function waitForMermaid() {
+  if (typeof mermaid !== 'undefined') {
+    mermaid.initialize({ startOnLoad: false, theme: 'default', securityLevel: 'loose' });
+    mermaid.run();
+  } else {
+    setTimeout(waitForMermaid, 50);
+  }
+})();
 </script>
 
 </body>
