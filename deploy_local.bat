@@ -35,17 +35,28 @@ if "%SCRIPT_DIR:~-1%"=="\" set "SCRIPT_DIR=%SCRIPT_DIR:~0,-1%"
 
 set "PLUGIN_JSON=%SCRIPT_DIR%\.claude-plugin\plugin.json"
 
-:: Parse plugin name and version from plugin.json via python
+:: Parse plugin name and version from plugin.json
+:: Try python, python3, py, then PowerShell as fallback
 for /f "usebackq delims=" %%a in (`python -c "import json; print(json.load(open(r'%PLUGIN_JSON%'))['name'])" 2^>nul`) do set "PLUGIN_NAME=%%a"
 for /f "usebackq delims=" %%a in (`python -c "import json; print(json.load(open(r'%PLUGIN_JSON%'))['version'])" 2^>nul`) do set "PLUGIN_VERSION=%%a"
 
 if not defined PLUGIN_NAME (
-    for /f "usebackq delims=" %%a in (`python3 -c "import json; print(json.load(open(r'%PLUGIN_JSON%'))['name'])"`) do set "PLUGIN_NAME=%%a"
-    for /f "usebackq delims=" %%a in (`python3 -c "import json; print(json.load(open(r'%PLUGIN_JSON%'))['version'])"`) do set "PLUGIN_VERSION=%%a"
+    for /f "usebackq delims=" %%a in (`python3 -c "import json; print(json.load(open(r'%PLUGIN_JSON%'))['name'])" 2^>nul`) do set "PLUGIN_NAME=%%a"
+    for /f "usebackq delims=" %%a in (`python3 -c "import json; print(json.load(open(r'%PLUGIN_JSON%'))['version'])" 2^>nul`) do set "PLUGIN_VERSION=%%a"
 )
 
 if not defined PLUGIN_NAME (
-    echo [ERR] Cannot parse plugin.json. Ensure python or python3 is installed.
+    for /f "usebackq delims=" %%a in (`py -c "import json; print(json.load(open(r'%PLUGIN_JSON%'))['name'])" 2^>nul`) do set "PLUGIN_NAME=%%a"
+    for /f "usebackq delims=" %%a in (`py -c "import json; print(json.load(open(r'%PLUGIN_JSON%'))['version'])" 2^>nul`) do set "PLUGIN_VERSION=%%a"
+)
+
+if not defined PLUGIN_NAME (
+    for /f "usebackq delims=" %%a in (`powershell -NoProfile -Command "(Get-Content -Raw '%PLUGIN_JSON%' | ConvertFrom-Json).name" 2^>nul`) do set "PLUGIN_NAME=%%a"
+    for /f "usebackq delims=" %%a in (`powershell -NoProfile -Command "(Get-Content -Raw '%PLUGIN_JSON%' | ConvertFrom-Json).version" 2^>nul`) do set "PLUGIN_VERSION=%%a"
+)
+
+if not defined PLUGIN_NAME (
+    echo [ERR] Cannot parse plugin.json. Ensure python, py, or powershell is available.
     exit /b 1
 )
 
@@ -164,13 +175,13 @@ if exist "%CACHE_DIR%\%PLUGIN_NAME%" (
 
 :: Remove from known_marketplaces.json
 if exist "%KNOWN_MP%" (
-    call :py_exec "import json; f='%KNOWN_MP:\=\\%'; d=json.load(open(f)); d.pop('%PLUGIN_NAME%',None); json.dump(d,open(f,'w'),indent=2)"
+    python -c "import json; f='%KNOWN_MP:\=\\%'; d=json.load(open(f)); d.pop('%PLUGIN_NAME%',None); json.dump(d,open(f,'w'),indent=2)" 2>nul || python3 -c "import json; f='%KNOWN_MP:\=\\%'; d=json.load(open(f)); d.pop('%PLUGIN_NAME%',None); json.dump(d,open(f,'w'),indent=2)" 2>nul || py -c "import json; f='%KNOWN_MP:\=\\%'; d=json.load(open(f)); d.pop('%PLUGIN_NAME%',None); json.dump(d,open(f,'w'),indent=2)" 2>nul || powershell -NoProfile -Command "$f='%KNOWN_MP%';$d=Get-Content $f|ConvertFrom-Json;$d.PSObject.Properties.Remove('%PLUGIN_NAME%');$d|ConvertTo-Json -Depth 10|Set-Content $f" 2>nul
     echo   [OK] known_marketplaces.json cleaned
 )
 
 :: Remove from installed_plugins.json
 if exist "%INSTALLED_PL%" (
-    call :py_exec "import json; f='%INSTALLED_PL:\=\\%'; d=json.load(open(f)); d.get('plugins',{}).pop('%PLUGIN_NAME%@%PLUGIN_NAME%',None); json.dump(d,open(f,'w'),indent=2)"
+    python -c "import json; f='%INSTALLED_PL:\=\\%'; d=json.load(open(f)); d.get('plugins',{}).pop('%PLUGIN_NAME%@%PLUGIN_NAME%',None); json.dump(d,open(f,'w'),indent=2)" 2>nul || python3 -c "import json; f='%INSTALLED_PL:\=\\%'; d=json.load(open(f)); d.get('plugins',{}).pop('%PLUGIN_NAME%@%PLUGIN_NAME%',None); json.dump(d,open(f,'w'),indent=2)" 2>nul || py -c "import json; f='%INSTALLED_PL:\=\\%'; d=json.load(open(f)); d.get('plugins',{}).pop('%PLUGIN_NAME%@%PLUGIN_NAME%',None); json.dump(d,open(f,'w'),indent=2)" 2>nul || powershell -NoProfile -Command "$f='%INSTALLED_PL%';$d=Get-Content $f|ConvertFrom-Json;if($d.plugins.PSObject.Properties['%PLUGIN_NAME%@%PLUGIN_NAME%']){$d.plugins.PSObject.Properties.Remove('%PLUGIN_NAME%@%PLUGIN_NAME%')};$d|ConvertTo-Json -Depth 10|Set-Content $f" 2>nul
     echo   [OK] installed_plugins.json cleaned
 )
 
@@ -365,16 +376,28 @@ goto :eof
 :: --- update_known_marketplaces ---
 :update_known_marketplaces
 if not exist "%KNOWN_MP%" echo {} > "%KNOWN_MP%"
+set "KM_CP=%CACHE_DIR%\%PLUGIN_NAME%\%PLUGIN_NAME%\%PLUGIN_VERSION%"
 
-call :py_exec "import json; from datetime import datetime, timezone; f=r'%KNOWN_MP%'; cp=r'%CACHE_DIR%\%PLUGIN_NAME%\%PLUGIN_NAME%\%PLUGIN_VERSION%'; d=json.load(open(f)); d['%PLUGIN_NAME%']={'source':{'source':'directory','path':cp},'installLocation':cp,'lastUpdated':datetime.now(timezone.utc).strftime('%%Y-%%m-%%dT%%H:%%M:%%S.000Z')}; json.dump(d,open(f,'w'),indent=2)"
+:: Try Python first, then PowerShell
+python -c "import json; from datetime import datetime, timezone; f=r'%KNOWN_MP%'; cp=r'%KM_CP%'; d=json.load(open(f)); d['%PLUGIN_NAME%']={'source':{'source':'directory','path':cp},'installLocation':cp,'lastUpdated':datetime.now(timezone.utc).strftime('%%Y-%%m-%%dT%%H:%%M:%%S.000Z')}; json.dump(d,open(f,'w'),indent=2)" 2>nul && goto :km_done
+python3 -c "import json; from datetime import datetime, timezone; f=r'%KNOWN_MP%'; cp=r'%KM_CP%'; d=json.load(open(f)); d['%PLUGIN_NAME%']={'source':{'source':'directory','path':cp},'installLocation':cp,'lastUpdated':datetime.now(timezone.utc).strftime('%%Y-%%m-%%dT%%H:%%M:%%S.000Z')}; json.dump(d,open(f,'w'),indent=2)" 2>nul && goto :km_done
+py -c "import json; from datetime import datetime, timezone; f=r'%KNOWN_MP%'; cp=r'%KM_CP%'; d=json.load(open(f)); d['%PLUGIN_NAME%']={'source':{'source':'directory','path':cp},'installLocation':cp,'lastUpdated':datetime.now(timezone.utc).strftime('%%Y-%%m-%%dT%%H:%%M:%%S.000Z')}; json.dump(d,open(f,'w'),indent=2)" 2>nul && goto :km_done
+powershell -NoProfile -Command "$f='%KNOWN_MP%';$cp='%KM_CP%';$d=Get-Content $f|ConvertFrom-Json;$d|Add-Member -Force '%PLUGIN_NAME%' @{source=@{source='directory';path=$cp};installLocation=$cp;lastUpdated=(Get-Date -Format 'yyyy-MM-ddTHH:mm:ss.000Z')};$d|ConvertTo-Json -Depth 10|Set-Content $f" 2>nul
+:km_done
 echo   [OK] known_marketplaces.json updated
 goto :eof
 
 :: --- update_installed_plugins ---
 :update_installed_plugins
 if not exist "%INSTALLED_PL%" echo {"plugins":{}} > "%INSTALLED_PL%"
+set "IP_CP=%CACHE_DIR%\%PLUGIN_NAME%\%PLUGIN_NAME%\%PLUGIN_VERSION%"
 
-call :py_exec "import json; from datetime import datetime, timezone; f=r'%INSTALLED_PL%'; cp=r'%CACHE_DIR%\%PLUGIN_NAME%\%PLUGIN_NAME%\%PLUGIN_VERSION%'; d=json.load(open(f)); d.setdefault('plugins',{}); now=datetime.now(timezone.utc).strftime('%%Y-%%m-%%dT%%H:%%M:%%S.000Z'); d['plugins']['%PLUGIN_NAME%@%PLUGIN_NAME%']=[{'scope':'user','installPath':cp,'version':'%PLUGIN_VERSION%','installedAt':now,'lastUpdated':now}]; json.dump(d,open(f,'w'),indent=2)"
+:: Try Python first, then PowerShell
+python -c "import json; from datetime import datetime, timezone; f=r'%INSTALLED_PL%'; cp=r'%IP_CP%'; d=json.load(open(f)); d.setdefault('plugins',{}); now=datetime.now(timezone.utc).strftime('%%Y-%%m-%%dT%%H:%%M:%%S.000Z'); d['plugins']['%PLUGIN_NAME%@%PLUGIN_NAME%']=[{'scope':'user','installPath':cp,'version':'%PLUGIN_VERSION%','installedAt':now,'lastUpdated':now}]; json.dump(d,open(f,'w'),indent=2)" 2>nul && goto :ip_done
+python3 -c "import json; from datetime import datetime, timezone; f=r'%INSTALLED_PL%'; cp=r'%IP_CP%'; d=json.load(open(f)); d.setdefault('plugins',{}); now=datetime.now(timezone.utc).strftime('%%Y-%%m-%%dT%%H:%%M:%%S.000Z'); d['plugins']['%PLUGIN_NAME%@%PLUGIN_NAME%']=[{'scope':'user','installPath':cp,'version':'%PLUGIN_VERSION%','installedAt':now,'lastUpdated':now}]; json.dump(d,open(f,'w'),indent=2)" 2>nul && goto :ip_done
+py -c "import json; from datetime import datetime, timezone; f=r'%INSTALLED_PL%'; cp=r'%IP_CP%'; d=json.load(open(f)); d.setdefault('plugins',{}); now=datetime.now(timezone.utc).strftime('%%Y-%%m-%%dT%%H:%%M:%%S.000Z'); d['plugins']['%PLUGIN_NAME%@%PLUGIN_NAME%']=[{'scope':'user','installPath':cp,'version':'%PLUGIN_VERSION%','installedAt':now,'lastUpdated':now}]; json.dump(d,open(f,'w'),indent=2)" 2>nul && goto :ip_done
+powershell -NoProfile -Command "$f='%INSTALLED_PL%';$cp='%IP_CP%';$now=Get-Date -Format 'yyyy-MM-ddTHH:mm:ss.000Z';$d=Get-Content $f|ConvertFrom-Json;if(-not $d.plugins){$d|Add-Member -Force 'plugins' @{}};$d.plugins|Add-Member -Force '%PLUGIN_NAME%@%PLUGIN_NAME%' @(@{scope='user';installPath=$cp;version='%PLUGIN_VERSION%';installedAt=$now;lastUpdated=$now});$d|ConvertTo-Json -Depth 10|Set-Content $f" 2>nul
+:ip_done
 echo   [OK] installed_plugins.json updated
 goto :eof
 
@@ -528,17 +551,21 @@ echo   [OK] Gemini shares Claude plugin directories
 goto :eof
 
 :: --- py_exec <python_code> ---
-:: Execute python code (tries python then python3)
+:: Execute python code (tries python, python3, py, then powershell)
 :py_exec
-python -c "%~1" 2>nul
-if !errorlevel! neq 0 python3 -c "%~1" 2>nul
+python -c "%~1" 2>nul && goto :eof
+python3 -c "%~1" 2>nul && goto :eof
+py -c "%~1" 2>nul && goto :eof
+:: PowerShell fallback for simple JSON operations
+powershell -NoProfile -Command "%~2" 2>nul
 goto :eof
 
 :: --- py_out <python_code> ---
 :: Execute python code and capture output
 :py_out
-python -c "%~1" 2>nul
-if !errorlevel! neq 0 python3 -c "%~1" 2>nul
+python -c "%~1" 2>nul && goto :eof
+python3 -c "%~1" 2>nul && goto :eof
+py -c "%~1" 2>nul
 goto :eof
 
 :: ============================================================
