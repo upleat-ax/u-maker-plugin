@@ -92,7 +92,8 @@ function parseCommand(input):
 | `coverage` | `/u-coverage` | Observability |
 | `trace` | `/u-trace` | Observability |
 | `discuss` | `/u-discuss` | Collaboration |
-| `assume` | `/u-assume` | Review |
+| `wireframe` | `/u-wireframe` | Design |
+| `loop` | `/u-loop` | Automation |
 | `report` | `/u-report` | Reporting |
 | `git-pr` | `/u-git-pr` | Git |
 
@@ -117,6 +118,8 @@ When the input is not a `/u-*` command, the router classifies intent from natura
 | "show coverage", "trace coverage" | `coverage` | u-agent-pm |
 | "trace FR-010", "where does this come from" | `trace` | u-agent-pm |
 | "let's discuss", "brainstorm", "review session" | `discuss` | u-agent-pm |
+| "wireframe", "mockup", "screen preview" | `wireframe` | u-agent-design |
+| "auto loop", "run loop", "unattended" | `loop` | u-agent-pm |
 | "generate report", "daily report" | `report` | u-agent-report |
 | "create PR", "pull request" | `git-pr` | u-agent-pm |
 
@@ -154,6 +157,10 @@ function classifyNaturalLanguage(input):
           intent: "trace" },
         { keywords: ["discuss", "brainstorm", "review session", "workshop", "retro"],
           intent: "discuss" },
+        { keywords: ["wireframe", "mockup", "screen preview", "ui preview"],
+          intent: "wireframe" },
+        { keywords: ["loop", "auto loop", "unattended", "run all phases"],
+          intent: "loop" },
         { keywords: ["report", "daily report"],
           intent: "report" },
         { keywords: ["pull request", "pr", "merge request"],
@@ -206,7 +213,8 @@ Once intent is classified, the router dispatches to the appropriate agent.
 | `coverage` | u-agent-pm | (none) |
 | `trace` | u-agent-pm | (none) |
 | `discuss` | u-agent-pm (inline) | (none) |
-| `assume` | u-agent-pm | (none) |
+| `wireframe` | u-agent-design | u-agent-pm |
+| `loop` | u-agent-pm | (none) |
 | `report` | u-agent-report | u-agent-pm |
 | `git-pr` | u-agent-pm (inline) | (none) |
 
@@ -245,7 +253,7 @@ function dispatch(parsed):
 
 | Command | Skill |
 |---------|-------|
-| `init` | (inline in u-agent-pm) |
+| `init` | u-init |
 | `ingest` | u-plan (digest phase) |
 | `plan` | u-plan |
 | `design` | u-design |
@@ -262,6 +270,8 @@ function dispatch(parsed):
 | `coverage` | u-engine (dep-engine) |
 | `trace` | u-engine (dep-engine) |
 | `discuss` | u-discuss |
+| `wireframe` | u-wireframe |
+| `loop` | u-loop |
 | `report` | u-engine (html-engine) |
 | `git-pr` | u-git-pr |
 
@@ -274,6 +284,7 @@ function dispatch(parsed):
 | `dev` | Design phase complete (ERD, API, Screens, Design System = Final) | "Run /u-design first. All design docs must be Final." |
 | `check` | Dev phase complete (code generated) | "Run /u-dev first. Code must be generated." |
 | `ship` | Check phase complete (all TCs pass) | "Run /u-check first. All test cases must pass." |
+| `wireframe` | Design phase complete (Screens=Final) | "Run /u-design first. Screen spec must be Final." |
 | `gate` | At least one document exists | "No documents to validate. Run a phase command first." |
 | `report` | At least one document exists | "No documents to report on." |
 
