@@ -666,21 +666,32 @@ exit /b 0
 :: --- check_python ---
 :check_python
 :: Try python first, then python3
+:: Windows Store alias returns exit 0 but outputs "was not found" — must check output text
 where python >nul 2>&1
 if !errorlevel! equ 0 (
-    :: Verify it's real Python (not Windows Store alias)
-    python --version >nul 2>&1
-    if !errorlevel! equ 0 (
-        for /f "usebackq delims=" %%v in (`python --version 2^>^&1`) do set "PY_VER=%%v"
-        echo   [OK] Python found: !PY_VER!
-        exit /b 0
+    set "PY_VER="
+    for /f "usebackq delims=" %%v in (`python --version 2^>^&1`) do set "PY_VER=%%v"
+    echo !PY_VER! | findstr /i "was not found" >nul 2>&1
+    if !errorlevel! neq 0 (
+        echo !PY_VER! | findstr /i "^Python [0-9]" >nul 2>&1
+        if !errorlevel! equ 0 (
+            echo   [OK] Python found: !PY_VER!
+            exit /b 0
+        )
     )
 )
 where python3 >nul 2>&1
 if !errorlevel! equ 0 (
+    set "PY_VER="
     for /f "usebackq delims=" %%v in (`python3 --version 2^>^&1`) do set "PY_VER=%%v"
-    echo   [OK] Python found: !PY_VER!
-    exit /b 0
+    echo !PY_VER! | findstr /i "was not found" >nul 2>&1
+    if !errorlevel! neq 0 (
+        echo !PY_VER! | findstr /i "^Python [0-9]" >nul 2>&1
+        if !errorlevel! equ 0 (
+            echo   [OK] Python found: !PY_VER!
+            exit /b 0
+        )
+    )
 )
 echo   [--] Python not found
 exit /b 1
@@ -700,18 +711,31 @@ exit /b 0
 :verify_python
 where python >nul 2>&1
 if !errorlevel! equ 0 (
-    python --version >nul 2>&1
-    if !errorlevel! equ 0 (
-        for /f "usebackq delims=" %%v in (`python --version 2^>^&1`) do echo   [OK] Python: %%v
-        exit /b 0
+    set "PY_VVER="
+    for /f "usebackq delims=" %%v in (`python --version 2^>^&1`) do set "PY_VVER=%%v"
+    echo !PY_VVER! | findstr /i "was not found" >nul 2>&1
+    if !errorlevel! neq 0 (
+        echo !PY_VVER! | findstr /i "^Python [0-9]" >nul 2>&1
+        if !errorlevel! equ 0 (
+            echo   [OK] Python: !PY_VVER!
+            exit /b 0
+        )
     )
 )
 where python3 >nul 2>&1
 if !errorlevel! equ 0 (
-    for /f "usebackq delims=" %%v in (`python3 --version 2^>^&1`) do echo   [OK] Python: %%v
-    exit /b 0
+    set "PY_VVER="
+    for /f "usebackq delims=" %%v in (`python3 --version 2^>^&1`) do set "PY_VVER=%%v"
+    echo !PY_VVER! | findstr /i "was not found" >nul 2>&1
+    if !errorlevel! neq 0 (
+        echo !PY_VVER! | findstr /i "^Python [0-9]" >nul 2>&1
+        if !errorlevel! equ 0 (
+            echo   [OK] Python: !PY_VVER!
+            exit /b 0
+        )
+    )
 )
-echo   [ERR] Python still not found after install
+echo   [WARN] Python not available. PowerShell will be used as fallback.
 exit /b 1
 
 :: --- install_with_winget <package_id> <display_name> ---
