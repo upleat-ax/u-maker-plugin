@@ -110,7 +110,7 @@ a:hover{text-decoration:underline}
 <nav class="sidebar" id="sidebar">
   <div class="sidebar-header">
     <h1>U-MAKER</h1>
-    <p>v3.1.2 &mdash; Plugin Documentation</p>
+    <p>v3.2.0 &mdash; Plugin Documentation</p>
   </div>
   <div class="sidebar-nav">
 
@@ -152,7 +152,7 @@ a:hover{text-decoration:underline}
     </div>
 
   </div>
-  <div class="sidebar-footer">GPL-3.0 &copy; U PLEAT &middot; v3.1.2</div>
+  <div class="sidebar-footer">GPL-3.0 &copy; U PLEAT &middot; v3.2.0</div>
 </nav>
 
 <main class="main">
@@ -161,13 +161,16 @@ a:hover{text-decoration:underline}
 <div class="hero">
   <h2>U-MAKER Plugin</h2>
   <p>PDCA-based SSoT (Single Source of Truth) collaboration orchestrator.<br>
-  A Claude Code plugin that automates the entire software development lifecycle with 4 specialized agents and a 3-Layer pipeline.</p>
+  A Claude Code plugin that automates the entire software development lifecycle with 7 specialized agents and a 3-Layer pipeline.</p>
   <div class="stats">
-    <div class="stat"><div class="stat-val">39</div><div class="stat-label">Skills (13 engine + 25 command + 1 NL router)</div></div>
-    <div class="stat"><div class="stat-val">4</div><div class="stat-label">Agents</div></div>
+    <div class="stat"><div class="stat-val">9</div><div class="stat-label">Skills</div></div>
+    <div class="stat"><div class="stat-val">7</div><div class="stat-label">Agents</div></div>
     <div class="stat"><div class="stat-val">5</div><div class="stat-label">PDCA Phases</div></div>
+    <div class="stat"><div class="stat-val">11</div><div class="stat-label">Gate Criteria</div></div>
   </div>
 </div>
+
+<blockquote><strong>v3.2.0 Key Changes (2026-04-04)</strong> &mdash; Streamlined from 32 skills down to 9 focused skills. Added <code>/u-loop</code> for unattended PDCA auto-execution and <code>/u-wireframe</code> for per-screen HTML wireframe generation. Agents expanded to 7 (pm, plan, design, dev, qa, gatekeeper, report). PDCA phases now 5: Plan, Design, Dev, Check, Ship.</blockquote>
 
 <!-- TL;DR -->
 <h2 id="tldr">TL;DR</h2>
@@ -272,7 +275,7 @@ curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/insta
   <text x="400" y="251" text-anchor="middle" fill="#5b21b6" font-size="10" font-weight="600">u-agent-* (dispatch)</text>
   <!-- Agents -->
   <rect x="520" y="230" width="180" height="32" rx="6" fill="#ede9fe" stroke="#8b5cf6"/>
-  <text x="610" y="246" text-anchor="middle" fill="#5b21b6" font-size="9">orchestrator|planner|builder|gatekeeper</text>
+  <text x="610" y="246" text-anchor="middle" fill="#5b21b6" font-size="9">pm|plan|design|dev|qa|gatekeeper|report</text>
   <!-- Output -->
   <line x1="360" y1="262" x2="360" y2="290" stroke="#6b7280" stroke-width="1.5" marker-end="url(#ar)"/>
   <rect x="260" y="292" width="200" height="28" rx="14" fill="#1e293b"/>
@@ -282,12 +285,17 @@ curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/insta
 
 <h3>Skill Naming Convention</h3>
 <table>
-<thead><tr><th>Prefix</th><th>Purpose</th><th>User-invocable</th><th>Count</th></tr></thead>
+<thead><tr><th>Skill</th><th>Phase</th><th>Description</th><th>Primary Output</th></tr></thead>
 <tbody>
-<tr><td><code>u-*</code></td><td>Command (slash command)</td><td>Yes</td><td>25</td></tr>
-<tr><td><code>u-skill-*</code></td><td>Internal engine</td><td>No</td><td>13</td></tr>
-<tr><td><code>u-skill-router</code></td><td>Intent router</td><td>No</td><td>1</td></tr>
-<tr><td><code>u-maker</code></td><td>NL router + help</td><td>Yes</td><td>1</td></tr>
+<tr><td><code>/u-plan</code></td><td>Plan</td><td>classified &rarr; SRS + IA + Roadmap chain generation</td><td>srs.md, ia.md, roadmap.md</td></tr>
+<tr><td><code>/u-design</code></td><td>Design</td><td>SRS/IA &rarr; ERD + API + Screen + Flow + RTM + wireframes</td><td>erd.md, api.md, screen.md</td></tr>
+<tr><td><code>/u-dev</code></td><td>Dev</td><td>Spec &rarr; FE + BE + DB code generation</td><td>Source code</td></tr>
+<tr><td><code>/u-check</code></td><td>Check</td><td>TC design + test execution + report + exit criteria</td><td>test-cases.md, test-report.md</td></tr>
+<tr><td><code>/u-engine</code></td><td>ALL</td><td>Cross-cutting internal engines (router, dep, doc, validator, etc.)</td><td>Internal</td></tr>
+<tr><td><code>/u-loop</code></td><td>Loop</td><td>Unattended PDCA auto-execution loop (Plan&rarr;Design&rarr;Dev&rarr;Check&rarr;Ship with gatekeeper)</td><td>loop-state.json</td></tr>
+<tr><td><code>/u-wireframe</code></td><td>Design</td><td>Per-screen HTML wireframe generation from screens.json</td><td>wireframes/*.html</td></tr>
+<tr><td><code>/u-discuss</code></td><td>ALL</td><td>Structured discussion session (brainstorm/review/decision/workshop/retro)</td><td>Session archive</td></tr>
+<tr><td><code>/u-git-pr</code></td><td>Ship</td><td>Auto-generate PR/MR (commit analysis, split/merge, review guide)</td><td>PR/MR</td></tr>
 </tbody>
 </table>
 
@@ -307,13 +315,13 @@ curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/insta
   <text x="215" y="72" text-anchor="middle" fill="#fff" font-size="11" font-weight="700">02 DESIGN</text>
   <text x="215" y="88" text-anchor="middle" fill="#ddd6fe" font-size="9">ERD &middot; API &middot; Screen</text>
   <rect x="300" y="50" width="110" height="50" rx="8" fill="#10b981"/>
-  <text x="355" y="72" text-anchor="middle" fill="#fff" font-size="11" font-weight="700">03 DO</text>
+  <text x="355" y="72" text-anchor="middle" fill="#fff" font-size="11" font-weight="700">03 DEV</text>
   <text x="355" y="88" text-anchor="middle" fill="#a7f3d0" font-size="9">Code &middot; Build</text>
   <rect x="440" y="50" width="110" height="50" rx="8" fill="#f59e0b"/>
   <text x="495" y="72" text-anchor="middle" fill="#fff" font-size="11" font-weight="700">04 CHECK</text>
   <text x="495" y="88" text-anchor="middle" fill="#fef3c7" font-size="9">Test &middot; Report</text>
   <rect x="580" y="50" width="100" height="50" rx="8" fill="#ef4444"/>
-  <text x="630" y="72" text-anchor="middle" fill="#fff" font-size="11" font-weight="700">05 ACT</text>
+  <text x="630" y="72" text-anchor="middle" fill="#fff" font-size="11" font-weight="700">05 SHIP</text>
   <text x="630" y="88" text-anchor="middle" fill="#fecaca" font-size="9">Ship &middot; Retro</text>
   <!-- Forward arrows -->
   <line x1="130" y1="75" x2="155" y2="75" stroke="#6b7280" stroke-width="2" marker-end="url(#ar2)"/>
@@ -337,11 +345,11 @@ curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/insta
 <table>
 <thead><tr><th>Phase</th><th>Deliverables</th><th>Responsible Agent</th><th>Gate Criteria</th></tr></thead>
 <tbody>
-<tr><td><strong>01 Plan</strong></td><td>SRS, IA, Roadmap</td><td>orchestrator&rarr;planner&rarr;gatekeeper</td><td>SRS+IA+Roadmap = Final</td></tr>
-<tr><td><strong>02 Design</strong></td><td>ERD, API, Screen, ScreenFlow, UXGuide, RTM, wireframes/index.html</td><td>planner&rarr;gatekeeper</td><td>ERD+RTM+Screen+API = Final</td></tr>
-<tr><td><strong>03 Do</strong></td><td>Code, UIComponents, Screen(impl)</td><td>builder</td><td>Code complete + build success</td></tr>
-<tr><td><strong>04 Check</strong></td><td>TestCase, TestReport</td><td>gatekeeper</td><td>Critical/Major=0, all FR impl</td></tr>
-<tr><td><strong>05 Act</strong></td><td>IterationLog, Retrospective</td><td>orchestrator&rarr;gatekeeper</td><td>Retro + archive complete</td></tr>
+<tr><td><strong>01 Plan</strong></td><td>SRS, IA, Roadmap</td><td>pm&rarr;plan&rarr;gatekeeper</td><td>SRS+IA+Roadmap = Final</td></tr>
+<tr><td><strong>02 Design</strong></td><td>ERD, API, Screen, ScreenFlow, UXGuide, RTM, wireframes/index.html</td><td>design&rarr;gatekeeper</td><td>ERD+RTM+Screen+API = Final</td></tr>
+<tr><td><strong>03 Dev</strong></td><td>Code, UIComponents, Screen(impl)</td><td>dev</td><td>Code complete + build success</td></tr>
+<tr><td><strong>04 Check</strong></td><td>TestCase, TestReport</td><td>qa&rarr;gatekeeper</td><td>Critical/Major=0, all FR impl</td></tr>
+<tr><td><strong>05 Ship</strong></td><td>IterationLog, Retrospective</td><td>pm&rarr;gatekeeper</td><td>Retro + archive complete</td></tr>
 </tbody>
 </table>
 
@@ -419,15 +427,18 @@ curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/insta
 <!-- Section 5 -->
 <h2 id="sec5">5. Agents</h2>
 
-<p>4 specialized agents share responsibilities by phase.</p>
+<p>7 specialized agents share responsibilities by phase.</p>
 
 <table>
-<thead><tr><th>Agent</th><th>Model</th><th>Role</th><th>Phase</th></tr></thead>
+<thead><tr><th>Agent</th><th>Role</th><th>Phase</th></tr></thead>
 <tbody>
-<tr><td><code>u-agent-orchestrator</code></td><td>opus</td><td>Command router, Phase controller, State machine, _links.json management</td><td>ALL</td></tr>
-<tr><td><code>u-agent-planner</code></td><td>sonnet</td><td>Analysis + Design (SRS, IA, ERD, API, Screen, UX)</td><td>Plan, Design</td></tr>
-<tr><td><code>u-agent-builder</code></td><td>sonnet</td><td>Integrated FE + BE implementation</td><td>Do</td></tr>
-<tr><td><code>u-agent-gatekeeper</code></td><td>sonnet</td><td>Gate verification, TestCase, consistency checks, RTM</td><td>Design, Do, Check, Act</td></tr>
+<tr><td><code>pm</code></td><td>Project management, orchestration, state machine, _links.json management</td><td>ALL</td></tr>
+<tr><td><code>plan</code></td><td>Analysis (SRS, IA, Roadmap)</td><td>Plan</td></tr>
+<tr><td><code>design</code></td><td>Design (ERD, API, Screen, UX, wireframes)</td><td>Design</td></tr>
+<tr><td><code>dev</code></td><td>Integrated FE + BE implementation</td><td>Dev</td></tr>
+<tr><td><code>qa</code></td><td>TC design, test execution, report</td><td>Check</td></tr>
+<tr><td><code>gatekeeper</code></td><td>Gate verification, consistency checks, RTM</td><td>ALL</td></tr>
+<tr><td><code>report</code></td><td>HTML report generation, deliverable formatting</td><td>ALL</td></tr>
 </tbody>
 </table>
 
@@ -445,7 +456,7 @@ curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/insta
 <li><strong>flags</strong>: <code>-i</code> (interactive) | <code>--step</code> | <code>--only X</code> | <code>--cascade</code> | <code>--dry-run</code> | <code>--json</code></li>
 </ul>
 
-<h3>6.1 Lifecycle (9)</h3>
+<h3>6.1 Lifecycle (10)</h3>
 <table>
 <thead><tr><th>Command</th><th>Description</th><th>Example</th></tr></thead>
 <tbody>
@@ -457,7 +468,8 @@ curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/insta
 <tr><td><code>/u-dev [scope] [--only X] [-i] [--step]</code></td><td>Spec &rarr; FE + BE + DB code generation</td><td><code>/u-dev [app] --only fe</code></td></tr>
 <tr><td><code>/u-qa [scope] [-i] [--step]</code></td><td>TC design + test execution + Report + exit criteria</td><td><code>/u-qa [app]</code></td></tr>
 <tr><td><code>/u-ship [scope] [-i] [--step]</code></td><td>Final verification + iteration log + retrospective</td><td><code>/u-ship [app]</code></td></tr>
-<tr><td><code>/u-loop [scope] [--from X] [--to Y]</code></td><td>Unattended PDCA pipeline execution with checkpoint-based resume</td><td><code>/u-loop [app] --from plan --to check</code></td></tr>
+<tr><td><code>/u-loop [--app name] [--from phase] [--to phase] [--dry-run]</code></td><td>Unattended PDCA auto-execution loop</td><td><code>/u-loop --app my-app --from plan --to check</code></td></tr>
+<tr><td><code>/u-wireframe [--app name] [--screen SCR-ID] [--all]</code></td><td>Per-screen wireframe HTML generation</td><td><code>/u-wireframe --app my-app --all</code></td></tr>
 </tbody>
 </table>
 
@@ -668,7 +680,9 @@ curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/insta
 |   +-- docs/                         # Layer 3: Deliverables
 |   |   +-- 01-plan/                  # srs.md, ia.md, roadmap.md
 |   |   +-- 02-design/               # erd.md, api.md, screen.md, screen-flow.md
-|   |   |   +-- wireframes/          # index.html (SPA viewer) + SCR-*.html/md
+|   |   |   +-- wireframes/
+|   |   |   |   +-- index.html       # Wireframe browser
+|   |   |   |   +-- {SCR-ID}.html    # Per-screen wireframe
 |   |   +-- 03-dev/                  # code.md, spec-sync-report.md
 |   |   +-- 04-check/               # test-cases.md, test-report.md
 |   +-- rtm.md                       # Traceability matrix
@@ -734,16 +748,17 @@ Use <code>/u-update --cascade</code> for automatic dependent document updates.</
 <h2 id="sec12">12. Plugin Repository Layout</h2>
 
 <pre><code>u-maker-plugin/
-+-- .claude-plugin/plugin.json        # v3.1.2
-+-- agents/                           # 4 agent definitions
-|   +-- u-agent-orchestrator.md
-|   +-- u-agent-planner.md
-|   +-- u-agent-builder.md
++-- .claude-plugin/plugin.json        # v3.2.0
++-- agents/                           # 7 agent definitions
+|   +-- u-agent-pm.md
+|   +-- u-agent-plan.md
+|   +-- u-agent-design.md
+|   +-- u-agent-dev.md
+|   +-- u-agent-qa.md
 |   +-- u-agent-gatekeeper.md
+|   +-- u-agent-report.md
 +-- skills/
-|   +-- u-skill-*/SKILL.md            # 13 internal engines
-|   +-- u-*/SKILL.md                  # 25 command skills (user-invocable)
-|   +-- u-maker/SKILL.md              # NL router
+|   +-- u-*/SKILL.md                  # 9 skills
 +-- hooks/                            # Event hooks
 |   +-- hooks.json
 |   +-- on-input-added.js
@@ -979,7 +994,7 @@ cd /path/to/u-maker-plugin && ./deploy_local.sh</code></pre>
 
 <!-- Footer -->
 <div class="footer">
-  <strong>U-MAKER Plugin</strong> v3.1.2 &middot; GPL-3.0 &copy; U PLEAT<br>
+  <strong>U-MAKER Plugin</strong> v3.2.0 &middot; GPL-3.0 &copy; U PLEAT<br>
   PDCA-based SSoT collaboration orchestrator
 </div>
 
