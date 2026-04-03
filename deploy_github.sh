@@ -260,6 +260,7 @@ with open('$PLUGIN_JSON', 'w') as f:
   tmp_dir="$(mktemp -d)"
 
   # Prepare public content
+  cp "$SCRIPT_DIR/README.md" "$tmp_dir/README.md" 2>/dev/null || true
   cp "$SCRIPT_DIR/README.ko.html" "$tmp_dir/README.ko.html"
   cp "$SCRIPT_DIR/README.en.html" "$tmp_dir/README.en.html"
   cp "$SCRIPT_DIR/GET_STARTED.html" "$tmp_dir/GET_STARTED.html"
