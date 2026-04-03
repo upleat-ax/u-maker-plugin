@@ -233,6 +233,7 @@ with open('$PLUGIN_JSON', 'w') as f:
     install.sh \
     install.bat \
     install.ps1 \
+    uninstall_local.sh \
     README.ko.html \
     README.en.html \
     GET_STARTED.html \
