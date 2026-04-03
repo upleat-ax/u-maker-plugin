@@ -53,7 +53,8 @@ Check phase: design test cases from SRS Features (FT), execute tests, record res
    - MUST include (inline SVG): FR→US→FT→TC→Result full traceability tree, Pass/Fail summary donut chart
 3. Generate SVG diagrams from companion `.json` data
 4. Update `output/{app}/index.html` navigation
-5. See `html-engine.md` § 2 — SVG preferred, Mermaid only for UML fallback
+5. Update root index files: `output/index.html`, `index.html` (see html-engine § 8 "Root Index Navigation System")
+6. See `html-engine.md` § 2 — SVG preferred, Mermaid only for UML fallback
 
 ### Step 5: Gatekeeper (if --loop)
 

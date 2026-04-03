@@ -160,6 +160,7 @@ When all phases pass (or `--to` phase reached):
 ```
 
 3. Write summary to `.state/loop-state.json` with `"status": "completed"`
+4. If any reports were generated during the loop (daily/gate/summary), update `reports/index.html` and `index.html` (see html-engine § 8 "Root Index Navigation System")
 
 ## Resume Support
 

@@ -78,7 +78,8 @@ Design phase: generate `docs/{app}/design/` documents (ERD, API, Screens, Design
    - MUST include (inline SVG): token hierarchy, color palette swatches
 5. Generate diagrams from companion `.json` data
 6. Update `output/{app}/index.html` navigation
-7. See `html-engine.md` § 2 — SVG preferred, Mermaid only for erDiagram/classDiagram/sequenceDiagram
+7. Update root index files: `output/index.html`, `index.html` (see html-engine § 8 "Root Index Navigation System")
+8. See `html-engine.md` § 2 — SVG preferred, Mermaid only for erDiagram/classDiagram/sequenceDiagram
 
 ### Step 6: Gatekeeper (if --loop)
 

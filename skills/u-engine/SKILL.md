@@ -13,7 +13,7 @@ Internal engine bundle providing cross-cutting capabilities for all u-maker phas
 | Engine | Reference | Purpose |
 |--------|-----------|---------|
 | doc-engine | `references/doc-engine.md` | Document CRUD, template rendering, JSON companion generation |
-| html-engine | `references/html-engine.md` | MD→HTML conversion, SVG diagrams, Mermaid CDN, base64 images, sidebar navigation |
+| html-engine | `references/html-engine.md` | MD→HTML conversion, SVG diagrams, Mermaid CDN, base64 images, sidebar navigation, root index management |
 | dep-engine | `references/dep-engine.md` | links.json dependency graph, cascade propagation |
 | digest-engine | `references/digest-engine.md` | dropzone→digest refinement, hash comparison, _index.json management |
 | router | `references/router.md` | Intent classification, command parsing, agent dispatch |
@@ -51,6 +51,7 @@ Every `.md` SSoT document has a `.json` companion following `_meta/schemas/doc-c
 8. Generate TOC from headings
 9. Write to `output/{app}/{phase}/{docName}.html`
 10. Update `output/{app}/index.html` navigation
+11. Update root index files (`output/index.html`, `reports/index.html`, `index.html`) — see `html-engine.md` § 8
 
 ### HTML Rules
 

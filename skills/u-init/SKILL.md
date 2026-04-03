@@ -62,8 +62,12 @@ Create the v4 folder structure:
 │       ├── design/              # erd, api, screens, design-system
 │       └── check/               # testcases, test-results
 ├── output/
+│   ├── index.html               # Output root index (all apps listing)
 │   └── {app}/                   # Generated HTML output
-│       └── index.html           # Navigation portal
+│       └── index.html           # Per-app navigation portal
+├── reports/                     # Generated reports (daily, gate, summary)
+│   └── index.html               # Reports index (chronological listing)
+├── index.html                   # Root navigation hub
 └── .state/
     ├── sessions/                # Session state files
     └── loop-state.json          # Auto-loop runtime state
@@ -123,7 +127,20 @@ Create all directories listed above. Replace `{app}` with the provided `app-name
 }
 ```
 
-#### 1.6 Update `.gitignore`
+#### 1.6 Generate Initial Index Files
+
+Render the three root index HTML files from their templates with empty/initial data:
+
+1. **`.u-maker/index.html`** — from `_meta/templates/root-index.template.html`
+   - `projectName` = app-name, `projectDescription` = "", `apps` = [{name: app-name, docCount: 0}], all counts = 0
+2. **`.u-maker/output/index.html`** — from `_meta/templates/output-root-index.template.html`
+   - `projectName` = app-name, `apps` = [{name: app-name, initial: first char uppercase, planCount/designCount/checkCount: 0, planDocs/designDocs/checkDocs: []}]
+3. **`.u-maker/output/{app}/index.html`** — from `_meta/templates/output-index.template.html`
+   - `appName` = app-name, all item arrays empty, all counts = 0
+4. **`.u-maker/reports/index.html`** — from `_meta/templates/reports-index.template.html`
+   - `projectName` = app-name, `reportCount` = 0, `reports` = []
+
+#### 1.7 Update `.gitignore`
 
 Append these lines to the project root `.gitignore` (create if absent, skip lines that already exist):
 
@@ -131,9 +148,10 @@ Append these lines to the project root `.gitignore` (create if absent, skip line
 # u-maker runtime
 .u-maker/.state/
 .u-maker/output/
+.u-maker/reports/
 ```
 
-#### 1.7 Print summary
+#### 1.8 Print summary
 
 ```
 u-maker initialized.
@@ -193,11 +211,15 @@ Print: `Backup created at .u-maker.bak-{timestamp}/`
 
 #### 2.2 Create missing directories
 
-After moving files, ensure all v4 directories exist (same as Step 1.1).
+After moving files, ensure all v4 directories exist (same as Step 1.1), including `reports/`.
 
 #### 2.3 Ensure required files exist
 
 Create `data/links.json`, `data/digest/_index.json`, `.state/loop-state.json` if they don't exist (same as Steps 1.3–1.5).
+
+#### 2.3.1 Generate missing index files
+
+If any of the 3 root index files are missing, generate them (same as Step 1.6). Scan existing `output/` and `reports/` directories for actual content and populate index data accordingly.
 
 #### 2.4 Clean empty legacy directories
 

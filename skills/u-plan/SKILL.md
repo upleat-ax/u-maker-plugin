@@ -66,7 +66,8 @@ For each new/changed file:
    - MUST include (inline SVG): site map hierarchy, user flow diagrams, navigation structure
    - Generate SVG diagrams from `ia.json` data
 3. Update `output/{app}/index.html` navigation
-4. See `html-engine.md` § 2 "Mandatory Diagram Requirements" — SVG preferred, Mermaid only for UML fallback
+4. Update root index files: `output/index.html`, `index.html` (see html-engine § 8 "Root Index Navigation System")
+5. See `html-engine.md` § 2 "Mandatory Diagram Requirements" — SVG preferred, Mermaid only for UML fallback
 
 ### Step 6: Gatekeeper (if --loop)
 

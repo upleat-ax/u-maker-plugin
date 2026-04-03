@@ -18,6 +18,7 @@ Step 8: Apply output-page.template.html wrapper
 Step 9: Inject dark/light toggle, Tailwind, Mermaid CDN
 Step 10: Write to output/{app}/{phase}/{docName}.html
 Step 11: Update output/{app}/index.html sidebar navigation
+Step 12: Update root index files (output/index.html, reports/index.html, index.html)
 ```
 
 ### Input / Output Paths
@@ -388,7 +389,69 @@ Light mode is the default. The `<html>` element starts without the `dark` class.
 
 Theme preference is saved in `localStorage` under the key `theme`. On page load, the saved preference is checked before the system preference.
 
-## 8. Sidebar Navigation (output-index.html)
+## 8. Root Index Navigation System
+
+The u-maker project maintains a 3-tier index navigation hierarchy. **All three index files MUST be updated whenever any HTML document or report is generated.**
+
+### Index Hierarchy
+
+```
+.u-maker/
+├── index.html                    ← Root hub (links to output/ and reports/)
+├── output/
+│   ├── index.html                ← Output root (lists all apps)
+│   └── {app}/
+│       └── index.html            ← Per-app portal (sidebar + iframe)
+└── reports/
+    └── index.html                ← Reports listing (chronological table)
+```
+
+### Templates
+
+| Index File | Template | Placeholders |
+|------------|----------|-------------|
+| `.u-maker/index.html` | `_meta/templates/root-index.template.html` | `projectName`, `projectDescription`, `apps[]`, `planCount`, `designCount`, `checkCount`, `reportCount` |
+| `.u-maker/output/index.html` | `_meta/templates/output-root-index.template.html` | `projectName`, `apps[]` (with `name`, `initial`, `description`, `planCount/Docs`, `designCount/Docs`, `checkCount/Docs`) |
+| `.u-maker/reports/index.html` | `_meta/templates/reports-index.template.html` | `projectName`, `reportCount`, `reports[]` (with `file`, `title`, `type`, `typeClass`, `app`, `date`, `score`, `scoreClass`) |
+| `.u-maker/output/{app}/index.html` | `_meta/templates/output-index.template.html` | `appName`, `appDescription`, `planItems[]`, `designItems[]`, `checkItems[]`, counts |
+
+### Root Index Update Protocol
+
+Whenever **any** of these events occur, ALL relevant index files MUST be regenerated:
+
+| Event | Index Files to Update |
+|-------|----------------------|
+| HTML document generated (`output/{app}/{phase}/*.html`) | `output/{app}/index.html` + `output/index.html` + `index.html` |
+| Report generated (`reports/*.html`) | `reports/index.html` + `index.html` |
+| New app initialized | `output/index.html` + `index.html` |
+
+### Update Algorithm
+
+1. **Scan** the filesystem for existing HTML files:
+   - `output/*/plan/*.html`, `output/*/design/*.html`, `output/*/check/*.html`
+   - `reports/*.html`
+2. **Collect** metadata: file paths, document titles (from `<title>` or filename), app names, phases, dates
+3. **Render** each template with collected data
+4. **Write** all affected index files
+
+### Report Type Classification
+
+| Report filename pattern | Type | `typeClass` |
+|------------------------|------|-------------|
+| `daily-*.html` | Daily | `bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300` |
+| `gate-*.html` | Gate | `bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300` |
+| `summary-*.html` | Summary | `bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-300` |
+| `loop-*.html` | Loop | `bg-purple-100 text-purple-700 dark:bg-purple-900/40 dark:text-purple-300` |
+
+### Score Badge Classification
+
+| Score Range | `scoreClass` |
+|-------------|-------------|
+| >= 95 | `bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-300` |
+| 80–94 | `bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300` |
+| < 80 | `bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-300` |
+
+## 9. Per-App Sidebar Navigation (output/{app}/index.html)
 
 The `output/{app}/index.html` file serves as the project's documentation portal with a sidebar navigation listing all generated HTML documents.
 
@@ -466,7 +529,7 @@ When viewing a specific document page, the corresponding sidebar entry is highli
 </a>
 ```
 
-## 9. TOC Auto-Generation
+## 10. TOC Auto-Generation
 
 Every document HTML page includes an auto-generated Table of Contents derived from the document's headings.
 
@@ -516,7 +579,7 @@ Heading `id` attributes are derived from the heading text:
 
 Example: `## 3. Functional Requirements` → `id="3-functional-requirements"`
 
-## 10. Footer Template
+## 11. Footer Template
 
 Every generated HTML page includes a standard footer at the bottom of the main content area.
 
@@ -539,7 +602,7 @@ Every generated HTML page includes a standard footer at the bottom of the main c
 3. The footer appears inside `<main>`, after all document content and before the closing `</main>` tag.
 4. The footer border separates it visually from the document content.
 
-## 11. Complete HTML Page Structure
+## 12. Complete HTML Page Structure
 
 The final assembled HTML page follows this structure:
 
