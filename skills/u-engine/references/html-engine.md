@@ -95,7 +95,7 @@ The "Default" column shows the rendering engine when `--diagram svg` (default). 
 | **API** | Request/response sequence per endpoint group | SVG | Mermaid `sequenceDiagram` |
 | **API** | Endpoint-to-FR traceability | SVG | SVG |
 | **Screens** | Screen flow / navigation map | SVG | SVG |
-| **Screens** | State transitions per interactive screen | SVG | SVG |
+| **Screens** | Screen layout structure per screen (from `layout` field) | SVG | SVG |
 | **Design System** | Token hierarchy (color, spacing, typography) | SVG | SVG |
 | **Design System** | Color palette swatches | SVG | SVG |
 | **Test Cases** | FT→TC coverage map | SVG | SVG |
@@ -140,7 +140,13 @@ The "Default" column shows the rendering engine when `--diagram svg` (default). 
     - **Timeline/Roadmap:** 컬럼별 phase, 세로 축 위에 pill-shape 항목, 점선 연결
     - **Node-link maps:** 노드 카드 + 라벨 달린 링크 커넥터, 그룹별 배경 영역
     - 데이터에 맞는 다른 시각 표현도 자유롭게 사용 가능
-12. **Fallback:** If source data is insufficient, insert a placeholder `<div class="text-center text-gray-400 py-8">` with note: `"Diagram will be generated when {dependency} data is available."`
+12. **Screen layout diagram (SVG):** Screens 문서의 각 화면에 대해 `screens.json`의 `layout` 필드를 읽어 대략적인 화면 레이아웃을 inline SVG로 렌더링한다. State Transition 다이어그램은 생성하지 않는다.
+    - `layout.direction`에 따라 영역을 수평/수직으로 배치
+    - 각 `area`를 labeled rectangle로 표현 (이름 + children 목록)
+    - fixed width/height는 비례 축소, flex는 남은 공간 채움
+    - 영역별 배경색 구분 (header: `#e0f2fe`, body: `#f8fafc`, sidebar: `#f1f5f9`, footer: `#f0fdf4`)
+    - children 컴포넌트명을 영역 내부에 작은 텍스트로 나열
+13. **Fallback:** If source data is insufficient, insert a placeholder `<div class="text-center text-gray-400 py-8">` with note: `"Diagram will be generated when {dependency} data is available."`
 
 ## 3. Mermaid Rendering Configuration
 
@@ -196,7 +202,7 @@ Mermaid code blocks are preserved as `<pre class="mermaid">` elements wrapped in
 | `classDiagram` | API model diagrams | API |
 | `flowchart` | Navigation flows, workflows | IA, Screens |
 | `sequenceDiagram` | API interaction sequences | API, Screens |
-| `stateDiagram-v2` | State transitions | Screens |
+| ~~`stateDiagram-v2`~~ | ~~State transitions~~ | ~~Screens~~ (removed — use SVG screen layout instead) |
 
 ### erDiagram Constraint Rules
 
@@ -733,7 +739,7 @@ Read `api.json` companion:
 Read `screens.json` companion:
 
 - **Index page** includes: Screen inventory table, screen flow navigation map (SVG), screen group summary
-- **Domain page per screen group**: Screens sharing the same `group` or navigation section + component details + state transitions (SVG)
+- **Domain page per screen group**: Screens sharing the same `group` or navigation section + component details + screen layout diagram (SVG, generated from `layout` field in `screens.json`)
 - **Slug**: Group name slugified (e.g., `auth-screens.html`)
 - **Stats**: Screen count, component count, group count
 

@@ -3,286 +3,327 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>{{SCR_ID}} {{screenName}} — {{appName}} Wireframe</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<script>
-tailwind.config = {
-  darkMode: 'class',
-  theme: {
-    extend: {
-      fontFamily: {
-        sans: ['Pretendard', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
-        mono: ['JetBrains Mono', 'Fira Code', 'monospace']
-      }
-    }
-  }
-};
-</script>
-<script type="module">
-import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js';
-mermaid.initialize({
-  startOnLoad: true,
-  theme: 'default',
-  flowchart: { curve: 'basis', useMaxWidth: true, htmlLabels: true },
-  er: { useMaxWidth: true },
-  sequence: { useMaxWidth: true, mirrorActors: false },
-  themeVariables: { fontFamily: 'Pretendard, Inter, system-ui, sans-serif', fontSize: '14px' }
-});
-window.__mermaid = mermaid;
-</script>
+<title>WF | {{SCR_ID}} — {{screenName}}</title>
 <style>
-/* Design Tokens — injected from design-system.json */
-:root {
-  --color-bg-c1: #ffffff;
-  --color-bg-c9: #eff6ff;
-  --color-line-c2: #e2e8f0;
-  --color-text-c7: #334155;
-  --color-primary: #3b82f6;
-  --color-success: #22c55e;
-  --color-warning: #f59e0b;
-  --color-danger: #ef4444;
-  --radius-r3: 8px;
-  --radius-r4: 12px;
-  --font-size-t7: 14px;
+:root{
+  --bg:#e8edf2;--surface:#fff;--border:#d1d9e0;--sb:#2d3a4a;--sb-text:#8fa3b1;
+  --hdr:#1a3a6e;--section:#f0f3f7;--text:#1a202c;--text2:#4a5568;--text3:#94a3b8;
+  --accent:#0891b2;--anno:#2563eb;
+  --svg-node:#3b82f6;--svg-node-text:#fff;--svg-condition:#f59e0b;
+  --svg-action:#10b981;--svg-arrow:#6b7280;--svg-actor:#8b5cf6;--svg-bg:#f8fafc;
 }
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans KR',sans-serif;background:var(--bg);font-size:13px;color:var(--text)}
 
-/* Annotation marker */
-.anno-marker {
-  display: inline-flex; align-items: center; justify-content: center;
-  width: 22px; height: 22px; border-radius: 50%;
-  background: var(--color-primary); color: #fff;
-  font-size: 11px; font-weight: 700; cursor: pointer;
-  position: absolute; z-index: 10;
-}
+/* ── Document Header (sticky) ── */
+.doc-header{background:#0f172a;color:#fff;padding:10px 20px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100;gap:12px}
+.dh-left{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.sid{background:#0891b2;color:#fff;padding:2px 10px;border-radius:4px;font-size:11px;font-weight:700;font-family:monospace}
+.dh-name{font-size:14px;font-weight:700}
+.dh-path{font-family:monospace;font-size:11px;color:#94a3b8;background:#1e293b;padding:2px 8px;border-radius:4px}
+.dh-right{display:flex;gap:8px;flex-shrink:0}
+.dh-right span,.dh-right a{font-size:11px;color:#94a3b8;background:#1e293b;padding:2px 8px;border-radius:4px;text-decoration:none}
+.dh-right a:hover{color:#fff;background:#334155}
 
-/* Wireframe container */
-.wf-container { background: #f8fafc; border: 1px solid var(--color-line-c2); border-radius: var(--radius-r4); overflow: hidden; }
-.wf-sidebar { width: 200px; background: #1e293b; color: #e2e8f0; min-height: 600px; }
-.wf-sidebar-item { padding: 8px 16px; font-size: 13px; cursor: pointer; border-left: 3px solid transparent; }
-.wf-sidebar-item:hover { background: rgba(255,255,255,0.06); }
-.wf-sidebar-item.active { background: rgba(59,130,246,0.2); border-left-color: var(--color-primary); color: #fff; }
-.wf-sidebar-group { padding: 12px 16px 4px; font-size: 11px; font-weight: 700; text-transform: uppercase; color: #64748b; letter-spacing: 0.5px; }
-.wf-main { flex: 1; padding: 24px; }
-.wf-header { display: flex; align-items: center; gap: 12px; padding: 12px 20px; background: #fff; border-bottom: 1px solid var(--color-line-c2); }
+/* ── Stage: App Frame + Annotation Panel ── */
+.stage{display:grid;grid-template-columns:1fr 300px;gap:16px;padding:16px;align-items:start}
+.app-frame{background:#fff;border:2px solid var(--border);border-radius:8px;overflow:hidden;display:flex;min-height:880px;box-shadow:0 4px 16px rgba(0,0,0,.12)}
 
-/* Table wireframe */
-.wf-table { width: 100%; border-collapse: collapse; font-size: var(--font-size-t7); }
-.wf-table thead { background: #1e293b; color: #fff; }
-.wf-table th { padding: 10px 14px; text-align: left; font-weight: 600; font-size: 13px; }
-.wf-table td { padding: 10px 14px; border-bottom: 1px solid var(--color-line-c2); }
-.wf-table tr:hover { background: #f1f5f9; }
+/* ── Sidebar (inside app-frame) ── */
+.sidebar{width:196px;background:var(--sb);flex-shrink:0;display:flex;flex-direction:column}
+.sb-brand{padding:14px 16px;border-bottom:1px solid rgba(255,255,255,.08)}
+.sb-brand .app-nm{font-size:12px;font-weight:700;color:#fff}
+.sb-brand .app-sub{font-size:10px;color:var(--sb-text)}
+.sb-list{list-style:none;padding:6px 0;flex:1;overflow-y:auto}
+.sbi{padding:8px 14px;font-size:12px;color:var(--sb-text);cursor:pointer;display:flex;align-items:center;gap:8px;border-left:3px solid transparent}
+.sbi:hover{background:rgba(255,255,255,.06);color:#fff}
+.sbi.active{background:rgba(8,145,178,.18);color:#fff;border-left-color:#0891b2}
+.sbi.sub{padding:6px 14px 6px 36px;font-size:11px}
+.sbi.sub.active{color:#67e8f9}
 
-/* Badge */
-.wf-badge { display: inline-block; padding: 2px 10px; border-radius: 12px; font-size: 12px; font-weight: 600; }
-.wf-badge-blue { background: #dbeafe; color: #1d4ed8; }
-.wf-badge-green { background: #dcfce7; color: #15803d; }
-.wf-badge-red { background: #fee2e2; color: #dc2626; }
-.wf-badge-gray { background: #f1f5f9; color: #475569; }
-.wf-badge-amber { background: #fef3c7; color: #92400e; }
+/* ── App Main (inside app-frame) ── */
+.app-main{flex:1;display:flex;flex-direction:column;overflow-y:auto}
+.pg-hdr{background:var(--hdr);color:#fff;padding:12px 18px;flex-shrink:0}
+.pg-bc{font-size:10px;opacity:.65;margin-bottom:3px}
+.pg-title{font-size:15px;font-weight:700;display:flex;align-items:center;gap:10px}
+.back-btn{font-size:11px;background:rgba(255,255,255,.15);padding:3px 10px;border-radius:6px;cursor:pointer}
+.pg-body{flex:1;padding:14px 16px;background:var(--section)}
 
-/* Tab bar */
-.wf-tabs { display: flex; border-bottom: 2px solid var(--color-line-c2); gap: 0; }
-.wf-tab { padding: 10px 20px; font-size: 14px; font-weight: 500; color: #64748b; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -2px; }
-.wf-tab.active { color: var(--color-primary); border-bottom-color: var(--color-primary); font-weight: 600; }
-.wf-tab .tab-badge { margin-left: 6px; background: #ef4444; color: #fff; font-size: 10px; padding: 1px 6px; border-radius: 10px; }
+/* ── Card ── */
+.card{background:#fff;border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:12px}
+.card-title{font-size:12px;font-weight:700;margin-bottom:10px;display:flex;align-items:center;gap:6px}
 
-/* Form fields */
-.wf-input { width: 100%; padding: 8px 12px; border: 1px solid var(--color-line-c2); border-radius: var(--radius-r3); font-size: var(--font-size-t7); background: #fff; }
-.wf-label { font-size: 13px; font-weight: 600; color: var(--color-text-c7); margin-bottom: 4px; display: block; }
+/* ── Info Grid ── */
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px 14px}
+.info-row{display:flex;flex-direction:column;gap:2px}
+.info-lbl{font-size:10px;color:var(--text3);font-weight:600;text-transform:uppercase}
+.info-val{font-size:12px;color:var(--text);font-weight:600}
 
-/* Stats card */
-.wf-stat { background: #fff; border: 1px solid var(--color-line-c2); border-radius: var(--radius-r3); padding: 16px; }
-.wf-stat-value { font-size: 28px; font-weight: 700; color: #0f172a; }
-.wf-stat-label { font-size: 13px; color: #64748b; margin-top: 2px; }
+/* ── Tags ── */
+.work-tag{background:#e0f2fe;color:#0369a1;font-size:10px;padding:1px 6px;border-radius:4px;margin-right:3px;font-weight:600}
 
-/* Annotations panel */
-.anno-panel { width: 320px; border-left: 1px solid var(--color-line-c2); padding: 20px; overflow-y: auto; max-height: 100vh; background: #fff; }
-.anno-panel h3 { font-size: 15px; font-weight: 700; margin-bottom: 12px; color: #0f172a; }
-.anno-item { margin-bottom: 14px; font-size: 13px; line-height: 1.6; color: #334155; }
-.anno-item .anno-num { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; border-radius: 50%; background: var(--color-primary); color: #fff; font-size: 11px; font-weight: 700; margin-right: 6px; flex-shrink: 0; }
-.anno-item strong { color: #0f172a; }
+/* ── Photo Upload ── */
+.photo-section{margin-bottom:12px}
+.photo-label{font-size:11px;font-weight:700;margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.photo-counter{font-size:10px;color:var(--text3);font-weight:400}
+.photo-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:6px}
+.photo-thumb{width:100%;aspect-ratio:1;background:#f1f5f9;border:1px solid var(--border);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:20px;color:var(--text3);position:relative}
+.photo-del{position:absolute;top:2px;right:2px;width:16px;height:16px;background:#ef4444;color:#fff;border-radius:50%;font-size:9px;display:flex;align-items:center;justify-content:center;cursor:pointer;border:none}
+.photo-add{background:#ecfeff;border:2px dashed #0891b2;color:#0891b2;cursor:pointer;font-size:12px;font-weight:700}
 
-/* Mermaid sections */
-.diagram-section { margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--color-line-c2); }
-.diagram-section h2 { font-size: 18px; font-weight: 700; margin-bottom: 16px; color: #0f172a; }
+/* ── Signature ── */
+.sign-canvas{width:100%;height:100px;background:#fff;border:2px solid var(--border);border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--text3);font-size:12px}
+.sign-reset{font-size:10px;color:#0891b2;cursor:pointer;text-decoration:underline;margin-top:4px;display:inline-block}
 
-/* Phone masking */
-.wf-masked { color: #94a3b8; letter-spacing: 1px; }
+/* ── Footer Bar (sticky bottom in app-frame) ── */
+.footer-bar{display:flex;justify-content:flex-end;gap:10px;padding:12px 16px;background:#fff;border-top:2px solid var(--border);position:sticky;bottom:0}
 
-/* Dark mode overrides */
-.dark .wf-container { background: #0f172a; border-color: #334155; }
-.dark .wf-main { background: #1e293b; }
-.dark .wf-header { background: #0f172a; border-color: #334155; }
-.dark .wf-table thead { background: #0f172a; }
-.dark .wf-table td { border-color: #334155; color: #e2e8f0; }
-.dark .wf-table tr:hover { background: #1e293b; }
-.dark .wf-stat { background: #1e293b; border-color: #334155; }
-.dark .wf-stat-value { color: #f1f5f9; }
-.dark .wf-input { background: #1e293b; border-color: #334155; color: #e2e8f0; }
-.dark .anno-panel { background: #0f172a; border-color: #334155; }
-.dark .anno-panel h3 { color: #f1f5f9; }
-.dark .anno-item { color: #cbd5e1; }
-.dark .anno-item strong { color: #f1f5f9; }
-.dark .diagram-section { border-color: #334155; }
-.dark .diagram-section h2 { color: #f1f5f9; }
+/* ── Buttons ── */
+.btn{padding:7px 18px;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;border:none;display:inline-flex;align-items:center;gap:6px}
+.btn.primary{background:#0891b2;color:#fff}
+.btn.secondary{background:#fff;color:var(--text2);border:1px solid var(--border)}
+.btn.danger{background:#ef4444;color:#fff}
+.btn.outline{background:#fff;color:var(--text2);border:1px solid var(--border)}
+
+/* ── Form Fields ── */
+.wf-input{width:100%;padding:7px 10px;border:1px solid var(--border);border-radius:6px;font-size:12px;background:#fff}
+.wf-label{font-size:11px;font-weight:600;color:var(--text2);margin-bottom:3px;display:block}
+.wf-select{padding:7px 10px;border:1px solid var(--border);border-radius:6px;font-size:12px;background:#fff}
+
+/* ── Table ── */
+.wf-table{width:100%;border-collapse:collapse;font-size:12px}
+.wf-table thead{background:#1e293b;color:#fff}
+.wf-table th{padding:8px 10px;text-align:left;font-size:11px;font-weight:600}
+.wf-table td{padding:8px 10px;border-bottom:1px solid #f1f5f9;vertical-align:top}
+.wf-table tr:hover{background:#f8fafc}
+
+/* ── Badge ── */
+.wf-badge{display:inline-block;padding:1px 8px;border-radius:10px;font-size:10px;font-weight:600}
+.wf-badge-blue{background:#dbeafe;color:#1d4ed8}
+.wf-badge-green{background:#dcfce7;color:#15803d}
+.wf-badge-red{background:#fee2e2;color:#dc2626}
+.wf-badge-gray{background:#f1f5f9;color:#475569}
+.wf-badge-amber{background:#fef3c7;color:#92400e}
+
+/* ── Tabs ── */
+.wf-tabs{display:flex;border-bottom:2px solid var(--border);gap:0}
+.wf-tab{padding:8px 16px;font-size:12px;font-weight:500;color:#64748b;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px}
+.wf-tab.active{color:var(--accent);border-bottom-color:var(--accent);font-weight:700}
+
+/* ── Stats Card ── */
+.wf-stat{background:#fff;border:1px solid var(--border);border-radius:8px;padding:14px}
+.wf-stat-value{font-size:22px;font-weight:700;color:#0f172a}
+.wf-stat-label{font-size:11px;color:#64748b;margin-top:2px}
+
+/* ── Annotation Marker ── */
+.mk{display:inline-flex;align-items:center;justify-content:center;width:17px;height:17px;background:var(--anno);color:#fff;border-radius:50%;font-size:9px;font-weight:700;vertical-align:middle;flex-shrink:0}
+
+/* ── Annotation Panel ── */
+.anno-panel{background:#fff;border:1px solid var(--border);border-radius:10px;padding:16px;font-size:12px}
+.anno-title{font-size:13px;font-weight:700;color:var(--text);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+.anno-item{display:flex;gap:8px;align-items:flex-start;margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid #f1f5f9}
+.anno-item:last-of-type{border-bottom:none}
+.an{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;min-width:20px;background:var(--anno);color:#fff;border-radius:50%;font-size:10px;font-weight:700;margin-top:1px}
+.ad{font-size:11px;color:var(--text2);line-height:1.5}
+.ad b{color:var(--text);display:block;margin-bottom:2px}
+
+/* ── Business Rules ── */
+.br-section{margin-top:16px;padding-top:12px;border-top:1px solid var(--border)}
+.br-title{font-size:11px;font-weight:700;color:var(--text);margin-bottom:8px}
+.br-item{font-size:11px;color:var(--text2);margin-bottom:5px;padding-left:14px;position:relative;line-height:1.5}
+
+/* ── Component Spec Table ── */
+.spec-wrap{padding:16px;background:#fff;border-top:2px solid var(--border)}
+.spec-title{font-size:13px;font-weight:700;margin-bottom:10px;color:var(--text)}
+.spec-tbl{width:100%;border-collapse:collapse;font-size:12px}
+.spec-tbl th{background:#f1f5f9;padding:7px 10px;text-align:left;font-size:11px;font-weight:700;color:var(--text2);border-bottom:1px solid var(--border)}
+.spec-tbl td{padding:7px 10px;border-bottom:1px solid #f5f7fa;color:var(--text);vertical-align:top}
+.spec-tbl tr:last-child td{border-bottom:none}
+code{font-family:monospace;background:#f1f5f9;padding:1px 5px;border-radius:3px;font-size:11px;color:#e11d48}
+
+/* ── Diagrams Section (2-column grid) ── */
+.diagrams-section{padding:16px;background:#fff;border-top:2px solid var(--border)}
+.diag-title{font-size:14px;font-weight:700;margin-bottom:6px;color:var(--text)}
+.diag-sub{font-size:11px;color:var(--text2);margin-bottom:14px}
+.diag-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.diag-block{margin-bottom:16px}
+.diag-block h3{font-size:11px;font-weight:700;color:#0891b2;margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px}
+svg.diag{width:100%;border:1px solid var(--border);border-radius:8px;background:var(--svg-bg);display:block}
+/* Full-width diagram (when single or wide) */
+.diag-block.full{grid-column:1/-1}
+
+/* ── Overlay UI Section (Modals, BottomSheets, Popups) ── */
+.overlay-section{padding:16px;background:#fff;border-top:2px solid var(--border)}
+.overlay-title{font-size:14px;font-weight:700;margin-bottom:14px;color:var(--text)}
+.overlay-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.overlay-card{border:1px solid var(--border);border-radius:8px;overflow:hidden}
+.overlay-card-header{background:#f1f5f9;padding:8px 12px;font-size:11px;font-weight:700;color:var(--text2);display:flex;align-items:center;gap:6px;border-bottom:1px solid var(--border)}
+.overlay-type-badge{font-size:9px;padding:1px 6px;border-radius:4px;font-weight:700;text-transform:uppercase}
+.overlay-type-modal .overlay-type-badge{background:#dbeafe;color:#1d4ed8}
+.overlay-type-bottomsheet .overlay-type-badge{background:#fef3c7;color:#92400e}
+.overlay-type-popup .overlay-type-badge{background:#f3e8ff;color:#7c3aed}
+.overlay-type-drawer .overlay-type-badge{background:#dcfce7;color:#15803d}
+.overlay-type-toast .overlay-type-badge{background:#fee2e2;color:#dc2626}
+.overlay-card-body{padding:12px;min-height:180px;background:#fff;position:relative}
+
+/* ── Annotation Legend ── */
+.legend-wrap{padding:16px;background:#fff;border-top:2px solid #e2e8f0}
+.legend-title{font-size:13px;font-weight:700;margin-bottom:8px;color:var(--text)}
+.legend-list{display:flex;flex-wrap:wrap;gap:8px;font-size:11px}
+
+/* ── Footer ── */
+.doc-footer{padding:12px 16px;background:#f8fafc;border-top:1px solid var(--border);text-align:center;font-size:11px;color:var(--text3)}
 </style>
 </head>
-<body class="bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 font-sans m-0 p-0">
+<body>
 
-<!-- Theme Toggle -->
-<button id="theme-toggle" class="fixed top-4 right-4 z-50 p-2 rounded-lg bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors" aria-label="Toggle dark mode">
-  <svg class="w-5 h-5 hidden dark:block" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"/></svg>
-  <svg class="w-5 h-5 block dark:hidden" fill="currentColor" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"/></svg>
-</button>
-
-<!-- Header Bar -->
-<div class="sticky top-0 z-40 flex items-center justify-between px-6 py-3 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 shadow-sm">
-  <div class="flex items-center gap-3">
-    <span class="inline-block px-3 py-1 rounded-md text-sm font-bold bg-blue-500 text-white">{{SCR_ID}}</span>
-    <span class="text-base font-semibold">{{screenName}}</span>
-    <span class="text-sm text-gray-400 font-mono">{{routePath}}</span>
+<!-- ═══════════════════════════════════════════════ -->
+<!--  A. Document Header (sticky)                  -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="doc-header">
+  <div class="dh-left">
+    <span class="sid">{{SCR_ID}}</span>
+    <span class="dh-name">{{screenName}}</span>
+    <span class="dh-path">{{routePath}}</span>
   </div>
-  <div class="flex items-center gap-2">
-    <a href="index.html" class="px-3 py-1 rounded border border-blue-500 text-blue-500 text-sm font-medium hover:bg-blue-50 dark:hover:bg-blue-900/30">Index</a>
-    <!-- Feature & FR links — populated per screen -->
-    {{#each relatedFT}}
-    <a href="#" class="px-3 py-1 rounded border border-gray-300 dark:border-gray-600 text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800">{{this}}</a>
+  <div class="dh-right">
+    <a href="index.html">전체 목록</a>
+    {{#each relatedFT}}<span>{{this}}</span>{{/each}}
+    {{#each relatedFR}}<span>{{this}}</span>{{/each}}
+    <span>{{generatedDate}}</span>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!--  B. Stage: App Frame + Annotation Panel        -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="stage">
+
+  <!-- B-1. App Frame (Sidebar + Main) -->
+  <div class="app-frame">
+    <!-- Sidebar Navigation -->
+    <div class="sidebar">
+      <div class="sb-brand">
+        <div class="app-nm">{{appName}}</div>
+        <div class="app-sub">{{appDescription}}</div>
+      </div>
+      <ul class="sb-list">
+        {{SIDEBAR_NAV_ITEMS}}
+      </ul>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="app-main">
+      <!-- Page Header (breadcrumb + title) -->
+      <div class="pg-hdr">
+        <div class="pg-bc">{{breadcrumb}}</div>
+        <div class="pg-title">
+          {{PAGE_TITLE_CONTENT}}
+        </div>
+      </div>
+
+      <!-- Page Body (components rendered as HTML mockup) -->
+      <div class="pg-body">
+        {{WIREFRAME_BODY_CONTENT}}
+      </div>
+
+      <!-- Footer Action Bar (if applicable) -->
+      {{#if hasFooterActions}}
+      <div class="footer-bar">
+        {{FOOTER_ACTION_BUTTONS}}
+      </div>
+      {{/if}}
+    </div>
+  </div>
+
+  <!-- B-2. Annotation Panel -->
+  <div class="anno-panel">
+    <div class="anno-title">화면 어노테이션</div>
+    {{#each annotations}}
+    <div class="anno-item">
+      <div class="an">{{this.num}}</div>
+      <div class="ad"><b>{{this.title}}</b>{{this.description}}</div>
+    </div>
+    {{/each}}
+
+    {{#if businessRules}}
+    <div class="br-section">
+      <div class="br-title">비즈니스 규칙</div>
+      {{#each businessRules}}
+      <div class="br-item">{{this}}</div>
+      {{/each}}
+    </div>
+    {{/if}}
+  </div>
+
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!--  C. Component Spec Table                       -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="spec-wrap">
+  <div class="spec-title">컴포넌트 명세</div>
+  <table class="spec-tbl">
+    <thead>
+      <tr><th>#</th><th>컴포넌트</th><th>타입</th><th>Props</th><th>API</th></tr>
+    </thead>
+    <tbody>
+      {{COMPONENT_SPEC_ROWS}}
+    </tbody>
+  </table>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!--  D. Logic Flow Diagrams (2-column grid)        -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="diagrams-section">
+  <div class="diag-title">로직 흐름 다이어그램</div>
+  <div class="diag-sub">화면의 조건 검증, API 호출 시퀀스, 데이터 흐름을 시각화합니다.</div>
+  <div class="diag-grid">
+    {{DIAGRAM_BLOCKS}}
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!--  E. Overlay UI (Modals / BottomSheets / Popups) -->
+<!-- ═══════════════════════════════════════════════ -->
+{{#if hasOverlays}}
+<div class="overlay-section">
+  <div class="overlay-title">팝업 / 모달 / BottomSheet UI</div>
+  <div class="overlay-grid">
+    {{#each overlays}}
+    <div class="overlay-card overlay-type-{{this.type}}">
+      <div class="overlay-card-header">
+        <span class="overlay-type-badge">{{this.type}}</span>
+        {{this.name}} <span class="mk">{{this.annoNum}}</span>
+      </div>
+      <div class="overlay-card-body">
+        {{this.content}}
+      </div>
+    </div>
+    {{/each}}
+  </div>
+</div>
+{{/if}}
+
+<!-- ═══════════════════════════════════════════════ -->
+<!--  F. Annotation Legend                          -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="legend-wrap">
+  <div class="legend-title">어노테이션 범례</div>
+  <div class="legend-list">
+    {{#each annotations}}
+    <span><span class="mk">{{this.num}}</span> {{this.title}}</span>
     {{/each}}
   </div>
 </div>
 
-<!-- Main 3-Column Layout -->
-<div class="flex min-h-screen">
-
-  <!-- Left Sidebar: App Navigation -->
-  <aside class="wf-sidebar hidden lg:block flex-shrink-0">
-    <div class="px-4 py-4 border-b border-gray-700">
-      <div class="text-sm font-bold text-white">{{appName}}</div>
-    </div>
-    <!-- Navigation groups from IA -->
-    {{#each navGroups}}
-    <div class="wf-sidebar-group">{{this.label}}</div>
-    {{#each this.items}}
-    <div class="wf-sidebar-item {{#if this.active}}active{{/if}}">{{this.label}}</div>
-    {{/each}}
-    {{/each}}
-  </aside>
-
-  <!-- Center: Wireframe Content -->
-  <main class="flex-1 overflow-x-auto">
-
-    <!-- Section A: Wireframe Mockup -->
-    <div class="p-6">
-      <div class="wf-container relative">
-        <!-- Page Header -->
-        <div class="wf-header">
-          {{!-- Back button, page title, header info grid --}}
-          {{WIREFRAME_HEADER_CONTENT}}
-        </div>
-
-        <!-- Page Body -->
-        <div class="wf-main">
-          {{!-- Tabs, tables, forms, cards, stats — rendered from components --}}
-          {{WIREFRAME_BODY_CONTENT}}
-        </div>
-
-        <!-- Annotation markers overlaid on wireframe -->
-        {{!-- <span class="anno-marker" style="top:60px;right:280px">1</span> --}}
-        {{ANNOTATION_MARKERS}}
-      </div>
-    </div>
-
-    <!-- Section B: Sequence Diagram -->
-    <div class="diagram-section px-6">
-      <h2>B. Sequence Diagram</h2>
-      <div class="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
-        <pre class="mermaid">
-sequenceDiagram
-    participant U as User
-    participant FE as Frontend ({{SCR_ID}})
-    participant API as Backend API
-    participant DB as Database
-
-    {{SEQUENCE_DIAGRAM_CONTENT}}
-        </pre>
-      </div>
-    </div>
-
-    <!-- Section C: Screen Flow -->
-    <div class="diagram-section px-6">
-      <h2>C. Screen Flow</h2>
-      <div class="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
-        <pre class="mermaid">
-flowchart LR
-    {{SCREEN_FLOW_CONTENT}}
-        </pre>
-      </div>
-      <!-- Flow detail table (tabs, steps, conditions) -->
-      {{FLOW_DETAIL_TABLE}}
-    </div>
-
-    <!-- Section D: Related ERD -->
-    <div class="diagram-section px-6 pb-12">
-      <h2>D. Related Data Model (ERD)</h2>
-      <div class="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
-        <pre class="mermaid">
-erDiagram
-    {{ERD_CONTENT}}
-        </pre>
-      </div>
-    </div>
-
-    <!-- Footer -->
-    <footer class="px-6 py-8 border-t border-gray-200 dark:border-gray-800">
-      <div class="flex items-center justify-between text-sm text-gray-500 dark:text-gray-400">
-        <p>Copyright(c) 2026 U PLEAT</p>
-        <p>Generated by u-maker v3.2.0</p>
-      </div>
-    </footer>
-  </main>
-
-  <!-- Right: Annotations Panel -->
-  <aside class="anno-panel hidden xl:block flex-shrink-0">
-    <h3>Design Annotations</h3>
-    {{#each designAnnotations}}
-    <div class="anno-item">
-      <span class="anno-num">{{this.num}}</span>
-      <strong>{{this.title}}</strong> - {{this.description}}
-    </div>
-    {{/each}}
-
-    <h3 class="mt-8">Develop Annotations</h3>
-    {{#each developAnnotations}}
-    <div class="anno-item">
-      <span class="anno-num">{{this.num}}</span>
-      <strong>{{this.title}}</strong> - {{this.description}}
-    </div>
-    {{/each}}
-  </aside>
-
+<!-- ═══════════════════════════════════════════════ -->
+<!--  G. Footer                                     -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="doc-footer">
+  Copyright(c) 2026 U PLEAT &middot; Generated by u-maker
 </div>
 
-<script>
-// Theme toggle
-const toggle = document.getElementById('theme-toggle');
-const html = document.documentElement;
-if (localStorage.getItem('theme') === 'dark' ||
-    (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-  html.classList.add('dark');
-}
-toggle.addEventListener('click', () => {
-  html.classList.toggle('dark');
-  const isDark = html.classList.contains('dark');
-  localStorage.setItem('theme', isDark ? 'dark' : 'light');
-  if (window.__mermaid) {
-    window.__mermaid.initialize({ theme: isDark ? 'dark' : 'default', flowchart: { curve: 'basis' } });
-    document.querySelectorAll('.mermaid').forEach(el => {
-      const src = el.getAttribute('data-processed') ? el.textContent : null;
-      if (src) { el.removeAttribute('data-processed'); el.innerHTML = src; }
-    });
-    window.__mermaid.run();
-  }
-});
-</script>
 </body>
 </html>

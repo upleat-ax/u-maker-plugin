@@ -99,7 +99,7 @@ Design phase: generate `docs/{app}/design/` documents (ERD, API, Screens, Design
      - Domain cards: one card per screen group
      - Overview: screen flow navigation map (SVG)
    - Generate `output/{app}/design/screens/{group-slug}.html` per group (split page):
-     - Content: screens + components + validation + state transitions (SVG)
+     - Content: screens + components + validation + screen layout diagram (SVG, from `layout` field)
      - Sidebar + prev/next navigation
 
 4. Convert `design-system.md` → `output/{app}/design/design-system.html` via html-engine (single file — typically small)

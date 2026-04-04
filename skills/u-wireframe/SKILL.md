@@ -60,64 +60,98 @@ For each screen in `screens.json`:
 
 ### Step 2: Generate Per-Screen HTML
 
-For each screen, generate `{SCR-ID}.html` using the wireframe page template:
+For each screen, generate `{SCR-ID}.html` using `references/wireframe-page.template.html`.
 
-**Page Structure (3-column layout):**
+**Page Structure — 6 Sections (top→bottom):**
 
-```svg
-<svg viewBox="0 0 800 260" width="100%" xmlns="http://www.w3.org/2000/svg" style="font-family:system-ui,sans-serif;font-size:13px">
-  <!-- Left Sidebar -->
-  <rect x="0" y="0" width="180" height="50" rx="0" class="fill-gray-200 dark:fill-gray-700" stroke="#334155" stroke-width="1"/>
-  <text x="90" y="22" text-anchor="middle" class="fill-gray-900 dark:fill-gray-100" font-weight="600">Left Sidebar</text>
-  <text x="90" y="40" text-anchor="middle" class="fill-gray-500 dark:fill-gray-400" font-size="11">(App Navigation)</text>
-  <rect x="0" y="50" width="180" height="210" rx="0" class="fill-gray-100 dark:fill-gray-800" stroke="#334155" stroke-width="1"/>
+| Section | Description |
+|---------|-------------|
+| **A. Document Header** | Sticky top bar: SCR-ID badge, screen name, route path, related FT/FR links, 전체 목록 link |
+| **B. Stage** | 2-column grid: App Frame (sidebar + main mockup) + Annotation Panel (annotations + business rules) |
+| **C. Component Spec** | Component specification table (#, 컴포넌트, 타입, Props, API) |
+| **D. Logic Flow Diagrams** | **2-column grid** of inline SVG diagrams (Condition Flow, Sequence, Data Flow, etc.) |
+| **E. Overlay UI** | Modals, BottomSheets, Popups, Drawers, Toast — each as a rendered card with component mockup |
+| **F. Annotation Legend** | Flat list of all annotation markers with component names |
 
-  <!-- Main Content -->
-  <rect x="180" y="0" width="400" height="50" rx="0" class="fill-blue-100 dark:fill-blue-900" stroke="#334155" stroke-width="1"/>
-  <text x="380" y="22" text-anchor="middle" class="fill-gray-900 dark:fill-gray-100" font-weight="600">Main Content</text>
-  <text x="380" y="40" text-anchor="middle" class="fill-gray-500 dark:fill-gray-400" font-size="11">(Wireframe Mockup)</text>
-  <rect x="180" y="50" width="400" height="210" rx="0" class="fill-white dark:fill-gray-800" stroke="#334155" stroke-width="1"/>
-  <text x="200" y="80" class="fill-gray-700 dark:fill-gray-300">A. Wireframe Mockup</text>
-  <text x="200" y="110" class="fill-gray-700 dark:fill-gray-300">B. Sequence Diagram</text>
-  <text x="200" y="140" class="fill-gray-700 dark:fill-gray-300">C. Screen Flow</text>
-  <text x="200" y="170" class="fill-gray-700 dark:fill-gray-300">D. Related ERD</text>
+#### B. Stage — App Frame + Annotation Panel
 
-  <!-- Right Annotations -->
-  <rect x="580" y="0" width="220" height="50" rx="0" class="fill-amber-100 dark:fill-amber-900" stroke="#334155" stroke-width="1"/>
-  <text x="690" y="22" text-anchor="middle" class="fill-gray-900 dark:fill-gray-100" font-weight="600">Right Annotations</text>
-  <text x="690" y="40" text-anchor="middle" class="fill-gray-500 dark:fill-gray-400" font-size="11">(Design + Develop)</text>
-  <rect x="580" y="50" width="220" height="210" rx="0" class="fill-white dark:fill-gray-800" stroke="#334155" stroke-width="1"/>
-</svg>
-```
+**App Frame** (left, `grid-template-columns: 1fr 300px`):
+- **Sidebar** (196px, dark): App name/description + IA navigation menu. Current screen = `.active`
+- **Main Area**: Page header (breadcrumb + title with back button) + Page body (components rendered as HTML mockup with annotation markers `<span class="mk">N</span>`) + Footer action bar (submit/cancel buttons)
 
-**A. Wireframe Mockup Section:**
-- Render actual UI layout based on screen components
-- Use Tailwind CSS for component rendering (not SVG)
-- Components: tables, forms, buttons, inputs, cards, modals, tabs, badges, etc.
-- Include sample data from screen spec
-- Show numbered annotation markers (circled numbers)
+**Annotation Panel** (right, 300px):
+- Numbered annotation items matching mockup markers
+- Each item: marker number + title (bold) + description (component behavior, API calls, conditions)
+- Business rules section at bottom: `BR-{SCR-ID}-NN` items
 
-**B. Sequence Diagram (Mermaid):**
-- Participants: User, Frontend ({SCR-ID}), Backend API, Database
-- Show API calls from screen's `apiCalls` section
-- Include request/response flow
+#### B. Wireframe Mockup Rendering Rules
 
-**C. Screen Flow:**
-- Show inbound screens (which screens navigate here)
-- Show outbound screens (where this screen navigates to)
-- Use Mermaid flowchart with curved connectors
-- Include trigger labels (e.g., "Click row", "Back button")
+Components are rendered as styled HTML elements (not SVG, not images) using the template's built-in CSS classes:
 
-**D. Related ERD (Mermaid):**
-- Extract only entities related to this screen's API responses
-- Use Mermaid erDiagram subset
-- PK/FK/UK constraints never combined
+| Component Type | CSS Class / Rendering |
+|---------------|-----------|
+| **Table** | `.wf-table` with thead/tbody, sample rows, `.wf-badge-*` status badges |
+| **Form** | `.wf-input`, `.wf-label`, `.wf-select` fields with sample values |
+| **Button** | `.btn.primary`, `.btn.secondary`, `.btn.danger`, `.btn.outline` |
+| **Card** | `.card` with `.card-title` + content |
+| **Tabs** | `.wf-tabs` + `.wf-tab.active` |
+| **Photo Grid** | `.photo-grid` + `.photo-thumb` + `.photo-add` (dashed border) |
+| **Signature** | `.sign-canvas` + `.sign-reset` |
+| **Info Grid** | `.info-grid` + `.info-row` (label/value pairs) |
+| **Sidebar Nav** | `.sb-list` + `.sbi` items (`.sbi.active`, `.sbi.sub`) |
+| **Badge** | `.wf-badge-blue`, `.wf-badge-green`, `.wf-badge-red`, `.wf-badge-amber`, `.wf-badge-gray` |
+| **Stats Card** | `.wf-stat` with `.wf-stat-value` + `.wf-stat-label` |
 
-**Right Annotations Panel:**
-- **Design Annotations**: Numbered list matching mockup markers
-  - Component descriptions, layout notes, loading states, error states
-- **Develop Annotations**: Implementation guidance
-  - API endpoints with keys, state management, error handling
+All annotation markers use `<span class="mk">N</span>` (blue circle with number).
+
+#### D. Logic Flow Diagrams — 2-Column Grid
+
+Diagrams are rendered as **inline SVG** (`<svg class="diag">`) in a **2-column grid** (`.diag-grid`).
+
+Each diagram block (`.diag-block`) has:
+- `<h3>` title (uppercase, cyan accent)
+- `<svg class="diag" viewBox="...">` with inline SVG content
+
+**Diagram types per screen** (generate what's relevant):
+
+| Diagram | Purpose | When to include |
+|---------|---------|-----------------|
+| **Condition Flow** | Submit/action activation conditions, validation logic | Screens with conditional button states or multi-step validation |
+| **Sequence Diagram** | API call sequence (Actor → Frontend → Backend → DB) | Screens with API calls |
+| **Data Flow** | State/data flow between components and stores | Screens with complex state management |
+| **Screen Flow** | Navigation inbound/outbound with trigger labels | All screens (from screen-flow.json) |
+
+SVG style tokens (use CSS variables from template):
+- Node: `var(--svg-node)` (#3b82f6) + `var(--svg-node-text)` (#fff)
+- Condition diamond: `var(--svg-condition)` (#f59e0b)
+- Action/success: `var(--svg-action)` (#10b981)
+- Arrows: `var(--svg-arrow)` (#6b7280)
+- Actor: `var(--svg-actor)` (#8b5cf6)
+- Background: `var(--svg-bg)` (#f8fafc)
+
+Use `.diag-block.full` (spans 2 columns) for wide diagrams like sequence diagrams.
+
+#### E. Overlay UI — Modals / BottomSheets / Popups
+
+**All overlay components (modals, bottomsheets, popups, drawers, toasts) used by the screen MUST be rendered at the bottom** in a 2-column grid (`.overlay-grid`).
+
+Each overlay is an `.overlay-card` containing:
+- **Header**: Type badge (`.overlay-type-badge`) + overlay name + annotation marker
+- **Body**: Rendered component mockup (same HTML rendering rules as main wireframe body)
+
+Overlay types and badge colors:
+
+| Type | Badge Style | Example |
+|------|------------|---------|
+| `modal` | Blue | Confirm dialog, form modal, detail modal |
+| `bottomsheet` | Amber | Mobile action sheet, filter panel |
+| `popup` | Purple | Tooltip, popover, context menu |
+| `drawer` | Green | Side panel, filter drawer |
+| `toast` | Red | Success/error notification |
+
+Extract overlays from `screens.json` component list — components with type containing `Modal`, `BottomSheet`, `Popup`, `Drawer`, `Toast`, or `Dialog`.
+
+If the screen has **no overlay components**, omit section E entirely.
 
 ### Step 3: Generate Index HTML (Browser)
 
@@ -143,60 +177,6 @@ const FILES = [
 
 1. Add wireframes link to `output/{app}/index.html` sidebar under Design section
 2. Add link: `<a href="design/wireframes/index.html">Wireframes</a>`
-
-## Per-Screen HTML Template
-
-See `references/wireframe-page.template.html` for the complete template.
-
-### Header Bar
-
-```html
-<div class="header-bar">
-  <span class="scr-badge">{SCR-ID}</span>
-  <span class="scr-title">{screenName}</span>
-  <span class="scr-path">{routePath}</span>
-  <!-- Right links -->
-  <a href="index.html">Index</a>
-  <a href="#">FT-{related}</a>
-  <a href="#">FR-{related}</a>
-</div>
-```
-
-### Wireframe Mockup Rendering Rules
-
-Components are rendered as Tailwind-styled HTML elements (not images):
-
-| Component Type | Rendering |
-|---------------|-----------|
-| **Table** | `<table>` with thead/tbody, sample rows, status badges |
-| **Form** | Input fields, labels, validation indicators |
-| **Button** | Styled buttons with variant (primary/secondary/danger) |
-| **Card** | Bordered container with header/body |
-| **Tabs** | Tab bar with active indicator + tab content panels |
-| **Modal** | Overlay dialog with backdrop |
-| **Sidebar Nav** | Vertical menu with icons and active state |
-| **Header** | Top bar with breadcrumb, user info, actions |
-| **Badge** | Colored pill with status text |
-| **Pagination** | Page numbers with prev/next |
-| **Search** | Input with search icon |
-| **Stats Card** | Number + label + trend indicator |
-
-### Design Token Application
-
-Map design-system tokens to wireframe styles:
-
-```css
-:root {
-  /* From design-system.json tokens */
-  --color-bg-c1: #ffffff;    /* card background */
-  --color-bg-c9: #f0f4ff;    /* accent background */
-  --color-line-c2: #e2e8f0;  /* border */
-  --color-text-c7: #334155;  /* body text */
-  --radius-r3: 8px;          /* medium radius */
-  --radius-r4: 12px;         /* large radius */
-  --font-size-t7: 14px;      /* body text */
-}
-```
 
 ## Checklist
 

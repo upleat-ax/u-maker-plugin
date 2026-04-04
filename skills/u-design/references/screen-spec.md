@@ -306,7 +306,15 @@ The `screens.json` file conforms to `_meta/schemas/doc-companion.schema.json`:
         { "name": "Social Login", "type": "Button.Secondary", "props": "providers: Google, GitHub" }
       ],
       "apiCalls": ["API-080"],
-      "states": ["email", "password", "loading", "error"]
+      "states": ["email", "password", "loading", "error"],
+      "layout": {
+        "direction": "vertical",
+        "areas": [
+          { "name": "Header", "height": "auto", "children": ["Logo", "App Title"] },
+          { "name": "Body", "height": "flex", "direction": "vertical", "children": ["Email Input", "Password Input", "Login Button", "Social Login"] },
+          { "name": "Footer", "height": "auto", "children": ["Forgot Password Link", "Sign Up Link"] }
+        ]
+      }
     }
   ],
   "crossRefs": [
@@ -339,7 +347,33 @@ The `screens.json` file conforms to `_meta/schemas/doc-companion.schema.json`:
 
 ### 7.2 Extended Fields
 
-Screen items include additional fields: `path` (URL path), `category` (Auth/Dashboard/CRUD/etc.), `components` (array of component specifications), `apiCalls` (array of API IDs), and `states` (array of state variable names). These enable downstream tools to scaffold frontend code automatically.
+Screen items include additional fields: `path` (URL path), `category` (Auth/Dashboard/CRUD/etc.), `components` (array of component specifications), `apiCalls` (array of API IDs), `states` (array of state variable names), and `layout` (screen layout structure for SVG rendering). These enable downstream tools to scaffold frontend code and generate visual layout diagrams automatically.
+
+### 7.3 Layout Field Structure
+
+The `layout` field describes the screen's spatial structure for inline SVG diagram generation:
+
+```json
+{
+  "layout": {
+    "direction": "horizontal|vertical",
+    "areas": [
+      {
+        "name": "Area name (e.g., Sidebar, Header, Main Content)",
+        "width": "fixed(px)|flex|auto",
+        "height": "fixed(px)|flex|auto",
+        "direction": "horizontal|vertical",
+        "children": ["Component or sub-area names"]
+      }
+    ]
+  }
+}
+```
+
+- **`direction`**: Top-level layout flow (`horizontal` for side-by-side, `vertical` for stacked)
+- **`areas`**: Ordered list of layout regions. Each area can have nested `children` (component names or sub-area labels)
+- **`width`/`height`**: `"200px"` (fixed), `"flex"` (fill remaining), `"auto"` (content-sized)
+- Areas are rendered as labeled rectangles in the SVG with proportional sizing
 
 ## 8. Screen Sections Mapping to Template
 
@@ -351,7 +385,7 @@ The `_meta/templates/screens.template.md` defines the canonical section structur
 | 2. Screen Details | One subsection per screen with layout, components, API calls, state, validation |
 
 Each Screen Detail subsection includes:
-- **Layout:** Header, body, footer description
+- **Layout:** Screen layout structure description (영역 구분, 배치, 크기 비율). JSON companion의 `layout` 필드에도 구조화하여 HTML 생성 시 inline SVG 레이아웃 다이어그램으로 렌더링.
 - **Components:** Component table with type, props, interaction
 - **API Calls:** Trigger-API mapping table
 - **State:** State variable table with types and defaults
