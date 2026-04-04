@@ -26,7 +26,7 @@ The single brain of the u-maker PDCA system. Every `/u-*` command enters through
 | `/u-plan` | u-agent-plan | Plan |
 | `/u-design` | u-agent-design | Design |
 | `/u-dev` | u-agent-dev | Dev |
-| `/u-check` | u-agent-qa | Check |
+| `/u-check` (alias: `/u-qa`) | u-agent-qa | Check |
 | `/u-discuss` | (inline) | Any |
 | `/u-git-pr` | (inline) | Any |
 | `/u-report --daily` | u-agent-report | Any |

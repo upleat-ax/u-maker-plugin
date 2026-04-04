@@ -4,6 +4,7 @@ description: "This skill should be used when the user asks to 'check', 'test', '
 version: 4.0.0
 triggers:
   - "/u-check"
+  - "/u-qa"
   - "check phase"
   - "QA"
   - "test cases"

@@ -31,6 +31,11 @@ function parseCommand(input):
     tokens = tokenize(input)
     command = tokens[0].replace("/u-", "")
 
+    // Step 3.5: Resolve aliases
+    ALIASES = { "qa": "check" }
+    if command in ALIASES:
+        command = ALIASES[command]
+
     // Step 4: Parse options
     options = {
         auto: true,       // Default ON
@@ -80,7 +85,7 @@ function parseCommand(input):
 | `plan` | `/u-plan` | Lifecycle |
 | `design` | `/u-design` | Lifecycle |
 | `dev` | `/u-dev` | Lifecycle |
-| `check` | `/u-check` | Lifecycle |
+| `check` | `/u-check` (alias: `/u-qa`) | Lifecycle |
 | `ship` | `/u-ship` | Lifecycle |
 | `add` | `/u-add` | Operations |
 | `update` | `/u-update` | Operations |

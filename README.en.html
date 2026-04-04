@@ -110,7 +110,7 @@ a:hover{text-decoration:underline}
 <nav class="sidebar" id="sidebar">
   <div class="sidebar-header">
     <h1>U-MAKER</h1>
-    <p>v3.2.3 &mdash; Plugin Documentation</p>
+    <p>v3.3.1 &mdash; Plugin Documentation</p>
   </div>
   <div class="sidebar-nav">
 
@@ -152,7 +152,7 @@ a:hover{text-decoration:underline}
     </div>
 
   </div>
-  <div class="sidebar-footer">GPL-3.0 &copy; U PLEAT &middot; v3.2.3</div>
+  <div class="sidebar-footer">Proprietary &copy; U PLEAT &middot; v3.3.1</div>
 </nav>
 
 <main class="main">
@@ -170,7 +170,7 @@ a:hover{text-decoration:underline}
   </div>
 </div>
 
-<blockquote><strong>v3.3.0 Key Changes (2026-04-04)</strong> &mdash; Added <code>/u-reverse</code> for reverse-engineering existing codebases into SSoT documents (Code &rarr; Design &rarr; Plan). Supports auto stack detection for 6+ language ecosystems with <code>--src/--db/--api/--pages</code> manual overrides. All 11 user-facing skills, 7 agents, 5 PDCA phases.</blockquote>
+<blockquote><strong>v3.3.1 Key Changes (2026-04-04)</strong> &mdash; 12 skills (11 user-facing + 1 engine). Added <code>/u-reverse</code> for reverse-engineering existing codebases into SSoT documents (Code &rarr; Design &rarr; Plan). <code>/u-check</code> now aliased as <code>/u-qa</code>. Added <code>/u-init</code>, <code>/u-meeting-report</code>. Supports auto stack detection for 6+ language ecosystems with <code>--src/--db/--api/--pages</code> manual overrides. 7 agents, 5 PDCA phases.</blockquote>
 
 <!-- TL;DR -->
 <h2 id="tldr">TL;DR</h2>
@@ -290,12 +290,15 @@ curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/insta
 <tr><td><code>/u-plan</code></td><td>Plan</td><td>classified &rarr; SRS + IA + Roadmap chain generation</td><td>srs.md, ia.md, roadmap.md</td></tr>
 <tr><td><code>/u-design</code></td><td>Design</td><td>SRS/IA &rarr; ERD + API + Screen + Flow + RTM + wireframes</td><td>erd.md, api.md, screen.md</td></tr>
 <tr><td><code>/u-dev</code></td><td>Dev</td><td>Spec &rarr; FE + BE + DB code generation</td><td>Source code</td></tr>
-<tr><td><code>/u-check</code></td><td>Check</td><td>TC design + test execution + report + exit criteria</td><td>test-cases.md, test-report.md</td></tr>
+<tr><td><code>/u-check</code> <small>(alias: <code>/u-qa</code>)</small></td><td>Check</td><td>TC design + test execution + report + exit criteria</td><td>test-cases.md, test-report.md</td></tr>
 <tr><td><code>/u-engine</code></td><td>ALL</td><td>Cross-cutting internal engines (router, dep, doc, validator, etc.)</td><td>Internal</td></tr>
 <tr><td><code>/u-loop</code></td><td>Loop</td><td>Unattended PDCA auto-execution loop (Plan&rarr;Design&rarr;Dev&rarr;Check&rarr;Ship with gatekeeper)</td><td>loop-state.json</td></tr>
 <tr><td><code>/u-wireframe</code></td><td>Design</td><td>Per-screen HTML wireframe generation from screens.json</td><td>wireframes/*.html</td></tr>
 <tr><td><code>/u-discuss</code></td><td>ALL</td><td>Structured discussion session (brainstorm/review/decision/workshop/retro)</td><td>Session archive</td></tr>
 <tr><td><code>/u-git-pr</code></td><td>Ship</td><td>Auto-generate PR/MR (commit analysis, split/merge, review guide)</td><td>PR/MR</td></tr>
+<tr><td><code>/u-reverse</code></td><td>Plan+Design</td><td>Source code &rarr; SSoT reverse engineering (Code &rarr; Design &rarr; Plan)</td><td>erd.md, api.md, screen.md, srs.md, ia.md</td></tr>
+<tr><td><code>/u-init</code></td><td>Init</td><td>Create .u-maker/ structure, initialize config, register app</td><td>.u-maker/ scaffold</td></tr>
+<tr><td><code>/u-meeting-report</code></td><td>ALL</td><td>Generate structured meeting report from discussion/notes</td><td>Meeting report HTML</td></tr>
 </tbody>
 </table>
 
@@ -484,7 +487,7 @@ curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/insta
 <tr><td><code>/u-plan [scope] [--only X] [-i] [--step]</code></td><td>classified &rarr; SRS + IA + Roadmap chain generation</td><td><code>/u-plan [app] -i</code></td></tr>
 <tr><td><code>/u-design [scope] [--only X] [-i] [--step]</code></td><td>SRS/IA &rarr; ERD + API + Screen + Flow + RTM + wireframes/index.html</td><td><code>/u-design [app] --only screens</code></td></tr>
 <tr><td><code>/u-dev [scope] [--only X] [-i] [--step]</code></td><td>Spec &rarr; FE + BE + DB code generation</td><td><code>/u-dev [app] --only fe</code></td></tr>
-<tr><td><code>/u-qa [scope] [-i] [--step]</code></td><td>TC design + test execution + Report + exit criteria</td><td><code>/u-qa [app]</code></td></tr>
+<tr><td><code>/u-check [scope] [-i] [--step]</code> <small>(alias: <code>/u-qa</code>)</small></td><td>TC design + test execution + Report + exit criteria</td><td><code>/u-qa [app]</code></td></tr>
 <tr><td><code>/u-ship [scope] [-i] [--step]</code></td><td>Final verification + iteration log + retrospective</td><td><code>/u-ship [app]</code></td></tr>
 <tr><td><code>/u-loop [--app name] [--from phase] [--to phase] [--dry-run]</code></td><td>Unattended PDCA auto-execution loop</td><td><code>/u-loop --app my-app --from plan --to check</code></td></tr>
 <tr><td><code>/u-wireframe [--app name] [--screen SCR-ID] [--all]</code></td><td>Per-screen wireframe HTML generation</td><td><code>/u-wireframe --app my-app --all</code></td></tr>
@@ -524,6 +527,7 @@ curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/insta
 <tr><td><code>/u-assume [approve|reject] [id]</code></td><td>Assumption review (approve/reject)</td><td><code>/u-assume approve A-001</code></td></tr>
 <tr><td><code>/u-backlog [scope]</code></td><td>Backlog management (view, add, sprint assign, priority, burndown)</td><td><code>/u-backlog [app]</code></td></tr>
 <tr><td><code>/u-git-pr [base] [flags]</code></td><td>Auto-generate PR/MR (commit analysis, split/merge, review guide)</td><td><code>/u-git-pr main --draft</code></td></tr>
+<tr><td><code>/u-meeting-report [scope]</code></td><td>Generate structured meeting report from discussion/notes</td><td><code>/u-meeting-report [app]</code></td></tr>
 </tbody>
 </table>
 
@@ -766,7 +770,7 @@ Use <code>/u-update --cascade</code> for automatic dependent document updates.</
 <h2 id="sec12">12. Plugin Repository Layout</h2>
 
 <pre><code>u-maker-plugin/
-+-- .claude-plugin/plugin.json        # v3.2.3
++-- .claude-plugin/plugin.json        # v3.3.1
 +-- agents/                           # 7 agent definitions
 |   +-- u-agent-pm.md
 |   +-- u-agent-plan.md
@@ -776,7 +780,7 @@ Use <code>/u-update --cascade</code> for automatic dependent document updates.</
 |   +-- u-agent-gatekeeper.md
 |   +-- u-agent-report.md
 +-- skills/
-|   +-- u-*/SKILL.md                  # 9 skills
+|   +-- u-*/SKILL.md                  # 12 skills (11 user-facing + 1 engine)
 +-- hooks/                            # Event hooks
 |   +-- hooks.json
 |   +-- on-input-added.js
@@ -1012,7 +1016,7 @@ cd /path/to/u-maker-plugin && ./deploy_local.sh</code></pre>
 
 <!-- Footer -->
 <div class="footer">
-  <strong>U-MAKER Plugin</strong> v3.2.3 &middot; GPL-3.0 &copy; U PLEAT<br>
+  <strong>U-MAKER Plugin</strong> v3.3.1 &middot; Proprietary &copy; U PLEAT<br>
   PDCA-based SSoT collaboration orchestrator
 </div>
 

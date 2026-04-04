@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>U-MAKER Plugin v3.2.3 — README (Korean)</title>
+<title>U-MAKER Plugin v3.3.1 — README (Korean)</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -47,7 +47,7 @@
   <!-- Sidebar -->
   <nav class="sidebar fixed top-0 left-0 w-64 h-screen bg-white border-r border-gray-200 flex flex-col z-50 overflow-y-auto">
     <div class="px-6 py-5 border-b border-gray-100">
-      <h2 class="text-base font-extrabold text-gray-900 tracking-tight">U-MAKER v3.2.3</h2>
+      <h2 class="text-base font-extrabold text-gray-900 tracking-tight">U-MAKER v3.3.1</h2>
       <p class="text-xs text-gray-400 mt-1">PDCA SSoT Plugin for Claude Code</p>
     </div>
     <ul class="flex-1 py-3 space-y-0.5">
@@ -60,7 +60,7 @@
       <li><a href="#folder" class="nav-link flex items-center gap-3 px-6 py-2.5 text-sm text-gray-500 border-l-3 border-transparent transition-all">
         <span class="w-5 h-5 flex items-center justify-center text-[10px] font-bold bg-gray-100 rounded text-gray-500">4</span> 폴더 구조</a></li>
       <li><a href="#skills" class="nav-link flex items-center gap-3 px-6 py-2.5 text-sm text-gray-500 border-l-3 border-transparent transition-all">
-        <span class="w-5 h-5 flex items-center justify-center text-[10px] font-bold bg-gray-100 rounded text-gray-500">5</span> 9개 Skills</a></li>
+        <span class="w-5 h-5 flex items-center justify-center text-[10px] font-bold bg-gray-100 rounded text-gray-500">5</span> 12개 Skills</a></li>
       <li><a href="#agents" class="nav-link flex items-center gap-3 px-6 py-2.5 text-sm text-gray-500 border-l-3 border-transparent transition-all">
         <span class="w-5 h-5 flex items-center justify-center text-[10px] font-bold bg-gray-100 rounded text-gray-500">6</span> 7개 Agents</a></li>
       <li><a href="#gatekeeper" class="nav-link flex items-center gap-3 px-6 py-2.5 text-sm text-gray-500 border-l-3 border-transparent transition-all">
@@ -82,10 +82,10 @@
 
     <!-- Header Banner -->
     <div class="bg-gradient-to-br from-blue-600 to-indigo-700 rounded-2xl p-8 text-white mb-10 shadow-lg">
-      <h1 class="text-2xl font-extrabold mb-2">U-MAKER Plugin v3.2.3</h1>
+      <h1 class="text-2xl font-extrabold mb-2">U-MAKER Plugin v3.3.1</h1>
       <p class="text-sm opacity-85 leading-relaxed">PDCA 기반 SSoT(Single Source of Truth) Claude Code 플러그인.<br>기획 자료를 넣으면, 분석 &rarr; 설계 &rarr; 구현 &rarr; 검증까지 자동으로 수행합니다.</p>
       <div class="flex gap-6 mt-5 pt-5 border-t border-white/20 text-xs opacity-75 flex-wrap">
-        <span><strong class="opacity-100">Version</strong> 3.2.3</span>
+        <span><strong class="opacity-100">Version</strong> 3.3.1</span>
         <span><strong class="opacity-100">License</strong> Proprietary</span>
         <span><strong class="opacity-100">Runtime</strong> Claude Code CLI</span>
         <span><strong class="opacity-100">Date</strong> 2026-04-04</span>
@@ -101,9 +101,7 @@
         모든 산출물은 <strong>SSoT(Single Source of Truth)</strong> 원칙으로 일관되게 관리됩니다.
       </p>
       <div class="bg-blue-50 border-l-4 border-blue-500 rounded-r-lg p-4 text-sm text-gray-700 leading-relaxed mb-4">
-        <strong>v3.2.3 핵심 변경:</strong> 32개 스킬에서 9개로 단순화, 에이전트 7개 (PM, Plan, Design, Dev, QA, Gatekeeper, Report).
-        <code class="bg-blue-100 px-1.5 py-0.5 rounded text-xs font-mono">/u-loop</code> 무인 PDCA 자동 실행 + <code class="bg-blue-100 px-1.5 py-0.5 rounded text-xs font-mono">/u-wireframe</code> 화면별 와이어프레임 생성 추가.
-        Gatekeeper 11개 검증항목 (avg &ge; 95 통과). 5-Phase PDCA (Plan &rarr; Design &rarr; Dev &rarr; Check &rarr; Ship).
+        <strong>v3.3.1 핵심 변경:</strong> 12개 스킬 (11 user-facing + 1 engine), 에이전트 7개 (PM, Plan, Design, Dev, QA, Gatekeeper, Report). <code class="bg-blue-100 px-1.5 py-0.5 rounded text-xs font-mono">/u-reverse</code> 코드→SSoT 역생성 + <code class="bg-blue-100 px-1.5 py-0.5 rounded text-xs font-mono">/u-qa</code> (/u-check alias) 추가. Gatekeeper 11개 검증항목 (avg &ge; 95 통과). 5-Phase PDCA (Plan &rarr; Design &rarr; Dev &rarr; Check &rarr; Ship).
       </div>
       <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-6">
         <div class="bg-white rounded-xl p-4 border border-gray-100 shadow-sm text-center">
@@ -111,7 +109,7 @@
           <div class="text-xs text-gray-500 mt-1">AI Agents</div>
         </div>
         <div class="bg-white rounded-xl p-4 border border-gray-100 shadow-sm text-center">
-          <div class="text-2xl font-extrabold text-emerald-600">9</div>
+          <div class="text-2xl font-extrabold text-emerald-600">12</div>
           <div class="text-xs text-gray-500 mt-1">Skills</div>
         </div>
         <div class="bg-white rounded-xl p-4 border border-gray-100 shadow-sm text-center">
@@ -139,7 +137,7 @@
         </div>
         <div class="bg-white rounded-lg p-4 border border-gray-100">
           <div class="font-bold text-gray-800 mb-1">특정 버전 설치</div>
-          <p class="text-xs text-gray-500 font-mono">./install.sh --version 1.0.7</p>
+          <p class="text-xs text-gray-500 font-mono">claude plugin add upleat-ax/u-maker-plugin</p>
         </div>
         <div class="bg-white rounded-lg p-4 border border-gray-100">
           <div class="font-bold text-gray-800 mb-1">제거</div>
@@ -225,7 +223,7 @@ graph LR
 
     <!-- Section 5: Skills -->
     <section id="skills" class="mb-14">
-      <h2 class="text-lg font-extrabold text-gray-900 pb-2 border-b-2 border-blue-500 inline-block mb-4">5. 10개 Skills</h2>
+      <h2 class="text-lg font-extrabold text-gray-900 pb-2 border-b-2 border-blue-500 inline-block mb-4">5. 12개 Skills</h2>
       <p class="text-sm text-gray-600 leading-relaxed mb-4">
         사용자가 직접 호출하는 슬래시 커맨드입니다. 각 스킬은 특정 Phase를 담당하거나 보조 기능을 제공합니다.
       </p>
@@ -259,7 +257,7 @@ graph LR
               <td class="px-4 py-3 text-xs text-gray-500">components, routes, migrations</td>
             </tr>
             <tr class="border-b border-gray-100 hover:bg-gray-50">
-              <td class="px-4 py-3 font-mono font-bold text-amber-600">/u-check</td>
+              <td class="px-4 py-3 font-mono font-bold text-amber-600">/u-check <span class="text-xs text-gray-400 font-normal">(alias: /u-qa)</span></td>
               <td class="px-4 py-3"><span class="bg-amber-100 text-amber-700 text-xs px-2 py-0.5 rounded-full font-semibold">Check</span></td>
               <td class="px-4 py-3 text-gray-600">TC 설계, 테스트 실행, 결과 기록</td>
               <td class="px-4 py-3 text-xs text-gray-500">testcases.md, test-results.md</td>
@@ -294,11 +292,23 @@ graph LR
               <td class="px-4 py-3 text-gray-600">구조화된 토론 세션 (brainstorm, review, decision 등)</td>
               <td class="px-4 py-3 text-xs text-gray-500">세션 기록, 액션 아이템</td>
             </tr>
-            <tr class="hover:bg-gray-50">
+            <tr class="border-b border-gray-100 hover:bg-gray-50">
               <td class="px-4 py-3 font-mono font-bold text-pink-600">/u-git-pr</td>
               <td class="px-4 py-3"><span class="bg-pink-100 text-pink-700 text-xs px-2 py-0.5 rounded-full font-semibold">Any</span></td>
               <td class="px-4 py-3 text-gray-600">Git PR/MR 자동 생성</td>
               <td class="px-4 py-3 text-xs text-gray-500">Pull Request</td>
+            </tr>
+            <tr class="border-b border-gray-100 hover:bg-gray-50">
+              <td class="px-4 py-3 font-mono font-bold text-teal-600">/u-init</td>
+              <td class="px-4 py-3"><span class="bg-teal-100 text-teal-700 text-xs px-2 py-0.5 rounded-full font-semibold">Setup</span></td>
+              <td class="px-4 py-3 text-gray-600">프로젝트 초기화, .u-maker/ 디렉토리 구조 생성</td>
+              <td class="px-4 py-3 text-xs text-gray-500">u-maker.config.json</td>
+            </tr>
+            <tr class="hover:bg-gray-50">
+              <td class="px-4 py-3 font-mono font-bold text-rose-600">/u-meeting-report</td>
+              <td class="px-4 py-3"><span class="bg-rose-100 text-rose-700 text-xs px-2 py-0.5 rounded-full font-semibold">Reporting</span></td>
+              <td class="px-4 py-3 text-gray-600">회의록 기반 리포트 생성</td>
+              <td class="px-4 py-3 text-xs text-gray-500">meeting-report.html</td>
             </tr>
           </tbody>
         </table>
@@ -609,7 +619,7 @@ graph LR
               <td class="px-4 py-2.5 text-gray-600">Dev Phase: FE + BE + DB 코드 생성</td>
             </tr>
             <tr class="border-b border-gray-100 hover:bg-gray-50">
-              <td class="px-4 py-2.5 font-mono text-xs font-bold text-amber-600">/u-check</td>
+              <td class="px-4 py-2.5 font-mono text-xs font-bold text-amber-600">/u-check <span class="text-[10px] text-gray-400 font-normal">(= /u-qa)</span></td>
               <td class="px-4 py-2.5 text-xs text-gray-500 font-mono">/u-check [--auto] [--loop] [--app name]</td>
               <td class="px-4 py-2.5 text-gray-600">Check Phase: TC 설계 + 테스트 실행 + 결과 기록</td>
             </tr>
@@ -628,10 +638,25 @@ graph LR
               <td class="px-4 py-2.5 text-xs text-gray-500 font-mono">/u-wireframe [--app name] [--screen SCR-ID] [--all]</td>
               <td class="px-4 py-2.5 text-gray-600">화면별 HTML 와이어프레임 생성 (ERD, Sequence, Flow 포함)</td>
             </tr>
-            <tr class="hover:bg-gray-50">
+            <tr class="border-b border-gray-100 hover:bg-gray-50">
               <td class="px-4 py-2.5 font-mono text-xs font-bold text-indigo-600">/u-loop</td>
               <td class="px-4 py-2.5 text-xs text-gray-500 font-mono">/u-loop [--app name] [--from phase] [--to phase] [--dry-run]</td>
               <td class="px-4 py-2.5 text-gray-600">무인 PDCA 자동 실행 루프 (Plan &rarr; Design &rarr; Dev &rarr; Check &rarr; Ship)</td>
+            </tr>
+            <tr class="border-b border-gray-100 hover:bg-gray-50">
+              <td class="px-4 py-2.5 font-mono text-xs font-bold text-red-600">/u-reverse</td>
+              <td class="px-4 py-2.5 text-xs text-gray-500 font-mono">/u-reverse [--app name] [--src path] [--db path] [--api path] [--pages path]</td>
+              <td class="px-4 py-2.5 text-gray-600">기존 코드 역분석 &rarr; SSoT 문서 생성 (Code &rarr; Design &rarr; Plan)</td>
+            </tr>
+            <tr class="border-b border-gray-100 hover:bg-gray-50">
+              <td class="px-4 py-2.5 font-mono text-xs font-bold text-teal-600">/u-init</td>
+              <td class="px-4 py-2.5 text-xs text-gray-500 font-mono">/u-init [--app name]</td>
+              <td class="px-4 py-2.5 text-gray-600">프로젝트 초기화, .u-maker/ 디렉토리 및 config 생성</td>
+            </tr>
+            <tr class="hover:bg-gray-50">
+              <td class="px-4 py-2.5 font-mono text-xs font-bold text-rose-600">/u-meeting-report</td>
+              <td class="px-4 py-2.5 text-xs text-gray-500 font-mono">/u-meeting-report [topic]</td>
+              <td class="px-4 py-2.5 text-gray-600">회의록 기반 리포트 생성</td>
             </tr>
           </tbody>
         </table>
