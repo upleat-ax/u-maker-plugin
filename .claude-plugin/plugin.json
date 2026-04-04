@@ -1,6 +1,6 @@
 {
   "name": "u-maker",
-  "version": "3.3.0",
+  "version": "3.3.1",
   "description": "PDCA-based SSoT plugin for Claude Code. 5-phase pipeline (Plan/Design/Dev/Check/Ship), 7 agents, 10 skills including /u-reverse for code-to-SSoT reverse engineering, 11-criteria quality gate with scoring.",
   "author": {
     "name": "u-plugin"
