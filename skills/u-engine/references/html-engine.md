@@ -105,6 +105,7 @@ The "Default" column shows the rendering engine when `--diagram svg` (default). 
 
 ### SVG Diagram Generation Rules
 
+0. **No ASCII art:** Layout structure diagrams MUST NEVER use ASCII art (`+--`, `|`, box-drawing characters in `<pre>` blocks). Always render as inline `<svg>` instead.
 1. **Placement:** Insert each diagram immediately after the relevant section heading.
 2. **Responsive:** Use `viewBox` + `width="100%"` on all `<svg>` elements. Never use fixed pixel widths.
 3. **Curved connectors:** All arrows/lines MUST use `<path>` with cubic Bezier curves (`C` or `Q`). NEVER use `<line>` or straight `<polyline>`.

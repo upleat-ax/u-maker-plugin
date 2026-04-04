@@ -64,16 +64,30 @@ For each screen, generate `{SCR-ID}.html` using the wireframe page template:
 
 **Page Structure (3-column layout):**
 
-```
-+------------------+---------------------------+---------------------+
-| Left Sidebar     | Main Content              | Right Annotations   |
-| (App Navigation) | (Wireframe Mockup)        | (Design + Develop)  |
-+------------------+---------------------------+---------------------+
-|                  | A. Wireframe Mockup       |                     |
-|                  | B. Sequence Diagram       |                     |
-|                  | C. Screen Flow            |                     |
-|                  | D. Related ERD            |                     |
-+------------------+---------------------------+---------------------+
+```svg
+<svg viewBox="0 0 800 260" width="100%" xmlns="http://www.w3.org/2000/svg" style="font-family:system-ui,sans-serif;font-size:13px">
+  <!-- Left Sidebar -->
+  <rect x="0" y="0" width="180" height="50" rx="0" class="fill-gray-200 dark:fill-gray-700" stroke="#334155" stroke-width="1"/>
+  <text x="90" y="22" text-anchor="middle" class="fill-gray-900 dark:fill-gray-100" font-weight="600">Left Sidebar</text>
+  <text x="90" y="40" text-anchor="middle" class="fill-gray-500 dark:fill-gray-400" font-size="11">(App Navigation)</text>
+  <rect x="0" y="50" width="180" height="210" rx="0" class="fill-gray-100 dark:fill-gray-800" stroke="#334155" stroke-width="1"/>
+
+  <!-- Main Content -->
+  <rect x="180" y="0" width="400" height="50" rx="0" class="fill-blue-100 dark:fill-blue-900" stroke="#334155" stroke-width="1"/>
+  <text x="380" y="22" text-anchor="middle" class="fill-gray-900 dark:fill-gray-100" font-weight="600">Main Content</text>
+  <text x="380" y="40" text-anchor="middle" class="fill-gray-500 dark:fill-gray-400" font-size="11">(Wireframe Mockup)</text>
+  <rect x="180" y="50" width="400" height="210" rx="0" class="fill-white dark:fill-gray-800" stroke="#334155" stroke-width="1"/>
+  <text x="200" y="80" class="fill-gray-700 dark:fill-gray-300">A. Wireframe Mockup</text>
+  <text x="200" y="110" class="fill-gray-700 dark:fill-gray-300">B. Sequence Diagram</text>
+  <text x="200" y="140" class="fill-gray-700 dark:fill-gray-300">C. Screen Flow</text>
+  <text x="200" y="170" class="fill-gray-700 dark:fill-gray-300">D. Related ERD</text>
+
+  <!-- Right Annotations -->
+  <rect x="580" y="0" width="220" height="50" rx="0" class="fill-amber-100 dark:fill-amber-900" stroke="#334155" stroke-width="1"/>
+  <text x="690" y="22" text-anchor="middle" class="fill-gray-900 dark:fill-gray-100" font-weight="600">Right Annotations</text>
+  <text x="690" y="40" text-anchor="middle" class="fill-gray-500 dark:fill-gray-400" font-size="11">(Design + Develop)</text>
+  <rect x="580" y="50" width="220" height="210" rx="0" class="fill-white dark:fill-gray-800" stroke="#334155" stroke-width="1"/>
+</svg>
 ```
 
 **A. Wireframe Mockup Section:**
