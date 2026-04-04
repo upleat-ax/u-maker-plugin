@@ -110,7 +110,7 @@ a:hover{text-decoration:underline}
 <nav class="sidebar" id="sidebar">
   <div class="sidebar-header">
     <h1>U-MAKER</h1>
-    <p>v3.4.1 &mdash; Plugin Documentation</p>
+    <p>v3.4.3 &mdash; Plugin Documentation</p>
   </div>
   <div class="sidebar-nav">
 
@@ -152,7 +152,7 @@ a:hover{text-decoration:underline}
     </div>
 
   </div>
-  <div class="sidebar-footer">Proprietary &copy; U PLEAT &middot; v3.4.1</div>
+  <div class="sidebar-footer">Proprietary &copy; U PLEAT &middot; v3.4.3</div>
 </nav>
 
 <main class="main">
@@ -166,11 +166,11 @@ a:hover{text-decoration:underline}
     <div class="stat"><div class="stat-val">13</div><div class="stat-label">Skills</div></div>
     <div class="stat"><div class="stat-val">7</div><div class="stat-label">Agents</div></div>
     <div class="stat"><div class="stat-val">5</div><div class="stat-label">PDCA Phases</div></div>
-    <div class="stat"><div class="stat-val">11</div><div class="stat-label">Gate Criteria</div></div>
+    <div class="stat"><div class="stat-val">5&ndash;11</div><div class="stat-label">Gate Criteria (default 5)</div></div>
   </div>
 </div>
 
-<blockquote><strong>v3.4.1 Key Changes (2026-04-04)</strong> &mdash; 13 skills (12 user-facing + 1 engine). Added <code>/u-output</code> for standalone HTML generation from existing <code>docs/</code>. Domain-split HTML output pipeline for large documents (SRS, ERD, API, Screens, TestCases). New <code>--diagram</code> parameter: <code>svg</code> (default, inline SVG only), <code>mermaid</code> (Mermaid CDN, always light mode), <code>all</code> (SVG primary + Mermaid fallback for UML). SVG-first approach strengthened across all HTML output. 7 agents, 5 PDCA phases, 11 gate criteria.</blockquote>
+<blockquote><strong>v3.4.3 Key Changes (2026-04-04)</strong> &mdash; <code>--loop [N]</code> parameter: configurable gate criteria count (1&ndash;11, default 5). Free-form SVG diagrams (not Mermaid-style) in svg mode. No ASCII art anywhere except folder trees. Wireframe template redesigned: 6-section layout (Header, Stage with app-frame + annotation panel, Component Spec table, 2-column logic diagrams, Overlay UI for modals/bottomsheets/popups, Annotation Legend). Screen layout SVG replaces State Transition diagrams. Screen spec JSON companion now includes <code>layout</code> field. 13 skills, 7 agents, 5 PDCA phases, 5&ndash;11 gate criteria.</blockquote>
 
 <!-- TL;DR -->
 <h2 id="tldr">TL;DR</h2>
@@ -292,14 +292,14 @@ curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/insta
 <tr><td><code>/u-dev</code></td><td>Dev</td><td>Spec &rarr; FE + BE + DB code generation</td><td>Source code</td></tr>
 <tr><td><code>/u-check</code> <small>(alias: <code>/u-qa</code>)</small></td><td>Check</td><td>TC design + test execution + report + exit criteria</td><td>test-cases.md, test-report.md</td></tr>
 <tr><td><code>/u-engine</code></td><td>ALL</td><td>Cross-cutting internal engines (router, dep, doc, validator, etc.)</td><td>Internal</td></tr>
-<tr><td><code>/u-loop</code></td><td>Loop</td><td>Unattended PDCA auto-execution loop (Plan&rarr;Design&rarr;Dev&rarr;Check&rarr;Ship with gatekeeper)</td><td>loop-state.json</td></tr>
-<tr><td><code>/u-wireframe</code></td><td>Design</td><td>Per-screen HTML wireframe generation from screens.json</td><td>wireframes/*.html</td></tr>
+<tr><td><code>/u-loop</code></td><td>Loop</td><td>Unattended PDCA auto-execution loop (Plan&rarr;Design&rarr;Dev&rarr;Check&rarr;Ship with gatekeeper). <code>--loop [N]</code> sets criteria count per gate (default 5, max 11)</td><td>loop-state.json</td></tr>
+<tr><td><code>/u-wireframe</code></td><td>Design</td><td>Per-screen HTML wireframe generation from screens.json. 6-section layout: Header, Stage (app-frame + annotation panel), Component Spec table, 2-column logic diagrams, Overlay UI (modals/bottomsheets/popups), Annotation Legend</td><td>wireframes/*.html</td></tr>
 <tr><td><code>/u-discuss</code></td><td>ALL</td><td>Structured discussion session (brainstorm/review/decision/workshop/retro)</td><td>Session archive</td></tr>
 <tr><td><code>/u-git-pr</code></td><td>Ship</td><td>Auto-generate PR/MR (commit analysis, split/merge, review guide)</td><td>PR/MR</td></tr>
 <tr><td><code>/u-reverse</code></td><td>Plan+Design</td><td>Source code &rarr; SSoT reverse engineering (Code &rarr; Design &rarr; Plan)</td><td>erd.md, api.md, screen.md, srs.md, ia.md</td></tr>
 <tr><td><code>/u-init</code></td><td>Init</td><td>Create .u-maker/ structure, initialize config, register app</td><td>.u-maker/ scaffold</td></tr>
 <tr><td><code>/u-meeting-report</code></td><td>ALL</td><td>Generate structured meeting report from discussion/notes</td><td>Meeting report HTML</td></tr>
-<tr><td><code>/u-output</code></td><td>ALL</td><td>Standalone HTML generation from existing docs/ (domain-split for large docs, <code>--diagram svg|mermaid|all</code>)</td><td>out/browse/*.html</td></tr>
+<tr><td><code>/u-output</code></td><td>ALL</td><td>Standalone HTML generation from existing docs/ (domain-split for large docs, <code>--diagram svg|mermaid|all</code>). SVG mode produces free-form diagrams, not Mermaid-style</td><td>out/browse/*.html</td></tr>
 </tbody>
 </table>
 
@@ -358,7 +358,7 @@ curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/insta
 </table>
 
 <h3>Mandatory Scorecard Display</h3>
-<p>Every gate validation <strong>must display the full 11-criteria scorecard</strong> on screen. No abbreviation or omission allowed.</p>
+<p>Every gate validation <strong>must display the full N-criteria scorecard</strong> on screen (N = 1&ndash;11, default 5; controlled by <code>--loop [N]</code>). No abbreviation or omission allowed.</p>
 
 <pre style="background:#0f172a;color:#cbd5e1;padding:20px;border-radius:12px;font-size:12px;line-height:1.7;overflow-x:auto"><code><span style="color:#60a5fa">&boxdr;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxdl;</span>
 <span style="color:#60a5fa">&boxv;</span>  <strong style="color:#fff">GATEKEEPER REPORT</strong> &mdash; Plan Phase (myapp)                  <span style="color:#60a5fa">&boxv;</span>
@@ -367,7 +367,7 @@ curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/insta
 <span style="color:#60a5fa">&boxvr;&boxh;&boxh;&boxh;&boxh;&boxh;&boxhu;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxhu;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxhu;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxhu;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxvl;</span>
 <span style="color:#60a5fa">&boxv;</span>  01 <span style="color:#60a5fa">&boxv;</span> Completeness         <span style="color:#60a5fa">&boxv;</span>   <span style="color:#4ade80">98</span>  <span style="color:#60a5fa">&boxv;</span>   <span style="color:#4ade80">PASS</span> <span style="color:#60a5fa">&boxv;</span> &mdash;             <span style="color:#60a5fa">&boxv;</span>
 <span style="color:#60a5fa">&boxv;</span>  04 <span style="color:#60a5fa">&boxv;</span> Traceability         <span style="color:#60a5fa">&boxv;</span>   <span style="color:#f87171">88</span>  <span style="color:#60a5fa">&boxv;</span>   <span style="color:#f87171">FAIL</span> <span style="color:#60a5fa">&boxv;</span> <span style="color:#f87171">FR-030 orphan</span> <span style="color:#60a5fa">&boxv;</span>
-<span style="color:#60a5fa">&boxv;</span>  ... (all 11 rows shown) ...                                <span style="color:#60a5fa">&boxv;</span>
+<span style="color:#60a5fa">&boxv;</span>  ... (all N rows shown, default 5) ...                       <span style="color:#60a5fa">&boxv;</span>
 <span style="color:#60a5fa">&boxvr;&boxh;&boxh;&boxh;&boxh;&boxh;&boxhu;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxhu;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxhu;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxhu;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxvl;</span>
 <span style="color:#60a5fa">&boxv;</span> <strong style="color:#fff">AVG</strong> <span style="color:#60a5fa">&boxv;</span>                      <span style="color:#60a5fa">&boxv;</span> <strong style="color:#facc15">95.2</strong>  <span style="color:#60a5fa">&boxv;</span> <strong style="color:#4ade80">PASS</strong>   <span style="color:#60a5fa">&boxv;</span>               <span style="color:#60a5fa">&boxv;</span>
 <span style="color:#60a5fa">&boxul;&boxh;&boxh;&boxh;&boxh;&boxh;&boxhu;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxhu;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxhu;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxhu;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxur;</span>
@@ -459,7 +459,7 @@ curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/insta
 <tr><td><code>design</code></td><td>Design (ERD, API, Screen, UX, wireframes)</td><td>Design</td></tr>
 <tr><td><code>dev</code></td><td>Integrated FE + BE implementation</td><td>Dev</td></tr>
 <tr><td><code>qa</code></td><td>TC design, test execution, report</td><td>Check</td></tr>
-<tr><td><code>gatekeeper</code></td><td>Gate verification, consistency checks, RTM. <strong>Displays full 11-criteria scorecard on every validation</strong></td><td>ALL</td></tr>
+<tr><td><code>gatekeeper</code></td><td>Gate verification, consistency checks, RTM. <strong>Displays full N-criteria scorecard on every validation</strong> (N = 1&ndash;11, default 5; set via <code>--loop [N]</code>)</td><td>ALL</td></tr>
 <tr><td><code>report</code></td><td>HTML report generation, deliverable formatting</td><td>ALL</td></tr>
 </tbody>
 </table>
@@ -483,16 +483,16 @@ curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/insta
 <thead><tr><th>Command</th><th>Description</th><th>Example</th></tr></thead>
 <tbody>
 <tr><td><code>/u-init [project-name]</code></td><td>Create .u-maker/ structure, initialize config, register app</td><td><code>/u-init my-project</code></td></tr>
-<tr><td><code>/u-reverse [--app name] [--src path] [--db path] [--api path] [--pages path] [--loop]</code></td><td>Source code &rarr; SSoT reverse engineering. Bottom-up: Code &rarr; Design (ERD, API, Screens, DS) &rarr; Plan (SRS, IA)</td><td><code>/u-reverse --app my-app --db prisma/</code></td></tr>
+<tr><td><code>/u-reverse [--app name] [--src path] [--db path] [--api path] [--pages path] [--loop [N]]</code></td><td>Source code &rarr; SSoT reverse engineering. Bottom-up: Code &rarr; Design (ERD, API, Screens, DS) &rarr; Plan (SRS, IA). <code>--loop [N]</code> enables gatekeeper with N criteria (default 5, max 11)</td><td><code>/u-reverse --app my-app --db prisma/</code></td></tr>
 <tr><td><code>/u-ingest [scope] [--review] [--incremental]</code></td><td><code>.u-maker/_dropzone/</code> &rarr; <code>_input/</code> auto-classification + classified analysis</td><td><code>/u-ingest [app] --review</code></td></tr>
-<tr><td><code>/u-plan [scope] [--only X] [-i] [--step]</code></td><td>classified &rarr; SRS + IA + Roadmap chain generation</td><td><code>/u-plan [app] -i</code></td></tr>
-<tr><td><code>/u-design [scope] [--only X] [-i] [--step]</code></td><td>SRS/IA &rarr; ERD + API + Screen + Flow + RTM + wireframes/index.html</td><td><code>/u-design [app] --only screens</code></td></tr>
-<tr><td><code>/u-dev [scope] [--only X] [-i] [--step]</code></td><td>Spec &rarr; FE + BE + DB code generation</td><td><code>/u-dev [app] --only fe</code></td></tr>
-<tr><td><code>/u-check [scope] [-i] [--step]</code> <small>(alias: <code>/u-qa</code>)</small></td><td>TC design + test execution + Report + exit criteria</td><td><code>/u-qa [app]</code></td></tr>
-<tr><td><code>/u-ship [scope] [-i] [--step]</code></td><td>Final verification + iteration log + retrospective</td><td><code>/u-ship [app]</code></td></tr>
-<tr><td><code>/u-loop [--app name] [--from phase] [--to phase] [--dry-run]</code></td><td>Unattended PDCA auto-execution loop</td><td><code>/u-loop --app my-app --from plan --to check</code></td></tr>
+<tr><td><code>/u-plan [scope] [--only X] [-i] [--step] [--loop [N]]</code></td><td>classified &rarr; SRS + IA + Roadmap chain generation</td><td><code>/u-plan [app] -i</code></td></tr>
+<tr><td><code>/u-design [scope] [--only X] [-i] [--step] [--loop [N]]</code></td><td>SRS/IA &rarr; ERD + API + Screen + Flow + RTM + wireframes/index.html</td><td><code>/u-design [app] --only screens</code></td></tr>
+<tr><td><code>/u-dev [scope] [--only X] [-i] [--step] [--loop [N]]</code></td><td>Spec &rarr; FE + BE + DB code generation</td><td><code>/u-dev [app] --only fe</code></td></tr>
+<tr><td><code>/u-check [scope] [-i] [--step] [--loop [N]]</code> <small>(alias: <code>/u-qa</code>)</small></td><td>TC design + test execution + Report + exit criteria</td><td><code>/u-qa [app]</code></td></tr>
+<tr><td><code>/u-ship [scope] [-i] [--step] [--loop [N]]</code></td><td>Final verification + iteration log + retrospective</td><td><code>/u-ship [app]</code></td></tr>
+<tr><td><code>/u-loop [--app name] [--from phase] [--to phase] [--loop [N]] [--dry-run]</code></td><td>Unattended PDCA auto-execution loop. <code>--loop [N]</code> sets gate criteria count (default 5, max 11)</td><td><code>/u-loop --app my-app --from plan --to check</code></td></tr>
 <tr><td><code>/u-wireframe [--app name] [--screen SCR-ID] [--all]</code></td><td>Per-screen wireframe HTML generation</td><td><code>/u-wireframe --app my-app --all</code></td></tr>
-<tr><td><code>/u-output [--app name] [--only X] [--diagram svg|mermaid|all]</code></td><td>Standalone HTML generation from existing docs/. Domain-split for large documents (SRS, ERD, API, Screens, TestCases)</td><td><code>/u-output --app my-app --diagram svg</code></td></tr>
+<tr><td><code>/u-output [--app name] [--only X] [--diagram svg|mermaid|all]</code></td><td>Standalone HTML generation from existing docs/. Domain-split for large documents. <code>svg</code> mode uses free-form SVG diagrams (not Mermaid-style)</td><td><code>/u-output --app my-app --diagram svg</code></td></tr>
 </tbody>
 </table>
 
@@ -545,7 +545,8 @@ curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/insta
 <tr><td><code>--json</code></td><td>JSON format output</td></tr>
 <tr><td><code>--incremental</code></td><td>(/u-ingest) Process only new items</td></tr>
 <tr><td><code>--review</code></td><td>(/u-ingest) Review extracted items</td></tr>
-<tr><td><code>--diagram svg|mermaid|all</code></td><td>(/u-output, /u-design) Diagram mode: <code>svg</code> = inline SVG only (default), <code>mermaid</code> = Mermaid CDN (always light mode), <code>all</code> = SVG primary + Mermaid fallback for UML</td></tr>
+<tr><td><code>--diagram svg|mermaid|all</code></td><td>(/u-output, /u-design) Diagram mode: <code>svg</code> = free-form inline SVG (default, not constrained to Mermaid style), <code>mermaid</code> = Mermaid CDN (always light mode), <code>all</code> = SVG primary + Mermaid fallback for UML</td></tr>
+<tr><td><code>--loop [N]</code></td><td>Gate criteria count per phase (1&ndash;11, default 5). Applies to all phase commands, <code>/u-loop</code>, and <code>/u-reverse</code></td></tr>
 </tbody>
 </table>
 
@@ -729,7 +730,7 @@ curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/insta
 <p>Set the document language for deliverables with <code>language.documents</code>. Supports ko (Korean), en (English), ja (Japanese), zh (Chinese). IDs and code are always in English.</p>
 
 <h3>wireframes/index.html</h3>
-<p>An SPA viewer auto-generated when <code>/u-design</code> runs. Navigate Screen documents via sidebar navigation and visualize wireframes with MD rendering.</p>
+<p>An SPA viewer auto-generated when <code>/u-design</code> runs. Navigate Screen documents via sidebar navigation and visualize wireframes with MD rendering. Each wireframe uses a 6-section layout: Header, Stage (app-frame + annotation panel), Component Spec table, 2-column logic diagrams, Overlay UI (modals/bottomsheets/popups), and Annotation Legend. Screen layout SVG replaces State Transition diagrams. Screen spec JSON companion includes a <code>layout</code> field.</p>
 
 <h3>Scope-First Navigation</h3>
 <p>Claude reads only <code>_index.json</code> first instead of opening files directly, then selectively loads only the needed files &rarr; saves context window.</p>
@@ -773,7 +774,7 @@ Use <code>/u-update --cascade</code> for automatic dependent document updates.</
 <h2 id="sec12">12. Plugin Repository Layout</h2>
 
 <pre><code>u-maker-plugin/
-+-- .claude-plugin/plugin.json        # v3.4.1
++-- .claude-plugin/plugin.json        # v3.4.3
 +-- agents/                           # 7 agent definitions
 |   +-- u-agent-pm.md
 |   +-- u-agent-plan.md
@@ -831,7 +832,7 @@ Use <code>/u-update --cascade</code> for automatic dependent document updates.</
 <tr><td>Specify DB schema path manually</td><td><code>/u-reverse --app my-app --db prisma/</code></td></tr>
 <tr><td>Specify API route path manually</td><td><code>/u-reverse --app my-app --api src/app/api/</code></td></tr>
 <tr><td>Specify page component path manually</td><td><code>/u-reverse --app my-app --pages src/app/</code></td></tr>
-<tr><td>Reverse engineer with gatekeeper validation</td><td><code>/u-reverse --app my-app --loop</code></td></tr>
+<tr><td>Reverse engineer with gatekeeper validation</td><td><code>/u-reverse --app my-app --loop [N]</code></td></tr>
 </tbody>
 </table>
 
@@ -907,7 +908,7 @@ Use <code>/u-update --cascade</code> for automatic dependent document updates.</
 <tr><td>Full trace of FR-015</td><td><code>/u-trace [app] FR-015</code></td></tr>
 <tr><td>Full coverage</td><td><code>/u-coverage all</code></td></tr>
 <tr><td>Full consistency verification</td><td><code>/u-sync all</code></td></tr>
-<tr><td>Generate standalone HTML from docs (SVG diagrams)</td><td><code>/u-output --app [app]</code></td></tr>
+<tr><td>Generate standalone HTML from docs (free-form SVG diagrams)</td><td><code>/u-output --app [app]</code></td></tr>
 <tr><td>Generate HTML with Mermaid diagrams</td><td><code>/u-output --app [app] --diagram mermaid</code></td></tr>
 <tr><td>Generate HTML with SVG + Mermaid fallback</td><td><code>/u-output --app [app] --diagram all</code></td></tr>
 <tr><td>Generate HTML for specific doc only</td><td><code>/u-output --app [app] --only srs</code></td></tr>
@@ -1013,7 +1014,7 @@ cd /path/to/u-maker-plugin && ./deploy_local.sh</code></pre>
 
 <!-- Footer -->
 <div class="footer">
-  <strong>U-MAKER Plugin</strong> v3.4.1 &middot; Proprietary &copy; U PLEAT<br>
+  <strong>U-MAKER Plugin</strong> v3.4.3 &middot; Proprietary &copy; U PLEAT<br>
   PDCA-based SSoT collaboration orchestrator
 </div>
 
