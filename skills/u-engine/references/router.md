@@ -53,6 +53,12 @@ function parseCommand(input):
             options.auto = false
         else if token == "--loop":
             options.loop = true
+            // Check if next token is a number (criteria count)
+            if tokens[i+1] and isNumeric(tokens[i+1]):
+                i++
+                options.loopCriteria = parseInt(tokens[i])  // 1-11, default 5
+            else:
+                options.loopCriteria = 5  // default
         else if token == "--app":
             i++
             options.app = tokens[i]
@@ -310,7 +316,7 @@ These options are available on ALL phase commands (plan, design, dev, check).
 | Option | Flag | Default | Description |
 |--------|------|---------|-------------|
 | Auto mode | `--auto` / `--no-auto` | ON | When ON, proceed without asking questions. When OFF, pause for user confirmation at key decision points. |
-| Loop mode | `--loop` | OFF | When ON, after phase completion, invoke u-agent-gatekeeper for scoring. If avg < 95, re-invoke phase with improvement items. Max 3 iterations. |
+| Loop mode | `--loop [N]` | OFF (default N=5) | When ON, after phase completion, invoke u-agent-gatekeeper for scoring. N = number of criteria to validate (1-11, default 5). If avg < 95, re-invoke phase with improvement items. Max 3 iterations. |
 | App target | `--app {name}` | (from config) | Target app name. If not specified, uses the default app from `u-maker.config.json`. If config has multiple apps, this is required. |
 
 ### Command-Specific Options

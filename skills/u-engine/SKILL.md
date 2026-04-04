@@ -95,7 +95,7 @@ Use `/u-output` to regenerate HTML from existing `docs/` without re-running phas
 | Option | Default | Description |
 |--------|---------|-------------|
 | `--auto` | ON | No questions, proceed automatically |
-| `--loop` | OFF | Gatekeeper-driven iteration (avg < 95 → retry, max 3) |
+| `--loop [N]` | OFF (default N=5) | Gatekeeper-driven iteration. N = criteria count (1-11, default 5). avg < 95 → retry, max 3 |
 | `--app {name}` | — | Target app name |
 | `--diagram {mode}` | `svg` | Diagram rendering: `svg` (all SVG), `mermaid` (all Mermaid), `all` (SVG + Mermaid UML fallback) |
 

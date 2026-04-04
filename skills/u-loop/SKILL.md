@@ -12,7 +12,7 @@ triggers:
 
 # u-loop — Unattended PDCA Auto-Execution Loop
 
-`/u-loop [--app {name}] [--from {phase}] [--to {phase}] [--dry-run] [--max-retries {n}]`
+`/u-loop [--app {name}] [--from {phase}] [--to {phase}] [--dry-run] [--max-retries {n}] [--criteria {n}]`
 
 Run all PDCA phases (Plan → Design → Dev → Check → Ship) sequentially. Each phase executes with `--loop` enabled so the gatekeeper validates and retries until quality passes (avg >= 95) or max retries exhausted.
 
@@ -28,14 +28,15 @@ Run all PDCA phases (Plan → Design → Dev → Check → Ship) sequentially. E
 | `--to {phase}` | `ship` | Stop after this phase |
 | `--dry-run` | OFF | Show execution plan without running |
 | `--max-retries {n}` | `3` | Max gatekeeper retries per phase |
+| `--criteria {n}` | `5` | Number of gatekeeper criteria to validate (1-11). Passed as `--loop {n}` to each phase |
 
 ## PDCA Phase Sequence
 
 ```
-Phase 1: PLAN    → /u-plan --auto --loop --app {name}
-Phase 2: DESIGN  → /u-design --auto --loop --app {name}
-Phase 3: DEV     → /u-dev --auto --loop --app {name}
-Phase 4: CHECK   → /u-check --auto --loop --app {name}
+Phase 1: PLAN    → /u-plan --auto --loop {criteria} --app {name}
+Phase 2: DESIGN  → /u-design --auto --loop {criteria} --app {name}
+Phase 3: DEV     → /u-dev --auto --loop {criteria} --app {name}
+Phase 4: CHECK   → /u-check --auto --loop {criteria} --app {name}
 Phase 5: SHIP    → (Final gate + output packaging)
 ```
 
@@ -87,9 +88,9 @@ For the current phase:
 
 ### Step 2: Gatekeeper Validation
 
-Each phase skill with `--loop` automatically invokes `u-agent-gatekeeper`:
+Each phase skill with `--loop {N}` automatically invokes `u-agent-gatekeeper`:
 
-1. Gatekeeper scores 11 criteria (GK-01 through GK-11)
+1. Gatekeeper scores top N criteria (GK-01 through GK-{N}, default 5)
 2. Calculate average score
 3. If avg >= 95 → **PASS**:
    - Set `phases[phase].status = "passed"`
@@ -192,28 +193,28 @@ Each phase reads outputs of all previous phases. If an upstream phase changes (e
 u-loop Execution Plan for: myapp
 ──────────────────────────────────
 Phase 1: PLAN
-  → /u-plan --auto --loop --app myapp
+  → /u-plan --auto --loop 5 --app myapp
   Input:  data/dropzone/
   Output: docs/myapp/plan/ (SRS, IA)
-  Gate:   11-criteria avg >= 95
+  Gate:   {N}-criteria avg >= 95
 
 Phase 2: DESIGN
-  → /u-design --auto --loop --app myapp
+  → /u-design --auto --loop 5 --app myapp
   Input:  docs/myapp/plan/ (SRS, IA)
   Output: docs/myapp/design/ (ERD, API, Screens, Design System)
-  Gate:   11-criteria avg >= 95
+  Gate:   {N}-criteria avg >= 95
 
 Phase 3: DEV
-  → /u-dev --auto --loop --app myapp
+  → /u-dev --auto --loop 5 --app myapp
   Input:  docs/myapp/design/ (ERD, API, Screens, Design System)
   Output: Generated code (FE, BE, DB)
-  Gate:   11-criteria avg >= 95
+  Gate:   {N}-criteria avg >= 95
 
 Phase 4: CHECK
-  → /u-check --auto --loop --app myapp
+  → /u-check --auto --loop 5 --app myapp
   Input:  docs/myapp/plan/srs.json (FT items) + generated code
   Output: docs/myapp/check/ (Test Cases, Test Results)
-  Gate:   11-criteria avg >= 95
+  Gate:   {N}-criteria avg >= 95
 
 Phase 5: SHIP
   → Final gate + output packaging
