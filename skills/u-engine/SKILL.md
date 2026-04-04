@@ -41,6 +41,8 @@ Every `.md` SSoT document has a `.json` companion following `_meta/schemas/doc-c
 
 ## HTML Generation Protocol
 
+### Single-file Pipeline (IA, Design System, Test Results)
+
 1. Read `.md` source document
 2. Parse frontmatter metadata
 3. Convert markdown → HTML body
@@ -50,8 +52,27 @@ Every `.md` SSoT document has a `.json` companion following `_meta/schemas/doc-c
 7. Apply `_meta/templates/output-page.template.html` wrapper
 8. Generate TOC from headings
 9. Write to `output/{app}/{phase}/{docName}.html`
-10. Update `output/{app}/index.html` navigation
-11. Update root index files (`output/index.html`, `reports/index.html`, `index.html`) — see `html-engine.md` § 8
+10. Update index navigation
+
+### Domain Split Pipeline (SRS, ERD, API, Screens, Test Cases)
+
+Large documents are split by domain into multiple pages — see `html-engine.md` § 12:
+
+1. Read companion `.json` → determine domain groups
+2. Create `output/{app}/{phase}/{doc}/` directory
+3. Render index page from `_meta/templates/output-split-index.template.html`
+4. Render each domain page from `_meta/templates/output-split-page.template.html`
+5. Inject sidebar navigation + prev/next links
+6. Update index navigation (point to `{doc}/index.html`)
+
+### Index Updates (both modes)
+
+- Update `output/{app}/index.html` navigation
+- Update root index files (`output/index.html`, `reports/index.html`, `index.html`) — see `html-engine.md` § 8
+
+### Standalone HTML Generation
+
+Use `/u-output` to regenerate HTML from existing `docs/` without re-running phase logic.
 
 ### HTML Rules
 

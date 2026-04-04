@@ -14,6 +14,7 @@ triggers:
 # u-check — Check Phase
 
 `/u-check [--auto] [--loop] [--app {name}]`
+**Alias:** `/u-qa`
 
 Check phase: design test cases from SRS Features (FT), execute tests, record results, verify coverage.
 
