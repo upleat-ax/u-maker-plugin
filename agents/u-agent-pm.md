@@ -30,6 +30,7 @@ The single brain of the u-maker PDCA system. Every `/u-*` command enters through
 | `/u-discuss` | (inline) | Any |
 | `/u-git-pr` | (inline) | Any |
 | `/u-report --daily` | u-agent-report | Any |
+| `/u-reverse` | u-agent-pm (orchestrates u-agent-design + u-agent-plan) | Reverse |
 
 ## 3. Phase State Machine
 

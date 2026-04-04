@@ -96,6 +96,7 @@ function parseCommand(input):
 | `loop` | `/u-loop` | Automation |
 | `report` | `/u-report` | Reporting |
 | `git-pr` | `/u-git-pr` | Git |
+| `reverse` | `/u-reverse` | Lifecycle |
 
 ## 2. Intent Classification
 
@@ -122,6 +123,7 @@ When the input is not a `/u-*` command, the router classifies intent from natura
 | "auto loop", "run loop", "unattended" | `loop` | u-agent-pm |
 | "generate report", "daily report" | `report` | u-agent-report |
 | "create PR", "pull request" | `git-pr` | u-agent-pm |
+| "reverse engineer", "analyze code", "code to docs", "extract from code" | `reverse` | u-agent-pm |
 
 ### Classification Algorithm
 
@@ -165,6 +167,9 @@ function classifyNaturalLanguage(input):
           intent: "report" },
         { keywords: ["pull request", "pr", "merge request"],
           intent: "git-pr" },
+        { keywords: ["reverse", "reverse-engineer", "reverse engineer", "code to docs",
+                     "extract from code", "analyze existing code", "code analysis"],
+          intent: "reverse" },
         { keywords: ["sync", "synchronize", "consistency"],
           intent: "sync" },
         { keywords: ["gate", "quality gate", "validate"],
@@ -217,6 +222,7 @@ Once intent is classified, the router dispatches to the appropriate agent.
 | `loop` | u-agent-pm | (none) |
 | `report` | u-agent-report | u-agent-pm |
 | `git-pr` | u-agent-pm (inline) | (none) |
+| `reverse` | u-agent-pm | (none) |
 
 ### Dispatch Algorithm
 
@@ -274,6 +280,7 @@ function dispatch(parsed):
 | `loop` | u-loop |
 | `report` | u-engine (html-engine) |
 | `git-pr` | u-git-pr |
+| `reverse` | u-reverse |
 
 ### Prerequisites
 
@@ -287,6 +294,7 @@ function dispatch(parsed):
 | `wireframe` | Design phase complete (Screens=Final) | "Run /u-design first. Screen spec must be Final." |
 | `gate` | At least one document exists | "No documents to validate. Run a phase command first." |
 | `report` | At least one document exists | "No documents to report on." |
+| `reverse` | Project source code exists (at least one recognized stack indicator) | "No recognizable project stack found. Use --src, --db, --api, --pages to specify paths." |
 
 ## 4. Option Parsing
 
@@ -315,6 +323,10 @@ These options are available on ALL phase commands (plan, design, dev, check).
 | `/u-ingest` | `--force` | Re-analyze all files regardless of hash |
 | `/u-assume` | `--action {approve\|reject\|list}` | Assumption management action |
 | `/u-gate` | `--phase {plan\|design\|dev\|check}` | Specific phase to gate |
+| `/u-reverse` | `--src {path}` | Source code root directory |
+| `/u-reverse` | `--db {path}` | DB schema/migration path |
+| `/u-reverse` | `--api {path}` | API route/controller path |
+| `/u-reverse` | `--pages {path}` | Page/screen component path |
 | `/u-coverage` | `--from {type}` | Source item type for coverage check |
 | `/u-trace` | `--id {ITEM-ID}` | Item ID to trace |
 
