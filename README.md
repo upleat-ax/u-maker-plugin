@@ -1,4 +1,4 @@
-# U-MAKER Plugin v3.2
+# U-MAKER Plugin v3.3
 
 PDCA-based SSoT(Single Source of Truth) plugin for Claude Code.
 

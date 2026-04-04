@@ -170,7 +170,7 @@ a:hover{text-decoration:underline}
   </div>
 </div>
 
-<blockquote><strong>v3.2.3 Key Changes (2026-04-04)</strong> &mdash; Streamlined from 32 skills down to 9 focused skills. Added <code>/u-loop</code> for unattended PDCA auto-execution and <code>/u-wireframe</code> for per-screen HTML wireframe generation. Agents expanded to 7 (pm, plan, design, dev, qa, gatekeeper, report). PDCA phases now 5: Plan, Design, Dev, Check, Ship.</blockquote>
+<blockquote><strong>v3.3.0 Key Changes (2026-04-04)</strong> &mdash; Added <code>/u-reverse</code> for reverse-engineering existing codebases into SSoT documents (Code &rarr; Design &rarr; Plan). Supports auto stack detection for 6+ language ecosystems with <code>--src/--db/--api/--pages</code> manual overrides. All 11 user-facing skills, 7 agents, 5 PDCA phases.</blockquote>
 
 <!-- TL;DR -->
 <h2 id="tldr">TL;DR</h2>
@@ -197,7 +197,7 @@ curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/insta
 
 <h3>Reverse Engineering (Existing Project)</h3>
 <pre><code><span class="cmd">/u-init my-app</span>                <span class="comment"># Initialize project</span>
-<span class="cmd">/u-reverse [app]</span>             <span class="comment"># Source code &rarr; SSoT reverse engineering (ERD, API, Screen, SRS, etc.)</span>
+<span class="cmd">/u-reverse --app my-app</span>       <span class="comment"># Source code &rarr; SSoT reverse engineering (ERD, API, Screen, SRS, IA)</span>
 <span class="cmd">/u-sync [app]</span>                <span class="comment"># Cross-document consistency verification</span></code></pre>
 
 <h3>Natural Language Also Works</h3>
@@ -479,7 +479,7 @@ curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/insta
 <thead><tr><th>Command</th><th>Description</th><th>Example</th></tr></thead>
 <tbody>
 <tr><td><code>/u-init [project-name]</code></td><td>Create .u-maker/ structure, initialize config, register app</td><td><code>/u-init my-project</code></td></tr>
-<tr><td><code>/u-reverse [scope] [--only X]</code></td><td>Source code &rarr; SSoT reverse engineering (ERD, API, Screen, SRS, etc.)</td><td><code>/u-reverse [app] --only erd</code></td></tr>
+<tr><td><code>/u-reverse [--app name] [--src path] [--db path] [--api path] [--pages path] [--loop]</code></td><td>Source code &rarr; SSoT reverse engineering. Bottom-up: Code &rarr; Design (ERD, API, Screens, DS) &rarr; Plan (SRS, IA)</td><td><code>/u-reverse --app my-app --db prisma/</code></td></tr>
 <tr><td><code>/u-ingest [scope] [--review] [--incremental]</code></td><td><code>.u-maker/_dropzone/</code> &rarr; <code>_input/</code> auto-classification + classified analysis</td><td><code>/u-ingest [app] --review</code></td></tr>
 <tr><td><code>/u-plan [scope] [--only X] [-i] [--step]</code></td><td>classified &rarr; SRS + IA + Roadmap chain generation</td><td><code>/u-plan [app] -i</code></td></tr>
 <tr><td><code>/u-design [scope] [--only X] [-i] [--step]</code></td><td>SRS/IA &rarr; ERD + API + Screen + Flow + RTM + wireframes/index.html</td><td><code>/u-design [app] --only screens</code></td></tr>
@@ -830,11 +830,11 @@ Use <code>/u-update --cascade</code> for automatic dependent document updates.</
 <table>
 <thead><tr><th>Scenario</th><th>Command</th></tr></thead>
 <tbody>
-<tr><td>Full reverse engineering of existing source code &rarr; SSoT</td><td><code>/u-reverse [app]</code></td></tr>
-<tr><td>Reverse engineer ERD only</td><td><code>/u-reverse [app] --only erd</code></td></tr>
-<tr><td>Reverse engineer API only</td><td><code>/u-reverse [app] --only api</code></td></tr>
-<tr><td>Reverse engineer Screen only</td><td><code>/u-reverse [app] --only screen</code></td></tr>
-<tr><td>Reverse engineer SRS only</td><td><code>/u-reverse [app] --only srs</code></td></tr>
+<tr><td>Full reverse engineering of existing source code &rarr; SSoT</td><td><code>/u-reverse --app my-app</code></td></tr>
+<tr><td>Specify DB schema path manually</td><td><code>/u-reverse --app my-app --db prisma/</code></td></tr>
+<tr><td>Specify API route path manually</td><td><code>/u-reverse --app my-app --api src/app/api/</code></td></tr>
+<tr><td>Specify page component path manually</td><td><code>/u-reverse --app my-app --pages src/app/</code></td></tr>
+<tr><td>Reverse engineer with gatekeeper validation</td><td><code>/u-reverse --app my-app --loop</code></td></tr>
 </tbody>
 </table>
 
@@ -960,7 +960,7 @@ Use <code>/u-update --cascade</code> for automatic dependent document updates.</
 "Optimize ERD for PostgreSQL"              &rarr; /u-design [app] --only erd
 "Create test cases"                        &rarr; /u-qa [app]
 "What's the current project status?"       &rarr; /u-status
-"Extract API docs from existing source"    &rarr; /u-reverse [app] --only api
+"Extract API docs from existing source"    &rarr; /u-reverse --app my-app
 "Create a PR"                              &rarr; /u-git-pr main</code></pre>
 
 <hr>
@@ -1003,7 +1003,7 @@ cd /path/to/u-maker-plugin && ./deploy_local.sh</code></pre>
 <tr><td><code>.u-maker/_dropzone/</code> files not classified</td><td>Run <code>/u-ingest [scope]</code> to trigger auto-classification</td></tr>
 <tr><td>wireframes/index.html missing</td><td>Run <code>/u-design [scope]</code> to auto-generate it</td></tr>
 <tr><td>Want to change document language</td><td>Change <code>language.documents</code> in <code>u-maker.config.json</code> to ko/en/ja/zh</td></tr>
-<tr><td><code>/u-reverse</code> results incomplete</td><td>Narrow the scope with <code>--only</code> flag and re-run</td></tr>
+<tr><td><code>/u-reverse</code> results incomplete</td><td>Use <code>--src</code>, <code>--db</code>, <code>--api</code>, <code>--pages</code> flags to specify exact paths</td></tr>
 <tr><td>Hooks not working</td><td>Check match settings in <code>hooks/hooks.json</code> + verify Node.js is installed</td></tr>
 </tbody>
 </table>

@@ -8,7 +8,7 @@
       "name": "u-maker",
       "source": "./",
       "description": "SSoT(SDD) collaboration ecosystem by U PLEAT",
-      "version": "1.0.14",
+      "version": "1.0.15",
       "category": "development",
       "tags": ["pdca", "ssot", "collaboration", "agents", "turborepo", "nextjs", "clean-architecture", "iteration"]
     }

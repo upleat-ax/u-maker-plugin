@@ -1,7 +1,7 @@
 {
   "name": "u-maker",
-  "version": "3.2.8",
-  "description": "PDCA-based SSoT plugin for Claude Code. 4-phase pipeline (dropzone \u2192 digest \u2192 docs \u2192 output), 7 agents (PM/Plan/Design/Dev/QA/Gatekeeper/Report), 7 skills, 11-criteria quality gate with scoring.",
+  "version": "3.3.0",
+  "description": "PDCA-based SSoT plugin for Claude Code. 5-phase pipeline (Plan/Design/Dev/Check/Ship), 7 agents, 10 skills including /u-reverse for code-to-SSoT reverse engineering, 11-criteria quality gate with scoring.",
   "author": {
     "name": "u-plugin"
   },
@@ -15,6 +15,7 @@
     "digest-pipeline",
     "quality-gate",
     "scoring",
-    "html-engine"
+    "html-engine",
+    "reverse-engineering"
   ]
 }

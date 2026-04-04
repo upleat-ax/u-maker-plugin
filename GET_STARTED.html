@@ -457,9 +457,9 @@
 <span class="cmd">/u-init</span> my-existing-app
 
 <span class="comment"># 2. 소스 코드 → SSoT 역공학</span>
-<span class="cmd">/u-reverse</span> [app]                    <span class="comment"># ERD, API, Screen, IA, SRS 전체 역추출</span>
-<span class="cmd">/u-reverse</span> [app] <span class="flag">--only erd</span>         <span class="comment"># ERD만 추출</span>
-<span class="cmd">/u-reverse</span> [app] <span class="flag">--only api</span>         <span class="comment"># API Contract만 추출</span>
+<span class="cmd">/u-reverse</span> <span class="flag">--app</span> my-app              <span class="comment"># Code → Design (ERD, API, Screens, DS) → Plan (SRS, IA) 전체 역생성</span>
+<span class="cmd">/u-reverse</span> <span class="flag">--app</span> my-app <span class="flag">--db</span> prisma/  <span class="comment"># DB 스키마 경로 수동 지정</span>
+<span class="cmd">/u-reverse</span> <span class="flag">--app</span> my-app <span class="flag">--loop</span>       <span class="comment"># Gatekeeper 검증 포함</span>
 
 <span class="comment"># 3. 역공학 결과 검증 + 보완</span>
 <span class="cmd">/u-sync</span> [app]                       <span class="comment"># 문서 간 정합성 검증</span>
@@ -526,7 +526,7 @@
       </div>
 
       <!-- 09. CHEATSHEET -->
-      <div class="section-divider" id="cheatsheet"><h2>09. 명령어 치트시트 (9 Skills)</h2></div>
+      <div class="section-divider" id="cheatsheet"><h2>09. 명령어 치트시트 (10 Skills)</h2></div>
 
       <div class="data-table-wrap">
         <table class="data-table">
@@ -536,6 +536,7 @@
             <tr><td class="col-abbr">/u-design</td><td class="col-desc">Design Phase &mdash; ERD + API + Screens + Design System</td><td><code>--app {name}</code></td></tr>
             <tr><td class="col-abbr">/u-dev</td><td class="col-desc">Dev Phase &mdash; FE + BE 코드 생성</td><td><code>--app {name}</code></td></tr>
             <tr><td class="col-abbr">/u-check</td><td class="col-desc">Check Phase &mdash; TC 설계 + 테스트 실행</td><td><code>--app {name}</code></td></tr>
+            <tr><td class="col-abbr">/u-reverse</td><td class="col-desc">기존 코드 &rarr; SSoT 역생성 (Code &rarr; Design &rarr; Plan)</td><td><code>--app {name}</code>, <code>--src {path}</code>, <code>--db {path}</code>, <code>--api {path}</code>, <code>--pages {path}</code>, <code>--loop</code></td></tr>
             <tr><td class="col-abbr">/u-engine</td><td class="col-desc">내부 엔진 스킬 (분석, 문서, 검증 등)</td><td>&mdash;</td></tr>
             <tr><td class="col-abbr">/u-loop</td><td class="col-desc">무인 PDCA 자동 실행 루프. Plan&rarr;Design&rarr;Dev&rarr;Check&rarr;Ship을 gatekeeper 검증과 함께 실행</td><td><code>--app {name}</code>, <code>--from {phase}</code>, <code>--to {phase}</code>, <code>--dry-run</code>, <code>--max-retries {n}</code></td></tr>
             <tr><td class="col-abbr">/u-wireframe</td><td class="col-desc">screens.json 기반 HTML 와이어프레임 생성 + ERD, Sequence Diagram, Screen Flow</td><td><code>--app {name}</code>, <code>--screen {SCR-ID}</code>, <code>--all</code></td></tr>
