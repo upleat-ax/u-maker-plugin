@@ -94,7 +94,7 @@ This reference defines the supported technology stacks, naming conventions, pack
 | Type / Interface | PascalCase | `interface UserProfile` |
 | Enum | PascalCase (members too) | `enum Role { Admin, User }` |
 | CSS class (Tailwind) | kebab-case utility | `className="flex items-center"` |
-| DB table | camelCase plural | `users`, `userProfiles`, `orderItems` |
+| DB table | `{Domain}{EntityPlural}` PascalCase | `AuthUsers`, `SalesOrders`, `CatalogProducts` |
 | DB column | camelCase | `createdAt`, `userId`, `passwordHash` |
 | API path | kebab-case | `/api/v1/user-profiles` |
 | Environment variable | UPPER_SNAKE_CASE | `DATABASE_URL` |

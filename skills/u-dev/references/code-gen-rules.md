@@ -187,8 +187,8 @@ The `erd.json` companion contains entity definitions:
 ```json
 {
   "id": "ENT-010",
-  "name": "Users",
-  "tableName": "users",
+  "name": "User",
+  "tableName": "AuthUsers",
   "columns": [
     { "name": "id", "type": "uuid", "primary": true, "default": "gen_random_uuid()" },
     { "name": "email", "type": "varchar(255)", "unique": true, "nullable": false },
@@ -227,12 +227,12 @@ model User {
   // Relations
   posts        Post[]   // ENT-020
 
-  @@map("users")
+  @@map("AuthUsers")    // domain: Auth
   @@index([email])
 }
 ```
 
-> **Rule:** Both Prisma model fields and DB column names use camelCase. No `@map` needed for columns. Only `@@map("pluralCamelCase")` at the model level for the table name. See `erd-spec.md § 8` for full conventions.
+> **Rule:** Both Prisma model fields and DB column names use camelCase. No `@map` needed for columns. Table names use `@@map("{Domain}{EntityPlural}")` PascalCase with mandatory domain prefix. See `erd-spec.md § 8` for full conventions.
 
 ## 5. File Naming Conventions
 

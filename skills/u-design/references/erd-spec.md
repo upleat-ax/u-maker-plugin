@@ -126,8 +126,8 @@ erDiagram
 - Entity names use `PascalCase` (singular) in Mermaid diagrams: `User`, `OrderItem`, `ProductCategory`.
 - Column names use `camelCase`: `createdAt`, `userId`, `productName`.
 - Foreign key columns follow the pattern `{referencedEntity}Id`: `userId`, `categoryId`, `orderId`.
-- Actual DB table names use `camelCase` plural: `users`, `orderItems`, `productCategories`.
-- See § 8 for comprehensive naming conventions.
+- Actual DB table names use `{Domain}{EntityPlural}` PascalCase: `AuthUsers`, `SalesOrders`, `SalesOrderItems`.
+- Domain prefix is **mandatory** — see § 8 for comprehensive naming conventions.
 
 ## 4. Relationship Cardinality Notation
 
@@ -206,6 +206,7 @@ erDiagram
         timestamp createdAt
     }
     User ||--o{ Session : "has"
+    %% Domain: Auth → tables: AuthUsers, AuthSessions
 ```
 
 ### 5.2 CRUD with Categories Pattern
@@ -229,6 +230,7 @@ erDiagram
     }
     Category ||--o{ Item : "contains"
     Category ||--o{ Category : "parent of"
+    %% Domain: Catalog → tables: CatalogCategories, CatalogItems
 ```
 
 ### 5.3 Audit Log Pattern
@@ -293,7 +295,7 @@ The `erd.json` file conforms to `_meta/schemas/doc-companion.schema.json`:
       "status": "Draft",
       "tracedFrom": ["FR-010"],
       "tracedTo": ["API-010", "SC-010"],
-      "tableName": "users",
+      "tableName": "AuthUsers",
       "columns": [
         { "name": "id", "type": "bigint", "constraint": "PK", "nullable": false },
         { "name": "email", "type": "varchar", "constraint": "UK", "nullable": false },
@@ -353,13 +355,13 @@ Entity items include a `columns` array not present in the base doc-companion sch
 
 | Rule | Convention | Example |
 |------|-----------|---------|
-| **Number** | **Plural** (tables are collections) | `users`, `orders`, `orderItems` |
-| **Case** | **camelCase** (plural) | `userProfiles`, `productCategories` |
-| **Domain prefix** (large projects) | `{domain}` camelCase prefix | `salesOrders`, `hrEmployees`, `auditLogs` |
-| **Junction tables** (M:N) | Both entity names combined | `ordersProducts`, `rolesUsers` |
-| **History/log tables** | `{entity}AuditLogs` or `{entity}History` | `userAuditLogs`, `orderHistory` |
-| **Mermaid display** | `PascalCase` singular (model name) | `User`, `OrderItem` |
-| **Document title** | PascalCase singular | "OrderItem" |
+| **Format** | `{Domain}{EntityPlural}` PascalCase | `AuthUsers`, `SalesOrders`, `CatalogProducts` |
+| **Domain prefix** | **Mandatory** — PascalCase domain name | `Auth`, `Sales`, `Catalog`, `Hr`, `Inventory` |
+| **Entity part** | PascalCase plural after domain prefix | `AuthUsers`, `SalesOrderItems`, `CatalogCategories` |
+| **Junction tables** (M:N) | `{Domain}{Entity1}{Entity2Plural}` | `AuthRoleUsers`, `SalesOrderProducts` |
+| **History/log tables** | `{Domain}{Entity}AuditLogs` | `AuthUserAuditLogs`, `SalesOrderHistory` |
+| **Mermaid display** | `PascalCase` singular (model name, no prefix) | `User`, `OrderItem` |
+| **Document title** | PascalCase singular (no prefix) | "OrderItem" |
 
 ### 8.3 Column Naming
 
@@ -408,8 +410,8 @@ Entity items include a `columns` array not present in the base doc-companion sch
 ### 8.7 Quick Reference (Prisma)
 
 ```prisma
-// Model: PascalCase singular
-// Table: camelCase plural via @@map
+// Model: PascalCase singular (no domain prefix)
+// Table: {Domain}{EntityPlural} PascalCase via @@map
 // Columns: camelCase (no @map needed)
 model User {
   id           String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
@@ -423,11 +425,26 @@ model User {
 
   orders       Order[]
 
-  @@map("users")
+  @@map("AuthUsers")          // domain: Auth
   @@index([email])
 }
 
-// Junction: camelCase plural
+model Order {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId    String   @db.Uuid
+  status    String   @db.VarChar(20)
+  total     Decimal  @db.Decimal(10, 2)
+  createdAt DateTime @default(now()) @db.Timestamptz
+  updatedAt DateTime @updatedAt @db.Timestamptz
+
+  user      User     @relation(fields: [userId], references: [id])
+  items     OrderItem[]
+
+  @@map("SalesOrders")        // domain: Sales
+  @@index([userId])
+}
+
+// Junction: {Domain}{Entity1}{Entity2Plural}
 model RoleUser {
   userId String @db.Uuid
   roleId String @db.Uuid
@@ -435,7 +452,7 @@ model RoleUser {
   role   Role   @relation(fields: [roleId], references: [id])
 
   @@id([userId, roleId])
-  @@map("rolesUsers")
+  @@map("AuthRoleUsers")      // domain: Auth
 }
 ```
 
