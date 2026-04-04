@@ -81,9 +81,10 @@ Use `/u-output` to regenerate HTML from existing `docs/` without re-running phas
 - Tailwind CSS utility classes
 - Dark/light toggle switcher (page only — Mermaid stays light)
 - **`--diagram` mode**: `svg` (default) | `mermaid` | `all`
-  - `svg`: All diagrams inline SVG, Mermaid CDN not loaded
+  - `svg`: All diagrams inline SVG, Mermaid CDN not loaded. Mermaid 스타일에 구애받지 않고 자유로운 SVG 표현 가능 (UML 박스, 카드형 노드, 타임라인 컬럼, 커넥터 등)
   - `mermaid`: All diagrams via Mermaid CDN
   - `all`: SVG primary + Mermaid fallback for UML only
+- **No ASCII art (folder tree 제외):** folder tree(`├──`, `└──`)만 ASCII 허용. 레이아웃, ERD, 플로우, 노드맵 등 모든 다이어그램은 반드시 inline SVG
 - **Mermaid always light mode**: `theme: 'default'` fixed, wrapped in `.mermaid-wrapper` (white bg)
 - SVG curved connectors only (Bezier `C`/`Q`, no `<line>`)
 - Images embedded as base64

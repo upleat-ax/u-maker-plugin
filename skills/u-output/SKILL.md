@@ -40,7 +40,7 @@ Standalone HTML generation: reads existing `docs/{app}/` markdown + JSON files a
 
 | Mode | Behavior |
 |------|----------|
-| `svg` **(default)** | All diagrams rendered as inline SVG. Mermaid CDN **not loaded**. ERD entity-relationships, class diagrams, sequence diagrams — all converted to hand-crafted SVG |
+| `svg` **(default)** | All diagrams rendered as inline SVG. Mermaid CDN **not loaded**. ERD, class, sequence 등 모든 다이어그램을 자유형 SVG로 렌더링 — Mermaid 스타일에 구애받지 않고 UML 박스, 카드형 노드, 타임라인 컬럼, 곡선 커넥터 등 최적의 시각 표현 사용. ASCII art 금지 (folder tree 제외) |
 | `mermaid` | All diagrams rendered via Mermaid CDN (`theme: 'default'`, always light mode). No inline SVG generated |
 | `all` | SVG as primary + Mermaid as fallback for UML (`erDiagram`, `classDiagram`, `sequenceDiagram`). Both rendering engines active |
 

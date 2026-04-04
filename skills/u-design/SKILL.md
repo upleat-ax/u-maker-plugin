@@ -33,7 +33,7 @@ Design phase: generate `docs/{app}/design/` documents (ERD, API, Screens, Design
 
 1. Load SRS entities, data models from `srs.json`
 2. Derive entity list, columns, types, relationships
-3. Generate Mermaid erDiagram (PK/FK/UK constraints — never combined)
+3. Generate ERD diagram in `.md` (format depends on `--diagram` mode: `svg` → inline SVG entity boxes with curved connectors and cardinality labels; `mermaid`/`all` → Mermaid `erDiagram`). PK/FK/UK constraints — never combined.
 4. Apply ID 10-increment (ENT-010, REL-010)
 5. Write `docs/{app}/design/erd.md` + `erd.json`
 6. Update `data/links.json`
@@ -44,7 +44,7 @@ Design phase: generate `docs/{app}/design/` documents (ERD, API, Screens, Design
 2. Derive API endpoints, methods, request/response schemas
 3. Map endpoints to FR IDs
 4. Apply ID 10-increment (API-010, API-020)
-5. Generate Mermaid classDiagram for models
+5. Generate data model diagram in `.md` (format depends on `--diagram` mode: `svg` → inline SVG class boxes with method lists and relationship arrows; `mermaid`/`all` → Mermaid `classDiagram`)
 6. Write `docs/{app}/design/api.md` + `api.json`
 7. Update `data/links.json`
 
@@ -74,9 +74,9 @@ Design phase: generate `docs/{app}/design/` documents (ERD, API, Screens, Design
    - Generate `output/{app}/design/erd/index.html` (split index):
      - Stats: entity count, relationship count, domain count
      - Domain cards: one card per entity domain
-     - Overview: full ER diagram (Mermaid erDiagram), relationship summary
+     - Overview: full ER diagram (SVG default; Mermaid `erDiagram` when `--diagram mermaid|all`), relationship summary
    - Generate `output/{app}/design/erd/{domain-slug}.html` per domain (split page):
-     - Content: entities in domain + relationships + domain-specific Mermaid erDiagram
+     - Content: entities in domain + relationships + domain-specific ER diagram (SVG default; Mermaid when `--diagram mermaid|all`)
      - Sidebar + prev/next navigation
    - Template: `output-split-index.template.html` + `output-split-page.template.html`
 
@@ -86,9 +86,9 @@ Design phase: generate `docs/{app}/design/` documents (ERD, API, Screens, Design
    - Generate `output/{app}/design/api/index.html` (split index):
      - Stats: endpoint count, group count, method distribution
      - Domain cards: one card per endpoint group
-     - Overview: API summary table, Auth & Roles (§3), Common Models + Mermaid classDiagram (§4), endpoint→FR traceability (SVG)
+     - Overview: API summary table, Auth & Roles (§3), Common Models + class diagram (SVG default; Mermaid `classDiagram` when `--diagram mermaid|all`) (§4), endpoint→FR traceability (SVG)
    - Generate `output/{app}/design/api/{group-slug}.html` per group (split page):
-     - Content: endpoints + request/response details + Mermaid sequenceDiagram
+     - Content: endpoints + request/response details + sequence diagram (SVG default; Mermaid `sequenceDiagram` when `--diagram mermaid|all`)
      - Sidebar + prev/next navigation
 
 3. **Screens → Domain Split** (see html-engine § 12):

@@ -105,7 +105,7 @@ The "Default" column shows the rendering engine when `--diagram svg` (default). 
 
 ### SVG Diagram Generation Rules
 
-0. **No ASCII art:** Layout structure diagrams MUST NEVER use ASCII art (`+--`, `|`, box-drawing characters in `<pre>` blocks). Always render as inline `<svg>` instead.
+0. **No ASCII art (folder tree 제외):** ASCII art (`+--`, `|`, box-drawing characters in `<pre>` blocks)는 folder tree 구조(`├──`, `└──`)에서만 허용. 그 외 모든 다이어그램(레이아웃, ERD, 클래스, 시퀀스, 플로우, 노드맵, 타임라인 등)은 반드시 inline `<svg>`로 렌더링. SVG mode에서는 Mermaid 문법/스타일에 구애받지 않고 자유로운 시각적 표현(UML 박스, 카드형 노드, 타임라인 컬럼, 커넥터 등)을 사용.
 1. **Placement:** Insert each diagram immediately after the relevant section heading.
 2. **Responsive:** Use `viewBox` + `width="100%"` on all `<svg>` elements. Never use fixed pixel widths.
 3. **Curved connectors:** All arrows/lines MUST use `<path>` with cubic Bezier curves (`C` or `Q`). NEVER use `<line>` or straight `<polyline>`.
@@ -134,7 +134,13 @@ The "Default" column shows the rendering engine when `--diagram svg` (default). 
     - **Bar chart:** `<rect>` elements with labels. Horizontal bars for comparison.
     - **Tree/hierarchy:** Top-down layout with curved parent→child connectors.
     - **Matrix:** Grid of `<rect>` cells with fill color intensity indicating coverage.
-11. **Fallback:** If source data is insufficient, insert a placeholder `<div class="text-center text-gray-400 py-8">` with note: `"Diagram will be generated when {dependency} data is available."`
+11. **Free-form SVG design:** SVG mode에서는 Mermaid 문법/스타일에 구애받지 않는다. 데이터 특성에 맞는 최적의 시각 표현을 자유롭게 설계:
+    - **UML class/entity boxes:** Header(colored) + attribute rows, 관계선에 cardinality 라벨
+    - **Card-style nodes:** 제목, 메타데이터, 상태 배지, 미니 차트를 포함하는 카드형 노드
+    - **Timeline/Roadmap:** 컬럼별 phase, 세로 축 위에 pill-shape 항목, 점선 연결
+    - **Node-link maps:** 노드 카드 + 라벨 달린 링크 커넥터, 그룹별 배경 영역
+    - 데이터에 맞는 다른 시각 표현도 자유롭게 사용 가능
+12. **Fallback:** If source data is insufficient, insert a placeholder `<div class="text-center text-gray-400 py-8">` with note: `"Diagram will be generated when {dependency} data is available."`
 
 ## 3. Mermaid Rendering Configuration
 
