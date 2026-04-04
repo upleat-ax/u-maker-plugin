@@ -68,18 +68,48 @@ Design phase: generate `docs/{app}/design/` documents (ERD, API, Screens, Design
 
 ### Step 5: Generate HTML Output
 
-1. Convert `erd.md` → `output/{app}/design/erd.html` via html-engine
-   - Mermaid `erDiagram` (UML fallback) + inline SVG for entity grouping by domain
-2. Convert `api.md` → `output/{app}/design/api.html` via html-engine
-   - Mermaid `classDiagram` + `sequenceDiagram` (UML fallback) + inline SVG for endpoint→FR traceability
-3. Convert `screens.md` → `output/{app}/design/screens.html` via html-engine
-   - MUST include (inline SVG): screen flow navigation map, state transitions per interactive screen
-4. Convert `design-system.md` → `output/{app}/design/design-system.html` via html-engine
+1. **ERD → Domain Split** (see html-engine § 12):
+   - Read `erd.json` → group entities by `domain` field
+   - Create `output/{app}/design/erd/` directory
+   - Generate `output/{app}/design/erd/index.html` (split index):
+     - Stats: entity count, relationship count, domain count
+     - Domain cards: one card per entity domain
+     - Overview: full ER diagram (Mermaid erDiagram), relationship summary
+   - Generate `output/{app}/design/erd/{domain-slug}.html` per domain (split page):
+     - Content: entities in domain + relationships + domain-specific Mermaid erDiagram
+     - Sidebar + prev/next navigation
+   - Template: `output-split-index.template.html` + `output-split-page.template.html`
+
+2. **API → Domain Split** (see html-engine § 12):
+   - Read `api.json` → group endpoints by `relatedFR` or resource path prefix
+   - Create `output/{app}/design/api/` directory
+   - Generate `output/{app}/design/api/index.html` (split index):
+     - Stats: endpoint count, group count, method distribution
+     - Domain cards: one card per endpoint group
+     - Overview: API summary table, Auth & Roles (§3), Common Models + Mermaid classDiagram (§4), endpoint→FR traceability (SVG)
+   - Generate `output/{app}/design/api/{group-slug}.html` per group (split page):
+     - Content: endpoints + request/response details + Mermaid sequenceDiagram
+     - Sidebar + prev/next navigation
+
+3. **Screens → Domain Split** (see html-engine § 12):
+   - Read `screens.json` → group by `group` or navigation section
+   - Create `output/{app}/design/screens/` directory
+   - Generate `output/{app}/design/screens/index.html` (split index):
+     - Stats: screen count, component count, group count
+     - Domain cards: one card per screen group
+     - Overview: screen flow navigation map (SVG)
+   - Generate `output/{app}/design/screens/{group-slug}.html` per group (split page):
+     - Content: screens + components + validation + state transitions (SVG)
+     - Sidebar + prev/next navigation
+
+4. Convert `design-system.md` → `output/{app}/design/design-system.html` via html-engine (single file — typically small)
    - MUST include (inline SVG): token hierarchy, color palette swatches
-5. Generate diagrams from companion `.json` data
-6. Update `output/{app}/index.html` navigation
-7. Update root index files: `output/index.html`, `index.html` (see html-engine § 8 "Root Index Navigation System")
-8. See `html-engine.md` § 2 — SVG preferred, Mermaid only for erDiagram/classDiagram/sequenceDiagram
+
+5. Update `output/{app}/index.html` navigation:
+   - ERD → `design/erd/index.html`, API → `design/api/index.html`, Screens → `design/screens/index.html`
+   - Design System → `design/design-system.html`
+6. Update root index files: `output/index.html`, `index.html` (see html-engine § 8 "Root Index Navigation System")
+7. See `html-engine.md` § 2 — SVG preferred, Mermaid only for erDiagram/classDiagram/sequenceDiagram
 
 ### Step 6: Gatekeeper (if --loop)
 

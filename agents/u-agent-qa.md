@@ -140,7 +140,8 @@ FR-020 → US-020 → FT-030 → TC-040 (PASS)
 | `docs/{app}/check/testcases.json` | TC companion (items, FT mappings, priorities, types) |
 | `docs/{app}/check/test-results.md` | Test execution results with pass/fail per TC |
 | `docs/{app}/check/test-results.json` | Results companion (results, pass rates, coverage matrix) |
-| `output/{app}/check/testcases.html` | Test Cases HTML with filterable table |
+| `output/{app}/check/testcases/index.html` | Test Cases split index (FR groups dashboard) |
+| `output/{app}/check/testcases/{fr-group-slug}.html` | Test Cases domain pages (TCs per FR group) |
 | `output/{app}/check/test-results.html` | Test Results HTML with coverage matrix visualization |
 
 ## 6. Reference Files

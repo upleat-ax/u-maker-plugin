@@ -59,5 +59,6 @@ Follow the execution flow defined in `skills/u-plan/SKILL.md` exactly:
 | `docs/{app}/plan/srs.json` | SRS companion (items, IDs, cross-refs) |
 | `docs/{app}/plan/ia.md` | Information Architecture |
 | `docs/{app}/plan/ia.json` | IA companion |
-| `output/{app}/plan/srs.html` | SRS HTML with Mermaid + SVG |
+| `output/{app}/plan/srs/index.html` | SRS split index (dashboard with FR domain cards) |
+| `output/{app}/plan/srs/{fr-slug}.html` | SRS domain pages (per FR + traced US/FT) |
 | `output/{app}/plan/ia.html` | IA HTML with site map diagram |

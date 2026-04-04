@@ -59,13 +59,24 @@ For each new/changed file:
 
 ### Step 5: Generate HTML Output
 
-1. Convert `srs.md` → `output/{app}/plan/srs.html` via html-engine
-   - MUST include (inline SVG): FR→US→FT traceability tree, MoSCoW priority donut chart, Stakeholder-FR matrix
-   - Generate SVG diagrams from `srs.json` data
-2. Convert `ia.md` → `output/{app}/plan/ia.html` via html-engine
+1. **SRS → Domain Split** (see html-engine § 12 "Domain Split Pipeline"):
+   - Read `srs.json` → group by FR items
+   - Create `output/{app}/plan/srs/` directory
+   - Generate `output/{app}/plan/srs/index.html` (split index dashboard):
+     - Stats: FR count, US count, FT count, NFR count
+     - Domain cards: one card per FR linking to domain page
+     - Overview sections: Project Overview, Stakeholders, NFR summary, Constraints, Glossary
+     - Diagrams (inline SVG): full FR→US→FT traceability tree, MoSCoW priority donut chart, Stakeholder-FR matrix
+   - Generate `output/{app}/plan/srs/{fr-slug}.html` per FR (split domain page):
+     - Content: FR detail + all traced US + all traced FT
+     - Sidebar: list of all FR domain pages (current = active)
+     - Navigation: prev/next FR domain pages
+     - Diagrams: FR-specific traceability subtree (SVG)
+   - Template: `output-split-index.template.html` + `output-split-page.template.html`
+2. Convert `ia.md` → `output/{app}/plan/ia.html` via html-engine (single file — typically small)
    - MUST include (inline SVG): site map hierarchy, user flow diagrams, navigation structure
    - Generate SVG diagrams from `ia.json` data
-3. Update `output/{app}/index.html` navigation
+3. Update `output/{app}/index.html` navigation (SRS → `plan/srs/index.html`, IA → `plan/ia.html`)
 4. Update root index files: `output/index.html`, `index.html` (see html-engine § 8 "Root Index Navigation System")
 5. See `html-engine.md` § 2 "Mandatory Diagram Requirements" — SVG preferred, Mermaid only for UML fallback
 

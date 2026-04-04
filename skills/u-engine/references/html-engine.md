@@ -23,16 +23,18 @@ Step 12: Update root index files (output/index.html, reports/index.html, index.h
 
 ### Input / Output Paths
 
-| Input | Output |
-|-------|--------|
-| `docs/{app}/plan/srs.md` | `output/{app}/plan/srs.html` |
-| `docs/{app}/plan/ia.md` | `output/{app}/plan/ia.html` |
-| `docs/{app}/design/erd.md` | `output/{app}/design/erd.html` |
-| `docs/{app}/design/api.md` | `output/{app}/design/api.html` |
-| `docs/{app}/design/screens.md` | `output/{app}/design/screens.html` |
-| `docs/{app}/design/design-system.md` | `output/{app}/design/design-system.html` |
-| `docs/{app}/check/testcases.md` | `output/{app}/check/testcases.html` |
-| `docs/{app}/check/test-results.md` | `output/{app}/check/test-results.html` |
+| Input | Output | Mode |
+|-------|--------|------|
+| `docs/{app}/plan/srs.md` | `output/{app}/plan/srs/index.html` + `srs/{fr-slug}.html` | **Split** |
+| `docs/{app}/plan/ia.md` | `output/{app}/plan/ia.html` | Single |
+| `docs/{app}/design/erd.md` | `output/{app}/design/erd/index.html` + `erd/{domain-slug}.html` | **Split** |
+| `docs/{app}/design/api.md` | `output/{app}/design/api/index.html` + `api/{group-slug}.html` | **Split** |
+| `docs/{app}/design/screens.md` | `output/{app}/design/screens/index.html` + `screens/{group-slug}.html` | **Split** |
+| `docs/{app}/design/design-system.md` | `output/{app}/design/design-system.html` | Single |
+| `docs/{app}/check/testcases.md` | `output/{app}/check/testcases/index.html` + `testcases/{group-slug}.html` | **Split** |
+| `docs/{app}/check/test-results.md` | `output/{app}/check/test-results.html` | Single |
+
+See § 12 "Domain Split Pipeline" for split mode details.
 
 ### Markdown Conversion Rules
 
@@ -602,7 +604,168 @@ Every generated HTML page includes a standard footer at the bottom of the main c
 3. The footer appears inside `<main>`, after all document content and before the closing `</main>` tag.
 4. The footer border separates it visually from the document content.
 
-## 12. Complete HTML Page Structure
+## 12. Domain Split Pipeline
+
+For documents with many items, the engine splits output into multiple HTML pages grouped by domain. This keeps individual pages fast-loading, focused, and navigable.
+
+### 12.1 Split vs Single Decision
+
+| Document | Mode | Split Key | Reason |
+|----------|------|-----------|--------|
+| **SRS** | **Split** | FR ID | Each FR + its traced US/FT chain = 1 domain page |
+| **ERD** | **Split** | Entity domain group | Entities grouped by domain = 1 page per domain |
+| **API** | **Split** | Endpoint group (by related FR) | Endpoints sharing the same FR = 1 page |
+| **Screens** | **Split** | Screen group / navigation section | Screens in the same flow = 1 page |
+| **Test Cases** | **Split** | FR/FT group | TCs grouped by parent FT's FR = 1 page |
+| **IA** | Single | — | Typically small |
+| **Design System** | Single | — | Typically small |
+| **Test Results** | Single | — | Summary page |
+
+### 12.2 Split Output Directory Structure
+
+Split documents produce a directory instead of a single file:
+
+```
+output/{app}/{phase}/{doc}/
+├── index.html                    ← Split index (dashboard overview)
+├── {domain-1-slug}.html         ← Domain page 1
+├── {domain-2-slug}.html         ← Domain page 2
+└── ...
+```
+
+Non-split documents remain as single files: `output/{app}/{phase}/{doc}.html`
+
+### 12.3 Split Pipeline Steps
+
+When a document qualifies for splitting, replace Steps 8–10 of the single-file pipeline with:
+
+```
+Step 8a: Read companion .json → determine domain groups
+Step 8b: Extract index-level content (overview sections, summary tables, overview diagrams)
+Step 8c: For each domain group, extract domain-specific content + diagrams
+Step 8d: Create output directory: output/{app}/{phase}/{doc}/
+Step 8e: Render index page from output-split-index.template.html → index.html
+Step 8f: For each domain, render page from output-split-page.template.html → {slug}.html
+Step 8g: Inject cross-page navigation (prev/next links, sidebar domain list)
+```
+
+Steps 11–12 (index updates) continue as before, but sidebar links point to `{phase}/{doc}/index.html` instead of `{phase}/{doc}.html`.
+
+### 12.4 Domain Grouping Rules
+
+#### SRS Domain Grouping
+
+Read `srs.json` companion:
+
+- **Index page** includes: Project Overview (§1), Stakeholders (§2), NFR summary table (§4), Constraints (§7), Glossary (§8), and overview-level diagrams (full FR→US→FT traceability tree, MoSCoW priority donut chart, Stakeholder-FR matrix)
+- **Domain page per FR**: Each FR item + all US items where `tracedFrom` includes this FR + all FT items where `tracedFrom` includes those USs
+- **Slug**: FR ID + slugified title (e.g., `fr-010-user-management.html`)
+- **Stats**: Total FR count, US count, FT count, NFR count
+
+#### ERD Domain Grouping
+
+Read `erd.json` companion:
+
+- **Index page** includes: Full ER overview diagram (Mermaid erDiagram), entity count summary, relationship summary table
+- **Domain page per entity group**: Entities sharing the same `domain` field + relationships involving those entities + domain-specific Mermaid erDiagram
+- **Slug**: Domain name slugified (e.g., `auth-domain.html`)
+- **Stats**: Entity count, relationship count, domain count
+
+#### API Domain Grouping
+
+Read `api.json` companion:
+
+- **Index page** includes: API summary table (all endpoints), Authentication & Authorization (§3), Common Models (§4), overview diagrams (endpoint→FR traceability SVG)
+- **Domain page per endpoint group**: Endpoints sharing the same `relatedFR` (or grouped by resource path prefix) + full request/response details + sequence diagrams
+- **Slug**: Group name slugified (e.g., `user-management-apis.html`)
+- **Stats**: Total endpoint count, group count, method distribution
+
+#### Screens Domain Grouping
+
+Read `screens.json` companion:
+
+- **Index page** includes: Screen inventory table, screen flow navigation map (SVG), screen group summary
+- **Domain page per screen group**: Screens sharing the same `group` or navigation section + component details + state transitions (SVG)
+- **Slug**: Group name slugified (e.g., `auth-screens.html`)
+- **Stats**: Screen count, component count, group count
+
+#### Test Cases Domain Grouping
+
+Read `testcases.json` companion:
+
+- **Index page** includes: Coverage matrix (FR→US→FT→TC), TC distribution by type donut chart (SVG), summary statistics
+- **Domain page per FR group**: TCs whose parent FT traces back to the same FR + preconditions, steps, expected results
+- **Slug**: FR-based group name slugified (e.g., `fr-010-test-cases.html`)
+- **Stats**: TC count by type, total TC count, pass/fail summary (if available)
+
+### 12.5 Split Index Page Template
+
+**Template:** `_meta/templates/output-split-index.template.html`
+
+**Placeholders:**
+
+| Placeholder | Description |
+|-------------|-------------|
+| `{{docTitle}}` | Full document title (e.g., "Software Requirements Specification") |
+| `{{docType}}` | Short name (e.g., "SRS") |
+| `{{appName}}` | Application name |
+| `{{status}}`, `{{version}}`, `{{lastUpdated}}` | Metadata |
+| `{{#stats}}` | Array: `{{value}}`, `{{label}}`, `{{colorClass}}` (Tailwind color class) |
+| `{{#domains}}` | Array: `{{id}}`, `{{name}}`, `{{description}}`, `{{file}}`, `{{itemCount}}`, `{{phaseColor}}` |
+| `{{overviewContent}}` | HTML of non-domain overview sections |
+| `{{diagrams}}` | Overview-level SVG/Mermaid diagrams |
+
+**Layout:** Dashboard-style with summary stat cards at top, domain navigation grid in the middle, overview content and diagrams below.
+
+### 12.6 Split Domain Page Template
+
+**Template:** `_meta/templates/output-split-page.template.html`
+
+**Placeholders:**
+
+| Placeholder | Description |
+|-------------|-------------|
+| `{{docTitle}}` | Parent document title |
+| `{{docType}}` | Parent short name |
+| `{{appName}}` | Application name |
+| `{{domainName}}` | Current domain name (e.g., "FR-010: User Management") |
+| `{{domainId}}` | Domain ID (e.g., "FR-010") |
+| `{{itemCount}}` | Item count label (e.g., "3 US · 8 FT") |
+| `{{#domains}}` | All domain pages: `{{id}}`, `{{name}}`, `{{file}}`, `{{active}}` (boolean) |
+| `{{content}}` | Domain HTML content |
+| `{{toc}}` | Domain-specific table of contents |
+| `{{prevFile}}`, `{{prevName}}` | Previous domain page (if exists) |
+| `{{nextFile}}`, `{{nextName}}` | Next domain page (if exists) |
+
+**Layout:** Fixed left sidebar (240px) listing all domains with active highlight. Main content area with breadcrumb, domain content, and bottom prev/next navigation. Mobile-responsive: sidebar collapses with hamburger toggle. Keyboard navigation: Left/Right arrow keys for prev/next.
+
+### 12.7 Slug Generation
+
+Domain page filenames use slugified identifiers:
+
+1. Start with the domain ID if available (e.g., `fr-010`)
+2. Append slugified domain title: lowercase, spaces → hyphens, remove special chars
+3. Truncate to 60 characters max
+4. Examples: `fr-010-user-management.html`, `auth-domain.html`, `payment-apis.html`
+
+### 12.8 App-Level Index Sidebar Update
+
+When split documents exist, the `output/{app}/index.html` sidebar links MUST point to the directory index:
+
+```
+<!-- Single file (non-split) -->
+<div class="nav-item" data-src="design/design-system.html">
+  <span class="label">Design System</span>
+</div>
+
+<!-- Split document (directory) -->
+<div class="nav-item" data-src="plan/srs/index.html">
+  <span class="label">SRS</span>
+  <span class="nav-count">5 domains</span>
+</div>
+```
+
+## 13. Complete HTML Page Structure
 
 The final assembled HTML page follows this structure:
 

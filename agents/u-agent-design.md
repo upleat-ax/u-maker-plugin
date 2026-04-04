@@ -134,9 +134,12 @@ Follow the execution flow defined in `skills/u-design/SKILL.md` exactly:
 | `docs/{app}/design/screens.json` | Screens companion (components, API calls, validation) |
 | `docs/{app}/design/design-system.md` | Design System with tokens, components, patterns |
 | `docs/{app}/design/design-system.json` | Design System companion (tokens, component variants) |
-| `output/{app}/design/erd.html` | ERD HTML with rendered Mermaid erDiagram |
-| `output/{app}/design/api.html` | API HTML with rendered Mermaid classDiagram |
-| `output/{app}/design/screens.html` | Screens HTML with component previews |
+| `output/{app}/design/erd/index.html` | ERD split index (entity domains dashboard) |
+| `output/{app}/design/erd/{domain-slug}.html` | ERD domain pages (entities per domain) |
+| `output/{app}/design/api/index.html` | API split index (endpoint groups dashboard) |
+| `output/{app}/design/api/{group-slug}.html` | API domain pages (endpoints per group) |
+| `output/{app}/design/screens/index.html` | Screens split index (screen groups dashboard) |
+| `output/{app}/design/screens/{group-slug}.html` | Screens domain pages (screens per group) |
 | `output/{app}/design/design-system.html` | Design System HTML with token swatches |
 
 ## 6. Reference Files

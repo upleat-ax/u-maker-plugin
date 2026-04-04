@@ -245,16 +245,16 @@ Reverse-infer information architecture (see `references/plan-synthesis.md` § 2)
 
 **Agent:** u-agent-gatekeeper (if `--loop`), otherwise u-agent-pm wraps up
 
-1. Generate HTML for all produced documents via html-engine:
-   - `output/{app}/plan/srs.html` — FR→US→FT traceability tree (inline SVG), MoSCoW priority donut chart, Stakeholder-FR matrix
-   - `output/{app}/plan/ia.html` — Site map hierarchy (inline SVG), user flow diagrams, navigation structure
-   - `output/{app}/design/erd.html` — Mermaid erDiagram + entity grouping by domain (inline SVG)
-   - `output/{app}/design/api.html` — Mermaid classDiagram + endpoint→FR traceability (inline SVG)
-   - `output/{app}/design/screens.html` — Screen flow navigation map (inline SVG), state transitions
-   - `output/{app}/design/design-system.html` — Token hierarchy (inline SVG), color palette swatches
+1. Generate HTML for all produced documents via html-engine (see html-engine § 12 "Domain Split Pipeline"):
+   - **SRS → Domain Split**: `output/{app}/plan/srs/index.html` + `srs/{fr-slug}.html` per FR (split by FR, each FR + traced US/FT chain)
+   - `output/{app}/plan/ia.html` — Site map hierarchy (inline SVG), user flow diagrams, navigation structure (single file)
+   - **ERD → Domain Split**: `output/{app}/design/erd/index.html` + `erd/{domain-slug}.html` per entity domain
+   - **API → Domain Split**: `output/{app}/design/api/index.html` + `api/{group-slug}.html` per endpoint group
+   - **Screens → Domain Split**: `output/{app}/design/screens/index.html` + `screens/{group-slug}.html` per screen group
+   - `output/{app}/design/design-system.html` — Token hierarchy (inline SVG), color palette swatches (single file)
 2. Skip HTML for any documents that were skipped in earlier steps
 3. Build complete `data/links.json` traceability graph (all FR→US→FT→SC→API→ENT edges)
-4. Update `output/{app}/index.html` navigation portal
+4. Update `output/{app}/index.html` navigation portal (split docs → `{doc}/index.html`, single docs → `{doc}.html`)
 5. Update `output/index.html` root output index
 6. Update root `.u-maker/index.html`
 7. If `--loop` → invoke u-agent-gatekeeper on all documents, max 3 retries per doc
