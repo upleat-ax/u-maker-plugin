@@ -50,6 +50,7 @@ code{background:#f1f5f9;padding:2px 6px;border-radius:4px;font-size:12px;font-fa
 pre{background:#1e293b;color:#e2e8f0;padding:16px;border-radius:8px;overflow-x:auto;font-size:12px;line-height:1.5}
 pre code{background:none;padding:0;color:inherit}
 .mermaid{margin:16px 0;text-align:center}
+.mermaid-wrapper{background:#fff;border-radius:8px;padding:16px;margin:16px 0}
 svg{max-width:100%}
 .bottom-nav{display:flex;justify-content:space-between;align-items:center;margin-top:48px;padding-top:20px;border-top:1px solid #e2e8f0}
 .dark .bottom-nav{border-color:#334155}
@@ -169,13 +170,7 @@ const toggle=document.getElementById('theme-toggle'),html=document.documentEleme
 if(localStorage.getItem('theme')==='dark'||(!localStorage.getItem('theme')&&window.matchMedia('(prefers-color-scheme:dark)').matches))html.classList.add('dark');
 toggle.addEventListener('click',()=>{
   html.classList.toggle('dark');
-  const isDark=html.classList.contains('dark');
-  localStorage.setItem('theme',isDark?'dark':'light');
-  if(typeof mermaid!=='undefined'){
-    mermaid.initialize({theme:isDark?'dark':'default',flowchart:{curve:'basis'}});
-    document.querySelectorAll('.mermaid').forEach(el=>{const c=el.getAttribute('data-mermaid-source');if(c){el.removeAttribute('data-processed');el.innerHTML=c;}});
-    mermaid.run();
-  }
+  localStorage.setItem('theme',html.classList.contains('dark')?'dark':'light');
 });
 // Mobile sidebar toggle
 const sbToggle=document.getElementById('sb-toggle'),sb=document.getElementById('sidebar');

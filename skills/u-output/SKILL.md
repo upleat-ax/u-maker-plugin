@@ -33,7 +33,16 @@ Standalone HTML generation: reads existing `docs/{app}/` markdown + JSON files a
 |--------|---------|-------------|
 | `--app {name}` | auto-detect | Target app (auto-detect if only one app exists) |
 | `--doc {docType}` | all | Specific doc type: `srs`, `ia`, `erd`, `api`, `screens`, `design-system`, `testcases`, `test-results` |
+| `--diagram {mode}` | `svg` | Diagram rendering mode: `svg`, `mermaid`, `all` (see below) |
 | `--force` | OFF | Regenerate even if HTML is newer than source `.md` |
+
+### `--diagram` Mode
+
+| Mode | Behavior |
+|------|----------|
+| `svg` **(default)** | All diagrams rendered as inline SVG. Mermaid CDN **not loaded**. ERD entity-relationships, class diagrams, sequence diagrams — all converted to hand-crafted SVG |
+| `mermaid` | All diagrams rendered via Mermaid CDN (`theme: 'default'`, always light mode). No inline SVG generated |
+| `all` | SVG as primary + Mermaid as fallback for UML (`erDiagram`, `classDiagram`, `sequenceDiagram`). Both rendering engines active |
 
 ## Execution Flow
 
@@ -97,9 +106,14 @@ For each single document:
 
 #### All Documents: Diagram Requirements
 
-Generate all mandatory diagrams per document type (see html-engine § 2):
-- SVG diagrams from companion `.json` data (primary)
-- Mermaid fallback for UML: erDiagram, classDiagram, sequenceDiagram only
+Generate all mandatory diagrams per document type (see html-engine § 2).
+Rendering depends on `--diagram` mode:
+
+| Mode | SVG diagrams | Mermaid UML | Mermaid CDN loaded |
+|------|-------------|-------------|-------------------|
+| `svg` (default) | All diagrams as inline SVG | ERD/Class/Sequence also as SVG | No |
+| `mermaid` | None | All diagrams via Mermaid | Yes |
+| `all` | Non-UML diagrams as SVG | ERD/Class/Sequence via Mermaid | Yes |
 
 ### Step 4: Update Index Navigation
 
@@ -129,15 +143,21 @@ u-output complete.
 ## Examples
 
 ```bash
-# Regenerate all HTML for the default app
+# Regenerate all HTML (SVG-only, default)
 /u-output
 
-# Regenerate only SRS HTML
-/u-output --doc srs
+# Regenerate with Mermaid diagrams only
+/u-output --diagram mermaid
+
+# Regenerate with both SVG + Mermaid fallback
+/u-output --diagram all
+
+# Regenerate only ERD HTML with SVG diagrams
+/u-output --doc erd
+
+# Regenerate only ERD HTML with Mermaid
+/u-output --doc erd --diagram mermaid
 
 # Force regenerate all HTML for specific app
 /u-output --app myapp --force
-
-# Regenerate only ERD HTML
-/u-output --doc erd
 ```

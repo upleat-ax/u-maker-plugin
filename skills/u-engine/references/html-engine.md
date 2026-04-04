@@ -9,13 +9,16 @@ The full conversion pipeline processes a single `.md` document into a standalone
 ```
 Step 1: Read .md source
 Step 2: Parse YAML frontmatter → extract metadata
-Step 3: Convert markdown body → HTML fragments
-Step 4: Generate inline SVG diagrams from .json companion data (primary)
-Step 5: Detect and prepare Mermaid code blocks (fallback: erDiagram, classDiagram, sequenceDiagram only)
+Step 3: Resolve --diagram mode (svg | mermaid | all; default: svg)
+Step 4: Convert markdown body → HTML fragments
+Step 5: Generate diagrams per mode:
+        svg     → all diagrams as inline SVG from .json data
+        mermaid → all diagrams as <pre class="mermaid"> blocks
+        all     → SVG primary + Mermaid for UML (erDiagram, classDiagram, sequenceDiagram)
 Step 6: Scan for image references → encode as base64
 Step 7: Generate Table of Contents from headings
 Step 8: Apply output-page.template.html wrapper
-Step 9: Inject dark/light toggle, Tailwind, Mermaid CDN
+Step 9: Inject dark/light toggle, Tailwind; load Mermaid CDN only if mode=mermaid|all
 Step 10: Write to output/{app}/{phase}/{docName}.html
 Step 11: Update output/{app}/index.html sidebar navigation
 Step 12: Update root index files (output/index.html, reports/index.html, index.html)
@@ -49,38 +52,56 @@ See § 12 "Domain Split Pipeline" for split mode details.
 
 Every HTML document MUST include diagrams appropriate to its document type. Diagrams are not optional — they are a core part of the HTML output that distinguishes it from the raw markdown. When converting `.md` to `.html`, the engine MUST ensure the following diagrams exist. Generate them from the companion `.json` data if not present in source `.md`.
 
-### Rendering Priority: SVG-first
+### Diagram Rendering Mode (`--diagram`)
 
-**Inline SVG is the preferred rendering method for all diagrams.** SVG is self-contained, works offline, renders instantly without CDN dependencies, and supports dark/light mode via CSS variables.
+The `--diagram` parameter controls how all diagrams are rendered. Defaults to `svg`.
 
-| Priority | Method | When to Use |
-|----------|--------|-------------|
-| **1st** | Inline SVG | All diagrams by default — flowcharts, trees, pie charts, matrices, navigation maps, state diagrams |
-| **2nd** | Mermaid CDN | Only for complex UML-specific diagrams where SVG hand-generation is impractical: `erDiagram`, `classDiagram`, `sequenceDiagram` |
+| Mode | Behavior | Mermaid CDN |
+|------|----------|-------------|
+| **`svg`** (default) | **All** diagrams as inline SVG — including ERD, class, sequence | Not loaded |
+| `mermaid` | **All** diagrams via Mermaid CDN (always `theme: 'default'` light) | Loaded |
+| `all` | SVG primary + Mermaid fallback for UML (`erDiagram`, `classDiagram`, `sequenceDiagram`) | Loaded |
+
+When `--diagram svg` (default):
+- ERD entity-relationship → SVG with entity boxes, curved connectors, cardinality labels
+- Class diagrams → SVG with class boxes, method lists, inheritance/composition arrows
+- Sequence diagrams → SVG with lifelines, arrows, activation bars
+- All other diagrams → SVG (same as before)
+
+When `--diagram mermaid`:
+- All diagrams rendered as Mermaid code blocks (`<pre class="mermaid">`)
+- Mermaid CDN loaded with `theme: 'default'` (always light mode)
+- Wrapped in `.mermaid-wrapper` (white background)
+
+When `--diagram all`:
+- Non-UML diagrams → inline SVG (flowcharts, trees, charts, matrices)
+- UML diagrams → Mermaid (`erDiagram`, `classDiagram`, `sequenceDiagram`)
 
 ### Diagram Requirements per Document
 
-| Document | Required Diagrams | Rendering |
-|----------|-------------------|-----------|
-| **SRS** | FR→US→FT traceability tree | SVG |
-| **SRS** | MoSCoW priority distribution (donut/bar chart) | SVG |
-| **SRS** | Stakeholder-FR responsibility matrix | SVG |
-| **IA** | Site map hierarchy | SVG |
-| **IA** | User flows (per major US) | SVG |
-| **IA** | Navigation structure | SVG |
-| **ERD** | Full entity-relationship diagram | Mermaid `erDiagram` |
-| **ERD** | Entity grouping by domain | SVG |
-| **API** | Data model class diagram | Mermaid `classDiagram` |
-| **API** | Request/response sequence per endpoint group | Mermaid `sequenceDiagram` |
-| **API** | Endpoint-to-FR traceability | SVG |
-| **Screens** | Screen flow / navigation map | SVG |
-| **Screens** | State transitions per interactive screen | SVG |
-| **Design System** | Token hierarchy (color, spacing, typography) | SVG |
-| **Design System** | Color palette swatches | SVG |
-| **Test Cases** | FT→TC coverage map | SVG |
-| **Test Cases** | TC distribution by type (donut chart) | SVG |
-| **Test Results** | FR→US→FT→TC→Result full traceability | SVG |
-| **Test Results** | Pass/Fail summary (donut chart) | SVG |
+The "Default" column shows the rendering engine when `--diagram svg` (default). With `--diagram mermaid`, all become Mermaid. With `--diagram all`, the "Fallback" column shows the alternative.
+
+| Document | Required Diagrams | Default (svg) | Fallback (all) |
+|----------|-------------------|---------------|----------------|
+| **SRS** | FR→US→FT traceability tree | SVG | SVG |
+| **SRS** | MoSCoW priority distribution (donut/bar chart) | SVG | SVG |
+| **SRS** | Stakeholder-FR responsibility matrix | SVG | SVG |
+| **IA** | Site map hierarchy | SVG | SVG |
+| **IA** | User flows (per major US) | SVG | SVG |
+| **IA** | Navigation structure | SVG | SVG |
+| **ERD** | Full entity-relationship diagram | SVG | Mermaid `erDiagram` |
+| **ERD** | Entity grouping by domain | SVG | SVG |
+| **API** | Data model class diagram | SVG | Mermaid `classDiagram` |
+| **API** | Request/response sequence per endpoint group | SVG | Mermaid `sequenceDiagram` |
+| **API** | Endpoint-to-FR traceability | SVG | SVG |
+| **Screens** | Screen flow / navigation map | SVG | SVG |
+| **Screens** | State transitions per interactive screen | SVG | SVG |
+| **Design System** | Token hierarchy (color, spacing, typography) | SVG | SVG |
+| **Design System** | Color palette swatches | SVG | SVG |
+| **Test Cases** | FT→TC coverage map | SVG | SVG |
+| **Test Cases** | TC distribution by type (donut chart) | SVG | SVG |
+| **Test Results** | FR→US→FT→TC→Result full traceability | SVG | SVG |
+| **Test Results** | Pass/Fail summary (donut chart) | SVG | SVG |
 
 ### SVG Diagram Generation Rules
 
@@ -114,9 +135,14 @@ Every HTML document MUST include diagrams appropriate to its document type. Diag
     - **Matrix:** Grid of `<rect>` cells with fill color intensity indicating coverage.
 11. **Fallback:** If source data is insufficient, insert a placeholder `<div class="text-center text-gray-400 py-8">` with note: `"Diagram will be generated when {dependency} data is available."`
 
-## 3. Mermaid Rendering Configuration (Fallback Only)
+## 3. Mermaid Rendering Configuration
 
-Mermaid is used ONLY for complex UML diagrams (`erDiagram`, `classDiagram`, `sequenceDiagram`) where inline SVG hand-generation is impractical. All other diagram types MUST use inline SVG (see § 2). Mermaid code blocks are preserved as `<pre class="mermaid">` elements for Mermaid.js to process client-side.
+Mermaid is activated when `--diagram mermaid` or `--diagram all` is specified. When `--diagram svg` (default), Mermaid CDN is **not loaded** and all diagrams are inline SVG.
+
+- `--diagram mermaid`: All diagrams rendered via Mermaid
+- `--diagram all`: Mermaid used only for UML (`erDiagram`, `classDiagram`, `sequenceDiagram`); all others inline SVG
+
+Mermaid code blocks are preserved as `<pre class="mermaid">` elements wrapped in `<div class="mermaid-wrapper">` for client-side rendering.
 
 ### CDN Script Inclusion
 
@@ -184,27 +210,45 @@ INCORRECT (never do this):
   }
 ```
 
-### Dark Mode Mermaid
+### Mermaid Theme: Always Light Mode
 
-When dark mode is active, re-initialize Mermaid with the `dark` theme:
+Mermaid diagrams MUST always render in **light mode** (`theme: 'default'`). When the page toggles to dark mode, Mermaid diagrams remain in light theme — do NOT re-initialize Mermaid with `theme: 'dark'`. Instead, wrap Mermaid containers in a light-background wrapper:
 
-```javascript
-function toggleMermaidTheme(isDark) {
-  mermaid.initialize({
-    theme: isDark ? 'dark' : 'default',
-    flowchart: { curve: 'basis' }
-  });
-  // Re-render all mermaid diagrams
-  document.querySelectorAll('.mermaid').forEach(el => {
-    const code = el.getAttribute('data-mermaid-source');
-    if (code) {
-      el.removeAttribute('data-processed');
-      el.innerHTML = code;
-    }
-  });
-  mermaid.run();
-}
+```html
+<div class="mermaid-wrapper bg-white rounded-lg p-4 my-4">
+  <pre class="mermaid">
+    erDiagram ...
+  </pre>
+</div>
 ```
+
+This ensures Mermaid diagrams are always readable regardless of page theme.
+
+### Mermaid Syntax Error Prevention (Critical)
+
+Mermaid syntax errors break the entire diagram. Follow these rules strictly:
+
+**erDiagram rules:**
+1. Entity names: `PascalCase`, no spaces, no hyphens → `OrderItem` not `Order-Item`
+2. Column constraints: **ONE per column** — never combine `PK FK` or `PK UK`
+3. Column format: `{type} {name} {constraint}` — e.g. `bigint id PK`
+4. Relationship labels: always in double quotes → `"has many"` not `has many`
+5. No trailing commas inside entity blocks
+6. No empty entity blocks — must have at least one column
+7. Comment with `%%` not `//`
+
+**classDiagram rules:**
+1. Class names: `PascalCase`, no spaces
+2. Methods: `+methodName(param: Type): ReturnType`
+3. Access modifiers: `+` public, `-` private, `#` protected
+4. Relationships: `<|--` inheritance, `*--` composition, `o--` aggregation
+
+**sequenceDiagram rules:**
+1. Participant names: no special characters, use `participant X as "Display Name"` for aliases
+2. Arrow types: `->>` async, `-->>` async reply, `->` sync, `-->` sync reply
+3. No unclosed `alt`/`opt`/`loop`/`par` blocks
+
+**Pre-render validation:** Before writing Mermaid code blocks, mentally walk through the syntax to verify no parser errors exist.
 
 ## 4. SVG Inline Generation
 
@@ -377,12 +421,9 @@ Light mode is the default. The `<html>` element starts without the `dark` class.
 
   toggle.addEventListener('click', () => {
     html.classList.toggle('dark');
-    const isDark = html.classList.contains('dark');
-    localStorage.setItem('theme', isDark ? 'dark' : 'light');
-    // Re-initialize Mermaid with appropriate theme
-    if (typeof mermaid !== 'undefined') {
-      toggleMermaidTheme(isDark);
-    }
+    localStorage.setItem('theme', html.classList.contains('dark') ? 'dark' : 'light');
+    // NOTE: Mermaid stays in light mode ('default' theme) regardless of page theme.
+    // Mermaid diagrams are wrapped in .mermaid-wrapper with white background.
   });
 </script>
 ```

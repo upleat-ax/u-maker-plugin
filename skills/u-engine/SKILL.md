@@ -45,14 +45,15 @@ Every `.md` SSoT document has a `.json` companion following `_meta/schemas/doc-c
 
 1. Read `.md` source document
 2. Parse frontmatter metadata
-3. Convert markdown → HTML body
-4. Render Mermaid diagrams via CDN (`https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js`)
-5. Generate SVG diagrams inline (curved connectors)
+3. Resolve `--diagram` mode (default: `svg`)
+4. Convert markdown → HTML body
+5. Generate diagrams per mode (see html-engine § 2)
 6. Encode images as base64
 7. Apply `_meta/templates/output-page.template.html` wrapper
 8. Generate TOC from headings
-9. Write to `output/{app}/{phase}/{docName}.html`
-10. Update index navigation
+9. Load Mermaid CDN only if mode = `mermaid` or `all`
+10. Write to `output/{app}/{phase}/{docName}.html`
+11. Update index navigation
 
 ### Domain Split Pipeline (SRS, ERD, API, Screens, Test Cases)
 
@@ -78,9 +79,13 @@ Use `/u-output` to regenerate HTML from existing `docs/` without re-running phas
 
 - Light mode default
 - Tailwind CSS utility classes
-- Dark/light toggle switcher
-- Mermaid CDN for UML rendering
-- SVG inline with curved connectors (flowchart curve: 'basis')
+- Dark/light toggle switcher (page only — Mermaid stays light)
+- **`--diagram` mode**: `svg` (default) | `mermaid` | `all`
+  - `svg`: All diagrams inline SVG, Mermaid CDN not loaded
+  - `mermaid`: All diagrams via Mermaid CDN
+  - `all`: SVG primary + Mermaid fallback for UML only
+- **Mermaid always light mode**: `theme: 'default'` fixed, wrapped in `.mermaid-wrapper` (white bg)
+- SVG curved connectors only (Bezier `C`/`Q`, no `<line>`)
 - Images embedded as base64
 - Footer: `Copyright(c) 2026 U PLEAT`
 
@@ -91,6 +96,7 @@ Use `/u-output` to regenerate HTML from existing `docs/` without re-running phas
 | `--auto` | ON | No questions, proceed automatically |
 | `--loop` | OFF | Gatekeeper-driven iteration (avg < 95 → retry, max 3) |
 | `--app {name}` | — | Target app name |
+| `--diagram {mode}` | `svg` | Diagram rendering: `svg` (all SVG), `mermaid` (all Mermaid), `all` (SVG + Mermaid UML fallback) |
 
 ## Reference Files
 

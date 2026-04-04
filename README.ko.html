@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>U-MAKER Plugin v3.3.1 — README (Korean)</title>
+<title>U-MAKER Plugin v3.4.1 — README (Korean)</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -47,7 +47,7 @@
   <!-- Sidebar -->
   <nav class="sidebar fixed top-0 left-0 w-64 h-screen bg-white border-r border-gray-200 flex flex-col z-50 overflow-y-auto">
     <div class="px-6 py-5 border-b border-gray-100">
-      <h2 class="text-base font-extrabold text-gray-900 tracking-tight">U-MAKER v3.3.1</h2>
+      <h2 class="text-base font-extrabold text-gray-900 tracking-tight">U-MAKER v3.4.1</h2>
       <p class="text-xs text-gray-400 mt-1">PDCA SSoT Plugin for Claude Code</p>
     </div>
     <ul class="flex-1 py-3 space-y-0.5">
@@ -60,7 +60,7 @@
       <li><a href="#folder" class="nav-link flex items-center gap-3 px-6 py-2.5 text-sm text-gray-500 border-l-3 border-transparent transition-all">
         <span class="w-5 h-5 flex items-center justify-center text-[10px] font-bold bg-gray-100 rounded text-gray-500">4</span> 폴더 구조</a></li>
       <li><a href="#skills" class="nav-link flex items-center gap-3 px-6 py-2.5 text-sm text-gray-500 border-l-3 border-transparent transition-all">
-        <span class="w-5 h-5 flex items-center justify-center text-[10px] font-bold bg-gray-100 rounded text-gray-500">5</span> 12개 Skills</a></li>
+        <span class="w-5 h-5 flex items-center justify-center text-[10px] font-bold bg-gray-100 rounded text-gray-500">5</span> 13개 Skills</a></li>
       <li><a href="#agents" class="nav-link flex items-center gap-3 px-6 py-2.5 text-sm text-gray-500 border-l-3 border-transparent transition-all">
         <span class="w-5 h-5 flex items-center justify-center text-[10px] font-bold bg-gray-100 rounded text-gray-500">6</span> 7개 Agents</a></li>
       <li><a href="#gatekeeper" class="nav-link flex items-center gap-3 px-6 py-2.5 text-sm text-gray-500 border-l-3 border-transparent transition-all">
@@ -82,10 +82,10 @@
 
     <!-- Header Banner -->
     <div class="bg-gradient-to-br from-blue-600 to-indigo-700 rounded-2xl p-8 text-white mb-10 shadow-lg">
-      <h1 class="text-2xl font-extrabold mb-2">U-MAKER Plugin v3.3.1</h1>
+      <h1 class="text-2xl font-extrabold mb-2">U-MAKER Plugin v3.4.1</h1>
       <p class="text-sm opacity-85 leading-relaxed">PDCA 기반 SSoT(Single Source of Truth) Claude Code 플러그인.<br>기획 자료를 넣으면, 분석 &rarr; 설계 &rarr; 구현 &rarr; 검증까지 자동으로 수행합니다.</p>
       <div class="flex gap-6 mt-5 pt-5 border-t border-white/20 text-xs opacity-75 flex-wrap">
-        <span><strong class="opacity-100">Version</strong> 3.3.1</span>
+        <span><strong class="opacity-100">Version</strong> 3.4.1</span>
         <span><strong class="opacity-100">License</strong> Proprietary</span>
         <span><strong class="opacity-100">Runtime</strong> Claude Code CLI</span>
         <span><strong class="opacity-100">Date</strong> 2026-04-04</span>
@@ -101,7 +101,7 @@
         모든 산출물은 <strong>SSoT(Single Source of Truth)</strong> 원칙으로 일관되게 관리됩니다.
       </p>
       <div class="bg-blue-50 border-l-4 border-blue-500 rounded-r-lg p-4 text-sm text-gray-700 leading-relaxed mb-4">
-        <strong>v3.3.1 핵심 변경:</strong> 12개 스킬 (11 user-facing + 1 engine), 에이전트 7개 (PM, Plan, Design, Dev, QA, Gatekeeper, Report). <code class="bg-blue-100 px-1.5 py-0.5 rounded text-xs font-mono">/u-reverse</code> 코드→SSoT 역생성 + <code class="bg-blue-100 px-1.5 py-0.5 rounded text-xs font-mono">/u-qa</code> (/u-check alias) 추가. Gatekeeper 11개 검증항목 (avg &ge; 95 통과). 5-Phase PDCA (Plan &rarr; Design &rarr; Dev &rarr; Check &rarr; Ship).
+        <strong>v3.4.1 핵심 변경:</strong> 13개 스킬 (12 user-facing + 1 engine), 에이전트 7개 (PM, Plan, Design, Dev, QA, Gatekeeper, Report). <code class="bg-blue-100 px-1.5 py-0.5 rounded text-xs font-mono">/u-output</code> 독립 HTML 생성 스킬 추가. <code class="bg-blue-100 px-1.5 py-0.5 rounded text-xs font-mono">--diagram</code> 파라미터 (<code class="bg-blue-100 px-1.5 py-0.5 rounded text-xs font-mono">svg</code> | <code class="bg-blue-100 px-1.5 py-0.5 rounded text-xs font-mono">mermaid</code> | <code class="bg-blue-100 px-1.5 py-0.5 rounded text-xs font-mono">all</code>) 지원. 대형 문서 도메인 분할 HTML 출력 파이프라인 (SRS, ERD, API, Screens, TestCases). Mermaid 항상 라이트 모드 렌더링 (theme: 'default'). SVG-first 접근 강화.
       </div>
       <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-6">
         <div class="bg-white rounded-xl p-4 border border-gray-100 shadow-sm text-center">
@@ -109,7 +109,7 @@
           <div class="text-xs text-gray-500 mt-1">AI Agents</div>
         </div>
         <div class="bg-white rounded-xl p-4 border border-gray-100 shadow-sm text-center">
-          <div class="text-2xl font-extrabold text-emerald-600">12</div>
+          <div class="text-2xl font-extrabold text-emerald-600">13</div>
           <div class="text-xs text-gray-500 mt-1">Skills</div>
         </div>
         <div class="bg-white rounded-xl p-4 border border-gray-100 shadow-sm text-center">
@@ -223,7 +223,7 @@ graph LR
 
     <!-- Section 5: Skills -->
     <section id="skills" class="mb-14">
-      <h2 class="text-lg font-extrabold text-gray-900 pb-2 border-b-2 border-blue-500 inline-block mb-4">5. 12개 Skills</h2>
+      <h2 class="text-lg font-extrabold text-gray-900 pb-2 border-b-2 border-blue-500 inline-block mb-4">5. 13개 Skills</h2>
       <p class="text-sm text-gray-600 leading-relaxed mb-4">
         사용자가 직접 호출하는 슬래시 커맨드입니다. 각 스킬은 특정 Phase를 담당하거나 보조 기능을 제공합니다.
       </p>
@@ -261,6 +261,12 @@ graph LR
               <td class="px-4 py-3"><span class="bg-amber-100 text-amber-700 text-xs px-2 py-0.5 rounded-full font-semibold">Check</span></td>
               <td class="px-4 py-3 text-gray-600">TC 설계, 테스트 실행, 결과 기록</td>
               <td class="px-4 py-3 text-xs text-gray-500">testcases.md, test-results.md</td>
+            </tr>
+            <tr class="border-b border-gray-100 hover:bg-gray-50">
+              <td class="px-4 py-3 font-mono font-bold text-fuchsia-600">/u-output</td>
+              <td class="px-4 py-3"><span class="bg-fuchsia-100 text-fuchsia-700 text-xs px-2 py-0.5 rounded-full font-semibold">Output</span></td>
+              <td class="px-4 py-3 text-gray-600">기존 docs/ 산출물을 독립 HTML로 변환. 도메인 분할 및 <code class="bg-gray-100 px-1 py-0.5 rounded text-xs font-mono">--diagram</code> 모드 지원</td>
+              <td class="px-4 py-3 text-xs text-gray-500">output/{app}/*.html</td>
             </tr>
             <tr class="border-b border-gray-100 hover:bg-gray-50">
               <td class="px-4 py-3 font-mono font-bold text-red-600">/u-reverse</td>
@@ -584,10 +590,15 @@ graph LR
               <td class="px-4 py-2.5"><span class="bg-gray-100 text-gray-600 text-xs px-2 py-0.5 rounded-full">default</span></td>
               <td class="px-4 py-2.5 text-gray-600">멀티앱 프로젝트에서 대상 앱 지정</td>
             </tr>
-            <tr>
+            <tr class="border-b border-gray-100">
               <td class="px-4 py-2.5 font-mono text-xs font-bold text-gray-700">--from / --to</td>
               <td class="px-4 py-2.5"><span class="bg-gray-100 text-gray-600 text-xs px-2 py-0.5 rounded-full">&#8212;</span></td>
               <td class="px-4 py-2.5 text-gray-600"><code class="bg-gray-100 px-1 py-0.5 rounded text-xs font-mono">/u-loop</code> 전용. Phase 범위 지정 (plan/design/dev/check/ship)</td>
+            </tr>
+            <tr>
+              <td class="px-4 py-2.5 font-mono text-xs font-bold text-gray-700">--diagram</td>
+              <td class="px-4 py-2.5"><span class="bg-blue-100 text-blue-700 text-xs px-2 py-0.5 rounded-full">svg</span></td>
+              <td class="px-4 py-2.5 text-gray-600">다이어그램 렌더링 모드: <code class="bg-gray-100 px-1 py-0.5 rounded text-xs font-mono">svg</code> (인라인 SVG, 기본값) | <code class="bg-gray-100 px-1 py-0.5 rounded text-xs font-mono">mermaid</code> (Mermaid CDN, 라이트 모드 전용) | <code class="bg-gray-100 px-1 py-0.5 rounded text-xs font-mono">all</code> (SVG 우선 + UML Mermaid 폴백)</td>
             </tr>
           </tbody>
         </table>
@@ -622,6 +633,11 @@ graph LR
               <td class="px-4 py-2.5 font-mono text-xs font-bold text-amber-600">/u-check <span class="text-[10px] text-gray-400 font-normal">(= /u-qa)</span></td>
               <td class="px-4 py-2.5 text-xs text-gray-500 font-mono">/u-check [--auto] [--loop] [--app name]</td>
               <td class="px-4 py-2.5 text-gray-600">Check Phase: TC 설계 + 테스트 실행 + 결과 기록</td>
+            </tr>
+            <tr class="border-b border-gray-100 hover:bg-gray-50">
+              <td class="px-4 py-2.5 font-mono text-xs font-bold text-fuchsia-600">/u-output</td>
+              <td class="px-4 py-2.5 text-xs text-gray-500 font-mono">/u-output [--app name] [--diagram svg|mermaid|all] [--only doc-type]</td>
+              <td class="px-4 py-2.5 text-gray-600">기존 docs/ 산출물을 독립 HTML로 변환. 도메인 분할 파이프라인 지원</td>
             </tr>
             <tr class="border-b border-gray-100 hover:bg-gray-50">
               <td class="px-4 py-2.5 font-mono text-xs font-bold text-violet-600">/u-discuss</td>
@@ -668,7 +684,9 @@ graph LR
       <h2 class="text-lg font-extrabold text-gray-900 pb-2 border-b-2 border-blue-500 inline-block mb-4">9. HTML 산출물</h2>
       <p class="text-sm text-gray-600 leading-relaxed mb-4">
         모든 SSoT 문서(.md)는 HTML로 변환되어 <code class="bg-gray-100 px-1.5 py-0.5 rounded text-xs font-mono">output/{app}/</code> 디렉토리에 저장됩니다.
-        Mermaid CDN으로 다이어그램을 렌더링하고, Tailwind CSS로 스타일링합니다.
+        <code class="bg-gray-100 px-1.5 py-0.5 rounded text-xs font-mono">/u-output</code> 스킬로 독립 실행하거나, 각 Phase 완료 시 자동 생성됩니다.
+        <strong>SVG-first</strong> 접근으로 인라인 SVG 다이어그램을 기본 사용하며, <code class="bg-gray-100 px-1.5 py-0.5 rounded text-xs font-mono">--diagram</code> 옵션으로 렌더링 모드를 선택할 수 있습니다.
+        대형 문서(SRS, ERD, API, Screens, TestCases)는 <strong>도메인 분할 파이프라인</strong>으로 섹션별 개별 HTML을 생성합니다.
       </p>
       <div class="bg-white rounded-xl border border-gray-100 p-6 shadow-sm mb-4">
         <pre class="folder-tree text-gray-700"><code>output/{app}/
@@ -688,19 +706,56 @@ graph LR
     ├── testcases.html           <span class="text-gray-400"># 테스트 케이스 (필터링 테이블)</span>
     └── test-results.html        <span class="text-gray-400"># 테스트 결과 (커버리지 매트릭스)</span></code></pre>
       </div>
+      <h3 class="font-bold text-gray-800 text-sm mb-3">--diagram 렌더링 모드</h3>
+      <div class="overflow-x-auto mb-6">
+        <table class="w-full text-sm border-collapse bg-white rounded-xl overflow-hidden shadow-sm">
+          <thead>
+            <tr class="bg-gray-800 text-white">
+              <th class="text-left px-4 py-3 font-bold text-xs">모드</th>
+              <th class="text-left px-4 py-3 font-bold text-xs">다이어그램 렌더링</th>
+              <th class="text-left px-4 py-3 font-bold text-xs">Mermaid CDN</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="border-b border-gray-100">
+              <td class="px-4 py-2.5 font-mono text-xs font-bold text-blue-600">svg <span class="text-gray-400 font-normal">(기본값)</span></td>
+              <td class="px-4 py-2.5 text-gray-600">모든 다이어그램을 인라인 SVG로 렌더링</td>
+              <td class="px-4 py-2.5"><span class="bg-gray-100 text-gray-600 text-xs px-2 py-0.5 rounded-full">미로드</span></td>
+            </tr>
+            <tr class="border-b border-gray-100">
+              <td class="px-4 py-2.5 font-mono text-xs font-bold text-emerald-600">mermaid</td>
+              <td class="px-4 py-2.5 text-gray-600">모든 다이어그램을 Mermaid CDN으로 렌더링 (항상 라이트 모드)</td>
+              <td class="px-4 py-2.5"><span class="bg-emerald-100 text-emerald-700 text-xs px-2 py-0.5 rounded-full">로드</span></td>
+            </tr>
+            <tr>
+              <td class="px-4 py-2.5 font-mono text-xs font-bold text-purple-600">all</td>
+              <td class="px-4 py-2.5 text-gray-600">SVG 우선 + UML(erDiagram, classDiagram, sequenceDiagram)만 Mermaid 폴백</td>
+              <td class="px-4 py-2.5"><span class="bg-purple-100 text-purple-700 text-xs px-2 py-0.5 rounded-full">UML만 로드</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
       <h3 class="font-bold text-gray-800 text-sm mb-3">HTML 산출물 특징</h3>
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div class="bg-white rounded-lg p-4 border border-gray-100 shadow-sm">
-          <div class="font-bold text-gray-800 text-sm mb-1">Mermaid CDN</div>
-          <p class="text-xs text-gray-500">erDiagram, classDiagram, sequenceDiagram, flowchart 등 다이어그램을 브라우저에서 직접 렌더링</p>
+          <div class="font-bold text-gray-800 text-sm mb-1">SVG-first 다이어그램</div>
+          <p class="text-xs text-gray-500">기본적으로 모든 다이어그램을 인라인 SVG로 렌더링. 외부 의존성 없는 자체 완결형 HTML. Mermaid는 UML 폴백 전용</p>
         </div>
         <div class="bg-white rounded-lg p-4 border border-gray-100 shadow-sm">
-          <div class="font-bold text-gray-800 text-sm mb-1">SVG + Base64</div>
-          <p class="text-xs text-gray-500">인라인 SVG 다이어그램과 base64 이미지로 외부 의존성 없는 자체 완결형 HTML</p>
+          <div class="font-bold text-gray-800 text-sm mb-1">도메인 분할 파이프라인</div>
+          <p class="text-xs text-gray-500">대형 문서(SRS, ERD, API, Screens, TestCases)를 섹션별로 분할하여 개별 HTML 파일로 생성. 성능과 탐색성 향상</p>
+        </div>
+        <div class="bg-white rounded-lg p-4 border border-gray-100 shadow-sm">
+          <div class="font-bold text-gray-800 text-sm mb-1">Mermaid 라이트 모드 전용</div>
+          <p class="text-xs text-gray-500">Mermaid CDN 사용 시 항상 theme: 'default' (라이트 모드)로 렌더링. 다크 테마로 전환하지 않음</p>
         </div>
         <div class="bg-white rounded-lg p-4 border border-gray-100 shadow-sm">
           <div class="font-bold text-gray-800 text-sm mb-1">Tailwind CSS</div>
           <p class="text-xs text-gray-500">CDN 기반 유틸리티 클래스로 일관된 스타일링. 반응형 디자인 지원</p>
+        </div>
+        <div class="bg-white rounded-lg p-4 border border-gray-100 shadow-sm">
+          <div class="font-bold text-gray-800 text-sm mb-1">/u-output 독립 실행</div>
+          <p class="text-xs text-gray-500">기존 docs/ 산출물을 언제든 HTML로 변환. Phase 완료 없이도 독립적으로 실행 가능</p>
         </div>
         <div class="bg-white rounded-lg p-4 border border-gray-100 shadow-sm">
           <div class="font-bold text-gray-800 text-sm mb-1">사이드바 내비게이션</div>

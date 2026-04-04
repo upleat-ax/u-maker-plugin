@@ -330,15 +330,14 @@ curl -fsSL --ssl-no-revoke https://raw.githubusercontent.com/${UPLEAT_REPO}/main
   # ── Step 8: Cleanup ──
   rm -f "$zip_file"
 
-  # ── Step 9: Clean & reinstall locally ──
-  log "Clean & reinstalling locally..."
+  # ── Step 9: Clean local deployment ──
+  log "Cleaning local deployment..."
   local deploy_local="$SCRIPT_DIR/deploy_local.sh"
   if [[ -x "$deploy_local" ]]; then
     bash "$deploy_local" --clean
-    bash "$deploy_local"
-    ok "Local reinstall complete"
+    ok "Local deployment cleaned"
   else
-    warn "deploy_local.sh not found, skipping local reinstall"
+    warn "deploy_local.sh not found, skipping local clean"
   fi
 
   echo ""
@@ -348,7 +347,7 @@ curl -fsSL --ssl-no-revoke https://raw.githubusercontent.com/${UPLEAT_REPO}/main
   echo -e "  Version: ${BOLD}${tag}${NC}"
   echo -e "  Private: https://github.com/${PRIVATE_REPO}"
   echo -e "  Public:  https://github.com/${UPLEAT_REPO}"
-  echo -e "  Local:   ${GREEN}clean reinstalled${NC}"
+  echo -e "  Local:   ${GREEN}cleaned (use deploy_local.sh to reinstall)${NC}"
   echo ""
   echo -e "  ${BOLD}Install (macOS/Linux):${NC}"
   echo -e "  curl -fsSL https://raw.githubusercontent.com/${UPLEAT_REPO}/main/install.sh | bash"

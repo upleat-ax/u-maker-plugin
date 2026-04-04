@@ -1,10 +1,10 @@
-# U-MAKER Plugin v3.3.1
+# U-MAKER Plugin v3.4.1
 
 PDCA-based SSoT(Single Source of Truth) plugin for Claude Code.
 
 Drop planning materials, and it automatically performs analysis → design → implementation → verification.
 
-**12 Skills** (11 user-facing + 1 engine) · **7 Agents** · **5 PDCA Phases** · **11 Gate Criteria**
+**13 Skills** (12 user-facing + 1 engine) · **7 Agents** · **5 PDCA Phases** · **11 Gate Criteria**
 
 ## Documentation
 
