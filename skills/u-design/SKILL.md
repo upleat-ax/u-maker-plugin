@@ -18,16 +18,18 @@ triggers:
 Design phase: generate `docs/{app}/design/` documents (ERD, API, Screens, Design System) from Plan phase documents (SRS + IA).
 
 **Primary Agent:** u-agent-design
-**Engine Dependencies:** doc-engine, html-engine, dep-engine
+**Engine Dependencies:** doc-engine, dep-engine
 **Gate Prerequisite:** Plan phase gate passed (SRS=Final, IA=Final)
 
 ## Execution Flow
 
-### Step 0: Verify Plan Gate
+### Step 0: Verify Plan Prerequisite
 
-1. Read `docs/{app}/plan/srs.json` and `ia.json` status
-2. Both must be `Final`
-3. If not → error: "Run /u-plan first or manually set status to Final"
+1. Check `docs/{app}/plan/` for required files: `srs.json`, `ia.json`
+2. If **any file missing** → inform user: "Plan documents not found. Running /u-plan first." → invoke `/u-plan --app {name}` automatically, then return here
+3. Read `docs/{app}/plan/srs.json` and `ia.json` status
+4. Both must be `Final`
+5. If not → error: "Plan documents exist but are not Final. Run /u-plan --loop or manually set status to Final"
 
 ### Step 1: Generate ERD
 
@@ -66,52 +68,7 @@ Design phase: generate `docs/{app}/design/` documents (ERD, API, Screens, Design
 6. Write `docs/{app}/design/design-system.md` + `design-system.json`
 7. Update `data/links.json`
 
-### Step 5: Generate HTML Output
-
-1. **ERD → Domain Split** (see html-engine § 12):
-   - Read `erd.json` → group entities by `domain` field
-   - Create `output/{app}/design/erd/` directory
-   - Generate `output/{app}/design/erd/index.html` (split index):
-     - Stats: entity count, relationship count, domain count
-     - Domain cards: one card per entity domain
-     - Overview: full ER diagram (SVG default; Mermaid `erDiagram` when `--diagram mermaid|all`), relationship summary
-   - Generate `output/{app}/design/erd/{domain-slug}.html` per domain (split page):
-     - Content: entities in domain + relationships + domain-specific ER diagram (SVG default; Mermaid when `--diagram mermaid|all`)
-     - Sidebar + prev/next navigation
-   - Template: `output-split-index.template.html` + `output-split-page.template.html`
-
-2. **API → Domain Split** (see html-engine § 12):
-   - Read `api.json` → group endpoints by `relatedFR` or resource path prefix
-   - Create `output/{app}/design/api/` directory
-   - Generate `output/{app}/design/api/index.html` (split index):
-     - Stats: endpoint count, group count, method distribution
-     - Domain cards: one card per endpoint group
-     - Overview: API summary table, Auth & Roles (§3), Common Models + class diagram (SVG default; Mermaid `classDiagram` when `--diagram mermaid|all`) (§4), endpoint→FR traceability (SVG)
-   - Generate `output/{app}/design/api/{group-slug}.html` per group (split page):
-     - Content: endpoints + request/response details + sequence diagram (SVG default; Mermaid `sequenceDiagram` when `--diagram mermaid|all`)
-     - Sidebar + prev/next navigation
-
-3. **Screens → Domain Split** (see html-engine § 12):
-   - Read `screens.json` → group by `group` or navigation section
-   - Create `output/{app}/design/screens/` directory
-   - Generate `output/{app}/design/screens/index.html` (split index):
-     - Stats: screen count, component count, group count
-     - Domain cards: one card per screen group
-     - Overview: screen flow navigation map (SVG)
-   - Generate `output/{app}/design/screens/{group-slug}.html` per group (split page):
-     - Content: screens + components + validation + screen layout diagram (SVG, from `layout` field)
-     - Sidebar + prev/next navigation
-
-4. Convert `design-system.md` → `output/{app}/design/design-system.html` via html-engine (single file — typically small)
-   - MUST include (inline SVG): token hierarchy, color palette swatches
-
-5. Update `output/{app}/index.html` navigation:
-   - ERD → `design/erd/index.html`, API → `design/api/index.html`, Screens → `design/screens/index.html`
-   - Design System → `design/design-system.html`
-6. Update root index files: `output/index.html`, `index.html` (see html-engine § 8 "Root Index Navigation System")
-7. See `html-engine.md` § 2 — SVG preferred, Mermaid only for erDiagram/classDiagram/sequenceDiagram
-
-### Step 6: Gatekeeper (if --loop)
+### Step 5: Gatekeeper (if --loop)
 
 1. Invoke u-agent-gatekeeper on design documents
 2. If avg score < 95 → improvement list → re-execute failed steps

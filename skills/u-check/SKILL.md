@@ -47,31 +47,7 @@ Check phase: design test cases from SRS Features (FT), execute tests, record res
 3. Build coverage matrix (FR→US→FT→TC→Result)
 4. Write `docs/{app}/check/test-results.md` + `test-results.json`
 
-### Step 4: Generate HTML Output
-
-1. **Test Cases → Domain Split** (see html-engine § 12):
-   - Read `testcases.json` → group TCs by parent FT's FR
-   - Create `output/{app}/check/testcases/` directory
-   - Generate `output/{app}/check/testcases/index.html` (split index):
-     - Stats: TC count by type (unit/integration/e2e/...), total TC count
-     - Domain cards: one card per FR group
-     - Overview: FT→TC coverage matrix (SVG), TC distribution by type donut chart (SVG)
-   - Generate `output/{app}/check/testcases/{fr-group-slug}.html` per FR group (split page):
-     - Content: TCs for that FR group + preconditions, steps, expected results
-     - Sidebar + prev/next navigation
-   - Template: `output-split-index.template.html` + `output-split-page.template.html`
-
-2. Convert `test-results.md` → `output/{app}/check/test-results.html` via html-engine (single file — summary)
-   - MUST include (inline SVG): FR→US→FT→TC→Result full traceability tree, Pass/Fail summary donut chart
-   - Generate SVG diagrams from `test-results.json` data
-
-3. Update `output/{app}/index.html` navigation:
-   - Test Cases → `check/testcases/index.html`
-   - Test Results → `check/test-results.html`
-4. Update root index files: `output/index.html`, `index.html` (see html-engine § 8 "Root Index Navigation System")
-5. See `html-engine.md` § 2 — SVG preferred, Mermaid only for UML fallback
-
-### Step 5: Gatekeeper (if --loop)
+### Step 4: Gatekeeper (if --loop)
 
 1. Invoke u-agent-gatekeeper on check documents
 2. If avg score < 95 → improvement list → re-execute

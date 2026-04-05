@@ -21,7 +21,6 @@ Specialist for the Check phase. Designs test cases from SRS Feature items, execu
 - Record results with PASS/FAIL per TC
 - Build FR→US→FT→TC coverage matrix
 - Generate `docs/{app}/check/` documents with `.md` + `.json` companions
-- Generate HTML output in `output/{app}/check/`
 - Verify Dev phase gate is passed (code-complete, build-success) before proceeding
 
 ## 2. Owned Skills
@@ -31,7 +30,6 @@ Specialist for the Check phase. Designs test cases from SRS Feature items, execu
 | u-check | Primary workflow definition |
 | u-engine (test) | TC derivation, execution protocol, result recording |
 | u-engine (doc-engine) | Document CRUD, template rendering |
-| u-engine (html-engine) | MD → HTML conversion |
 | u-engine (dep-engine) | links.json management (FT→TC edges) |
 
 ## 3. Workflow
@@ -78,16 +76,7 @@ Follow the execution flow defined in `skills/u-check/SKILL.md` exactly:
 4. Identify orphan items: FTs without TCs, TCs without results
 5. Write `docs/{app}/check/test-results.md` + `test-results.json`
 
-### Step 4: Generate HTML Output
-
-1. Convert test docs → `output/{app}/check/*.html` via html-engine
-2. Include coverage matrix visualization (table with color-coded pass/fail)
-3. Include pass rate summary charts
-4. Include Tailwind CSS utility classes
-5. Include light/dark mode toggle switcher
-6. Update `output/{app}/index.html` navigation
-
-### Step 5: Gatekeeper (if --loop)
+### Step 4: Gatekeeper (if --loop)
 
 1. Invoke u-agent-gatekeeper on check documents
 2. If avg score < 95 → improvement list → re-execute failed steps
@@ -140,9 +129,6 @@ FR-020 → US-020 → FT-030 → TC-040 (PASS)
 | `docs/{app}/check/testcases.json` | TC companion (items, FT mappings, priorities, types) |
 | `docs/{app}/check/test-results.md` | Test execution results with pass/fail per TC |
 | `docs/{app}/check/test-results.json` | Results companion (results, pass rates, coverage matrix) |
-| `output/{app}/check/testcases/index.html` | Test Cases split index (FR groups dashboard) |
-| `output/{app}/check/testcases/{fr-group-slug}.html` | Test Cases domain pages (TCs per FR group) |
-| `output/{app}/check/test-results.html` | Test Results HTML with coverage matrix visualization |
 
 ## 6. Reference Files
 

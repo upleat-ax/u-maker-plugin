@@ -21,11 +21,13 @@ Dev phase: generate FE + BE + DB code from Design specifications.
 
 ## Execution Flow
 
-### Step 0: Verify Design Gate
+### Step 0: Verify Design Prerequisite
 
-1. Read design doc statuses from companion JSONs
-2. All must be `Final`: erd.json, api.json, screens.json, design-system.json
-3. If not → error with missing doc list
+1. Check `docs/{app}/design/` for required files: `erd.json`, `api.json`, `screens.json`, `design-system.json`
+2. If **any file missing** → inform user: "Design documents not found. Running /u-design first." → invoke `/u-design --app {name}` automatically, then return here
+3. Read design doc statuses from companion JSONs
+4. All must be `Final`: erd.json, api.json, screens.json, design-system.json
+5. If not → error with missing doc list and statuses
 
 ### Step 1: Generate FE Code
 

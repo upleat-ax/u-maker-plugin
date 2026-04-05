@@ -18,7 +18,7 @@ triggers:
 Reverse-engineer an existing codebase into SSoT documents. Bottom-up: Code → Design (ERD, API, Screens, DS) → Plan (SRS, IA). All documents start as `Draft`.
 
 **Primary Agent:** u-agent-pm (orchestrates u-agent-design + u-agent-plan)
-**Engine Dependencies:** doc-engine, html-engine, dep-engine
+**Engine Dependencies:** doc-engine, dep-engine
 
 ## Arguments
 
@@ -241,23 +241,12 @@ Reverse-infer information architecture (see `references/plan-synthesis.md` § 2)
 7. Generate companion `ia.json`
 8. Update `data/links.json`
 
-### Step 7: Generate HTML Output + Finalize
+### Step 7: Finalize
 
 **Agent:** u-agent-gatekeeper (if `--loop`), otherwise u-agent-pm wraps up
 
-1. Generate HTML for all produced documents via html-engine (see html-engine § 12 "Domain Split Pipeline"):
-   - **SRS → Domain Split**: `output/{app}/plan/srs/index.html` + `srs/{fr-slug}.html` per FR (split by FR, each FR + traced US/FT chain)
-   - `output/{app}/plan/ia.html` — Site map hierarchy (inline SVG), user flow diagrams, navigation structure (single file)
-   - **ERD → Domain Split**: `output/{app}/design/erd/index.html` + `erd/{domain-slug}.html` per entity domain
-   - **API → Domain Split**: `output/{app}/design/api/index.html` + `api/{group-slug}.html` per endpoint group
-   - **Screens → Domain Split**: `output/{app}/design/screens/index.html` + `screens/{group-slug}.html` per screen group
-   - `output/{app}/design/design-system.html` — Token hierarchy (inline SVG), color palette swatches (single file)
-2. Skip HTML for any documents that were skipped in earlier steps
-3. Build complete `data/links.json` traceability graph (all FR→US→FT→SC→API→ENT edges)
-4. Update `output/{app}/index.html` navigation portal (split docs → `{doc}/index.html`, single docs → `{doc}.html`)
-5. Update `output/index.html` root output index
-6. Update root `.u-maker/index.html`
-7. If `--loop` → invoke u-agent-gatekeeper on all documents, max 3 retries per doc
+1. Build complete `data/links.json` traceability graph (all FR→US→FT→SC→API→ENT edges)
+2. If `--loop` → invoke u-agent-gatekeeper on all documents, max 3 retries per doc
 
 ### Output Summary
 
@@ -271,10 +260,9 @@ u-reverse complete.
 
   Plan:    srs.md, ia.md
   Design:  erd.md, api.md, screens.md, design-system.md
-  HTML:    {N} files in output/{app}/
   Skipped: {list of skipped docs, if any}
 
-  Next:    Review Draft documents, then run /u-check --app {app}
+  Next:    Review Draft documents, then run /u-output to generate HTML
 ```
 
 ## Error Handling

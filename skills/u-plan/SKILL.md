@@ -57,33 +57,10 @@ For each new/changed file:
 5. Generate `docs/{app}/plan/ia.json`
 6. Update `data/links.json`
 
-### Step 5: Generate HTML Output
-
-1. **SRS → Domain Split** (see html-engine § 12 "Domain Split Pipeline"):
-   - Read `srs.json` → group by FR items
-   - Create `output/{app}/plan/srs/` directory
-   - Generate `output/{app}/plan/srs/index.html` (split index dashboard):
-     - Stats: FR count, US count, FT count, NFR count
-     - Domain cards: one card per FR linking to domain page
-     - Overview sections: Project Overview, Stakeholders, NFR summary, Constraints, Glossary
-     - Diagrams (inline SVG): full FR→US→FT traceability tree, MoSCoW priority donut chart, Stakeholder-FR matrix
-   - Generate `output/{app}/plan/srs/{fr-slug}.html` per FR (split domain page):
-     - Content: FR detail + all traced US + all traced FT
-     - Sidebar: list of all FR domain pages (current = active)
-     - Navigation: prev/next FR domain pages
-     - Diagrams: FR-specific traceability subtree (SVG)
-   - Template: `output-split-index.template.html` + `output-split-page.template.html`
-2. Convert `ia.md` → `output/{app}/plan/ia.html` via html-engine (single file — typically small)
-   - MUST include (inline SVG): site map hierarchy, user flow diagrams, navigation structure
-   - Generate SVG diagrams from `ia.json` data
-3. Update `output/{app}/index.html` navigation (SRS → `plan/srs/index.html`, IA → `plan/ia.html`)
-4. Update root index files: `output/index.html`, `index.html` (see html-engine § 8 "Root Index Navigation System")
-5. See `html-engine.md` § 2 "Mandatory Diagram Requirements" — SVG preferred, Mermaid only for UML fallback
-
-### Step 6: Gatekeeper (if --loop)
+### Step 5: Gatekeeper (if --loop)
 
 1. Invoke u-agent-gatekeeper on plan documents
-2. If avg score < 95 → receive improvement list → re-execute Steps 3-5
+2. If avg score < 95 → receive improvement list → re-execute Steps 3-4
 3. Max 3 retries
 
 ## Reference Files

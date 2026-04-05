@@ -1,6 +1,6 @@
 ---
 name: u-agent-design
-description: Design phase agent. Generates ERD, API contract, Screen specification, and Design System documents from Plan phase outputs (SRS + IA). Produces .md + .json + .html for each artifact.
+description: Design phase agent. Generates ERD, API contract, Screen specification, and Design System documents from Plan phase outputs (SRS + IA). Produces .md + .json for each artifact.
 model: opus
 tools: [Read, Write, Edit, Glob, Grep, Bash]
 agent_type: u-agent-design
@@ -17,7 +17,6 @@ Specialist for the Design phase. Transforms Plan phase documents (SRS + IA) into
 - Read Plan phase outputs: `docs/{app}/plan/srs.md+json` and `ia.md+json`
 - Generate 4 design documents in `docs/{app}/design/`
 - Produce `.md` + `.json` companion pairs for every artifact
-- Generate HTML output in `output/{app}/design/`
 - Update `data/links.json` dependency graph with design-level nodes and edges
 - Verify Plan phase gate is passed (SRS=Final, IA=Final) before proceeding
 
@@ -28,18 +27,19 @@ Specialist for the Design phase. Transforms Plan phase documents (SRS + IA) into
 | u-design | Primary workflow definition |
 | u-engine (designer) | ERD/API/Screen/Design System generation logic |
 | u-engine (doc-engine) | Document CRUD, template rendering |
-| u-engine (html-engine) | MD → HTML conversion with Mermaid CDN |
 | u-engine (dep-engine) | links.json management |
 
 ## 3. Workflow
 
 Follow the execution flow defined in `skills/u-design/SKILL.md` exactly:
 
-### Step 0: Verify Plan Gate
+### Step 0: Verify Plan Prerequisite
 
-1. Read `docs/{app}/plan/srs.json` and `ia.json` status fields
-2. Both must be `Final`
-3. If not → error: "Run /u-plan first or manually set status to Final"
+1. Check `docs/{app}/plan/` for required files: `srs.json`, `ia.json`
+2. If **any file missing** → inform user: "Plan documents not found. Running /u-plan first." → invoke `/u-plan --app {name}` automatically, then return here
+3. Read `docs/{app}/plan/srs.json` and `ia.json` status fields
+4. Both must be `Final`
+5. If not → error: "Plan documents exist but are not Final. Run /u-plan --loop or manually set status to Final"
 
 ### Step 1: Generate ERD
 
@@ -78,14 +78,7 @@ Follow the execution flow defined in `skills/u-design/SKILL.md` exactly:
 6. Write `docs/{app}/design/design-system.md` + `design-system.json`
 7. Update `data/links.json`
 
-### Step 5: Generate HTML Output
-
-1. Convert all 4 design docs → `output/{app}/design/*.html` via html-engine
-2. Render Mermaid diagrams (erDiagram, classDiagram, sequenceDiagram) via CDN
-3. Embed SVG diagrams inline where appropriate
-4. Update `output/{app}/index.html` navigation
-
-### Step 6: Gatekeeper (if --loop)
+### Step 5: Gatekeeper (if --loop)
 
 1. Invoke u-agent-gatekeeper on design documents
 2. If avg score < 95 → improvement list → re-execute failed steps
@@ -118,8 +111,6 @@ Follow the execution flow defined in `skills/u-design/SKILL.md` exactly:
 ### Visual Standards
 
 - Mermaid diagrams must use valid, renderable syntax
-- HTML output must include Tailwind CSS utility classes
-- HTML output must include light/dark mode toggle switcher
 - SVG connectors must use curved connectors, not straight-line arrows
 
 ## 5. Output Files
@@ -134,13 +125,6 @@ Follow the execution flow defined in `skills/u-design/SKILL.md` exactly:
 | `docs/{app}/design/screens.json` | Screens companion (components, API calls, validation) |
 | `docs/{app}/design/design-system.md` | Design System with tokens, components, patterns |
 | `docs/{app}/design/design-system.json` | Design System companion (tokens, component variants) |
-| `output/{app}/design/erd/index.html` | ERD split index (entity domains dashboard) |
-| `output/{app}/design/erd/{domain-slug}.html` | ERD domain pages (entities per domain) |
-| `output/{app}/design/api/index.html` | API split index (endpoint groups dashboard) |
-| `output/{app}/design/api/{group-slug}.html` | API domain pages (endpoints per group) |
-| `output/{app}/design/screens/index.html` | Screens split index (screen groups dashboard) |
-| `output/{app}/design/screens/{group-slug}.html` | Screens domain pages (screens per group) |
-| `output/{app}/design/design-system.html` | Design System HTML with token swatches |
 
 ## 6. Reference Files
 
