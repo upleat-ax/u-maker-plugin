@@ -197,7 +197,7 @@
       <li><a href="#folder"><span class="nav-icon">12</span>폴더 구조</a></li>
       <li><a href="#faq"><span class="nav-icon">13</span>FAQ</a></li>
     </ul>
-    <div class="sidebar-footer">U-MAKER Plugin v3.4.3 &middot; Get Started</div>
+    <div class="sidebar-footer">U-MAKER Plugin v3.4.4 &middot; Get Started</div>
   </aside>
 
   <div class="main-content">
@@ -209,7 +209,7 @@
         <p>핵심 개념부터 전체 명령어, 실전 시나리오까지 단계별로 안내합니다.<br>전체 레퍼런스는 <a href="README.ko.html" style="color:#fff;text-decoration:underline">README</a>를 참고하세요.</p>
         <div class="doc-meta">
           <div class="doc-meta-item"><strong>대상</strong> &nbsp;초보자 ~ 중급</div>
-          <div class="doc-meta-item"><strong>Version</strong> &nbsp;3.4.3</div>
+          <div class="doc-meta-item"><strong>Version</strong> &nbsp;3.4.4</div>
           <div class="doc-meta-item"><strong>Skills</strong> &nbsp;13</div>
           <div class="doc-meta-item"><strong>Agents</strong> &nbsp;7</div>
         </div>
@@ -445,6 +445,12 @@
         <strong>자동 실행:</strong> <code>/u-loop --app myapp</code>를 사용하면 Plan&rarr;Design&rarr;Dev&rarr;Check&rarr;Ship 전체를 gatekeeper 검증과 함께 자동으로 실행합니다.
       </div>
 
+      <div class="highlight-box" style="background:#f0fdf4;border-left-color:#22c55e">
+        <strong>선행조건 자동 캐스케이드:</strong> 선행 Phase 문서가 없으면 자동으로 호출됩니다.<br>
+        <code>/u-dev</code> 실행 시 Design 문서 없으면 &rarr; <code>/u-design</code> 자동 호출 &rarr; Plan 문서 없으면 &rarr; <code>/u-plan</code> 자동 호출.<br>
+        즉, <code>/u-dev</code> 하나로 Plan &rarr; Design &rarr; Dev 전체가 자동 실행될 수 있습니다.
+      </div>
+
       <div class="highlight-box" style="background:#fef2f2;border-left-color:#ef4444">
         <strong>스코어카드 필수 출력:</strong> 모든 Phase 검증 시 Gatekeeper가 <strong>N개 검증 (기본 5, 최대 11) 스코어카드를 화면에 출력</strong>합니다. PASS/FAIL 상태, 점수, 발견사항을 한눈에 확인할 수 있으며, FAIL 시 개선 항목이 심각도 순으로 표시됩니다.
       </div>
@@ -675,7 +681,7 @@
         <code>/u-ask</code>로 궁금한 점을 자유롭게 질문하고, <code>/u-status</code>로 프로젝트 상태를 확인하세요.
       </div>
 
-      <div class="report-footer">U-MAKER Plugin v3.4.3 &middot; Proprietary &middot; Copyright &copy; 2026 U PLEAT</div>
+      <div class="report-footer">U-MAKER Plugin v3.4.4 &middot; Proprietary &middot; Copyright &copy; 2026 U PLEAT</div>
     </div>
   </div>
 </div>

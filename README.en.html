@@ -110,7 +110,7 @@ a:hover{text-decoration:underline}
 <nav class="sidebar" id="sidebar">
   <div class="sidebar-header">
     <h1>U-MAKER</h1>
-    <p>v3.4.3 &mdash; Plugin Documentation</p>
+    <p>v3.4.4 &mdash; Plugin Documentation</p>
   </div>
   <div class="sidebar-nav">
 
@@ -152,7 +152,7 @@ a:hover{text-decoration:underline}
     </div>
 
   </div>
-  <div class="sidebar-footer">Proprietary &copy; U PLEAT &middot; v3.4.3</div>
+  <div class="sidebar-footer">Proprietary &copy; U PLEAT &middot; v3.4.4</div>
 </nav>
 
 <main class="main">
@@ -170,7 +170,7 @@ a:hover{text-decoration:underline}
   </div>
 </div>
 
-<blockquote><strong>v3.4.3 Key Changes (2026-04-04)</strong> &mdash; <code>--loop [N]</code> parameter: configurable gate criteria count (1&ndash;11, default 5). Free-form SVG diagrams (not Mermaid-style) in svg mode. No ASCII art anywhere except folder trees. Wireframe template redesigned: 6-section layout (Header, Stage with app-frame + annotation panel, Component Spec table, 2-column logic diagrams, Overlay UI for modals/bottomsheets/popups, Annotation Legend). Screen layout SVG replaces State Transition diagrams. Screen spec JSON companion now includes <code>layout</code> field. 13 skills, 7 agents, 5 PDCA phases, 5&ndash;11 gate criteria.</blockquote>
+<blockquote><strong>v3.4.4 Key Changes (2026-04-05)</strong> &mdash; HTML generation decoupled from phase skills: <code>/u-plan</code>, <code>/u-design</code>, <code>/u-check</code>, <code>/u-reverse</code> no longer auto-generate HTML output. Use <code>/u-output</code> command to generate HTML independently. Phase prerequisite cascade: <code>/u-dev</code> auto-invokes <code>/u-design</code> if Design docs missing; <code>/u-design</code> auto-invokes <code>/u-plan</code> if Plan docs missing.</blockquote>
 
 <!-- TL;DR -->
 <h2 id="tldr">TL;DR</h2>
@@ -730,7 +730,7 @@ curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/insta
 <p>Set the document language for deliverables with <code>language.documents</code>. Supports ko (Korean), en (English), ja (Japanese), zh (Chinese). IDs and code are always in English.</p>
 
 <h3>wireframes/index.html</h3>
-<p>An SPA viewer auto-generated when <code>/u-design</code> runs. Navigate Screen documents via sidebar navigation and visualize wireframes with MD rendering. Each wireframe uses a 6-section layout: Header, Stage (app-frame + annotation panel), Component Spec table, 2-column logic diagrams, Overlay UI (modals/bottomsheets/popups), and Annotation Legend. Screen layout SVG replaces State Transition diagrams. Screen spec JSON companion includes a <code>layout</code> field.</p>
+<p>An SPA viewer generated via <code>/u-wireframe</code>. Navigate Screen documents via sidebar navigation and visualize wireframes with MD rendering. Each wireframe uses a 6-section layout: Header, Stage (app-frame + annotation panel), Component Spec table, 2-column logic diagrams, Overlay UI (modals/bottomsheets/popups), and Annotation Legend. Screen layout SVG replaces State Transition diagrams. Screen spec JSON companion includes a <code>layout</code> field.</p>
 
 <h3>Scope-First Navigation</h3>
 <p>Claude reads only <code>_index.json</code> first instead of opening files directly, then selectively loads only the needed files &rarr; saves context window.</p>
@@ -745,7 +745,7 @@ curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/insta
 <tbody>
 <tr><td><code>.md</code></td><td>Human-readable Markdown (SSoT source)</td><td>All documents</td></tr>
 <tr><td><code>.json</code></td><td>Machine-parseable structured data</td><td>Generated simultaneously with all documents</td></tr>
-<tr><td><code>.html</code></td><td>Visual viewer (wireframes/index.html, domain-split HTML reports)</td><td>When /u-design or /u-output runs</td></tr>
+<tr><td><code>.html</code></td><td>Visual viewer (wireframes/index.html, domain-split HTML reports)</td><td>Only via <code>/u-output</code> command (or <code>/u-wireframe</code> for wireframes)</td></tr>
 </tbody>
 </table>
 
@@ -774,7 +774,7 @@ Use <code>/u-update --cascade</code> for automatic dependent document updates.</
 <h2 id="sec12">12. Plugin Repository Layout</h2>
 
 <pre><code>u-maker-plugin/
-+-- .claude-plugin/plugin.json        # v3.4.3
++-- .claude-plugin/plugin.json        # v3.4.4
 +-- agents/                           # 7 agent definitions
 |   +-- u-agent-pm.md
 |   +-- u-agent-plan.md
@@ -875,6 +875,8 @@ Use <code>/u-update --cascade</code> for automatic dependent document updates.</
 <tr><td>Generate BE only</td><td><code>/u-dev [app] --only be</code></td></tr>
 </tbody>
 </table>
+
+<blockquote><strong>Prerequisite Cascade:</strong> <code>/u-dev</code> auto-invokes <code>/u-design</code> if Design documents are missing; <code>/u-design</code> auto-invokes <code>/u-plan</code> if Plan documents are missing. This means running <code>/u-dev</code> alone can trigger the entire Plan &rarr; Design &rarr; Dev pipeline.</blockquote>
 
 <h3>Verification (Check Phase)</h3>
 <table>
@@ -1003,7 +1005,7 @@ cd /path/to/u-maker-plugin && ./deploy_local.sh</code></pre>
 <tr><td>Auto mode keeps switching to interactive</td><td><code>maxAssumptions</code> exceeded. Review with <code>/u-assume</code></td></tr>
 <tr><td>Too many cascade notifications</td><td>Clean up at once with <code>/u-sync</code> or auto-update with <code>/u-update --cascade</code></td></tr>
 <tr><td><code>.u-maker/_dropzone/</code> files not classified</td><td>Run <code>/u-ingest [scope]</code> to trigger auto-classification</td></tr>
-<tr><td>wireframes/index.html missing</td><td>Run <code>/u-design [scope]</code> to auto-generate it</td></tr>
+<tr><td>wireframes/index.html missing</td><td>Run <code>/u-wireframe --app [name] --all</code> to generate it</td></tr>
 <tr><td>Want to change document language</td><td>Change <code>language.documents</code> in <code>u-maker.config.json</code> to ko/en/ja/zh</td></tr>
 <tr><td><code>/u-reverse</code> results incomplete</td><td>Use <code>--src</code>, <code>--db</code>, <code>--api</code>, <code>--pages</code> flags to specify exact paths</td></tr>
 <tr><td>Hooks not working</td><td>Check match settings in <code>hooks/hooks.json</code> + verify Node.js is installed</td></tr>
@@ -1014,7 +1016,7 @@ cd /path/to/u-maker-plugin && ./deploy_local.sh</code></pre>
 
 <!-- Footer -->
 <div class="footer">
-  <strong>U-MAKER Plugin</strong> v3.4.3 &middot; Proprietary &copy; U PLEAT<br>
+  <strong>U-MAKER Plugin</strong> v3.4.4 &middot; Proprietary &copy; U PLEAT<br>
   PDCA-based SSoT collaboration orchestrator
 </div>
 
