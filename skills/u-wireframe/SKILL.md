@@ -62,15 +62,16 @@ For each screen in `screens.json`:
 
 For each screen, generate `{SCR-ID}.html` using `references/wireframe-page.template.html`.
 
-**Page Structure — 5 Sections (top→bottom):**
+**Page Structure — 6 Sections (top→bottom):**
 
 | Section | Description |
 |---------|-------------|
 | **A. Document Header** | Sticky top bar: SCR-ID badge, screen name, route path, related FT/FR links, 전체 목록 link |
 | **B. Stage** | 2-column grid: App Frame (sidebar + main mockup) + Annotation Panel (상세 기획 명세) |
-| **C. Component Spec** | Component specification table (#, 컴포넌트, 타입, Props, API) |
-| **D. Logic Flow Diagrams** | inline SVG diagrams: **Business Process Flow** (full-width) + Sequence Diagram + Screen Flow |
-| **E. Overlay UI** | Alert, Confirm, Modal, BottomSheet, Popup, Drawer, Toast — 각각 렌더링된 미리보기 카드 + 상세 기획 설명 |
+| **C. Overlay UI** | Alert, Confirm, Modal, BottomSheet, Popup, Drawer, Toast — 각각 렌더링된 미리보기 카드 + 상세 기획 설명 |
+| **D. 주요 흐름도** | 3-column grid: **Sequence Diagram** + **Class Diagram** + **ERD** (해당 화면 특화, 일반적이면 생략) |
+| **E. 주요 프로세스** | inline SVG: **Business Process Flow** (전체 너비) — 해당 화면의 업무 프로세스 단계별 시각화 |
+| **F. Component Spec** | Component specification table (#, 컴포넌트, 타입, Props, Bound Data, API) |
 
 #### B. Stage — App Frame + Annotation Panel
 
@@ -151,27 +152,58 @@ All annotation markers use `<span class="mk">N</span>` (blue circle with number)
 
 **테이블 샘플 데이터**: 3~5행의 현실적인 샘플 데이터를 도메인에 맞게 생성 (실제 이름, 날짜, 금액 등)
 
-#### D. Logic Flow Diagrams
+#### C. Overlay UI — Modals / BottomSheets / Popups
 
-Diagrams are rendered as **inline SVG** (`<svg class="diag">`) in a grid (`.diag-grid`).
+> **오버레이 섹션이 Stage 바로 아래에 위치** (스크린샷 레이아웃 기준)
 
-Each diagram block (`.diag-block`) has:
-- `<h3>` title (uppercase, cyan accent)
-- `<svg class="diag" viewBox="...">` with inline SVG content
+**All overlay components (modals, bottomsheets, popups, drawers, toasts) used by the screen MUST be rendered here** in a 2-column grid (`.overlay-grid`).
 
-**Diagram types per screen** (generate what's relevant):
+Each overlay is an `.overlay-card` containing:
+- **Header**: Type badge (`.overlay-type-badge`) + overlay name + annotation marker
+- **Body**: Rendered component mockup (same HTML rendering rules as main wireframe body)
 
-| Diagram | Purpose | When to include | Layout |
-|---------|---------|-----------------|--------|
-| **Business Process Flow (업무 프로세스 흐름도)** | 화면의 전체 업무 프로세스를 단계별로 시각화 | **모든 화면 (필수)** | `.full` (전체 너비) |
-| **Sequence Diagram** | API call sequence (Actor → Frontend → Backend → DB) | Screens with API calls | `.full` |
-| **Screen Flow** | Navigation inbound/outbound with trigger labels | All screens (from screen-flow.json) | 1-column |
+Overlay types and badge colors:
+
+| Type | Badge Style | Example |
+|------|------------|---------|
+| `modal` | Blue | Confirm dialog, form modal, detail modal |
+| `bottomsheet` | Amber | Mobile action sheet, filter panel |
+| `popup` | Purple | Tooltip, popover, context menu |
+| `drawer` | Green | Side panel, filter drawer |
+| `toast` | Red | Success/error notification |
+
+Extract overlays from `screens.json` component list — components with type containing `Modal`, `BottomSheet`, `Popup`, `Drawer`, `Toast`, or `Dialog`.
+
+If the screen has **no overlay components**, omit section C entirely.
+
+#### D. 주요 흐름도 (Key Diagrams)
+
+3-column grid (`.diag-grid-3col`) displaying the screen's key technical diagrams.
+Each diagram block uses `<svg class="diag">` with inline SVG content.
+
+| Diagram | Purpose | When to include |
+|---------|---------|-----------------|
+| **Sequence Diagram (시퀀스 다이어그램)** | API call sequence: Actor → Frontend → Backend → DB/External | 복수 API 연쇄 호출, 조건 분기가 있는 화면. **단일 CRUD API만 있으면 생략** |
+| **Class Diagram (주요 Class)** | 화면이 다루는 핵심 도메인 클래스의 속성, 메서드, 관계 | 비즈니스 로직 클래스가 있는 화면. **단순 DTO만이면 생략** |
+| **ERD (주요 ERD)** | 해당 화면이 참조하는 엔티티만 추출한 mini ERD | 2개 이상 엔티티를 참조하는 화면. **단일 테이블만이면 생략** |
+
+**Non-Generic Policy (CRITICAL):**
+- 3개 다이어그램 모두 해당 화면에 **특화된 내용**만 포함
+- 일반적인 CRUD 패턴, 자명한 관계는 생략
+- **3개 모두 일반적이면 섹션 D 전체 생략**
+- 1~2개만 의미 있으면 해당 다이어그램만 렌더링 (빈 칸은 grid가 자동 조정)
 
 **~~Data Flow~~ — 삭제됨. 생성하지 않는다.**
+**~~Screen Flow~~ — 삭제됨. screen-flow.md에서 별도 관리.**
+
+#### E. 주요 프로세스 (Business Process Flow)
+
+업무 프로세스 흐름도는 `.process-section` 내에 전체 너비로 렌더링한다.
+해당 화면에서 사용자가 수행하는 **전체 업무 흐름**을 좌→우 방향으로 inline SVG로 표현한다.
+
+**Non-Generic Policy:** 단순 CRUD 흐름(목록→상세→수정→저장)만 있는 화면은 이 섹션 생략.
 
 ##### Business Process Flow 작성 규칙 (CRITICAL)
-
-업무 프로세스 흐름도는 해당 화면에서 사용자가 수행하는 **전체 업무 흐름**을 좌→우 방향으로 표현한다.
 
 **SVG 구성 요소:**
 
@@ -217,29 +249,12 @@ SVG style tokens (use CSS variables from template):
 - Actor: `var(--svg-actor)` (#8b5cf6)
 - Background: `var(--svg-bg)` (#f8fafc)
 
-Use `.diag-block.full` (spans 2 columns) for wide diagrams (Business Process Flow, Sequence Diagram).
+#### F. Component Spec Table
 
-#### E. Overlay UI — Modals / BottomSheets / Popups
+Component specification table rendered as `.spec-wrap` at the bottom.
+Table columns: `#`, `컴포넌트`, `타입`, `Props`, `Bound Data`, `API`.
 
-**All overlay components (modals, bottomsheets, popups, drawers, toasts) used by the screen MUST be rendered at the bottom** in a 2-column grid (`.overlay-grid`).
-
-Each overlay is an `.overlay-card` containing:
-- **Header**: Type badge (`.overlay-type-badge`) + overlay name + annotation marker
-- **Body**: Rendered component mockup (same HTML rendering rules as main wireframe body)
-
-Overlay types and badge colors:
-
-| Type | Badge Style | Example |
-|------|------------|---------|
-| `modal` | Blue | Confirm dialog, form modal, detail modal |
-| `bottomsheet` | Amber | Mobile action sheet, filter panel |
-| `popup` | Purple | Tooltip, popover, context menu |
-| `drawer` | Green | Side panel, filter drawer |
-| `toast` | Red | Success/error notification |
-
-Extract overlays from `screens.json` component list — components with type containing `Modal`, `BottomSheet`, `Popup`, `Drawer`, `Toast`, or `Dialog`.
-
-If the screen has **no overlay components**, omit section E entirely.
+This section is always present as a reference appendix.
 
 ### Step 3: Generate Index HTML (Browser)
 
@@ -269,15 +284,20 @@ const FILES = [
 ## Checklist
 
 - [ ] All screens from screens.json have individual HTML files
-- [ ] Each wireframe has: mockup + Business Process Flow + Sequence Diagram + Screen Flow + ERD
+- [ ] Section order: A(Header) → B(Stage) → C(Overlay) → D(주요 흐름도) → E(주요 프로세스) → F(Component Spec) → Footer
 - [ ] Annotations contain 기획 명세 수준의 상세 설명 (generic placeholder 없음)
-- [ ] Business Process Flow: 단계별 업무 흐름 + DB + 관련화면 + 분기 포함
+- [ ] 주요 흐름도 (D): 3-column grid — Sequence Diagram + Class Diagram + ERD (일반적이면 개별/전체 생략)
+- [ ] 주요 프로세스 (E): Business Process Flow (단순 CRUD만이면 생략)
+- [ ] Component Spec (F): Bound Data 컬럼 포함
+- [ ] Non-generic policy 준수: 모든 다이어그램/섹션이 해당 화면에 특화된 내용만 포함
+- [ ] Overlay가 없으면 C 섹션 생략, 다이어그램이 모두 일반적이면 D/E 섹션 생략
 - [ ] Index browser has correct FILES array with all screens
 - [ ] Sidebar groups match IA categories
 - [ ] Dark/light toggle works on all pages
 - [ ] Navigation links (Index, FT, FR) are correct
 - [ ] ERD constraints: PK/FK/UK never combined
 - [ ] Data Flow 다이어그램 없음 (삭제됨)
+- [ ] Screen Flow 다이어그램 없음 (screen-flow.md에서 별도 관리)
 - [ ] Annotation Legend 섹션 없음 (삭제됨)
 - [ ] 테이블 샘플 데이터가 도메인에 맞는 현실적 데이터임
 - [ ] Footer: Copyright(c) 2026 U PLEAT

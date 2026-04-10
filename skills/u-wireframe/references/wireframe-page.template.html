@@ -132,26 +132,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans KR',sans
 .br-title{font-size:11px;font-weight:700;color:var(--text);margin-bottom:8px}
 .br-item{font-size:11px;color:var(--text2);margin-bottom:5px;padding-left:14px;position:relative;line-height:1.5}
 
-/* ── Component Spec Table ── */
-.spec-wrap{padding:16px;background:#fff;border-top:2px solid var(--border)}
-.spec-title{font-size:13px;font-weight:700;margin-bottom:10px;color:var(--text)}
-.spec-tbl{width:100%;border-collapse:collapse;font-size:12px}
-.spec-tbl th{background:#f1f5f9;padding:7px 10px;text-align:left;font-size:11px;font-weight:700;color:var(--text2);border-bottom:1px solid var(--border)}
-.spec-tbl td{padding:7px 10px;border-bottom:1px solid #f5f7fa;color:var(--text);vertical-align:top}
-.spec-tbl tr:last-child td{border-bottom:none}
-code{font-family:monospace;background:#f1f5f9;padding:1px 5px;border-radius:3px;font-size:11px;color:#e11d48}
-
-/* ── Diagrams Section (2-column grid) ── */
-.diagrams-section{padding:16px;background:#fff;border-top:2px solid var(--border)}
-.diag-title{font-size:14px;font-weight:700;margin-bottom:6px;color:var(--text)}
-.diag-sub{font-size:11px;color:var(--text2);margin-bottom:14px}
-.diag-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-.diag-block{margin-bottom:16px}
-.diag-block h3{font-size:11px;font-weight:700;color:#0891b2;margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px}
-svg.diag{width:100%;border:1px solid var(--border);border-radius:8px;background:var(--svg-bg);display:block}
-/* Full-width diagram (when single or wide) */
-.diag-block.full{grid-column:1/-1}
-
 /* ── Overlay UI Section (Modals, BottomSheets, Popups) ── */
 .overlay-section{padding:16px;background:#fff;border-top:2px solid var(--border)}
 .overlay-title{font-size:14px;font-weight:700;margin-bottom:14px;color:var(--text)}
@@ -165,6 +145,33 @@ svg.diag{width:100%;border:1px solid var(--border);border-radius:8px;background:
 .overlay-type-drawer .overlay-type-badge{background:#dcfce7;color:#15803d}
 .overlay-type-toast .overlay-type-badge{background:#fee2e2;color:#dc2626}
 .overlay-card-body{padding:12px;min-height:180px;background:#fff;position:relative}
+
+/* ── 주요 흐름도 Section (3-column: Sequence + Class + ERD) ── */
+.diagrams-section{padding:16px;background:#fff;border-top:2px solid var(--border)}
+.diag-title{font-size:14px;font-weight:700;margin-bottom:6px;color:var(--text)}
+.diag-sub{font-size:11px;color:var(--text2);margin-bottom:14px}
+.diag-grid-3col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+.diag-block{margin-bottom:16px}
+.diag-block h3{font-size:11px;font-weight:700;color:#0891b2;margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px}
+svg.diag{width:100%;border:1px solid var(--border);border-radius:8px;background:var(--svg-bg);display:block}
+/* Full-width diagram (single wide) */
+.diag-block.full{grid-column:1/-1}
+
+/* ── 주요 프로세스 Section (Business Process Flow, full-width) ── */
+.process-section{padding:16px;background:#fff;border-top:2px solid var(--border)}
+.process-title{font-size:14px;font-weight:700;margin-bottom:6px;color:var(--text)}
+.process-sub{font-size:11px;color:var(--text2);margin-bottom:14px}
+.process-block{margin-bottom:16px}
+.process-block h3{font-size:11px;font-weight:700;color:#0891b2;margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px}
+
+/* ── Component Spec Table ── */
+.spec-wrap{padding:16px;background:#fff;border-top:2px solid var(--border)}
+.spec-title{font-size:13px;font-weight:700;margin-bottom:10px;color:var(--text)}
+.spec-tbl{width:100%;border-collapse:collapse;font-size:12px}
+.spec-tbl th{background:#f1f5f9;padding:7px 10px;text-align:left;font-size:11px;font-weight:700;color:var(--text2);border-bottom:1px solid var(--border)}
+.spec-tbl td{padding:7px 10px;border-bottom:1px solid #f5f7fa;color:var(--text);vertical-align:top}
+.spec-tbl tr:last-child td{border-bottom:none}
+code{font-family:monospace;background:#f1f5f9;padding:1px 5px;border-radius:3px;font-size:11px;color:#e11d48}
 
 /* ── Footer ── */
 .doc-footer{padding:12px 16px;background:#f8fafc;border-top:1px solid var(--border);text-align:center;font-size:11px;color:var(--text3)}
@@ -233,7 +240,7 @@ svg.diag{width:100%;border:1px solid var(--border);border-radius:8px;background:
 
   <!-- B-2. Annotation Panel -->
   <div class="anno-panel">
-    <div class="anno-title">화면 어노테이션</div>
+    <div class="anno-title">Description</div>
     {{#each annotations}}
     <div class="anno-item">
       <div class="an">{{this.num}}</div>
@@ -254,37 +261,12 @@ svg.diag{width:100%;border:1px solid var(--border);border-radius:8px;background:
 </div>
 
 <!-- ═══════════════════════════════════════════════ -->
-<!--  C. Component Spec Table                       -->
-<!-- ═══════════════════════════════════════════════ -->
-<div class="spec-wrap">
-  <div class="spec-title">컴포넌트 명세</div>
-  <table class="spec-tbl">
-    <thead>
-      <tr><th>#</th><th>컴포넌트</th><th>타입</th><th>Props</th><th>API</th></tr>
-    </thead>
-    <tbody>
-      {{COMPONENT_SPEC_ROWS}}
-    </tbody>
-  </table>
-</div>
-
-<!-- ═══════════════════════════════════════════════ -->
-<!--  D. Logic Flow Diagrams (2-column grid)        -->
-<!-- ═══════════════════════════════════════════════ -->
-<div class="diagrams-section">
-  <div class="diag-title">로직 흐름 다이어그램</div>
-  <div class="diag-sub">업무 프로세스 흐름, API 호출 시퀀스, 화면 이동을 시각화합니다.</div>
-  <div class="diag-grid">
-    {{DIAGRAM_BLOCKS}}
-  </div>
-</div>
-
-<!-- ═══════════════════════════════════════════════ -->
-<!--  E. Overlay UI (Modals / BottomSheets / Popups) -->
+<!--  C. Overlay UI (Modals / BottomSheets / Popups) -->
+<!--  오버레이가 없으면 이 섹션 전체 생략            -->
 <!-- ═══════════════════════════════════════════════ -->
 {{#if hasOverlays}}
 <div class="overlay-section">
-  <div class="overlay-title">팝업 / 모달 / BottomSheet UI</div>
+  <div class="overlay-title">오버레이</div>
   <div class="overlay-grid">
     {{#each overlays}}
     <div class="overlay-card overlay-type-{{this.type}}">
@@ -302,7 +284,75 @@ svg.diag{width:100%;border:1px solid var(--border);border-radius:8px;background:
 {{/if}}
 
 <!-- ═══════════════════════════════════════════════ -->
-<!--  F. Footer                                     -->
+<!--  D. 주요 흐름도 (3-column: Sequence + Class + ERD) -->
+<!--  모든 다이어그램이 일반적이면 이 섹션 전체 생략     -->
+<!-- ═══════════════════════════════════════════════ -->
+{{#if hasDiagrams}}
+<div class="diagrams-section">
+  <div class="diag-title">주요 흐름도</div>
+  <div class="diag-sub">시퀀스 다이어그램, 주요 클래스, 관련 ERD를 시각화합니다. 해당 화면에 특화된 내용만 표시합니다.</div>
+  <div class="diag-grid-3col">
+
+    {{#if hasSequenceDiagram}}
+    <!-- D-1. Sequence Diagram -->
+    <div class="diag-block">
+      <h3>주요 흐름도</h3>
+      {{SEQUENCE_DIAGRAM_SVG}}
+    </div>
+    {{/if}}
+
+    {{#if hasClassDiagram}}
+    <!-- D-2. Class Diagram -->
+    <div class="diag-block">
+      <h3>주요 Class</h3>
+      {{CLASS_DIAGRAM_SVG}}
+    </div>
+    {{/if}}
+
+    {{#if hasERD}}
+    <!-- D-3. ERD -->
+    <div class="diag-block">
+      <h3>주요 ERD</h3>
+      {{ERD_DIAGRAM_SVG}}
+    </div>
+    {{/if}}
+
+  </div>
+</div>
+{{/if}}
+
+<!-- ═══════════════════════════════════════════════ -->
+<!--  E. 주요 프로세스 (Business Process Flow)       -->
+<!--  단순 CRUD만이면 이 섹션 전체 생략               -->
+<!-- ═══════════════════════════════════════════════ -->
+{{#if hasProcessFlow}}
+<div class="process-section">
+  <div class="process-title">주요 프로세스</div>
+  <div class="process-sub">해당 화면의 업무 프로세스를 단계별로 시각화합니다.</div>
+  <div class="process-block">
+    <h3>Business Process Flow</h3>
+    {{BUSINESS_PROCESS_FLOW_SVG}}
+  </div>
+</div>
+{{/if}}
+
+<!-- ═══════════════════════════════════════════════ -->
+<!--  F. Component Spec Table                       -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="spec-wrap">
+  <div class="spec-title">컴포넌트 명세</div>
+  <table class="spec-tbl">
+    <thead>
+      <tr><th>#</th><th>컴포넌트</th><th>타입</th><th>Props</th><th>Bound Data</th><th>API</th></tr>
+    </thead>
+    <tbody>
+      {{COMPONENT_SPEC_ROWS}}
+    </tbody>
+  </table>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!--  G. Footer                                     -->
 <!-- ═══════════════════════════════════════════════ -->
 <div class="doc-footer">
   Copyright(c) 2026 U PLEAT &middot; Generated by u-maker
