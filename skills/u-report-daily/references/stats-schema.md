@@ -146,7 +146,7 @@ fi
 | `contributors` | string[] | 기여자 목록 |
 | `doc_changes` | int | `.u-maker/docs/` 하위 변경 수 |
 | `plugin_changes` | int | `skills/`, `agents/`, `hooks/` 변경 수 |
-| `output_changes` | int | `.u-maker/out/` 하위 변경 수 |
+| `output_changes` | int | `.u-maker/output/` 하위 변경 수 |
 
 ## Chart Data Derivation
 

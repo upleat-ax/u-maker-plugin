@@ -207,7 +207,7 @@ Print: `Backup created at .u-maker.bak-{timestamp}/`
 | `.u-maker/data/input/` | `.u-maker/data/digest/` | Rename if exists |
 | `.u-maker/data/classified/` | (discard) | Note for re-ingest |
 | `.u-maker/out/browse/` | `.u-maker/output/` | Move contents |
-| `.u-maker/out/reports/` | `.u-maker/output/` | Move contents |
+| `.u-maker/out/reports/` | `.u-maker/reports/` | Move contents |
 
 #### 2.2 Create missing directories
 

@@ -582,6 +582,24 @@ Whenever **any** of these events occur, ALL relevant index files MUST be regener
 | 80–94 | `bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300` |
 | < 80 | `bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-300` |
 
+### HTML Link Rule (CRITICAL)
+
+**모든 `<a href>` 링크는 반드시 파일명까지 명시해야 한다.** 폴더 경로만 사용하면 `file://` 프로토콜에서 작동하지 않는다.
+
+| Pattern | Bad (금지) | Good (필수) |
+|---------|-----------|------------|
+| 폴더 index | `href="output/"` | `href="output/index.html"` |
+| 폴더 index | `href="reports/"` | `href="reports/index.html"` |
+| 앱 폴더 | `href="myapp/"` | `href="myapp/index.html"` |
+| Split doc 폴더 | `href="plan/srs/"` | `href="plan/srs/index.html"` |
+| 단일 파일 | `href="plan/ia"` | `href="plan/ia.html"` |
+
+**규칙:**
+1. 디렉토리 링크 → 항상 `index.html` 포함: `{dir}/index.html`
+2. 단일 파일 링크 → 항상 `.html` 확장자 포함: `{file}.html`
+3. `../` 상대 경로도 동일 적용: `href="../index.html"` (not `href="../"`)
+4. 이 규칙은 sidebar, breadcrumb, back link, card link 등 **모든 `<a href>`에 적용**
+
 ## 9. Per-App Sidebar Navigation (output/{app}/index.html)
 
 The `output/{app}/index.html` file serves as the project's documentation portal with a sidebar navigation listing all generated HTML documents.
@@ -601,7 +619,7 @@ The `output/{app}/index.html` file serves as the project's documentation portal 
                dark:text-gray-400 mb-2">Plan</h3>
     <ul class="space-y-1">
       <li>
-        <a href="plan/srs.html"
+        <a href="plan/srs/index.html"
            class="block px-3 py-1.5 rounded text-sm text-gray-700
                   dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-800">
           SRS
@@ -618,9 +636,9 @@ The `output/{app}/index.html` file serves as the project's documentation portal 
     <h3 class="text-xs font-semibold uppercase tracking-wider text-gray-500
                dark:text-gray-400 mb-2">Design</h3>
     <ul class="space-y-1">
-      <li><a href="design/erd.html" class="...">ERD</a></li>
-      <li><a href="design/api.html" class="...">API</a></li>
-      <li><a href="design/screens.html" class="...">Screens</a></li>
+      <li><a href="design/erd/index.html" class="...">ERD</a></li>
+      <li><a href="design/api/index.html" class="...">API</a></li>
+      <li><a href="design/screens/index.html" class="...">Screens</a></li>
       <li><a href="design/design-system.html" class="...">Design System</a></li>
     </ul>
   </div>
@@ -630,7 +648,7 @@ The `output/{app}/index.html` file serves as the project's documentation portal 
     <h3 class="text-xs font-semibold uppercase tracking-wider text-gray-500
                dark:text-gray-400 mb-2">Check</h3>
     <ul class="space-y-1">
-      <li><a href="check/testcases.html" class="...">Test Cases</a></li>
+      <li><a href="check/testcases/index.html" class="...">Test Cases</a></li>
       <li><a href="check/test-results.html" class="...">Test Results</a></li>
     </ul>
   </div>
@@ -653,7 +671,7 @@ When a new HTML document is generated, the sidebar navigation in `output/{app}/i
 When viewing a specific document page, the corresponding sidebar entry is highlighted:
 
 ```html
-<a href="plan/srs.html"
+<a href="plan/srs/index.html"
    class="block px-3 py-1.5 rounded text-sm bg-blue-100 dark:bg-blue-900
           text-blue-700 dark:text-blue-300 font-medium">
   SRS

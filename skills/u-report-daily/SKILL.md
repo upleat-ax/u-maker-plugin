@@ -55,7 +55,7 @@ ls .u-maker/docs/{app}/check/   # testcases.md+json, test-results.md+json
 
 ```bash
 # 생성된 와이어프레임 HTML 수
-ls .u-maker/out/wireframes/{app}/*.html 2>/dev/null | wc -l
+ls .u-maker/output/{app}/design/wireframes/*.html 2>/dev/null | wc -l
 ```
 
 **구현된 화면 카운트:** Playwright로 접근 가능한 실제 화면 수. `screens.json`의 `implemented: true` 플래그 또는 `out/screenshots/` 디렉토리의 파일 수로 판단.
@@ -77,7 +77,7 @@ git log --since="{date} 00:00" --until="{date} 23:59" --shortstat --no-merges
 
 **분류 기준:**
 - `.u-maker/docs/` 변경 → 문서 변경
-- `.u-maker/out/` 변경 → HTML 산출물 변경
+- `.u-maker/output/` 변경 → HTML 산출물 변경
 - `skills/`, `agents/`, `hooks/` 변경 → 플러그인 변경
 - 그 외 → 기타 변경
 
@@ -115,7 +115,7 @@ URL: https://hj-wiki.upleat.ai/69cd33f60b6f1e9c6e7398f1?tab=meeting
 `--no-screenshot` 미지정 시, Playwright MCP로 주요 화면을 캡처한다.
 
 **캡처 대상:**
-1. `.u-maker/out/{app}/` 의 최근 변경된 HTML 페이지 (최대 5개)
+1. `.u-maker/output/{app}/` 의 최근 변경된 HTML 페이지 (최대 5개)
 2. 실제 구현된 앱 화면 (dev server URL이 있는 경우)
 
 **Playwright 워크플로우:**
@@ -179,7 +179,7 @@ URL: https://hj-wiki.upleat.ai/69cd33f60b6f1e9c6e7398f1?tab=meeting
 단일 HTML 파일로 리포트를 생성한다.
 
 ```
-출력: .u-maker/out/reports/{YYYY-MM-DD}-daily.html
+출력: .u-maker/reports/{YYYY-MM-DD}-daily.html
 ```
 
 #### HTML 구성 요소
@@ -245,7 +245,7 @@ SVG 차트 규칙:
 
 리포트 생성 후 인덱스를 업데이트한다.
 
-1. `.u-maker/out/reports/index.html` — 리포트 목록에 새 항목 추가
+1. `.u-maker/reports/index.html` — 리포트 목록에 새 항목 추가
 2. `.u-maker/index.html` — 루트 허브의 최근 리포트 링크 갱신
 
 ## Output Summary
@@ -255,7 +255,7 @@ u-report-daily complete.
   Date:        2026-04-10
   App(s):      fsms, portal
   Stats saved: .u-maker/.state/stats/2026-04-10.json
-  Report:      .u-maker/out/reports/2026-04-10-daily.html
+  Report:      .u-maker/reports/2026-04-10-daily.html
   Screenshots: 5 captured
   
   Metrics:

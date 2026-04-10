@@ -54,7 +54,7 @@ docs/{app}/plan/srs.json     → FR, US, FT
 docs/{app}/design/screens.json → SC (designed)
 docs/{app}/check/testcases.json → TC
 docs/{app}/check/test-results.json → test pass/fail
-out/wireframes/{app}/*.html  → Wireframe count
+output/{app}/design/wireframes/*.html  → Wireframe count
 ```
 
 ### Step 3: Git 히스토리 수집 (1주일)
@@ -100,8 +100,8 @@ WebFetch로 회의 목록 페이지를 읽고, 기간 내 날짜의 회의를 �
 `--no-screenshot` 미지정 시, 앱별 주요 화면을 캡처한다.
 
 **캡처 대상:**
-1. `.u-maker/out/{app}/design/screens/` — 화면 설계서 HTML (앱별 최대 3개)
-2. `.u-maker/out/wireframes/{app}/` — 와이어프레임 (앱별 최대 3개)
+1. `.u-maker/output/{app}/design/screens/` — 화면 설계서 HTML (앱별 최대 3개)
+2. `.u-maker/output/{app}/design/wireframes/` — 와이어프레임 (앱별 최대 3개)
 3. 실제 구현 화면 (dev server URL 있는 경우)
 
 **Playwright 워크플로우:**
@@ -165,7 +165,7 @@ WebFetch로 회의 목록 페이지를 읽고, 기간 내 날짜의 회의를 �
 ### Step 7: HTML 리포트 생성
 
 ```
-출력: .u-maker/out/reports/{to}-weekly.html
+출력: .u-maker/reports/{to}-weekly.html
 ```
 
 #### HTML 필수 요소
@@ -277,7 +277,7 @@ SVG 차트 규칙:
 
 ### Step 8: 인덱스 갱신
 
-1. `.u-maker/out/reports/index.html` — weekly 항목 추가
+1. `.u-maker/reports/index.html` — weekly 항목 추가
 2. `.u-maker/index.html` — 루트 허브 갱신
 
 ## Output Summary
@@ -288,7 +288,7 @@ u-report-weekly complete.
   App(s):      fsms, portal
   Stats used:  7 daily snapshots
   Weekly saved: .u-maker/.state/stats/2026-04-04--2026-04-10-weekly.json
-  Report:      .u-maker/out/reports/2026-04-10-weekly.html
+  Report:      .u-maker/reports/2026-04-10-weekly.html
   Screenshots: 12 captured
   
   Summary:
