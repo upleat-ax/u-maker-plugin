@@ -73,7 +73,7 @@ For each document to process:
 
 ### Step 3: Generate HTML via html-engine
 
-Process each document according to its type. See html-engine § 12 "Domain Split Pipeline" for split documents.
+Process each document according to its type.
 
 #### Split Documents (Domain Split)
 
@@ -101,19 +101,142 @@ For each split document:
 | Test Results | `output/{app}/check/test-results.html` |
 
 For each single document:
-1. Convert `.md` → `.html` via standard html-engine pipeline (§ 1)
+1. Convert `.md` → `.html` via standard html-engine pipeline
 2. Apply `output-page.template.html` wrapper
 
 #### All Documents: Diagram Requirements
 
-Generate all mandatory diagrams per document type (see html-engine § 2).
-Rendering depends on `--diagram` mode:
+Generate all mandatory diagrams per document type. Rendering depends on `--diagram` mode:
 
 | Mode | SVG diagrams | Mermaid UML | Mermaid CDN loaded |
 |------|-------------|-------------|-------------------|
 | `svg` (default) | All diagrams as inline SVG | ERD/Class/Sequence also as SVG | No |
 | `mermaid` | None | All diagrams via Mermaid | Yes |
 | `all` | Non-UML diagrams as SVG | ERD/Class/Sequence via Mermaid | Yes |
+
+---
+
+### ⚠️ Screens Domain Page — Full Rendering Spec
+
+> **CRITICAL:** Each screen group page MUST include the full content below for EVERY screen in the group. DO NOT generate simplified stub pages with only path/FR/IA info. Screens pages without wireframes are **incomplete output**.
+
+#### Screen Page Layout (per screen, in order)
+
+```
+┌─────────────────────────────────────────────────────┐
+│  1. Doc-header (SC-ID badge, name, path, FT/FR/P)   │
+├──────────────────────────────┬──────────────────────┤
+│  2. SVG Wireframe            │  Annotation Panel    │
+│     (app-frame mockup)       │  (numbered markers   │
+│                              │   + biz rules)       │
+├──────────────────────────────┴──────────────────────┤
+│  3. Component Spec Table (#, Component, Type, Props, API) │
+├─────────────────────────────────────────────────────┤
+│  4. Diagrams (2-column SVG grid):                   │
+│     A. Business Logic (condition flow)              │
+│     B. Sequential (actor-system interaction)        │
+│     C. Data Flow (state/API/DB)                     │
+│     D. Used ERD (mini ERD for related entities)     │
+└─────────────────────────────────────────────────────┘
+```
+
+**1. Doc-header:** SC-ID badge, screen title, route path (`/path/to`), related FR IDs, priority, date
+
+**2. SVG Wireframe** (`screens.json` → `layout` + `components` + `state`):
+- **App-frame:** 2-column — 좌측 sidebar (앱 네비게이션, 약 200px) + 우측 main area (header + body + footer)
+- **Sidebar:** 앱 이름 + 메뉴 목록, 현재 화면 active
+- **Page header:** breadcrumb + title + action buttons
+- **Page body:** 실제 UI 요소를 SVG로 렌더링:
+  - Input: labeled `<rect>` + placeholder text
+  - Select: `<rect>` + dropdown arrow
+  - Buttons: rounded `<rect>` — primary(filled) / outline(bordered)
+  - Tables: header row + body rows with cell borders
+  - Cards: rounded `<rect>` + title + content area
+  - Form groups: label + input stacked vertically
+- **Annotation markers:** 각 UI 요소에 numbered circle (`<circle>` + `<text>`) 배치
+- **Colors:** sidebar `#2d3a4a`, header `#3b1e6e`, body `#f0f3f7`, marker `#7c3aed`
+- `viewBox` 기반 반응형. State Transition 다이어그램 생성 금지.
+
+**Annotation Panel** (wireframe 우측, HTML):
+- 각 numbered marker: marker번호 + component name(bold) + 상세 설명 (type, validation, BR ID)
+- 하단 비즈니스 규칙 섹션: `BR-{screenId}-XX` 형식. 어노테이션 범례(legend) 생성 금지.
+
+**3. Component Spec Table** (`screens.json` → `components`):
+
+| # | 컴포넌트 | 타입 | Props / 유효성 | API |
+|---|---------|------|--------------|-----|
+| 1 | ... | Input/Select/Button/... | required, ... | endpoint or `-` |
+
+**4. Diagrams** (inline SVG, `screens.json` 데이터 기반):
+
+- **A. Business Logic** (`validationRules` + `businessRules`): condition flow chart SVG
+  - Start node: pill shape / Action nodes: rounded rect / Decision: `<polygon>` diamond / Error: red rect / Success: green rect
+  - Curved path connectors with Yes/No labels
+- **B. Sequential** (`apiCalls` + `components`): actor-system interaction SVG
+  - Actors: User, Frontend, Backend API, DB — colored box + dashed lifeline
+  - Request: solid arrow / Response: dashed arrow, numbered steps
+- **C. Data Flow** (state + API + DB): DFD SVG
+  - External entity: `<rect>` / Process: `<ellipse>` / Data store: open-top `<rect>`
+  - Labeled curved arrows
+- **D. Used ERD** (`relatedEntities` or API refs → `erd.json`): mini ERD SVG
+  - 관련 엔티티만 추출, entity box + curved connector + cardinality
+
+> If `screens.json` data is insufficient for a diagram, insert: `<div class="text-center text-gray-400 py-8">Diagram will be generated when data is available.</div>`
+
+#### Screens Index Page
+
+`output/{app}/design/screens/index.html` includes:
+- Summary metrics (total screens, groups, components, forms)
+- SVG navigation map — 4-column grid of group boxes with arrows
+- Screen groups card grid (link to each group page with screen count + description)
+
+---
+
+### ⚠️ ERD Domain Page — Full Rendering Spec
+
+> **CRITICAL:** Each ERD domain page MUST include ALL four sections below. DO NOT generate pages with only text or entity lists. ERD pages without inline SVG diagrams and relationship cards are **incomplete output**.
+
+#### ERD Domain Page Content (per entity group, in order)
+
+**1. Inline SVG ERD (필수)** (`erd.json` → `entities` + `relationships`):
+- **Entity boxes:** rounded rectangle per entity
+  - Header row: colored (`#3b82f6` blue-500), entity name bold
+  - Column rows: column name + type + 배지 (PK: `#8b5cf6` violet / FK: `#f59e0b` amber / UK: `#10b981` green)
+  - PK/FK/UK 배지는 절대 동일 컬럼에 중복 표시 금지 (각 제약조건은 독립 행)
+- **Relationship connectors:** 엔티티 간 **curved `<path>` (C Bezier)** 로 연결. `<line>` / `<polyline>` 사용 금지
+  - 커넥터 양 끝: 카디널리티 텍스트 (`1`, `N`, `0..1`, `0..N`)
+  - 커넥터 중앙: 관계 설명 라벨 (예: "has many", "belongs to")
+- **Domain grouping:** 같은 도메인 엔티티를 배경 `<rect>` (light fill)으로 그룹핑
+- **Layout:** 엔티티 간 겹침 없도록 배치. 엔티티 30개 초과 시 도메인별 분할
+- `viewBox` 기반 반응형 (`width="100%"`)
+
+**2. Relationship Description Cards (필수)** — SVG 다이어그램 바로 아래 HTML 카드:
+
+각 relationship마다 카드 1개:
+| 필드 | 내용 |
+|------|------|
+| From → To | `EntityA` → `EntityB` |
+| Type | `1:1` / `1:N` / `N:M` |
+| FK Column | `entityB.entityAId` |
+| 비즈니스 의미 | 자연어 prose (예: "하나의 주문은 여러 주문항목을 가진다") |
+| 참조 무결성 | `CASCADE` / `SET NULL` / `RESTRICT` 등 |
+
+**3. Entity Detail Tables** — 각 엔티티의 컬럼 상세:
+
+| Column | Type | PK | FK | Nullable | Default | Description |
+|--------|------|----|----|----------|---------|-------------|
+
+**4. Common Table References** — 이 도메인 엔티티를 참조하는 다른 도메인 목록 (있는 경우)
+
+#### ERD Index Page
+
+`output/{app}/design/erd/index.html` includes:
+- Full ER overview SVG (모든 도메인 entity boxes + curved connectors + cardinality labels)
+- Entity count / relationship count 요약 메트릭
+- Relationship summary table (From, To, Type, FK)
+- Domain cards grid (link to each domain page)
+
+---
 
 ### Step 4: Update Index Navigation
 

@@ -463,7 +463,74 @@ model RoleUser {
 | ENT | Entity definitions | ENT-010, ENT-020 |
 | REL | Relationship definitions | REL-010, REL-020 |
 
-## 9. Validation Checks
+## 9. Sample Data Specification
+
+ERD 문서는 각 엔티티에 대해 현실적인 샘플 데이터를 포함해야 한다. 샘플 데이터는 엔티티 간 관계를 구체적으로 보여주며, 데이터 모델의 실용성을 검증하는 역할을 한다.
+
+### 9.1 Sample Data Generation Rules
+
+1. **건수:** 엔티티당 3~5건의 샘플 레코드를 생성한다.
+2. **현실적 값:** 도메인에 맞는 실제적인 값을 사용한다 (예: 이메일은 `alice@example.com`, 이름은 "김민수" 등). `test1`, `data1` 같은 의미 없는 값 금지.
+3. **FK 정합성:** FK 컬럼 값은 반드시 참조 엔티티의 샘플 PK 값과 일치해야 한다. 존재하지 않는 PK를 참조하는 FK 금지.
+4. **관계 커버리지:** 모든 REL(relationship)에 대해 최소 하나의 FK 연결 예시가 샘플 데이터에 존재해야 한다.
+5. **카디널리티 반영:** 1:N 관계에서는 하나의 부모 레코드가 여러 자식 레코드와 연결되는 예시를 포함한다. N:M 관계에서는 junction 테이블 샘플을 통해 다대다 연결을 보여준다.
+6. **Enum 다양성:** enum 타입 컬럼은 가능한 여러 enum 값을 포함하도록 샘플을 구성한다.
+7. **Nullable 표현:** nullable 컬럼은 일부 레코드에서 `NULL` 값을 포함하여 선택적 필드임을 보여준다.
+8. **시간순 정합성:** `createdAt`/`updatedAt` 타임스탬프는 비즈니스 시나리오에 맞는 시간 순서를 반영한다.
+
+### 9.2 Sample Data Relationship Description
+
+샘플 데이터 간의 관계를 명시적으로 서술한다:
+
+- **연결 예시:** 부모 엔티티의 특정 레코드가 자식 엔티티의 어떤 레코드들과 연결되는지 대표값(이름, 제목 등)과 함께 표시
+- **비즈니스 시나리오:** 샘플 데이터가 표현하는 실제 비즈니스 상황을 1~2문장으로 설명 (예: "김민수 사용자가 전자제품 카테고리에서 노트북과 마우스를 주문한 시나리오")
+- **관계 매핑 테이블:** 부모 PK, 부모 대표값, 자식 PK, 자식 대표값, FK 컬럼을 테이블로 정리
+
+### 9.3 JSON Companion Extension (erd.json)
+
+`erd.json`의 entity 아이템에 `sampleData` 배열을 추가한다:
+
+```json
+{
+  "id": "ENT-010",
+  "type": "entity",
+  "title": "User",
+  "columns": [...],
+  "sampleData": [
+    {
+      "id": 1,
+      "email": "alice@example.com",
+      "name": "김민수",
+      "role": "admin",
+      "isActive": true,
+      "createdAt": "2026-01-15T09:00:00Z",
+      "updatedAt": "2026-01-15T09:00:00Z"
+    },
+    {
+      "id": 2,
+      "email": "bob@example.com",
+      "name": "이영희",
+      "role": "user",
+      "isActive": true,
+      "createdAt": "2026-01-16T10:30:00Z",
+      "updatedAt": "2026-01-16T10:30:00Z"
+    },
+    {
+      "id": 3,
+      "email": "carol@example.com",
+      "name": "박지원",
+      "role": "user",
+      "isActive": false,
+      "createdAt": "2026-01-17T14:00:00Z",
+      "updatedAt": "2026-02-01T08:00:00Z"
+    }
+  ]
+}
+```
+
+`sampleData`의 각 객체는 해당 엔티티의 컬럼 구조와 일치해야 하며, FK 컬럼 값은 참조 엔티티의 `sampleData` 내 유효한 `id` 값이어야 한다.
+
+## 10. Validation Checks
 
 After ERD generation, the following validations are performed:
 
@@ -478,3 +545,5 @@ After ERD generation, the following validations are performed:
 9. **Mermaid syntax validity:** The erDiagram block is syntactically valid Mermaid.
 10. **JSON-Markdown sync:** Every item in `erd.json` has a corresponding entry in `erd.md`.
 11. **Link graph update:** `data/links.json` contains nodes and edges for all ERD items.
+12. **Sample data FK integrity:** 모든 샘플 데이터의 FK 값이 참조 엔티티의 샘플 PK에 존재하는지 검증.
+13. **Sample data coverage:** 모든 REL에 대해 최소 1건의 FK 연결이 샘플 데이터에 존재하는지 검증.

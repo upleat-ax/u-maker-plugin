@@ -299,7 +299,33 @@ setup_gemini() {
 }
 
 # ============================================================
-# 6c. Register skill symlinks in ~/.claude/skills/
+# 6c. Register _meta symlinks (templates, schemas, etc.)
+# ============================================================
+
+register_meta_symlinks() {
+  local cache_meta="$CACHE_DIR/$PLUGIN_NAME/$PLUGIN_NAME/$PLUGIN_VERSION/_meta"
+
+  if [[ ! -d "$cache_meta" ]]; then
+    warn "No _meta directory in cache, skipping _meta symlinks"
+    return 0
+  fi
+
+  # Register in each platform's home that exists
+  for platform_home in "$CLAUDE_HOME" "$CODEX_HOME" "$GEMINI_HOME"; do
+    [[ -d "$platform_home" ]] || continue
+
+    local meta_dir="$platform_home/_meta"
+    local link_path="$meta_dir/$PLUGIN_NAME"
+
+    mkdir -p "$meta_dir"
+    make_link "$cache_meta" "$link_path"
+  done
+
+  ok "Registered _meta symlinks (templates, schemas, session-protocols, tech-rules)"
+}
+
+# ============================================================
+# 6e. Register skill symlinks in ~/.claude/skills/
 # ============================================================
 
 register_skill_symlinks() {
@@ -344,7 +370,7 @@ register_skill_symlinks() {
 }
 
 # ============================================================
-# 6d. Register agent symlinks in ~/.claude/agents/
+# 6f. Register agent symlinks in ~/.claude/agents/
 # ============================================================
 
 register_agent_symlinks() {
@@ -389,7 +415,7 @@ register_agent_symlinks() {
 }
 
 # ============================================================
-# 6e. Clean stale agent symlinks
+# 6g. Clean stale agent symlinks
 # ============================================================
 
 clean_stale_agent_symlinks() {
@@ -416,7 +442,7 @@ clean_stale_agent_symlinks() {
 }
 
 # ============================================================
-# 6f. Clean stale skill symlinks
+# 6h. Clean stale skill symlinks
 # ============================================================
 
 clean_stale_skill_symlinks() {
@@ -466,43 +492,47 @@ deploy() {
   mkdir -p "$MARKETPLACES_DIR" "$CACHE_DIR"
 
   # Step 1: Cache sync (must run BEFORE symlink so the target exists)
-  log "1/7  Cache sync"
+  log "1/11  Cache sync"
   sync_to_cache
 
   # Step 2: Marketplace symlink (points to cache, not SCRIPT_DIR — survives temp dir cleanup)
-  log "2/7  Marketplace symlink"
+  log "2/11  Marketplace symlink"
   local cache_dest="$CACHE_DIR/$PLUGIN_NAME/$PLUGIN_NAME/$PLUGIN_VERSION"
   make_link "$cache_dest" "$MARKETPLACES_DIR/$MARKETPLACE_NAME"
 
   # Step 3: known_marketplaces.json
-  log "3/7  known_marketplaces.json"
+  log "3/11  known_marketplaces.json"
   update_known_marketplaces
 
   # Step 4: installed_plugins.json
-  log "4/7  installed_plugins.json"
+  log "4/11  installed_plugins.json"
   update_installed_plugins
 
   # Step 5: Clean stale symlinks
-  log "5/10 Clean stale skill symlinks"
+  log "5/11  Clean stale skill symlinks"
   clean_stale_skill_symlinks
 
-  log "6/10 Clean stale agent symlinks"
+  log "6/11  Clean stale agent symlinks"
   clean_stale_agent_symlinks
 
   # Step 7: Skill symlinks
-  log "7/10 Skill symlinks"
+  log "7/11  Skill symlinks"
   register_skill_symlinks
 
   # Step 8: Agent symlinks
-  log "8/10 Agent symlinks"
+  log "8/11  Agent symlinks"
   register_agent_symlinks
 
-  # Step 9: Codex
-  log "9/10 Codex integration"
+  # Step 9: _meta symlinks (templates, schemas, etc.)
+  log "9/11  _meta symlinks (templates, schemas)"
+  register_meta_symlinks
+
+  # Step 10: Codex
+  log "10/11 Codex integration"
   setup_codex
 
-  # Step 10: Gemini
-  log "10/10 Gemini integration"
+  # Step 11: Gemini
+  log "11/11 Gemini integration"
   setup_gemini
 
   echo ""
@@ -588,6 +618,14 @@ with open('$INSTALLED_PL', 'w') as f:
     ok "Removed $acount agent symlinks"
   fi
 
+  # Remove _meta symlinks
+  for platform_home in "$CLAUDE_HOME" "$CODEX_HOME" "$GEMINI_HOME"; do
+    if [[ -L "$platform_home/_meta/$PLUGIN_NAME" ]]; then
+      rm "$platform_home/_meta/$PLUGIN_NAME"
+      ok "Removed _meta symlink from $(basename "$platform_home")"
+    fi
+  done
+
   # Remove Gemini symlinks
   if [[ -d "$GEMINI_HOME" ]]; then
     for link in plugins agents skills; do
@@ -671,6 +709,23 @@ check() {
     fi
   else
     err "installed_plugins.json not found"
+    all_ok=false
+  fi
+
+  # _meta symlinks
+  local meta_ok=true
+  for platform_home in "$CLAUDE_HOME" "$CODEX_HOME" "$GEMINI_HOME"; do
+    [[ -d "$platform_home" ]] || continue
+    local pname
+    pname="$(basename "$platform_home")"
+    if [[ -L "$platform_home/_meta/$PLUGIN_NAME" ]]; then
+      ok "$pname _meta → cache _meta"
+    else
+      warn "$pname _meta symlink missing"
+      meta_ok=false
+    fi
+  done
+  if ! $meta_ok; then
     all_ok=false
   fi
 

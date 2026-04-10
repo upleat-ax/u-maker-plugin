@@ -89,13 +89,22 @@ The "Default" column shows the rendering engine when `--diagram svg` (default). 
 | **IA** | Site map hierarchy | SVG | SVG |
 | **IA** | User flows (per major US) | SVG | SVG |
 | **IA** | Navigation structure | SVG | SVG |
-| **ERD** | Full entity-relationship diagram | SVG | Mermaid `erDiagram` |
+| **ERD** | Full entity-relationship diagram (entity boxes + curved connectors + cardinality) | SVG | Mermaid `erDiagram` |
 | **ERD** | Entity grouping by domain | SVG | SVG |
+| **ERD** | Relationship description cards (per relationship — from/to, type, FK, prose description) | SVG | SVG |
+| **ERD** | Sample data tables per entity (3~5 records with FK highlight) | HTML | HTML |
+| **ERD** | Sample data relation diagram (record cards + FK curved connectors + scenario) | SVG | SVG |
 | **API** | Data model class diagram | SVG | Mermaid `classDiagram` |
 | **API** | Request/response sequence per endpoint group | SVG | Mermaid `sequenceDiagram` |
 | **API** | Endpoint-to-FR traceability | SVG | SVG |
-| **Screens** | Screen flow / navigation map | SVG | SVG |
-| **Screens** | Screen layout structure per screen (from `layout` field) | SVG | SVG |
+| **Screens** | Screen flow / navigation map (index page) | SVG | SVG |
+| **Screens** | SVG wireframe per screen (app-frame: sidebar + header + body with actual UI elements) | SVG | SVG |
+| **Screens** | Annotation panel per screen (numbered markers mapped to wireframe elements) | HTML | HTML |
+| **Screens** | Component spec table per screen (component, type, props/validation, API) | HTML | HTML |
+| **Screens** | Business logic diagram per screen (condition flow chart SVG) | SVG | SVG |
+| **Screens** | Sequential diagram per screen (actor-system interaction SVG) | SVG | SVG |
+| **Screens** | Data flow diagram per screen (data stores, processes, external entities SVG) | SVG | SVG |
+| **Screens** | Used ERD section per screen (related entities from erd.json) | SVG | SVG |
 | **Design System** | Token hierarchy (color, spacing, typography) | SVG | SVG |
 | **Design System** | Color palette swatches | SVG | SVG |
 | **Test Cases** | FT→TC coverage map | SVG | SVG |
@@ -140,13 +149,79 @@ The "Default" column shows the rendering engine when `--diagram svg` (default). 
     - **Timeline/Roadmap:** 컬럼별 phase, 세로 축 위에 pill-shape 항목, 점선 연결
     - **Node-link maps:** 노드 카드 + 라벨 달린 링크 커넥터, 그룹별 배경 영역
     - 데이터에 맞는 다른 시각 표현도 자유롭게 사용 가능
-12. **Screen layout diagram (SVG):** Screens 문서의 각 화면에 대해 `screens.json`의 `layout` 필드를 읽어 대략적인 화면 레이아웃을 inline SVG로 렌더링한다. State Transition 다이어그램은 생성하지 않는다.
-    - `layout.direction`에 따라 영역을 수평/수직으로 배치
-    - 각 `area`를 labeled rectangle로 표현 (이름 + children 목록)
-    - fixed width/height는 비례 축소, flex는 남은 공간 채움
-    - 영역별 배경색 구분 (header: `#e0f2fe`, body: `#f8fafc`, sidebar: `#f1f5f9`, footer: `#f0fdf4`)
-    - children 컴포넌트명을 영역 내부에 작은 텍스트로 나열
-13. **Fallback:** If source data is insufficient, insert a placeholder `<div class="text-center text-gray-400 py-8">` with note: `"Diagram will be generated when {dependency} data is available."`
+12. **ERD SVG diagram (필수):** ERD 문서의 각 도메인 페이지에 반드시 inline SVG ERD를 생성한다. `erd.json`의 entities + relationships 데이터로부터 생성:
+    - **Entity boxes:** 각 엔티티를 rounded rectangle로 렌더링. 헤더 영역(colored, 엔티티명) + column rows (name, type, PK/FK/UK 배지)
+    - **Relationship connectors:** 엔티티 간 curved path (`C` Bezier)로 연결. 직선(`<line>`) 금지
+    - **Cardinality labels:** 커넥터 양 끝에 `1`, `N`, `0..1`, `0..N` 등 카디널리티 텍스트 표시
+    - **Relationship labels:** 커넥터 중앙에 관계 설명 텍스트 (예: "has many", "belongs to")
+    - **Color scheme:** Entity header: `#3b82f6` (blue-500), PK badge: `#8b5cf6` (violet), FK badge: `#f59e0b` (amber), UK badge: `#10b981` (green)
+    - **Domain grouping:** 같은 도메인 엔티티를 배경 영역(`<rect>` with light fill)으로 그룹핑
+    - **Layout:** 엔티티 30개 초과 시 도메인별로 분할. 엔티티 간 겹침 없도록 자동 배치
+13. **ERD relationship description section (필수):** ERD 도메인 페이지에 SVG 다이어그램 아래 관계 설명 카드를 HTML로 생성:
+    - 각 relationship을 카드 형태로 표시: From Entity → To Entity, Type (1:1/1:N/N:M), FK Column, 상세 설명(prose)
+    - 관계의 비즈니스 의미를 자연어로 서술 (예: "하나의 주문(Order)은 여러 개의 주문항목(OrderItem)을 가진다")
+    - 참조 무결성 규칙 명시 (CASCADE/SET NULL/RESTRICT 등)
+14. **ERD sample data section (필수):** ERD 도메인 페이지에 관계 설명 카드 아래, 샘플 데이터 섹션을 생성한다. `erd.json`의 각 entity `sampleData` 배열로부터:
+    - **샘플 데이터 테이블:** 엔티티별 샘플 레코드를 `<table>`로 렌더링. PK 컬럼은 `font-weight: bold`, FK 컬럼은 amber 배경 하이라이트
+    - **Sample Data Relation Diagram (inline SVG, 필수):** 샘플 데이터 간의 실제 FK 연결을 시각화하는 inline SVG 다이어그램:
+      - **노드:** 각 샘플 레코드를 rounded rectangle 카드로 표현. 카드 내용 = 엔티티명 + PK 값 + 대표 컬럼값 (이름, 제목 등)
+      - **커넥터:** FK 관계에 따라 부모 레코드 → 자식 레코드를 curved path (`C` Bezier)로 연결. 직선 금지
+      - **레이블:** 커넥터 위에 FK 컬럼명 표시 (예: `userId`, `orderId`)
+      - **그룹핑:** 같은 엔티티의 레코드를 수평으로 나열하고, 엔티티 그룹을 수직으로 배치. 각 엔티티 그룹에 라벨 헤더
+      - **Color scheme:** 엔티티 그룹별 헤더 색상 구분 (blue-500, green-500, amber-500, violet-500 순환). 카드 배경: white/gray-50. 커넥터: slate-700
+      - **비즈니스 시나리오:** 다이어그램 하단에 샘플 데이터가 표현하는 비즈니스 시나리오를 1~2문장으로 서술하는 `<p>` 텍스트 추가
+      - **Dark mode:** 카드/텍스트에 `dark:` 클래스 적용
+    - **관계 매핑 테이블:** 각 REL별로 부모 PK, 부모 대표값, 자식 PK, 자식 대표값, FK 컬럼을 정리하는 요약 테이블
+16. **Screen wireframe (SVG — 대체 기존 screen layout diagram):** 기존 layout 박스 대신, 실제 UI를 묘사하는 고충실도 SVG wireframe을 생성한다. `screens.json`의 `layout` + `components` + `state` 필드로부터:
+    - **App-frame 구조:** 2-column layout — 좌측 sidebar (앱 내비게이션) + 우측 main area (page header + body + footer)
+    - **Sidebar:** 앱 이름/로고, 메뉴 항목 목록. 현재 화면 active 상태 표시
+    - **Page header:** breadcrumb + page title + action buttons
+    - **Page body:** 실제 UI 요소를 SVG로 렌더링:
+      - Input fields: labeled `<rect>` with placeholder text
+      - Select/Dropdown: `<rect>` with dropdown arrow indicator
+      - Buttons: rounded `<rect>` with label (primary: filled, outline: bordered)
+      - Tables: header row + body rows with cell borders
+      - Cards: rounded `<rect>` with title + content area
+      - File dropzone: dashed border `<rect>` with upload icon
+      - Form groups: label + input stacked vertically
+    - **Annotation markers:** 각 주요 UI 요소에 numbered circle marker (`<circle>` + `<text>`) 배치. 마커 번호는 annotation panel과 1:1 매핑
+    - **Color scheme:** sidebar bg: `#2d3a4a`, header bg: `#3b1e6e`, body bg: `#f0f3f7`, marker: `#7c3aed`
+    - **Sizing:** `viewBox` 기반 반응형. sidebar 약 200px, main area 나머지
+    - State Transition 다이어그램은 생성하지 않는다
+17. **Screen annotation panel (HTML):** wireframe 오른쪽에 배치되는 어노테이션 패널:
+    - 각 numbered marker에 대응하는 설명 항목: marker number + component name (bold) + 상세 설명
+    - 설명에는 component type, validation rules, related BR(Business Rule) ID 포함
+    - 하단에 **비즈니스 규칙** 섹션: `BR-{screenId}-XX` 형식의 규칙 목록
+    - 어노테이션 범례(legend)는 생성하지 않는다
+18. **Screen component spec table (HTML):** wireframe + annotation 아래 배치:
+    - 테이블 컬럼: `#` (marker 번호), `컴포넌트`, `타입` (Input/Select/Button/Upload/Display/Form/Action...), `Props / 유효성`, `API`
+    - `screens.json`의 `components` 배열로부터 생성
+    - API 컬럼: 해당 컴포넌트가 트리거하는 API endpoint (없으면 `-`)
+19. **Screen business logic diagram (SVG):** 해당 화면의 유효성 검사 / 조건 분기 흐름을 condition flow chart로 생성:
+    - **Start node:** pill shape (화면 진입)
+    - **Action nodes:** rounded rect (사용자 입력, API 호출 등)
+    - **Decision diamonds:** `<polygon>` diamond shape (조건 분기: 유효성 검사, 상태 체크)
+    - **Error nodes:** red-tinted rect (에러 표시, 비활성 등)
+    - **Success node:** green-tinted rect (최종 성공 상태)
+    - **Connectors:** curved path with Yes/No labels
+    - `screens.json`의 `validationRules` + `businessRules` 데이터로부터 생성
+20. **Screen sequential diagram (SVG):** 해당 화면의 사용자-시스템 상호작용 시퀀스:
+    - **Actors:** 사용자(User), Frontend, Backend API, DB/External 등 — 각각 colored box + dashed lifeline
+    - **Messages:** solid arrow (request) + dashed arrow (response) with numbered step labels
+    - **Activation bars:** Frontend/Backend 처리 구간을 thin rect로 표시
+    - **Self-calls:** Frontend 내부 처리 (유효성 검사 등) — loop-back arrow
+    - `screens.json`의 `apiCalls` + `components` 데이터로부터 흐름 추론
+21. **Screen data flow diagram (SVG):** 해당 화면의 데이터 흐름:
+    - **External entity:** `<rect>` (사용자, 외부 시스템)
+    - **Process:** `<circle>` or `<ellipse>` (화면 Page, API endpoint)
+    - **Data store:** open-top `<rect>` (state store, DB table)
+    - **Data flows:** labeled curved arrows showing data movement
+    - 화면에서 사용하는 state, API request/response, DB 읽기/쓰기를 시각화
+22. **Screen used ERD section (SVG):** 해당 화면이 사용하는 엔티티만 추출하여 mini ERD를 inline SVG로 생성:
+    - `screens.json`의 `relatedEntities` 또는 API endpoint에서 참조하는 entity를 `erd.json`에서 조회
+    - 해당 엔티티 + 엔티티 간 관계만 포함하는 축소된 ERD SVG
+    - 전체 ERD와 동일한 스타일 (entity box + curved connector + cardinality)
+23. **Fallback:** If source data is insufficient, insert a placeholder `<div class="text-center text-gray-400 py-8">` with note: `"Diagram will be generated when {dependency} data is available."`
 
 ## 3. Mermaid Rendering Configuration
 
@@ -720,8 +795,14 @@ Read `srs.json` companion:
 
 Read `erd.json` companion:
 
-- **Index page** includes: Full ER overview diagram (Mermaid erDiagram), entity count summary, relationship summary table
-- **Domain page per entity group**: Entities sharing the same `domain` field + relationships involving those entities + domain-specific Mermaid erDiagram
+- **Index page** includes: Full ER overview diagram (inline SVG — entity boxes with columns, curved connectors with cardinality labels), entity count summary, relationship summary table
+- **Domain page per entity group**: Entities sharing the same `domain` field + relationships involving those entities:
+  1. **Inline SVG ERD (필수):** 해당 도메인의 entity boxes + relationship connectors를 SVG로 렌더링 (§ 2 Rule 12 참조). Mermaid가 아닌 inline SVG로 생성해야 `--diagram svg` 모드에서 정상 표시됨
+  2. **Relationship descriptions (필수):** 각 관계를 카드 형태로 설명 — From → To, Type (1:1/1:N/N:M), FK Column, 비즈니스 의미 prose, 참조 무결성 규칙 (§ 2 Rule 13 참조)
+  3. **Entity detail tables:** 각 엔티티의 column 상세 테이블 (Column, Type, PK, FK, Nullable, Default, Description)
+  4. **Sample data tables (필수):** 각 엔티티의 샘플 데이터를 `<table>`로 렌더링. PK 컬럼 bold, FK 컬럼 amber 하이라이트 (§ 2 Rule 14 참조)
+  5. **Sample data relation diagram (필수):** 도메인 내 샘플 데이터 간 FK 연결을 inline SVG로 시각화. 레코드 카드 + curved connector + FK 라벨 + 비즈니스 시나리오 설명 (§ 2 Rule 14 참조)
+  6. **Common table references:** 다른 도메인에서 참조하는 테이블 목록
 - **Slug**: Domain name slugified (e.g., `auth-domain.html`)
 - **Stats**: Entity count, relationship count, domain count
 
@@ -738,8 +819,40 @@ Read `api.json` companion:
 
 Read `screens.json` companion:
 
-- **Index page** includes: Screen inventory table, screen flow navigation map (SVG), screen group summary
-- **Domain page per screen group**: Screens sharing the same `group` or navigation section + component details + screen layout diagram (SVG, generated from `layout` field in `screens.json`)
+- **Index page** includes: Screen inventory table (ID, Name, Path, Category, Related IA/FR), screen flow navigation map (SVG), screen group summary
+- **Domain page per screen group**: Screens sharing the same `group` or navigation section. 각 화면(screen)마다 아래 섹션을 순서대로 생성:
+
+  **Screen Page Layout (2-column stage):**
+  ```
+  ┌─────────────────────────────────────────────────────┬───────────────┐
+  │  doc-header (screen ID, name, path, FT/FR/P/date)   │               │
+  ├──────────────────────────────────┬──────────────────┤               │
+  │  SVG Wireframe (app-frame)       │  Annotation Panel│               │
+  │  ├─ sidebar (app nav)            │  ├─ markers 1~N  │               │
+  │  └─ main (header+body+footer)    │  ├─ descriptions │               │
+  │     with actual UI elements      │  └─ biz rules    │               │
+  ├──────────────────────────────────┴──────────────────┤               │
+  │  Component Spec Table (#, Component, Type, Props, API)              │
+  ├─────────────────────────────────────────────────────┤               │
+  │  Diagrams Section                                    │               │
+  │  ├─ A. Business Logic Diagram (condition flow SVG)   │               │
+  │  ├─ B. Sequential Diagram (actor-system SVG)         │               │
+  │  ├─ C. Data Flow Diagram (DFD SVG)                   │               │
+  │  └─ D. Used ERD (mini ERD SVG for related entities)  │               │
+  └─────────────────────────────────────────────────────┘               │
+  ```
+
+  1. **Doc-header:** sticky top bar — screen ID badge (`SC-XXX`), screen name, route path (`/path/to`), related FT/FR IDs, priority, date
+  2. **SVG Wireframe + Annotation (2-column grid):**
+     - 좌측: SVG wireframe (§ 2 Rule 14 — app-frame with sidebar, page header, form elements, tables, buttons, annotation markers)
+     - 우측: Annotation panel (§ 2 Rule 15 — numbered descriptions + business rules). 어노테이션 범례는 생성하지 않는다
+  3. **Component spec table:** § 2 Rule 16 — `#`, 컴포넌트, 타입, Props/유효성, API
+  4. **Diagrams section:** 4개 다이어그램 순서대로:
+     - A. Business Logic Diagram — condition flow chart SVG (§ 2 Rule 17)
+     - B. Sequential Diagram — actor-system interaction SVG (§ 2 Rule 18)
+     - C. Data Flow Diagram — DFD SVG (§ 2 Rule 19)
+     - D. Used ERD — mini ERD SVG for this screen's related entities (§ 2 Rule 20)
+
 - **Slug**: Group name slugified (e.g., `auth-screens.html`)
 - **Stats**: Screen count, component count, group count
 
