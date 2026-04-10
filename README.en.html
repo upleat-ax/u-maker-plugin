@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>U-MAKER Plugin Documentation</title>
+<title>U-MAKER Plugin v3.4.5 Documentation</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{--sidebar-w:280px;--bg:#ffffff;--sidebar-bg:#ffffff;--main-bg:#ffffff;--text:#334155;--text-main:#334155;--heading:#0f172a;--accent:#3b82f6;--accent-hover:#2563eb;--code-bg:#f1f5f9;--code-text:#1e293b;--border:#e2e8f0;--active-bg:#f8fafc;--badge-bg:#e2e8f0;--badge-text:#64748b;--table-stripe:#f8fafc;--table-border:#e2e8f0;--table-header:#f1f5f9}
@@ -110,132 +110,106 @@ a:hover{text-decoration:underline}
 <nav class="sidebar" id="sidebar">
   <div class="sidebar-header">
     <h1>U-MAKER</h1>
-    <p>v3.4.4 &mdash; Plugin Documentation</p>
+    <p>v3.4.5 &mdash; Plugin Documentation</p>
   </div>
   <div class="sidebar-nav">
 
     <div class="nav-group">
       <div class="nav-group-title">Quick Start <span class="badge">2</span></div>
-      <a class="nav-item active" href="#tldr" onclick="nav(this)"><span class="num">00</span> TL;DR</a>
-      <a class="nav-item" href="#sec1" onclick="nav(this)"><span class="num">01</span> Problem &amp; Solution</a>
+      <a class="nav-item active" href="#hero" onclick="nav(this)"><span class="num">00</span> Overview</a>
+      <a class="nav-item" href="#tldr" onclick="nav(this)"><span class="num">01</span> TL;DR</a>
     </div>
 
     <div class="nav-group">
       <div class="nav-group-title">Architecture <span class="badge">3</span></div>
-      <a class="nav-item" href="#sec2" onclick="nav(this)"><span class="num">02</span> Architecture</a>
-      <a class="nav-item" href="#sec3" onclick="nav(this)"><span class="num">03</span> PDCA 5-Phase</a>
-      <a class="nav-item" href="#sec4" onclick="nav(this)"><span class="num">04</span> 3-Layer Pipeline</a>
+      <a class="nav-item" href="#sec-arch" onclick="nav(this)"><span class="num">02</span> Architecture</a>
+      <a class="nav-item" href="#sec-pdca" onclick="nav(this)"><span class="num">03</span> PDCA 5-Phase</a>
+      <a class="nav-item" href="#sec-pipeline" onclick="nav(this)"><span class="num">04</span> Data Pipeline</a>
     </div>
 
     <div class="nav-group">
-      <div class="nav-group-title">Components <span class="badge">4</span></div>
-      <a class="nav-item" href="#sec5" onclick="nav(this)"><span class="num">05</span> Agents</a>
-      <a class="nav-item" href="#sec6" onclick="nav(this)"><span class="num">06</span> Commands</a>
-      <a class="nav-item" href="#sec7" onclick="nav(this)"><span class="num">07</span> Engine Skills</a>
-      <a class="nav-item" href="#sec8" onclick="nav(this)"><span class="num">08</span> Interaction Modes</a>
+      <div class="nav-group-title">Components <span class="badge">3</span></div>
+      <a class="nav-item" href="#sec-agents" onclick="nav(this)"><span class="num">05</span> Agents</a>
+      <a class="nav-item" href="#sec-commands" onclick="nav(this)"><span class="num">06</span> Commands</a>
+      <a class="nav-item" href="#sec-gate" onclick="nav(this)"><span class="num">07</span> Gate Criteria</a>
     </div>
 
     <div class="nav-group">
-      <div class="nav-group-title">Data Model <span class="badge">3</span></div>
-      <a class="nav-item" href="#sec9" onclick="nav(this)"><span class="num">09</span> 4-Tier ID</a>
-      <a class="nav-item" href="#sec10" onclick="nav(this)"><span class="num">10</span> Folder Structure</a>
-      <a class="nav-item" href="#sec11" onclick="nav(this)"><span class="num">11</span> Output Rules</a>
+      <div class="nav-group-title">Data Model <span class="badge">2</span></div>
+      <a class="nav-item" href="#sec-folder" onclick="nav(this)"><span class="num">08</span> Folder Structure</a>
+      <a class="nav-item" href="#sec-4tier" onclick="nav(this)"><span class="num">09</span> 4-Tier ID</a>
     </div>
 
     <div class="nav-group">
-      <div class="nav-group-title">Reference <span class="badge">5</span></div>
-      <a class="nav-item" href="#sec12" onclick="nav(this)"><span class="num">12</span> Plugin Layout</a>
-      <a class="nav-item" href="#sec13" onclick="nav(this)"><span class="num">13</span> Hooks &amp; Guardrails</a>
-      <a class="nav-item" href="#sec14" onclick="nav(this)"><span class="num">14</span> Scenario Guide</a>
-      <a class="nav-item" href="#sec15" onclick="nav(this)"><span class="num">15</span> Install</a>
-      <a class="nav-item" href="#sec16" onclick="nav(this)"><span class="num">16</span> Troubleshooting</a>
+      <div class="nav-group-title">Reference <span class="badge">4</span></div>
+      <a class="nav-item" href="#sec-scenario" onclick="nav(this)"><span class="num">10</span> Scenario Guide</a>
+      <a class="nav-item" href="#sec-install" onclick="nav(this)"><span class="num">11</span> Install</a>
+      <a class="nav-item" href="#sec-troubleshoot" onclick="nav(this)"><span class="num">12</span> Troubleshooting</a>
+      <a class="nav-item" href="#sec-license" onclick="nav(this)"><span class="num">13</span> License</a>
     </div>
 
   </div>
-  <div class="sidebar-footer">Proprietary &copy; U PLEAT &middot; v3.4.4</div>
+  <div class="sidebar-footer">Proprietary &copy; 2026 U PLEAT &middot; v3.4.5</div>
 </nav>
 
 <main class="main">
 
-<!-- Hero -->
-<div class="hero">
+<!-- ============================================================ -->
+<!-- SECTION 0: Hero -->
+<!-- ============================================================ -->
+<div class="hero" id="hero">
   <h2>U-MAKER Plugin</h2>
-  <p>PDCA-based SSoT (Single Source of Truth) collaboration orchestrator.<br>
-  A Claude Code plugin that automates the entire software development lifecycle with 7 specialized agents and a 3-Layer pipeline.</p>
+  <p>PDCA-based SSoT (Single Source of Truth) collaboration orchestrator for Claude Code.<br>
+  Automates the entire software development lifecycle with 7 specialized agents, 15 skills, and a structured data pipeline.</p>
   <div class="stats">
-    <div class="stat"><div class="stat-val">13</div><div class="stat-label">Skills</div></div>
+    <div class="stat"><div class="stat-val">15</div><div class="stat-label">Skills</div></div>
     <div class="stat"><div class="stat-val">7</div><div class="stat-label">Agents</div></div>
     <div class="stat"><div class="stat-val">5</div><div class="stat-label">PDCA Phases</div></div>
-    <div class="stat"><div class="stat-val">5&ndash;11</div><div class="stat-label">Gate Criteria (default 5)</div></div>
+    <div class="stat"><div class="stat-val">11</div><div class="stat-label">Gate Criteria (threshold 95)</div></div>
   </div>
 </div>
 
-<blockquote><strong>v3.4.4 Key Changes (2026-04-05)</strong> &mdash; HTML generation decoupled from phase skills: <code>/u-plan</code>, <code>/u-design</code>, <code>/u-check</code>, <code>/u-reverse</code> no longer auto-generate HTML output. Use <code>/u-output</code> command to generate HTML independently. Phase prerequisite cascade: <code>/u-dev</code> auto-invokes <code>/u-design</code> if Design docs missing; <code>/u-design</code> auto-invokes <code>/u-plan</code> if Plan docs missing.</blockquote>
-
-<!-- TL;DR -->
-<h2 id="tldr">TL;DR</h2>
+<!-- ============================================================ -->
+<!-- SECTION 1: TL;DR -->
+<!-- ============================================================ -->
+<h2 id="tldr">1. TL;DR</h2>
 
 <h3>Forward Engineering (New Project)</h3>
-<pre><code><span class="comment"># 1. Install (macOS/Linux)</span>
-curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/install.sh | bash
+<pre><code><span class="comment"># 1. Install the plugin</span>
+<span class="cmd">claude plugin add upleat-ax/u-maker-plugin</span>
 
-<span class="comment"># 2. Restart Claude Code, then run in your project</span>
+<span class="comment"># 2. Restart Claude Code, then initialize your project</span>
 <span class="cmd">/u-init my-app</span>                <span class="comment"># Create .u-maker/ structure + register app</span>
 
 <span class="comment"># 3. Collect data &rarr; Analyze &rarr; Plan</span>
-<span class="comment"># &rarr; Drop RFP, meeting notes, AS-IS materials into .u-maker/_dropzone/ (auto-classified)</span>
-<span class="cmd">/u-ingest [app]</span>              <span class="comment"># raw &rarr; classified analysis</span>
-<span class="cmd">/u-plan [app]</span>                <span class="comment"># Auto-generate SRS + IA + Roadmap</span>
+<span class="comment"># Drop RFP, meeting notes, AS-IS materials into .u-maker/_dropzone/</span>
+<span class="cmd">/u-plan my-app</span>               <span class="comment"># dropzone &rarr; digest &rarr; SRS + IA + Roadmap</span>
 
 <span class="comment"># 4. Design &rarr; Implement &rarr; Verify</span>
-<span class="cmd">/u-design [app]</span>              <span class="comment"># ERD + API + Screen + Flow + RTM + wireframes</span>
-<span class="cmd">/u-dev [app]</span>                 <span class="comment"># Generate FE + BE + DB code</span>
-<span class="cmd">/u-qa [app]</span>               <span class="comment"># TC design + test + report</span>
+<span class="cmd">/u-design my-app</span>             <span class="comment"># SRS/IA &rarr; ERD + API + Screen + Flow + RTM</span>
+<span class="cmd">/u-dev my-app</span>                <span class="comment"># ERD/API/Screens &rarr; FE + BE + DB code</span>
+<span class="cmd">/u-check my-app</span>              <span class="comment"># SRS FT &rarr; Test Cases + Test Results</span>
 
-<span class="comment"># 5. Deploy + Retrospective</span>
-<span class="cmd">/u-ship [app]</span>                <span class="comment"># Final verification + iteration log + retrospective</span></code></pre>
+<span class="comment"># 5. Ship + Retrospective</span>
+<span class="cmd">/u-ship my-app</span>               <span class="comment"># Final verification + iteration log + retrospective</span></code></pre>
 
 <h3>Reverse Engineering (Existing Project)</h3>
 <pre><code><span class="cmd">/u-init my-app</span>                <span class="comment"># Initialize project</span>
-<span class="cmd">/u-reverse --app my-app</span>       <span class="comment"># Source code &rarr; SSoT reverse engineering (ERD, API, Screen, SRS, IA)</span>
-<span class="cmd">/u-sync [app]</span>                <span class="comment"># Cross-document consistency verification</span></code></pre>
+<span class="cmd">/u-reverse --app my-app</span>       <span class="comment"># Existing code &rarr; SSoT reverse engineering</span></code></pre>
 
 <h3>Natural Language Also Works</h3>
-<pre><code><span class="comment">"Create SRS for the [app] app"</span>      <span class="comment"># U-MAKER router auto-dispatches</span></code></pre>
+<pre><code><span class="comment">"Create SRS for my-app"</span>           <span class="comment"># U-MAKER router auto-dispatches to /u-plan</span>
+<span class="comment">"Generate the ERD for my-app"</span>     <span class="comment"># Routed to /u-design --only erd</span>
+<span class="comment">"Run all tests for my-app"</span>        <span class="comment"># Routed to /u-check</span></code></pre>
 
 <hr>
 
-<!-- Section 1 -->
-<h2 id="sec1">1. What This Plugin Solves</h2>
+<!-- ============================================================ -->
+<!-- SECTION 2: Architecture Overview -->
+<!-- ============================================================ -->
+<h2 id="sec-arch">2. Architecture Overview</h2>
 
-<p>U-MAKER is a collaboration orchestrator that implements <strong>Intent-driven, document-centric development (SSoT)</strong>.</p>
-
-<h3>Traditional Approach vs U-MAKER v3</h3>
-<table>
-<thead><tr><th>Traditional Approach</th><th>U-MAKER v3 Approach</th></tr></thead>
-<tbody>
-<tr><td>Code first, documentation later</td><td>Docs first, code generated from docs (Docs-First)</td></tr>
-<tr><td>Existing projects have no documentation</td><td><code>/u-reverse</code> auto reverse-engineers source code into SSoT</td></tr>
-<tr><td>Analyzing 200-page RFP at once &rarr; early content lost</td><td>3-Layer pipeline with chunk analysis &rarr; zero information loss</td></tr>
-<tr><td>"What documents do I need to create?"</td><td>A single <code>/u-plan [app]</code> chain-generates SRS+IA+Roadmap</td></tr>
-<tr><td>Cannot trace requirements</td><td>Full traceability with 4-Tier IDs (USR&rarr;FR&rarr;US&rarr;FT)</td></tr>
-<tr><td>Manual update of ERD/Screen/TC when SRS changes</td><td>Auto-Cascade via <code>_links.json</code> dependency graph</td></tr>
-<tr><td>Quality degradation from skipping phases</td><td>Phase Gate auto-verification before proceeding to next phase</td></tr>
-<tr><td>File classification is tedious</td><td>Drop into <code>.u-maker/_dropzone/</code> for auto-classification (rfp/, as-is/, etc.)</td></tr>
-<tr><td>Document and code version mismatch</td><td>Simultaneous <code>.md</code> + <code>.json</code> generation</td></tr>
-<tr><td>Different rules per app</td><td>common/ policy inheritance + per-app override</td></tr>
-<tr><td>AI decisions are a black box</td><td>Assumptions Log records all decisions + post-review</td></tr>
-<tr><td>Fixed document language</td><td><code>language.documents</code> setting supports ko/en/ja/zh</td></tr>
-<tr><td>Hard to visualize design artifacts</td><td>Auto-generated <code>wireframes/index.html</code> SPA viewer</td></tr>
-<tr><td>Writing PR/MR is repetitive labor</td><td><code>/u-git-pr</code> auto-generates structured PR/MR</td></tr>
-<tr><td>Don't know where to ask questions</td><td>Quick Q&amp;A with <code>/u-ask</code></td></tr>
-</tbody>
-</table>
-
-<hr>
-
-<!-- Section 2 -->
-<h2 id="sec2">2. Architecture Overview</h2>
+<p>U-MAKER accepts both slash commands and natural language, routing them through a skill router and agent dispatch system to produce SSoT documents.</p>
 
 <div class="diagram-wrap">
 <svg viewBox="0 0 720 320" xmlns="http://www.w3.org/2000/svg" style="font-family:-apple-system,sans-serif">
@@ -283,30 +257,15 @@ curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/insta
 </svg>
 </div>
 
-<h3>Skill Naming Convention</h3>
-<table>
-<thead><tr><th>Skill</th><th>Phase</th><th>Description</th><th>Primary Output</th></tr></thead>
-<tbody>
-<tr><td><code>/u-plan</code></td><td>Plan</td><td>classified &rarr; SRS + IA + Roadmap chain generation</td><td>srs.md, ia.md, roadmap.md</td></tr>
-<tr><td><code>/u-design</code></td><td>Design</td><td>SRS/IA &rarr; ERD + API + Screen + Flow + RTM + wireframes</td><td>erd.md, api.md, screen.md</td></tr>
-<tr><td><code>/u-dev</code></td><td>Dev</td><td>Spec &rarr; FE + BE + DB code generation</td><td>Source code</td></tr>
-<tr><td><code>/u-check</code> <small>(alias: <code>/u-qa</code>)</small></td><td>Check</td><td>TC design + test execution + report + exit criteria</td><td>test-cases.md, test-report.md</td></tr>
-<tr><td><code>/u-engine</code></td><td>ALL</td><td>Cross-cutting internal engines (router, dep, doc, validator, etc.)</td><td>Internal</td></tr>
-<tr><td><code>/u-loop</code></td><td>Loop</td><td>Unattended PDCA auto-execution loop (Plan&rarr;Design&rarr;Dev&rarr;Check&rarr;Ship with gatekeeper). <code>--loop [N]</code> sets criteria count per gate (default 5, max 11)</td><td>loop-state.json</td></tr>
-<tr><td><code>/u-wireframe</code></td><td>Design</td><td>Per-screen HTML wireframe generation from screens.json. 6-section layout: Header, Stage (app-frame + annotation panel), Component Spec table, 2-column logic diagrams, Overlay UI (modals/bottomsheets/popups), Annotation Legend</td><td>wireframes/*.html</td></tr>
-<tr><td><code>/u-discuss</code></td><td>ALL</td><td>Structured discussion session (brainstorm/review/decision/workshop/retro)</td><td>Session archive</td></tr>
-<tr><td><code>/u-git-pr</code></td><td>Ship</td><td>Auto-generate PR/MR (commit analysis, split/merge, review guide)</td><td>PR/MR</td></tr>
-<tr><td><code>/u-reverse</code></td><td>Plan+Design</td><td>Source code &rarr; SSoT reverse engineering (Code &rarr; Design &rarr; Plan)</td><td>erd.md, api.md, screen.md, srs.md, ia.md</td></tr>
-<tr><td><code>/u-init</code></td><td>Init</td><td>Create .u-maker/ structure, initialize config, register app</td><td>.u-maker/ scaffold</td></tr>
-<tr><td><code>/u-meeting-report</code></td><td>ALL</td><td>Generate structured meeting report from discussion/notes</td><td>Meeting report HTML</td></tr>
-<tr><td><code>/u-output</code></td><td>ALL</td><td>Standalone HTML generation from existing docs/ (domain-split for large docs, <code>--diagram svg|mermaid|all</code>). SVG mode produces free-form diagrams, not Mermaid-style</td><td>out/browse/*.html</td></tr>
-</tbody>
-</table>
+<h3>Data Pipeline</h3>
+<pre><code>data/dropzone/ &rarr; data/digest/ &rarr; docs/ &rarr; output/</code></pre>
 
 <hr>
 
-<!-- Section 3 -->
-<h2 id="sec3">3. PDCA 5-Phase Process</h2>
+<!-- ============================================================ -->
+<!-- SECTION 3: PDCA 5-Phase Process -->
+<!-- ============================================================ -->
+<h2 id="sec-pdca">3. PDCA 5-Phase Process</h2>
 
 <div class="diagram-wrap">
 <svg viewBox="0 0 700 180" xmlns="http://www.w3.org/2000/svg" style="font-family:-apple-system,sans-serif">
@@ -343,86 +302,94 @@ curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/insta
 </svg>
 </div>
 
-<blockquote>You can select 4-Phase mode (merging Design into Do) in config: <code>designPhase: "merged"</code></blockquote>
-
 <h3>Phase Definition</h3>
 <table>
-<thead><tr><th>Phase</th><th>Deliverables</th><th>Responsible Agent</th><th>Gate Criteria</th></tr></thead>
+<thead><tr><th>Phase</th><th>Deliverables</th><th>Responsible Agents</th><th>Gate Condition</th></tr></thead>
 <tbody>
-<tr><td><strong>01 Plan</strong></td><td>SRS, IA, Roadmap</td><td>pm&rarr;plan&rarr;gatekeeper</td><td>SRS+IA+Roadmap = Final</td></tr>
-<tr><td><strong>02 Design</strong></td><td>ERD, API, Screen, ScreenFlow, UXGuide, RTM, wireframes/index.html</td><td>design&rarr;gatekeeper</td><td>ERD+RTM+Screen+API = Final</td></tr>
-<tr><td><strong>03 Dev</strong></td><td>Code, UIComponents, Screen(impl)</td><td>dev</td><td>Code complete + build success</td></tr>
-<tr><td><strong>04 Check</strong></td><td>TestCase, TestReport</td><td>qa&rarr;gatekeeper</td><td>Critical/Major=0, all FR impl</td></tr>
-<tr><td><strong>05 Ship</strong></td><td>IterationLog, Retrospective</td><td>pm&rarr;gatekeeper</td><td>Retro + archive complete</td></tr>
+<tr><td><strong>01 Plan</strong></td><td>SRS, IA, Roadmap</td><td>pm &rarr; plan &rarr; gatekeeper</td><td>SRS + IA + Roadmap = Final</td></tr>
+<tr><td><strong>02 Design</strong></td><td>ERD, API, Screen, ScreenFlow, UXGuide, RTM, wireframes</td><td>design &rarr; gatekeeper</td><td>ERD + RTM + Screen + API = Final</td></tr>
+<tr><td><strong>03 Dev</strong></td><td>FE + BE + DB Code, UIComponents</td><td>dev</td><td>Code complete + build success</td></tr>
+<tr><td><strong>04 Check</strong></td><td>TestCase, TestReport</td><td>qa &rarr; gatekeeper</td><td>Critical/Major = 0, all FR implemented</td></tr>
+<tr><td><strong>05 Ship/Done</strong></td><td>IterationLog, Retrospective</td><td>pm &rarr; gatekeeper</td><td>Retro + archive complete</td></tr>
 </tbody>
 </table>
 
-<h3>Mandatory Scorecard Display</h3>
-<p>Every gate validation <strong>must display the full N-criteria scorecard</strong> on screen (N = 1&ndash;11, default 5; controlled by <code>--loop [N]</code>). No abbreviation or omission allowed.</p>
+<h3>Gatekeeper Scorecard</h3>
+<p>Every gate validation <strong>must display the full 11-criteria scorecard</strong> (threshold 95, configurable). No abbreviation or omission allowed.</p>
 
-<pre style="background:#0f172a;color:#cbd5e1;padding:20px;border-radius:12px;font-size:12px;line-height:1.7;overflow-x:auto"><code><span style="color:#60a5fa">&boxdr;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxdl;</span>
-<span style="color:#60a5fa">&boxv;</span>  <strong style="color:#fff">GATEKEEPER REPORT</strong> &mdash; Plan Phase (myapp)                  <span style="color:#60a5fa">&boxv;</span>
-<span style="color:#60a5fa">&boxvr;&boxh;&boxh;&boxh;&boxh;&boxh;&boxhd;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxhd;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxhd;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxhd;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxvl;</span>
-<span style="color:#60a5fa">&boxv;</span>  #  <span style="color:#60a5fa">&boxv;</span> Criteria             <span style="color:#60a5fa">&boxv;</span> Score <span style="color:#60a5fa">&boxv;</span> Status <span style="color:#60a5fa">&boxv;</span> Findings      <span style="color:#60a5fa">&boxv;</span>
-<span style="color:#60a5fa">&boxvr;&boxh;&boxh;&boxh;&boxh;&boxh;&boxhu;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxhu;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxhu;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxhu;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxvl;</span>
-<span style="color:#60a5fa">&boxv;</span>  01 <span style="color:#60a5fa">&boxv;</span> Completeness         <span style="color:#60a5fa">&boxv;</span>   <span style="color:#4ade80">98</span>  <span style="color:#60a5fa">&boxv;</span>   <span style="color:#4ade80">PASS</span> <span style="color:#60a5fa">&boxv;</span> &mdash;             <span style="color:#60a5fa">&boxv;</span>
-<span style="color:#60a5fa">&boxv;</span>  04 <span style="color:#60a5fa">&boxv;</span> Traceability         <span style="color:#60a5fa">&boxv;</span>   <span style="color:#f87171">88</span>  <span style="color:#60a5fa">&boxv;</span>   <span style="color:#f87171">FAIL</span> <span style="color:#60a5fa">&boxv;</span> <span style="color:#f87171">FR-030 orphan</span> <span style="color:#60a5fa">&boxv;</span>
-<span style="color:#60a5fa">&boxv;</span>  ... (all N rows shown, default 5) ...                       <span style="color:#60a5fa">&boxv;</span>
-<span style="color:#60a5fa">&boxvr;&boxh;&boxh;&boxh;&boxh;&boxh;&boxhu;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxhu;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxhu;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxhu;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxvl;</span>
-<span style="color:#60a5fa">&boxv;</span> <strong style="color:#fff">AVG</strong> <span style="color:#60a5fa">&boxv;</span>                      <span style="color:#60a5fa">&boxv;</span> <strong style="color:#facc15">95.2</strong>  <span style="color:#60a5fa">&boxv;</span> <strong style="color:#4ade80">PASS</strong>   <span style="color:#60a5fa">&boxv;</span>               <span style="color:#60a5fa">&boxv;</span>
-<span style="color:#60a5fa">&boxul;&boxh;&boxh;&boxh;&boxh;&boxh;&boxhu;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxhu;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxhu;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxhu;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxur;</span>
+<pre style="background:#0f172a;color:#cbd5e1;padding:20px;border-radius:12px;font-size:12px;line-height:1.7;overflow-x:auto"><code><span style="color:#60a5fa">&#x250C;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2510;</span>
+<span style="color:#60a5fa">&#x2502;</span>  <strong style="color:#fff">GATEKEEPER REPORT</strong> &mdash; Plan Phase (myapp)                  <span style="color:#60a5fa">&#x2502;</span>
+<span style="color:#60a5fa">&#x251C;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x252C;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x252C;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x252C;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x252C;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2524;</span>
+<span style="color:#60a5fa">&#x2502;</span>  #  <span style="color:#60a5fa">&#x2502;</span> Criteria             <span style="color:#60a5fa">&#x2502;</span> Score <span style="color:#60a5fa">&#x2502;</span> Status <span style="color:#60a5fa">&#x2502;</span> Findings      <span style="color:#60a5fa">&#x2502;</span>
+<span style="color:#60a5fa">&#x251C;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x253C;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x253C;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x253C;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x253C;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2524;</span>
+<span style="color:#60a5fa">&#x2502;</span>  01 <span style="color:#60a5fa">&#x2502;</span> Completeness         <span style="color:#60a5fa">&#x2502;</span>   <span style="color:#4ade80">98</span>  <span style="color:#60a5fa">&#x2502;</span>   <span style="color:#4ade80">PASS</span> <span style="color:#60a5fa">&#x2502;</span> &mdash;             <span style="color:#60a5fa">&#x2502;</span>
+<span style="color:#60a5fa">&#x2502;</span>  02 <span style="color:#60a5fa">&#x2502;</span> Accuracy             <span style="color:#60a5fa">&#x2502;</span>   <span style="color:#4ade80">96</span>  <span style="color:#60a5fa">&#x2502;</span>   <span style="color:#4ade80">PASS</span> <span style="color:#60a5fa">&#x2502;</span> &mdash;             <span style="color:#60a5fa">&#x2502;</span>
+<span style="color:#60a5fa">&#x2502;</span>  04 <span style="color:#60a5fa">&#x2502;</span> Traceability         <span style="color:#60a5fa">&#x2502;</span>   <span style="color:#f87171">88</span>  <span style="color:#60a5fa">&#x2502;</span>   <span style="color:#f87171">FAIL</span> <span style="color:#60a5fa">&#x2502;</span> <span style="color:#f87171">FR-030 orphan</span> <span style="color:#60a5fa">&#x2502;</span>
+<span style="color:#60a5fa">&#x2502;</span>  ... (all 11 rows shown) ...                                <span style="color:#60a5fa">&#x2502;</span>
+<span style="color:#60a5fa">&#x251C;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2534;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2534;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2534;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2534;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2524;</span>
+<span style="color:#60a5fa">&#x2502;</span> <strong style="color:#fff">AVG</strong>                            <span style="color:#60a5fa">&#x2502;</span> <strong style="color:#facc15">95.2</strong>  <span style="color:#60a5fa">&#x2502;</span> <strong style="color:#4ade80">PASS</strong>   <span style="color:#60a5fa">&#x2502;</span>               <span style="color:#60a5fa">&#x2502;</span>
+<span style="color:#60a5fa">&#x2514;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2534;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2534;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2534;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2518;</span>
   Attempt: 1/3 &middot; Threshold: 95 &middot; Result: <span style="color:#4ade80">PASS &rarr; advance to Design</span></code></pre>
 
 <p><strong>On FAIL:</strong> Improvement items are appended below the scorecard, ordered by severity. <strong>After 3 retries:</strong> <code>LOOP HALTED</code> &mdash; manual intervention required.</p>
 
 <hr>
 
-<!-- Section 4 -->
-<h2 id="sec4">4. 3-Layer Data Pipeline</h2>
+<!-- ============================================================ -->
+<!-- SECTION 4: Data Pipeline -->
+<!-- ============================================================ -->
+<h2 id="sec-pipeline">4. Data Pipeline</h2>
 
-<p>Processing raw data all at once causes early content loss due to context window limits. An intermediate refinement layer solves this:</p>
+<p>Processing raw data all at once causes early content loss due to context window limits. U-MAKER solves this with a layered pipeline:</p>
 
 <div class="diagram-wrap">
 <svg viewBox="0 0 720 200" xmlns="http://www.w3.org/2000/svg" style="font-family:-apple-system,sans-serif">
   <defs><marker id="ar3" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0,10 3.5,0 7" fill="#6b7280"/></marker></defs>
-  <!-- Layer 1: Raw -->
-  <rect x="20" y="30" width="180" height="140" rx="10" fill="#fee2e2" stroke="#f87171" stroke-width="2"/>
-  <text x="110" y="55" text-anchor="middle" fill="#991b1b" font-size="13" font-weight="700">Layer 1: _input/</text>
-  <text x="110" y="75" text-anchor="middle" fill="#7f1d1d" font-size="10">.u-maker/_dropzone/</text>
-  <text x="110" y="92" text-anchor="middle" fill="#7f1d1d" font-size="10">rfp/ &middot; as-is/</text>
-  <text x="110" y="109" text-anchor="middle" fill="#7f1d1d" font-size="10">meeting-notes/</text>
-  <text x="110" y="126" text-anchor="middle" fill="#7f1d1d" font-size="10">interviews/</text>
-  <text x="110" y="155" text-anchor="middle" fill="#ef4444" font-size="9" font-weight="600">/u-ingest &rarr;</text>
+  <!-- Layer 1: dropzone -->
+  <rect x="10" y="25" width="155" height="150" rx="10" fill="#fee2e2" stroke="#f87171" stroke-width="2"/>
+  <text x="87" y="48" text-anchor="middle" fill="#991b1b" font-size="12" font-weight="700">data/dropzone/</text>
+  <text x="87" y="68" text-anchor="middle" fill="#7f1d1d" font-size="10">RFP, meeting notes</text>
+  <text x="87" y="84" text-anchor="middle" fill="#7f1d1d" font-size="10">AS-IS materials</text>
+  <text x="87" y="100" text-anchor="middle" fill="#7f1d1d" font-size="10">interviews, specs</text>
+  <text x="87" y="118" text-anchor="middle" fill="#ef4444" font-size="9" font-weight="600">Raw input</text>
+  <text x="87" y="160" text-anchor="middle" fill="#ef4444" font-size="9" font-weight="600">auto-ingest &rarr;</text>
   <!-- Arrow -->
-  <line x1="200" y1="100" x2="250" y2="100" stroke="#6b7280" stroke-width="2" marker-end="url(#ar3)"/>
-  <!-- Layer 2: Classified -->
-  <rect x="255" y="15" width="200" height="170" rx="10" fill="#dbeafe" stroke="#3b82f6" stroke-width="2"/>
-  <text x="355" y="40" text-anchor="middle" fill="#1e40af" font-size="13" font-weight="700">Layer 2: _classified/</text>
-  <text x="355" y="60" text-anchor="middle" fill="#1e3a8a" font-size="9">requirements/ &middot; pain-points/</text>
-  <text x="355" y="75" text-anchor="middle" fill="#1e3a8a" font-size="9">domain-terms/ &middot; stakeholders/</text>
-  <text x="355" y="90" text-anchor="middle" fill="#1e3a8a" font-size="9">workflows/ &middot; screens/</text>
-  <text x="355" y="105" text-anchor="middle" fill="#1e3a8a" font-size="9">data-models/ &middot; constraints/</text>
-  <text x="355" y="120" text-anchor="middle" fill="#1e3a8a" font-size="9">decisions/ &middot; questions/</text>
-  <text x="355" y="138" text-anchor="middle" fill="#2563eb" font-size="9" font-weight="700">standards/ &middot; ux-standards/</text>
-  <text x="355" y="155" text-anchor="middle" fill="#1e40af" font-size="9">(12 categories)</text>
-  <text x="355" y="172" text-anchor="middle" fill="#3b82f6" font-size="9" font-weight="600">/u-plan &rarr;</text>
+  <line x1="165" y1="100" x2="195" y2="100" stroke="#6b7280" stroke-width="2" marker-end="url(#ar3)"/>
+  <!-- Layer 2: digest -->
+  <rect x="200" y="15" width="175" height="170" rx="10" fill="#dbeafe" stroke="#3b82f6" stroke-width="2"/>
+  <text x="287" y="38" text-anchor="middle" fill="#1e40af" font-size="12" font-weight="700">data/digest/</text>
+  <text x="287" y="58" text-anchor="middle" fill="#1e3a8a" font-size="9">requirements/ &middot; pain-points/</text>
+  <text x="287" y="73" text-anchor="middle" fill="#1e3a8a" font-size="9">domain-terms/ &middot; stakeholders/</text>
+  <text x="287" y="88" text-anchor="middle" fill="#1e3a8a" font-size="9">workflows/ &middot; screens/</text>
+  <text x="287" y="103" text-anchor="middle" fill="#1e3a8a" font-size="9">data-models/ &middot; constraints/</text>
+  <text x="287" y="118" text-anchor="middle" fill="#1e3a8a" font-size="9">decisions/ &middot; questions/</text>
+  <text x="287" y="133" text-anchor="middle" fill="#2563eb" font-size="9" font-weight="700">standards/ &middot; ux-standards/</text>
+  <text x="287" y="150" text-anchor="middle" fill="#1e40af" font-size="9">(12 categories)</text>
+  <text x="287" y="172" text-anchor="middle" fill="#3b82f6" font-size="9" font-weight="600">/u-plan &rarr;</text>
   <!-- Arrow -->
-  <line x1="455" y1="100" x2="505" y2="100" stroke="#6b7280" stroke-width="2" marker-end="url(#ar3)"/>
-  <!-- Layer 3: Docs -->
-  <rect x="510" y="30" width="190" height="140" rx="10" fill="#dcfce7" stroke="#22c55e" stroke-width="2"/>
-  <text x="605" y="55" text-anchor="middle" fill="#166534" font-size="13" font-weight="700">Layer 3: docs/</text>
-  <text x="605" y="75" text-anchor="middle" fill="#14532d" font-size="10">SRS &middot; IA &middot; Roadmap</text>
-  <text x="605" y="92" text-anchor="middle" fill="#14532d" font-size="10">ERD &middot; API &middot; Screen</text>
-  <text x="605" y="109" text-anchor="middle" fill="#14532d" font-size="10">ScreenFlow &middot; RTM</text>
-  <text x="605" y="126" text-anchor="middle" fill="#14532d" font-size="10">Code &middot; TestCase</text>
-  <text x="605" y="143" text-anchor="middle" fill="#14532d" font-size="10">wireframes/</text>
+  <line x1="375" y1="100" x2="405" y2="100" stroke="#6b7280" stroke-width="2" marker-end="url(#ar3)"/>
+  <!-- Layer 3: docs -->
+  <rect x="410" y="25" width="145" height="150" rx="10" fill="#dcfce7" stroke="#22c55e" stroke-width="2"/>
+  <text x="482" y="48" text-anchor="middle" fill="#166534" font-size="12" font-weight="700">docs/</text>
+  <text x="482" y="68" text-anchor="middle" fill="#14532d" font-size="10">SRS &middot; IA &middot; Roadmap</text>
+  <text x="482" y="84" text-anchor="middle" fill="#14532d" font-size="10">ERD &middot; API &middot; Screen</text>
+  <text x="482" y="100" text-anchor="middle" fill="#14532d" font-size="10">ScreenFlow &middot; RTM</text>
+  <text x="482" y="116" text-anchor="middle" fill="#14532d" font-size="10">Code &middot; TestCase</text>
+  <text x="482" y="132" text-anchor="middle" fill="#14532d" font-size="10">wireframes/</text>
+  <text x="482" y="160" text-anchor="middle" fill="#22c55e" font-size="9" font-weight="600">/u-output &rarr;</text>
+  <!-- Arrow -->
+  <line x1="555" y1="100" x2="585" y2="100" stroke="#6b7280" stroke-width="2" marker-end="url(#ar3)"/>
+  <!-- Layer 4: output -->
+  <rect x="590" y="40" width="120" height="120" rx="10" fill="#fef3c7" stroke="#f59e0b" stroke-width="2"/>
+  <text x="650" y="63" text-anchor="middle" fill="#92400e" font-size="12" font-weight="700">output/</text>
+  <text x="650" y="83" text-anchor="middle" fill="#78350f" font-size="10">HTML reports</text>
+  <text x="650" y="99" text-anchor="middle" fill="#78350f" font-size="10">SVG diagrams</text>
+  <text x="650" y="115" text-anchor="middle" fill="#78350f" font-size="10">Wireframe SPA</text>
+  <text x="650" y="145" text-anchor="middle" fill="#f59e0b" font-size="9" font-weight="600">Browser-ready</text>
 </svg>
 </div>
 
-<h3>.u-maker/_dropzone/ Auto-Classification</h3>
-<p>When you drop files into <code>.u-maker/_dropzone/</code>, running <code>/u-ingest</code> analyzes filenames and contents to auto-classify them into appropriate subfolders like <code>.u-maker/_input/rfp/</code>, <code>as-is/</code>, <code>meeting-notes/</code>, etc. After processing, <code>.u-maker/_dropzone/</code> is emptied. (<code>_input/raw/</code> is also supported as a fallback)</p>
-
-<h3>_classified 12 Categories</h3>
+<h3>Digest Categories (12)</h3>
 <table>
 <thead><tr><th>Category</th><th>ID Pattern</th><th>Input Source</th></tr></thead>
 <tbody>
@@ -441,33 +408,34 @@ curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/insta
 </tbody>
 </table>
 
-<h3>Item Lifecycle</h3>
-<p><code>extracted</code> &rarr; <code>validated</code> &rarr; <code>adopted</code> / <code>rejected</code></p>
-
 <hr>
 
-<!-- Section 5 -->
-<h2 id="sec5">5. Agents</h2>
+<!-- ============================================================ -->
+<!-- SECTION 5: Agents -->
+<!-- ============================================================ -->
+<h2 id="sec-agents">5. Agents</h2>
 
-<p>7 specialized agents share responsibilities by phase.</p>
+<p>7 specialized agents share responsibilities by phase. Each agent is powered by the model indicated in parentheses.</p>
 
 <table>
-<thead><tr><th>Agent</th><th>Role</th><th>Phase</th></tr></thead>
+<thead><tr><th>Agent</th><th>Model</th><th>Role</th><th>Phase</th></tr></thead>
 <tbody>
-<tr><td><code>pm</code></td><td>Project management, orchestration, state machine, _links.json management</td><td>ALL</td></tr>
-<tr><td><code>plan</code></td><td>Analysis (SRS, IA, Roadmap)</td><td>Plan</td></tr>
-<tr><td><code>design</code></td><td>Design (ERD, API, Screen, UX, wireframes)</td><td>Design</td></tr>
-<tr><td><code>dev</code></td><td>Integrated FE + BE implementation</td><td>Dev</td></tr>
-<tr><td><code>qa</code></td><td>TC design, test execution, report</td><td>Check</td></tr>
-<tr><td><code>gatekeeper</code></td><td>Gate verification, consistency checks, RTM. <strong>Displays full N-criteria scorecard on every validation</strong> (N = 1&ndash;11, default 5; set via <code>--loop [N]</code>)</td><td>ALL</td></tr>
-<tr><td><code>report</code></td><td>HTML report generation, deliverable formatting</td><td>ALL</td></tr>
+<tr><td><code>u-agent-pm</code></td><td>opus</td><td>Command routing, orchestration, state machine, dependency graph management</td><td>ALL</td></tr>
+<tr><td><code>u-agent-plan</code></td><td>opus</td><td>Plan phase executor &mdash; SRS, IA, Roadmap generation</td><td>Plan</td></tr>
+<tr><td><code>u-agent-design</code></td><td>opus</td><td>Design phase executor &mdash; ERD, API, Screen, UX, wireframes</td><td>Design</td></tr>
+<tr><td><code>u-agent-dev</code></td><td>opus</td><td>Dev phase executor &mdash; FE + BE + DB code generation</td><td>Dev</td></tr>
+<tr><td><code>u-agent-qa</code></td><td>opus</td><td>Check phase executor &mdash; TC design, test execution, report</td><td>Check</td></tr>
+<tr><td><code>u-agent-gatekeeper</code></td><td>opus</td><td>Quality validation &mdash; 11 criteria scoring, consistency checks, RTM</td><td>ALL</td></tr>
+<tr><td><code>u-agent-report</code></td><td>sonnet</td><td>Report generation &mdash; HTML reports, deliverable formatting</td><td>ALL</td></tr>
 </tbody>
 </table>
 
 <hr>
 
-<!-- Section 6 -->
-<h2 id="sec6">6. Commands</h2>
+<!-- ============================================================ -->
+<!-- SECTION 6: Commands (All 15 Skills) -->
+<!-- ============================================================ -->
+<h2 id="sec-commands">6. Commands</h2>
 
 <h3>Grammar</h3>
 <pre><code>/u-{command} [scope] [target] [flags]</code></pre>
@@ -478,58 +446,39 @@ curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/insta
 <li><strong>flags</strong>: <code>-i</code> (interactive) | <code>--step</code> | <code>--only X</code> | <code>--cascade</code> | <code>--dry-run</code> | <code>--json</code></li>
 </ul>
 
-<h3>6.1 Lifecycle (11)</h3>
+<h3>6.1 Lifecycle Skills (8)</h3>
 <table>
-<thead><tr><th>Command</th><th>Description</th><th>Example</th></tr></thead>
+<thead><tr><th>Command</th><th>Version</th><th>Description</th><th>Example</th></tr></thead>
 <tbody>
-<tr><td><code>/u-init [project-name]</code></td><td>Create .u-maker/ structure, initialize config, register app</td><td><code>/u-init my-project</code></td></tr>
-<tr><td><code>/u-reverse [--app name] [--src path] [--db path] [--api path] [--pages path] [--loop [N]]</code></td><td>Source code &rarr; SSoT reverse engineering. Bottom-up: Code &rarr; Design (ERD, API, Screens, DS) &rarr; Plan (SRS, IA). <code>--loop [N]</code> enables gatekeeper with N criteria (default 5, max 11)</td><td><code>/u-reverse --app my-app --db prisma/</code></td></tr>
-<tr><td><code>/u-ingest [scope] [--review] [--incremental]</code></td><td><code>.u-maker/_dropzone/</code> &rarr; <code>_input/</code> auto-classification + classified analysis</td><td><code>/u-ingest [app] --review</code></td></tr>
-<tr><td><code>/u-plan [scope] [--only X] [-i] [--step] [--loop [N]]</code></td><td>classified &rarr; SRS + IA + Roadmap chain generation</td><td><code>/u-plan [app] -i</code></td></tr>
-<tr><td><code>/u-design [scope] [--only X] [-i] [--step] [--loop [N]]</code></td><td>SRS/IA &rarr; ERD + API + Screen + Flow + RTM + wireframes/index.html</td><td><code>/u-design [app] --only screens</code></td></tr>
-<tr><td><code>/u-dev [scope] [--only X] [-i] [--step] [--loop [N]]</code></td><td>Spec &rarr; FE + BE + DB code generation</td><td><code>/u-dev [app] --only fe</code></td></tr>
-<tr><td><code>/u-check [scope] [-i] [--step] [--loop [N]]</code> <small>(alias: <code>/u-qa</code>)</small></td><td>TC design + test execution + Report + exit criteria</td><td><code>/u-qa [app]</code></td></tr>
-<tr><td><code>/u-ship [scope] [-i] [--step] [--loop [N]]</code></td><td>Final verification + iteration log + retrospective</td><td><code>/u-ship [app]</code></td></tr>
-<tr><td><code>/u-loop [--app name] [--from phase] [--to phase] [--loop [N]] [--dry-run]</code></td><td>Unattended PDCA auto-execution loop. <code>--loop [N]</code> sets gate criteria count (default 5, max 11)</td><td><code>/u-loop --app my-app --from plan --to check</code></td></tr>
-<tr><td><code>/u-wireframe [--app name] [--screen SCR-ID] [--all]</code></td><td>Per-screen wireframe HTML generation</td><td><code>/u-wireframe --app my-app --all</code></td></tr>
-<tr><td><code>/u-output [--app name] [--only X] [--diagram svg|mermaid|all]</code></td><td>Standalone HTML generation from existing docs/. Domain-split for large documents. <code>svg</code> mode uses free-form SVG diagrams (not Mermaid-style)</td><td><code>/u-output --app my-app --diagram svg</code></td></tr>
+<tr><td><code>/u-init</code></td><td>v4.0</td><td>Project initialization. Creates <code>.u-maker/</code> structure, initializes config, registers app. Supports <code>--migrate</code> for version upgrades</td><td><code>/u-init my-project</code></td></tr>
+<tr><td><code>/u-plan</code></td><td>v4.0</td><td>dropzone &rarr; digest &rarr; SRS + IA + Roadmap chain generation. Includes ingest functionality</td><td><code>/u-plan my-app -i</code></td></tr>
+<tr><td><code>/u-design</code></td><td>v4.0</td><td>SRS/IA &rarr; ERD, API Contract, Screen Spec, Design System, ScreenFlow, RTM</td><td><code>/u-design my-app --only erd</code></td></tr>
+<tr><td><code>/u-dev</code></td><td>v4.0</td><td>ERD/API/Screens &rarr; FE + BE + DB code generation. <code>--only fe|be|db</code></td><td><code>/u-dev my-app --only fe</code></td></tr>
+<tr><td><code>/u-check</code></td><td>v4.0</td><td>SRS FT &rarr; Test Cases + Test Results. <small>alias: <code>/u-qa</code></small></td><td><code>/u-qa my-app</code></td></tr>
+<tr><td><code>/u-reverse</code></td><td>v4.0</td><td>Existing code &rarr; SSoT reverse engineering (Code &rarr; Design &rarr; Plan)</td><td><code>/u-reverse --app my-app</code></td></tr>
+<tr><td><code>/u-wireframe</code></td><td>v3.2</td><td>Screen spec &rarr; per-screen HTML wireframes with annotation panels</td><td><code>/u-wireframe --app my-app --all</code></td></tr>
+<tr><td><code>/u-loop</code></td><td>v3.2</td><td>Unattended PDCA auto-execution Plan &rarr; Ship. Checkpoint-based resume, auto error recovery</td><td><code>/u-loop --app my-app --from plan</code></td></tr>
 </tbody>
 </table>
 
-<h3>6.2 Operations (5)</h3>
+<h3>6.2 Output &amp; Report Skills (4)</h3>
 <table>
-<thead><tr><th>Command</th><th>Description</th><th>Example</th></tr></thead>
+<thead><tr><th>Command</th><th>Version</th><th>Description</th><th>Example</th></tr></thead>
 <tbody>
-<tr><td><code>/u-add [scope] [type] "title"</code></td><td>Add item (FR/NR/US/FT/Screen/TC, etc.)</td><td><code>/u-add [app] fr "Password Reset"</code></td></tr>
-<tr><td><code>/u-update [scope] [doc]</code></td><td>Modify document + cascade auto-propagation</td><td><code>/u-update [app] srs --cascade</code></td></tr>
-<tr><td><code>/u-doc [scope] [doc]</code></td><td>View/edit/regenerate a specific document</td><td><code>/u-doc [app] screens</code></td></tr>
-<tr><td><code>/u-sync [scope]</code></td><td>Full document consistency check + fix suggestions</td><td><code>/u-sync [app]</code></td></tr>
-<tr><td><code>/u-gate [scope]</code></td><td>Phase gate check + transition</td><td><code>/u-gate [app]</code></td></tr>
+<tr><td><code>/u-output</code></td><td>v4.0</td><td>.md + .json &rarr; HTML rendering. <code>--diagram svg|mermaid|all</code>. <small>alias: <code>/u-html</code></small></td><td><code>/u-output --app my-app --diagram svg</code></td></tr>
+<tr><td><code>/u-report-daily</code></td><td>v1.0</td><td>Daily report (git + meetings + stats)</td><td><code>/u-report-daily</code></td></tr>
+<tr><td><code>/u-report-weekly</code></td><td>v1.0</td><td>Weekly trend report with SVG charts</td><td><code>/u-report-weekly</code></td></tr>
+<tr><td><code>/u-meeting-report</code></td><td>v1.0</td><td>Audio/text &rarr; structured meeting minutes HTML</td><td><code>/u-meeting-report my-app</code></td></tr>
 </tbody>
 </table>
 
-<h3>6.3 Observability (5)</h3>
+<h3>6.3 Control Flow Skills (3)</h3>
 <table>
-<thead><tr><th>Command</th><th>Description</th><th>Example</th></tr></thead>
+<thead><tr><th>Command</th><th>Version</th><th>Description</th><th>Example</th></tr></thead>
 <tbody>
-<tr><td><code>/u-status [scope]</code></td><td>Dashboard (phase, progress, impact flags)</td><td><code>/u-status [app]</code></td></tr>
-<tr><td><code>/u-coverage [scope]</code></td><td>classified &rarr; deliverable coverage report</td><td><code>/u-coverage all</code></td></tr>
-<tr><td><code>/u-trace [scope] [id]</code></td><td>raw &rarr; classified &rarr; docs traceability chain</td><td><code>/u-trace [app] FR-015</code></td></tr>
-<tr><td><code>/u-browse [scope] [--only path] [--open]</code></td><td>Generate rich HTML viewer from SSoT docs with cross-references. Wireframes include annotations, screen flow, business logic</td><td><code>/u-browse [app] --open</code></td></tr>
-<tr><td><code>/u-report [scope] [--only X]</code></td><td>Generate per-phase HTML report (Done/Remaining/Improve tracking). Reports saved in <code>_reports/{scope}/YYYY-MM-DD/</code> by date</td><td><code>/u-report [app] --only plan</code></td></tr>
-</tbody>
-</table>
-
-<h3>6.4 Collaboration (5)</h3>
-<table>
-<thead><tr><th>Command</th><th>Description</th><th>Example</th></tr></thead>
-<tbody>
-<tr><td><code>/u-ask {question}</code></td><td>Q&amp;A &mdash; context-aware answers to questions, suggestions, feedback</td><td><code>/u-ask Why use soft delete in the ERD?</code></td></tr>
-<tr><td><code>/u-discuss [type] [topic]</code></td><td>Structured discussion session (brainstorm/review/decision/workshop/retro)</td><td><code>/u-discuss brainstorm "Payment UX"</code></td></tr>
-<tr><td><code>/u-assume [approve|reject] [id]</code></td><td>Assumption review (approve/reject)</td><td><code>/u-assume approve A-001</code></td></tr>
-<tr><td><code>/u-backlog [scope]</code></td><td>Backlog management (view, add, sprint assign, priority, burndown)</td><td><code>/u-backlog [app]</code></td></tr>
-<tr><td><code>/u-git-pr [base] [flags]</code></td><td>Auto-generate PR/MR (commit analysis, split/merge, review guide)</td><td><code>/u-git-pr main --draft</code></td></tr>
-<tr><td><code>/u-meeting-report [scope]</code></td><td>Generate structured meeting report from discussion/notes</td><td><code>/u-meeting-report [app]</code></td></tr>
+<tr><td><code>/u-discuss</code></td><td>v4.0</td><td>Structured collaboration sessions (brainstorm, review, decision, workshop, retro)</td><td><code>/u-discuss brainstorm "Payment UX"</code></td></tr>
+<tr><td><code>/u-git-pr</code></td><td>v5.0</td><td>Intelligent PR generation with commit grouping, split/merge, review guide</td><td><code>/u-git-pr main --draft</code></td></tr>
+<tr><td><code>/u-engine</code></td><td>v4.0</td><td>Internal infrastructure engine (not user-invocable)</td><td>&mdash;</td></tr>
 </tbody>
 </table>
 
@@ -539,85 +488,116 @@ curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/insta
 <tbody>
 <tr><td><code>-i</code></td><td>Interactive mode &mdash; pauses only at decision points</td></tr>
 <tr><td><code>--step</code></td><td>Step mode &mdash; confirmation at every step</td></tr>
-<tr><td><code>--only X</code></td><td>Specific deliverable only (srs, erd, fe, be...)</td></tr>
+<tr><td><code>--only X</code></td><td>Specific deliverable only (srs, erd, fe, be, db...)</td></tr>
 <tr><td><code>--cascade</code></td><td>Auto-update dependent documents on change</td></tr>
 <tr><td><code>--dry-run</code></td><td>Show plan without executing</td></tr>
 <tr><td><code>--json</code></td><td>JSON format output</td></tr>
-<tr><td><code>--incremental</code></td><td>(/u-ingest) Process only new items</td></tr>
-<tr><td><code>--review</code></td><td>(/u-ingest) Review extracted items</td></tr>
-<tr><td><code>--diagram svg|mermaid|all</code></td><td>(/u-output, /u-design) Diagram mode: <code>svg</code> = free-form inline SVG (default, not constrained to Mermaid style), <code>mermaid</code> = Mermaid CDN (always light mode), <code>all</code> = SVG primary + Mermaid fallback for UML</td></tr>
-<tr><td><code>--loop [N]</code></td><td>Gate criteria count per phase (1&ndash;11, default 5). Applies to all phase commands, <code>/u-loop</code>, and <code>/u-reverse</code></td></tr>
+<tr><td><code>--migrate</code></td><td>(/u-init) Migrate from previous version</td></tr>
+<tr><td><code>--diagram svg|mermaid|all</code></td><td>(/u-output) Diagram rendering mode</td></tr>
 </tbody>
 </table>
 
 <hr>
 
-<!-- Section 7 -->
-<h2 id="sec7">7. Engine Skills</h2>
+<!-- ============================================================ -->
+<!-- SECTION 7: Gate Criteria -->
+<!-- ============================================================ -->
+<h2 id="sec-gate">7. Gate Criteria</h2>
 
-<p>13 cross-cutting engines. Not user-invocable; called internally by command skills.</p>
+<p>The gatekeeper agent evaluates <strong>11 criteria</strong> at each phase transition. The default passing threshold is <strong>95</strong> (configurable). All 11 criteria are always evaluated and displayed.</p>
 
-<h3>Core Engines (orchestrator)</h3>
 <table>
-<thead><tr><th>Engine</th><th>Role</th></tr></thead>
+<thead><tr><th>#</th><th>Criterion</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>u-skill-router</code></td><td>Intent classification, scope resolution, agent dispatch</td></tr>
-<tr><td><code>u-skill-phase-detector</code></td><td>Document status aggregation &rarr; auto phase detection</td></tr>
-<tr><td><code>u-skill-dep-engine</code></td><td><code>_links.json</code> dependency graph, cascade propagation</td></tr>
-<tr><td><code>u-skill-workflow-runner</code></td><td>Multi-step execution, rollback, progress</td></tr>
-<tr><td><code>u-skill-facilitator</code></td><td>/u-discuss session facilitation</td></tr>
+<tr><td>01</td><td><strong>Completeness</strong></td><td>All required deliverables exist and contain expected sections</td></tr>
+<tr><td>02</td><td><strong>Accuracy</strong></td><td>Content correctly reflects source data and requirements</td></tr>
+<tr><td>03</td><td><strong>Consistency</strong></td><td>No contradictions between documents (e.g., SRS vs. ERD)</td></tr>
+<tr><td>04</td><td><strong>Traceability</strong></td><td>Every FR &rarr; US &rarr; FT chain is intact, no orphan IDs</td></tr>
+<tr><td>05</td><td><strong>TOC Quality</strong></td><td>Table of Contents matches actual document structure</td></tr>
+<tr><td>06</td><td><strong>Content Composition</strong></td><td>Proper formatting, section depth, prose quality</td></tr>
+<tr><td>07</td><td><strong>Visual Adequacy</strong></td><td>Required diagrams and wireframes are present</td></tr>
+<tr><td>08</td><td><strong>Diagram Fitness</strong></td><td>Diagrams correctly represent described flows and structures</td></tr>
+<tr><td>09</td><td><strong>Mermaid Integrity</strong></td><td>All Mermaid/SVG diagrams render without syntax errors</td></tr>
+<tr><td>10</td><td><strong>JSON Sync</strong></td><td>Companion .json files are in sync with .md content</td></tr>
+<tr><td>11</td><td><strong>Cross-Reference</strong></td><td>All inter-document references (IDs, links) resolve correctly</td></tr>
 </tbody>
 </table>
 
-<h3>Domain Engines (planner)</h3>
-<table>
-<thead><tr><th>Engine</th><th>Role</th></tr></thead>
-<tbody>
-<tr><td><code>u-skill-doc-engine</code></td><td>All document CRUD, template rendering, JSON export, wireframe viewer generation, language settings</td></tr>
-<tr><td><code>u-skill-analyzer</code></td><td>Raw parsing, chunk analysis, classified loading</td></tr>
-<tr><td><code>u-skill-designer</code></td><td>IA/Screen/ERD/API integrated design</td></tr>
-<tr><td><code>u-skill-estimator</code></td><td>SRS-based schedule/effort estimation</td></tr>
-</tbody>
-</table>
-
-<h3>Execution Engines (builder+gatekeeper)</h3>
-<table>
-<thead><tr><th>Engine</th><th>Role</th></tr></thead>
-<tbody>
-<tr><td><code>u-skill-code-engine</code></td><td>Spec &rarr; code generation (FE+BE), scaffold</td></tr>
-<tr><td><code>u-skill-validator</code></td><td>Gate check, cross-document consistency</td></tr>
-<tr><td><code>u-skill-test</code></td><td>Auto TC generation, execution, report</td></tr>
-<tr><td><code>u-skill-backlog</code></td><td>Backlog CRUD, priority, sprint, burndown</td></tr>
-</tbody>
-</table>
+<blockquote>Threshold is 95 by default. Each criterion is scored 0&ndash;100. The average across all 11 must meet or exceed the threshold. Individual criteria that score below threshold are flagged with findings.</blockquote>
 
 <hr>
 
-<!-- Section 8 -->
-<h2 id="sec8">8. Interaction Modes</h2>
+<!-- ============================================================ -->
+<!-- SECTION 8: Folder Structure -->
+<!-- ============================================================ -->
+<h2 id="sec-folder">8. Folder Structure</h2>
 
-<table>
-<thead><tr><th>Mode</th><th>Flag</th><th>Behavior</th></tr></thead>
-<tbody>
-<tr><td><strong>auto</strong></td><td>(default)</td><td>Executes without asking. Decisions recorded in Assumptions Log</td></tr>
-<tr><td><strong>interactive</strong></td><td><code>-i</code></td><td>Pauses only at decision points. Everything else runs at auto speed</td></tr>
-<tr><td><strong>step</strong></td><td><code>--step</code></td><td>Pauses + requires approval at every step</td></tr>
-</tbody>
-</table>
+<h3>.u-maker/ Project Root</h3>
+<pre><code>.u-maker/
+&#x251C;&#x2500;&#x2500; u-maker.config.json              # Global settings (language, designTool, iteration)
+&#x251C;&#x2500;&#x2500; _links.json                       # Dependency graph
+&#x251C;&#x2500;&#x2500; _dropzone/                        # File drop zone (auto-classified on /u-plan)
+&#x2502;
+&#x251C;&#x2500;&#x2500; common/                           # Project-wide shared config
+&#x2502;   &#x251C;&#x2500;&#x2500; _index.json
+&#x2502;   &#x251C;&#x2500;&#x2500; policy/                       # Service / Security / Privacy / ErrorCodes
+&#x2502;   &#x251C;&#x2500;&#x2500; ux/                           # UX Guide, Design Token, UI Components
+&#x2502;   &#x251C;&#x2500;&#x2500; dev/                          # Coding Convention, Git Strategy, Testing
+&#x2502;   &#x251C;&#x2500;&#x2500; architecture/                 # System Overview, ERD, API, Infra
+&#x2502;   &#x2514;&#x2500;&#x2500; project/                      # Roadmap, Stakeholders, Iteration Log
+&#x2502;
+&#x251C;&#x2500;&#x2500; apps/{app-name}/                  # Independent pipeline per app
+&#x2502;   &#x251C;&#x2500;&#x2500; _index.json                   # App document TOC + status
+&#x2502;   &#x251C;&#x2500;&#x2500; app.config.json               # Per-app settings override
+&#x2502;   &#x251C;&#x2500;&#x2500; data/
+&#x2502;   &#x2502;   &#x251C;&#x2500;&#x2500; dropzone/                 # Raw input files
+&#x2502;   &#x2502;   &#x2514;&#x2500;&#x2500; digest/                   # Classified data (12 categories)
+&#x2502;   &#x2502;       &#x251C;&#x2500;&#x2500; requirements/         # FR-nnn, NR-nnn
+&#x2502;   &#x2502;       &#x251C;&#x2500;&#x2500; pain-points/          # PP-nnn
+&#x2502;   &#x2502;       &#x251C;&#x2500;&#x2500; domain-terms/         # DT-nnn
+&#x2502;   &#x2502;       &#x251C;&#x2500;&#x2500; stakeholders/         # SH-nnn
+&#x2502;   &#x2502;       &#x251C;&#x2500;&#x2500; workflows/            # WF-nnn
+&#x2502;   &#x2502;       &#x251C;&#x2500;&#x2500; screens/              # SC-nnn
+&#x2502;   &#x2502;       &#x251C;&#x2500;&#x2500; data-models/          # DM-nnn
+&#x2502;   &#x2502;       &#x251C;&#x2500;&#x2500; constraints/          # CN-nnn
+&#x2502;   &#x2502;       &#x251C;&#x2500;&#x2500; decisions/            # DC-nnn
+&#x2502;   &#x2502;       &#x251C;&#x2500;&#x2500; questions/            # QS-nnn
+&#x2502;   &#x2502;       &#x251C;&#x2500;&#x2500; standards/            # STD-nnn
+&#x2502;   &#x2502;       &#x251C;&#x2500;&#x2500; ux-standards/         # UXS-nnn
+&#x2502;   &#x2502;       &#x2514;&#x2500;&#x2500; _summary.json         # Classification summary
+&#x2502;   &#x251C;&#x2500;&#x2500; docs/                         # Layer 3: Deliverables (SSoT)
+&#x2502;   &#x2502;   &#x251C;&#x2500;&#x2500; 01-plan/              # srs.md, ia.md, roadmap.md
+&#x2502;   &#x2502;   &#x251C;&#x2500;&#x2500; 02-design/            # erd.md, api.md, screen.md, screen-flow.md
+&#x2502;   &#x2502;   &#x2502;   &#x2514;&#x2500;&#x2500; wireframes/
+&#x2502;   &#x2502;   &#x2502;       &#x251C;&#x2500;&#x2500; index.html    # Wireframe browser SPA
+&#x2502;   &#x2502;   &#x2502;       &#x2514;&#x2500;&#x2500; {SCR-ID}.html # Per-screen wireframe
+&#x2502;   &#x2502;   &#x251C;&#x2500;&#x2500; 03-dev/               # code.md, spec-sync-report.md
+&#x2502;   &#x2502;   &#x2514;&#x2500;&#x2500; 04-check/             # test-cases.md, test-report.md
+&#x2502;   &#x251C;&#x2500;&#x2500; output/                       # HTML reports, rendered output
+&#x2502;   &#x251C;&#x2500;&#x2500; _sessions/                    # Discussion session archive
+&#x2502;   &#x251C;&#x2500;&#x2500; _assumptions/                 # Assumptions log
+&#x2502;   &#x251C;&#x2500;&#x2500; _backlog/                     # Backlog items
+&#x2502;   &#x2514;&#x2500;&#x2500; rtm.md                        # Traceability matrix
+&#x2502;
+&#x251C;&#x2500;&#x2500; _sessions/                        # Cross-app discussions
+&#x2514;&#x2500;&#x2500; _assumptions/                     # Cross-app assumptions</code></pre>
 
-<h3>Assumptions Log</h3>
-<p>A safety mechanism that records every time an agent "decides instead of asking" in auto mode.</p>
+<h3>Config Settings</h3>
+<pre><code>{
+  "language": {
+    "documents": "en",
+    "supported": ["ko", "en", "ja", "zh"]
+  }
+}</code></pre>
 
-<pre><code><span class="cmd">/u-status [app] --assumptions</span>    <span class="comment"># Check pending assumptions</span>
-<span class="cmd">/u-assume approve A-001</span>           <span class="comment"># Approve</span>
-<span class="cmd">/u-assume reject A-001 "cancel only"</span>  <span class="comment"># Reject &rarr; cascade correction</span></code></pre>
-
-<p>When <code>maxAssumptions</code> (default: 20) is exceeded, auto mode switches to interactive automatically.</p>
+<p>Set the document language with <code>language.documents</code>. Supports ko (Korean), en (English), ja (Japanese), zh (Chinese). IDs and code are always in English regardless of this setting.</p>
 
 <hr>
 
-<!-- Section 9 -->
-<h2 id="sec9">9. 4-Tier ID Hierarchy</h2>
+<!-- ============================================================ -->
+<!-- SECTION 9: 4-Tier ID -->
+<!-- ============================================================ -->
+<h2 id="sec-4tier">9. 4-Tier ID Hierarchy</h2>
 
 <div class="diagram-wrap">
 <svg viewBox="0 0 600 230" xmlns="http://www.w3.org/2000/svg" style="font-family:-apple-system,sans-serif">
@@ -649,178 +629,24 @@ curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/insta
 </svg>
 </div>
 
-<blockquote>FT = <strong>Feature</strong> (implementation unit). <del>Functional Test</del> &mdash; absolutely not.</blockquote>
+<p>Every requirement is traceable through the hierarchy: <strong>USR</strong> (User Type) &rarr; <strong>FR</strong> (Functional Requirement) &rarr; <strong>US</strong> (User Story) &rarr; <strong>FT</strong> (Feature / implementation unit). This ensures full traceability from stakeholder needs to delivered code.</p>
+
+<blockquote>FT = <strong>Feature</strong> (implementation unit). It is not "Functional Test."</blockquote>
 
 <hr>
 
-<!-- Section 10 -->
-<h2 id="sec10">10. Folder Structure</h2>
-
-<h3>Project Root</h3>
-<pre><code>project-root/
-+-- .u-maker/                         # SSoT directory
-+-- src/                              # Source code
-+-- ...</code></pre>
-
-<h3>.u-maker/ (Project)</h3>
-<pre><code>.u-maker/
-+-- u-maker.config.json              # Global settings (language, designTool, iteration, etc.)
-+-- _links.json                       # Dependency graph
-+-- _dropzone/                        # File drop zone (drop RFP, meeting notes, AS-IS materials; auto-classified on /u-ingest)
-|
-+-- common/                           # Project-wide common
-|   +-- _index.json
-|   +-- policy/                       # Service/Security/Privacy/ErrorCodes/Terms
-|   +-- ux/                           # UX Guide, Design Token, UI Components
-|   +-- dev/                          # Coding Convention, Git Strategy, Testing
-|   +-- architecture/                 # System Overview, ERD, API, Infra
-|   +-- project/                      # Roadmap, Stakeholders, Iteration Log
-|
-+-- apps/{app-name}/                  # Independent pipeline per app
-|   +-- _index.json                   # App document TOC + status
-|   +-- app.config.json               # Per-app settings
-|   +-- _input/                       # Layer 1: Raw data (classified storage)
-|   |   +-- raw/                      # Fallback drop zone (.u-maker/_dropzone/ recommended)
-|   |   +-- rfp/                      # RFP, proposals
-|   |   +-- as-is/                    # AS-IS analysis materials
-|   |   +-- meeting-notes/            # Meeting notes
-|   |   +-- interviews/               # Interview notes
-|   |   +-- _manifest.json            # Input file manifest
-|   +-- _classified/                  # Layer 2: Refined data (12 categories)
-|   |   +-- requirements/             # FR-nnn, NR-nnn
-|   |   +-- pain-points/             # PP-nnn
-|   |   +-- domain-terms/            # DT-nnn
-|   |   +-- stakeholders/            # SH-nnn
-|   |   +-- workflows/               # WF-nnn
-|   |   +-- screens/                 # SC-nnn
-|   |   +-- data-models/             # DM-nnn
-|   |   +-- constraints/             # CN-nnn
-|   |   +-- decisions/               # DC-nnn
-|   |   +-- questions/               # QS-nnn
-|   |   +-- standards/              # STD-nnn
-|   |   +-- ux-standards/           # UXS-nnn
-|   |   +-- _summary.json            # Classification summary
-|   +-- _sessions/                    # Discussion session archive
-|   +-- _assumptions/                 # Assumptions log
-|   +-- _backlog/                     # Backlog
-|   +-- docs/                         # Layer 3: Deliverables
-|   |   +-- 01-plan/                  # srs.md, ia.md, roadmap.md
-|   |   +-- 02-design/               # erd.md, api.md, screen.md, screen-flow.md
-|   |   |   +-- wireframes/
-|   |   |   |   +-- index.html       # Wireframe browser
-|   |   |   |   +-- {SCR-ID}.html    # Per-screen wireframe
-|   |   +-- 03-dev/                  # code.md, spec-sync-report.md
-|   |   +-- 04-check/               # test-cases.md, test-report.md
-|   +-- rtm.md                       # Traceability matrix
-|
-+-- _input/                           # Project-wide common raw data
-|   +-- raw/                          # Common fallback drop zone
-+-- _classified/                      # Common classified
-+-- _sessions/                        # Cross-app discussions
-+-- _assumptions/                     # Cross-app assumptions</code></pre>
-
-<h3>Config Settings</h3>
-<pre><code>{
-  "language": {
-    "documents": "ko",
-    "supported": ["ko", "en", "ja", "zh"]
-  }
-}</code></pre>
-
-<p>Set the document language for deliverables with <code>language.documents</code>. Supports ko (Korean), en (English), ja (Japanese), zh (Chinese). IDs and code are always in English.</p>
-
-<h3>wireframes/index.html</h3>
-<p>An SPA viewer generated via <code>/u-wireframe</code>. Navigate Screen documents via sidebar navigation and visualize wireframes with MD rendering. Each wireframe uses a 6-section layout: Header, Stage (app-frame + annotation panel), Component Spec table, 2-column logic diagrams, Overlay UI (modals/bottomsheets/popups), and Annotation Legend. Screen layout SVG replaces State Transition diagrams. Screen spec JSON companion includes a <code>layout</code> field.</p>
-
-<h3>Scope-First Navigation</h3>
-<p>Claude reads only <code>_index.json</code> first instead of opening files directly, then selectively loads only the needed files &rarr; saves context window.</p>
-
-<hr>
-
-<!-- Section 11 -->
-<h2 id="sec11">11. Document Output Rules</h2>
-
-<table>
-<thead><tr><th>Extension</th><th>Purpose</th><th>Generation Condition</th></tr></thead>
-<tbody>
-<tr><td><code>.md</code></td><td>Human-readable Markdown (SSoT source)</td><td>All documents</td></tr>
-<tr><td><code>.json</code></td><td>Machine-parseable structured data</td><td>Generated simultaneously with all documents</td></tr>
-<tr><td><code>.html</code></td><td>Visual viewer (wireframes/index.html, domain-split HTML reports)</td><td>Only via <code>/u-output</code> command (or <code>/u-wireframe</code> for wireframes)</td></tr>
-</tbody>
-</table>
-
-<h3>Document Status Lifecycle</h3>
-<div class="diagram-wrap">
-<svg viewBox="0 0 500 60" xmlns="http://www.w3.org/2000/svg" style="font-family:-apple-system,sans-serif">
-  <defs><marker id="ar5" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0,10 3.5,0 7" fill="#6b7280"/></marker></defs>
-  <rect x="20" y="15" width="100" height="32" rx="16" fill="#64748b"/>
-  <text x="70" y="36" text-anchor="middle" fill="#fff" font-size="12" font-weight="700">Draft</text>
-  <line x1="120" y1="31" x2="170" y2="31" stroke="#6b7280" stroke-width="2" marker-end="url(#ar5)"/>
-  <rect x="175" y="15" width="100" height="32" rx="16" fill="#f59e0b"/>
-  <text x="225" y="36" text-anchor="middle" fill="#fff" font-size="12" font-weight="700">Review</text>
-  <line x1="275" y1="31" x2="325" y2="31" stroke="#6b7280" stroke-width="2" marker-end="url(#ar5)"/>
-  <rect x="330" y="15" width="100" height="32" rx="16" fill="#22c55e"/>
-  <text x="380" y="36" text-anchor="middle" fill="#fff" font-size="12" font-weight="700">Final</text>
-</svg>
-</div>
-
-<h3>Auto-Cascade</h3>
-<p>When SRS changes, impact flags are automatically propagated to ERD, Screen, TestCase via <code>_links.json</code>.<br>
-Use <code>/u-update --cascade</code> for automatic dependent document updates.</p>
-
-<hr>
-
-<!-- Section 12 -->
-<h2 id="sec12">12. Plugin Repository Layout</h2>
-
-<pre><code>u-maker-plugin/
-+-- .claude-plugin/plugin.json        # v3.4.4
-+-- agents/                           # 7 agent definitions
-|   +-- u-agent-pm.md
-|   +-- u-agent-plan.md
-|   +-- u-agent-design.md
-|   +-- u-agent-dev.md
-|   +-- u-agent-qa.md
-|   +-- u-agent-gatekeeper.md
-|   +-- u-agent-report.md
-+-- skills/
-|   +-- u-*/SKILL.md                  # 13 skills (12 user-facing + 1 engine)
-+-- hooks/                            # Event hooks (3)
-|   +-- hooks.json
-|   +-- on-dropzone-added.js
-|   +-- on-gate-result.js
-|   +-- on-doc-change.js
-+-- shared/references/                # Reference documents</code></pre>
-
-<hr>
-
-<!-- Section 13 -->
-<h2 id="sec13">13. Hooks &amp; Guardrails</h2>
-
-<p>All hooks are bound to <code>PostToolUse(Write)</code> events and run automatically after file writes.</p>
-
-<table>
-<thead><tr><th>Script</th><th>Behavior</th></tr></thead>
-<tbody>
-<tr><td><code>on-dropzone-added.js</code></td><td>Detects _dropzone/ file addition &rarr; suggests /u-ingest</td></tr>
-<tr><td><code>on-gate-result.js</code></td><td>Gate criteria evaluated &rarr; suggests phase transition or retry</td></tr>
-<tr><td><code>on-doc-change.js</code></td><td>Cascade impact notification via _links.json</td></tr>
-</tbody>
-</table>
-
-<hr>
-
-<!-- Section 14 -->
-<h2 id="sec14">14. Scenario Guide &mdash; When to Use Which Command?</h2>
+<!-- ============================================================ -->
+<!-- SECTION 10: Scenario Guide -->
+<!-- ============================================================ -->
+<h2 id="sec-scenario">10. Scenario Guide</h2>
 
 <h3>Project Start (Forward Engineering)</h3>
 <table>
 <thead><tr><th>Scenario</th><th>Command</th></tr></thead>
 <tbody>
 <tr><td>Starting a completely new project</td><td><code>/u-init my-project</code></td></tr>
-<tr><td>Have existing RFP/meeting notes</td><td><code>/u-init</code> &rarr; drop files into <code>.u-maker/_dropzone/</code> &rarr; <code>/u-ingest [app]</code></td></tr>
-<tr><td>Want to review analyzed data</td><td><code>/u-ingest [app] --review</code></td></tr>
-<tr><td>Analyze only new additions</td><td><code>/u-ingest [app] --incremental</code></td></tr>
+<tr><td>Have existing RFP / meeting notes</td><td><code>/u-init</code> &rarr; drop files into <code>.u-maker/_dropzone/</code> &rarr; <code>/u-plan my-app</code></td></tr>
+<tr><td>Migrate from an older u-maker version</td><td><code>/u-init my-app --migrate</code></td></tr>
 </tbody>
 </table>
 
@@ -828,11 +654,10 @@ Use <code>/u-update --cascade</code> for automatic dependent document updates.</
 <table>
 <thead><tr><th>Scenario</th><th>Command</th></tr></thead>
 <tbody>
-<tr><td>Full reverse engineering of existing source code &rarr; SSoT</td><td><code>/u-reverse --app my-app</code></td></tr>
-<tr><td>Specify DB schema path manually</td><td><code>/u-reverse --app my-app --db prisma/</code></td></tr>
-<tr><td>Specify API route path manually</td><td><code>/u-reverse --app my-app --api src/app/api/</code></td></tr>
-<tr><td>Specify page component path manually</td><td><code>/u-reverse --app my-app --pages src/app/</code></td></tr>
-<tr><td>Reverse engineer with gatekeeper validation</td><td><code>/u-reverse --app my-app --loop [N]</code></td></tr>
+<tr><td>Full reverse engineering of existing code &rarr; SSoT</td><td><code>/u-reverse --app my-app</code></td></tr>
+<tr><td>Specify DB schema path</td><td><code>/u-reverse --app my-app --db prisma/</code></td></tr>
+<tr><td>Specify API route path</td><td><code>/u-reverse --app my-app --api src/app/api/</code></td></tr>
+<tr><td>Specify page component path</td><td><code>/u-reverse --app my-app --pages src/app/</code></td></tr>
 </tbody>
 </table>
 
@@ -840,15 +665,11 @@ Use <code>/u-update --cascade</code> for automatic dependent document updates.</
 <table>
 <thead><tr><th>Scenario</th><th>Command</th></tr></thead>
 <tbody>
-<tr><td>Run entire Plan Phase</td><td><code>/u-plan [app]</code></td></tr>
-<tr><td>Generate SRS only</td><td><code>/u-plan [app] --only srs</code></td></tr>
-<tr><td>Want to co-create interactively</td><td><code>/u-plan [app] -i</code></td></tr>
-<tr><td>Confirm at every step</td><td><code>/u-plan [app] --step</code></td></tr>
-<tr><td>Generate common policy documents</td><td><code>/u-plan common</code></td></tr>
-<tr><td>Add a functional requirement</td><td><code>/u-add [app] fr "Password Reset"</code></td></tr>
-<tr><td>Add a user story</td><td><code>/u-add [app] us "I want to reset my password"</code></td></tr>
-<tr><td>Brainstorming</td><td><code>/u-discuss brainstorm "Payment UX"</code></td></tr>
-<tr><td>Plan&rarr;Design gate verification</td><td><code>/u-gate [app]</code></td></tr>
+<tr><td>Run entire Plan Phase</td><td><code>/u-plan my-app</code></td></tr>
+<tr><td>Generate SRS only</td><td><code>/u-plan my-app --only srs</code></td></tr>
+<tr><td>Interactive co-creation</td><td><code>/u-plan my-app -i</code></td></tr>
+<tr><td>Step-by-step with approval at every step</td><td><code>/u-plan my-app --step</code></td></tr>
+<tr><td>Brainstorming session</td><td><code>/u-discuss brainstorm "Payment UX"</code></td></tr>
 </tbody>
 </table>
 
@@ -856,227 +677,191 @@ Use <code>/u-update --cascade</code> for automatic dependent document updates.</
 <table>
 <thead><tr><th>Scenario</th><th>Command</th></tr></thead>
 <tbody>
-<tr><td>Run entire Design Phase</td><td><code>/u-design [app]</code></td></tr>
-<tr><td>Generate Screen only</td><td><code>/u-design [app] --only screens</code></td></tr>
-<tr><td>Generate ERD only</td><td><code>/u-design [app] --only erd</code></td></tr>
-<tr><td>Two apps interactive</td><td><code>/u-design [app],[app2] -i</code></td></tr>
-<tr><td>IA workshop</td><td><code>/u-discuss workshop "Main IA"</code></td></tr>
-<tr><td>Common auth method decision</td><td><code>/u-discuss decision "Auth Method"</code></td></tr>
-<tr><td>Consistency verification</td><td><code>/u-sync [app]</code></td></tr>
+<tr><td>Run entire Design Phase</td><td><code>/u-design my-app</code></td></tr>
+<tr><td>Generate Screen spec only</td><td><code>/u-design my-app --only screens</code></td></tr>
+<tr><td>Generate ERD only</td><td><code>/u-design my-app --only erd</code></td></tr>
+<tr><td>Generate all wireframes</td><td><code>/u-wireframe --app my-app --all</code></td></tr>
 </tbody>
 </table>
 
-<h3>Implementation (Do Phase)</h3>
+<h3>Development (Dev Phase)</h3>
 <table>
 <thead><tr><th>Scenario</th><th>Command</th></tr></thead>
 <tbody>
-<tr><td>Generate FE+BE+DB code</td><td><code>/u-dev [app]</code></td></tr>
-<tr><td>Generate FE only</td><td><code>/u-dev [app] --only fe</code></td></tr>
-<tr><td>Generate BE only</td><td><code>/u-dev [app] --only be</code></td></tr>
+<tr><td>Generate FE + BE + DB code</td><td><code>/u-dev my-app</code></td></tr>
+<tr><td>Generate FE only</td><td><code>/u-dev my-app --only fe</code></td></tr>
+<tr><td>Generate BE only</td><td><code>/u-dev my-app --only be</code></td></tr>
+<tr><td>Generate DB only</td><td><code>/u-dev my-app --only db</code></td></tr>
 </tbody>
 </table>
 
-<blockquote><strong>Prerequisite Cascade:</strong> <code>/u-dev</code> auto-invokes <code>/u-design</code> if Design documents are missing; <code>/u-design</code> auto-invokes <code>/u-plan</code> if Plan documents are missing. This means running <code>/u-dev</code> alone can trigger the entire Plan &rarr; Design &rarr; Dev pipeline.</blockquote>
+<blockquote><strong>Prerequisite Cascade:</strong> <code>/u-dev</code> auto-invokes <code>/u-design</code> if Design docs are missing; <code>/u-design</code> auto-invokes <code>/u-plan</code> if Plan docs are missing. Running <code>/u-dev</code> alone can trigger the entire Plan &rarr; Design &rarr; Dev pipeline.</blockquote>
 
 <h3>Verification (Check Phase)</h3>
 <table>
 <thead><tr><th>Scenario</th><th>Command</th></tr></thead>
 <tbody>
-<tr><td>TC design + test</td><td><code>/u-qa [app]</code></td></tr>
-<tr><td>Review results interactively</td><td><code>/u-qa [app] -i</code></td></tr>
+<tr><td>Run TC design + test execution</td><td><code>/u-check my-app</code> or <code>/u-qa my-app</code></td></tr>
+<tr><td>Review results interactively</td><td><code>/u-qa my-app -i</code></td></tr>
 </tbody>
 </table>
 
-<h3>Deploy + Retrospective (Act Phase)</h3>
+<h3>Ship + Retrospective</h3>
 <table>
 <thead><tr><th>Scenario</th><th>Command</th></tr></thead>
 <tbody>
-<tr><td>Final verification + deploy + retrospective</td><td><code>/u-ship [app]</code></td></tr>
+<tr><td>Final verification + deploy + retrospective</td><td><code>/u-ship my-app</code></td></tr>
 <tr><td>Retrospective session</td><td><code>/u-discuss retro</code></td></tr>
 </tbody>
 </table>
 
-<h3>Day-to-Day Operations</h3>
+<h3>Full Automation</h3>
 <table>
 <thead><tr><th>Scenario</th><th>Command</th></tr></thead>
 <tbody>
-<tr><td>Full project dashboard</td><td><code>/u-status</code></td></tr>
-<tr><td>Specific app status</td><td><code>/u-status [app]</code></td></tr>
-<tr><td>Check pending assumptions</td><td><code>/u-status [app] --assumptions</code></td></tr>
-<tr><td>Approve assumption</td><td><code>/u-assume approve A-001</code></td></tr>
-<tr><td>Reject assumption (cascade)</td><td><code>/u-assume reject A-001 "cancel only"</code></td></tr>
-<tr><td>Modify SRS + update dependent docs</td><td><code>/u-update [app] srs --cascade</code></td></tr>
-<tr><td>View specific document</td><td><code>/u-doc [app] screens</code></td></tr>
-<tr><td>Full trace of FR-015</td><td><code>/u-trace [app] FR-015</code></td></tr>
-<tr><td>Full coverage</td><td><code>/u-coverage all</code></td></tr>
-<tr><td>Full consistency verification</td><td><code>/u-sync all</code></td></tr>
-<tr><td>Generate standalone HTML from docs (free-form SVG diagrams)</td><td><code>/u-output --app [app]</code></td></tr>
-<tr><td>Generate HTML with Mermaid diagrams</td><td><code>/u-output --app [app] --diagram mermaid</code></td></tr>
-<tr><td>Generate HTML with SVG + Mermaid fallback</td><td><code>/u-output --app [app] --diagram all</code></td></tr>
-<tr><td>Generate HTML for specific doc only</td><td><code>/u-output --app [app] --only srs</code></td></tr>
+<tr><td>Run entire PDCA pipeline unattended</td><td><code>/u-loop --app my-app</code></td></tr>
+<tr><td>Run from Plan to Check only</td><td><code>/u-loop --app my-app --from plan --to check</code></td></tr>
+<tr><td>Dry run (preview only)</td><td><code>/u-loop --app my-app --dry-run</code></td></tr>
 </tbody>
 </table>
 
-<h3>Q&amp;A &amp; Discussions</h3>
+<h3>Reporting</h3>
 <table>
 <thead><tr><th>Scenario</th><th>Command</th></tr></thead>
 <tbody>
-<tr><td>Quick question/suggestion</td><td><code>/u-ask What's the impact of changing screens.json structure?</code></td></tr>
-<tr><td>Ask about u-maker usage</td><td><code>/u-ask How does reverse work in u-maker?</code></td></tr>
-<tr><td>Idea brainstorming</td><td><code>/u-discuss brainstorm "Payment UX"</code></td></tr>
-<tr><td>Deliverable review</td><td><code>/u-discuss review</code></td></tr>
-<tr><td>Technical decision</td><td><code>/u-discuss decision "DB Selection"</code></td></tr>
-<tr><td>Multi-step workshop</td><td><code>/u-discuss workshop "Main Screen Design"</code></td></tr>
-<tr><td>Iteration retrospective</td><td><code>/u-discuss retro</code></td></tr>
+<tr><td>Generate HTML output from docs</td><td><code>/u-output --app my-app</code></td></tr>
+<tr><td>Generate with SVG diagrams</td><td><code>/u-output --app my-app --diagram svg</code></td></tr>
+<tr><td>Daily team report</td><td><code>/u-report-daily</code></td></tr>
+<tr><td>Weekly trend report</td><td><code>/u-report-weekly</code></td></tr>
+<tr><td>Meeting minutes from notes</td><td><code>/u-meeting-report my-app</code></td></tr>
 </tbody>
 </table>
 
-<p>Micro-commands available during sessions:</p>
-<table>
-<thead><tr><th>Command</th><th>Description</th></tr></thead>
-<tbody>
-<tr><td><code>@planner</code> / <code>@builder</code> / <code>@gatekeeper</code></td><td>Ask a specific agent</td></tr>
-<tr><td><code>@all</code></td><td>Request opinions from all agents</td></tr>
-<tr><td><code>/idea [text]</code></td><td>Tag an idea</td></tr>
-<tr><td><code>/decide [text]</code></td><td>Record a decision</td></tr>
-<tr><td><code>/concern [text]</code></td><td>Record a concern/risk</td></tr>
-<tr><td><code>/action [who] [text]</code></td><td>Record an action item</td></tr>
-<tr><td><code>/wrap</code></td><td>End session + load into _classified</td></tr>
-</tbody>
-</table>
-
-<h3>Backlog &amp; PR</h3>
+<h3>Collaboration</h3>
 <table>
 <thead><tr><th>Scenario</th><th>Command</th></tr></thead>
 <tbody>
-<tr><td>View backlog</td><td><code>/u-backlog [app]</code></td></tr>
-<tr><td>Add backlog item</td><td><code>/u-backlog [app] add "Improve login"</code></td></tr>
-<tr><td>Assign to sprint</td><td><code>/u-backlog [app] assign S-001 sprint-2</code></td></tr>
-<tr><td>Auto-generate PR</td><td><code>/u-git-pr main</code></td></tr>
-<tr><td>PR (draft)</td><td><code>/u-git-pr main --draft</code></td></tr>
-<tr><td>Split PR generation</td><td><code>/u-git-pr main --split</code></td></tr>
+<tr><td>Structured brainstorming</td><td><code>/u-discuss brainstorm "Payment UX"</code></td></tr>
+<tr><td>Design review</td><td><code>/u-discuss review "API v2"</code></td></tr>
+<tr><td>Decision meeting</td><td><code>/u-discuss decision "Auth Method"</code></td></tr>
+<tr><td>Generate a PR from current branch</td><td><code>/u-git-pr main</code></td></tr>
+<tr><td>Generate a draft PR</td><td><code>/u-git-pr main --draft</code></td></tr>
 </tbody>
 </table>
-
-<h3>Natural Language Also Works</h3>
-<p>If you don't know the command, just say it in natural language:</p>
-<pre><code>"Create SRS for the [app] app"             &rarr; /u-plan [app] --only srs
-"Optimize ERD for PostgreSQL"              &rarr; /u-design [app] --only erd
-"Create test cases"                        &rarr; /u-qa [app]
-"What's the current project status?"       &rarr; /u-status
-"Extract API docs from existing source"    &rarr; /u-reverse --app my-app
-"Create a PR"                              &rarr; /u-git-pr main</code></pre>
 
 <hr>
 
-<!-- Section 15 -->
-<h2 id="sec15">15. Prerequisites &amp; Install</h2>
+<!-- ============================================================ -->
+<!-- SECTION 11: Install & Prerequisites -->
+<!-- ============================================================ -->
+<h2 id="sec-install">11. Install &amp; Prerequisites</h2>
 
-<table>
-<thead><tr><th>Tool</th><th>Purpose</th><th>Required</th></tr></thead>
-<tbody>
-<tr><td><strong>Claude Code</strong></td><td>u-maker base environment</td><td>Yes</td></tr>
-<tr><td><strong>Node.js</strong></td><td>Hook script execution</td><td>Yes</td></tr>
-</tbody>
-</table>
+<h3>Prerequisites</h3>
+<ul>
+<li><strong>Claude Code CLI</strong> installed and authenticated</li>
+<li><strong>Node.js 18+</strong> (for hooks)</li>
+<li><strong>Git</strong> (for /u-git-pr)</li>
+</ul>
 
 <h3>Installation</h3>
-<pre><code><span class="comment"># macOS / Linux</span>
-curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/install.sh | bash
+<pre><code><span class="comment"># Install the plugin</span>
+<span class="cmd">claude plugin add upleat-ax/u-maker-plugin</span>
 
-<span class="comment"># Update</span>
-curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/update.sh | bash
+<span class="comment"># Restart Claude Code to load the plugin</span>
+<span class="comment"># Then initialize your project</span>
+<span class="cmd">/u-init my-project</span></code></pre>
 
-<span class="comment"># Local development</span>
-cd /path/to/u-maker-plugin && ./deploy_local.sh</code></pre>
+<h3>Migration from Previous Version</h3>
+<pre><code><span class="cmd">/u-init my-project --migrate</span>    <span class="comment"># Upgrades .u-maker/ structure to v3.4.5</span></code></pre>
 
-<blockquote>After install/update, you must <strong>restart Claude Code</strong>.</blockquote>
+<h3>Plugin Repository Layout</h3>
+<pre><code>u-maker-plugin/
+&#x251C;&#x2500;&#x2500; .claude-plugin/plugin.json        # v3.4.5
+&#x251C;&#x2500;&#x2500; agents/                           # 7 agent definitions
+&#x2502;   &#x251C;&#x2500;&#x2500; u-agent-pm.md
+&#x2502;   &#x251C;&#x2500;&#x2500; u-agent-plan.md
+&#x2502;   &#x251C;&#x2500;&#x2500; u-agent-design.md
+&#x2502;   &#x251C;&#x2500;&#x2500; u-agent-dev.md
+&#x2502;   &#x251C;&#x2500;&#x2500; u-agent-qa.md
+&#x2502;   &#x251C;&#x2500;&#x2500; u-agent-gatekeeper.md
+&#x2502;   &#x2514;&#x2500;&#x2500; u-agent-report.md
+&#x251C;&#x2500;&#x2500; skills/                           # 15 skills (12 user-facing + 1 engine + 2 reports)
+&#x2502;   &#x2514;&#x2500;&#x2500; u-*/SKILL.md
+&#x251C;&#x2500;&#x2500; hooks/                            # Event hooks
+&#x2502;   &#x251C;&#x2500;&#x2500; hooks.json
+&#x2502;   &#x251C;&#x2500;&#x2500; on-dropzone-added.js
+&#x2502;   &#x251C;&#x2500;&#x2500; on-gate-result.js
+&#x2502;   &#x2514;&#x2500;&#x2500; on-doc-change.js
+&#x2514;&#x2500;&#x2500; shared/references/                # Reference documents</code></pre>
 
 <hr>
 
-<!-- Section 16 -->
-<h2 id="sec16">16. Troubleshooting</h2>
+<!-- ============================================================ -->
+<!-- SECTION 12: Troubleshooting -->
+<!-- ============================================================ -->
+<h2 id="sec-troubleshoot">12. Troubleshooting</h2>
 
 <table>
-<thead><tr><th>Symptom</th><th>Solution</th></tr></thead>
+<thead><tr><th>Symptom</th><th>Cause</th><th>Solution</th></tr></thead>
 <tbody>
-<tr><td><code>/u-plan</code> not recognized</td><td>Restart Claude Code and try again</td></tr>
-<tr><td>Scope resolution is incorrect</td><td>Verify the app is registered in <code>u-maker.config.json</code> under <code>apps[]</code></td></tr>
-<tr><td>Auto mode keeps switching to interactive</td><td><code>maxAssumptions</code> exceeded. Review with <code>/u-assume</code></td></tr>
-<tr><td>Too many cascade notifications</td><td>Clean up at once with <code>/u-sync</code> or auto-update with <code>/u-update --cascade</code></td></tr>
-<tr><td><code>.u-maker/_dropzone/</code> files not classified</td><td>Run <code>/u-ingest [scope]</code> to trigger auto-classification</td></tr>
-<tr><td>wireframes/index.html missing</td><td>Run <code>/u-wireframe --app [name] --all</code> to generate it</td></tr>
-<tr><td>Want to change document language</td><td>Change <code>language.documents</code> in <code>u-maker.config.json</code> to ko/en/ja/zh</td></tr>
-<tr><td><code>/u-reverse</code> results incomplete</td><td>Use <code>--src</code>, <code>--db</code>, <code>--api</code>, <code>--pages</code> flags to specify exact paths</td></tr>
-<tr><td>Hooks not working</td><td>Check match settings in <code>hooks/hooks.json</code> + verify Node.js is installed</td></tr>
+<tr><td>Plugin commands not recognized</td><td>Plugin not loaded or Claude Code not restarted</td><td>Run <code>claude plugin add upleat-ax/u-maker-plugin</code> and restart Claude Code</td></tr>
+<tr><td><code>/u-plan</code> produces empty SRS</td><td>No data in dropzone or digest</td><td>Drop RFP/meeting notes into <code>.u-maker/_dropzone/</code> before running <code>/u-plan</code></td></tr>
+<tr><td>Gate always fails</td><td>Threshold set too high or documents incomplete</td><td>Check gatekeeper scorecard findings. Fix flagged criteria. Consider lowering threshold if appropriate</td></tr>
+<tr><td><code>/u-dev</code> generates no code</td><td>Design phase documents missing</td><td><code>/u-dev</code> will auto-cascade to <code>/u-design</code> and <code>/u-plan</code>. Ensure dropzone has input data</td></tr>
+<tr><td>Dependency cascade not triggering</td><td><code>_links.json</code> not initialized</td><td>Run <code>/u-init</code> to regenerate the dependency graph</td></tr>
+<tr><td><code>/u-loop</code> halts after 3 retries</td><td>Gate criteria cannot be satisfied automatically</td><td>Review the scorecard, fix the lowest-scoring criteria manually, then resume</td></tr>
+<tr><td>Wireframes not rendering</td><td>Screen spec JSON missing <code>layout</code> field</td><td>Run <code>/u-design --only screens</code> to regenerate screen specs</td></tr>
+<tr><td>Wrong document language</td><td><code>language.documents</code> setting mismatch</td><td>Edit <code>u-maker.config.json</code> and set <code>language.documents</code> to desired locale (ko/en/ja/zh)</td></tr>
+<tr><td><code>/u-reverse</code> misses some files</td><td>Source paths not specified</td><td>Use <code>--db</code>, <code>--api</code>, <code>--pages</code> flags to specify exact paths</td></tr>
+<tr><td>HTML output missing diagrams</td><td>Diagram mode not specified</td><td>Use <code>/u-output --diagram svg</code> or <code>--diagram all</code></td></tr>
 </tbody>
 </table>
 
 <hr>
+
+<!-- ============================================================ -->
+<!-- SECTION 13: License -->
+<!-- ============================================================ -->
+<h2 id="sec-license">13. License</h2>
+
+<p><strong>Proprietary</strong> &mdash; Copyright (c) 2026 U PLEAT. All rights reserved.</p>
+
+<p>This software and associated documentation files are the proprietary property of U PLEAT. Unauthorized copying, distribution, modification, or use of this software, in whole or in part, is strictly prohibited without prior written permission from U PLEAT.</p>
+
+<p>For licensing inquiries, contact U PLEAT.</p>
 
 <!-- Footer -->
 <div class="footer">
-  <strong>U-MAKER Plugin</strong> v3.4.4 &middot; Proprietary &copy; U PLEAT<br>
-  PDCA-based SSoT collaboration orchestrator
+  <strong>U-MAKER Plugin</strong> v3.4.5 &mdash; PDCA-based SSoT Collaboration Orchestrator<br>
+  Proprietary &copy; 2026 U PLEAT &middot; All rights reserved
 </div>
 
 </main>
 
 <script>
-// Toggle sidebar (mobile)
 function toggleSidebar(){
   document.getElementById('sidebar').classList.toggle('open');
   document.getElementById('overlay').classList.toggle('open');
 }
-
-// Navigation click
 function nav(el){
-  document.querySelectorAll('.nav-item').forEach(function(item){item.classList.remove('active')});
+  document.querySelectorAll('.nav-item').forEach(i=>i.classList.remove('active'));
   el.classList.add('active');
-  // Close sidebar on mobile
-  if(window.innerWidth<=768){toggleSidebar()}
+  if(window.innerWidth<=768) toggleSidebar();
 }
-
-// Scroll Spy
-(function(){
-  var sections=[];
-  var navItems=[];
-
-  function init(){
-    navItems=document.querySelectorAll('.nav-item');
-    sections=[];
-    navItems.forEach(function(item){
-      var href=item.getAttribute('href');
-      if(href){
-        var target=document.querySelector(href);
-        if(target){sections.push({el:target,nav:item})}
-      }
+// Scroll spy
+window.addEventListener('scroll',function(){
+  const sections=document.querySelectorAll('h2[id],div[id]');
+  let current='';
+  sections.forEach(s=>{
+    if(window.scrollY>=s.offsetTop-100) current=s.id;
+  });
+  if(current){
+    document.querySelectorAll('.nav-item').forEach(i=>{
+      i.classList.remove('active');
+      if(i.getAttribute('href')==='#'+current) i.classList.add('active');
     });
   }
-
-  function onScroll(){
-    var scrollPos=window.scrollY+100;
-    var current=null;
-    for(var i=0;i<sections.length;i++){
-      if(sections[i].el.offsetTop<=scrollPos){current=sections[i]}
-    }
-    if(current){
-      navItems.forEach(function(item){item.classList.remove('active')});
-      current.nav.classList.add('active');
-      // Scroll sidebar to keep active item visible
-      var sidebar=document.getElementById('sidebar');
-      var activeTop=current.nav.offsetTop;
-      var sidebarH=sidebar.clientHeight;
-      if(activeTop>sidebarH*0.7){
-        sidebar.scrollTop=activeTop-sidebarH*0.4;
-      }
-    }
-  }
-
-  window.addEventListener('load',function(){init();onScroll()});
-  window.addEventListener('scroll',onScroll);
-  window.addEventListener('resize',function(){init()});
-})();
+});
 </script>
 
 </body>
