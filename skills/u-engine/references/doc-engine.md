@@ -32,21 +32,37 @@ All documents are generated from templates stored in `_meta/templates/`. Templat
 ### Template Location
 
 ```
-_meta/templates/{docType}.template.md
+_meta/templates/{docType}.template.md     (standard documents)
+_meta/templates/{docType}.template.html   (HTML-first documents)
 ```
 
 Available templates:
 
-| Template File | Document Type | Output Path |
-|---------------|---------------|-------------|
-| `srs.template.md` | Software Requirements Specification | `docs/{app}/plan/srs.md` |
-| `ia.template.md` | Information Architecture | `docs/{app}/plan/ia.md` |
-| `erd.template.md` | Entity-Relationship Diagram | `docs/{app}/design/erd.md` |
-| `api.template.md` | API Contract | `docs/{app}/design/api.md` |
-| `screens.template.md` | Screen Specification | `docs/{app}/design/screens.md` |
-| `design-system.template.md` | Design System | `docs/{app}/design/design-system.md` |
-| `testcase.template.md` | Test Cases | `docs/{app}/check/testcases.md` |
-| `test-results.template.md` | Test Results | `docs/{app}/check/test-results.md` |
+| Template File | Document Type | Output Path | Pipeline |
+|---------------|---------------|-------------|----------|
+| `srs.template.md` | Software Requirements Specification | `docs/{app}/plan/srs.md` | Standard (MD→JSON→HTML) |
+| `ia.template.md` | Information Architecture | `docs/{app}/plan/ia.md` | Standard |
+| `erd.template.md` | Entity-Relationship Diagram | `docs/{app}/design/erd.md` | Standard |
+| `api.template.md` | API Contract | `docs/{app}/design/api.md` | Standard |
+| `screens.template.md` | Screen Specification | `docs/{app}/design/screens.md` | Standard |
+| `design-system.template.html` | Design System | `out/{app}/design/design-system.html` | **HTML-first** (HTML→MD+JSON) |
+| `design-system.template.md` | Design System (derived) | `docs/{app}/design/design-system.md` | Derived from HTML |
+| `testcase.template.md` | Test Cases | `docs/{app}/check/testcases.md` | Standard |
+| `test-results.template.md` | Test Results | `docs/{app}/check/test-results.md` | Standard |
+
+### Design System: HTML-First Exception
+
+The Design System is the only SSoT document that uses an **HTML-first pipeline**. Instead of the standard `template.md → MD → JSON → HTML` flow, it follows:
+
+```
+template.html → HTML (primary) → MD + JSON (derived)
+```
+
+1. **Phase A (Primary):** Load `design-system.template.html`, render CSS custom properties and component showcases with actual token values, write to `out/{app}/design/design-system.html`
+2. **Phase B (Derive MD):** Parse CSS variables and component classes from the HTML, generate token tables and component specs, write `docs/{app}/design/design-system.md` with a `Source:` frontmatter field pointing to the HTML
+3. **Phase C (Derive JSON):** Extract items from the HTML, build `design-system.json` with a `source` field pointing to the HTML
+
+When updating the Design System, always edit the HTML first, then re-derive MD and JSON. The HTML is the single source of truth for visual language definitions.
 
 ### Mustache Placeholder Syntax
 
@@ -147,13 +163,21 @@ docs/{app}/check/testcases.md  ↔  docs/{app}/check/testcases.json
 
 ### Synchronization Verification
 
-After any document write or update, doc-engine MUST verify `.md` ↔ `.json` synchronization:
+After any document write or update, doc-engine MUST verify synchronization:
 
+**Standard documents (MD is source of truth):**
 1. Parse all IDs from the `.md` document (table rows, headings, list items)
 2. Compare with `items[].id` in the `.json` companion
 3. Verify status fields match between frontmatter and JSON
 4. Verify version fields match
 5. If any mismatch is found, regenerate the `.json` from the `.md` as the source of truth
+
+**Design System (HTML is source of truth):**
+1. Parse all CSS custom properties from the HTML `:root` block
+2. Parse all component classes (`.ds-*`) from the HTML `<style>` block
+3. Compare tokens/components with MD tables and JSON items
+4. Verify status and version fields match across HTML metadata, MD frontmatter, and JSON
+5. If any mismatch is found, regenerate `.md` and `.json` from the HTML as the source of truth
 
 ## 4. ID Auto-Assignment
 

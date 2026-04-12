@@ -5,52 +5,90 @@ Version: {{version}}
 Last Updated: {{date}}
 App: {{app}}
 Companion: design-system.json
+Source: ../../out/{{app}}/design/design-system.html
 ---
 
 # Design System
 
+> **This document is derived from the primary HTML artifact:** `out/{{app}}/design/design-system.html`
+> To modify the Design System, edit the HTML first, then re-derive this MD and the JSON companion.
+>
 > JSON companion: `design-system.json`
-> ID Rule: DS-010, DS-020, ... (tokens), CMP-010, CMP-020, ... (components)
+> ID Rule: DS-010, DS-020, ... (token groups), CMP-010, CMP-020, ... (components)
 
 ## 1. Design Tokens
 
-### 1.1 Colors
-
-| ID | Token | Value | Usage |
-|----|-------|-------|-------|
-| DS-010 | --color-primary | {{value}} | Primary actions, links |
-| DS-020 | --color-secondary | {{value}} | Secondary elements |
-| DS-030 | --color-bg | {{value}} | Page background |
-| DS-040 | --color-surface | {{value}} | Card/panel background |
-| DS-050 | --color-text | {{value}} | Body text |
-| DS-060 | --color-border | {{value}} | Borders, dividers |
-| DS-070 | --color-error | {{value}} | Error states |
-| DS-080 | --color-success | {{value}} | Success states |
-
-### 1.2 Typography
-
-| Token | Font | Size | Weight | Line Height |
-|-------|------|------|--------|-------------|
-| --font-heading-1 | {{font}} | {{size}} | {{weight}} | {{lineHeight}} |
-| --font-body | {{font}} | {{size}} | {{weight}} | {{lineHeight}} |
-
-### 1.3 Spacing
+### 1.1 Brand Colors (DS-010)
 
 | Token | Value | Usage |
 |-------|-------|-------|
-| --space-xs | 4px | Tight spacing |
-| --space-sm | 8px | Compact elements |
-| --space-md | 16px | Default gap |
-| --space-lg | 24px | Section spacing |
-| --space-xl | 32px | Major sections |
+{{#brandColorTokens}}
+| `{{name}}` | `{{value}}` | {{usage}} |
+{{/brandColorTokens}}
 
-### 1.4 Border Radius
+### 1.2 Semantic Colors (DS-020)
 
 | Token | Value | Usage |
 |-------|-------|-------|
-| --radius-sm | 4px | Inputs, small elements |
-| --radius-md | 8px | Cards, buttons |
-| --radius-lg | 16px | Modals, large panels |
+{{#semanticColorTokens}}
+| `{{name}}` | `{{value}}` | {{usage}} |
+{{/semanticColorTokens}}
+
+### 1.3 Neutral Colors (DS-030)
+
+| Token | Value | Usage |
+|-------|-------|-------|
+{{#neutralColorTokens}}
+| `{{name}}` | `{{value}}` | {{usage}} |
+{{/neutralColorTokens}}
+
+### 1.4 Surface Colors (DS-040)
+
+| Token | Light Mode | Dark Mode | Usage |
+|-------|-----------|-----------|-------|
+{{#surfaceColorTokens}}
+| `{{name}}` | `{{lightValue}}` | `{{darkValue}}` | {{usage}} |
+{{/surfaceColorTokens}}
+
+### 1.5 Typography (DS-050)
+
+| Token | Value | Usage |
+|-------|-------|-------|
+{{#typographyTokens}}
+| `{{name}}` | `{{value}}` | {{usage}} |
+{{/typographyTokens}}
+
+### 1.6 Spacing (DS-060)
+
+| Token | Value | Pixels | Usage |
+|-------|-------|--------|-------|
+{{#spacingTokens}}
+| `{{name}}` | `{{value}}` | {{px}} | {{usage}} |
+{{/spacingTokens}}
+
+### 1.7 Border Radius (DS-070)
+
+| Token | Value | Usage |
+|-------|-------|-------|
+{{#radiusTokens}}
+| `{{name}}` | `{{value}}` | {{usage}} |
+{{/radiusTokens}}
+
+### 1.8 Shadows (DS-080)
+
+| Token | Value |
+|-------|-------|
+{{#shadowTokens}}
+| `{{name}}` | `{{value}}` |
+{{/shadowTokens}}
+
+### 1.9 Transitions (DS-090)
+
+| Token | Value |
+|-------|-------|
+{{#transitionTokens}}
+| `{{name}}` | `{{value}}` |
+{{/transitionTokens}}
 
 ## 2. UI Components
 
@@ -58,32 +96,75 @@ Companion: design-system.json
 
 | Variant | Background | Text | Border | Usage |
 |---------|-----------|------|--------|-------|
-| Primary | --color-primary | #fff | none | Main CTA |
-| Secondary | transparent | --color-primary | --color-primary | Alternative action |
-| Danger | --color-error | #fff | none | Destructive action |
+{{#buttonVariants}}
+| {{name}} | `{{bg}}` | `{{text}}` | `{{border}}` | {{usage}} |
+{{/buttonVariants}}
+
+| Size | Height | Padding X | Font Size | Radius |
+|------|--------|----------|-----------|--------|
+{{#buttonSizes}}
+| {{name}} | {{height}} | `{{paddingX}}` | `{{fontSize}}` | `{{radius}}` |
+{{/buttonSizes}}
 
 ### CMP-020: Input
 
 | State | Border | Background | Text |
 |-------|--------|-----------|------|
-| Default | --color-border | --color-surface | --color-text |
-| Focus | --color-primary | --color-surface | --color-text |
-| Error | --color-error | --color-surface | --color-text |
+{{#inputStates}}
+| {{name}} | `{{border}}` | `{{bg}}` | `{{text}}` |
+{{/inputStates}}
 
 ### CMP-030: Card
 
 | Property | Value |
 |----------|-------|
-| Background | --color-surface |
-| Border | 1px solid --color-border |
-| Radius | --radius-md |
-| Shadow | 0 1px 3px rgba(0,0,0,0.1) |
-| Padding | --space-md |
+{{#cardProps}}
+| {{name}} | `{{value}}` |
+{{/cardProps}}
+
+### CMP-040: Table
+
+| Property | Value |
+|----------|-------|
+{{#tableProps}}
+| {{name}} | `{{value}}` |
+{{/tableProps}}
+
+### CMP-050: Modal
+
+| Property | Value |
+|----------|-------|
+{{#modalProps}}
+| {{name}} | `{{value}}` |
+{{/modalProps}}
+
+### CMP-060: Toast
+
+| Variant | Background | Border | Text |
+|---------|-----------|--------|------|
+{{#toastVariants}}
+| {{name}} | `{{bg}}` | `{{border}}` | `{{text}}` |
+{{/toastVariants}}
+
+### CMP-070: Badge
+
+| Variant | Background | Text |
+|---------|-----------|------|
+{{#badgeVariants}}
+| {{name}} | `{{bg}}` | `{{text}}` |
+{{/badgeVariants}}
 
 ## 3. Layout Patterns
 
 | Pattern | Description | Breakpoints |
 |---------|-------------|-------------|
-| Sidebar + Content | 280px sidebar + fluid content | < 768px: stack |
-| Grid Cards | Auto-fill grid, min 280px | Responsive |
-| Form Stack | Vertical form fields, max-width 480px | Always stacked |
+{{#layoutPatterns}}
+| {{name}} | {{description}} | {{breakpoints}} |
+{{/layoutPatterns}}
+
+## 4. Accessibility
+
+- **Contrast:** Normal text 4.5:1, large text 3:1 (WCAG AA)
+- **Focus:** 2px solid ring `--color-primary-300`, offset 2px
+- **Motion:** Respects `prefers-reduced-motion`
+- **ARIA:** All interactive elements have appropriate ARIA attributes

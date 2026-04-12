@@ -68,15 +68,28 @@ Follow the execution flow defined in `skills/u-design/SKILL.md` exactly:
 4. Write `docs/{app}/design/screens.md` + `screens.json`
 5. Update `data/links.json`
 
-### Step 4: Generate Design System
+### Step 4: Generate Design System (HTML-First)
+
+**The Design System uses an HTML-first pipeline.** CSS variables, component styles, and a live showcase HTML are created first; MD and JSON are then derived from the HTML.
+
+#### Step 4a: Generate HTML/CSS/Variables (Primary)
 
 1. Analyze SRS/IA for UI patterns and component needs
-2. Define design tokens: colors, typography, spacing, border-radius, shadows
-3. Define UI components: Button, Input, Card, Table, Modal, Toast, etc.
-4. Define layout patterns: Sidebar+Content, Grid, Form Stack, Dashboard
-5. Apply ID 10-increment (DS-010, CMP-010)
-6. Write `docs/{app}/design/design-system.md` + `design-system.json`
-7. Update `data/links.json`
+2. Load template: `_meta/templates/design-system.template.html`
+3. Render CSS custom properties (`:root` block) with actual token values: colors, typography, spacing, radius, shadows, transitions
+4. Render component class definitions (`.ds-btn`, `.ds-input`, `.ds-card`, `.ds-table`, `.ds-modal`, `.ds-toast`, `.ds-badge`)
+5. Render live showcases: color swatches, type scale, spacing bars, component variants/sizes/states
+6. Apply ID 10-increment (DS-010~DS-110 for token groups, CMP-010~CMP-070 for components)
+7. Write `out/{app}/design/design-system.html`
+
+#### Step 4b: Derive MD + JSON from HTML
+
+1. Parse CSS variables from HTML `:root` → token tables in markdown
+2. Parse component classes from HTML `<style>` → component spec tables in markdown
+3. Write `docs/{app}/design/design-system.md` (with `Source:` frontmatter pointing to HTML)
+4. Write `docs/{app}/design/design-system.json` (with `source` field pointing to HTML)
+5. Verify sync: HTML tokens/components ↔ MD tables ↔ JSON items
+6. Update `data/links.json`
 
 ### Step 5: Gatekeeper (if --loop)
 
@@ -95,9 +108,9 @@ Follow the execution flow defined in `skills/u-design/SKILL.md` exactly:
 
 ### Design Token Naming
 
-- Token names follow hierarchical dot notation: `color.primary.500`, `spacing.md`, `radius.lg`
-- Token categories: color, typography, spacing, radius, shadow, breakpoint, z-index
-- All tokens must be defined in design-system.json with name, value, and category
+- Tokens are CSS custom properties defined in the HTML `:root` block: `--color-primary-500`, `--space-4`, `--radius-lg`
+- Token categories: color, typography, spacing, radius, shadow, transition, breakpoint, z-index
+- All tokens must exist in the HTML first, then be extracted to design-system.json with name, value, and category
 
 ### Document Integrity
 
@@ -123,8 +136,9 @@ Follow the execution flow defined in `skills/u-design/SKILL.md` exactly:
 | `docs/{app}/design/api.json` | API companion (endpoints, models, auth mapping) |
 | `docs/{app}/design/screens.md` | Screen Specification with layouts, components, states |
 | `docs/{app}/design/screens.json` | Screens companion (components, API calls, validation) |
-| `docs/{app}/design/design-system.md` | Design System with tokens, components, patterns |
-| `docs/{app}/design/design-system.json` | Design System companion (tokens, component variants) |
+| `out/{app}/design/design-system.html` | **Primary** — live style guide with CSS variables, component showcases |
+| `docs/{app}/design/design-system.md` | Derived — Design System documentation (tokens, components, patterns) |
+| `docs/{app}/design/design-system.json` | Derived — Design System companion (tokens, component variants) |
 
 ## 6. Reference Files
 

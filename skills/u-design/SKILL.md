@@ -58,15 +58,28 @@ Design phase: generate `docs/{app}/design/` documents (ERD, API, Screens, Design
 4. Write `docs/{app}/design/screens.md` + `screens.json`
 5. Update `data/links.json`
 
-### Step 4: Generate Design System
+### Step 4: Generate Design System (HTML-First)
 
-1. Analyze SRS/IA for UI patterns, component needs
-2. Define design tokens (colors, typography, spacing, radius)
-3. Define UI components (Button, Input, Card, Table, Modal, etc.)
-4. Define layout patterns (Sidebar+Content, Grid, Form Stack)
-5. Apply ID 10-increment (DS-010, CMP-010)
-6. Write `docs/{app}/design/design-system.md` + `design-system.json`
-7. Update `data/links.json`
+**Unlike other artifacts, the Design System uses an HTML-first pipeline.** The live HTML with CSS variables and component showcases is the primary artifact; MD and JSON are derived from it.
+
+#### Step 4a: Generate HTML/CSS/Variables (Primary)
+
+1. Analyze SRS/IA for UI patterns, component needs, brand colors
+2. Load template: `_meta/templates/design-system.template.html`
+3. Render CSS custom properties in `:root` block with actual token values
+4. Render component styles (`.ds-btn`, `.ds-input`, `.ds-card`, etc.) with token references
+5. Render live showcases: color swatches, typography scale, component variants/sizes/states
+6. Apply ID convention (DS-010~DS-110 for tokens, CMP-010~CMP-070 for components)
+7. Write `out/{app}/design/design-system.html`
+
+#### Step 4b: Derive MD + JSON from HTML
+
+1. Parse CSS variables from the HTML `:root` block → token tables
+2. Parse component classes from the HTML `<style>` block → component specs
+3. Write `docs/{app}/design/design-system.md` (with `Source:` pointing to HTML)
+4. Write `docs/{app}/design/design-system.json` (with `source` field pointing to HTML)
+5. Verify sync: every token/component in HTML is documented in MD and JSON
+6. Update `data/links.json`
 
 ### Step 5: Gatekeeper (if --loop)
 
