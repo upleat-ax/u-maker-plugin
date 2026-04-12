@@ -36,15 +36,31 @@ The primary template is `_meta/templates/design-system.template.html`. It contai
 ### 2.1 Step-by-Step
 
 1. **Analyze SRS/IA** for UI patterns, component needs, brand requirements
-2. **Determine token values** from project context:
+2. **Extract from Figma (if available):** When a Figma source is linked, extract tokens and components before determining values. Figma actuals take precedence over SRS/IA-derived defaults. Use `figma-mcp-go` MCP (primary) or Figma Official MCP at `https://mcp.figma.com/mcp` (fallback, requires auth). See `u-plan/references/figma-analysis.md` § 1.3 for server detection.
+   - **Variables** (`get_variable_defs` / Official MCP: `get_variables`): Map Figma variable collections to CSS custom properties
+     - Color variables → `--color-{name}-{shade}` (DS-010~DS-040)
+     - Number variables → `--space-{n}`, `--radius-{name}` (DS-060~DS-070)
+     - String variables → `--font-family-{name}` (DS-050)
+   - **Styles** (`get_styles`): Map paint/text/effect/grid styles to tokens
+     - Paint styles → color tokens
+     - Text styles → typography tokens (family, size, weight, line-height)
+     - Effect styles → shadow tokens (DS-080)
+     - Grid styles → layout breakpoint validation
+   - **Variable Modes**: Map mode variants to theme/responsive overrides
+     - Light mode → `:root` defaults
+     - Dark mode → `[data-theme="dark"]` overrides
+   - **Components** (`get_local_components`): Map to CMP-xxx IDs, extract variant/size/state matrix
+   - **Fonts** (`get_fonts`): Validate font availability, map to `--font-family-*` tokens
+   > Full Figma extraction spec: `u-plan/references/figma-analysis.md` § 3.5 (tokens), § 4.2 (design system context)
+3. **Determine token values** from project context (used when no Figma source, or to fill gaps):
    - Brand colors (derive from client requirements or use defaults)
    - Typography (font family, scale)
    - Spacing, radius, shadow, transition values
-3. **Load template**: `_meta/templates/design-system.template.html`
-4. **Render CSS custom properties** into the `:root` block with actual values
-5. **Render component styles** — adjust component class definitions to match the token values
-6. **Render showcases** — populate live examples with project-specific content
-7. **Write**: `out/{app}/design/design-system.html`
+4. **Load template**: `_meta/templates/design-system.template.html`
+5. **Render CSS custom properties** into the `:root` block with actual values
+6. **Render component styles** — adjust component class definitions to match the token values
+7. **Render showcases** — populate live examples with project-specific content
+8. **Write**: `out/{app}/design/design-system.html`
 
 ### 2.2 CSS Custom Property Structure
 

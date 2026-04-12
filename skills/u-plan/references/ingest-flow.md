@@ -36,7 +36,29 @@ Image files are cataloged in the digest with metadata (filename, dimensions, for
 
 Plain text files are read directly. The engine applies line-based segmentation, looking for section breaks (blank lines, separator characters like `---` or `===`) to split content into logical chunks for analysis.
 
-### 2.7 Unsupported File Types
+### 2.8 Figma Links (.figma-link, direct URL)
+
+Figma links are processed through a dedicated multi-step analysis pipeline. A single Figma frame can contain heterogeneous content: screen designs, wireframes, diagrams, annotations, design tokens, assets, and prototype interactions. The engine classifies each content region within the frame and applies type-specific extraction using Figma MCP tools.
+
+**MCP Server Priority:**
+1. **`figma-mcp-go`** (primary) — local MCP, connects to Figma desktop app, full tool set (`get_node`, `scan_nodes_by_types`, `get_variable_defs`, `get_styles`, `get_reactions`, etc.)
+2. **Figma Official MCP** (fallback) — remote REST API via `https://mcp.figma.com/mcp`, requires authentication, compensates missing tools via file-level queries
+
+**Input methods:**
+- **File-based:** A `.figma-link` file in `data/dropzone/` containing the Figma URL
+- **Direct URL:** User provides a Figma link during `/u-ingest` conversation
+
+**Key capabilities:**
+- Content type auto-detection (screen-design, screen-planning, diagram, annotation, design-tokens, assets, prototype)
+- Mixed frame handling — multiple content types extracted and cross-referenced from a single frame
+- Variable and style extraction for design system token mapping
+- Prototype reaction extraction for screen flow derivation
+
+**Output:** Standard digest JSON with extended `figmaMeta` and `sourceType: "figma-frame"` fields.
+
+> **Full specification:** See `references/figma-analysis.md` for the complete detection algorithm, MCP tool mapping, extraction strategies, and digest output format.
+
+### 2.9 Unsupported File Types
 
 Files with unrecognized extensions (e.g., `.pptx`, `.zip`, `.exe`) are recorded in `_index.json` with status `skipped` and a reason field. They are not analyzed but their presence is tracked so the user can be notified.
 

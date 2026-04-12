@@ -84,6 +84,7 @@ The digest-engine identifies file types to determine the appropriate analysis st
 | `.json` | Structured data | Direct JSON parsing and schema inference |
 | `.yaml`, `.yml` | Structured data | YAML parsing and schema inference |
 | `.pptx` | Presentation | Slide content extraction, text and image analysis |
+| `.figma-link` | Figma link | Multi-type frame analysis via Figma MCP tools (see `u-plan/references/figma-analysis.md`) |
 
 ### Detection Algorithm
 
@@ -101,8 +102,13 @@ function detectFileType(filePath):
         ".svg": "vector",
         ".html": "webpage",
         ".json": "structured-data", ".yaml": "structured-data", ".yml": "structured-data",
-        ".pptx": "presentation"
+        ".pptx": "presentation",
+        ".figma-link": "figma-link"
     }
+
+    // Special case: direct Figma URL (not file-based)
+    if isUrl(filePath) and filePath.contains("figma.com"):
+        return "figma-link"
 
     return typeMap[extension] or "unknown"
 ```

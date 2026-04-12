@@ -65,6 +65,7 @@ Design phase: generate `docs/{app}/design/` documents (ERD, API, Screens, Design
 #### Step 4a: Generate HTML/CSS/Variables (Primary)
 
 1. Analyze SRS/IA for UI patterns, component needs, brand colors
+1a. **Figma source (if available):** Extract design tokens and component specs from Figma via `u-plan/references/figma-analysis.md` § 4.2 (Design System Context). Figma Variables → CSS custom properties, Paint/Text/Effect styles → token values, Local components → CMP-xxx mapping. Figma actuals override SRS/IA-derived defaults.
 2. Load template: `_meta/templates/design-system.template.html`
 3. Render CSS custom properties in `:root` block with actual token values
 4. Render component styles (`.ds-btn`, `.ds-input`, `.ds-card`, etc.) with token references
@@ -93,3 +94,4 @@ Design phase: generate `docs/{app}/design/` documents (ERD, API, Screens, Design
 - **`references/api-spec.md`** — Endpoint derivation, OpenAPI structure, auth/role mapping
 - **`references/screen-spec.md`** — Component taxonomy, state management, validation rules
 - **`references/design-system-spec.md`** — Token naming, component variants, responsive breakpoints
+- **`../u-plan/references/figma-analysis.md`** — Figma frame analysis, content type detection, design token extraction from Figma
