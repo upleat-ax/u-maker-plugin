@@ -1372,7 +1372,14 @@ code {
   </div>
 
   <div class="callout callout-amber">
-    <strong>Windows:</strong> PowerShell 스크립트(<code class="code-inline">install.ps1</code>) 또는 <code class="code-inline">install.bat</code>을 사용하세요.
+    <strong>Windows:</strong> 아래 명령어는 쉘에 따라 구문이 다릅니다.
+    <div class="code-block" style="margin-top:8px;">
+<code><span class="comment"># CMD (cmd.exe)</span>
+<span class="cmd">curl -fsSL --ssl-no-revoke https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/install.bat -o install.bat &amp;&amp; install.bat &amp;&amp; del install.bat</span>
+
+<span class="comment"># PowerShell 5.1+ (&amp;&amp; 미지원 → 세미콜론 사용, curl.exe 강제)</span>
+<span class="cmd">curl.exe -fsSL --ssl-no-revoke https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/install.bat -o install.bat; .\install.bat; del install.bat</span></code>
+    </div>
   </div>
 
   <h3 style="font-size:14px; font-weight:700; color:#0f172a; margin:20px 0 12px;">초기화</h3>

@@ -771,6 +771,16 @@ a:hover{text-decoration:underline}
 <span class="comment"># Then initialize your project</span>
 <span class="cmd">/u-init my-project</span></code></pre>
 
+<h4>Standalone install scripts</h4>
+<pre><code><span class="comment"># macOS / Linux</span>
+<span class="cmd">curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/install.sh | bash</span>
+
+<span class="comment"># Windows (CMD / cmd.exe)</span>
+<span class="cmd">curl -fsSL --ssl-no-revoke https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/install.bat -o install.bat &amp;&amp; install.bat &amp;&amp; del install.bat</span>
+
+<span class="comment"># Windows (PowerShell 5.1+ — `&amp;&amp;` not supported, use `;` and curl.exe)</span>
+<span class="cmd">curl.exe -fsSL --ssl-no-revoke https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/install.bat -o install.bat; .\install.bat; del install.bat</span></code></pre>
+
 <h3>Migration from Previous Version</h3>
 <pre><code><span class="cmd">/u-init my-project --migrate</span>    <span class="comment"># Upgrades .u-maker/ structure to v3.4.5</span></code></pre>
 

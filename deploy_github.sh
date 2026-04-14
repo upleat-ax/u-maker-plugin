@@ -160,8 +160,11 @@ cmd_check() {
   log "Install (macOS/Linux):"
   echo -e "  ${BOLD}curl -fsSL https://raw.githubusercontent.com/${UPLEAT_REPO}/main/install.sh | bash${NC}"
   echo ""
-  log "Install (Windows):"
+  log "Install (Windows CMD):"
   echo -e "  ${BOLD}curl -fsSL --ssl-no-revoke https://raw.githubusercontent.com/${UPLEAT_REPO}/main/install.bat -o install.bat && install.bat && del install.bat${NC}"
+  echo ""
+  log "Install (Windows PowerShell):"
+  echo -e "  ${BOLD}curl.exe -fsSL --ssl-no-revoke https://raw.githubusercontent.com/${UPLEAT_REPO}/main/install.bat -o install.bat; .\\install.bat; del install.bat${NC}"
 }
 
 cmd_deploy() {
@@ -310,9 +313,14 @@ EOF
 curl -fsSL https://raw.githubusercontent.com/${UPLEAT_REPO}/main/install.sh | bash
 \`\`\`
 
-**Windows (CMD / PowerShell):**
+**Windows (CMD):**
 \`\`\`cmd
 curl -fsSL --ssl-no-revoke https://raw.githubusercontent.com/${UPLEAT_REPO}/main/install.bat -o install.bat && install.bat && del install.bat
+\`\`\`
+
+**Windows (PowerShell):**
+\`\`\`powershell
+curl.exe -fsSL --ssl-no-revoke https://raw.githubusercontent.com/${UPLEAT_REPO}/main/install.bat -o install.bat; .\\install.bat; del install.bat
 \`\`\`"
 
   for repo in "$UPLEAT_REPO"; do
@@ -352,8 +360,11 @@ curl -fsSL --ssl-no-revoke https://raw.githubusercontent.com/${UPLEAT_REPO}/main
   echo -e "  ${BOLD}Install (macOS/Linux):${NC}"
   echo -e "  curl -fsSL https://raw.githubusercontent.com/${UPLEAT_REPO}/main/install.sh | bash"
   echo ""
-  echo -e "  ${BOLD}Install (Windows):${NC}"
+  echo -e "  ${BOLD}Install (Windows CMD):${NC}"
   echo -e "  curl -fsSL --ssl-no-revoke https://raw.githubusercontent.com/${UPLEAT_REPO}/main/install.bat -o install.bat && install.bat && del install.bat"
+  echo ""
+  echo -e "  ${BOLD}Install (Windows PowerShell):${NC}"
+  echo -e "  curl.exe -fsSL --ssl-no-revoke https://raw.githubusercontent.com/${UPLEAT_REPO}/main/install.bat -o install.bat; .\\install.bat; del install.bat"
   echo ""
 }
 
