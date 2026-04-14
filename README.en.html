@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>U-MAKER Plugin v3.4.5 Documentation</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--sidebar-w:280px;--bg:#ffffff;--sidebar-bg:#ffffff;--main-bg:#ffffff;--text:#334155;--text-main:#334155;--heading:#0f172a;--accent:#3b82f6;--accent-hover:#2563eb;--code-bg:#f1f5f9;--code-text:#1e293b;--border:#e2e8f0;--active-bg:#f8fafc;--badge-bg:#e2e8f0;--badge-text:#64748b;--table-stripe:#f8fafc;--table-border:#e2e8f0;--table-header:#f1f5f9}
+html{scroll-behavior:smooth}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;display:flex;min-height:100vh;background:var(--main-bg);color:var(--text-main)}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+
+/* Sidebar */
+.sidebar{width:var(--sidebar-w);background:var(--sidebar-bg);color:var(--text);position:fixed;top:0;left:0;height:100vh;overflow-y:auto;z-index:100;transition:transform .3s ease;border-right:1px solid var(--border)}
+.sidebar::-webkit-scrollbar{width:6px}
+.sidebar::-webkit-scrollbar-thumb{background:var(--badge-bg);border-radius:3px}
+.sidebar-header{padding:24px 20px 16px;border-bottom:1px solid var(--border)}
+.sidebar-header h1{font-size:20px;font-weight:700;color:var(--heading);letter-spacing:1px}
+.sidebar-header p{font-size:12px;color:var(--badge-text);margin-top:4px}
+.sidebar-nav{padding:12px 0}
+.nav-group{margin-bottom:4px}
+.nav-group-title{display:flex;align-items:center;justify-content:space-between;padding:10px 20px;font-size:12px;font-weight:700;color:var(--badge-text);text-transform:uppercase;letter-spacing:.5px;user-select:none}
+.nav-group-title .badge{background:var(--badge-bg);color:var(--badge-text);font-size:10px;padding:2px 8px;border-radius:10px;font-weight:500}
+.nav-item{display:block;padding:6px 20px 6px 28px;font-size:13px;color:var(--text);cursor:pointer;transition:all .15s ease;border-left:3px solid transparent}
+.nav-item:hover{background:var(--active-bg);text-decoration:none;border-left-color:var(--accent)}
+.nav-item.active{background:var(--active-bg);color:var(--heading);font-weight:600;border-left-color:var(--accent)}
+.nav-item .num{display:inline-block;background:var(--badge-bg);color:var(--badge-text);font-size:10px;padding:1px 6px;border-radius:3px;margin-right:6px;font-family:'SF Mono',Monaco,monospace;min-width:22px;text-align:center}
+.sidebar-footer{padding:16px 20px;border-top:1px solid var(--border);font-size:11px;color:var(--badge-text);text-align:center}
+
+/* Main */
+.main{margin-left:var(--sidebar-w);flex:1;padding:40px 60px 80px;max-width:960px}
+.main h2{font-size:26px;font-weight:700;margin:48px 0 16px;padding-bottom:10px;border-bottom:2px solid var(--border);color:var(--heading)}
+.main h2:first-child{margin-top:0}
+.main h3{font-size:18px;font-weight:600;margin:28px 0 12px;color:var(--heading)}
+.main h4{font-size:15px;font-weight:600;margin:20px 0 8px;color:#475569}
+.main p{line-height:1.8;margin-bottom:12px;font-size:15px}
+.main ul,.main ol{margin:8px 0 16px 24px;line-height:1.8}
+.main li{margin-bottom:4px;font-size:15px}
+.main strong{font-weight:600}
+.main blockquote{border-left:3px solid var(--accent);padding:10px 16px;margin:12px 0;background:#eff6ff;border-radius:0 6px 6px 0;font-size:14px;color:#1e40af}
+.main hr{border:none;border-top:1px solid var(--border);margin:36px 0}
+.main code{background:var(--code-bg);padding:2px 6px;border-radius:4px;font-size:13px;font-family:'SF Mono',Monaco,'Cascadia Code',monospace;color:#be185d}
+.main pre{background:var(--code-bg);color:var(--code-text);padding:20px 24px;border-radius:8px;overflow-x:auto;margin:12px 0 20px;font-size:13px;line-height:1.7;border:1px solid var(--border)}
+.main pre code{background:none;padding:0;color:inherit}
+
+/* Tables */
+.main table{width:100%;border-collapse:collapse;margin:12px 0 20px;font-size:14px;border-radius:8px;overflow:hidden;border:1px solid var(--table-border)}
+.main thead th{background:var(--table-header);padding:10px 14px;text-align:left;font-weight:600;border:1px solid var(--table-border);font-size:13px;color:var(--heading)}
+.main tbody td{padding:10px 14px;border:1px solid var(--table-border);vertical-align:top}
+.main tbody tr:nth-child(even){background:var(--table-stripe)}
+.main tbody tr:hover{background:#eff6ff}
+
+/* Hero */
+.hero{background:linear-gradient(135deg,#3b82f6 0%,#2563eb 100%);color:#fff;padding:32px;border-radius:12px;margin-bottom:32px}
+.hero h2{color:#fff;border-bottom:none;margin:0 0 8px;font-size:28px}
+.hero p{color:#dbeafe;margin:0;font-size:15px}
+.hero .stats{display:flex;gap:24px;margin-top:20px;flex-wrap:wrap}
+.hero .stat{background:rgba(255,255,255,.15);padding:12px 20px;border-radius:8px;border:1px solid rgba(255,255,255,.2)}
+.hero .stat-val{font-size:22px;font-weight:700;color:#fff}
+.hero .stat-label{font-size:12px;color:#bfdbfe;margin-top:2px}
+
+/* Comment highlight in code */
+.cmd{color:var(--accent);font-weight:500}
+.comment{color:#64748b}
+
+/* Footer */
+.footer{margin-top:60px;padding:24px 0;border-top:2px solid var(--border);text-align:center;font-size:13px;color:#64748b}
+.footer strong{color:var(--heading)}
+
+/* Mobile */
+.hamburger{display:none;position:fixed;top:12px;left:12px;z-index:200;background:var(--accent);color:#fff;border:none;padding:10px 14px;border-radius:8px;font-size:20px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.15)}
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.3);z-index:50}
+@media(max-width:768px){
+  .sidebar{transform:translateX(-100%)}
+  .sidebar.open{transform:translateX(0)}
+  .hamburger{display:block}
+  .overlay.open{display:block}
+  .main{margin-left:0;padding:60px 20px 40px}
+  .hero .stats{flex-direction:column;gap:8px}
+  .main table{font-size:12px}
+  .main thead th,.main tbody td{padding:6px 8px}
+  .main pre{padding:12px 14px;font-size:12px}
+}
+
+/* Print */
+@media print{
+  .sidebar,.hamburger,.overlay{display:none!important}
+  .main{margin-left:0;padding:20px;max-width:100%}
+  .hero{background:#3b82f6!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .main pre{border:1px solid #ccc;background:#f8f8f8!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .main table{font-size:11px}
+  .main h2{page-break-after:avoid}
+  .main table,.main pre{page-break-inside:avoid}
+  a{color:var(--accent)!important}
+}
+
+/* SVG Diagrams */
+.diagram-wrap{margin:20px 0;text-align:center}
+.diagram-wrap svg{max-width:100%;height:auto;border:1px solid var(--border);border-radius:8px;background:var(--table-stripe)}
+.diagram-caption{font-size:12px;color:#64748b;margin-top:6px;text-align:center}
+</style>
+</head>
+<body>
+
+<button class="hamburger" onclick="toggleSidebar()" aria-label="Toggle menu">&#9776;</button>
+<div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+<nav class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <h1>U-MAKER</h1>
+    <p>v3.4.5 &mdash; Plugin Documentation</p>
+  </div>
+  <div class="sidebar-nav">
+
+    <div class="nav-group">
+      <div class="nav-group-title">Quick Start <span class="badge">2</span></div>
+      <a class="nav-item active" href="#hero" onclick="nav(this)"><span class="num">00</span> Overview</a>
+      <a class="nav-item" href="#tldr" onclick="nav(this)"><span class="num">01</span> TL;DR</a>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-group-title">Architecture <span class="badge">3</span></div>
+      <a class="nav-item" href="#sec-arch" onclick="nav(this)"><span class="num">02</span> Architecture</a>
+      <a class="nav-item" href="#sec-pdca" onclick="nav(this)"><span class="num">03</span> PDCA 5-Phase</a>
+      <a class="nav-item" href="#sec-pipeline" onclick="nav(this)"><span class="num">04</span> Data Pipeline</a>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-group-title">Components <span class="badge">3</span></div>
+      <a class="nav-item" href="#sec-agents" onclick="nav(this)"><span class="num">05</span> Agents</a>
+      <a class="nav-item" href="#sec-commands" onclick="nav(this)"><span class="num">06</span> Commands</a>
+      <a class="nav-item" href="#sec-gate" onclick="nav(this)"><span class="num">07</span> Gate Criteria</a>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-group-title">Data Model <span class="badge">2</span></div>
+      <a class="nav-item" href="#sec-folder" onclick="nav(this)"><span class="num">08</span> Folder Structure</a>
+      <a class="nav-item" href="#sec-4tier" onclick="nav(this)"><span class="num">09</span> 4-Tier ID</a>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-group-title">Reference <span class="badge">4</span></div>
+      <a class="nav-item" href="#sec-scenario" onclick="nav(this)"><span class="num">10</span> Scenario Guide</a>
+      <a class="nav-item" href="#sec-install" onclick="nav(this)"><span class="num">11</span> Install</a>
+      <a class="nav-item" href="#sec-troubleshoot" onclick="nav(this)"><span class="num">12</span> Troubleshooting</a>
+      <a class="nav-item" href="#sec-license" onclick="nav(this)"><span class="num">13</span> License</a>
+    </div>
+
+  </div>
+  <div class="sidebar-footer">Proprietary &copy; 2026 U PLEAT &middot; v3.4.5</div>
+</nav>
+
+<main class="main">
+
+<!-- ============================================================ -->
+<!-- SECTION 0: Hero -->
+<!-- ============================================================ -->
+<div class="hero" id="hero">
+  <h2>U-MAKER Plugin</h2>
+  <p>PDCA-based SSoT (Single Source of Truth) collaboration orchestrator for Claude Code.<br>
+  Automates the entire software development lifecycle with 7 specialized agents, 15 skills, and a structured data pipeline.</p>
+  <div class="stats">
+    <div class="stat"><div class="stat-val">15</div><div class="stat-label">Skills</div></div>
+    <div class="stat"><div class="stat-val">7</div><div class="stat-label">Agents</div></div>
+    <div class="stat"><div class="stat-val">5</div><div class="stat-label">PDCA Phases</div></div>
+    <div class="stat"><div class="stat-val">11</div><div class="stat-label">Gate Criteria (threshold 95)</div></div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SECTION 1: TL;DR -->
+<!-- ============================================================ -->
+<h2 id="tldr">1. TL;DR</h2>
+
+<h3>Forward Engineering (New Project)</h3>
+<pre><code><span class="comment"># 1. Install the plugin</span>
+<span class="cmd">claude plugin add upleat-ax/u-maker-plugin</span>
+
+<span class="comment"># 2. Restart Claude Code, then initialize your project</span>
+<span class="cmd">/u-init my-app</span>                <span class="comment"># Create .u-maker/ structure + register app</span>
+
+<span class="comment"># 3. Collect data &rarr; Analyze &rarr; Plan</span>
+<span class="comment"># Drop RFP, meeting notes, AS-IS materials into .u-maker/_dropzone/</span>
+<span class="cmd">/u-plan my-app</span>               <span class="comment"># dropzone &rarr; digest &rarr; SRS + IA + Roadmap</span>
+
+<span class="comment"># 4. Design &rarr; Implement &rarr; Verify</span>
+<span class="cmd">/u-design my-app</span>             <span class="comment"># SRS/IA &rarr; ERD + API + Screen + Flow + RTM</span>
+<span class="cmd">/u-dev my-app</span>                <span class="comment"># ERD/API/Screens &rarr; FE + BE + DB code</span>
+<span class="cmd">/u-check my-app</span>              <span class="comment"># SRS FT &rarr; Test Cases + Test Results</span>
+
+<span class="comment"># 5. Ship + Retrospective</span>
+<span class="cmd">/u-ship my-app</span>               <span class="comment"># Final verification + iteration log + retrospective</span></code></pre>
+
+<h3>Reverse Engineering (Existing Project)</h3>
+<pre><code><span class="cmd">/u-init my-app</span>                <span class="comment"># Initialize project</span>
+<span class="cmd">/u-reverse --app my-app</span>       <span class="comment"># Existing code &rarr; SSoT reverse engineering</span></code></pre>
+
+<h3>Natural Language Also Works</h3>
+<pre><code><span class="comment">"Create SRS for my-app"</span>           <span class="comment"># U-MAKER router auto-dispatches to /u-plan</span>
+<span class="comment">"Generate the ERD for my-app"</span>     <span class="comment"># Routed to /u-design --only erd</span>
+<span class="comment">"Run all tests for my-app"</span>        <span class="comment"># Routed to /u-check</span></code></pre>
+
+<hr>
+
+<!-- ============================================================ -->
+<!-- SECTION 2: Architecture Overview -->
+<!-- ============================================================ -->
+<h2 id="sec-arch">2. Architecture Overview</h2>
+
+<p>U-MAKER accepts both slash commands and natural language, routing them through a skill router and agent dispatch system to produce SSoT documents.</p>
+
+<div class="diagram-wrap">
+<svg viewBox="0 0 720 320" xmlns="http://www.w3.org/2000/svg" style="font-family:-apple-system,sans-serif">
+  <defs><marker id="ar" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0,10 3.5,0 7" fill="#6b7280"/></marker></defs>
+  <!-- User Input -->
+  <rect x="260" y="10" width="200" height="40" rx="20" fill="#0891b2"/>
+  <text x="360" y="35" text-anchor="middle" fill="#fff" font-size="14" font-weight="700">USER INPUT</text>
+  <!-- Split -->
+  <line x1="310" y1="50" x2="180" y2="90" stroke="#6b7280" stroke-width="1.5" marker-end="url(#ar)"/>
+  <line x1="410" y1="50" x2="540" y2="90" stroke="#6b7280" stroke-width="1.5" marker-end="url(#ar)"/>
+  <!-- Slash Command -->
+  <rect x="80" y="92" width="200" height="36" rx="6" fill="#dbeafe" stroke="#3b82f6"/>
+  <text x="180" y="115" text-anchor="middle" fill="#1e40af" font-size="12" font-weight="600">/u-{cmd} [scope] [flags]</text>
+  <!-- Natural Language -->
+  <rect x="440" y="92" width="200" height="36" rx="6" fill="#fef3c7" stroke="#f59e0b"/>
+  <text x="540" y="115" text-anchor="middle" fill="#92400e" font-size="12" font-weight="600">Natural Language</text>
+  <!-- Arrows down -->
+  <line x1="180" y1="128" x2="180" y2="160" stroke="#6b7280" stroke-width="1.5" marker-end="url(#ar)"/>
+  <line x1="540" y1="128" x2="540" y2="160" stroke="#6b7280" stroke-width="1.5" marker-end="url(#ar)"/>
+  <!-- SKILL.md -->
+  <rect x="80" y="162" width="200" height="36" rx="6" fill="#e0f2fe" stroke="#38bdf8"/>
+  <text x="180" y="185" text-anchor="middle" fill="#0c4a6e" font-size="11" font-weight="600">u-{cmd}/SKILL.md</text>
+  <!-- u-maker NL Router -->
+  <rect x="440" y="162" width="200" height="36" rx="6" fill="#fef9c3" stroke="#ca8a04"/>
+  <text x="540" y="185" text-anchor="middle" fill="#78350f" font-size="11" font-weight="600">u-maker (NL Router)</text>
+  <!-- NL to slash -->
+  <line x1="440" y1="180" x2="285" y2="180" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="5" marker-end="url(#ar)"/>
+  <text x="362" y="173" text-anchor="middle" fill="#92400e" font-size="9">&rarr; /u-* conversion</text>
+  <!-- Arrow down from SKILL -->
+  <line x1="180" y1="198" x2="180" y2="228" stroke="#6b7280" stroke-width="1.5" marker-end="url(#ar)"/>
+  <!-- Engines row -->
+  <rect x="20" y="230" width="140" height="32" rx="6" fill="#f0fdf4" stroke="#22c55e"/>
+  <text x="90" y="251" text-anchor="middle" fill="#166534" font-size="10" font-weight="600">u-skill-router</text>
+  <rect x="170" y="230" width="140" height="32" rx="6" fill="#f0fdf4" stroke="#22c55e"/>
+  <text x="240" y="251" text-anchor="middle" fill="#166534" font-size="10" font-weight="600">u-skill-* (engines)</text>
+  <rect x="320" y="230" width="160" height="32" rx="6" fill="#ede9fe" stroke="#8b5cf6"/>
+  <text x="400" y="251" text-anchor="middle" fill="#5b21b6" font-size="10" font-weight="600">u-agent-* (dispatch)</text>
+  <!-- Agents -->
+  <rect x="520" y="230" width="180" height="32" rx="6" fill="#ede9fe" stroke="#8b5cf6"/>
+  <text x="610" y="246" text-anchor="middle" fill="#5b21b6" font-size="9">pm|plan|design|dev|qa|gatekeeper|report</text>
+  <!-- Output -->
+  <line x1="360" y1="262" x2="360" y2="290" stroke="#6b7280" stroke-width="1.5" marker-end="url(#ar)"/>
+  <rect x="260" y="292" width="200" height="28" rx="14" fill="#1e293b"/>
+  <text x="360" y="311" text-anchor="middle" fill="#e2e8f0" font-size="11" font-weight="600">.u-maker/docs/ (SSoT)</text>
+</svg>
+</div>
+
+<h3>Data Pipeline</h3>
+<pre><code>data/dropzone/ &rarr; data/digest/ &rarr; docs/ &rarr; output/</code></pre>
+
+<hr>
+
+<!-- ============================================================ -->
+<!-- SECTION 3: PDCA 5-Phase Process -->
+<!-- ============================================================ -->
+<h2 id="sec-pdca">3. PDCA 5-Phase Process</h2>
+
+<div class="diagram-wrap">
+<svg viewBox="0 0 700 180" xmlns="http://www.w3.org/2000/svg" style="font-family:-apple-system,sans-serif">
+  <defs><marker id="ar2" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0,10 3.5,0 7" fill="#6b7280"/></marker></defs>
+  <!-- Phase boxes -->
+  <rect x="20" y="50" width="110" height="50" rx="8" fill="#3b82f6"/>
+  <text x="75" y="72" text-anchor="middle" fill="#fff" font-size="11" font-weight="700">01 PLAN</text>
+  <text x="75" y="88" text-anchor="middle" fill="#bfdbfe" font-size="9">SRS &middot; IA &middot; Roadmap</text>
+  <rect x="160" y="50" width="110" height="50" rx="8" fill="#8b5cf6"/>
+  <text x="215" y="72" text-anchor="middle" fill="#fff" font-size="11" font-weight="700">02 DESIGN</text>
+  <text x="215" y="88" text-anchor="middle" fill="#ddd6fe" font-size="9">ERD &middot; API &middot; Screen</text>
+  <rect x="300" y="50" width="110" height="50" rx="8" fill="#10b981"/>
+  <text x="355" y="72" text-anchor="middle" fill="#fff" font-size="11" font-weight="700">03 DEV</text>
+  <text x="355" y="88" text-anchor="middle" fill="#a7f3d0" font-size="9">Code &middot; Build</text>
+  <rect x="440" y="50" width="110" height="50" rx="8" fill="#f59e0b"/>
+  <text x="495" y="72" text-anchor="middle" fill="#fff" font-size="11" font-weight="700">04 CHECK</text>
+  <text x="495" y="88" text-anchor="middle" fill="#fef3c7" font-size="9">Test &middot; Report</text>
+  <rect x="580" y="50" width="100" height="50" rx="8" fill="#ef4444"/>
+  <text x="630" y="72" text-anchor="middle" fill="#fff" font-size="11" font-weight="700">05 SHIP</text>
+  <text x="630" y="88" text-anchor="middle" fill="#fecaca" font-size="9">Ship &middot; Retro</text>
+  <!-- Forward arrows -->
+  <line x1="130" y1="75" x2="155" y2="75" stroke="#6b7280" stroke-width="2" marker-end="url(#ar2)"/>
+  <line x1="270" y1="75" x2="295" y2="75" stroke="#6b7280" stroke-width="2" marker-end="url(#ar2)"/>
+  <line x1="410" y1="75" x2="435" y2="75" stroke="#6b7280" stroke-width="2" marker-end="url(#ar2)"/>
+  <line x1="550" y1="75" x2="575" y2="75" stroke="#6b7280" stroke-width="2" marker-end="url(#ar2)"/>
+  <!-- Gate labels -->
+  <text x="143" y="65" text-anchor="middle" fill="#dc2626" font-size="8" font-weight="700">GATE</text>
+  <text x="283" y="65" text-anchor="middle" fill="#dc2626" font-size="8" font-weight="700">GATE</text>
+  <text x="423" y="65" text-anchor="middle" fill="#dc2626" font-size="8" font-weight="700">GATE</text>
+  <text x="563" y="65" text-anchor="middle" fill="#dc2626" font-size="8" font-weight="700">GATE</text>
+  <!-- Iteration loop -->
+  <path d="M630,105 L630,145 Q630,155 620,155 L80,155 Q70,155 70,145 L70,105" fill="none" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="6" marker-end="url(#ar2)"/>
+  <text x="350" y="150" text-anchor="middle" fill="#64748b" font-size="10" font-style="italic">&larr; iteration &rarr;</text>
+</svg>
+</div>
+
+<h3>Phase Definition</h3>
+<table>
+<thead><tr><th>Phase</th><th>Deliverables</th><th>Responsible Agents</th><th>Gate Condition</th></tr></thead>
+<tbody>
+<tr><td><strong>01 Plan</strong></td><td>SRS, IA, Roadmap</td><td>pm &rarr; plan &rarr; gatekeeper</td><td>SRS + IA + Roadmap = Final</td></tr>
+<tr><td><strong>02 Design</strong></td><td>ERD, API, Screen, ScreenFlow, UXGuide, RTM, wireframes</td><td>design &rarr; gatekeeper</td><td>ERD + RTM + Screen + API = Final</td></tr>
+<tr><td><strong>03 Dev</strong></td><td>FE + BE + DB Code, UIComponents</td><td>dev</td><td>Code complete + build success</td></tr>
+<tr><td><strong>04 Check</strong></td><td>TestCase, TestReport</td><td>qa &rarr; gatekeeper</td><td>Critical/Major = 0, all FR implemented</td></tr>
+<tr><td><strong>05 Ship/Done</strong></td><td>IterationLog, Retrospective</td><td>pm &rarr; gatekeeper</td><td>Retro + archive complete</td></tr>
+</tbody>
+</table>
+
+<h3>Gatekeeper Scorecard</h3>
+<p>Every gate validation <strong>must display the full 11-criteria scorecard</strong> (threshold 95, configurable). No abbreviation or omission allowed.</p>
+
+<pre style="background:#0f172a;color:#cbd5e1;padding:20px;border-radius:12px;font-size:12px;line-height:1.7;overflow-x:auto"><code><span style="color:#60a5fa">&#x250C;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2510;</span>
+<span style="color:#60a5fa">&#x2502;</span>  <strong style="color:#fff">GATEKEEPER REPORT</strong> &mdash; Plan Phase (myapp)                  <span style="color:#60a5fa">&#x2502;</span>
+<span style="color:#60a5fa">&#x251C;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x252C;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x252C;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x252C;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x252C;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2524;</span>
+<span style="color:#60a5fa">&#x2502;</span>  #  <span style="color:#60a5fa">&#x2502;</span> Criteria             <span style="color:#60a5fa">&#x2502;</span> Score <span style="color:#60a5fa">&#x2502;</span> Status <span style="color:#60a5fa">&#x2502;</span> Findings      <span style="color:#60a5fa">&#x2502;</span>
+<span style="color:#60a5fa">&#x251C;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x253C;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x253C;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x253C;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x253C;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2524;</span>
+<span style="color:#60a5fa">&#x2502;</span>  01 <span style="color:#60a5fa">&#x2502;</span> Completeness         <span style="color:#60a5fa">&#x2502;</span>   <span style="color:#4ade80">98</span>  <span style="color:#60a5fa">&#x2502;</span>   <span style="color:#4ade80">PASS</span> <span style="color:#60a5fa">&#x2502;</span> &mdash;             <span style="color:#60a5fa">&#x2502;</span>
+<span style="color:#60a5fa">&#x2502;</span>  02 <span style="color:#60a5fa">&#x2502;</span> Accuracy             <span style="color:#60a5fa">&#x2502;</span>   <span style="color:#4ade80">96</span>  <span style="color:#60a5fa">&#x2502;</span>   <span style="color:#4ade80">PASS</span> <span style="color:#60a5fa">&#x2502;</span> &mdash;             <span style="color:#60a5fa">&#x2502;</span>
+<span style="color:#60a5fa">&#x2502;</span>  04 <span style="color:#60a5fa">&#x2502;</span> Traceability         <span style="color:#60a5fa">&#x2502;</span>   <span style="color:#f87171">88</span>  <span style="color:#60a5fa">&#x2502;</span>   <span style="color:#f87171">FAIL</span> <span style="color:#60a5fa">&#x2502;</span> <span style="color:#f87171">FR-030 orphan</span> <span style="color:#60a5fa">&#x2502;</span>
+<span style="color:#60a5fa">&#x2502;</span>  ... (all 11 rows shown) ...                                <span style="color:#60a5fa">&#x2502;</span>
+<span style="color:#60a5fa">&#x251C;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2534;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2534;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2534;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2534;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2524;</span>
+<span style="color:#60a5fa">&#x2502;</span> <strong style="color:#fff">AVG</strong>                            <span style="color:#60a5fa">&#x2502;</span> <strong style="color:#facc15">95.2</strong>  <span style="color:#60a5fa">&#x2502;</span> <strong style="color:#4ade80">PASS</strong>   <span style="color:#60a5fa">&#x2502;</span>               <span style="color:#60a5fa">&#x2502;</span>
+<span style="color:#60a5fa">&#x2514;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2534;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2534;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2534;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2518;</span>
+  Attempt: 1/3 &middot; Threshold: 95 &middot; Result: <span style="color:#4ade80">PASS &rarr; advance to Design</span></code></pre>
+
+<p><strong>On FAIL:</strong> Improvement items are appended below the scorecard, ordered by severity. <strong>After 3 retries:</strong> <code>LOOP HALTED</code> &mdash; manual intervention required.</p>
+
+<hr>
+
+<!-- ============================================================ -->
+<!-- SECTION 4: Data Pipeline -->
+<!-- ============================================================ -->
+<h2 id="sec-pipeline">4. Data Pipeline</h2>
+
+<p>Processing raw data all at once causes early content loss due to context window limits. U-MAKER solves this with a layered pipeline:</p>
+
+<div class="diagram-wrap">
+<svg viewBox="0 0 720 200" xmlns="http://www.w3.org/2000/svg" style="font-family:-apple-system,sans-serif">
+  <defs><marker id="ar3" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0,10 3.5,0 7" fill="#6b7280"/></marker></defs>
+  <!-- Layer 1: dropzone -->
+  <rect x="10" y="25" width="155" height="150" rx="10" fill="#fee2e2" stroke="#f87171" stroke-width="2"/>
+  <text x="87" y="48" text-anchor="middle" fill="#991b1b" font-size="12" font-weight="700">data/dropzone/</text>
+  <text x="87" y="68" text-anchor="middle" fill="#7f1d1d" font-size="10">RFP, meeting notes</text>
+  <text x="87" y="84" text-anchor="middle" fill="#7f1d1d" font-size="10">AS-IS materials</text>
+  <text x="87" y="100" text-anchor="middle" fill="#7f1d1d" font-size="10">interviews, specs</text>
+  <text x="87" y="118" text-anchor="middle" fill="#ef4444" font-size="9" font-weight="600">Raw input</text>
+  <text x="87" y="160" text-anchor="middle" fill="#ef4444" font-size="9" font-weight="600">auto-ingest &rarr;</text>
+  <!-- Arrow -->
+  <line x1="165" y1="100" x2="195" y2="100" stroke="#6b7280" stroke-width="2" marker-end="url(#ar3)"/>
+  <!-- Layer 2: digest -->
+  <rect x="200" y="15" width="175" height="170" rx="10" fill="#dbeafe" stroke="#3b82f6" stroke-width="2"/>
+  <text x="287" y="38" text-anchor="middle" fill="#1e40af" font-size="12" font-weight="700">data/digest/</text>
+  <text x="287" y="58" text-anchor="middle" fill="#1e3a8a" font-size="9">requirements/ &middot; pain-points/</text>
+  <text x="287" y="73" text-anchor="middle" fill="#1e3a8a" font-size="9">domain-terms/ &middot; stakeholders/</text>
+  <text x="287" y="88" text-anchor="middle" fill="#1e3a8a" font-size="9">workflows/ &middot; screens/</text>
+  <text x="287" y="103" text-anchor="middle" fill="#1e3a8a" font-size="9">data-models/ &middot; constraints/</text>
+  <text x="287" y="118" text-anchor="middle" fill="#1e3a8a" font-size="9">decisions/ &middot; questions/</text>
+  <text x="287" y="133" text-anchor="middle" fill="#2563eb" font-size="9" font-weight="700">standards/ &middot; ux-standards/</text>
+  <text x="287" y="150" text-anchor="middle" fill="#1e40af" font-size="9">(12 categories)</text>
+  <text x="287" y="172" text-anchor="middle" fill="#3b82f6" font-size="9" font-weight="600">/u-plan &rarr;</text>
+  <!-- Arrow -->
+  <line x1="375" y1="100" x2="405" y2="100" stroke="#6b7280" stroke-width="2" marker-end="url(#ar3)"/>
+  <!-- Layer 3: docs -->
+  <rect x="410" y="25" width="145" height="150" rx="10" fill="#dcfce7" stroke="#22c55e" stroke-width="2"/>
+  <text x="482" y="48" text-anchor="middle" fill="#166534" font-size="12" font-weight="700">docs/</text>
+  <text x="482" y="68" text-anchor="middle" fill="#14532d" font-size="10">SRS &middot; IA &middot; Roadmap</text>
+  <text x="482" y="84" text-anchor="middle" fill="#14532d" font-size="10">ERD &middot; API &middot; Screen</text>
+  <text x="482" y="100" text-anchor="middle" fill="#14532d" font-size="10">ScreenFlow &middot; RTM</text>
+  <text x="482" y="116" text-anchor="middle" fill="#14532d" font-size="10">Code &middot; TestCase</text>
+  <text x="482" y="132" text-anchor="middle" fill="#14532d" font-size="10">wireframes/</text>
+  <text x="482" y="160" text-anchor="middle" fill="#22c55e" font-size="9" font-weight="600">/u-output &rarr;</text>
+  <!-- Arrow -->
+  <line x1="555" y1="100" x2="585" y2="100" stroke="#6b7280" stroke-width="2" marker-end="url(#ar3)"/>
+  <!-- Layer 4: output -->
+  <rect x="590" y="40" width="120" height="120" rx="10" fill="#fef3c7" stroke="#f59e0b" stroke-width="2"/>
+  <text x="650" y="63" text-anchor="middle" fill="#92400e" font-size="12" font-weight="700">output/</text>
+  <text x="650" y="83" text-anchor="middle" fill="#78350f" font-size="10">HTML reports</text>
+  <text x="650" y="99" text-anchor="middle" fill="#78350f" font-size="10">SVG diagrams</text>
+  <text x="650" y="115" text-anchor="middle" fill="#78350f" font-size="10">Wireframe SPA</text>
+  <text x="650" y="145" text-anchor="middle" fill="#f59e0b" font-size="9" font-weight="600">Browser-ready</text>
+</svg>
+</div>
+
+<h3>Digest Categories (12)</h3>
+<table>
+<thead><tr><th>Category</th><th>ID Pattern</th><th>Input Source</th></tr></thead>
+<tbody>
+<tr><td>requirements/</td><td>FR-nnn, NR-nnn</td><td>RFP, meeting notes</td></tr>
+<tr><td>pain-points/</td><td>PP-nnn</td><td>Interviews</td></tr>
+<tr><td>domain-terms/</td><td>DT-nnn</td><td>RFP, AS-IS</td></tr>
+<tr><td>stakeholders/</td><td>SH-nnn</td><td>RFP</td></tr>
+<tr><td>workflows/</td><td>WF-nnn</td><td>AS-IS workflows</td></tr>
+<tr><td>screens/</td><td>SC-nnn</td><td>AS-IS screens</td></tr>
+<tr><td>data-models/</td><td>DM-nnn</td><td>AS-IS DB</td></tr>
+<tr><td>constraints/</td><td>CN-nnn</td><td>RFP, regulations</td></tr>
+<tr><td>decisions/</td><td>DC-nnn</td><td>Meeting notes, /u-discuss</td></tr>
+<tr><td>questions/</td><td>QS-nnn</td><td>Generated during analysis</td></tr>
+<tr><td>standards/</td><td>STD-nnn</td><td>Standard policies, guidelines</td></tr>
+<tr><td>ux-standards/</td><td>UXS-nnn</td><td>Design system, UI guides</td></tr>
+</tbody>
+</table>
+
+<hr>
+
+<!-- ============================================================ -->
+<!-- SECTION 5: Agents -->
+<!-- ============================================================ -->
+<h2 id="sec-agents">5. Agents</h2>
+
+<p>7 specialized agents share responsibilities by phase. Each agent is powered by the model indicated in parentheses.</p>
+
+<table>
+<thead><tr><th>Agent</th><th>Model</th><th>Role</th><th>Phase</th></tr></thead>
+<tbody>
+<tr><td><code>u-agent-pm</code></td><td>opus</td><td>Command routing, orchestration, state machine, dependency graph management</td><td>ALL</td></tr>
+<tr><td><code>u-agent-plan</code></td><td>opus</td><td>Plan phase executor &mdash; SRS, IA, Roadmap generation</td><td>Plan</td></tr>
+<tr><td><code>u-agent-design</code></td><td>opus</td><td>Design phase executor &mdash; ERD, API, Screen, UX, wireframes</td><td>Design</td></tr>
+<tr><td><code>u-agent-dev</code></td><td>opus</td><td>Dev phase executor &mdash; FE + BE + DB code generation</td><td>Dev</td></tr>
+<tr><td><code>u-agent-qa</code></td><td>opus</td><td>Check phase executor &mdash; TC design, test execution, report</td><td>Check</td></tr>
+<tr><td><code>u-agent-gatekeeper</code></td><td>opus</td><td>Quality validation &mdash; 11 criteria scoring, consistency checks, RTM</td><td>ALL</td></tr>
+<tr><td><code>u-agent-report</code></td><td>sonnet</td><td>Report generation &mdash; HTML reports, deliverable formatting</td><td>ALL</td></tr>
+</tbody>
+</table>
+
+<hr>
+
+<!-- ============================================================ -->
+<!-- SECTION 6: Commands (All 15 Skills) -->
+<!-- ============================================================ -->
+<h2 id="sec-commands">6. Commands</h2>
+
+<h3>Grammar</h3>
+<pre><code>/u-{command} [scope] [target] [flags]</code></pre>
+
+<ul>
+<li><strong>scope</strong>: app name | <code>common</code> | <code>all</code> | omit (auto-selected)</li>
+<li><strong>target</strong>: document/item name</li>
+<li><strong>flags</strong>: <code>-i</code> (interactive) | <code>--step</code> | <code>--only X</code> | <code>--cascade</code> | <code>--dry-run</code> | <code>--json</code></li>
+</ul>
+
+<h3>6.1 Lifecycle Skills (8)</h3>
+<table>
+<thead><tr><th>Command</th><th>Version</th><th>Description</th><th>Example</th></tr></thead>
+<tbody>
+<tr><td><code>/u-init</code></td><td>v4.0</td><td>Project initialization. Creates <code>.u-maker/</code> structure, initializes config, registers app. Supports <code>--migrate</code> for version upgrades</td><td><code>/u-init my-project</code></td></tr>
+<tr><td><code>/u-plan</code></td><td>v4.0</td><td>dropzone &rarr; digest &rarr; SRS + IA + Roadmap chain generation. Includes ingest functionality</td><td><code>/u-plan my-app -i</code></td></tr>
+<tr><td><code>/u-design</code></td><td>v4.0</td><td>SRS/IA &rarr; ERD, API Contract, Screen Spec, Design System, ScreenFlow, RTM</td><td><code>/u-design my-app --only erd</code></td></tr>
+<tr><td><code>/u-dev</code></td><td>v4.0</td><td>ERD/API/Screens &rarr; FE + BE + DB code generation. <code>--only fe|be|db</code></td><td><code>/u-dev my-app --only fe</code></td></tr>
+<tr><td><code>/u-check</code></td><td>v4.0</td><td>SRS FT &rarr; Test Cases + Test Results. <small>alias: <code>/u-qa</code></small></td><td><code>/u-qa my-app</code></td></tr>
+<tr><td><code>/u-reverse</code></td><td>v4.0</td><td>Existing code &rarr; SSoT reverse engineering (Code &rarr; Design &rarr; Plan)</td><td><code>/u-reverse --app my-app</code></td></tr>
+<tr><td><code>/u-wireframe</code></td><td>v3.2</td><td>Screen spec &rarr; per-screen HTML wireframes with annotation panels</td><td><code>/u-wireframe --app my-app --all</code></td></tr>
+<tr><td><code>/u-loop</code></td><td>v3.2</td><td>Unattended PDCA auto-execution Plan &rarr; Ship. Checkpoint-based resume, auto error recovery</td><td><code>/u-loop --app my-app --from plan</code></td></tr>
+</tbody>
+</table>
+
+<h3>6.2 Output &amp; Report Skills (4)</h3>
+<table>
+<thead><tr><th>Command</th><th>Version</th><th>Description</th><th>Example</th></tr></thead>
+<tbody>
+<tr><td><code>/u-output</code></td><td>v4.0</td><td>.md + .json &rarr; HTML rendering. <code>--diagram svg|mermaid|all</code>. <small>alias: <code>/u-html</code></small></td><td><code>/u-output --app my-app --diagram svg</code></td></tr>
+<tr><td><code>/u-report-daily</code></td><td>v1.0</td><td>Daily report (git + meetings + stats)</td><td><code>/u-report-daily</code></td></tr>
+<tr><td><code>/u-report-weekly</code></td><td>v1.0</td><td>Weekly trend report with SVG charts</td><td><code>/u-report-weekly</code></td></tr>
+<tr><td><code>/u-meeting-report</code></td><td>v1.0</td><td>Audio/text &rarr; structured meeting minutes HTML</td><td><code>/u-meeting-report my-app</code></td></tr>
+</tbody>
+</table>
+
+<h3>6.3 Control Flow Skills (3)</h3>
+<table>
+<thead><tr><th>Command</th><th>Version</th><th>Description</th><th>Example</th></tr></thead>
+<tbody>
+<tr><td><code>/u-discuss</code></td><td>v4.0</td><td>Structured collaboration sessions (brainstorm, review, decision, workshop, retro)</td><td><code>/u-discuss brainstorm "Payment UX"</code></td></tr>
+<tr><td><code>/u-git-pr</code></td><td>v5.0</td><td>Intelligent PR generation with commit grouping, split/merge, review guide</td><td><code>/u-git-pr main --draft</code></td></tr>
+<tr><td><code>/u-engine</code></td><td>v4.0</td><td>Internal infrastructure engine (not user-invocable)</td><td>&mdash;</td></tr>
+</tbody>
+</table>
+
+<h3>Global Flags</h3>
+<table>
+<thead><tr><th>Flag</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>-i</code></td><td>Interactive mode &mdash; pauses only at decision points</td></tr>
+<tr><td><code>--step</code></td><td>Step mode &mdash; confirmation at every step</td></tr>
+<tr><td><code>--only X</code></td><td>Specific deliverable only (srs, erd, fe, be, db...)</td></tr>
+<tr><td><code>--cascade</code></td><td>Auto-update dependent documents on change</td></tr>
+<tr><td><code>--dry-run</code></td><td>Show plan without executing</td></tr>
+<tr><td><code>--json</code></td><td>JSON format output</td></tr>
+<tr><td><code>--migrate</code></td><td>(/u-init) Migrate from previous version</td></tr>
+<tr><td><code>--diagram svg|mermaid|all</code></td><td>(/u-output) Diagram rendering mode</td></tr>
+</tbody>
+</table>
+
+<hr>
+
+<!-- ============================================================ -->
+<!-- SECTION 7: Gate Criteria -->
+<!-- ============================================================ -->
+<h2 id="sec-gate">7. Gate Criteria</h2>
+
+<p>The gatekeeper agent evaluates <strong>11 criteria</strong> at each phase transition. The default passing threshold is <strong>95</strong> (configurable). All 11 criteria are always evaluated and displayed.</p>
+
+<table>
+<thead><tr><th>#</th><th>Criterion</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td>01</td><td><strong>Completeness</strong></td><td>All required deliverables exist and contain expected sections</td></tr>
+<tr><td>02</td><td><strong>Accuracy</strong></td><td>Content correctly reflects source data and requirements</td></tr>
+<tr><td>03</td><td><strong>Consistency</strong></td><td>No contradictions between documents (e.g., SRS vs. ERD)</td></tr>
+<tr><td>04</td><td><strong>Traceability</strong></td><td>Every FR &rarr; US &rarr; FT chain is intact, no orphan IDs</td></tr>
+<tr><td>05</td><td><strong>TOC Quality</strong></td><td>Table of Contents matches actual document structure</td></tr>
+<tr><td>06</td><td><strong>Content Composition</strong></td><td>Proper formatting, section depth, prose quality</td></tr>
+<tr><td>07</td><td><strong>Visual Adequacy</strong></td><td>Required diagrams and wireframes are present</td></tr>
+<tr><td>08</td><td><strong>Diagram Fitness</strong></td><td>Diagrams correctly represent described flows and structures</td></tr>
+<tr><td>09</td><td><strong>Mermaid Integrity</strong></td><td>All Mermaid/SVG diagrams render without syntax errors</td></tr>
+<tr><td>10</td><td><strong>JSON Sync</strong></td><td>Companion .json files are in sync with .md content</td></tr>
+<tr><td>11</td><td><strong>Cross-Reference</strong></td><td>All inter-document references (IDs, links) resolve correctly</td></tr>
+</tbody>
+</table>
+
+<blockquote>Threshold is 95 by default. Each criterion is scored 0&ndash;100. The average across all 11 must meet or exceed the threshold. Individual criteria that score below threshold are flagged with findings.</blockquote>
+
+<hr>
+
+<!-- ============================================================ -->
+<!-- SECTION 8: Folder Structure -->
+<!-- ============================================================ -->
+<h2 id="sec-folder">8. Folder Structure</h2>
+
+<h3>.u-maker/ Project Root</h3>
+<pre><code>.u-maker/
+&#x251C;&#x2500;&#x2500; u-maker.config.json              # Global settings (language, designTool, iteration)
+&#x251C;&#x2500;&#x2500; _links.json                       # Dependency graph
+&#x251C;&#x2500;&#x2500; _dropzone/                        # File drop zone (auto-classified on /u-plan)
+&#x2502;
+&#x251C;&#x2500;&#x2500; common/                           # Project-wide shared config
+&#x2502;   &#x251C;&#x2500;&#x2500; _index.json
+&#x2502;   &#x251C;&#x2500;&#x2500; policy/                       # Service / Security / Privacy / ErrorCodes
+&#x2502;   &#x251C;&#x2500;&#x2500; ux/                           # UX Guide, Design Token, UI Components
+&#x2502;   &#x251C;&#x2500;&#x2500; dev/                          # Coding Convention, Git Strategy, Testing
+&#x2502;   &#x251C;&#x2500;&#x2500; architecture/                 # System Overview, ERD, API, Infra
+&#x2502;   &#x2514;&#x2500;&#x2500; project/                      # Roadmap, Stakeholders, Iteration Log
+&#x2502;
+&#x251C;&#x2500;&#x2500; apps/{app-name}/                  # Independent pipeline per app
+&#x2502;   &#x251C;&#x2500;&#x2500; _index.json                   # App document TOC + status
+&#x2502;   &#x251C;&#x2500;&#x2500; app.config.json               # Per-app settings override
+&#x2502;   &#x251C;&#x2500;&#x2500; data/
+&#x2502;   &#x2502;   &#x251C;&#x2500;&#x2500; dropzone/                 # Raw input files
+&#x2502;   &#x2502;   &#x2514;&#x2500;&#x2500; digest/                   # Classified data (12 categories)
+&#x2502;   &#x2502;       &#x251C;&#x2500;&#x2500; requirements/         # FR-nnn, NR-nnn
+&#x2502;   &#x2502;       &#x251C;&#x2500;&#x2500; pain-points/          # PP-nnn
+&#x2502;   &#x2502;       &#x251C;&#x2500;&#x2500; domain-terms/         # DT-nnn
+&#x2502;   &#x2502;       &#x251C;&#x2500;&#x2500; stakeholders/         # SH-nnn
+&#x2502;   &#x2502;       &#x251C;&#x2500;&#x2500; workflows/            # WF-nnn
+&#x2502;   &#x2502;       &#x251C;&#x2500;&#x2500; screens/              # SC-nnn
+&#x2502;   &#x2502;       &#x251C;&#x2500;&#x2500; data-models/          # DM-nnn
+&#x2502;   &#x2502;       &#x251C;&#x2500;&#x2500; constraints/          # CN-nnn
+&#x2502;   &#x2502;       &#x251C;&#x2500;&#x2500; decisions/            # DC-nnn
+&#x2502;   &#x2502;       &#x251C;&#x2500;&#x2500; questions/            # QS-nnn
+&#x2502;   &#x2502;       &#x251C;&#x2500;&#x2500; standards/            # STD-nnn
+&#x2502;   &#x2502;       &#x251C;&#x2500;&#x2500; ux-standards/         # UXS-nnn
+&#x2502;   &#x2502;       &#x2514;&#x2500;&#x2500; _summary.json         # Classification summary
+&#x2502;   &#x251C;&#x2500;&#x2500; docs/                         # Layer 3: Deliverables (SSoT)
+&#x2502;   &#x2502;   &#x251C;&#x2500;&#x2500; 01-plan/              # srs.md, ia.md, roadmap.md
+&#x2502;   &#x2502;   &#x251C;&#x2500;&#x2500; 02-design/            # erd.md, api.md, screen.md, screen-flow.md
+&#x2502;   &#x2502;   &#x2502;   &#x2514;&#x2500;&#x2500; wireframes/
+&#x2502;   &#x2502;   &#x2502;       &#x251C;&#x2500;&#x2500; index.html    # Wireframe browser SPA
+&#x2502;   &#x2502;   &#x2502;       &#x2514;&#x2500;&#x2500; {SCR-ID}.html # Per-screen wireframe
+&#x2502;   &#x2502;   &#x251C;&#x2500;&#x2500; 03-dev/               # code.md, spec-sync-report.md
+&#x2502;   &#x2502;   &#x2514;&#x2500;&#x2500; 04-check/             # test-cases.md, test-report.md
+&#x2502;   &#x251C;&#x2500;&#x2500; output/                       # HTML reports, rendered output
+&#x2502;   &#x251C;&#x2500;&#x2500; _sessions/                    # Discussion session archive
+&#x2502;   &#x251C;&#x2500;&#x2500; _assumptions/                 # Assumptions log
+&#x2502;   &#x251C;&#x2500;&#x2500; _backlog/                     # Backlog items
+&#x2502;   &#x2514;&#x2500;&#x2500; rtm.md                        # Traceability matrix
+&#x2502;
+&#x251C;&#x2500;&#x2500; _sessions/                        # Cross-app discussions
+&#x2514;&#x2500;&#x2500; _assumptions/                     # Cross-app assumptions</code></pre>
+
+<h3>Config Settings</h3>
+<pre><code>{
+  "language": {
+    "documents": "en",
+    "supported": ["ko", "en", "ja", "zh"]
+  }
+}</code></pre>
+
+<p>Set the document language with <code>language.documents</code>. Supports ko (Korean), en (English), ja (Japanese), zh (Chinese). IDs and code are always in English regardless of this setting.</p>
+
+<hr>
+
+<!-- ============================================================ -->
+<!-- SECTION 9: 4-Tier ID -->
+<!-- ============================================================ -->
+<h2 id="sec-4tier">9. 4-Tier ID Hierarchy</h2>
+
+<div class="diagram-wrap">
+<svg viewBox="0 0 600 230" xmlns="http://www.w3.org/2000/svg" style="font-family:-apple-system,sans-serif">
+  <defs><marker id="ar4" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#6b7280"/></marker></defs>
+  <!-- USR -->
+  <rect x="20" y="20" width="200" height="36" rx="6" fill="#8b5cf6"/>
+  <text x="120" y="43" text-anchor="middle" fill="#fff" font-size="12" font-weight="700">USR-0001 General User</text>
+  <line x1="120" y1="56" x2="120" y2="75" stroke="#6b7280" stroke-width="1.5" marker-end="url(#ar4)"/>
+  <!-- FR -->
+  <rect x="40" y="78" width="240" height="36" rx="6" fill="#3b82f6"/>
+  <text x="160" y="101" text-anchor="middle" fill="#fff" font-size="12" font-weight="700">FR-0001 Sign-up Feature</text>
+  <line x1="160" y1="114" x2="160" y2="133" stroke="#6b7280" stroke-width="1.5" marker-end="url(#ar4)"/>
+  <!-- US -->
+  <rect x="40" y="136" width="310" height="36" rx="6" fill="#0891b2"/>
+  <text x="195" y="159" text-anchor="middle" fill="#fff" font-size="12" font-weight="700">US-0001 I want to sign up with email</text>
+  <line x1="195" y1="172" x2="130" y2="192" stroke="#6b7280" stroke-width="1.5" marker-end="url(#ar4)"/>
+  <line x1="195" y1="172" x2="340" y2="192" stroke="#6b7280" stroke-width="1.5" marker-end="url(#ar4)"/>
+  <!-- FT 1 -->
+  <rect x="20" y="195" width="230" height="30" rx="6" fill="#10b981"/>
+  <text x="135" y="215" text-anchor="middle" fill="#fff" font-size="11" font-weight="600">FT-0001 Email verification impl</text>
+  <!-- FT 2 -->
+  <rect x="270" y="195" width="230" height="30" rx="6" fill="#10b981"/>
+  <text x="385" y="215" text-anchor="middle" fill="#fff" font-size="11" font-weight="600">FT-0002 Social login impl</text>
+  <!-- Legend -->
+  <text x="540" y="38" fill="#8b5cf6" font-size="10" font-weight="600">User Type</text>
+  <text x="540" y="98" fill="#3b82f6" font-size="10" font-weight="600">Requirement</text>
+  <text x="540" y="158" fill="#0891b2" font-size="10" font-weight="600">User Story</text>
+  <text x="540" y="215" fill="#10b981" font-size="10" font-weight="600">Feature</text>
+</svg>
+</div>
+
+<p>Every requirement is traceable through the hierarchy: <strong>USR</strong> (User Type) &rarr; <strong>FR</strong> (Functional Requirement) &rarr; <strong>US</strong> (User Story) &rarr; <strong>FT</strong> (Feature / implementation unit). This ensures full traceability from stakeholder needs to delivered code.</p>
+
+<blockquote>FT = <strong>Feature</strong> (implementation unit). It is not "Functional Test."</blockquote>
+
+<hr>
+
+<!-- ============================================================ -->
+<!-- SECTION 10: Scenario Guide -->
+<!-- ============================================================ -->
+<h2 id="sec-scenario">10. Scenario Guide</h2>
+
+<h3>Project Start (Forward Engineering)</h3>
+<table>
+<thead><tr><th>Scenario</th><th>Command</th></tr></thead>
+<tbody>
+<tr><td>Starting a completely new project</td><td><code>/u-init my-project</code></td></tr>
+<tr><td>Have existing RFP / meeting notes</td><td><code>/u-init</code> &rarr; drop files into <code>.u-maker/_dropzone/</code> &rarr; <code>/u-plan my-app</code></td></tr>
+<tr><td>Migrate from an older u-maker version</td><td><code>/u-init my-app --migrate</code></td></tr>
+</tbody>
+</table>
+
+<h3>Project Start (Reverse Engineering)</h3>
+<table>
+<thead><tr><th>Scenario</th><th>Command</th></tr></thead>
+<tbody>
+<tr><td>Full reverse engineering of existing code &rarr; SSoT</td><td><code>/u-reverse --app my-app</code></td></tr>
+<tr><td>Specify DB schema path</td><td><code>/u-reverse --app my-app --db prisma/</code></td></tr>
+<tr><td>Specify API route path</td><td><code>/u-reverse --app my-app --api src/app/api/</code></td></tr>
+<tr><td>Specify page component path</td><td><code>/u-reverse --app my-app --pages src/app/</code></td></tr>
+</tbody>
+</table>
+
+<h3>Planning (Plan Phase)</h3>
+<table>
+<thead><tr><th>Scenario</th><th>Command</th></tr></thead>
+<tbody>
+<tr><td>Run entire Plan Phase</td><td><code>/u-plan my-app</code></td></tr>
+<tr><td>Generate SRS only</td><td><code>/u-plan my-app --only srs</code></td></tr>
+<tr><td>Interactive co-creation</td><td><code>/u-plan my-app -i</code></td></tr>
+<tr><td>Step-by-step with approval at every step</td><td><code>/u-plan my-app --step</code></td></tr>
+<tr><td>Brainstorming session</td><td><code>/u-discuss brainstorm "Payment UX"</code></td></tr>
+</tbody>
+</table>
+
+<h3>Design (Design Phase)</h3>
+<table>
+<thead><tr><th>Scenario</th><th>Command</th></tr></thead>
+<tbody>
+<tr><td>Run entire Design Phase</td><td><code>/u-design my-app</code></td></tr>
+<tr><td>Generate Screen spec only</td><td><code>/u-design my-app --only screens</code></td></tr>
+<tr><td>Generate ERD only</td><td><code>/u-design my-app --only erd</code></td></tr>
+<tr><td>Generate all wireframes</td><td><code>/u-wireframe --app my-app --all</code></td></tr>
+</tbody>
+</table>
+
+<h3>Development (Dev Phase)</h3>
+<table>
+<thead><tr><th>Scenario</th><th>Command</th></tr></thead>
+<tbody>
+<tr><td>Generate FE + BE + DB code</td><td><code>/u-dev my-app</code></td></tr>
+<tr><td>Generate FE only</td><td><code>/u-dev my-app --only fe</code></td></tr>
+<tr><td>Generate BE only</td><td><code>/u-dev my-app --only be</code></td></tr>
+<tr><td>Generate DB only</td><td><code>/u-dev my-app --only db</code></td></tr>
+</tbody>
+</table>
+
+<blockquote><strong>Prerequisite Cascade:</strong> <code>/u-dev</code> auto-invokes <code>/u-design</code> if Design docs are missing; <code>/u-design</code> auto-invokes <code>/u-plan</code> if Plan docs are missing. Running <code>/u-dev</code> alone can trigger the entire Plan &rarr; Design &rarr; Dev pipeline.</blockquote>
+
+<h3>Verification (Check Phase)</h3>
+<table>
+<thead><tr><th>Scenario</th><th>Command</th></tr></thead>
+<tbody>
+<tr><td>Run TC design + test execution</td><td><code>/u-check my-app</code> or <code>/u-qa my-app</code></td></tr>
+<tr><td>Review results interactively</td><td><code>/u-qa my-app -i</code></td></tr>
+</tbody>
+</table>
+
+<h3>Ship + Retrospective</h3>
+<table>
+<thead><tr><th>Scenario</th><th>Command</th></tr></thead>
+<tbody>
+<tr><td>Final verification + deploy + retrospective</td><td><code>/u-ship my-app</code></td></tr>
+<tr><td>Retrospective session</td><td><code>/u-discuss retro</code></td></tr>
+</tbody>
+</table>
+
+<h3>Full Automation</h3>
+<table>
+<thead><tr><th>Scenario</th><th>Command</th></tr></thead>
+<tbody>
+<tr><td>Run entire PDCA pipeline unattended</td><td><code>/u-loop --app my-app</code></td></tr>
+<tr><td>Run from Plan to Check only</td><td><code>/u-loop --app my-app --from plan --to check</code></td></tr>
+<tr><td>Dry run (preview only)</td><td><code>/u-loop --app my-app --dry-run</code></td></tr>
+</tbody>
+</table>
+
+<h3>Reporting</h3>
+<table>
+<thead><tr><th>Scenario</th><th>Command</th></tr></thead>
+<tbody>
+<tr><td>Generate HTML output from docs</td><td><code>/u-output --app my-app</code></td></tr>
+<tr><td>Generate with SVG diagrams</td><td><code>/u-output --app my-app --diagram svg</code></td></tr>
+<tr><td>Daily team report</td><td><code>/u-report-daily</code></td></tr>
+<tr><td>Weekly trend report</td><td><code>/u-report-weekly</code></td></tr>
+<tr><td>Meeting minutes from notes</td><td><code>/u-meeting-report my-app</code></td></tr>
+</tbody>
+</table>
+
+<h3>Collaboration</h3>
+<table>
+<thead><tr><th>Scenario</th><th>Command</th></tr></thead>
+<tbody>
+<tr><td>Structured brainstorming</td><td><code>/u-discuss brainstorm "Payment UX"</code></td></tr>
+<tr><td>Design review</td><td><code>/u-discuss review "API v2"</code></td></tr>
+<tr><td>Decision meeting</td><td><code>/u-discuss decision "Auth Method"</code></td></tr>
+<tr><td>Generate a PR from current branch</td><td><code>/u-git-pr main</code></td></tr>
+<tr><td>Generate a draft PR</td><td><code>/u-git-pr main --draft</code></td></tr>
+</tbody>
+</table>
+
+<hr>
+
+<!-- ============================================================ -->
+<!-- SECTION 11: Install & Prerequisites -->
+<!-- ============================================================ -->
+<h2 id="sec-install">11. Install &amp; Prerequisites</h2>
+
+<h3>Prerequisites</h3>
+<ul>
+<li><strong>Claude Code CLI</strong> installed and authenticated</li>
+<li><strong>Node.js 18+</strong> (for hooks)</li>
+<li><strong>Git</strong> (for /u-git-pr)</li>
+</ul>
+
+<h3>Installation</h3>
+<pre><code><span class="comment"># Install the plugin</span>
+<span class="cmd">claude plugin add upleat-ax/u-maker-plugin</span>
+
+<span class="comment"># Restart Claude Code to load the plugin</span>
+<span class="comment"># Then initialize your project</span>
+<span class="cmd">/u-init my-project</span></code></pre>
+
+<h3>Migration from Previous Version</h3>
+<pre><code><span class="cmd">/u-init my-project --migrate</span>    <span class="comment"># Upgrades .u-maker/ structure to v3.4.5</span></code></pre>
+
+<h3>Plugin Repository Layout</h3>
+<pre><code>u-maker-plugin/
+&#x251C;&#x2500;&#x2500; .claude-plugin/plugin.json        # v3.4.5
+&#x251C;&#x2500;&#x2500; agents/                           # 7 agent definitions
+&#x2502;   &#x251C;&#x2500;&#x2500; u-agent-pm.md
+&#x2502;   &#x251C;&#x2500;&#x2500; u-agent-plan.md
+&#x2502;   &#x251C;&#x2500;&#x2500; u-agent-design.md
+&#x2502;   &#x251C;&#x2500;&#x2500; u-agent-dev.md
+&#x2502;   &#x251C;&#x2500;&#x2500; u-agent-qa.md
+&#x2502;   &#x251C;&#x2500;&#x2500; u-agent-gatekeeper.md
+&#x2502;   &#x2514;&#x2500;&#x2500; u-agent-report.md
+&#x251C;&#x2500;&#x2500; skills/                           # 15 skills (12 user-facing + 1 engine + 2 reports)
+&#x2502;   &#x2514;&#x2500;&#x2500; u-*/SKILL.md
+&#x251C;&#x2500;&#x2500; hooks/                            # Event hooks
+&#x2502;   &#x251C;&#x2500;&#x2500; hooks.json
+&#x2502;   &#x251C;&#x2500;&#x2500; on-dropzone-added.js
+&#x2502;   &#x251C;&#x2500;&#x2500; on-gate-result.js
+&#x2502;   &#x2514;&#x2500;&#x2500; on-doc-change.js
+&#x2514;&#x2500;&#x2500; shared/references/                # Reference documents</code></pre>
+
+<hr>
+
+<!-- ============================================================ -->
+<!-- SECTION 12: Troubleshooting -->
+<!-- ============================================================ -->
+<h2 id="sec-troubleshoot">12. Troubleshooting</h2>
+
+<table>
+<thead><tr><th>Symptom</th><th>Cause</th><th>Solution</th></tr></thead>
+<tbody>
+<tr><td>Plugin commands not recognized</td><td>Plugin not loaded or Claude Code not restarted</td><td>Run <code>claude plugin add upleat-ax/u-maker-plugin</code> and restart Claude Code</td></tr>
+<tr><td><code>/u-plan</code> produces empty SRS</td><td>No data in dropzone or digest</td><td>Drop RFP/meeting notes into <code>.u-maker/_dropzone/</code> before running <code>/u-plan</code></td></tr>
+<tr><td>Gate always fails</td><td>Threshold set too high or documents incomplete</td><td>Check gatekeeper scorecard findings. Fix flagged criteria. Consider lowering threshold if appropriate</td></tr>
+<tr><td><code>/u-dev</code> generates no code</td><td>Design phase documents missing</td><td><code>/u-dev</code> will auto-cascade to <code>/u-design</code> and <code>/u-plan</code>. Ensure dropzone has input data</td></tr>
+<tr><td>Dependency cascade not triggering</td><td><code>_links.json</code> not initialized</td><td>Run <code>/u-init</code> to regenerate the dependency graph</td></tr>
+<tr><td><code>/u-loop</code> halts after 3 retries</td><td>Gate criteria cannot be satisfied automatically</td><td>Review the scorecard, fix the lowest-scoring criteria manually, then resume</td></tr>
+<tr><td>Wireframes not rendering</td><td>Screen spec JSON missing <code>layout</code> field</td><td>Run <code>/u-design --only screens</code> to regenerate screen specs</td></tr>
+<tr><td>Wrong document language</td><td><code>language.documents</code> setting mismatch</td><td>Edit <code>u-maker.config.json</code> and set <code>language.documents</code> to desired locale (ko/en/ja/zh)</td></tr>
+<tr><td><code>/u-reverse</code> misses some files</td><td>Source paths not specified</td><td>Use <code>--db</code>, <code>--api</code>, <code>--pages</code> flags to specify exact paths</td></tr>
+<tr><td>HTML output missing diagrams</td><td>Diagram mode not specified</td><td>Use <code>/u-output --diagram svg</code> or <code>--diagram all</code></td></tr>
+</tbody>
+</table>
+
+<hr>
+
+<!-- ============================================================ -->
+<!-- SECTION 13: License -->
+<!-- ============================================================ -->
+<h2 id="sec-license">13. License</h2>
+
+<p><strong>Proprietary</strong> &mdash; Copyright (c) 2026 U PLEAT. All rights reserved.</p>
+
+<p>This software and associated documentation files are the proprietary property of U PLEAT. Unauthorized copying, distribution, modification, or use of this software, in whole or in part, is strictly prohibited without prior written permission from U PLEAT.</p>
+
+<p>For licensing inquiries, contact U PLEAT.</p>
+
+<!-- Footer -->
+<div class="footer">
+  <strong>U-MAKER Plugin</strong> v3.4.5 &mdash; PDCA-based SSoT Collaboration Orchestrator<br>
+  Proprietary &copy; 2026 U PLEAT &middot; All rights reserved
+</div>
+
+</main>
+
+<script>
+function toggleSidebar(){
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('overlay').classList.toggle('open');
+}
+function nav(el){
+  document.querySelectorAll('.nav-item').forEach(i=>i.classList.remove('active'));
+  el.classList.add('active');
+  if(window.innerWidth<=768) toggleSidebar();
+}
+// Scroll spy
+window.addEventListener('scroll',function(){
+  const sections=document.querySelectorAll('h2[id],div[id]');
+  let current='';
+  sections.forEach(s=>{
+    if(window.scrollY>=s.offsetTop-100) current=s.id;
+  });
+  if(current){
+    document.querySelectorAll('.nav-item').forEach(i=>{
+      i.classList.remove('active');
+      if(i.getAttribute('href')==='#'+current) i.classList.add('active');
+    });
+  }
+});
+</script>
+
+</body>
+</html>
