@@ -101,43 +101,47 @@ if not exist "%MARKETPLACES_DIR%" mkdir "%MARKETPLACES_DIR%"
 if not exist "%CACHE_DIR%" mkdir "%CACHE_DIR%"
 
 :: Step 1: Cache sync (must run BEFORE junction so the target exists)
-echo [u-maker] 1/10 Cache sync
+echo [u-maker] 1/11 Cache sync
 call :sync_cache
 
 :: Step 2: Marketplace junction (points to cache, not SCRIPT_DIR — survives temp dir cleanup)
-echo [u-maker] 2/10 Marketplace junction
+echo [u-maker] 2/11 Marketplace junction
 call :make_junction "%MARKETPLACES_DIR%\%MARKETPLACE_NAME%" "%CACHE_DIR%\%PLUGIN_NAME%\%PLUGIN_NAME%\%PLUGIN_VERSION%"
 
 :: Step 3: known_marketplaces.json
-echo [u-maker] 3/10 known_marketplaces.json
+echo [u-maker] 3/11 known_marketplaces.json
 call :update_known_marketplaces
 
 :: Step 4: installed_plugins.json
-echo [u-maker] 4/10 installed_plugins.json
+echo [u-maker] 4/11 installed_plugins.json
 call :update_installed_plugins
 
 :: Step 5: Clean stale skill symlinks
-echo [u-maker] 5/10 Clean stale skill junctions
+echo [u-maker] 5/11 Clean stale skill junctions
 call :clean_stale_skills
 
 :: Step 6: Clean stale agent symlinks
-echo [u-maker] 6/10 Clean stale agent junctions
+echo [u-maker] 6/11 Clean stale agent junctions
 call :clean_stale_agents
 
 :: Step 7: Skill junctions
-echo [u-maker] 7/10 Skill junctions
+echo [u-maker] 7/11 Skill junctions
 call :register_skills
 
 :: Step 8: Agent junctions
-echo [u-maker] 8/10 Agent junctions
+echo [u-maker] 8/11 Agent junctions
 call :register_agents
 
-:: Step 9: Codex integration
-echo [u-maker] 9/10 Codex integration
+:: Step 9: _meta junctions (templates, schemas, session-protocols, tech-rules)
+echo [u-maker] 9/11 _meta junctions (templates, schemas)
+call :register_meta
+
+:: Step 10: Codex integration
+echo [u-maker] 10/11 Codex integration
 call :setup_codex
 
-:: Step 10: Gemini integration
-echo [u-maker] 10/10 Gemini integration
+:: Step 11: Gemini integration
+echo [u-maker] 11/11 Gemini integration
 call :setup_gemini
 
 echo.
@@ -205,6 +209,14 @@ if exist "%AGENTS_ROOT%" (
         set /a ACOUNT+=1
     )
     if !ACOUNT! GTR 0 echo   [OK] Removed !ACOUNT! agent links
+)
+
+:: Remove _meta junctions from all platform homes
+for %%H in ("%CLAUDE_HOME%" "%CODEX_HOME%" "%GEMINI_HOME%") do (
+    if exist "%%~H\_meta\%PLUGIN_NAME%" (
+        rmdir "%%~H\_meta\%PLUGIN_NAME%" 2>nul
+        if not exist "%%~H\_meta\%PLUGIN_NAME%" echo   [OK] _meta junction removed from %%~nxH
+    )
 )
 
 :: Remove Gemini junctions
@@ -292,6 +304,14 @@ if exist "%CLAUDE_HOME%\agents" (
     for %%f in ("%CLAUDE_HOME%\agents\%PLUGIN_NAME%__*.md") do set /a AG_COUNT+=1
 )
 echo   [OK] %AG_COUNT% agent links registered
+
+:: _meta junction
+if exist "%CLAUDE_HOME%\_meta\%PLUGIN_NAME%" (
+    echo   [OK] _meta junction exists ^(templates, schemas^)
+) else (
+    echo   [ERR] _meta junction missing at %CLAUDE_HOME%\_meta\%PLUGIN_NAME%
+    set "ALL_OK=0"
+)
 
 :: Codex
 if exist "%CODEX_HOME%" (
@@ -511,6 +531,42 @@ if !COUNT! GTR 0 (
     echo   [OK] Removed !COUNT! stale agent links
 ) else (
     echo   [OK] No stale agent links
+)
+goto :eof
+
+:: --- register_meta ---
+:: Registers _meta junction in each platform home so skills can reference
+:: templates, schemas, session-protocols, tech-rules via ~/.claude/_meta/u-maker/
+:register_meta
+set "CACHE_META=%CACHE_DIR%\%PLUGIN_NAME%\%PLUGIN_NAME%\%PLUGIN_VERSION%\_meta"
+
+if not exist "%CACHE_META%" (
+    echo   [WARN] No _meta directory in cache, skipping _meta junctions
+    goto :eof
+)
+
+set "META_COUNT=0"
+for %%H in ("%CLAUDE_HOME%" "%CODEX_HOME%" "%GEMINI_HOME%") do (
+    if exist "%%~H" (
+        if not exist "%%~H\_meta" mkdir "%%~H\_meta"
+        set "META_LINK=%%~H\_meta\%PLUGIN_NAME%"
+        if exist "!META_LINK!" (
+            fsutil reparsepoint query "!META_LINK!" >nul 2>&1
+            if !errorlevel! equ 0 (
+                rmdir "!META_LINK!" 2>nul
+            ) else (
+                rd /s /q "!META_LINK!" 2>nul
+            )
+        )
+        mklink /J "!META_LINK!" "%CACHE_META%" >nul 2>&1
+        if !errorlevel! equ 0 set /a META_COUNT+=1
+    )
+)
+
+if !META_COUNT! GTR 0 (
+    echo   [OK] Registered !META_COUNT! _meta junction(s) ^(templates, schemas, session-protocols, tech-rules^)
+) else (
+    echo   [ERR] Failed to create _meta junction. Try running as Administrator.
 )
 goto :eof
 
