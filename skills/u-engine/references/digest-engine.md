@@ -84,7 +84,7 @@ The digest-engine identifies file types to determine the appropriate analysis st
 | `.json` | Structured data | Direct JSON parsing and schema inference |
 | `.yaml`, `.yml` | Structured data | YAML parsing and schema inference |
 | `.pptx` | Presentation | Slide content extraction, text and image analysis |
-| `.figma-link` | Figma link | Multi-type frame analysis via Figma MCP tools (see `u-plan/references/figma-analysis.md`) |
+| `.figma-link` | Figma link | Multi-type frame analysis via Figma MCP tools (see `u-plan/references/figma-analysis.md`). Digest에 `figmaMeta.figmaUrl` (deep link) 필수 포함. 기획 텍스트는 `screenDescriptions`, `businessRules`, `decisions`, `domainRules`, `processingRules`, `commonRules`, `stateTransitions`, `validationRules`, `permissionRules`, `uiSpecifications`, `dataRules`, `crossRefs`, `acceptanceHints` 필드로 구조화 (figma-analysis.md § 3.4, § 3.8, § 4.3). **추출 완전성 필수** — 누락 불가 |
 
 ### Detection Algorithm
 

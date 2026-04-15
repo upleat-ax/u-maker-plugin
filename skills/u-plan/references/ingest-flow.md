@@ -49,12 +49,20 @@ Figma links are processed through a dedicated multi-step analysis pipeline. A si
 - **Direct URL:** User provides a Figma link during `/u-ingest` conversation
 
 **Key capabilities:**
-- Content type auto-detection (screen-design, screen-planning, diagram, annotation, design-tokens, assets, prototype)
+- Content type auto-detection (screen-design, screen-planning, diagram, annotation, **specification**, design-tokens, assets, prototype)
 - Mixed frame handling — multiple content types extracted and cross-referenced from a single frame
 - Variable and style extraction for design system token mapping
 - Prototype reaction extraction for screen flow derivation
+- **Rich planning content extraction** — 기업용 시스템 Figma는 단순 UI 디자인이 아닌 **화면기획서** 역할을 겸하므로, 비즈니스 로직·도메인 규칙·처리방법·공통규칙·상태전이·권한규칙·검증규칙·화면별 상세 설명 등을 구조화하여 추출 (figma-analysis.md § 3.4, § 3.8, § 4.3 참조)
 
-**Output:** Standard digest JSON with extended `figmaMeta` and `sourceType: "figma-frame"` fields.
+**Output:** Standard digest JSON with extended `figmaMeta` and `sourceType: "figma-frame"` fields. `figmaMeta`에는 원본 Figma URL (`figmaUrl`, deep link 포함)이 반드시 포함된다. 추가로 digest에는 다음 필드가 포함되어 다운스트림(SRS, Screen Spec, Wireframe 등)에서 활용된다:
+
+- `screenDescriptions` — 화면별 상세 설명 (purpose, components, linkedScreens)
+- `businessRules`, `decisions`, `domainRules`, `processingRules`, `commonRules`
+- `stateTransitions`, `validationRules`, `permissionRules`, `uiSpecifications`, `dataRules`
+- `crossRefs`, `acceptanceHints`
+
+> **완전성 원칙:** Figma 프레임의 모든 기획 텍스트는 digest에서 구조화되어 보존된다. digest 누락 = 다운스트림 복구 불가.
 
 > **Full specification:** See `references/figma-analysis.md` for the complete detection algorithm, MCP tool mapping, extraction strategies, and digest output format.
 

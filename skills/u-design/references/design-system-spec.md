@@ -168,7 +168,7 @@ After the HTML is created, derive the markdown documentation from it.
    - Group by CMP-xxx ID
    - Write component tables with: Variant, Properties, States
 3. **Extract layout patterns** from showcase sections
-4. **Write frontmatter**: Owner, Status, Version, Last Updated, App, Companion, Source
+4. **Write frontmatter**: Owner, Status, Version, Last Updated, App, Companion, Source, Figma (if applicable)
 5. **Write** to `docs/{app}/design/design-system.md`
 
 ### 3.2 Frontmatter Schema
@@ -184,8 +184,11 @@ Last Updated: {ISO-8601}
 App: {app-name}
 Companion: design-system.json
 Source: ../../out/{app}/design/design-system.html
+Figma: https://www.figma.com/design/{file_key}/{file_name}?node-id={node_id}
 ---
 ```
+
+> `Figma` 필드는 Figma 소스가 있는 경우 필수. deep link (`?node-id=...`) 형태 권장. 없으면 생략.
 
 ### 3.3 Template
 
@@ -214,6 +217,7 @@ Use `_meta/templates/design-system.template.md` as the structural guide for the 
   "version": "1.0.0",
   "lastUpdated": "{ISO-8601}",
   "source": "../../out/{app}/design/design-system.html",
+  "figmaUrl": "https://www.figma.com/design/{file_key}/{file_name}?node-id={node_id}",
   "items": [
     {
       "id": "DS-010",

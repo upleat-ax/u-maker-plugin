@@ -26,6 +26,19 @@ https://www.figma.com/design/{file_key}/{file_name}?node-id={node_id}
 - **Page-level link** (`node-id` points to page): Analyze all frames within the page
 - **Frame-level link** (`node-id` points to frame): Deep-analyze the single frame — this is the primary use case
 
+### 1.2.1 Figma Link Traceability (MANDATORY)
+
+Figma 분석으로 생성되는 **모든** `.json` 및 `.md` 산출물에는 원본 Figma 링크를 반드시 기록한다.
+
+| 산출물 형식 | 기록 방식 |
+|---|---|
+| `.json` | `figmaUrl` 필드 (개별 item에도 `figmaUrl` 포함 권장) |
+| `.md` | 문서 상단 메타 섹션 또는 각 섹션에 `> Figma: <url>` 형태 |
+
+- 링크는 가능한 한 **deep link** (`?node-id=...`) 형태로 남겨 프레임 단위 추적성 확보
+- 파일 수준 링크와 프레임 수준 링크를 모두 보존 (파일 링크: `figmaFileUrl`, 프레임 링크: `figmaUrl`)
+- 이 규칙은 digest, SRS, IA, ERD, API, Screen Spec, Design System 등 모든 다운스트림 산출물에 전파
+
 ### 1.3 MCP Server Selection
 
 Two Figma MCP servers are supported. The engine detects which is available and selects accordingly.
@@ -109,6 +122,8 @@ function detectContentTypes(frameNodeId):
         types.add("screen-planning")
     if hasStickyNotePattern(frames, textNodes):
         types.add("annotation")
+    if hasSpecificationPattern(textNodes, frames):
+        types.add("specification")
     if hasTokenPattern(rectangles, textNodes, grid-layout):
         types.add("design-tokens")
     if hasAssetPattern(components, vectors, images):
@@ -119,6 +134,22 @@ function detectContentTypes(frameNodeId):
     return types
 ```
 
+> **`hasSpecificationPattern` Detection:**
+> ```
+> function hasSpecificationPattern(textNodes, frames):
+>     // 기획서/명세서 패턴: 긴 텍스트 블록, 번호 매김, 테이블형 레이아웃, 규칙/조건 키워드
+>     longTextNodes = textNodes.filter(t => t.characters.length > 100)
+>     numberedPatterns = textNodes.filter(t => t.characters.match(/^\d+[\.\)]/))
+>     specKeywords = ["규칙", "조건", "처리", "검증", "공통", "비고", "예외", "필수",
+>                      "Rule", "Condition", "Validation", "Process", "Common",
+>                      "상태", "전이", "권한", "계산", "기본값", "자동"]
+>     keywordHits = textNodes.filter(t => specKeywords.some(k => t.characters.contains(k)))
+>
+>     return (longTextNodes.length >= 3) or
+>            (numberedPatterns.length >= 5) or
+>            (keywordHits.length >= 3)
+> ```
+
 ### 2.2 Content Type Definitions
 
 | Content Type | Detection Signal | Examples |
@@ -127,6 +158,7 @@ function detectContentTypes(frameNodeId):
 | **screen-planning** | Low-fidelity layouts: simple rectangles with text labels, placeholder boxes ("Image here"), minimal styling | Wireframe layouts, page structure sketches |
 | **diagram** | Connector lines (VECTOR/LINE) linking labeled frames/shapes, flow patterns, decision diamonds | User flow, IA diagram, ERD, process flow |
 | **annotation** | Sticky notes (colored rectangles + text), comment markers, callout frames, numbered labels pointing to elements | Design rationale, decisions, review comments |
+| **specification** | Dense text blocks with business rules, numbered conditions, domain-specific terms, processing procedures, state descriptions, validation rules. Often found alongside screen-design/screen-planning as supplementary planning content | 비즈니스 규칙, 처리방법, 공통규칙, 도메인 규칙, 상태 전이, 검증 규칙, 권한 규칙, 결정사항, 기획 노트 |
 | **design-tokens** | Grid-arranged color swatches, typography samples, spacing demonstrations, systematic naming in text nodes | Color palette, type scale, spacing guide |
 | **assets** | Standalone COMPONENT definitions, icon sets, logo variations, illustration elements | Icon library, logo variants, illustrations |
 | **prototype** | Frames with reactions (onClick, onHover, onDrag), navigation connections between frames | Interactive prototype, micro-interaction spec |
@@ -249,15 +281,76 @@ Each content type uses specific MCP tools for optimal extraction.
 }
 ```
 
-### 3.4 Annotation Extraction
+### 3.4 Annotation & Planning Content Extraction
 
-**Goal:** Extract design rationale, decisions, review comments, specification notes
+**Goal:** Figma 프레임에 포함된 모든 기획·설계 텍스트를 빠짐없이 추출하고 카테고리별로 분류한다. 기업용 시스템 Figma에는 단순 sticky note뿐 아니라 비즈니스 로직, 결정사항, 도메인 규칙, 처리방법, 공통규칙, 검증규칙, 권한규칙, 상태전이 등 화면기획서 수준의 풍부한 정보가 텍스트로 기재되어 있다. 이 모든 내용이 digest에 구조화되어 보존되어야 한다.
 
 **MCP Tools:**
-1. `scan_text_nodes` — All text content
+1. `scan_text_nodes` — 프레임 내 **모든** 텍스트 노드 수집 (UI 라벨 제외 필터링은 후처리)
 2. `get_annotations` — Figma native annotations
-3. `scan_nodes_by_types` — Identify sticky-note-like frames (small colored rectangles with text)
-4. `get_node` — Spatial context (what element the annotation is near)
+3. `scan_nodes_by_types` — FRAME, RECTANGLE, TEXT, SECTION, GROUP 노드 탐색
+4. `get_node` — 공간적 컨텍스트 (어떤 UI 요소 근처에 위치하는지)
+5. `get_screenshot` — 시각적 참조 (텍스트 추출 보완용)
+
+**Step 1: 전체 텍스트 수집**
+
+프레임 내 모든 TEXT 노드를 수집한 후, 아래 기준으로 **UI 라벨**과 **기획 텍스트**를 분리:
+
+```
+function classifyTextNode(textNode, parentNode):
+    // UI 라벨: INSTANCE 내부, 짧은 텍스트(< 30자), 버튼/입력/메뉴 컴포넌트 자식
+    if parentNode.type == "INSTANCE" and textNode.characters.length < 30:
+        return "ui-label"
+
+    // 기획 텍스트: 긴 텍스트, INSTANCE 외부, 설명적 내용
+    if textNode.characters.length >= 30:
+        return "planning-text"
+
+    // 중간 길이: 위치 기반 판단 (UI 영역 외부면 planning-text)
+    if isOutsideUIBounds(textNode, mainScreenFrame):
+        return "planning-text"
+
+    return "ui-label"
+```
+
+**Step 2: 기획 텍스트 카테고리 분류**
+
+수집된 planning-text를 내용 기반으로 아래 카테고리로 분류:
+
+| Category | Detection Keywords/Patterns | Examples |
+|---|---|---|
+| `business-rule` | "규칙", "Rule", "~인 경우", "~할 때", "조건:", "IF/THEN", 계산식, 공식 | "연체이자 = 미납금 × 일이율 × 경과일수" |
+| `decision` | "결정", "Decision", "확정", "→ 채택", "변경이력", "[QA]", "[확인]" | "OAuth2 방식으로 확정 (2026-03-15)" |
+| `domain-rule` | "상태", "전이", "코드", "분류", "체계", 상태명 나열, 코드표 | "계약상태: 신청→심사→승인→해약" |
+| `processing-rule` | "처리", "절차", "Process", "Step", 번호 매김 절차, "~한다" | "1. 신청접수 2. 자격심사 3. 승인처리" |
+| `common-rule` | "공통", "전역", "Global", "모든 화면", "일괄 적용" | "모든 금액 필드는 천단위 콤마 표시" |
+| `validation-rule` | "검증", "Validation", "필수", "형식", "범위", "중복체크" | "이메일 형식 검증, 중복 불허" |
+| `permission-rule` | "권한", "역할", "Role", "접근", "제한", "관리자만" | "해약 처리는 팀장 이상만 가능" |
+| `state-transition` | 상태 → 상태 패턴, "전이", "Lifecycle", 매트릭스, 상태 다이어그램 | "대기→배정→진행→완료→마감" |
+| `ui-specification` | "UI", "화면", "표시", "숨김", "비활성", "기본값", "자동계산" | "해약사유 필드는 해약 상태일 때만 표시" |
+| `data-rule` | "데이터", "기본값", "자동", "참조", "연계", "마스터" | "담당자 기본값 = 로그인 사용자" |
+| `screen-description` | 화면 목적, 개요, 설명, 화면코드(Sxxxx), 화면명 | "S2030101: 선불상조 가입조회 현황" |
+| `note` | 위 카테고리에 해당하지 않는 일반 메모/비고 | "추후 2차 개발 시 추가 예정" |
+
+**Step 3: 공간적 연관 매핑**
+
+각 기획 텍스트가 **어떤 화면/컴포넌트에 관한 것인지** 공간 좌표 기반으로 매핑:
+
+```
+function mapToNearestScreen(textNode, screenFrames):
+    // 1. textNode가 특정 screen frame 내부에 위치하면 해당 화면
+    for screen in screenFrames:
+        if isInsideBounds(textNode, screen):
+            return screen.name
+
+    // 2. 외부이면 가장 가까운 화면 프레임과 연결
+    nearest = findNearestFrame(textNode.position, screenFrames)
+    if distance(textNode, nearest) < threshold:
+        return nearest.name
+
+    // 3. 특정 화면과 무관하면 "global" (공통)
+    return "global"
+```
 
 **Extraction Output:**
 ```json
@@ -266,19 +359,36 @@ Each content type uses specific MCP tools for optimal extraction.
   "notes": [
     {
       "content": "Password must be 8+ chars with at least one special character",
-      "category": "requirement",
+      "category": "validation-rule",
+      "nearScreen": "Login Screen",
       "nearElement": "Password Input",
-      "position": { "x": 400, "y": 250 }
+      "figmaNodeId": "1234:5678"
     },
     {
-      "content": "Decision: Use OAuth2 instead of custom auth",
+      "content": "Decision: Use OAuth2 instead of custom auth (확정 2026-03-15)",
       "category": "decision",
+      "nearScreen": "Login Screen",
       "nearElement": "Login Form",
-      "position": { "x": 500, "y": 100 }
+      "figmaNodeId": "1234:5680"
     }
-  ]
+  ],
+  "planningContent": {
+    "businessRules": [...],
+    "decisions": [...],
+    "domainRules": [...],
+    "processingRules": [...],
+    "commonRules": [...],
+    "validationRules": [...],
+    "permissionRules": [...],
+    "stateTransitions": [...],
+    "uiSpecifications": [...],
+    "dataRules": [...],
+    "screenDescriptions": [...]
+  }
 }
 ```
+
+> **CRITICAL:** 기획 텍스트는 **하나도 누락 없이** 추출한다. 카테고리 분류가 모호한 경우에도 `note`로 분류하여 반드시 포함. 짧은 텍스트라도 UI 라벨이 아닌 기획 메모라면 추출해야 한다.
 
 ### 3.5 Design Token Extraction
 
@@ -383,6 +493,225 @@ Each content type uses specific MCP tools for optimal extraction.
 }
 ```
 
+### 3.8 Specification Content Extraction
+
+**Goal:** Figma 프레임에 포함된 기획서·명세서 수준의 상세 텍스트를 구조화하여 추출. § 3.4에서 분류된 `planningContent`를 최종 digest 필드로 정규화한다.
+
+> **왜 별도 전략이 필요한가:** 기업용 시스템 Figma는 단순 UI 디자인 도구가 아닌 **기획 문서** 역할을 겸한다. 한 페이지에 화면 설계 + 비즈니스 규칙 + 처리방법 + 결정사항 + 공통규칙이 혼재한다. 이 모든 기획 정보가 downstream(SRS, Screen Spec, Wireframe)에서 활용되려면 digest 단계에서 빠짐없이 구조화되어야 한다.
+
+**의존:** § 3.4 Annotation & Planning Content Extraction 결과 사용
+
+#### 3.8.1 Business Rules (비즈니스 규칙)
+
+조건부 로직, 계산식, 판단 기준 등 시스템이 수행하는 비즈니스 로직.
+
+```json
+{
+  "id": "BR-001",
+  "title": "연체이자 계산",
+  "description": "연체이자 = 미납금액 × 일이율(0.025%) × 연체경과일수. 소수점 이하 절사.",
+  "condition": "납부기한 경과 시",
+  "action": "연체이자 자동 산정 후 다음 청구에 합산",
+  "scope": "screen",
+  "relatedScreens": ["S2030101"],
+  "figmaNodeId": "2791:66100",
+  "figmaUrl": "https://www.figma.com/design/...?node-id=2791-66100"
+}
+```
+
+#### 3.8.2 Decisions (결정사항)
+
+기획/설계 과정에서 확정된 의사결정. 대안과 선택 이유 포함.
+
+```json
+{
+  "id": "DEC-001",
+  "title": "OAuth2 인증 방식 채택",
+  "description": "자체 인증 대신 OAuth2 방식으로 확정",
+  "rationale": "보안 감사 요구사항 충족 + SSO 확장성",
+  "decidedAt": "2026-03-15",
+  "alternatives": ["자체 JWT 인증", "SAML"],
+  "relatedScreens": ["S1010101"],
+  "figmaNodeId": "1234:5680"
+}
+```
+
+#### 3.8.3 Domain Rules (도메인 규칙)
+
+해당 도메인(업종/업무)에 특화된 규칙. 상태 체계, 코드 분류, 업무 용어 정의 등.
+
+```json
+{
+  "id": "DR-001",
+  "title": "상조 계약 상태 체계",
+  "description": "계약 라이프사이클: 가입상담 → 계약체결 → 납부중 → 만기완료. 예외: 해약(중도), 연체(조건부)",
+  "domain": "계약관리 > 상조",
+  "type": "state-system",
+  "states": ["가입상담", "계약체결", "납부중", "만기완료", "해약", "연체"],
+  "relatedScreens": ["S2030101", "S2030201"],
+  "figmaNodeId": "2791:66150"
+}
+```
+
+#### 3.8.4 Processing Rules (처리 규칙)
+
+데이터 처리 절차, 배치 처리 로직, 연쇄 API 호출 등.
+
+```json
+{
+  "id": "PR-001",
+  "title": "선불상조 가입상담 → 계약 전환 처리",
+  "trigger": "상담사가 '계약전환' 버튼 클릭",
+  "steps": [
+    "1. 가입상담 정보 유효성 검증",
+    "2. 중복 계약 체크 (동일 고객 + 동일 상품)",
+    "3. 계약 생성 (상태: 계약체결)",
+    "4. 상담 건 상태 → '전환완료'로 변경",
+    "5. 담당 모집인에게 알림 발송"
+  ],
+  "errorHandling": "중복 계약 발견 시 모달로 기존 계약 정보 표시, 강제 진행 여부 확인",
+  "relatedScreens": ["S2030101"],
+  "figmaNodeId": "2791:66200"
+}
+```
+
+#### 3.8.5 Common Rules (공통 규칙)
+
+여러 화면에 일괄 적용되는 전역 규칙.
+
+```json
+{
+  "id": "CMR-001",
+  "title": "금액 필드 표시 규칙",
+  "description": "모든 금액 필드는 천단위 콤마 표시, 음수는 빨간색, 단위(원) 접미",
+  "applicableScreens": "all",
+  "figmaNodeId": "2791:66050"
+}
+```
+
+#### 3.8.6 State Transitions (상태 전이)
+
+엔티티의 상태 전이 매트릭스. Figma에서 상태 라벨 그룹/매트릭스로 시각화된 것을 구조화.
+
+```json
+{
+  "entity": "상조계약",
+  "states": ["가입상담", "계약체결", "1회차납부", "납부중", "만기완료", "해약", "연체"],
+  "transitions": [
+    { "from": "가입상담", "to": "계약체결", "trigger": "계약전환 처리", "condition": "상담 유효성 통과" },
+    { "from": "계약체결", "to": "1회차납부", "trigger": "첫 납부 완료", "condition": null },
+    { "from": "납부중", "to": "연체", "trigger": "납부기한 N일 경과", "condition": "자동 배치" },
+    { "from": "연체", "to": "납부중", "trigger": "연체금 완납", "condition": null },
+    { "from": "납부중", "to": "해약", "trigger": "해약 신청 + 팀장 승인", "condition": "환급금 정산 완료" }
+  ],
+  "relatedScreens": ["S2030101", "S2030201"],
+  "figmaNodeId": "2117917190"
+}
+```
+
+#### 3.8.7 Validation Rules (검증 규칙)
+
+필드별 유효성 검증 규칙. 단순 required 외에 교차 검증, 조건부 필수, 비즈니스 검증.
+
+```json
+{
+  "id": "VR-001",
+  "field": "해약사유",
+  "rule": "conditionalRequired",
+  "condition": "계약상태 == '해약'",
+  "message": "해약 처리 시 해약사유는 필수",
+  "relatedScreens": ["S2030201"],
+  "figmaNodeId": "2791:66300"
+}
+```
+
+#### 3.8.8 Permission Rules (권한 규칙)
+
+역할 기반 접근 제어, 기능별 권한 제한.
+
+```json
+{
+  "id": "PMR-001",
+  "title": "해약 처리 권한",
+  "description": "해약 처리는 팀장(TL) 이상 직급만 실행 가능. 일반 상담사는 해약 신청만 가능.",
+  "roles": ["TL", "Manager", "Admin"],
+  "action": "계약 해약 처리",
+  "relatedScreens": ["S2030201"],
+  "figmaNodeId": "2791:66350"
+}
+```
+
+#### 3.8.9 UI Specifications (UI 상세 사양)
+
+컴포넌트 동작 방식, 조건부 표시/숨김, 기본값, 자동계산 등 UI 동작 명세.
+
+```json
+{
+  "id": "UI-001",
+  "title": "해약사유 필드 조건부 표시",
+  "description": "계약상태가 '해약'일 때만 해약사유 셀렉트박스와 해약일자 필드 표시. 그 외 상태에서는 숨김.",
+  "type": "conditional-visibility",
+  "condition": "contractStatus == 'CANCEL'",
+  "affectedComponents": ["해약사유 Select", "해약일자 DatePicker"],
+  "relatedScreens": ["S2030201"],
+  "figmaNodeId": "2791:66400"
+}
+```
+
+#### 3.8.10 Data Rules (데이터 규칙)
+
+기본값, 자동계산, 참조 데이터, 연계 조회 등.
+
+```json
+{
+  "id": "DAT-001",
+  "title": "담당자 기본값 자동 설정",
+  "description": "신규 계약 등록 시 담당자 필드는 로그인 사용자로 자동 세팅. 변경 가능.",
+  "type": "auto-fill",
+  "field": "담당자",
+  "defaultValue": "currentUser",
+  "editable": true,
+  "relatedScreens": ["S2030201"],
+  "figmaNodeId": "2791:66450"
+}
+```
+
+#### 3.8.11 Screen Descriptions (화면별 상세 설명)
+
+화면 목적, 업무 컨텍스트, 화면 간 관계, 사용 시나리오 등 화면별 기획 설명.
+
+```json
+{
+  "code": "S2030101",
+  "name": "선불상조 가입조회 현황",
+  "kind": "list",
+  "description": "선불상조 가입상담 신청 건을 포함한 상조 계약을 종합 조회하는 화면. 가입상담 → 가입조회 현황 기반의 캠페인 실행 현황/결과와 연계.",
+  "purpose": "계약 라이프사이클 전체 상태를 한 화면에서 모니터링하며, 상담사별 실적·전환율 추적",
+  "searchContext": "가입상담(선계약) → 계약 체결 → 납부 중 → 만기/해약 단계별 조회",
+  "linkedScreens": [
+    { "code": "S2030201", "name": "계약 상세", "relation": "행 클릭 → 상세 이동" },
+    { "code": "S2030301", "name": "캠페인 실행 현황", "relation": "탭 전환" }
+  ],
+  "figmaUrl": "https://www.figma.com/design/FK8YQNPvK7A504JxRhHeB1?node-id=2791-66049",
+  "figmaNodeId": "2791:66049"
+}
+```
+
+#### 3.8.12 Extraction Priority
+
+텍스트 추출 시 아래 우선순위를 따른다:
+
+| Priority | Category | Reason |
+|---|---|---|
+| 1 | `business-rule`, `processing-rule` | 개발 시 로직 구현에 직접 필요 |
+| 2 | `state-transition`, `domain-rule` | 데이터 모델·상태 설계에 필수 |
+| 3 | `validation-rule`, `permission-rule` | 보안·무결성에 영향 |
+| 4 | `ui-specification`, `data-rule` | UI 구현 상세 |
+| 5 | `decision`, `common-rule` | 설계 근거·전역 정책 |
+| 6 | `screen-description`, `note` | 컨텍스트·참고 |
+
+> **모든 카테고리는 누락 없이 추출한다.** 우선순위는 분류 모호 시 상위 카테고리 우선 적용을 위한 것이지 하위 카테고리 생략을 의미하지 않는다.
+
 ## 4. Analysis Pipeline
 
 ### 4.1 Full Pipeline (Ingest Context)
@@ -412,14 +741,23 @@ When a Figma link is processed during `/u-ingest`:
    ├─ screen-design → § 3.1
    ├─ screen-planning → § 3.2
    ├─ diagram → § 3.3
-   ├─ annotation → § 3.4
+   ├─ annotation & planning content → § 3.4 (모든 텍스트 수집 + 카테고리 분류)
    ├─ design-tokens → § 3.5
    ├─ assets → § 3.6
    └─ prototype → § 3.7
 
+4b. Specification Structuring (§ 3.8)
+   ├─ § 3.4의 planningContent를 정규화
+   ├─ businessRules, decisions, domainRules, processingRules 등 구조화
+   ├─ screenDescriptions에 화면별 상세 설명 매핑
+   ├─ stateTransitions 매트릭스 구성
+   └─ 공간적 연관으로 화면↔규칙 매핑
+
 5. Digest Generation
-   ├─ Map extractions to digest schema fields
+   ├─ Map extractions to digest schema fields (§ 4.3 확장 포맷)
    ├─ Cross-reference related extractions
+   ├─ screenDescriptions ↔ businessRules ↔ stateTransitions 간 상호참조
+   ├─ Set figmaMeta.figmaUrl (deep link with node-id) and figmaMeta.figmaFileUrl
    └─ Write digest.json (§ 4.3)
 
 6. Index Update
@@ -470,7 +808,7 @@ When Figma is analyzed during `/u-design` (design system generation):
 
 ### 4.3 Digest Output Format
 
-Figma-sourced digests follow the standard `digest.schema.json` with extended metadata:
+Figma-sourced digests follow the standard `digest.schema.json` with extended metadata. **기업용 시스템 Figma에서는 `planningContent` 블록이 digest의 핵심**으로, 비즈니스 로직·도메인 규칙·처리방법 등 화면기획서 수준의 상세 정보를 구조화하여 보존한다.
 
 ```json
 {
@@ -485,37 +823,255 @@ Figma-sourced digests follow the standard `digest.schema.json` with extended met
     "nodeName": "Login Screen Spec",
     "pageId": "0:1",
     "pageName": "Screens",
-    "contentTypes": ["screen-design", "annotation", "prototype"],
+    "figmaUrl": "https://www.figma.com/design/abc123/Project-Design?node-id=1234:5678",
+    "figmaFileUrl": "https://www.figma.com/design/abc123/Project-Design",
+    "contentTypes": ["screen-design", "annotation", "specification", "prototype"],
     "screenshotPath": "data/digest/_screenshots/abc123_1234-5678.png"
   },
-  "summary": "Login screen design with OAuth2 authentication flow...",
-  "keywords": ["login", "authentication", "OAuth2", "form validation"],
+  "domain": "계약관리 > 상조 계약관리 > 상조 계약조회",
+  "summary": "선불상조 가입상담 신청 건을 포함한 상조 계약을 종합 조회...",
+  "keywords": ["상조", "계약관리", "가입상담", "캠페인", "계약상태"],
+
+  "screenDescriptions": [
+    {
+      "code": "S2030101",
+      "name": "선불상조 가입조회 현황",
+      "kind": "list",
+      "description": "선불상조 가입상담 신청 건을 포함한 상조 계약을 종합 조회. 캠페인 실행 현황/결과와 연계.",
+      "purpose": "계약 라이프사이클 상태를 모니터링, 상담사별 실적·전환율 추적",
+      "searchContext": "가입상담(선계약) → 계약 체결 → 납부 중 → 만기/해약 단계별 조회",
+      "linkedScreens": [
+        { "code": "S2030201", "name": "B2C계약정보 상세", "relation": "행 클릭 → 상세 전이" },
+        { "code": "S2030301", "name": "캠페인 실행 현황/결과", "relation": "탭 전환" }
+      ],
+      "components": [
+        { "name": "검색 조건 영역", "type": "Form.Horizontal", "fields": ["기간", "상태", "담당자", "캠페인"] },
+        { "name": "가입조회 그리드", "type": "Table.Sortable", "columns": ["계약번호", "고객명", "상태", "납부현황", "담당자"] },
+        { "name": "상태 매트릭스", "type": "StatCard", "description": "계약 상태별 건수 시각화" }
+      ],
+      "figmaUrl": "https://www.figma.com/design/FK8YQNPvK7A504JxRhHeB1?node-id=2791-66049",
+      "figmaNodeId": "2791:66049"
+    }
+  ],
+
+  "businessRules": [
+    {
+      "id": "BR-001",
+      "title": "연체이자 계산",
+      "description": "연체이자 = 미납금액 × 일이율(0.025%) × 연체경과일수. 소수점 이하 절사.",
+      "condition": "납부기한 경과 시",
+      "action": "연체이자 자동 산정 후 다음 청구에 합산",
+      "scope": "screen",
+      "relatedScreens": ["S2030101"],
+      "figmaNodeId": "2791:66100",
+      "figmaUrl": "https://www.figma.com/design/...?node-id=2791-66100"
+    }
+  ],
+
+  "decisions": [
+    {
+      "id": "DEC-001",
+      "title": "캠페인 실적 연계 방식",
+      "description": "캠페인 실행 결과를 계약 목록과 동일 화면 탭으로 통합 표시",
+      "rationale": "상담사가 캠페인→계약 전환을 한 화면에서 추적할 수 있도록",
+      "decidedAt": "2026-03-20",
+      "relatedScreens": ["S2030101"],
+      "figmaNodeId": "2791:66120"
+    }
+  ],
+
+  "domainRules": [
+    {
+      "id": "DR-001",
+      "title": "상조 계약 상태 체계",
+      "description": "계약 라이프사이클: 가입상담 → 계약체결 → 납부중 → 만기완료. 예외: 해약, 연체",
+      "domain": "계약관리 > 상조",
+      "type": "state-system",
+      "states": ["가입상담", "계약체결", "납부중", "만기완료", "해약", "연체"],
+      "relatedScreens": ["S2030101"],
+      "figmaNodeId": "2791:66150"
+    }
+  ],
+
+  "processingRules": [
+    {
+      "id": "PR-001",
+      "title": "가입상담 → 계약 전환 처리",
+      "trigger": "상담사가 '계약전환' 버튼 클릭",
+      "steps": [
+        "1. 가입상담 정보 유효성 검증",
+        "2. 중복 계약 체크 (동일 고객 + 동일 상품)",
+        "3. 계약 생성 (상태: 계약체결)",
+        "4. 상담 건 상태 → '전환완료'로 변경",
+        "5. 담당 모집인에게 알림 발송"
+      ],
+      "errorHandling": "중복 계약 발견 시 모달로 기존 계약 정보 표시, 강제 진행 여부 확인",
+      "relatedScreens": ["S2030101"],
+      "figmaNodeId": "2791:66200"
+    }
+  ],
+
+  "commonRules": [
+    {
+      "id": "CMR-001",
+      "title": "금액 필드 표시 규칙",
+      "description": "모든 금액 필드는 천단위 콤마 표시, 음수는 빨간색, 단위(원) 접미",
+      "applicableScreens": "all",
+      "figmaNodeId": "2791:66050"
+    }
+  ],
+
+  "stateTransitions": [
+    {
+      "entity": "상조계약",
+      "states": ["가입상담", "계약체결", "납부중", "만기완료", "해약", "연체"],
+      "transitions": [
+        { "from": "가입상담", "to": "계약체결", "trigger": "계약전환 처리", "condition": "상담 유효성 통과" },
+        { "from": "납부중", "to": "연체", "trigger": "납부기한 N일 경과", "condition": "자동 배치" },
+        { "from": "연체", "to": "납부중", "trigger": "연체금 완납", "condition": null },
+        { "from": "납부중", "to": "해약", "trigger": "해약 신청 + 팀장 승인", "condition": "환급금 정산 완료" }
+      ],
+      "relatedScreens": ["S2030101", "S2030201"],
+      "figmaNodeId": "2117917190"
+    }
+  ],
+
+  "validationRules": [
+    {
+      "id": "VR-001",
+      "field": "해약사유",
+      "rule": "conditionalRequired",
+      "condition": "계약상태 == '해약'",
+      "message": "해약 처리 시 해약사유는 필수",
+      "relatedScreens": ["S2030201"],
+      "figmaNodeId": "2791:66300"
+    }
+  ],
+
+  "permissionRules": [
+    {
+      "id": "PMR-001",
+      "title": "해약 처리 권한",
+      "description": "해약 처리는 팀장(TL) 이상만 실행 가능",
+      "roles": ["TL", "Manager", "Admin"],
+      "action": "계약 해약 처리",
+      "relatedScreens": ["S2030201"],
+      "figmaNodeId": "2791:66350"
+    }
+  ],
+
+  "uiSpecifications": [
+    {
+      "id": "UI-001",
+      "title": "해약사유 조건부 표시",
+      "description": "해약 상태일 때만 해약사유 셀렉트 + 해약일자 필드 표시",
+      "type": "conditional-visibility",
+      "condition": "contractStatus == 'CANCEL'",
+      "affectedComponents": ["해약사유 Select", "해약일자 DatePicker"],
+      "relatedScreens": ["S2030201"],
+      "figmaNodeId": "2791:66400"
+    }
+  ],
+
+  "dataRules": [
+    {
+      "id": "DAT-001",
+      "title": "담당자 기본값",
+      "description": "신규 계약 등록 시 담당자 = 로그인 사용자 (변경 가능)",
+      "type": "auto-fill",
+      "field": "담당자",
+      "defaultValue": "currentUser",
+      "relatedScreens": ["S2030201"],
+      "figmaNodeId": "2791:66450"
+    }
+  ],
+
   "requirements": [
     {
       "id": "REQ-001",
       "type": "functional",
-      "title": "Email/Password Login",
-      "description": "Extracted from Login form component structure",
+      "title": "상조 계약 종합 조회",
+      "description": "가입상담·계약·납부·해약 전 라이프사이클 단계별 조회",
       "priority": "Must",
-      "figmaSource": "annotation near Password Input"
+      "figmaSource": "screen-design S2030101"
     }
   ],
-  "constraints": ["Password: 8+ chars with special character"],
-  "domainTerms": [],
+  "constraints": [],
+  "domainTerms": [
+    { "term": "선불상조", "definition": "납입 완료 후 서비스 제공받는 상조 상품 형태" },
+    { "term": "모집인", "definition": "상조 가입 상담 담당자 (영업 채널)" }
+  ],
   "stakeholders": [],
   "painPoints": [],
   "workflows": [
     {
-      "name": "Login Flow",
-      "steps": ["Enter credentials", "Validate", "Redirect to Dashboard"],
-      "figmaSource": "prototype reactions"
+      "name": "선불상조 가입조회",
+      "steps": ["검색조건 입력", "가입조회 현황 목록 표시", "행 클릭 → B2C계약정보 상세", "캠페인 실행 현황 탭"],
+      "figmaSource": "diagram extraction"
     }
   ],
-  "designTokens": { ... },
-  "screenSpecs": { ... },
-  "assets": { ... }
+
+  "crossRefs": [
+    { "to": "B2C 계약관리 계약고객조회", "relation": "상세 전이", "figmaPage": "p10" },
+    { "to": "캠페인관리", "relation": "캠페인 실적 연계", "figmaPage": "p17" },
+    { "to": "모집인 관리", "relation": "가입상담 담당자", "figmaPage": "p15" }
+  ],
+
+  "acceptanceHints": [
+    "상조 계약조회는 가입상담·캠페인 실행과 연계되어 상담부터 체결까지 이력 확인 가능",
+    "계약 상태 라벨(정상/연체/해약/최고/상담중 등)은 상태별 컬러·아이콘 기준 통일"
+  ],
+
+  "designTokens": {},
+  "screenSpecs": {},
+  "assets": {}
 }
 ```
+
+### 4.3.1 Digest Field Reference
+
+| Field | Type | Required | Description |
+|---|---|---|---|
+| `figmaMeta` | object | Yes | Figma 원본 메타데이터 (URL, nodeId, contentTypes 등) |
+| `domain` | string | Yes | 도메인 경로 (대분류 > 중분류 > 소분류) |
+| `screenDescriptions` | array | Yes | 화면별 상세 설명 — code, name, kind, purpose, searchContext, components, linkedScreens |
+| `businessRules` | array | Yes* | 비즈니스 규칙 — 계산식, 조건부 로직, 판단 기준 |
+| `decisions` | array | Yes* | 결정사항 — 기획/설계 확정 사항과 근거 |
+| `domainRules` | array | Yes* | 도메인 규칙 — 상태 체계, 코드 분류, 업무 특수 규칙 |
+| `processingRules` | array | Yes* | 처리 규칙 — 절차, 배치, 연쇄 처리 |
+| `commonRules` | array | Yes* | 공통 규칙 — 전역 적용 규칙 |
+| `stateTransitions` | array | Yes* | 상태 전이 매트릭스 — 엔티티별 상태 머신 |
+| `validationRules` | array | Yes* | 검증 규칙 — 교차 검증, 조건부 필수 |
+| `permissionRules` | array | Yes* | 권한 규칙 — 역할 기반 접근 제어 |
+| `uiSpecifications` | array | Yes* | UI 사양 — 조건부 표시, 자동계산, 동작 명세 |
+| `dataRules` | array | Yes* | 데이터 규칙 — 기본값, 참조, 연계 |
+| `crossRefs` | array | Yes* | 타 화면/기능 참조 — 화면 간 이동, 연계 |
+| `acceptanceHints` | array | Yes* | 인수 기준 힌트 — Figma에서 도출한 검증 포인트 |
+| `requirements` | array | Yes* | 기능 요구사항 (기존) |
+| `constraints` | array | Yes* | 제약조건 (기존) |
+| `domainTerms` | array | Yes* | 도메인 용어 (기존) |
+| `workflows` | array | Yes* | 워크플로우 (기존) |
+
+> `*` = 배열이 비어있을 수 있으나 필드 자체는 항상 포함. Figma에 해당 내용이 없으면 빈 배열 `[]`.
+
+### 4.3.2 Planning Content Completeness Rule
+
+> **CRITICAL — 기획 정보 완전성:**
+>
+> Figma 프레임에서 추출 가능한 기획 텍스트는 **하나도 누락 없이** digest에 포함되어야 한다. 이 digest는 SRS, Screen Spec, Wireframe 등 모든 다운스트림 산출물의 **유일한 소스**가 되므로, digest에서 누락된 정보는 이후 단계에서 복구할 수 없다.
+>
+> 추출 완전성 체크리스트:
+> 1. 화면 설명 텍스트 → `screenDescriptions[].description`, `purpose`, `searchContext`
+> 2. 조건/규칙 텍스트 → `businessRules`, `domainRules`, `validationRules`
+> 3. 절차/처리 텍스트 → `processingRules`
+> 4. 상태 라벨/매트릭스 → `stateTransitions`, `domainRules`
+> 5. 권한/역할 텍스트 → `permissionRules`
+> 6. UI 동작 텍스트 → `uiSpecifications`
+> 7. 결정/확정 텍스트 → `decisions`
+> 8. 공통규칙 텍스트 → `commonRules`
+> 9. 데이터 규칙 텍스트 → `dataRules`
+> 10. 화면 간 관계 텍스트 → `crossRefs`, `screenDescriptions[].linkedScreens`
+> 11. 분류 불가 텍스트 → `acceptanceHints` 또는 `screenDescriptions[].description`에 포함
 
 ## 5. MCP Tool Mapping
 

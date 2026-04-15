@@ -297,6 +297,7 @@ The `screens.json` file conforms to `_meta/schemas/doc-companion.schema.json`:
       "priority": "Must",
       "tracedFrom": ["IA-020", "FR-010"],
       "tracedTo": [],
+      "figmaUrl": "https://www.figma.com/design/{file_key}/{file_name}?node-id=1234:5678",
       "path": "/auth/login",
       "category": "Auth",
       "components": [
@@ -386,6 +387,7 @@ Screen items include additional fields beyond the base schema:
 | `srsRefs` | string[] | 관련 FR ID 목록 (Screen Inventory 외 추가 참조) |
 | `ftRefs` | string[] | 관련 FT ID 목록 |
 | `commonRuleRefs` | string[] | 적용되는 공통 규칙 CR ID 목록 |
+| `figmaUrl` | string \| null | Figma 소스 deep link (`?node-id=...`). Figma에서 파생된 화면인 경우 필수 |
 
 These enable downstream tools to scaffold frontend code, generate wireframe diagrams, and maintain traceability automatically.
 

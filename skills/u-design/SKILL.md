@@ -55,8 +55,9 @@ Design phase: generate `docs/{app}/design/` documents (ERD, API, Screens, Design
 1. Load IA page inventory, SRS user stories
 2. Define screen layout, components, API calls, state, validation
 3. Apply ID 10-increment (SC-010, SC-020)
-4. Write `docs/{app}/design/screens.md` + `screens.json`
-5. Update `data/links.json`
+4. **Figma link traceability:** Figma 소스가 있는 화면은 `screens.json` item에 `figmaUrl` (deep link) 포함, `screens.md`에 `> Figma: <url>` 기재
+5. Write `docs/{app}/design/screens.md` + `screens.json`
+6. Update `data/links.json`
 
 ### Step 4: Generate Design System (HTML-First)
 
@@ -66,6 +67,7 @@ Design phase: generate `docs/{app}/design/` documents (ERD, API, Screens, Design
 
 1. Analyze SRS/IA for UI patterns, component needs, brand colors
 1a. **Figma source (if available):** Extract design tokens and component specs from Figma via `u-plan/references/figma-analysis.md` § 4.2 (Design System Context). Figma Variables → CSS custom properties, Paint/Text/Effect styles → token values, Local components → CMP-xxx mapping. Figma actuals override SRS/IA-derived defaults.
+1b. **Figma link traceability:** Figma 소스 URL을 `design-system.json`의 `figmaUrl` 필드에 기록, `design-system.md` 상단에 `> Figma: <url>` 기재. 개별 토큰/컴포넌트도 Figma 프레임 deep link 포함 권장.
 2. Load template: `_meta/templates/design-system.template.html`
 3. Render CSS custom properties in `:root` block with actual token values
 4. Render component styles (`.ds-btn`, `.ds-input`, `.ds-card`, etc.) with token references

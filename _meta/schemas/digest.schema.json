@@ -1,13 +1,18 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "Digest File",
-  "description": "Refined analysis data from raw dropzone files",
+  "description": "Refined analysis data from raw dropzone files. For Figma sources, includes rich planning content (business rules, domain rules, processing rules, etc.) per figma-analysis.md § 3.8, § 4.3.",
   "type": "object",
   "required": ["sourceFile", "sourceHash", "analyzedAt", "summary", "keywords"],
   "properties": {
     "sourceFile": {
       "type": "string",
-      "description": "Relative path from data/dropzone/"
+      "description": "Relative path from data/dropzone/ or figma://{file_key}/{node_id} for Figma sources"
+    },
+    "sourceType": {
+      "type": "string",
+      "enum": ["text", "pdf", "word", "spreadsheet", "image", "vector", "webpage", "structured-data", "presentation", "figma-frame", "figma-file", "figma-page"],
+      "description": "Type of source. figma-frame/figma-file/figma-page for Figma extraction."
     },
     "sourceHash": {
       "type": "string",
@@ -17,12 +22,292 @@
       "type": "string",
       "format": "date-time"
     },
+    "figmaMeta": {
+      "type": "object",
+      "description": "Figma-specific metadata (only for sourceType=figma-*). See figma-analysis.md § 4.3.",
+      "properties": {
+        "fileKey": { "type": "string" },
+        "fileName": { "type": "string" },
+        "nodeId": { "type": "string" },
+        "nodeName": { "type": "string" },
+        "pageId": { "type": "string" },
+        "pageName": { "type": "string" },
+        "figmaUrl": { "type": "string", "format": "uri", "description": "Deep link with node-id" },
+        "figmaFileUrl": { "type": "string", "format": "uri", "description": "File-level link" },
+        "contentTypes": {
+          "type": "array",
+          "items": {
+            "enum": ["screen-design", "screen-planning", "diagram", "annotation", "specification", "design-tokens", "assets", "prototype"]
+          }
+        },
+        "screenshotPath": { "type": "string" }
+      },
+      "required": ["figmaUrl"]
+    },
+    "domain": {
+      "type": "string",
+      "description": "Domain path (e.g., '계약관리 > 상조 계약관리 > 상조 계약조회')"
+    },
     "summary": {
       "type": "string",
       "description": "Concise summary of the source document"
     },
     "keywords": {
       "type": "array",
+      "items": { "type": "string" }
+    },
+    "screenDescriptions": {
+      "type": "array",
+      "description": "Per-screen detailed descriptions extracted from Figma planning content",
+      "items": {
+        "type": "object",
+        "properties": {
+          "code": { "type": "string", "description": "Screen code (e.g., S2030101)" },
+          "name": { "type": "string" },
+          "kind": { "type": "string", "enum": ["list", "form", "detail", "dashboard", "wizard", "modal", "report", "other"] },
+          "description": { "type": "string", "description": "Detailed description of the screen's purpose and behavior" },
+          "purpose": { "type": "string" },
+          "searchContext": { "type": "string", "description": "Business context for list/search screens" },
+          "linkedScreens": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "code": { "type": "string" },
+                "name": { "type": "string" },
+                "relation": { "type": "string" }
+              }
+            }
+          },
+          "components": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": { "type": "string" },
+                "type": { "type": "string" },
+                "fields": { "type": "array", "items": { "type": "string" } },
+                "columns": { "type": "array", "items": { "type": "string" } },
+                "description": { "type": "string" }
+              }
+            }
+          },
+          "figmaUrl": { "type": "string", "format": "uri" },
+          "figmaNodeId": { "type": "string" }
+        },
+        "required": ["name"]
+      }
+    },
+    "businessRules": {
+      "type": "array",
+      "description": "Business logic rules (calculations, conditional logic, decision criteria)",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "title": { "type": "string" },
+          "description": { "type": "string" },
+          "condition": { "type": "string" },
+          "action": { "type": "string" },
+          "scope": { "type": "string", "enum": ["screen", "module", "global"] },
+          "relatedScreens": { "type": "array", "items": { "type": "string" } },
+          "figmaNodeId": { "type": "string" },
+          "figmaUrl": { "type": "string", "format": "uri" }
+        },
+        "required": ["title", "description"]
+      }
+    },
+    "decisions": {
+      "type": "array",
+      "description": "Design/planning decisions with rationale",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "title": { "type": "string" },
+          "description": { "type": "string" },
+          "rationale": { "type": "string" },
+          "decidedAt": { "type": "string" },
+          "alternatives": { "type": "array", "items": { "type": "string" } },
+          "relatedScreens": { "type": "array", "items": { "type": "string" } },
+          "figmaNodeId": { "type": "string" },
+          "figmaUrl": { "type": "string", "format": "uri" }
+        },
+        "required": ["title", "description"]
+      }
+    },
+    "domainRules": {
+      "type": "array",
+      "description": "Domain-specific rules (state systems, code classifications, domain terminology)",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "title": { "type": "string" },
+          "description": { "type": "string" },
+          "domain": { "type": "string" },
+          "type": { "type": "string", "enum": ["state-system", "calculation", "classification", "code-system", "other"] },
+          "states": { "type": "array", "items": { "type": "string" } },
+          "relatedScreens": { "type": "array", "items": { "type": "string" } },
+          "figmaNodeId": { "type": "string" },
+          "figmaUrl": { "type": "string", "format": "uri" }
+        },
+        "required": ["title", "description"]
+      }
+    },
+    "processingRules": {
+      "type": "array",
+      "description": "Processing procedures (step-by-step operations, batch processes, chained API calls)",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "title": { "type": "string" },
+          "trigger": { "type": "string" },
+          "steps": { "type": "array", "items": { "type": "string" } },
+          "errorHandling": { "type": "string" },
+          "relatedScreens": { "type": "array", "items": { "type": "string" } },
+          "figmaNodeId": { "type": "string" },
+          "figmaUrl": { "type": "string", "format": "uri" }
+        },
+        "required": ["title", "steps"]
+      }
+    },
+    "commonRules": {
+      "type": "array",
+      "description": "Globally applicable rules across multiple screens",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "title": { "type": "string" },
+          "description": { "type": "string" },
+          "applicableScreens": {
+            "oneOf": [
+              { "type": "string", "enum": ["all"] },
+              { "type": "array", "items": { "type": "string" } }
+            ]
+          },
+          "figmaNodeId": { "type": "string" },
+          "figmaUrl": { "type": "string", "format": "uri" }
+        },
+        "required": ["title", "description"]
+      }
+    },
+    "stateTransitions": {
+      "type": "array",
+      "description": "Entity state machines (state transition matrices)",
+      "items": {
+        "type": "object",
+        "properties": {
+          "entity": { "type": "string" },
+          "states": { "type": "array", "items": { "type": "string" } },
+          "transitions": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "from": { "type": "string" },
+                "to": { "type": "string" },
+                "trigger": { "type": "string" },
+                "condition": { "type": ["string", "null"] }
+              },
+              "required": ["from", "to"]
+            }
+          },
+          "relatedScreens": { "type": "array", "items": { "type": "string" } },
+          "figmaNodeId": { "type": "string" }
+        },
+        "required": ["entity", "states"]
+      }
+    },
+    "validationRules": {
+      "type": "array",
+      "description": "Field validation rules (cross-field, conditional required, business validation)",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "field": { "type": "string" },
+          "rule": { "type": "string" },
+          "condition": { "type": "string" },
+          "message": { "type": "string" },
+          "relatedScreens": { "type": "array", "items": { "type": "string" } },
+          "figmaNodeId": { "type": "string" }
+        },
+        "required": ["field", "rule"]
+      }
+    },
+    "permissionRules": {
+      "type": "array",
+      "description": "Role-based access control rules",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "title": { "type": "string" },
+          "description": { "type": "string" },
+          "roles": { "type": "array", "items": { "type": "string" } },
+          "action": { "type": "string" },
+          "relatedScreens": { "type": "array", "items": { "type": "string" } },
+          "figmaNodeId": { "type": "string" }
+        },
+        "required": ["title", "description"]
+      }
+    },
+    "uiSpecifications": {
+      "type": "array",
+      "description": "UI behavior specifications (conditional visibility, auto-calculation, default values)",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "title": { "type": "string" },
+          "description": { "type": "string" },
+          "type": { "type": "string", "enum": ["conditional-visibility", "auto-calculation", "default-value", "conditional-enable", "cascade", "other"] },
+          "condition": { "type": "string" },
+          "affectedComponents": { "type": "array", "items": { "type": "string" } },
+          "relatedScreens": { "type": "array", "items": { "type": "string" } },
+          "figmaNodeId": { "type": "string" }
+        },
+        "required": ["title", "description"]
+      }
+    },
+    "dataRules": {
+      "type": "array",
+      "description": "Data handling rules (default values, auto-fill, references, master data)",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "title": { "type": "string" },
+          "description": { "type": "string" },
+          "type": { "type": "string", "enum": ["auto-fill", "reference", "master-data", "calculation", "other"] },
+          "field": { "type": "string" },
+          "defaultValue": { "type": "string" },
+          "editable": { "type": "boolean" },
+          "relatedScreens": { "type": "array", "items": { "type": "string" } },
+          "figmaNodeId": { "type": "string" }
+        },
+        "required": ["title", "description"]
+      }
+    },
+    "crossRefs": {
+      "type": "array",
+      "description": "Cross-references to other screens/features/pages",
+      "items": {
+        "type": "object",
+        "properties": {
+          "to": { "type": "string" },
+          "relation": { "type": "string" },
+          "figmaPage": { "type": "string" }
+        },
+        "required": ["to", "relation"]
+      }
+    },
+    "acceptanceHints": {
+      "type": "array",
+      "description": "Acceptance criteria hints derived from Figma content",
       "items": { "type": "string" }
     },
     "requirements": {
@@ -34,7 +319,8 @@
           "type": { "enum": ["functional", "non-functional"] },
           "title": { "type": "string" },
           "description": { "type": "string" },
-          "priority": { "enum": ["Must", "Should", "Could", "Won't"] }
+          "priority": { "enum": ["Must", "Should", "Could", "Won't"] },
+          "figmaSource": { "type": "string" }
         }
       }
     },
@@ -73,9 +359,22 @@
         "type": "object",
         "properties": {
           "name": { "type": "string" },
-          "steps": { "type": "array", "items": { "type": "string" } }
+          "steps": { "type": "array", "items": { "type": "string" } },
+          "figmaSource": { "type": "string" }
         }
       }
+    },
+    "designTokens": {
+      "type": "object",
+      "description": "Design tokens extracted from Figma (variables, styles, fonts)"
+    },
+    "screenSpecs": {
+      "type": "object",
+      "description": "Screen-design extraction results (component tree, layout)"
+    },
+    "assets": {
+      "type": "object",
+      "description": "Asset inventory (icons, logos, illustrations)"
     }
   }
 }
