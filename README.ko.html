@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>U-MAKER Plugin v3.4.5 — README (Korean)</title>
+<title>U-MAKER Plugin v3.4.9 — README (Korean)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
@@ -311,7 +311,7 @@ code {
 <!-- ==================== Sidebar ==================== -->
 <nav class="sidebar" id="sidebar">
   <div class="sidebar-header">
-    <h2>U-MAKER v3.4.5</h2>
+    <h2>U-MAKER v3.4.9</h2>
     <p>PDCA SSoT Plugin for Claude Code</p>
   </div>
   <div class="sidebar-nav">
@@ -322,7 +322,7 @@ code {
       <li><a href="#pdca" class="nav-link"><span class="nav-num">4</span> PDCA 5-Phase</a></li>
       <li><a href="#pipeline" class="nav-link"><span class="nav-num">5</span> 데이터 파이프라인</a></li>
       <li><a href="#agents" class="nav-link"><span class="nav-num">6</span> 7개 Agents</a></li>
-      <li><a href="#commands" class="nav-link"><span class="nav-num">7</span> 15개 Commands</a></li>
+      <li><a href="#commands" class="nav-link"><span class="nav-num">7</span> 16개 Commands</a></li>
       <li><a href="#gate" class="nav-link"><span class="nav-num">8</span> Gate Criteria</a></li>
       <li><a href="#folder" class="nav-link"><span class="nav-num">9</span> 폴더 구조</a></li>
       <li><a href="#scenario" class="nav-link"><span class="nav-num">10</span> 시나리오 가이드</a></li>
@@ -342,17 +342,17 @@ code {
 <!-- ===== 1. Hero ===== -->
 <section id="hero" class="section">
   <div class="hero">
-    <h1>U-MAKER Plugin v3.4.5</h1>
+    <h1>U-MAKER Plugin v3.4.9</h1>
     <p>PDCA 기반 SSoT(Single Source of Truth) Claude Code 플러그인.<br>
     기획 자료를 넣으면, 분석 &rarr; 설계 &rarr; 구현 &rarr; 검증까지 자동으로 수행합니다.</p>
     <div class="hero-badges">
-      <span class="badge"><span class="badge-num">15</span> Skills</span>
+      <span class="badge"><span class="badge-num">16</span> Skills</span>
       <span class="badge"><span class="badge-num">7</span> Agents</span>
       <span class="badge"><span class="badge-num">5</span> PDCA Phases</span>
       <span class="badge"><span class="badge-num">11</span> Gate Criteria</span>
     </div>
     <div class="hero-meta">
-      <span><strong>Version</strong> 3.4.5</span>
+      <span><strong>Version</strong> 3.4.9</span>
       <span><strong>Config</strong> v4.0</span>
       <span><strong>License</strong> Proprietary</span>
       <span><strong>Runtime</strong> Claude Code CLI</span>
@@ -360,7 +360,7 @@ code {
   </div>
   <div class="grid-4" style="margin-top: 24px;">
     <div class="stat-card">
-      <div class="stat-num" style="color:#3b82f6;">15</div>
+      <div class="stat-num" style="color:#3b82f6;">16</div>
       <div class="stat-label">Skills</div>
     </div>
     <div class="stat-card">
@@ -839,10 +839,10 @@ code {
   </div>
 </section>
 
-<!-- ===== 7. Commands (15 Skills) ===== -->
+<!-- ===== 7. Commands (16 Skills) ===== -->
 <section id="commands" class="section">
-  <h2 class="section-title">7. 15개 Commands (Skills)</h2>
-  <p style="margin-bottom:16px; color:#475569;">모든 커맨드는 <code class="code-inline">/u-{name}</code> 형태로 호출됩니다. 12개 사용자 커맨드 + 1개 엔진 + 2개 리포트 스킬로 구성됩니다.</p>
+  <h2 class="section-title">7. 16개 Commands (Skills)</h2>
+  <p style="margin-bottom:16px; color:#475569;">모든 커맨드는 <code class="code-inline">/u-{name}</code> 형태로 호출됩니다. 13개 사용자 커맨드 + 1개 엔진 + 2개 리포트 스킬로 구성됩니다.</p>
 
   <!-- Common options -->
   <h3 style="font-size:14px; font-weight:700; color:#0f172a; margin-bottom:12px;">공통 옵션</h3>
@@ -886,7 +886,7 @@ code {
   </div>
 
   <!-- Lifecycle Skills -->
-  <h3 style="font-size:14px; font-weight:700; color:#0f172a; margin-bottom:12px;">Lifecycle Skills (6)</h3>
+  <h3 style="font-size:14px; font-weight:700; color:#0f172a; margin-bottom:12px;">Lifecycle Skills (7)</h3>
   <div class="table-wrap" style="margin-bottom:24px;">
     <table>
       <thead>
@@ -1052,6 +1052,14 @@ code {
         </tr>
         <tr>
           <td style="text-align:center;">15</td>
+          <td><strong style="color:#0f766e;">/u-createproject</strong></td>
+          <td>v1.0</td>
+          <td><span class="tag tag-setup">Setup</span></td>
+          <td style="font-size:11px;"><code class="code-inline">/u-createproject my-app</code></td>
+          <td>Turborepo + Bun 모노레포 프로젝트 스캐폴딩. u-init 자동 실행 포함</td>
+        </tr>
+        <tr>
+          <td style="text-align:center;">16</td>
           <td><strong style="color:#64748b;">/u-engine</strong></td>
           <td>v4.0</td>
           <td><span class="tag tag-engine">Engine</span></td>
@@ -1367,7 +1375,7 @@ code {
     </div>
     <div class="card">
       <div style="font-size:13px; font-weight:700; color:#0f172a; margin-bottom:4px;">버전 확인</div>
-      <p style="font-size:12px; color:#64748b;">u-maker.config.json &rarr; version: 3.4.5</p>
+      <p style="font-size:12px; color:#64748b;">u-maker.config.json &rarr; version: 3.4.9</p>
     </div>
   </div>
 
@@ -1476,7 +1484,7 @@ code {
 
 <!-- Footer -->
 <footer style="margin-top:40px; padding-top:24px; border-top:1px solid #e2e8f0; text-align:center; font-size:12px; color:#94a3b8;">
-  U-MAKER Plugin v3.4.5 &mdash; Copyright &copy; 2026 U PLEAT
+  U-MAKER Plugin v3.4.9 &mdash; Copyright &copy; 2026 U PLEAT
 </footer>
 
 </main>

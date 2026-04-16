@@ -1,10 +1,10 @@
-# U-MAKER Plugin v3.4.5
+# U-MAKER Plugin v3.4.9
 
 PDCA-based SSoT(Single Source of Truth) plugin for Claude Code.
 
 Drop planning materials, and it automatically performs analysis → design → implementation → verification.
 
-**15 Skills** (12 user-facing + 1 engine + 2 reports) · **7 Agents** · **5 PDCA Phases** · **11 Gate Criteria** (configurable via `--loop [N]`, default 5)
+**16 Skills** (13 user-facing + 1 engine + 2 reports) · **7 Agents** · **5 PDCA Phases** · **11 Gate Criteria** (configurable via `--loop [N]`, default 5)
 
 ## Documentation
 
@@ -20,7 +20,10 @@ Drop planning materials, and it automatically performs analysis → design → i
 # Install
 claude plugin add upleat-ax/u-maker-plugin
 
-# Initialize project
+# Create new monorepo project
+/u-createproject my-app
+
+# Or initialize in existing directory
 /u-init my-app
 
 # Drop files into .u-maker/data/dropzone/ then:

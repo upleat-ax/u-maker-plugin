@@ -90,6 +90,24 @@ Design phase: generate `docs/{app}/design/` documents (ERD, API, Screens, Design
 2. If avg score < 95 → improvement list → re-execute failed steps
 3. Max 3 retries
 
+### Step 6: Completion & Next Step Guide
+
+Design phase 완료 후 아래 안내를 출력한다:
+
+```
+✅ Design phase completed.
+  Generated: ERD, API Contract, Screen Specification, Design System
+
+🔜 Next Step:
+  /u-wireframe --app {app} --all
+  → Screen Specification 기반으로 화면별 HTML 와이어프레임을 생성합니다.
+  → 각 화면의 목업 UI, 어노테이션, ERD 매핑, Sequence Diagram, Screen Flow가 포함됩니다.
+
+  이후:
+  /u-dev --app {app}      → FE + BE 코드 생성
+  /u-check --app {app}    → 테스트 케이스 + 결과
+```
+
 ## Reference Files
 
 - **`references/erd-spec.md`** — Entity derivation, Mermaid erDiagram rules, constraint syntax
