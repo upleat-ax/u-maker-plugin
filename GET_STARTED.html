@@ -621,13 +621,13 @@
       </div>
 
       <!-- ═══════════════════════════════════════════════════════════ -->
-      <!--  PART 6. 명령어 치트시트 (15 Skills)                       -->
+      <!--  PART 6. 명령어 치트시트 (16 Skills)                       -->
       <!-- ═══════════════════════════════════════════════════════════ -->
-      <div class="section-divider" id="cheatsheet"><h2>06. 명령어 치트시트 (15 Skills)</h2></div>
-      <p class="section-desc">12개 사용자 호출 스킬 + 1개 엔진 스킬 + 2개 리포트 스킬 = 총 15개</p>
+      <div class="section-divider" id="cheatsheet"><h2>06. 명령어 치트시트 (16 Skills)</h2></div>
+      <p class="section-desc">13개 사용자 호출 스킬 + 1개 엔진 스킬 + 2개 리포트 스킬 = 총 16개</p>
 
       <!-- User-facing Skills -->
-      <h3 style="font-size:14px;font-weight:700;margin:20px 0 8px;color:var(--text)">사용자 호출 스킬 (12)</h3>
+      <h3 style="font-size:14px;font-weight:700;margin:20px 0 8px;color:var(--text)">사용자 호출 스킬 (13)</h3>
       <div class="data-table-wrap">
         <table class="data-table">
           <thead><tr><th style="width:150px">Command</th><th>설명</th><th>예제</th></tr></thead>
@@ -636,6 +636,11 @@
               <td class="col-abbr">/u-init</td>
               <td class="col-desc">프로젝트 초기화. <code>.u-maker/</code> 구조 생성, config 초기화, 모노레포 감지</td>
               <td><code>/u-init my-saas</code><br><code>/u-init --migrate</code></td>
+            </tr>
+            <tr>
+              <td class="col-abbr">/u-createproject</td>
+              <td class="col-desc">Turborepo + Bun 모노레포 프로젝트 스캐폴딩. workspace 공유 설정, u-init 자동 실행 포함</td>
+              <td><code>/u-createproject my-app</code></td>
             </tr>
             <tr>
               <td class="col-abbr">/u-plan</td>

@@ -451,6 +451,7 @@ a:hover{text-decoration:underline}
 <thead><tr><th>Command</th><th>Version</th><th>Description</th><th>Example</th></tr></thead>
 <tbody>
 <tr><td><code>/u-init</code></td><td>v4.0</td><td>Project initialization. Creates <code>.u-maker/</code> structure, initializes config, registers app. Supports <code>--migrate</code> for version upgrades</td><td><code>/u-init my-project</code></td></tr>
+<tr><td><code>/u-createproject</code></td><td>v1.0</td><td>Scaffold a Turborepo + Bun monorepo project. Runs u-init automatically</td><td><code>/u-createproject my-app</code></td></tr>
 <tr><td><code>/u-plan</code></td><td>v4.0</td><td>dropzone &rarr; digest &rarr; SRS + IA + Roadmap chain generation. Includes ingest functionality</td><td><code>/u-plan my-app -i</code></td></tr>
 <tr><td><code>/u-design</code></td><td>v4.0</td><td>SRS/IA &rarr; ERD, API Contract, Screen Spec, Design System, ScreenFlow, RTM</td><td><code>/u-design my-app --only erd</code></td></tr>
 <tr><td><code>/u-dev</code></td><td>v4.0</td><td>ERD/API/Screens &rarr; FE + BE + DB code generation. <code>--only fe|be|db</code></td><td><code>/u-dev my-app --only fe</code></td></tr>
@@ -795,7 +796,7 @@ a:hover{text-decoration:underline}
 &#x2502;   &#x251C;&#x2500;&#x2500; u-agent-qa.md
 &#x2502;   &#x251C;&#x2500;&#x2500; u-agent-gatekeeper.md
 &#x2502;   &#x2514;&#x2500;&#x2500; u-agent-report.md
-&#x251C;&#x2500;&#x2500; skills/                           # 15 skills (12 user-facing + 1 engine + 2 reports)
+&#x251C;&#x2500;&#x2500; skills/                           # 16 skills (13 user-facing + 1 engine + 2 reports)
 &#x2502;   &#x2514;&#x2500;&#x2500; u-*/SKILL.md
 &#x251C;&#x2500;&#x2500; hooks/                            # Event hooks
 &#x2502;   &#x251C;&#x2500;&#x2500; hooks.json
