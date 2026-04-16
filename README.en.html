@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>U-MAKER Plugin v3.4.9 Documentation</title>
+<title>U-MAKER Plugin v3.4.10 Documentation</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{--sidebar-w:280px;--bg:#ffffff;--sidebar-bg:#ffffff;--main-bg:#ffffff;--text:#334155;--text-main:#334155;--heading:#0f172a;--accent:#3b82f6;--accent-hover:#2563eb;--code-bg:#f1f5f9;--code-text:#1e293b;--border:#e2e8f0;--active-bg:#f8fafc;--badge-bg:#e2e8f0;--badge-text:#64748b;--table-stripe:#f8fafc;--table-border:#e2e8f0;--table-header:#f1f5f9}
@@ -110,7 +110,7 @@ a:hover{text-decoration:underline}
 <nav class="sidebar" id="sidebar">
   <div class="sidebar-header">
     <h1>U-MAKER</h1>
-    <p>v3.4.9 &mdash; Plugin Documentation</p>
+    <p>v3.4.10 &mdash; Plugin Documentation</p>
   </div>
   <div class="sidebar-nav">
 
@@ -149,7 +149,7 @@ a:hover{text-decoration:underline}
     </div>
 
   </div>
-  <div class="sidebar-footer">Proprietary &copy; 2026 U PLEAT &middot; v3.4.9</div>
+  <div class="sidebar-footer">Proprietary &copy; 2026 U PLEAT &middot; v3.4.10</div>
 </nav>
 
 <main class="main">
@@ -175,27 +175,25 @@ a:hover{text-decoration:underline}
 <h2 id="tldr">1. TL;DR</h2>
 
 <h3>Forward Engineering (New Project)</h3>
-<pre><code><span class="comment"># 1. Install the plugin</span>
-<span class="cmd">claude plugin add upleat-ax/u-maker-plugin</span>
+<pre><code><span class="comment"># A. Starting a brand new project → /u-createproject</span>
+<span class="cmd">/u-createproject my-app</span>          <span class="comment"># Scaffold monorepo + auto-runs u-init</span>
 
-<span class="comment"># 2. Restart Claude Code, then initialize your project</span>
-<span class="cmd">/u-init my-app</span>                <span class="comment"># Create .u-maker/ structure + register app</span>
+<span class="comment"># B. Adding U-MAKER to an existing project → /u-init</span>
+<span class="cmd">/u-init my-app</span>                   <span class="comment"># Add .u-maker/ structure to existing project</span>
 
-<span class="comment"># 3. Collect data &rarr; Analyze &rarr; Plan</span>
-<span class="comment"># Drop RFP, meeting notes, AS-IS materials into .u-maker/_dropzone/</span>
-<span class="cmd">/u-plan my-app</span>               <span class="comment"># dropzone &rarr; digest &rarr; SRS + IA + Roadmap</span>
+<span class="comment"># Then follow the common pipeline</span>
+<span class="cmd">/u-plan my-app</span>                   <span class="comment"># dropzone → digest → SRS + IA</span>
+<span class="cmd">/u-design my-app</span>                 <span class="comment"># SRS/IA → ERD + API + Screen + Design System</span>
+<span class="cmd">/u-wireframe --app my-app --all</span>  <span class="comment"># Screen → HTML wireframes</span>
+<span class="cmd">/u-dev my-app</span>                    <span class="comment"># ERD/API/Screens → FE + BE + DB code</span>
+<span class="cmd">/u-check my-app</span>                  <span class="comment"># SRS FT → Test Cases + Test Results</span>
 
-<span class="comment"># 4. Design &rarr; Implement &rarr; Verify</span>
-<span class="cmd">/u-design my-app</span>             <span class="comment"># SRS/IA &rarr; ERD + API + Screen + Flow + RTM</span>
-<span class="cmd">/u-dev my-app</span>                <span class="comment"># ERD/API/Screens &rarr; FE + BE + DB code</span>
-<span class="cmd">/u-check my-app</span>              <span class="comment"># SRS FT &rarr; Test Cases + Test Results</span>
+<span class="comment"># Or run all phases unattended</span>
+<span class="cmd">/u-loop my-app</span></code></pre>
 
-<span class="comment"># 5. Ship + Retrospective</span>
-<span class="cmd">/u-ship my-app</span>               <span class="comment"># Final verification + iteration log + retrospective</span></code></pre>
-
-<h3>Reverse Engineering (Existing Project)</h3>
-<pre><code><span class="cmd">/u-init my-app</span>                <span class="comment"># Initialize project</span>
-<span class="cmd">/u-reverse --app my-app</span>       <span class="comment"># Existing code &rarr; SSoT reverse engineering</span></code></pre>
+<h3>Reverse Engineering (Existing Codebase)</h3>
+<pre><code><span class="cmd">/u-init my-app</span>                   <span class="comment"># Initialize .u-maker/ structure first</span>
+<span class="cmd">/u-reverse --app my-app</span>          <span class="comment"># Existing code → SSoT reverse engineering</span></code></pre>
 
 <h3>Natural Language Also Works</h3>
 <pre><code><span class="comment">"Create SRS for my-app"</span>           <span class="comment"># U-MAKER router auto-dispatches to /u-plan</span>
@@ -783,11 +781,11 @@ a:hover{text-decoration:underline}
 <span class="cmd">curl.exe -fsSL --ssl-no-revoke https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/install.bat -o install.bat; .\install.bat; del install.bat</span></code></pre>
 
 <h3>Migration from Previous Version</h3>
-<pre><code><span class="cmd">/u-init my-project --migrate</span>    <span class="comment"># Upgrades .u-maker/ structure to v3.4.9</span></code></pre>
+<pre><code><span class="cmd">/u-init my-project --migrate</span>    <span class="comment"># Upgrades .u-maker/ structure to v3.4.10</span></code></pre>
 
 <h3>Plugin Repository Layout</h3>
 <pre><code>u-maker-plugin/
-&#x251C;&#x2500;&#x2500; .claude-plugin/plugin.json        # v3.4.9
+&#x251C;&#x2500;&#x2500; .claude-plugin/plugin.json        # v3.4.10
 &#x251C;&#x2500;&#x2500; agents/                           # 7 agent definitions
 &#x2502;   &#x251C;&#x2500;&#x2500; u-agent-pm.md
 &#x2502;   &#x251C;&#x2500;&#x2500; u-agent-plan.md
@@ -843,7 +841,7 @@ a:hover{text-decoration:underline}
 
 <!-- Footer -->
 <div class="footer">
-  <strong>U-MAKER Plugin</strong> v3.4.9 &mdash; PDCA-based SSoT Collaboration Orchestrator<br>
+  <strong>U-MAKER Plugin</strong> v3.4.10 &mdash; PDCA-based SSoT Collaboration Orchestrator<br>
   Proprietary &copy; 2026 U PLEAT &middot; All rights reserved
 </div>
 

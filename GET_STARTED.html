@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>U-MAKER v3.4.9 — Get Started Guide</title>
+<title>U-MAKER v3.4.10 — Get Started Guide</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;800&display=swap');
 
@@ -234,7 +234,7 @@
   <aside class="sidebar">
     <div class="sidebar-header">
       <h2>Get Started</h2>
-      <p>U-MAKER v3.4.9 Guide</p>
+      <p>U-MAKER v3.4.10 Guide</p>
     </div>
     <ul class="sidebar-nav">
       <li><a href="#what"><span class="nav-icon">01</span>U-MAKER란?</a></li>
@@ -250,7 +250,7 @@
       <li><a href="#faq"><span class="nav-icon">11</span>FAQ</a></li>
       <li><a href="#next"><span class="nav-icon">12</span>다음 단계</a></li>
     </ul>
-    <div class="sidebar-footer">U-MAKER Plugin v3.4.9 &middot; Get Started</div>
+    <div class="sidebar-footer">U-MAKER Plugin v3.4.10 &middot; Get Started</div>
   </aside>
 
   <!-- ═══════════════ MAIN CONTENT ═══════════════ -->
@@ -262,7 +262,7 @@
         <h1>U-MAKER 시작하기</h1>
         <p>핵심 개념부터 전체 명령어, 실전 시나리오까지 단계별로 안내합니다.<br>전체 레퍼런스는 <a href="README.ko.html">README</a>를 참고하세요.</p>
         <div class="doc-meta">
-          <div class="doc-meta-item"><strong>Version</strong> &nbsp;3.4.9</div>
+          <div class="doc-meta-item"><strong>Version</strong> &nbsp;3.4.10</div>
           <div class="doc-meta-item"><strong>Config</strong> &nbsp;v4.0</div>
           <div class="doc-meta-item"><strong>Skills</strong> &nbsp;16</div>
           <div class="doc-meta-item"><strong>Agents</strong> &nbsp;7</div>
@@ -448,7 +448,7 @@
         <ul>
           <li>Claude Code CLI가 설치되어 있어야 합니다</li>
           <li>인터넷 연결 필요 (플러그인 다운로드 시)</li>
-          <li>설치 후 <code>/u-init</code>으로 프로젝트를 초기화해야 동작합니다</li>
+          <li>새 프로젝트는 <code>/u-createproject</code>, 기존 프로젝트는 <code>/u-init</code>으로 시작합니다</li>
         </ul>
       </div>
 
@@ -464,8 +464,12 @@
 
       <div class="timeline">
         <div class="timeline-item">
-          <div class="timestamp">Step 1 &mdash; 초기화</div>
-          <p><code>/u-init my-saas</code> &mdash; .u-maker/ 구조 생성, u-maker.config.json 초기화</p>
+          <div class="timestamp">Step 1A &mdash; 새 프로젝트 시작</div>
+          <p><code>/u-createproject my-saas</code> &mdash; Turborepo+Bun 모노레포 스캐폴딩 + .u-maker/ 자동 초기화 (u-init 포함)</p>
+        </div>
+        <div class="timeline-item">
+          <div class="timestamp">Step 1B &mdash; 기존 프로젝트에 적용</div>
+          <p><code>/u-init my-saas</code> &mdash; 이미 코드가 있는 프로젝트에 .u-maker/ 구조만 추가</p>
         </div>
         <div class="timeline-item">
           <div class="timestamp">Step 2 &mdash; 자료 수집</div>
@@ -951,7 +955,7 @@
 
       <!-- ────────── Footer ────────── -->
       <div class="report-footer">
-        U-MAKER Plugin v3.4.9 &middot; Config v4.0 &middot; Proprietary &middot; Copyright &copy; 2026 U PLEAT
+        U-MAKER Plugin v3.4.10 &middot; Config v4.0 &middot; Proprietary &middot; Copyright &copy; 2026 U PLEAT
       </div>
 
     </div>

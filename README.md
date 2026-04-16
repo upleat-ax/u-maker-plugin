@@ -1,4 +1,4 @@
-# U-MAKER Plugin v3.4.9
+# U-MAKER Plugin v3.4.10
 
 PDCA-based SSoT(Single Source of Truth) plugin for Claude Code.
 
@@ -20,15 +20,16 @@ Drop planning materials, and it automatically performs analysis → design → i
 # Install
 claude plugin add upleat-ax/u-maker-plugin
 
-# Create new monorepo project
-/u-createproject my-app
+# A. 새 프로젝트를 처음부터 시작할 때 → /u-createproject
+/u-createproject my-app       # Turborepo+Bun 모노레포 스캐폴딩 + u-init 자동 실행
 
-# Or initialize in existing directory
-/u-init my-app
+# B. 이미 코드가 있는 프로젝트에 적용할 때 → /u-init
+/u-init my-app                # 기존 프로젝트에 .u-maker/ 구조만 추가
 
 # Drop files into .u-maker/data/dropzone/ then:
 /u-plan [app]            # SRS + IA
 /u-design [app]          # ERD + API + Screens + Design System
+/u-wireframe [app]       # Screen별 HTML 와이어프레임
 /u-dev [app]             # FE + BE + DB code
 /u-check [app]           # Test Cases + Results
 /u-output [app]          # HTML output generation
