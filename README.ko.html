@@ -390,11 +390,12 @@ code {
   <div class="code-block" style="margin-bottom:20px;">
 <code><span class="comment"># A. 새 프로젝트를 처음부터 시작할 때</span>
 <span class="cmd">/u-createproject</span> myapp          <span class="comment"># 모노레포 스캐폴딩 + u-init 자동 실행</span>
+<span class="comment"># ⚠️ 생성 후: cd myapp && claude  (새 폴더에서 CLI 재시작)</span>
 
 <span class="comment"># B. 이미 코드가 있는 프로젝트에 적용할 때</span>
 <span class="cmd">/u-init</span> myapp                    <span class="comment"># 기존 프로젝트에 .u-maker/ 구조만 추가</span>
 
-<span class="comment"># 이후 공통 흐름</span>
+<span class="comment"># 이후 공통 흐름 (새 프로젝트는 cd 후 진행)</span>
 <span class="cmd">/u-plan</span> <span class="flag">--app</span> myapp             <span class="comment"># dropzone 자료 → SRS + IA</span>
 <span class="cmd">/u-design</span> <span class="flag">--app</span> myapp           <span class="comment"># ERD + API + Screens + Design System</span>
 <span class="cmd">/u-wireframe</span> <span class="flag">--app</span> myapp <span class="flag">--all</span>  <span class="comment"># Screen별 HTML 와이어프레임</span>

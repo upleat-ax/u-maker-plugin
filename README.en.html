@@ -177,11 +177,12 @@ a:hover{text-decoration:underline}
 <h3>Forward Engineering (New Project)</h3>
 <pre><code><span class="comment"># A. Starting a brand new project → /u-createproject</span>
 <span class="cmd">/u-createproject my-app</span>          <span class="comment"># Scaffold monorepo + auto-runs u-init</span>
+<span class="comment"># ⚠️ After creation: cd my-app && claude  (restart CLI in new folder)</span>
 
 <span class="comment"># B. Adding U-MAKER to an existing project → /u-init</span>
 <span class="cmd">/u-init my-app</span>                   <span class="comment"># Add .u-maker/ structure to existing project</span>
 
-<span class="comment"># Then follow the common pipeline</span>
+<span class="comment"># Then follow the common pipeline (for new projects, run after cd)</span>
 <span class="cmd">/u-plan my-app</span>                   <span class="comment"># dropzone → digest → SRS + IA</span>
 <span class="cmd">/u-design my-app</span>                 <span class="comment"># SRS/IA → ERD + API + Screen + Design System</span>
 <span class="cmd">/u-wireframe --app my-app --all</span>  <span class="comment"># Screen → HTML wireframes</span>
