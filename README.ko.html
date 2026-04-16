@@ -1269,7 +1269,11 @@ code {
   <h3 style="font-size:14px; font-weight:700; color:#0f172a; margin-bottom:8px;">A. Forward Engineering (신규 프로젝트)</h3>
   <p style="font-size:13px; color:#64748b; margin-bottom:12px;">원시 기획 자료로부터 전체 산출물을 처음부터 생성하는 시나리오입니다.</p>
   <div class="code-block" style="margin-bottom:24px;">
-<code><span class="comment"># 1. 프로젝트 초기화</span>
+<code><span class="comment"># 1A. 새 프로젝트 시작 (모노레포 스캐폴딩 + u-init 자동 포함)</span>
+<span class="cmd">/u-createproject</span> myapp
+<span class="comment"># ⚠️ 생성 후: cd myapp && claude  (새 폴더에서 CLI 재시작)</span>
+
+<span class="comment"># 1B. 기존 프로젝트에 적용할 때</span>
 <span class="cmd">/u-init</span> <span class="flag">--app</span> myapp
 
 <span class="comment"># 2. dropzone에 기획 자료 배치 (RFP, 회의록, 와이어프레임 등)</span>
