@@ -1159,3 +1159,718 @@ If the Figma file has no Variables or Styles defined (common in early-stage wire
 1. Extract colors from fill properties of rectangles/frames
 2. Extract typography from text node properties
 3. Generate approximate tokens with `"confidence": "inferred"` flag
+
+---
+
+# PART II — Orchestrated Pipeline (v2, 2026-04-18)
+
+> **Relation to PART I (§1–§6):** PART I defines **what** to extract from a single frame (content types, per-type strategies, MCP tools, edge cases). PART II defines **how** to orchestrate extraction across an entire file: enumerating every page/frame/variant, tracking coverage, recovering from failure, and integrating results into `/u-plan` and `/u-design`. PART I stays authoritative for per-frame extraction; PART II supersedes §4.1's file-level pipeline for v2.
+>
+> **User-stated pain priority** (for design trade-offs): missing content (a) > coverage opacity (d) > volume overload (b) > type confusion (c). Within (a): variant/state > page-level > frame-level > comments > nested text > sticky-notes. Every decision below traces back to this ordering.
+
+## 7. Variant / State Detection Algorithm
+
+User's #1 missing-content pain. Four variant sources are detected and **unioned** (not exclusive); every match becomes an independent manifest entry. No variant can slip through manifest construction.
+
+### 7.1 Four variant sources
+
+| Source | Detection | MCP tool |
+|---|---|---|
+| **A. COMPONENT_SET** | `nodeType == "COMPONENT_SET"` — enumerate all child COMPONENTs and their `componentPropertyDefinitions` | `get_local_components`, `scan_nodes_by_types(["COMPONENT_SET","COMPONENT"])` |
+| **B. Naming pattern** | Frame name carries a state suffix (` / `, `·`, ` - `, `_suffix`, `(..)`, `[..]`) | `scan_nodes_by_types(["FRAME"])` + regex |
+| **C. Positional cluster** | Frames sharing an LHS base name, horizontally adjacent (gap < 1.5 × avgWidth), same Y (±50 px) | bbox clustering |
+| **D. Suffix marker** | Frame name ending with `_error`, `-loading`, `(empty)`, `[disabled]`, etc. | regex |
+
+### 7.2 Base/State extraction
+
+```
+function extractBase(frameName):
+    patterns = [
+        /^(.+?)\s*\/\s*(.+)$/,                 # "Login / Error"
+        /^(.+?)\s*·\s*(.+)$/,                  # "Login · Error"
+        /^(.+?)\s*-\s*(.+)$/,                  # "Login - Error"
+        /^(.+?)_(default|hover|pressed|disabled|error|loading|empty|success|focus)$/i,
+        /^(.+?)\s*\((.+)\)$/,                  # "Login (empty)"
+        /^(.+?)\s*\[(.+)\]$/                   # "Login [disabled]"
+    ]
+    for p in patterns:
+        m = frameName.match(p)
+        if m: return { base: m[1].trim(), state: m[2].trim() }
+    return { base: frameName, state: null }
+```
+
+### 7.3 Positional clustering (source C)
+
+```
+function detectPositionalVariants(frames):
+    clusters = groupBy(frames, f => extractBase(f.name).base)
+    for cluster in clusters:
+        if cluster.size < 2: continue
+        sortedByX = sort(cluster.frames, f => f.bbox.x)
+        if areHorizontallyAdjacent(sortedByX) and shareYCoord(sortedByX):
+            markAsVariantSeries(cluster)
+```
+
+### 7.4 Manifest entry — variant is a first-class citizen
+
+```json
+{
+  "nodeId": "5:102",
+  "name": "Login / Error",
+  "variantOf": {
+    "baseName": "Login",
+    "baseNodeId": "5:100",
+    "stateLabel": "Error",
+    "detectionSource": "component-set | naming-pattern | positional | suffix-marker"
+  },
+  "status": "pending",
+  "digestPath": "frames/5-102.digest.json"
+}
+```
+
+### 7.5 Post-scan completeness checks
+
+1. **Component-set completeness**: every COMPONENT_SET must have `variants.length >= 1`. 0 → warning.
+2. **Orphan base**: 2+ frames share an LHS but `variantOf == null` → `coverageWarnings.type = "orphan-base"`.
+3. **State gap**: a base has only `Default` but no `Error|Loading|Empty` → info warning.
+4. **Naming inconsistency**: `/` vs `-` mixed within the same page → warning.
+
+---
+
+## 8. Manifest Schema & Coverage Ledger
+
+Single source of truth for inventory, progress, change detection, and recovery. Per-frame digest files live alongside the manifest (isolated for context safety).
+
+### 8.1 File layout
+
+```
+.u-maker/data/figma/<file_key>/
+  manifest.json                      # inventory + ledger (authoritative)
+  comments.json                      # see §11
+  frames/
+    <node_id>.digest.json
+    <node_id>/                       # dense-frame chunking (§10.3)
+      chunk-<section_id>.digest.json
+  screenshots/
+    <node_id>.png
+  aggregate.json                     # roll-up for downstream
+  _errors/
+    <node_id>.error.json
+```
+
+### 8.2 `manifest.json` schema (v1.0)
+
+```json
+{
+  "schemaVersion": "1.0",
+  "fileKey": "rthR0h9cahAAFfWL1JyAMq",
+  "fileName": "...",
+  "figmaUrl": "https://www.figma.com/design/...",
+  "figmaFileUrl": "https://www.figma.com/design/rthR0h9cahAAFfWL1JyAMq",
+
+  "scan": {
+    "scannedAt": "2026-04-18T10:00:00+09:00",
+    "scannedBy": "u-figma@<version>",
+    "mcpServer": "figma-mcp-go | plugin_figma",
+    "scope": "file | page | frame"
+  },
+
+  "stats": {
+    "totalPages": 15,
+    "totalFrames": 247,
+    "totalComponentSets": 34,
+    "totalVariants": 89,
+    "totalComments": 47,
+    "extractStatus": { "pending": 0, "in_progress": 0, "done": 247, "failed": 0, "skipped": 0 }
+  },
+
+  "pages": [
+    {
+      "pageId": "0:1",
+      "pageName": "01. Wireframes",
+      "pageIndex": 0,
+      "hash": "sha256:...",
+      "frames": [
+        {
+          "nodeId": "1:2",
+          "name": "Login",
+          "nodeType": "FRAME",
+          "bbox": { "x": 0, "y": 0, "w": 1440, "h": 900 },
+          "nodeCount": 89,
+          "textNodeCount": 42,
+          "depth": 6,
+          "variantOf": null,
+          "detectedContentTypes": ["screen-design", "annotation", "specification"],
+          "denseness": "normal | dense | extreme",
+          "hash": "sha256:...",
+          "status": "pending | in_progress | done | failed | skipped",
+          "digestPath": "frames/1-2.digest.json",
+          "screenshotPath": "screenshots/1-2.png",
+          "extractedAt": "...",
+          "extractionAttempts": 1,
+          "errorPath": null,
+          "subFrameChunks": null
+        }
+      ]
+    }
+  ],
+
+  "componentSets": [
+    {
+      "nodeId": "5:100",
+      "name": "Button",
+      "pageId": "p3",
+      "variants": [
+        { "nodeId": "5:101", "label": "Primary/Default", "properties": {"style":"Primary","state":"Default"}, "status": "done" }
+      ]
+    }
+  ],
+
+  "comments": {
+    "source": "rest-api | rest-api+annotations+heuristic | skipped | not-available",
+    "fetchedAt": "...",
+    "counts": { "rest": 47, "devAnnotations": 12, "stickyNotes": 8, "sectionNotes": 23, "merged": 78, "dedupeRemoved": 12 },
+    "unresolved": 12,
+    "path": "comments.json",
+    "patConfigured": true,
+    "warnings": []
+  },
+
+  "coverageWarnings": [
+    { "type": "orphan-base", "baseName": "Dashboard", "frameIds": ["2:10","2:11"], "reason": "..." },
+    { "type": "state-gap", "baseName": "Form", "presentStates": ["Default"], "missingSuspected": ["Error","Loading"] },
+    { "type": "naming-inconsistency", "scope": "p3", "detail": "..." },
+    { "type": "extreme-density", "nodeId": "2791:66049", "nodeCount": 1847 }
+  ],
+
+  "retry": {
+    "maxAttempts": 3,
+    "backoffSeconds": [0, 2, 8]
+  }
+}
+```
+
+### 8.3 Status machine
+
+```
+pending → in_progress → done
+                     ↘ failed  → (retry) → in_progress
+                     ↘ skipped           (--skip)
+```
+
+- `in_progress` entries on process start → reset to `pending` (crash recovery).
+- `done` entries are never overwritten when hash is unchanged.
+
+### 8.4 Change detection (re-run)
+
+- Per-frame `hash = sha256(canonicalize(node_tree))`.
+- Re-run: unchanged → skip; changed → reset to `pending`; new pages/frames → append; removed → mark `removed`.
+- `--refresh` forces full re-extraction.
+
+### 8.5 Atomicity
+
+- `manifest.json` writes are atomic (temp-file → rename).
+- Per-frame progress updates touch only `frames[].status` + `extractedAt`.
+
+### 8.6 User-facing coverage report
+
+```
+Figma: 설계-현진웹-HJW-테스트
+  Pages:          15/15 enumerated
+  Frames:         247 total  (219 primary + 28 variants)
+  Extracted:      ████████████████░░░░  201/247  (81%)
+  Variants:       89/89 (100% — component-set 34 + naming 42 + positional 11 + suffix 2)
+  Comments:       47 via REST + 12 dev-annotations + 8 stickies = 78 (after dedup)
+  Warnings:       3 (orphan-base:1, state-gap:1, naming-inconsistency:1)
+  Failed:         2  → retry? [Y/n]
+```
+
+---
+
+## 9. Command Surface — `/u-figma`
+
+### 9.1 Decision: dedicated command with delegation
+
+- Figma is consumed by multiple phases (plan + design); a flag on `/u-plan` alone is asymmetric.
+- The pipeline has multi-step sub-actions (scan → gate → extract → verify → sync) that flags cannot express cleanly.
+- Consistent with existing `/u-backlog add/sprint/groom` style.
+
+### 9.2 Sub-commands
+
+```
+/u-figma scan <url>     [--scope file|page|frame] [--refresh]
+/u-figma extract <url>  [--page <id>] [--frame <id>] [--retry-failed] [--limit N]
+/u-figma status <url>   [--verbose] [--warnings-only]
+/u-figma verify <url>   [--fix]
+/u-figma sync <url>     [--to plan|design|both]
+/u-figma skip <url> --frame <id> [--reason "..."]
+/u-figma ingest <url>                  # scan + gate + extract + verify + sync
+```
+
+### 9.3 Delegation from existing commands (auto-trigger ON by default)
+
+- **`/u-plan`** — scans `data/dropzone/` for `.figma-link | *.figma.txt | markdown with figma.com/design/…`; each URL triggers `/u-figma ingest <url> --to plan`.
+- **`/u-design`** — if SRS has `designSystemSource: figma:<url>` or `screenDesignSource: figma:<url>`, call `/u-figma sync <url> --to design`.
+
+Configurable via `figma.integration.autoTriggerFromPlan` / `autoTriggerFromDesign` (§12.7).
+
+### 9.4 Adaptive gate (Approach C core)
+
+Active inside `ingest` only. If `frames > autoExtractThreshold` (default 80) **or** estimated extraction tokens exceed the cap, prompt:
+
+```
+⚠ Large Figma file detected.
+  Pages: 15  Frames: 247 (primary 219 + variants 28)
+  Variants: 89 groups   Estimated tokens: ~420K
+
+Proceed?
+  [Y] Extract all
+  [S] Scope — specify pages/frames
+  [M] Manifest only (scan done; run /u-figma extract later)
+  [N] Cancel
+```
+
+Direct `/u-figma scan` + `/u-figma extract` invocations bypass the gate (explicit intent).
+
+### 9.5 New files
+
+```
+skills/u-figma/
+  SKILL.md
+  references/
+    manifest-schema.md       # §8
+    variant-detection.md     # §7
+    pipeline.md              # §10
+    comments-fallback.md     # §11
+    integration.md           # §12
+
+agents/
+  u-agent-figma.md           # §12.5 — dedicated agent
+
+skills/u-plan/references/
+  figma-analysis.md          # THIS FILE (retained)
+```
+
+---
+
+## 10. Orchestrated Pipeline & Dense-Frame Chunking
+
+### 10.1 End-to-end pipeline (`/u-figma ingest`)
+
+```
+[Phase 0] MCP server detection
+  figma-mcp-go ? → primary
+  else plugin_figma → authenticate → fallback
+  else → fail fast with install guidance
+
+[Phase 1] SCAN
+  1.1 Parse URL → fileKey, pageId, nodeId, scope
+  1.2 get_pages() → ALL pages enumerated (no page tunnel vision)
+  1.3 per page: scan_nodes_by_types([FRAME, COMPONENT_SET, COMPONENT, SECTION])
+  1.4 variant detection (§7 — four sources unioned)
+  1.5 per-frame metadata: name, bbox, nodeCount, depth, hash
+  1.6 content type classification (PART I §2.1)
+  1.7 dense-frame flagging (§10.3)
+  1.8 comments fetch (§11 three-tier)
+  1.9 coverageWarnings computation
+  → atomic write manifest.json
+
+[Phase 2] ADAPTIVE GATE (§9.4)
+
+[Phase 3] EXTRACT (per-frame loop)
+  For each pending frame:
+    3.1 status = in_progress (atomic)
+    3.2 dense check → chunking path (§10.3) if needed
+    3.3 strategy dispatch by contentTypes → PART I §3.1–3.8
+    3.4 write frames/<nodeId>.digest.json
+    3.5 get_screenshot → screenshots/<nodeId>.png
+    3.6 status = done + extractedAt (atomic)
+    3.7 stream progress (§10.4)
+    3.8 on error: increment attempts → backoff → retry OR mark failed
+
+[Phase 4] VERIFY
+  4.1 coverageWarnings walk
+  4.2 auto-retry failed frames (1 pass even without --fix)
+  4.3 orphan-base, state-gap reporting
+  4.4 variant completeness (§7.5 four checks)
+  4.5 summary report (§8.6)
+
+[Phase 5] AGGREGATE
+  5.1 per-frame digest → aggregate.json roll-up
+  5.2 cross-ref (screen↔rules, variant↔base)
+  5.3 atomic write aggregate.json
+
+[Phase 6] SYNC (optional, per sub-command)
+  → §12
+```
+
+### 10.2 Failure modes
+
+| Phase | Failure | Recovery |
+|---|---|---|
+| 0 | No MCP available | fail fast, print install guidance |
+| 1 | REST rate limit (comments) | exponential backoff 3× → skip with warning |
+| 1 | Single page scan error | record `scanError` on that page, continue |
+| 3 | Extraction timeout | mark `failed`, next frame |
+| 3 | Process crash | `in_progress` → reset to `pending` on next run |
+| 4 | Verify warnings unresolved | persist in report, do not block pipeline |
+
+### 10.3 Dense-frame chunking
+
+`denseness` levels: `normal | dense | extreme`.
+
+```
+function isDense(frame):
+    if frame.nodeCount > 2000: return extreme
+    if frame.nodeCount > 800: return dense
+    if frame.textNodeCount > 150: return dense
+    if frame.depth > 10: return dense
+    if frame.bbox.w * frame.bbox.h > 4_000_000: return dense
+    return normal
+```
+
+Chunking strategy (recursive, max depth 3):
+
+```
+function extractDenseFrame(frame, currentDepth):
+    topSections = get_node(frame.id, depth=2)
+    sections = []
+    for section in topSections:
+        if section.nodeCount > 300 and currentDepth < 3:
+            chunkDigest = extractDenseFrame(section, currentDepth + 1)
+        else:
+            chunkDigest = extractNormal(section)
+        path = f"frames/{frame.id}/chunk-{section.id}.digest.json"
+        writeAtomic(path, chunkDigest)
+        sections.append({ "sectionId": section.id, "name": section.name, "digestPath": path })
+    return { "sections": sections, "chunked": true }
+```
+
+Manifest's `subFrameChunks[]` captures the section index. `aggregate.json` transparently merges main + chunks for downstream consumers. `extreme` density raises a `coverageWarnings.extreme-density` entry recommending a split in Figma.
+
+### 10.4 Progress streaming
+
+```
+▸ Extracting 247 frames across 15 pages...
+
+  [  1/247] p1/Login                         Default       ✓ (1.2s)
+  [  2/247] p1/Login                         Error         ✓ (0.9s)
+  [  4/247] p1/Dashboard                     Default       ⚙ dense (chunking 5 sections...)
+  [  5/247] p2/가입조회 현황                  Default       ⚠ extreme (1847 nodes) → chunking
+
+Elapsed 4m 12s  |  Done 201  |  Failed 2  |  Remaining 44
+```
+
+### 10.5 Idempotency
+
+- Re-run: hash unchanged → skip; changed → re-extract the changed subset only.
+- `--refresh` forces full re-extraction.
+- `done` frames preserve `extractedAt`; user edits persisted (hash check on unchanged input prevents overwrite).
+
+---
+
+## 11. Comments Strategy (REST + Heuristic Fallback)
+
+Neither MCP exposes `get_comments`. Three tiers collected concurrently and deduplicated.
+
+### 11.1 Tiers
+
+| Tier | Source | Requirement |
+|---|---|---|
+| **1 — REST** | `GET https://api.figma.com/v1/files/{fileKey}/comments` with `X-Figma-Token` header | `FIGMA_PAT` configured |
+| **2 — Dev annotations** | `get_annotations` (figma-mcp-go; PART I §5.2 has fallback for plugin_figma) | Designer added dev-mode annotations |
+| **3 — Sticky/Section heuristic** | `scan_nodes_by_types` + pattern match | Always runs |
+
+### 11.2 PAT management
+
+Resolution order:
+
+1. env `FIGMA_PAT`
+2. `.u-maker/secrets.local.json` → `{"figmaPat": "..."}` (gitignored — enforced by `install.sh`)
+3. `u-maker.config.json` → `figma.comments.patEnv` (specify env var name)
+
+On first scan needing REST with no PAT: prompt once; user can skip (Tier 1 marked `skipped`, pipeline continues).
+
+### 11.3 `comments.json` schema
+
+```json
+{
+  "fetchedAt": "...",
+  "source": "rest-api",
+  "total": 47,
+  "unresolved": 12,
+  "comments": [
+    {
+      "id": "123",
+      "message": "...",
+      "author": "...",
+      "createdAt": "...",
+      "resolvedAt": null,
+      "parentId": null,
+      "clientMeta": { "nodeId": "2791:66049", "nodeOffset": { "x": 240, "y": 120 } },
+      "nearestFrame": { "nodeId": "2791:66049", "name": "...", "distance": 0 },
+      "reactions": [{"emoji": "👍", "count": 3}],
+      "thread": [ { "id": "124", "message": "...", "author": "..." } ]
+    }
+  ]
+}
+```
+
+### 11.4 Coordinate → frame mapping
+
+```
+function mapCommentToFrame(comment, manifest):
+    if comment.clientMeta.nodeId: return findFrameByNodeId(...)
+    containing = findSmallestContainingFrame(manifest, comment.x, comment.y)
+    if containing: return containing
+    return findNearestFrame(manifest, comment.x, comment.y)
+```
+
+### 11.5 Tier 3 heuristics
+
+**Sticky-note detection:**
+```
+isSticky(node) :=
+  node.bbox.w ≤ 300 AND node.bbox.h ≤ 300
+  AND children.length == 1 AND children[0].type == "TEXT"
+  AND hasFill(node)
+  AND !isInsideMainScreens(node)
+  AND isStickyColor(node.fill)     // saturated yellow/pink/blue
+```
+
+**Section-block extraction:** Within Figma `SECTION` nodes, TEXT classified as `planning-text` by `classifyTextNode` (PART I §3.4) is treated as a comment.
+
+### 11.6 Dedup
+
+```
+key(c) = hash(c.message.trim() + "|" + (c.nodeRef || c.x + "," + c.y))
+priority: rest-api > dev-annotation > section-heuristic > sticky-heuristic
+```
+
+### 11.7 Injection into frame digests
+
+Each frame digest receives an `annotations[]` array with every comment resolving to that frame. Downstream SRS can surface an "Unresolved design questions" section automatically.
+
+### 11.8 Privacy
+
+- PAT lives only in `.u-maker/secrets.local.json` (gitignored).
+- Original comments (author names) stay in `comments.json`, not in `aggregate.json`.
+- `--no-comments` disables all three tiers.
+
+---
+
+## 12. Integration (u-plan, u-design, u-agent-figma)
+
+### 12.1 Data flow
+
+```
+data/figma/<file_key>/aggregate.json
+        │
+        ├─ (plan) ─────▶ data/digest/figma_<fileKey>.digest.json
+        │                   │
+        │                   ├─▶ SRS: screenDescriptions + businessRules +
+        │                   │        processingRules + permissionRules +
+        │                   │        validationRules → FR/NFR candidates
+        │                   └─▶ IA: screen inventory + linkedScreens →
+        │                           site map nodes/edges
+        │
+        └─ (design) ───▶ data/figma/<fileKey>/design-system-source.json
+                            ├─▶ Design System (DS-010~080): tokens, styles
+                            ├─▶ Component Inventory (CMP-xxx): every variant
+                            └─▶ Screen Spec: per-screen layout + every variant
+```
+
+### 12.2 Plan-side (auto-trigger ON)
+
+- `/u-plan` scans `data/dropzone/` for Figma URLs; each triggers `/u-figma ingest <url> --to plan`.
+- `aggregate.json` mirrored to `data/digest/figma_<fileKey>.digest.json`.
+- SRS/IA generation merges Figma digest with other digests.
+
+#### 12.2.1 Merge priority (conflict resolution at SRS generation)
+
+| Field | Priority | Rationale |
+|---|---|---|
+| `screenDescriptions[].name / code` | **Figma** | Figma is the screen-definition ground truth |
+| `screenDescriptions[].components` | **Figma** | Component structure measured from actual design |
+| `businessRules`, `processingRules` | **Figma** | Figma planning text is the richest source (PART I §3.8) |
+| `domainTerms`, `stakeholders` | Other sources | Business context comes from docs/meetings |
+| `stateTransitions` | **Merge (union)** | Both sources partial |
+| `validationRules`, `uiSpecifications` | **Figma** | Screen-level detail is most current in design |
+
+Conflicts resolved during SRS generation (not aggregate), so gatekeeper can diff.
+
+#### 12.2.2 User Story auto-drafting
+
+From `screenDescriptions` + `prototype.flows`, emit US candidates with `status: "extracted"`. User approval required before promotion. ID-10-increment rule (FR-010, US-010) applies.
+
+### 12.3 Design-side
+
+- `/u-design` reads SRS; if `designSystemSource: figma:<url>` or `screenDesignSource: figma:<url>` present → `/u-figma sync <url> --to design`.
+- `aggregate.designTokens` → CSS `:root` variables.
+- `aggregate.componentSets` → `CMP-xxx` with full variant/property matrices (directly addresses user's #1 pain).
+- `aggregate.screenDescriptions` → Screen Spec base; each variant becomes a state subsection (Error/Empty/Loading/etc.).
+
+### 12.4 `/u-figma sync` (manual re-sync)
+
+```
+/u-figma sync <url> --to plan       # SRS/IA only
+/u-figma sync <url> --to design     # Design System only
+/u-figma sync <url> --to both       # both (default)
+```
+
+Idempotent: diffs against current docs, patches only changed fields. User edits marked with `// user-edit` comments are preserved.
+
+### 12.5 Agent: dedicated `u-agent-figma` (Option B)
+
+**Decision: skill + new agent.** The 247-frame iteration in main context is prohibitive; agent isolation required.
+
+```yaml
+name: u-agent-figma
+description: Owns Figma manifest/extract/verify. Runs scan → extract → aggregate.
+tools: Read, Write, Glob, Grep, Bash,
+       mcp__figma-mcp-go__*,
+       mcp__plugin_figma_figma__*
+```
+
+- `/u-figma ingest` → orchestrator delegates to `u-agent-figma`.
+- Agent runs the per-frame loop in its own context window.
+- Returns only the `aggregate.json` path on completion.
+
+### 12.6 Gatekeeper integration
+
+On `/u-gate` or `--loop`:
+
+- **Coverage gate** — `manifest.stats.extractStatus.failed == 0`
+- **Variant completeness** — `coverageWarnings.orphan-base` + `state-gap` counts ≤ configured threshold
+- **Traceability gate** — every `aggregate.screenDescriptions[]` has a matching FR in SRS
+- **Sync freshness** — docs regenerated within N hours of `aggregate.scannedAt`
+
+Failed gates propose an auto `/u-figma verify --fix`.
+
+### 12.7 Config block (`u-maker.config.json`)
+
+```json
+{
+  "figma": {
+    "enabled": true,
+    "autoExtractThreshold": 80,
+    "maxChunkDepth": 3,
+    "comments": {
+      "enabled": true,
+      "heuristicTier3": true,
+      "patEnv": "FIGMA_PAT"
+    },
+    "variants": {
+      "detectNamingPatterns": true,
+      "detectPositional": true,
+      "detectSuffix": true
+    },
+    "denseness": {
+      "nodeCountThreshold": 800,
+      "textNodeThreshold": 150,
+      "depthThreshold": 10
+    },
+    "retry": {
+      "maxAttempts": 3,
+      "backoffSeconds": [0, 2, 8]
+    },
+    "integration": {
+      "autoTriggerFromPlan": true,
+      "autoTriggerFromDesign": true,
+      "preserveUserEdits": true
+    }
+  }
+}
+```
+
+### 12.8 Relation to `/u-sync`
+
+- `/u-figma sync` — Figma → docs only.
+- `/u-sync` — docs internal cross-refs (FR→US→FT, etc.) only.
+- Independent; `/u-sync` is unaware of Figma.
+
+### 12.9 Backlog integration
+
+Auto-feed:
+
+- `aggregate.decisions[]` → `data/backlog/decisions/`
+- `aggregate.comments.unresolved[]` → `data/backlog/questions/`
+- `aggregate.coverageWarnings[]` → `data/backlog/issues/figma/`
+
+`/u-backlog groom` surfaces Figma-sourced items alongside others.
+
+---
+
+## 13. Testing & Validation
+
+### 13.1 Golden corpora
+
+Three user-supplied URLs serve as acceptance tests:
+
+1. **현진웹 HJW (spec doc)** — `https://www.figma.com/design/rthR0h9cahAAFfWL1JyAMq/…?node-id=3163-50673`
+   - Expected content types: `screen-planning + annotation + specification`
+   - Validates: planning-text extraction depth, business/processing rule coverage.
+2. **그리고라이프 화면디자인 (hi-fi)** — `https://www.figma.com/design/dbzjO8T5hWQXvuNc6IiwIH/…?node-id=532-48007`
+   - Expected content types: `screen-design + prototype + annotation`
+   - Validates: variant detection (sources B + C + D), prototype reactions, screenshot fidelity.
+3. **그리고라이프 컴포넌트 V.02 (design system)** — `https://www.figma.com/design/LgSNuJWOrRx1K9iPVUgFKE/…?node-id=0-1`
+   - Expected content types: `design-tokens + assets`; heavy COMPONENT_SET usage
+   - Validates: Source A — **every** COMPONENT_SET variant enumerated; zero orphans.
+
+### 13.2 Assertions (per corpus)
+
+- `manifest.stats.totalVariants >= <expected>` (manually counted once, locked).
+- `manifest.coverageWarnings[].type == "orphan-base"` count == 0.
+- Every COMPONENT_SET has `variants.length >= 1`.
+- REST comment count matches Figma 💬 UI count (PAT available case).
+- Kill mid-extract → next run completes without re-doing `done` frames.
+
+### 13.3 Regression suite
+
+`skills/u-figma/tests/` contains:
+- Mock Figma fixtures (serialized node trees) for unit tests of variant detection, dense flagging, dedup.
+- Integration tests invoking `u-agent-figma` against recorded MCP responses.
+- Gatekeeper-style schema assertions on manifest/aggregate.
+
+---
+
+## 14. Rollout & Success Criteria
+
+### 14.1 Build sequence (high-level)
+
+1. `skills/u-figma/SKILL.md` + references (§7, §8, §10, §11, §12 authoring).
+2. `agents/u-agent-figma.md` (Option B).
+3. Manifest schema file + validator in `_meta/schemas/figma-manifest.schema.json`.
+4. `/u-figma scan` + `status` (read-only subset — validates schema end-to-end).
+5. `/u-figma extract` + `verify` + chunking.
+6. Comments Tier 1 (REST), then Tier 2/3.
+7. `/u-figma sync` + plan/design delegation + gatekeeper gates.
+8. Tests against the three corpora.
+
+### 14.2 Back-compatibility
+
+- PART I (§1–§6) remains authoritative for per-type extraction strategy.
+- No breaking changes to digest schema — only additive fields.
+- Users without Figma MCPs see graceful fail with setup instructions.
+
+### 14.3 Out of scope
+
+- Figma plugin/extension.
+- Writing back to Figma (create annotations/comments).
+- Cross-file team-library deep analysis.
+- Historical version diffing.
+
+### 14.4 Open questions (revisit during implementation)
+
+1. Figma REST rate limits — batch fetch needed for 500+ comments?
+2. Large screenshots (2K+ pages) — PNG vs WebP? Size budget?
+3. PAT rotation UX — token expiry prompt flow?
+4. Team-library INSTANCE refs — deep-analyze once per referenced file, or always shallow?
+
+### 14.5 Success criteria
+
+- Given the three test URLs: **0 orphan-base warnings** and **100% COMPONENT_SET variant coverage** reported by `/u-figma status`.
+- Mid-extract interruption resumable with zero loss.
+- `/u-plan` on a Figma-containing dropzone produces SRS with `businessRules` and `processingRules` derived from Figma planning text.
+- `/u-design` on an SRS with `designSystemSource: figma:…` produces a Design System HTML representing every COMPONENT_SET variant.
+- `/u-figma status <url>` surfaces coverage at any time.
