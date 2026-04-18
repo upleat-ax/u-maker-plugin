@@ -159,9 +159,9 @@ a:hover{text-decoration:underline}
 <div class="hero" id="hero">
   <h2>U-MAKER Plugin</h2>
   <p>PBGD-based SSoT (Single Source of Truth) collaboration orchestrator for Claude Code.<br>
-  Automates the entire software development lifecycle with 10 specialized agents, 24 skills (incl. 3 aliases), and a structured data pipeline.</p>
+  Automates the entire software development lifecycle with 10 specialized agents, 25 skills (incl. 3 aliases), and a structured data pipeline.</p>
   <div class="stats">
-    <div class="stat"><div class="stat-val">24</div><div class="stat-label">Skills</div></div>
+    <div class="stat"><div class="stat-val">25</div><div class="stat-label">Skills</div></div>
     <div class="stat"><div class="stat-val">10</div><div class="stat-label">Agents</div></div>
     <div class="stat"><div class="stat-val">4</div><div class="stat-label">PBGD Phases</div></div>
     <div class="stat"><div class="stat-val">11</div><div class="stat-label">Gate Criteria (threshold 95)</div></div>
@@ -438,7 +438,7 @@ a:hover{text-decoration:underline}
 <hr>
 
 <!-- ============================================================ -->
-<!-- SECTION 6: Commands (24 Skills) -->
+<!-- SECTION 6: Commands (25 Skills) -->
 <!-- ============================================================ -->
 <h2 id="sec-commands">6. Commands</h2>
 
@@ -493,11 +493,25 @@ a:hover{text-decoration:underline}
 </tbody>
 </table>
 
-<h3>6.5 Cross-Phase &amp; Source Skills (1)</h3>
+<h3>6.5 External-tool Skills (3) &mdash; <code>u-tools-*</code> namespace</h3>
+<p>Wrappers around external programs/services. Phase skills must route through these rather than calling the underlying MCP / CLI directly.</p>
 <table>
-<thead><tr><th>Command</th><th>Description</th><th>Example</th></tr></thead>
+<thead><tr><th>Command</th><th>External tool</th><th>Example</th></tr></thead>
 <tbody>
-<tr><td><code>/u-tools-figma</code></td><td>Comprehensive Figma analyzer &mdash; pages + variants + assets + components + comments + semantics. Auto-delegated from <code>/u-prepare</code>, <code>/u-analyze</code>, <code>/u-reverse</code>, <code>/u-build</code>. <em>v4.0.0-alpha.1: reduced extraction path</em></td><td><code>/u-tools-figma &lt;figma-url&gt;</code></td></tr>
+<tr><td><code>/u-tools-figma</code></td><td>Figma API / Plugin. Comprehensive analyzer &mdash; pages + variants + assets + components + comments + semantics. Auto-delegated from <code>/u-prepare</code>, <code>/u-analyze</code>, <code>/u-reverse</code>, <code>/u-build</code>. <em>v4.0.0-alpha.1: reduced extraction path</em></td><td><code>/u-tools-figma &lt;figma-url&gt;</code></td></tr>
+<tr><td><code>/u-tools-browser</code></td><td>Unified browser engine. Playwright MCP &rarr; chrome-devtools MCP &rarr; agent-browser CLI fallback. Used for E2E, screen capture, visual verify, wireframe preview. Consumed by <code>/u-gatekeeping</code>, <code>/u-report-weekly</code>, <code>/u-dev --verify</code>, <code>/u-wireframe --preview</code>. 9-step protocol</td><td><code>/u-tools-browser --app my-app</code></td></tr>
+<tr><td><code>/u-tools-git-pr</code></td><td>git + <code>gh</code> CLI + GitHub API. Intelligent PR generation with commit grouping, split/merge, review guide, multiline numeric confirmation prompt</td><td><code>/u-tools-git-pr</code><br><code>/u-tools-git-pr --base main --dry-run</code></td></tr>
+</tbody>
+</table>
+
+<h3>6.5.1 Rule Packs &mdash; external authoritative references</h3>
+<p>Rule packs loaded automatically during generation. Define <em>what</em> the generator must emit.</p>
+<table>
+<thead><tr><th>Rule pack</th><th>Source</th><th>Applied in</th></tr></thead>
+<tbody>
+<tr><td><code>fe-rules.md</code></td><td><a href="https://github.com/vercel-labs/agent-skills" target="_blank">vercel-labs/agent-skills</a> &mdash; react-best-practices (70) + composition-patterns (9) = 79 rules</td><td><code>/u-dev</code> Step 1 FE generation. §0 MUST-APPLY 15 rules enforced</td></tr>
+<tr><td><code>design-system-rules.md</code></td><td><a href="https://github.com/dylantarre/design-system-skills" target="_blank">dylantarre/design-system-skills</a> &mdash; 28 skills (tokens 10 / patterns 5 / a11y 3 / frameworks 4 / tools 4 / docs 2)</td><td><code>/u-design</code> Step 4 DS HTML-first pipeline. <code>/u-build</code> Step 3 ping-pong gap routing</td></tr>
+<tr><td>Browser 9-step protocol</td><td><a href="https://github.com/EveryInc/compound-engineering-plugin" target="_blank">EveryInc/compound-engineering-plugin</a> &mdash; <code>test-browser</code> pattern</td><td><code>/u-tools-browser</code> internal protocol</td></tr>
 </tbody>
 </table>
 
@@ -513,13 +527,12 @@ a:hover{text-decoration:underline}
 </tbody>
 </table>
 
-<h3>6.7 Control Flow &amp; Utility Skills (4)</h3>
+<h3>6.7 Control Flow &amp; Utility Skills (3)</h3>
 <table>
 <thead><tr><th>Command</th><th>Description</th><th>Example</th></tr></thead>
 <tbody>
 <tr><td><code>/u-loop</code></td><td>Unattended PBGD auto-execution Plan &rarr; Build &rarr; Gatekeeping &rarr; Deploy. Checkpoint-based resume</td><td><code>/u-loop --app my-app --from plan</code></td></tr>
 <tr><td><code>/u-discuss</code></td><td>Structured collaboration sessions (brainstorm, review, decision, workshop, retro)</td><td><code>/u-discuss brainstorm "Payment UX"</code></td></tr>
-<tr><td><code>/u-tools-git-pr</code></td><td>Intelligent PR generation with commit grouping, split/merge, review guide</td><td><code>/u-tools-git-pr main --draft</code></td></tr>
 <tr><td><code>/u-engine</code></td><td>Internal infrastructure engine (not user-invocable)</td><td>&mdash;</td></tr>
 </tbody>
 </table>
@@ -860,7 +873,7 @@ a:hover{text-decoration:underline}
 &#x2502;   &#x251C;&#x2500;&#x2500; u-agent-deploy.md             # NEW
 &#x2502;   &#x251C;&#x2500;&#x2500; u-agent-figma.md              # NEW (reduced path in alpha)
 &#x2502;   &#x2514;&#x2500;&#x2500; u-agent-report.md
-&#x251C;&#x2500;&#x2500; skills/                           # 24 skills (incl. 3 backward-compat aliases)
+&#x251C;&#x2500;&#x2500; skills/                           # 25 skills (incl. 3 backward-compat aliases)
 &#x2502;   &#x2514;&#x2500;&#x2500; u-*/SKILL.md
 &#x251C;&#x2500;&#x2500; hooks/                            # Event hooks (Write/Edit/MultiEdit matcher)
 &#x2502;   &#x251C;&#x2500;&#x2500; hooks.json

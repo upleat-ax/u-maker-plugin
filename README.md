@@ -4,7 +4,7 @@ PBGD-based SSoT (Single Source of Truth) plugin for Claude Code.
 
 Drop planning materials, and it automatically performs Preparation → Plan → Build → Gatekeeping → Deploy.
 
-**24 Skills** (incl. 3 aliases) · **10 Agents** · **4 PBGD Phases** (Plan · Build · Gatekeeping · Deploy) · **11 Gate Criteria** (configurable via `--loop [N]`, default 5) · **Pass ≥ 95** · **Deploy-gate ≥ 98**
+**25 Skills** (incl. 3 aliases) · **10 Agents** · **4 PBGD Phases** (Plan · Build · Gatekeeping · Deploy) · **11 Gate Criteria** (configurable via `--loop [N]`, default 5) · **Pass ≥ 95** · **Deploy-gate ≥ 98**
 
 ## Documentation
 
@@ -52,7 +52,26 @@ claude plugin add upleat-ax/u-maker-plugin
 | `/u-prepare-foldertree` | `.u-maker/` folder/state scaffolding only |
 | `/u-analyze` | Dropzone → digest |
 | `/u-reverse` | Reverse-engineer existing code → digest |
-| `/u-tools-figma` | Comprehensive Figma analyzer (pages + variants + assets + components + comments + semantics). Auto-delegated from `/u-prepare`, `/u-analyze`, `/u-reverse`, `/u-design` on Figma sources. |
+
+### External-tool skills (`u-tools-*`)
+
+Wrappers around external programs/services. All u-maker phase skills route through these instead of calling the underlying tools directly.
+
+| Command | External tool | Used by |
+|---------|--------------|---------|
+| `/u-tools-figma` | Figma API / Plugin | `/u-prepare`, `/u-analyze`, `/u-reverse`, `/u-design` (auto-delegated on Figma sources) |
+| `/u-tools-browser` | Playwright MCP → chrome-devtools MCP → agent-browser CLI | `/u-gatekeeping` (E2E), `/u-report-weekly` (capture), `/u-dev --verify`, `/u-wireframe --preview` |
+| `/u-tools-git-pr` | git + `gh` CLI + GitHub API | Standalone PR generator with intelligent grouping |
+
+### Rule packs (external reference integrations)
+
+Authoritative rule sets applied automatically during code/design generation.
+
+| Rule pack | Source | Applied in |
+|-----------|--------|-----------|
+| `fe-rules.md` | [vercel-labs/agent-skills](https://github.com/vercel-labs/agent-skills) — react-best-practices (70) + composition-patterns (9) | `/u-dev` Step 1 (FE generation) |
+| `design-system-rules.md` | [dylantarre/design-system-skills](https://github.com/dylantarre/design-system-skills) — 28 skills (tokens, patterns, a11y, frameworks, tools, docs) | `/u-design` Step 4 (DS HTML-first), `/u-build` Step 3 (ping-pong gap routing) |
+| Browser engine | [EveryInc/compound-engineering-plugin](https://github.com/EveryInc/compound-engineering-plugin) — `test-browser` pattern | `/u-tools-browser` 9-step protocol |
 
 ## PBGD Phases
 

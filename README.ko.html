@@ -323,7 +323,7 @@ code {
       <li><a href="#pbgd" class="nav-link"><span class="nav-num">4</span> PBGD 4-Phase</a></li>
       <li><a href="#pipeline" class="nav-link"><span class="nav-num">5</span> 데이터 파이프라인</a></li>
       <li><a href="#agents" class="nav-link"><span class="nav-num">6</span> 10개 Agents</a></li>
-      <li><a href="#commands" class="nav-link"><span class="nav-num">7</span> 24개 Commands</a></li>
+      <li><a href="#commands" class="nav-link"><span class="nav-num">7</span> 25개 Commands</a></li>
       <li><a href="#gate" class="nav-link"><span class="nav-num">8</span> Gate Criteria</a></li>
       <li><a href="#folder" class="nav-link"><span class="nav-num">9</span> 폴더 구조</a></li>
       <li><a href="#scenario" class="nav-link"><span class="nav-num">10</span> 시나리오 가이드</a></li>
@@ -436,7 +436,7 @@ code {
 <!-- ===== 3. Architecture Overview ===== -->
 <section id="architecture" class="section">
   <h2 class="section-title">3. 아키텍처 개요</h2>
-  <p style="margin-bottom: 20px; color: #475569;">U-MAKER는 10개 AI 에이전트가 PBGD 4-phase 파이프라인을 수행하며, 24개 스킬(별칭 3개 포함)을 통해 각 단계를 제어합니다. PM 에이전트가 모든 요청을 라우팅하고 Gatekeeper가 품질을 검증합니다.</p>
+  <p style="margin-bottom: 20px; color: #475569;">U-MAKER는 10개 AI 에이전트가 PBGD 4-phase 파이프라인을 수행하며, 25개 스킬(별칭 3개 포함)을 통해 각 단계를 제어합니다. PM 에이전트가 모든 요청을 라우팅하고 Gatekeeper가 품질을 검증합니다.</p>
 
   <div class="card" style="padding:24px; margin-bottom:20px;">
     <svg viewBox="0 0 720 340" class="pipeline-svg" xmlns="http://www.w3.org/2000/svg" style="font-family:'Noto Sans KR',sans-serif;">
@@ -891,10 +891,10 @@ code {
   </div>
 </section>
 
-<!-- ===== 7. Commands (24 Skills) ===== -->
+<!-- ===== 7. Commands (25 Skills) ===== -->
 <section id="commands" class="section">
-  <h2 class="section-title">7. 24개 Commands (Skills)</h2>
-  <p style="margin-bottom:16px; color:#475569;">모든 커맨드는 <code class="code-inline">/u-{name}</code> 형태로 호출됩니다. Plan(7) + Build(3) + Gatekeeping(1+2 aliases) + Deploy(1) + Cross-phase(1) + Output/Report(5) + Control(4) + Setup alias(1) = 24개.</p>
+  <h2 class="section-title">7. 25개 Commands (Skills)</h2>
+  <p style="margin-bottom:16px; color:#475569;">모든 커맨드는 <code class="code-inline">/u-{name}</code> 형태로 호출됩니다. Plan(7) + Build(3) + Gatekeeping(1+2 aliases) + Deploy(1) + Tools(3) + Output/Report(5) + Control(3) + Setup alias(1) = 25개.</p>
 
   <!-- Common options -->
   <h3 style="font-size:14px; font-weight:700; color:#0f172a; margin-bottom:12px;">공통 옵션</h3>
@@ -1112,8 +1112,9 @@ code {
     </table>
   </div>
 
-  <!-- Cross-phase Skills -->
-  <h3 style="font-size:14px; font-weight:700; color:#0f172a; margin-bottom:12px;">Cross-phase &amp; Source Skills (1)</h3>
+  <!-- External-tool Skills (u-tools-*) -->
+  <h3 style="font-size:14px; font-weight:700; color:#0f172a; margin-bottom:12px;">External-tool Skills (3) &mdash; <code class="code-inline">u-tools-*</code> 네임스페이스</h3>
+  <p style="font-size:12px; color:#64748b; margin-bottom:8px;">외부 프로그램/서비스 래퍼. phase skill은 MCP/CLI를 직접 호출하지 않고 이 스킬들을 경유해야 합니다.</p>
   <div class="table-wrap" style="margin-bottom:24px;">
     <table>
       <thead>
@@ -1129,9 +1130,55 @@ code {
         <tr>
           <td style="text-align:center;">15</td>
           <td><strong style="color:#be185d;">/u-tools-figma</strong></td>
-          <td><span class="tag tag-any">Cross</span></td>
+          <td><span class="tag tag-any">Tools</span></td>
           <td style="font-size:11px;"><code class="code-inline">/u-tools-figma &lt;figma-url&gt; [--app]</code></td>
           <td>Figma 분석 &mdash; pages + variants + assets + components + comments + semantics. <code class="code-inline">/u-prepare</code>, <code class="code-inline">/u-analyze</code>, <code class="code-inline">/u-reverse</code>, <code class="code-inline">/u-build</code>에서 자동 위임. <em>v4.0.0-alpha.1: reduced path</em></td>
+        </tr>
+        <tr>
+          <td style="text-align:center;">16</td>
+          <td><strong style="color:#be185d;">/u-tools-browser</strong></td>
+          <td><span class="tag tag-any">Tools</span></td>
+          <td style="font-size:11px;"><code class="code-inline">/u-tools-browser [--app] [--headless|--headed] [--port N]</code></td>
+          <td>통합 브라우저 엔진 &mdash; Playwright MCP &rarr; chrome-devtools MCP &rarr; agent-browser CLI 순 우선. E2E 테스트, 화면 캡처, 비주얼 검증, wireframe 프리뷰. <code class="code-inline">/u-gatekeeping</code>, <code class="code-inline">/u-report-weekly</code>, <code class="code-inline">/u-dev --verify</code>, <code class="code-inline">/u-wireframe --preview</code>에서 위임. 9-step 프로토콜</td>
+        </tr>
+        <tr>
+          <td style="text-align:center;">17</td>
+          <td><strong style="color:#be185d;">/u-tools-git-pr</strong></td>
+          <td><span class="tag tag-any">Tools</span></td>
+          <td style="font-size:11px;"><code class="code-inline">/u-tools-git-pr [--base branch] [--strategy single|group|auto] [--dry-run]</code></td>
+          <td>PR/MR 자동 생성 &mdash; 변경 분석 + 커밋 그루핑 + 구조화된 PR body + 리뷰 가이드. multiline 번호 선택 확인 프롬프트</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Rule Packs -->
+  <h3 style="font-size:14px; font-weight:700; color:#0f172a; margin-bottom:12px;">Rule Packs &mdash; 외부 표준 룰 연동</h3>
+  <p style="font-size:12px; color:#64748b; margin-bottom:8px;">코드·디자인 산출물 품질을 강제하는 외부 권위 룰 팩. 관련 스킬에서 자동 로드됩니다.</p>
+  <div class="table-wrap" style="margin-bottom:24px;">
+    <table>
+      <thead>
+        <tr>
+          <th style="width:180px;">Rule pack</th>
+          <th>출처</th>
+          <th>적용 대상</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code class="code-inline">fe-rules.md</code></td>
+          <td>Vercel Labs <a href="https://github.com/vercel-labs/agent-skills" target="_blank">agent-skills</a> &mdash; react-best-practices 70 + composition-patterns 9 = 79 룰</td>
+          <td><code class="code-inline">/u-dev</code> Step 1 FE 생성. §0 MUST-APPLY 15개 강제</td>
+        </tr>
+        <tr>
+          <td><code class="code-inline">design-system-rules.md</code></td>
+          <td><a href="https://github.com/dylantarre/design-system-skills" target="_blank">dylantarre/design-system-skills</a> &mdash; 28 스킬 (tokens 10 / patterns 5 / a11y 3 / frameworks 4 / tools 4 / docs 2)</td>
+          <td><code class="code-inline">/u-design</code> Step 4 DS HTML-first, <code class="code-inline">/u-build</code> Step 3 ping-pong gap 라우팅</td>
+        </tr>
+        <tr>
+          <td>Browser 9-step</td>
+          <td><a href="https://github.com/EveryInc/compound-engineering-plugin" target="_blank">EveryInc/compound-engineering-plugin</a> &mdash; <code class="code-inline">test-browser</code> 패턴</td>
+          <td><code class="code-inline">/u-tools-browser</code> 내부 프로토콜</td>
         </tr>
       </tbody>
     </table>
@@ -1152,35 +1199,35 @@ code {
       </thead>
       <tbody>
         <tr>
-          <td style="text-align:center;">16</td>
+          <td style="text-align:center;">18</td>
           <td><strong style="color:#7c3aed;">/u-output</strong> <span style="font-size:10px;color:#94a3b8;">(= /u-html)</span></td>
           <td><span class="tag tag-output">Output</span></td>
           <td style="font-size:11px;"><code class="code-inline">/u-output [--app] [--diagram svg|mermaid|all]</code></td>
           <td>.md+.json &rarr; HTML 렌더링</td>
         </tr>
         <tr>
-          <td style="text-align:center;">17</td>
+          <td style="text-align:center;">19</td>
           <td><strong style="color:#be123c;">/u-report-daily</strong></td>
           <td><span class="tag tag-report">Report</span></td>
           <td style="font-size:11px;"><code class="code-inline">/u-report-daily [--app name]</code></td>
           <td>git+회의+통계 기반 일일 리포트</td>
         </tr>
         <tr>
-          <td style="text-align:center;">18</td>
+          <td style="text-align:center;">20</td>
           <td><strong style="color:#be123c;">/u-report-weekly</strong></td>
           <td><span class="tag tag-report">Report</span></td>
           <td style="font-size:11px;"><code class="code-inline">/u-report-weekly [--app name]</code></td>
           <td>주간 트렌드 + SVG 차트 리포트</td>
         </tr>
         <tr>
-          <td style="text-align:center;">19</td>
+          <td style="text-align:center;">21</td>
           <td><strong style="color:#be123c;">/u-meeting-report</strong></td>
           <td><span class="tag tag-report">Report</span></td>
           <td style="font-size:11px;"><code class="code-inline">/u-meeting-report [topic]</code></td>
           <td>음성/텍스트 &rarr; 구조화된 회의록 HTML</td>
         </tr>
         <tr>
-          <td style="text-align:center;">20</td>
+          <td style="text-align:center;">22</td>
           <td><strong style="color:#0f766e;">/u-init</strong></td>
           <td><span class="tag tag-setup">Alias</span></td>
           <td style="font-size:11px;"><code class="code-inline">/u-init [app]</code></td>
@@ -1191,7 +1238,7 @@ code {
   </div>
 
   <!-- Control Flow / Utility Skills -->
-  <h3 style="font-size:14px; font-weight:700; color:#0f172a; margin-bottom:12px;">Control Flow / Utility Skills (4)</h3>
+  <h3 style="font-size:14px; font-weight:700; color:#0f172a; margin-bottom:12px;">Control Flow / Utility Skills (3)</h3>
   <div class="table-wrap">
     <table>
       <thead>
@@ -1205,28 +1252,21 @@ code {
       </thead>
       <tbody>
         <tr>
-          <td style="text-align:center;">21</td>
+          <td style="text-align:center;">23</td>
           <td><strong style="color:#4338ca;">/u-loop</strong></td>
           <td><span class="tag tag-all">All</span></td>
           <td style="font-size:11px;"><code class="code-inline">/u-loop [--app] [--from] [--to] [--loop N] [--dry-run]</code></td>
           <td>Plan&rarr;Build&rarr;Gatekeeping&rarr;Deploy 무인 자동 실행</td>
         </tr>
         <tr>
-          <td style="text-align:center;">22</td>
+          <td style="text-align:center;">24</td>
           <td><strong style="color:#7c3aed;">/u-discuss</strong></td>
           <td><span class="tag tag-any">Any</span></td>
           <td style="font-size:11px;"><code class="code-inline">/u-discuss {type} [topic]</code></td>
           <td>brainstorm/review/decision/workshop/retro 세션</td>
         </tr>
         <tr>
-          <td style="text-align:center;">23</td>
-          <td><strong style="color:#ec4899;">/u-tools-git-pr</strong></td>
-          <td><span class="tag tag-any">Any</span></td>
-          <td style="font-size:11px;"><code class="code-inline">/u-tools-git-pr [--base branch]</code></td>
-          <td>변경 분석 &rarr; 자동 커밋+PR 생성</td>
-        </tr>
-        <tr>
-          <td style="text-align:center;">24</td>
+          <td style="text-align:center;">25</td>
           <td><strong style="color:#64748b;">/u-engine</strong></td>
           <td><span class="tag tag-engine">Engine</span></td>
           <td style="font-size:11px;">&mdash;</td>

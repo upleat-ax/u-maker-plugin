@@ -433,9 +433,9 @@
           <path d="M 370 65 C 350 75, 300 85, 280 90" stroke="#3b82f6" stroke-width="2" fill="none" marker-end="url(#mb)"/>
           <path d="M 430 65 C 440 75, 450 85, 460 90" stroke="#3b82f6" stroke-width="2" fill="none" marker-end="url(#mb)"/>
 
-          <!-- 24 Skills layer -->
+          <!-- 25 Skills layer -->
           <rect x="20" y="305" width="520" height="30" rx="6" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
-          <text x="280" y="325" text-anchor="middle" fill="#64748b" font-size="10" font-weight="600" font-family="Noto Sans KR,sans-serif">24 Skills: Plan(7) + Build(3) + Gatekeeping(1+2 aliases) + Deploy(1) + Cross(1) + Output/Report(5) + Control(4) + alias(1)</text>
+          <text x="280" y="325" text-anchor="middle" fill="#64748b" font-size="10" font-weight="600" font-family="Noto Sans KR,sans-serif">25 Skills: Plan(7) + Build(3) + Gatekeeping(1+2 aliases) + Deploy(1) + Tools(3) + Output/Report(5) + Control(4) + alias(1)</text>
 
           <!-- Gate Criteria badge -->
           <rect x="570" y="90" width="190" height="195" rx="12" fill="#fff" stroke="#e2e8f0" stroke-width="1.5"/>
@@ -571,7 +571,7 @@
 "배포 준비해줘"                    <span class="comment"># → /u-deploy</span></pre></div>
 
       <div class="highlight-box purple">
-        <strong>Tip:</strong> 자연어 라우팅이 작동하지 않으면 슬래시 커맨드를 직접 사용하세요. PM Agent는 v4.0.0-alpha.1의 24개 스킬(별칭 3개 포함)을 모두 인지합니다.
+        <strong>Tip:</strong> 자연어 라우팅이 작동하지 않으면 슬래시 커맨드를 직접 사용하세요. PM Agent는 v4.0.0-alpha.1의 25개 스킬(별칭 3개 포함)을 모두 인지합니다.
       </div>
 
       <!-- ═══════════════════════════════════════════════════════════ -->
@@ -652,10 +652,10 @@
       </div>
 
       <!-- ═══════════════════════════════════════════════════════════ -->
-      <!--  PART 6. 명령어 치트시트 (24 Skills)                       -->
+      <!--  PART 6. 명령어 치트시트 (25 Skills)                       -->
       <!-- ═══════════════════════════════════════════════════════════ -->
-      <div class="section-divider" id="cheatsheet"><h2>06. 명령어 치트시트 (24 Skills)</h2></div>
-      <p class="section-desc">Plan(7) + Build(3) + Gatekeeping(1+2 aliases) + Deploy(1) + Cross-phase(1) + Output/Report(5) + Control(4) + Setup alias(1) = 24개</p>
+      <div class="section-divider" id="cheatsheet"><h2>06. 명령어 치트시트 (25 Skills)</h2></div>
+      <p class="section-desc">Plan(7) + Build(3) + Gatekeeping(1+2 aliases) + Deploy(1) + Tools(3) + Output/Report(5) + Control(3) + Setup alias(1) = 25개</p>
 
       <!-- Plan Phase Skills -->
       <h3 style="font-size:14px;font-weight:700;margin:20px 0 8px;color:var(--text)">Plan Phase Skills (7)</h3>
@@ -767,8 +767,9 @@
         </table>
       </div>
 
-      <!-- Cross-phase Skills -->
-      <h3 style="font-size:14px;font-weight:700;margin:20px 0 8px;color:var(--text)">Cross-phase &amp; Source Skills (1)</h3>
+      <!-- External-tool Skills (u-tools-*) -->
+      <h3 style="font-size:14px;font-weight:700;margin:20px 0 8px;color:var(--text)">External-tool Skills (3) &mdash; <code>u-tools-*</code> namespace</h3>
+      <p style="font-size:12px;color:var(--text-secondary);margin-bottom:8px">외부 프로그램/서비스 래퍼. phase skill은 이 스킬들을 경유해야 하며, MCP/CLI 직접 호출은 금지.</p>
       <div class="data-table-wrap">
         <table class="data-table">
           <thead><tr><th style="width:170px">Command</th><th>설명</th><th>예제</th></tr></thead>
@@ -777,6 +778,42 @@
               <td class="col-abbr">/u-tools-figma</td>
               <td class="col-desc">Figma 분석 &mdash; pages + variants + assets + components + comments + semantics. <code>/u-prepare</code>, <code>/u-analyze</code>, <code>/u-reverse</code>, <code>/u-build</code>에서 자동 위임. <strong>v4.0.0-alpha.1: reduced extraction path</strong></td>
               <td><code>/u-tools-figma &lt;figma-url&gt;</code><br><code>/u-tools-figma &lt;url&gt; --app myapp</code></td>
+            </tr>
+            <tr>
+              <td class="col-abbr">/u-tools-browser</td>
+              <td class="col-desc">통합 브라우저 엔진 &mdash; Playwright MCP → chrome-devtools MCP → agent-browser CLI 순서. E2E 테스트, 화면 캡처, 비주얼 검증, 와이어프레임 프리뷰. <code>/u-gatekeeping</code> / <code>/u-report-weekly</code> / <code>/u-dev --verify</code> / <code>/u-wireframe --preview</code>에서 위임. <strong>9-step 프로토콜</strong> 제공</td>
+              <td><code>/u-tools-browser --app myapp</code><br><code>/u-tools-browser --auto --headless</code></td>
+            </tr>
+            <tr>
+              <td class="col-abbr">/u-tools-git-pr</td>
+              <td class="col-desc">PR/MR 자동 생성 &mdash; 변경사항 분석 + 커밋 그루핑 + 구조화된 PR body + 리뷰 가이드. multiline + 번호 선택 프롬프트</td>
+              <td><code>/u-tools-git-pr</code><br><code>/u-tools-git-pr --base main</code><br><code>/u-tools-git-pr --dry-run</code></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Rule Packs -->
+      <h3 style="font-size:14px;font-weight:700;margin:20px 0 8px;color:var(--text)">Rule Packs &mdash; 외부 표준 연동</h3>
+      <p style="font-size:12px;color:var(--text-secondary);margin-bottom:8px">코드·디자인 산출물의 품질을 강제하는 외부 권위 룰 팩. 자동 로드됨.</p>
+      <div class="data-table-wrap">
+        <table class="data-table">
+          <thead><tr><th style="width:200px">Rule pack</th><th>출처</th><th>적용 대상</th></tr></thead>
+          <tbody>
+            <tr>
+              <td class="col-abbr"><code>fe-rules.md</code></td>
+              <td class="col-desc">Vercel Labs <a href="https://github.com/vercel-labs/agent-skills" target="_blank">agent-skills</a> &mdash; react-best-practices (70) + composition-patterns (9)</td>
+              <td><code>/u-dev</code> Step 1 (FE 생성). §0 MUST-APPLY 15개 강제</td>
+            </tr>
+            <tr>
+              <td class="col-abbr"><code>design-system-rules.md</code></td>
+              <td class="col-desc"><a href="https://github.com/dylantarre/design-system-skills" target="_blank">dylantarre/design-system-skills</a> &mdash; 28 skills (tokens 10 / patterns 5 / a11y 3 / frameworks 4 / tools 4 / docs 2)</td>
+              <td><code>/u-design</code> Step 4 (DS HTML-first), <code>/u-build</code> Step 3 (ping-pong gap routing)</td>
+            </tr>
+            <tr>
+              <td class="col-abbr">Browser 9-step</td>
+              <td class="col-desc"><a href="https://github.com/EveryInc/compound-engineering-plugin" target="_blank">EveryInc/compound-engineering-plugin</a> &mdash; <code>test-browser</code> 패턴</td>
+              <td><code>/u-tools-browser</code> 내부 프로토콜</td>
             </tr>
           </tbody>
         </table>
@@ -818,7 +855,7 @@
       </div>
 
       <!-- Control Flow Skills -->
-      <h3 style="font-size:14px;font-weight:700;margin:20px 0 8px;color:var(--text)">Control Flow / Utility Skills (4)</h3>
+      <h3 style="font-size:14px;font-weight:700;margin:20px 0 8px;color:var(--text)">Control Flow / Utility Skills (3)</h3>
       <div class="data-table-wrap">
         <table class="data-table">
           <thead><tr><th style="width:170px">Command</th><th>설명</th><th>예제</th></tr></thead>
@@ -832,11 +869,6 @@
               <td class="col-abbr">/u-discuss</td>
               <td class="col-desc">구조화된 토론 세션. brainstorm/review/decision/workshop/retro 5가지 유형. 결과를 SSoT에 반영</td>
               <td><code>/u-discuss brainstorm "결제 UX"</code><br><code>/u-discuss decision "DB 선택"</code></td>
-            </tr>
-            <tr>
-              <td class="col-abbr">/u-tools-git-pr</td>
-              <td class="col-desc">PR/MR 자동 생성. 변경사항 분석, 커밋 그루핑, 구조화된 PR body, 리뷰 가이드</td>
-              <td><code>/u-tools-git-pr</code><br><code>/u-tools-git-pr --base main</code></td>
             </tr>
             <tr>
               <td class="col-abbr">/u-init<br><span class="badge badge-gray">alias</span></td>
@@ -1007,7 +1039,7 @@
         </li>
         <li>
           <span class="decision-check">Q</span>
-          <div class="decision-body"><strong>어떤 명령어를 써야 할지 모르겠어요</strong><br><span>자연어로 말하세요. PM Agent(<code>u-agent-pm</code>)가 24개 스킬(별칭 3개 포함) 중 가장 적합한 명령으로 자동 라우팅합니다.</span></div>
+          <div class="decision-body"><strong>어떤 명령어를 써야 할지 모르겠어요</strong><br><span>자연어로 말하세요. PM Agent(<code>u-agent-pm</code>)가 25개 스킬(별칭 3개 포함) 중 가장 적합한 명령으로 자동 라우팅합니다.</span></div>
         </li>
         <li>
           <span class="decision-check">Q</span>
