@@ -2415,6 +2415,795 @@ git commit -m "test(figma): corpus verify script for manual acceptance"
 
 ---
 
+## Phase 14 — Common-Component Candidate Detection (spec §7.6)
+
+### Task 14.1: Visual signature helper
+
+**Files:**
+- Create: `skills/u-figma/lib/visual-signature.js`
+- Create: `skills/u-figma/tests/visual-signature.test.js`
+
+- [ ] **Step 1: Failing tests**
+
+Create `skills/u-figma/tests/visual-signature.test.js`:
+
+```js
+const { test } = require('node:test');
+const assert = require('node:assert');
+const { visualSignature } = require('../lib/visual-signature');
+
+const cardA = {
+  type: 'FRAME',
+  fills: [{ type: 'SOLID', color: { r: 1, g: 1, b: 1, a: 1 } }],
+  strokes: [],
+  strokeWeight: 0,
+  cornerRadius: 8,
+  effects: [],
+  layoutMode: 'VERTICAL',
+  primaryAxisSizingMode: 'AUTO',
+  counterAxisSizingMode: 'FIXED',
+  paddingLeft: 16, paddingRight: 16, paddingTop: 16, paddingBottom: 16,
+  itemSpacing: 8,
+  children: [{ type: 'TEXT' }, { type: 'TEXT' }]
+};
+const cardB = { ...cardA, children: [{ type: 'TEXT' }, { type: 'TEXT' }] };
+const cardDifferentPadding = { ...cardA, paddingLeft: 24 };
+
+test('identical shape → identical signature', () => {
+  assert.strictEqual(visualSignature(cardA), visualSignature(cardB));
+});
+test('different padding → different signature', () => {
+  assert.notStrictEqual(visualSignature(cardA), visualSignature(cardDifferentPadding));
+});
+test('signature is sha256:<hex>', () => {
+  assert.match(visualSignature(cardA), /^sha256:[0-9a-f]{64}$/);
+});
+test('children-shape uses type+count, not content', () => {
+  const withDifferentTextContent = { ...cardA, children: [{ type: 'TEXT', characters: 'X' }, { type: 'TEXT', characters: 'Y' }] };
+  assert.strictEqual(visualSignature(cardA), visualSignature(withDifferentTextContent));
+});
+```
+
+- [ ] **Step 2: Run — fail**
+
+Expected: `Cannot find module '../lib/visual-signature'`.
+
+- [ ] **Step 3: Implement**
+
+Create `skills/u-figma/lib/visual-signature.js`:
+
+```js
+'use strict';
+const { hashCanonical } = require('./hash');
+
+function childrenShape(node) {
+  const counts = {};
+  for (const c of node.children || []) {
+    counts[c.type] = (counts[c.type] || 0) + 1;
+  }
+  return counts;
+}
+
+function visualSignature(node) {
+  const sig = {
+    nodeType: node.type,
+    fills: node.fills || [],
+    strokes: node.strokes || [],
+    strokeWeight: node.strokeWeight ?? 0,
+    cornerRadius: node.cornerRadius ?? 0,
+    effects: (node.effects || []).filter(e => e.visible !== false),
+    layoutMode: node.layoutMode || null,
+    primaryAxisSizingMode: node.primaryAxisSizingMode || null,
+    counterAxisSizingMode: node.counterAxisSizingMode || null,
+    paddingLeft: node.paddingLeft ?? 0,
+    paddingRight: node.paddingRight ?? 0,
+    paddingTop: node.paddingTop ?? 0,
+    paddingBottom: node.paddingBottom ?? 0,
+    itemSpacing: node.itemSpacing ?? 0,
+    childrenShape: childrenShape(node)
+  };
+  return hashCanonical(sig);
+}
+
+function textStyleSignature(textNode) {
+  return hashCanonical({
+    fontFamily: textNode.style?.fontFamily ?? null,
+    fontSize: textNode.style?.fontSize ?? null,
+    fontWeight: textNode.style?.fontWeight ?? null,
+    lineHeight: textNode.style?.lineHeight ?? null,
+    letterSpacing: textNode.style?.letterSpacing ?? null
+  });
+}
+
+module.exports = { visualSignature, textStyleSignature };
+```
+
+- [ ] **Step 4: Pass; commit**
+
+```bash
+npm run test:figma
+git add skills/u-figma/lib/visual-signature.js skills/u-figma/tests/visual-signature.test.js
+git commit -m "feat(figma): visual and text-style signature helpers"
+```
+
+### Task 14.2: Candidate detector
+
+**Files:**
+- Create: `skills/u-figma/lib/candidate-detect.js`
+- Create: `skills/u-figma/tests/candidate-detect.test.js`
+
+- [ ] **Step 1: Failing tests**
+
+Create `skills/u-figma/tests/candidate-detect.test.js`:
+
+```js
+const { test } = require('node:test');
+const assert = require('node:assert');
+const { detectCandidates } = require('../lib/candidate-detect');
+
+function card(nodeId, pageId, padding = 16) {
+  return {
+    nodeId, pageId, name: 'Card', parentName: 'Dashboard',
+    type: 'FRAME',
+    fills: [{ type: 'SOLID', color: { r: 1, g: 1, b: 1, a: 1 } }],
+    strokes: [], strokeWeight: 0, cornerRadius: 8, effects: [],
+    layoutMode: 'VERTICAL', primaryAxisSizingMode: 'AUTO', counterAxisSizingMode: 'FIXED',
+    paddingLeft: padding, paddingRight: padding, paddingTop: padding, paddingBottom: padding,
+    itemSpacing: 8, children: [{ type: 'TEXT' }, { type: 'TEXT' }]
+  };
+}
+
+test('visual-signature: 3+ identical frames → one candidate', () => {
+  const nodes = [card('1:1', 'p1'), card('1:2', 'p1'), card('2:1', 'p2')];
+  const result = detectCandidates(nodes, { components: [] }, { minOccurrences: 3 });
+  assert.strictEqual(result.length, 1);
+  assert.strictEqual(result[0].kind, 'visual-signature');
+  assert.strictEqual(result[0].occurrences, 3);
+});
+
+test('below threshold → no candidate', () => {
+  const nodes = [card('1:1', 'p1'), card('1:2', 'p1')];
+  const result = detectCandidates(nodes, { components: [] }, { minOccurrences: 3 });
+  assert.strictEqual(result.length, 0);
+});
+
+test('different padding → separate candidates, each below threshold → none', () => {
+  const nodes = [card('1:1', 'p1', 16), card('1:2', 'p1', 24), card('2:1', 'p2', 32)];
+  const result = detectCandidates(nodes, { components: [] }, { minOccurrences: 3 });
+  assert.strictEqual(result.length, 0);
+});
+
+test('instance-repeat: INSTANCE sharing componentRef 3× → candidate kind=instance-repeat', () => {
+  const instances = [
+    { nodeId: '1:1', pageId: 'p1', name: 'Btn', type: 'INSTANCE', componentRef: 'ext-lib/Button', parentName: 'Form' },
+    { nodeId: '1:2', pageId: 'p1', name: 'Btn', type: 'INSTANCE', componentRef: 'ext-lib/Button', parentName: 'Dialog' },
+    { nodeId: '2:1', pageId: 'p2', name: 'Btn', type: 'INSTANCE', componentRef: 'ext-lib/Button', parentName: 'Header' }
+  ];
+  const result = detectCandidates(instances, { components: [] }, { minOccurrences: 3 });
+  assert.strictEqual(result.length, 1);
+  assert.strictEqual(result[0].kind, 'instance-repeat');
+});
+
+test('duplicate of existing DS is marked', () => {
+  const nodes = [card('1:1', 'p1'), card('1:2', 'p1'), card('2:1', 'p2')];
+  const existing = { components: [{ id: 'CMP-010', visualSignature: require('../lib/visual-signature').visualSignature(card('x', 'y')) }] };
+  const result = detectCandidates(nodes, existing, { minOccurrences: 3 });
+  assert.strictEqual(result[0].existingDsMatch, 'CMP-010');
+  assert.match(result[0].status, /^duplicate-of-/);
+});
+```
+
+- [ ] **Step 2: Run — fail**
+
+Expected: module not found.
+
+- [ ] **Step 3: Implement**
+
+Create `skills/u-figma/lib/candidate-detect.js`:
+
+```js
+'use strict';
+const { visualSignature, textStyleSignature } = require('./visual-signature');
+
+function inferName(nodes) {
+  const names = nodes.map(n => n.name || 'Pattern').filter(Boolean);
+  if (names.length === 0) return 'Pattern';
+  // Find common prefix by splitting on / or -
+  const first = names[0].split(/[\/\-_·\s]/)[0].trim();
+  if (first && names.every(n => n.startsWith(first))) return first;
+  return names[0];
+}
+
+function generatePendingCmpId() {
+  return 'CMP-pending-' + Math.random().toString(16).slice(2, 8);
+}
+
+function toLocation(n) {
+  return { nodeId: n.nodeId, pageId: n.pageId, pageName: n.pageName, parentName: n.parentName };
+}
+
+function extractProps(n) {
+  return {
+    fills: n.fills,
+    cornerRadius: n.cornerRadius,
+    padding: {
+      top: n.paddingTop, right: n.paddingRight, bottom: n.paddingBottom, left: n.paddingLeft
+    },
+    layoutMode: n.layoutMode
+  };
+}
+
+function pickSignature(node) {
+  if (node.type === 'INSTANCE' && node.componentRef) return `instance:${node.componentRef}`;
+  if (node.type === 'FRAME' || node.type === 'RECTANGLE') return `visual:${visualSignature(node)}`;
+  if (node.type === 'TEXT' && !node.styleId) return `text:${textStyleSignature(node)}`;
+  return null;
+}
+
+function inferKind(sig) {
+  if (sig.startsWith('instance:')) return 'instance-repeat';
+  if (sig.startsWith('visual:')) return 'visual-signature';
+  if (sig.startsWith('text:')) return 'text-style';
+  return 'layout-pattern';
+}
+
+function findInDs(existingDs, sampleNode) {
+  const sig = visualSignature(sampleNode);
+  for (const cmp of (existingDs.components || [])) {
+    if (cmp.visualSignature === sig) return cmp;
+  }
+  return null;
+}
+
+function detectCandidates(nodes, existingDs = { components: [] }, cfg = {}) {
+  const minOccurrences = cfg.minOccurrences ?? 3;
+  const sigMap = new Map();
+  for (const n of nodes) {
+    const sig = pickSignature(n);
+    if (!sig) continue;
+    if (!sigMap.has(sig)) sigMap.set(sig, []);
+    sigMap.get(sig).push(n);
+  }
+
+  const out = [];
+  for (const [sig, group] of sigMap) {
+    if (group.length < minOccurrences) continue;
+    const existing = findInDs(existingDs, group[0]);
+    out.push({
+      signature: sig,
+      kind: inferKind(sig),
+      occurrences: group.length,
+      locations: group.map(toLocation),
+      suggestedName: inferName(group),
+      suggestedCmpId: existing ? existing.id : generatePendingCmpId(),
+      sampleProps: extractProps(group[0]),
+      confidence: sig.startsWith('instance:') ? 1.0 : 0.9,
+      existingDsMatch: existing ? existing.id : null,
+      status: existing ? `duplicate-of-${existing.id}` : 'pending-promotion'
+    });
+  }
+  return out;
+}
+
+module.exports = { detectCandidates, pickSignature, inferKind, findInDs };
+```
+
+- [ ] **Step 4: Pass**
+
+Run: `npm run test:figma`
+Expected: 5 candidate tests pass.
+
+- [ ] **Step 5: Commit**
+
+```bash
+git add skills/u-figma/lib/candidate-detect.js skills/u-figma/tests/candidate-detect.test.js
+git commit -m "feat(figma): common-component candidate detector (4 sources + DS dedup)"
+```
+
+### Task 14.3: Aggregate integration — emit candidates
+
+**Files:**
+- Modify: `_meta/schemas/figma-aggregate.schema.json`
+
+- [ ] **Step 1: Add `componentCandidates` to aggregate schema**
+
+Add to `properties`:
+
+```json
+"componentCandidates": {
+  "type": "array",
+  "description": "Patterns repeated >= minOccurrences times, candidates for DS promotion. See figma-analysis.md §7.6, §12.10.",
+  "items": {
+    "type": "object",
+    "required": ["signature", "kind", "occurrences", "suggestedName", "status"],
+    "properties": {
+      "signature": { "type": "string" },
+      "kind": { "enum": ["instance-repeat", "visual-signature", "layout-pattern", "text-style"] },
+      "occurrences": { "type": "integer", "minimum": 1 },
+      "locations": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "nodeId": { "type": "string" },
+            "pageId": { "type": "string" },
+            "pageName": { "type": "string" },
+            "parentName": { "type": "string" }
+          }
+        }
+      },
+      "suggestedName": { "type": "string" },
+      "suggestedCmpId": { "type": "string" },
+      "sampleProps": { "type": "object" },
+      "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+      "existingDsMatch": { "type": ["string", "null"] },
+      "status": {
+        "type": "string",
+        "pattern": "^(pending-promotion|proposed|promoted|rejected|below-threshold|duplicate-of-.+)$"
+      }
+    }
+  }
+}
+```
+
+- [ ] **Step 2: Regression**
+
+Run: `npm test`
+Expected: existing aggregate fixture still validates.
+
+- [ ] **Step 3: Commit**
+
+```bash
+git add _meta/schemas/figma-aggregate.schema.json
+git commit -m "feat(figma): aggregate schema supports componentCandidates[]"
+```
+
+---
+
+## Phase 15 — DS Promotion Pipeline + FE DS-First
+
+### Task 15.1: DS manifest query helper
+
+**Files:**
+- Create: `skills/u-figma/lib/ds-query.js`
+- Create: `skills/u-figma/tests/ds-query.test.js`
+
+- [ ] **Step 1: Failing tests**
+
+Create `skills/u-figma/tests/ds-query.test.js`:
+
+```js
+const { test } = require('node:test');
+const assert = require('node:assert');
+const { loadDs, findComponent, findProposal } = require('../lib/ds-query');
+const fs = require('fs');
+const path = require('path');
+const os = require('os');
+
+function tmpDir() { return fs.mkdtempSync(path.join(os.tmpdir(), 'ds-query-')); }
+
+test('loadDs returns empty when missing', () => {
+  assert.deepStrictEqual(loadDs('/nowhere'), { components: [] });
+});
+
+test('findComponent by id', () => {
+  const ds = { components: [{ id: 'CMP-010', name: 'Button' }] };
+  assert.strictEqual(findComponent(ds, { id: 'CMP-010' }).name, 'Button');
+});
+
+test('findComponent by intent+tag', () => {
+  const ds = { components: [{ id: 'CMP-010', name: 'Button', tag: 'button', intents: ['primary-action'] }] };
+  assert.strictEqual(findComponent(ds, { tag: 'button', intent: 'primary-action' }).id, 'CMP-010');
+});
+
+test('findProposal detects existing proposal file', () => {
+  const dir = tmpDir();
+  fs.mkdirSync(path.join(dir, 'proposals'), { recursive: true });
+  fs.writeFileSync(path.join(dir, 'proposals', 'Card.md'), '# Proposal\n');
+  assert.strictEqual(findProposal(dir, 'Card'), path.join(dir, 'proposals', 'Card.md'));
+  assert.strictEqual(findProposal(dir, 'DoesNotExist'), null);
+});
+```
+
+- [ ] **Step 2: Implement**
+
+Create `skills/u-figma/lib/ds-query.js`:
+
+```js
+'use strict';
+const fs = require('fs');
+const path = require('path');
+
+function loadDs(dsPath) {
+  if (!fs.existsSync(dsPath)) return { components: [] };
+  try {
+    return JSON.parse(fs.readFileSync(dsPath, 'utf8'));
+  } catch (_) {
+    return { components: [] };
+  }
+}
+
+function findComponent(ds, query) {
+  const list = ds.components || [];
+  if (query.id) return list.find(c => c.id === query.id) || null;
+  if (query.tag || query.intent) {
+    return list.find(c =>
+      (!query.tag || c.tag === query.tag) &&
+      (!query.intent || (c.intents || []).includes(query.intent))
+    ) || null;
+  }
+  return null;
+}
+
+function findProposal(proposalsDir, name) {
+  const p = path.join(proposalsDir, 'proposals', `${name}.md`);
+  return fs.existsSync(p) ? p : null;
+}
+
+module.exports = { loadDs, findComponent, findProposal };
+```
+
+- [ ] **Step 3: Pass; commit**
+
+```bash
+npm run test:figma
+git add skills/u-figma/lib/ds-query.js skills/u-figma/tests/ds-query.test.js
+git commit -m "feat(figma): DS query helper (components + proposals)"
+```
+
+### Task 15.2: Proposal generator
+
+**Files:**
+- Create: `skills/u-figma/lib/proposal-gen.js`
+- Create: `skills/u-figma/tests/proposal-gen.test.js`
+
+- [ ] **Step 1: Failing test**
+
+Create `skills/u-figma/tests/proposal-gen.test.js`:
+
+```js
+const { test } = require('node:test');
+const assert = require('node:assert');
+const { renderProposal } = require('../lib/proposal-gen');
+
+test('renders proposal MD with source, occurrences, inferred API', () => {
+  const md = renderProposal({
+    suggestedName: 'Card',
+    source: 'figma-candidate',
+    occurrences: 7,
+    locations: [{ pageName: 'Wireframes', parentName: 'Dashboard' }],
+    sampleProps: { cornerRadius: 8, padding: { top: 16, right: 16, bottom: 16, left: 16 } },
+    inferredProps: ['title', 'body']
+  });
+  assert.match(md, /# Proposal: Card/);
+  assert.match(md, /\*\*Occurrences:\*\* 7/);
+  assert.match(md, /title/);
+  assert.match(md, /figma-candidate/);
+});
+```
+
+- [ ] **Step 2: Implement**
+
+Create `skills/u-figma/lib/proposal-gen.js`:
+
+```js
+'use strict';
+
+function renderProposal({ suggestedName, source, occurrences, locations = [], sampleProps = {}, inferredProps = [], screenId = null }) {
+  const lines = [
+    `# Proposal: ${suggestedName}`,
+    ``,
+    `**Status:** Proposed`,
+    `**Source:** ${source}` + (screenId ? ` (screen ${screenId})` : ''),
+    `**Occurrences:** ${occurrences}`,
+    ``,
+    `## Usage locations`,
+    ...locations.map(l => `- ${l.pageName || '?'} → ${l.parentName || '?'}`),
+    ``,
+    `## Inferred API`,
+    `- Props: ${inferredProps.length ? inferredProps.join(', ') : '(to be determined)'}`,
+    `- Variants: default (add more as needed)`,
+    ``,
+    `## Inferred tokens`,
+    `- cornerRadius: ${sampleProps.cornerRadius ?? 'n/a'}`,
+    `- padding: ${JSON.stringify(sampleProps.padding || {})}`,
+    ``,
+    `## Next steps`,
+    `- [ ] Approve → merge into \`docs/common/design-system.json\``,
+    `- [ ] Reject → mark \`status: "rejected"\``,
+    `- [ ] Modify → edit this proposal, then approve`
+  ];
+  return lines.join('\n');
+}
+
+module.exports = { renderProposal };
+```
+
+- [ ] **Step 3: Pass; commit**
+
+```bash
+npm run test:figma
+git add skills/u-figma/lib/proposal-gen.js skills/u-figma/tests/proposal-gen.test.js
+git commit -m "feat(figma): proposal markdown generator"
+```
+
+### Task 15.3: FE lint — forbidden pattern detector
+
+**Files:**
+- Create: `skills/u-figma/lib/fe-lint.js`
+- Create: `skills/u-figma/tests/fe-lint.test.js`
+
+- [ ] **Step 1: Failing tests**
+
+Create `skills/u-figma/tests/fe-lint.test.js`:
+
+```js
+const { test } = require('node:test');
+const assert = require('node:assert');
+const { lintFe } = require('../lib/fe-lint');
+
+test('rejects arbitrary Tailwind px', () => {
+  const src = `<div className="w-[321px] p-4">x</div>`;
+  const errs = lintFe(src);
+  assert.ok(errs.some(e => e.rule === 'arbitrary-value'));
+});
+
+test('rejects raw hex color', () => {
+  const src = `<div style={{ color: '#3B82F6' }}>x</div>`;
+  const errs = lintFe(src);
+  assert.ok(errs.some(e => e.rule === 'raw-hex'));
+});
+
+test('rejects raw px in style', () => {
+  const src = `<div style={{ padding: '17px' }}>x</div>`;
+  const errs = lintFe(src);
+  assert.ok(errs.some(e => e.rule === 'raw-px'));
+});
+
+test('accepts DS variables', () => {
+  const src = `<div className="text-brand-primary p-md" style={{ color: 'var(--color-brand-primary)' }}>x</div>`;
+  assert.strictEqual(lintFe(src).length, 0);
+});
+
+test('accepts runtime-computed inline style', () => {
+  const src = 'const s = { transform: `translateX(${x}px)` };';
+  assert.strictEqual(lintFe(src).length, 0);
+});
+```
+
+- [ ] **Step 2: Implement**
+
+Create `skills/u-figma/lib/fe-lint.js`:
+
+```js
+'use strict';
+
+const RULES = [
+  { rule: 'arbitrary-value', re: /className=["'`][^"'`]*\b(w|h|p|m|top|left|right|bottom)-\[[^\]]+\]/g },
+  { rule: 'raw-hex', re: /(?:color|backgroundColor|borderColor)\s*:\s*['"`]#[0-9a-fA-F]{3,8}['"`]/g },
+  { rule: 'raw-px', re: /(?:padding|margin|width|height|fontSize|borderRadius|gap)\s*:\s*['"`]\d+(?:px|rem|em)['"`]/g }
+];
+
+function lintFe(src) {
+  const errors = [];
+  for (const r of RULES) {
+    let m;
+    const re = new RegExp(r.re.source, r.re.flags);
+    while ((m = re.exec(src)) !== null) {
+      errors.push({ rule: r.rule, index: m.index, match: m[0] });
+    }
+  }
+  return errors;
+}
+
+module.exports = { lintFe, RULES };
+```
+
+- [ ] **Step 3: Pass; commit**
+
+```bash
+npm run test:figma
+git add skills/u-figma/lib/fe-lint.js skills/u-figma/tests/fe-lint.test.js
+git commit -m "feat(figma): FE lint for forbidden patterns (arbitrary/hex/px)"
+```
+
+### Task 15.4: DS coverage computation
+
+**Files:**
+- Create: `skills/u-figma/lib/ds-coverage.js`
+- Create: `skills/u-figma/tests/ds-coverage.test.js`
+
+- [ ] **Step 1: Failing test**
+
+Create `skills/u-figma/tests/ds-coverage.test.js`:
+
+```js
+const { test } = require('node:test');
+const assert = require('node:assert');
+const { computeDsCoverage } = require('../lib/ds-coverage');
+
+test('coverage = DS imports / total JSX elements', () => {
+  const src = `
+    import { Button } from '@/ds/button';
+    import { Input } from '@/ds/input';
+    function X() {
+      return (
+        <div>
+          <Button>ok</Button>
+          <Input />
+          <span>raw</span>
+          <p>also raw</p>
+        </div>
+      );
+    }
+  `;
+  const cov = computeDsCoverage(src);
+  assert.strictEqual(cov.dsElements, 2);
+  assert.strictEqual(cov.totalElements, 5);
+  assert.strictEqual(cov.percent, 40);
+});
+```
+
+- [ ] **Step 2: Implement**
+
+Create `skills/u-figma/lib/ds-coverage.js`:
+
+```js
+'use strict';
+
+function computeDsCoverage(src) {
+  const imports = new Set();
+  const importRe = /import\s*\{([^}]+)\}\s*from\s*['"`]@\/ds\/[^'"`]+['"`]/g;
+  let m;
+  while ((m = importRe.exec(src)) !== null) {
+    for (const name of m[1].split(',')) imports.add(name.trim());
+  }
+
+  const jsxRe = /<([A-Za-z][A-Za-z0-9_.-]*)/g;
+  let total = 0;
+  let ds = 0;
+  while ((m = jsxRe.exec(src)) !== null) {
+    total++;
+    if (imports.has(m[1]) || m[1].startsWith('DS.')) ds++;
+  }
+
+  return {
+    dsElements: ds,
+    totalElements: total,
+    percent: total === 0 ? 0 : Math.round((ds / total) * 100)
+  };
+}
+
+module.exports = { computeDsCoverage };
+```
+
+- [ ] **Step 3: Pass; commit**
+
+```bash
+npm run test:figma
+git add skills/u-figma/lib/ds-coverage.js skills/u-figma/tests/ds-coverage.test.js
+git commit -m "feat(figma): DS coverage computation for generated FE"
+```
+
+### Task 15.5: `/u-dev` SKILL update — DS-first section
+
+**Files:**
+- Modify: `skills/u-dev/SKILL.md`
+
+- [ ] **Step 1: Insert Step 0.5 DS-first contract into u-dev**
+
+Locate `### Step 1: Generate FE Code` in `skills/u-dev/SKILL.md` and insert before it:
+
+```markdown
+### Step 0.5: Design-System-First Contract (spec §12.11)
+
+Applies to all FE generation. Enforced for every JSX element produced.
+
+1. **DS lookup first**: for every UI element needed, query `docs/common/design-system.json` via `skills/u-figma/lib/ds-query.js` (`findComponent({ id | tag+intent })`).
+2. **If DS match**: emit `import { <Cmp> } from '@/ds/<cmp>'` + JSX that uses the component. Do not re-implement.
+3. **If DS miss** → auto-extend proposal (`figma.dsEnforcement.level = "error"` default):
+   a. Emit `<DS.Placeholder name="<Name>" reason="no DS match" screenId="<id>">` stub.
+   b. Generate `docs/common/design-system/proposals/<Name>.md` via `skills/u-figma/lib/proposal-gen.js` with `source: "ds-gap"`.
+   c. Append to `docs/{app}/dev/ds-gaps.md`:
+      `| {screenId} | {Name} | {inferred props} | proposals/{Name}.md |`
+   d. Return from `/u-dev` with `dsGapsFound: N`. User reviews + runs `/u-design --accept-proposals` + re-runs `/u-dev`.
+4. **Lint gate** (applies after every file write): run `skills/u-figma/lib/fe-lint.js` → forbidden patterns (arbitrary px, raw hex, inline design tokens) fail the file unless `figma.dsEnforcement.level = "warn"`.
+5. **Coverage measurement**: after Step 1, compute `skills/u-figma/lib/ds-coverage.js` per file, aggregate per-screen. Write `docs/{app}/dev/ds-coverage.md`. Fail `--loop` gate if < `figma.dsEnforcement.dsCoverageThreshold` (default 85).
+
+Forbidden / Allowed catalog: see `skills/u-plan/references/figma-analysis.md` §12.11.2.
+```
+
+- [ ] **Step 2: Commit**
+
+```bash
+git add skills/u-dev/SKILL.md
+git commit -m "feat(figma): /u-dev DS-first contract (auto-extend proposal + lint + coverage)"
+```
+
+### Task 15.6: Gate rules — DS gates
+
+**Files:**
+- Modify: `_meta/schemas/gate-rules.json`
+
+- [ ] **Step 1: Append four gates from spec §12.12**
+
+Add to gate-rules (pattern-match existing shape):
+
+```json
+{
+  "id": "FIGMA-PROM-001",
+  "name": "Promotion completeness",
+  "description": "No componentCandidates with status=pending-promotion after sync",
+  "applies": "if-figma-present",
+  "check": "aggregate.componentCandidates all status != 'pending-promotion'"
+},
+{
+  "id": "FIGMA-DS-COV-001",
+  "name": "DS coverage",
+  "description": "FE dsCoverage >= figma.dsEnforcement.dsCoverageThreshold",
+  "applies": "if-app-has-fe",
+  "check": "docs/{app}/dev/ds-coverage.md average percent >= threshold"
+},
+{
+  "id": "FIGMA-DS-FORBID-001",
+  "name": "Forbidden patterns absent",
+  "description": "Generated FE passes fe-lint with zero errors",
+  "applies": "if-app-has-fe",
+  "check": "lintFe(generatedFiles) == []"
+},
+{
+  "id": "FIGMA-DS-GAP-001",
+  "name": "DS gaps documented",
+  "description": "Every DS.Placeholder has a matching proposal file",
+  "applies": "if-app-has-fe",
+  "check": "every Placeholder.name → docs/common/design-system/proposals/<name>.md exists"
+}
+```
+
+- [ ] **Step 2: Commit**
+
+```bash
+git add _meta/schemas/gate-rules.json
+git commit -m "feat(figma): 4 DS gates (promotion, coverage, forbidden, gaps)"
+```
+
+### Task 15.7: Config schema — promotion + dsEnforcement
+
+**Files:**
+- Modify: `_meta/schemas/config.schema.json`
+
+- [ ] **Step 1: Extend figma block**
+
+Append inside `figma.properties`:
+
+```json
+"promotion": {
+  "type": "object",
+  "properties": {
+    "minOccurrences": { "type": "integer", "minimum": 1, "default": 3 },
+    "autoPromote": { "type": "boolean", "default": false },
+    "duplicateSimilarityThreshold": { "type": "number", "minimum": 0, "maximum": 1, "default": 0.8 }
+  }
+},
+"dsEnforcement": {
+  "type": "object",
+  "properties": {
+    "level": { "enum": ["off", "warn", "error"], "default": "error" },
+    "dsCoverageThreshold": { "type": "integer", "minimum": 0, "maximum": 100, "default": 85 }
+  }
+}
+```
+
+- [ ] **Step 2: Regression + commit**
+
+```bash
+npm test
+git add _meta/schemas/config.schema.json
+git commit -m "feat(figma): config schema for promotion + dsEnforcement"
+```
+
+---
+
 ## Phase 13 — Docs Update
 
 ### Task 13.1: README entry
@@ -2463,14 +3252,18 @@ git commit -m "chore: bump version to 3.5.0 for /u-figma feature"
 - [ ] Every task has exact file paths (no "the appropriate file").
 - [ ] Every code step shows the code in full — no "add validation".
 - [ ] Every test step shows expected output (PASS / FAIL / specific error message).
-- [ ] Method names consistent across tasks: `extractBase`, `detectPositionalVariants`, `unionVariants`, `checkCompleteness`, `classifyDensity`, `hashCanonical`, `loadManifest`, `saveManifest`, `updateFrameStatus`, `dedupComments`, `fetchComments`, `resolvePAT`, `detectStickyNotes`, `computeCoverageReport`.
+- [ ] Method names consistent across tasks: `extractBase`, `detectPositionalVariants`, `unionVariants`, `checkCompleteness`, `classifyDensity`, `hashCanonical`, `loadManifest`, `saveManifest`, `updateFrameStatus`, `dedupComments`, `fetchComments`, `resolvePAT`, `detectStickyNotes`, `computeCoverageReport`, `visualSignature`, `textStyleSignature`, `detectCandidates`, `pickSignature`, `inferKind`, `findInDs`, `loadDs`, `findComponent`, `findProposal`, `renderProposal`, `lintFe`, `computeDsCoverage`.
 - [ ] Every spec section (§7–§14) has at least one task:
-  - §7 → Tasks 2.1–2.4
+  - §7 → Tasks 2.1–2.4 (variant detection)
+  - §7.6 → Tasks 14.1–14.3 (common-component candidates)
   - §8 → Tasks 1.1, 5.1, 10.1
   - §9 → Task 6.1
   - §10 → Tasks 3.1, 7.1
   - §11 → Tasks 4.1–4.4
   - §12 → Tasks 9.1, 9.2
+  - §12.10 → Tasks 15.1, 15.2 (DS promotion)
+  - §12.11 → Tasks 15.3, 15.4, 15.5 (FE DS-first)
+  - §12.12 → Tasks 15.6, 15.7 (gates + config)
   - §13 → Tasks 12.1, 12.2
   - §14 → Task 13.1, 13.2
 - [ ] Each phase ends with working, committed code (no half-states).

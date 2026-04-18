@@ -1235,6 +1235,106 @@ function detectPositionalVariants(frames):
 3. **State gap**: a base has only `Default` but no `Error|Loading|Empty` → info warning.
 4. **Naming inconsistency**: `/` vs `-` mixed within the same page → warning.
 
+### 7.6 Common-component candidate detection
+
+Variant detection (§7.1–§7.5) only handles nodes already declared as `COMPONENT_SET` or named as state variants. Real Figma files are full of **ad-hoc patterns** — repeated visual blocks the designer forgot to promote to components. These must be detected and fed to the design-system promotion pipeline (§12.10).
+
+Four candidate sources. Every node that triggers any source becomes an entry in `componentCandidates[]` (separate from `componentSets[]`).
+
+| Source | Signal | Threshold |
+|---|---|---|
+| **P1. Instance repetition** | INSTANCE nodes sharing `componentRef` but the referenced component is not promoted to the project's design system | count ≥ 3 |
+| **P2. Visual-signature repetition** | Non-instance FRAME/RECTANGLE with identical visual signature (fill + stroke + radius + shadow + layoutMode) | count ≥ 3 |
+| **P3. Auto-layout pattern** | FRAME with same `layoutMode` + `primaryAxisSizingMode` + `itemSpacing` + `padding*` + children-signature | count ≥ 3 |
+| **P4. Text-style repetition** | TEXT with same `fontFamily` + `fontSize` + `fontWeight` + `lineHeight` + `letterSpacing`, but no applied text style | count ≥ 3 |
+
+The threshold (3) is configurable via `figma.promotion.minOccurrences` (§12.7).
+
+#### 7.6.1 Visual signature
+
+```
+function visualSignature(node):
+    return sha256(canonicalize({
+        nodeType: node.type,           # FRAME | RECTANGLE
+        fills: node.fills || [],       # normalized: gradient → stops, solid → color
+        strokes: node.strokes || [],
+        strokeWeight: node.strokeWeight,
+        cornerRadius: node.cornerRadius,
+        effects: (node.effects || []).filter(e => e.visible !== false),
+        layoutMode: node.layoutMode,
+        primaryAxisSizingMode: node.primaryAxisSizingMode,
+        counterAxisSizingMode: node.counterAxisSizingMode,
+        paddingLeft: node.paddingLeft, paddingRight: node.paddingRight,
+        paddingTop: node.paddingTop, paddingBottom: node.paddingBottom,
+        itemSpacing: node.itemSpacing,
+        // children-shape, not children-content — length + type counts only
+        childrenShape: (node.children || []).map(c => ({ type: c.type, count: 1 }))
+    }))
+```
+
+Note: `childrenShape` is a shape fingerprint — **type** of each child + count, not text content. This lets "Card with image + title + 2 lines" match other cards with same structure even if content differs.
+
+#### 7.6.2 Candidate schema
+
+```json
+{
+  "signature": "sha256:abc...",
+  "kind": "instance-repeat | visual-signature | layout-pattern | text-style",
+  "occurrences": 7,
+  "locations": [
+    { "nodeId": "1:2", "pageId": "p1", "pageName": "Wireframes", "parentName": "Dashboard" },
+    { "nodeId": "3:5", "pageId": "p2", "pageName": "Settings", "parentName": "Profile" }
+  ],
+  "suggestedName": "Card",
+  "suggestedCmpId": "CMP-pending-010",
+  "sampleProps": {
+    "fills": [{ "type": "SOLID", "color": { "r": 1, "g": 1, "b": 1, "a": 1 } }],
+    "cornerRadius": 8,
+    "padding": { "top": 16, "right": 16, "bottom": 16, "left": 16 },
+    "layoutMode": "VERTICAL"
+  },
+  "confidence": 0.95,
+  "existingDsMatch": null,
+  "status": "pending-promotion | promoted | rejected | duplicate-of-CMP-010"
+}
+```
+
+Fields:
+- `suggestedName` — inferred from: shared parent/layer names across occurrences (e.g., 7 nodes named "Card_1", "Card / hover" → `Card`). If no convergence, use `Pattern_<shortHash>`.
+- `confidence` — 1.0 for instance-repeat; for visual-signature, the ratio of signature matches to total fields (lower if only fills match but layout differs).
+- `existingDsMatch` — set to `CMP-xxx` if current DS already has a matching entry (dedupe against DS so we don't re-propose).
+
+#### 7.6.3 Detection algorithm
+
+```
+function detectCandidates(allNodes, existingDs):
+    sigToNodes = new Map()
+    for node in allNodes:
+        sig = pickSignature(node)      # uses the right signature fn per node type
+        if not sig: continue
+        push(sigToNodes, sig, node)
+
+    candidates = []
+    for [sig, nodes] of sigToNodes:
+        if nodes.length < config.minOccurrences: continue
+        existing = findInDs(existingDs, nodes[0])
+        candidates.push({
+            signature: sig,
+            kind: inferKind(nodes),
+            occurrences: nodes.length,
+            locations: nodes.map(toLocation),
+            suggestedName: inferName(nodes),
+            suggestedCmpId: existing ? existing.id : generatePendingCmpId(),
+            sampleProps: extractProps(nodes[0]),
+            confidence: computeConfidence(nodes),
+            existingDsMatch: existing?.id ?? null,
+            status: existing ? "duplicate-of-" + existing.id : "pending-promotion"
+        })
+    return candidates
+```
+
+Output is written to `aggregate.componentCandidates[]` and propagated to §12.10 promotion pipeline.
+
 ---
 
 ## 8. Manifest Schema & Coverage Ledger
@@ -1778,6 +1878,15 @@ Failed gates propose an auto `/u-figma verify --fix`.
       "autoTriggerFromPlan": true,
       "autoTriggerFromDesign": true,
       "preserveUserEdits": true
+    },
+    "promotion": {
+      "minOccurrences": 3,
+      "autoPromote": false,
+      "duplicateSimilarityThreshold": 0.8
+    },
+    "dsEnforcement": {
+      "level": "error",
+      "dsCoverageThreshold": 85
     }
   }
 }
@@ -1796,8 +1905,185 @@ Auto-feed:
 - `aggregate.decisions[]` → `data/backlog/decisions/`
 - `aggregate.comments.unresolved[]` → `data/backlog/questions/`
 - `aggregate.coverageWarnings[]` → `data/backlog/issues/figma/`
+- `aggregate.componentCandidates[]` with `status = "pending-promotion"` → `data/backlog/questions/ds-promotion/<name>.md` (§12.10)
 
 `/u-backlog groom` surfaces Figma-sourced items alongside others.
+
+### 12.10 Design System Promotion Pipeline
+
+`componentCandidates[]` (§7.6) drives automatic or user-reviewed promotion into `docs/common/design-system/*`.
+
+#### 12.10.1 Promotion flow
+
+```
+/u-figma sync <url> --to design
+  └─▶ read aggregate.componentCandidates[]
+       └─▶ for each c where c.status == "pending-promotion":
+            1. if c.existingDsMatch != null:
+                 mark c.status = "duplicate-of-<id>", skip generation
+            2. else if c.occurrences >= config.figma.promotion.minOccurrences (default 3):
+                 a. generate docs/common/design-system/proposals/<suggestedName>.md
+                    (full DS-component spec stub: API, variants, slots, tokens used)
+                 b. write data/backlog/questions/ds-promotion/<suggestedName>.md
+                    with: "This pattern appears {occurrences}× across {locations}. Promote to DS?"
+                 c. mark c.status = "proposed"
+            3. else:
+                 mark c.status = "below-threshold", skip
+       └─▶ if config.figma.promotion.autoPromote == true:
+            for each c where c.status == "proposed":
+              merge proposal into docs/common/design-system.json (new CMP-xxx entry)
+              mark c.status = "promoted"
+       └─▶ report: proposed N, promoted M, duplicates K
+```
+
+#### 12.10.2 Proposal document structure
+
+`docs/common/design-system/proposals/<name>.md`:
+
+```markdown
+# Proposal: <suggestedName> (from Figma common pattern)
+
+**Status:** Proposed
+**Source:** aggregate.componentCandidates[<signature>]
+**Occurrences:** 7
+**Detected by:** visual-signature
+
+## Usage locations
+- Wireframes → Dashboard → Card #3
+- Settings → Profile → Card #1
+- ...
+
+## Inferred API
+- Props: { title, body, footer, onClick }
+- Variants: (based on detected naming) default | selected | disabled
+- Slots: header, body, footer
+
+## Inferred tokens
+- Background: DS-010 surface/default
+- Border: DS-020 border/subtle
+- Radius: DS-060 radius-md
+
+## Next steps
+- [ ] Approve → merge into `docs/common/design-system.json` as CMP-<id>
+- [ ] Reject → mark `status: "rejected"` in manifest
+- [ ] Modify → edit this proposal, then approve
+```
+
+Approval is triggered by `/u-design --accept-proposals` (new flag) or manual edit of `docs/common/design-system.json`.
+
+#### 12.10.3 Duplicate detection against existing DS
+
+Before emitting a proposal, compare candidate's `sampleProps` to existing DS components via signature match:
+
+```
+function findInDs(existingDs, sampleNode):
+    sig = visualSignature(sampleNode)
+    for cmp in existingDs.components:
+        if cmp.visualSignature == sig: return cmp
+        # soft match: compare individual fields, >= 80% similarity
+        if softSimilarity(cmp.sampleProps, sampleNode) >= 0.8: return cmp
+    return null
+```
+
+Duplicates are recorded (`status: "duplicate-of-CMP-010"`) — still visible in reports but not re-proposed.
+
+#### 12.10.4 Promotion gate
+
+`/u-gate` or `--loop` adds `FIGMA-PROM-001`:
+- Every `componentCandidates[]` with `occurrences >= minOccurrences` must have `status ∈ {"promoted", "proposed", "rejected", "duplicate-of-*"}` — no `pending-promotion` left after sync.
+
+### 12.11 FE Design-System-First Generation (`/u-dev` enforcement)
+
+User requirement: **FE must maximally use DS + UI components; arbitrary inline styling is forbidden.** Enforced at generation time, with auto-extend proposal for DS gaps.
+
+#### 12.11.1 Generation contract
+
+For every UI element `/u-dev` emits:
+
+1. **DS lookup first**: query `docs/common/design-system.json` by `cmpId` or by `tag + intent` match. If hit → import and use:
+   ```tsx
+   import { Button } from '@/ds/button';
+   <Button variant="primary" size="md">Submit</Button>
+   ```
+2. **DS miss → auto-extend proposal**:
+   a. Emit stub:
+      ```tsx
+      import { DS } from '@/ds';
+      <DS.Placeholder
+        name="ConfirmDialog"
+        reason="no matching DS component"
+        screenId="S2030201"
+      >
+        {/* TODO: replace with DS.ConfirmDialog once promoted */}
+      </DS.Placeholder>
+      ```
+   b. Generate `docs/common/design-system/proposals/<ConfirmDialog>.md` with inferred API (same template as §12.10.2) — **source type**: `ds-gap` (distinct from Figma-detected `figma-candidate`).
+   c. Append to `docs/{app}/dev/ds-gaps.md`:
+      ```markdown
+      | Screen | Missing | Needed props | Proposal |
+      |---|---|---|---|
+      | S2030201 | ConfirmDialog | title, message, onConfirm, onCancel | proposals/ConfirmDialog.md |
+      ```
+   d. `/u-dev` returns with `dsGapsFound: N`. User reviews proposals, runs `/u-design --accept-proposals` to merge, then re-runs `/u-dev` which now finds the DS hit.
+
+#### 12.11.2 Forbidden patterns in generated code
+
+The generator and lint layer reject:
+
+| Forbidden | Example | Reason |
+|---|---|---|
+| Arbitrary px/rem values | `className="w-[321px]"`, `style={{ padding: '17px' }}` | not in DS scale |
+| Raw hex colors | `#3B82F6`, `rgb(59,130,246)` | must use `var(--color-*)` or DS token class |
+| Inline `style={...}` for layout/color/typography | `style={{ color: '#000' }}` | DS utility classes only |
+| Direct Tailwind color utilities | `text-blue-500` | use `text-brand-primary` or DS wrapper |
+
+**Allowed:**
+- DS-sourced utilities: `class="text-brand-primary p-md rounded-md"`
+- DS tokens via CSS variables: `color: var(--color-brand-primary)`
+- DS component imports: `import { Input } from '@/ds/input'`
+- Position-only inline style when dynamic: `style={{ transform: \`translateX(${x}px)\` }}` (allowed because values are runtime-computed, not design tokens)
+
+#### 12.11.3 Lint rule (generator-side)
+
+`/u-dev` post-processes every generated file through a lint that parses the code and fails on forbidden patterns:
+
+```
+for each generated .tsx/.jsx/.css file:
+  parse AST
+  walk → find JSX attrs: className, style
+    for each className string:
+      tokens = split(className, ' ')
+      for each token:
+        if matches /^(w|h|p|m|top|left|right|bottom)-\[.+\]$/: FAIL
+        if matches /^(text|bg|border)-(red|blue|green|...)-\d+$/
+          and not in DS.allowedPalette: FAIL
+    for each style object literal:
+      for each key in [color, backgroundColor, padding, margin, width, height, fontSize, border*]:
+        if value matches /^#[0-9a-f]{3,8}$/i: FAIL
+        if value matches /^\d+(px|rem|em)$/: FAIL
+  if any FAIL: emit error with file:line
+```
+
+Config flag `figma.dsEnforcement.level`: `"off" | "warn" | "error"` (default `"error"` for new projects, `"warn"` for retrofits).
+
+#### 12.11.4 DS-coverage measurement
+
+After `/u-dev`, compute coverage per `{app}`:
+
+```
+dsCoverage = (# JSX elements imported from @/ds/*) / (# total JSX elements) × 100
+```
+
+Report to `docs/{app}/dev/ds-coverage.md` with per-screen breakdown. Target: ≥ 85% (configurable `figma.dsCoverageThreshold`).
+
+### 12.12 Gatekeeper gates (additions)
+
+Adding to §12.6 list:
+
+- **FIGMA-PROM-001 — Promotion completeness**: no `componentCandidates[].status == "pending-promotion"` after sync.
+- **FIGMA-DS-COV-001 — DS coverage**: FE code per app must have `dsCoverage >= figma.dsCoverageThreshold` (default 85%).
+- **FIGMA-DS-FORBID-001 — Forbidden patterns absent**: no arbitrary px/hex/inline in generated FE files (lint clean).
+- **FIGMA-DS-GAP-001 — DS gaps documented**: every `DS.Placeholder` in generated code has a matching proposal in `docs/common/design-system/proposals/`.
 
 ---
 
