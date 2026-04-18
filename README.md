@@ -60,7 +60,7 @@ Wrappers around external programs/services. All u-maker phase skills route throu
 | Command | External tool | Used by |
 |---------|--------------|---------|
 | `/u-tools-figma` | Figma API / Plugin | `/u-prepare`, `/u-analyze`, `/u-reverse`, `/u-design` (auto-delegated on Figma sources) |
-| `/u-tools-browser` | Playwright MCP → chrome-devtools MCP → agent-browser CLI | `/u-gatekeeping` (E2E), `/u-report-weekly` (capture), `/u-dev --verify`, `/u-wireframe --preview` |
+| `/u-tools-browser` | agent-browser CLI → Playwright MCP → chrome-devtools MCP | `/u-gatekeeping` (E2E), `/u-report-weekly` (capture), `/u-dev --verify`, `/u-wireframe --preview` |
 | `/u-tools-git-pr` | git + `gh` CLI + GitHub API | Standalone PR generator with intelligent grouping |
 
 ### Rule packs (external reference integrations)

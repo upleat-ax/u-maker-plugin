@@ -29,27 +29,27 @@ All u-maker interactions with the browser MUST go through the protocol in this s
 - Failure triage (fix / todo / skip) identical everywhere
 - Headed vs headless mode asked once per session
 
-If the platform offers multiple ways to control a browser, always pick **Playwright MCP** first, **chrome-devtools MCP** as fallback, **agent-browser CLI** only if both are unavailable.
+If the platform offers multiple ways to control a browser, always pick **agent-browser CLI** first, **Playwright MCP** as fallback, **chrome-devtools MCP** only if both are unavailable.
 
 ## Prerequisites
 
 - Local dev server running on the target app's port (web 3000, admin 3001, backend 2920 by default)
-- Playwright MCP available (`mcp__plugin_playwright_playwright__*` tools)
+- `agent-browser` CLI installed (primary); Playwright MCP (`mcp__plugin_playwright_playwright__*` tools) as fallback
 - Git repository initialised (required for scope detection by diff)
 
 ### Tool Detection
 
-Before step 1, verify that Playwright MCP is reachable:
+Before step 1, verify that a browser backend is reachable. Check in this order:
 
-1. If `mcp__plugin_playwright_playwright__browser_navigate` is listed in the available tools → proceed with **Playwright MCP** (primary).
-2. Else if `mcp__plugin_chrome-devtools-mcp_chrome-devtools__navigate_page` is available → proceed with **chrome-devtools MCP** (fallback).
-3. Else check the shell for `agent-browser`:
+1. Check the shell for `agent-browser`:
    ```bash
    command -v agent-browser >/dev/null 2>&1 && echo "Installed" || echo "NOT INSTALLED"
    ```
-   If installed → use agent-browser CLI (last resort).
+   If installed → use **agent-browser CLI** (primary).
+2. Else if `mcp__plugin_playwright_playwright__browser_navigate` is listed in the available tools → proceed with **Playwright MCP** (fallback).
+3. Else if `mcp__plugin_chrome-devtools-mcp_chrome-devtools__navigate_page` is available → proceed with **chrome-devtools MCP** (last resort).
 4. Else → inform user:
-   > "No browser automation backend available. Install the `plugin_playwright` plugin or the `agent-browser` CLI."
+   > "No browser automation backend available. Install the `agent-browser` CLI, or enable the `plugin_playwright` plugin as a fallback."
    Then HALT.
 
 ## Workflow
@@ -117,7 +117,7 @@ Do you want to watch the browser run?
 2. Headless (faster) — background, faster, default for CI
 ```
 
-Store the choice; pass `headless: false` to Playwright MCP when the user picks option 1.
+Store the choice; pass the appropriate headed flag to the active backend (`--headed` for agent-browser CLI, `headless: false` for Playwright MCP) when the user picks option 1.
 
 Caller override hints:
 - `/u-gatekeeping --auto` → headless always
@@ -320,7 +320,7 @@ The calling phase skill consumes this summary (not the raw MCP output) and integ
 ## Anti-patterns
 
 - ❌ Phase skill directly calling `mcp__plugin_playwright_playwright__browser_navigate`
-- ❌ Mixing chrome-devtools MCP and Playwright MCP in the same run
+- ❌ Mixing multiple backends (agent-browser CLI + Playwright MCP + chrome-devtools MCP) in the same run
 - ❌ Writing screenshots outside `.u-maker/.state/screenshots/`
 - ❌ Running E2E tests without first verifying the dev server via Step 5
 - ❌ Hard-coding port 3000 for backend (should be 2920)
@@ -330,7 +330,7 @@ The calling phase skill consumes this summary (not the raw MCP output) and integ
 
 | Condition | Action |
 |-----------|--------|
-| No browser backend available | Ask user to install `plugin_playwright` or `agent-browser`, HALT |
+| No browser backend available | Ask user to install the `agent-browser` CLI (or the `plugin_playwright` plugin as fallback), HALT |
 | Dev server not responding on detected port | Print start-command hints (Step 5), HALT |
 | MCP timeout (>30s) during navigation | Retry once; if second timeout, record as failure (Step 8) |
 | Screenshot write fails (disk / perms) | Fallback to `/tmp/{uuid}.png`, warn user, continue |
@@ -340,7 +340,7 @@ The calling phase skill consumes this summary (not the raw MCP output) and integ
 
 Adapted from the [test-browser skill](https://github.com/EveryInc/compound-engineering-plugin/blob/main/plugins/compound-engineering/skills/test-browser/SKILL.md) pattern (compound-engineering plugin). Core differences:
 
-- Backend priority: Playwright MCP > chrome-devtools MCP > agent-browser CLI
+- Backend priority: agent-browser CLI > Playwright MCP > chrome-devtools MCP
 - Port defaults follow u-maker convention (web 3000 / admin 3001 / backend 2920)
 - Artifacts live under `.u-maker/.state/` instead of a free-form path
 - Scope mapping aligned with Turborepo `apps/*` + `packages/*` layout from `/u-createproject`

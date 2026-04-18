@@ -499,7 +499,7 @@ a:hover{text-decoration:underline}
 <thead><tr><th>Command</th><th>External tool</th><th>Example</th></tr></thead>
 <tbody>
 <tr><td><code>/u-tools-figma</code></td><td>Figma API / Plugin. Comprehensive analyzer &mdash; pages + variants + assets + components + comments + semantics. Auto-delegated from <code>/u-prepare</code>, <code>/u-analyze</code>, <code>/u-reverse</code>, <code>/u-build</code>. <em>v4.0.0-alpha.1: reduced extraction path</em></td><td><code>/u-tools-figma &lt;figma-url&gt;</code></td></tr>
-<tr><td><code>/u-tools-browser</code></td><td>Unified browser engine. Playwright MCP &rarr; chrome-devtools MCP &rarr; agent-browser CLI fallback. Used for E2E, screen capture, visual verify, wireframe preview. Consumed by <code>/u-gatekeeping</code>, <code>/u-report-weekly</code>, <code>/u-dev --verify</code>, <code>/u-wireframe --preview</code>. 9-step protocol</td><td><code>/u-tools-browser --app my-app</code></td></tr>
+<tr><td><code>/u-tools-browser</code></td><td>Unified browser engine. agent-browser CLI &rarr; Playwright MCP &rarr; chrome-devtools MCP fallback. Used for E2E, screen capture, visual verify, wireframe preview. Consumed by <code>/u-gatekeeping</code>, <code>/u-report-weekly</code>, <code>/u-dev --verify</code>, <code>/u-wireframe --preview</code>. 9-step protocol</td><td><code>/u-tools-browser --app my-app</code></td></tr>
 <tr><td><code>/u-tools-git-pr</code></td><td>git + <code>gh</code> CLI + GitHub API. Intelligent PR generation with commit grouping, split/merge, review guide, multiline numeric confirmation prompt</td><td><code>/u-tools-git-pr</code><br><code>/u-tools-git-pr --base main --dry-run</code></td></tr>
 </tbody>
 </table>
