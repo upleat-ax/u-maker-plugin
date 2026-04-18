@@ -70,7 +70,7 @@ Invoke `/u-prepare-foldertree [app-name] [--migrate]`. On success, `.u-maker/` i
 - Scenario A or B1 → invoke `/u-analyze [--app {name}]`.
 - Scenario B2 → invoke `/u-reverse [--app {name}]` (which writes digest-equivalent output into `data/digest/`).
 
-**Auto-delegation to `/u-figma`:** If the dropzone (or the `--figma` arg on reverse) references any Figma source (`.figma-link`, `.figma-make-link`, `figma.com` URL), delegate that source's analysis to `/u-figma --app {app}` *before* completing Step 4. `/u-figma` runs the comprehensive 6-phase pipeline (scan → gate → extract → verify → aggregate → sync) across every page, variant, asset, component, and comment of the file — never a partial scan. See `skills/u-figma/references/integration.md` for the delegation contract.
+**Auto-delegation to `/u-tools-figma`:** If the dropzone (or the `--figma` arg on reverse) references any Figma source (`.figma-link`, `.figma-make-link`, `figma.com` URL), delegate that source's analysis to `/u-tools-figma --app {app}` *before* completing Step 4. `/u-tools-figma` runs the comprehensive 6-phase pipeline (scan → gate → extract → verify → aggregate → sync) across every page, variant, asset, component, and comment of the file — never a partial scan. See `skills/u-tools-figma/references/integration.md` for the delegation contract.
 
 On completion, `data/digest/` (including `data/digest/figma/…`) contains structured analysis results.
 

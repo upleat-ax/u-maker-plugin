@@ -17,7 +17,7 @@ triggers:
 
 Reverse-engineer an existing codebase into SSoT documents. Bottom-up: Code → Design (ERD, API, Screens, DS) → Plan (SRS, IA). All documents start as `Draft`.
 
-**Figma auto-delegation:** If `--figma {url}` is passed, or if the project root contains a `figma-link.json` / `.figma-link`, `/u-reverse` first delegates to `/u-figma --app {app} --url {url}` so the Figma digest (pages + variants + assets + components + comments + semantics) is available as a cross-reference during code extraction. See `skills/u-figma/references/integration.md`.
+**Figma auto-delegation:** If `--figma {url}` is passed, or if the project root contains a `figma-link.json` / `.figma-link`, `/u-reverse` first delegates to `/u-tools-figma --app {app} --url {url}` so the Figma digest (pages + variants + assets + components + comments + semantics) is available as a cross-reference during code extraction. See `skills/u-tools-figma/references/integration.md`.
 
 **Primary Agent:** u-agent-pm (orchestrates u-agent-design + u-agent-plan)
 **Engine Dependencies:** doc-engine, dep-engine
@@ -31,7 +31,7 @@ Reverse-engineer an existing codebase into SSoT documents. Bottom-up: Code → D
 | `--db` | Auto-detect | DB schema/migration path |
 | `--api` | Auto-detect | API route/controller path |
 | `--pages` | Auto-detect | Page/screen component path |
-| `--figma {url}` | (none) | Figma file URL to co-analyze (auto-delegated to `/u-figma`) |
+| `--figma {url}` | (none) | Figma file URL to co-analyze (auto-delegated to `/u-tools-figma`) |
 | `--loop` | false | Run gatekeeper validation after generation |
 
 ## Execution Flow

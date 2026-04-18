@@ -501,7 +501,7 @@
         </div>
         <div class="timeline-item">
           <div class="timestamp">Step 2 &mdash; 자료 수집 (Plan Phase)</div>
-          <p><code>.u-maker/data/dropzone/</code>에 RFP, 회의록, AS-IS 자료, Figma URL을 드롭. <code>/u-prepare</code>가 자동으로 <code>/u-analyze</code> (또는 Figma 소스 감지 시 <code>/u-figma</code>) 를 위임합니다.</p>
+          <p><code>.u-maker/data/dropzone/</code>에 RFP, 회의록, AS-IS 자료, Figma URL을 드롭. <code>/u-prepare</code>가 자동으로 <code>/u-analyze</code> (또는 Figma 소스 감지 시 <code>/u-tools-figma</code>) 를 위임합니다.</p>
         </div>
         <div class="timeline-item">
           <div class="timestamp">Step 3 &mdash; 기획 (Plan Phase)</div>
@@ -567,7 +567,7 @@
 "ERD 만들어줘"                     <span class="comment"># → /u-build --only erd (또는 /u-design --only erd)</span>
 "테스트 돌려줘"                    <span class="comment"># → /u-gatekeeping (또는 /u-qa)</span>
 "이 코드 분석해서 문서 만들어줘"     <span class="comment"># → /u-reverse</span>
-"Figma 파일 분석해줘"              <span class="comment"># → /u-figma</span>
+"Figma 파일 분석해줘"              <span class="comment"># → /u-tools-figma</span>
 "배포 준비해줘"                    <span class="comment"># → /u-deploy</span></pre></div>
 
       <div class="highlight-box purple">
@@ -615,7 +615,7 @@
             <li><code>/u-plan [app] -i</code> &mdash; SRS + IA</li>
             <li><code>/u-analyze [app]</code> &mdash; dropzone → digest</li>
             <li><code>/u-discuss brainstorm "UX"</code> &mdash; 아이디어 토론</li>
-            <li><code>/u-figma &lt;url&gt;</code> &mdash; Figma 소스 분석</li>
+            <li><code>/u-tools-figma &lt;url&gt;</code> &mdash; Figma 소스 분석</li>
             <li><code>/u-report-daily</code> &mdash; 일일 리포트</li>
           </ul>
         </div>
@@ -625,7 +625,7 @@
             <li><code>/u-design [app]</code> &mdash; ERD + API + Screens + DS</li>
             <li><code>/u-design [app] --only screens</code> &mdash; Screen만</li>
             <li><code>/u-wireframe [app] --all</code> &mdash; 와이어프레임</li>
-            <li><code>/u-figma &lt;url&gt;</code> &mdash; Figma 분석 / variants / tokens</li>
+            <li><code>/u-tools-figma &lt;url&gt;</code> &mdash; Figma 분석 / variants / tokens</li>
             <li><code>/u-discuss workshop "메인 IA"</code> &mdash; 워크숍</li>
           </ul>
         </div>
@@ -636,7 +636,7 @@
             <li><code>/u-dev [app] --only fe|be|db</code> &mdash; 선택 레이어</li>
             <li><code>/u-reverse [app]</code> &mdash; 코드 역공학</li>
             <li><code>/u-deploy [app]</code> &mdash; CI/CD 배포</li>
-            <li><code>/u-git-pr</code> &mdash; PR 자동 생성</li>
+            <li><code>/u-tools-git-pr</code> &mdash; PR 자동 생성</li>
           </ul>
         </div>
         <div class="feature-card purple">
@@ -665,7 +665,7 @@
           <tbody>
             <tr>
               <td class="col-abbr">/u-prepare<br><span class="badge badge-gray">alias: /u-init</span></td>
-              <td class="col-desc">준비 umbrella &mdash; foldertree + dropzone + analyze/reverse + 요구사항 협의. Figma 소스 감지 시 <code>/u-figma</code> 자동 위임</td>
+              <td class="col-desc">준비 umbrella &mdash; foldertree + dropzone + analyze/reverse + 요구사항 협의. Figma 소스 감지 시 <code>/u-tools-figma</code> 자동 위임</td>
               <td><code>/u-prepare my-saas</code><br><code>/u-init my-saas</code></td>
             </tr>
             <tr>
@@ -774,9 +774,9 @@
           <thead><tr><th style="width:170px">Command</th><th>설명</th><th>예제</th></tr></thead>
           <tbody>
             <tr>
-              <td class="col-abbr">/u-figma</td>
+              <td class="col-abbr">/u-tools-figma</td>
               <td class="col-desc">Figma 분석 &mdash; pages + variants + assets + components + comments + semantics. <code>/u-prepare</code>, <code>/u-analyze</code>, <code>/u-reverse</code>, <code>/u-build</code>에서 자동 위임. <strong>v4.0.0-alpha.1: reduced extraction path</strong></td>
-              <td><code>/u-figma &lt;figma-url&gt;</code><br><code>/u-figma &lt;url&gt; --app myapp</code></td>
+              <td><code>/u-tools-figma &lt;figma-url&gt;</code><br><code>/u-tools-figma &lt;url&gt; --app myapp</code></td>
             </tr>
           </tbody>
         </table>
@@ -834,9 +834,9 @@
               <td><code>/u-discuss brainstorm "결제 UX"</code><br><code>/u-discuss decision "DB 선택"</code></td>
             </tr>
             <tr>
-              <td class="col-abbr">/u-git-pr</td>
+              <td class="col-abbr">/u-tools-git-pr</td>
               <td class="col-desc">PR/MR 자동 생성. 변경사항 분석, 커밋 그루핑, 구조화된 PR body, 리뷰 가이드</td>
-              <td><code>/u-git-pr</code><br><code>/u-git-pr --base main</code></td>
+              <td><code>/u-tools-git-pr</code><br><code>/u-tools-git-pr --base main</code></td>
             </tr>
             <tr>
               <td class="col-abbr">/u-init<br><span class="badge badge-gray">alias</span></td>
@@ -900,12 +900,12 @@
         </div>
         <div class="feature-card yellow">
           <h3>Scenario 3: Figma 소스 기반 설계</h3>
-          <p>Figma URL을 <code>.u-maker/data/dropzone/</code>에 드롭 &rarr; <code>/u-prepare --app myapp</code> (자동으로 <code>/u-figma</code> 위임) &rarr; <code>/u-plan</code> &rarr; <code>/u-build</code></p>
+          <p>Figma URL을 <code>.u-maker/data/dropzone/</code>에 드롭 &rarr; <code>/u-prepare --app myapp</code> (자동으로 <code>/u-tools-figma</code> 위임) &rarr; <code>/u-plan</code> &rarr; <code>/u-build</code></p>
           <div class="annotation">v4.0.0-alpha.1은 reduced extraction path (<code>source.pipeline == "reduced"</code>). downstream은 <code>coverageWarnings[]</code>를 warning으로 처리합니다.</div>
         </div>
         <div class="feature-card purple">
           <h3>Scenario 4: PR 생성</h3>
-          <p><code>/u-git-pr</code> &mdash; 현재 브랜치의 변경사항을 분석하여 커밋 그루핑 + 구조화된 PR body + 리뷰 가이드를 자동 생성합니다.</p>
+          <p><code>/u-tools-git-pr</code> &mdash; 현재 브랜치의 변경사항을 분석하여 커밋 그루핑 + 구조화된 PR body + 리뷰 가이드를 자동 생성합니다.</p>
         </div>
         <div class="feature-card red">
           <h3>Scenario 5: Phase Gate 미통과 대응</h3>
@@ -1015,7 +1015,7 @@
         </li>
         <li>
           <span class="decision-check">Q</span>
-          <div class="decision-body"><strong>Figma 파일로 시작하고 싶어요</strong><br><span>Figma URL을 dropzone에 넣고 <code>/u-prepare</code>를 실행하세요. <code>/u-figma</code>가 자동 위임됩니다. 또는 직접 <code>/u-figma &lt;url&gt;</code>도 가능합니다. v4.0.0-alpha.1은 reduced extraction path를 사용합니다.</span></div>
+          <div class="decision-body"><strong>Figma 파일로 시작하고 싶어요</strong><br><span>Figma URL을 dropzone에 넣고 <code>/u-prepare</code>를 실행하세요. <code>/u-tools-figma</code>가 자동 위임됩니다. 또는 직접 <code>/u-tools-figma &lt;url&gt;</code>도 가능합니다. v4.0.0-alpha.1은 reduced extraction path를 사용합니다.</span></div>
         </li>
         <li>
           <span class="decision-check">Q</span>
@@ -1031,7 +1031,7 @@
         </li>
         <li>
           <span class="decision-check">Q</span>
-          <div class="decision-body"><strong>PR을 빠르게 만들고 싶어요</strong><br><span><code>/u-git-pr</code> &mdash; 현재 브랜치의 변경사항을 분석하여 커밋 그루핑 + 구조화된 PR을 자동 생성합니다.</span></div>
+          <div class="decision-body"><strong>PR을 빠르게 만들고 싶어요</strong><br><span><code>/u-tools-git-pr</code> &mdash; 현재 브랜치의 변경사항을 분석하여 커밋 그루핑 + 구조화된 PR을 자동 생성합니다.</span></div>
         </li>
         <li>
           <span class="decision-check">Q</span>
@@ -1059,7 +1059,7 @@
         </div>
         <div class="feature-card purple">
           <h3>Figma 소스 분석</h3>
-          <p><code>/u-figma &lt;url&gt;</code>로 Figma 파일을 직접 분석하거나, dropzone에 URL을 넣어 <code>/u-prepare</code>의 자동 위임을 활용하세요. v4.0.0-alpha.1은 reduced extraction path를 제공합니다.</p>
+          <p><code>/u-tools-figma &lt;url&gt;</code>로 Figma 파일을 직접 분석하거나, dropzone에 URL을 넣어 <code>/u-prepare</code>의 자동 위임을 활용하세요. v4.0.0-alpha.1은 reduced extraction path를 제공합니다.</p>
         </div>
         <div class="feature-card yellow">
           <h3>팀 협업</h3>

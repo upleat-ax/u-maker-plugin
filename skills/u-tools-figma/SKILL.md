@@ -1,18 +1,18 @@
 ---
-name: u-figma
-description: "Comprehensive Figma analyzer. Use when the user mentions 'figma', shares a figma.com URL, asks to 'analyze figma', 'extract figma', '/u-figma'. Also auto-delegated from /u-prepare, /u-analyze, /u-reverse when any Figma source is detected. Covers every page, every variant, every asset, every component, and every comment — never a partial scan."
+name: u-tools-figma
+description: "Comprehensive Figma analyzer. Use when the user mentions 'figma', shares a figma.com URL, asks to 'analyze figma', 'extract figma', '/u-tools-figma'. Also auto-delegated from /u-prepare, /u-analyze, /u-reverse when any Figma source is detected. Covers every page, every variant, every asset, every component, and every comment — never a partial scan."
 version: 4.0.0
 triggers:
-  - "/u-figma"
+  - "/u-tools-figma"
   - "figma"
   - "figma.com"
   - "analyze figma"
   - "extract figma"
 ---
 
-# u-figma — Comprehensive Figma Analyzer
+# u-tools-figma — Comprehensive Figma Analyzer
 
-`/u-figma [--app {name}] [--loop] [--file-key {key}] [--url {figma-url}] [--page {pageId|all}] [--include-fig-jam] [--refresh-comments] [--verify]`
+`/u-tools-figma [--app {name}] [--loop] [--file-key {key}] [--url {figma-url}] [--page {pageId|all}] [--include-fig-jam] [--refresh-comments] [--verify]`
 
 Comprehensive Figma analysis pipeline. Unconditionally scans **every page**, **every variant** (component-set / naming / positional / suffix), **every asset**, **every component**, and **every comment** (3-tier: sticky notes in-canvas → Figma REST comments → inline review threads). Extracts semantic content required by downstream PBGD phases: input validation rules, value policies, initial values, button actions, layout, screen-to-screen flow, data model hints, user/role/permission rules.
 
@@ -24,7 +24,7 @@ Comprehensive Figma analysis pipeline. Unconditionally scans **every page**, **e
 
 ## Scope — non-negotiable
 
-Every `/u-figma` run must cover the following for every referenced Figma file:
+Every `/u-tools-figma` run must cover the following for every referenced Figma file:
 
 ### Surfaces (exhaustive)
 
@@ -110,7 +110,7 @@ Both raw material and analysis outputs are written under `.u-maker/data/`:
 
 ## Auto-delegation
 
-When any of these skills encounter a Figma source, they must delegate to `/u-figma` instead of attempting their own partial extraction:
+When any of these skills encounter a Figma source, they must delegate to `/u-tools-figma` instead of attempting their own partial extraction:
 
 - `/u-prepare` — during Scenario A/B1 dropzone scan, if any `.figma-link` / `figma.com` URL is present.
 - `/u-analyze` — if a file under `data/dropzone/` is a `.figma-link` or `.figma-make-link`.
@@ -149,7 +149,7 @@ The delegating skill must pass `--app` and `--loop` through verbatim.
 
 ## Related Commands
 
-- `/u-prepare`, `/u-analyze`, `/u-reverse`, `/u-design` — auto-delegate to `/u-figma` as described above.
+- `/u-prepare`, `/u-analyze`, `/u-reverse`, `/u-design` — auto-delegate to `/u-tools-figma` as described above.
 - `/u-plan`, `/u-build` — consume `data/figma/aggregate.json` and per-frame digests downstream.
 
 ## Implementation status

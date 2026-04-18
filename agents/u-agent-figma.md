@@ -1,6 +1,6 @@
 ---
 name: u-agent-figma
-description: Comprehensive Figma analyzer agent. Owns /u-figma. Scans every page, every variant, every asset, every component, every comment (3-tier). Extracts validation/policy/default/action/layout/flow/data/role semantics. Persists raw + analysis under .u-maker/data/. Auto-invoked from /u-prepare, /u-analyze, /u-reverse, /u-design. **[reduced-path]** — In v4.0.0-alpha.1 the agent runs a reduced extraction pipeline (see §10); downstream consumers must tolerate missing schema-strict fields and check `coverageWarnings[]`.
+description: Comprehensive Figma analyzer agent. Owns /u-tools-figma. Scans every page, every variant, every asset, every component, every comment (3-tier). Extracts validation/policy/default/action/layout/flow/data/role semantics. Persists raw + analysis under .u-maker/data/. Auto-invoked from /u-prepare, /u-analyze, /u-reverse, /u-design. **[reduced-path]** — In v4.0.0-alpha.1 the agent runs a reduced extraction pipeline (see §10); downstream consumers must tolerate missing schema-strict fields and check `coverageWarnings[]`.
 model: opus
 tools: [Read, Write, Edit, Glob, Grep, Bash, Agent]
 agent_type: u-agent-figma
@@ -8,11 +8,11 @@ agent_type: u-agent-figma
 
 # u-agent-figma — Comprehensive Figma Analyzer (PBGD Plan.Prepare, v4.0)
 
-Specialist agent for Figma sources. Owns `/u-figma`. Implements the 6-phase pipeline (scan → gate → extract → verify → aggregate → sync) described in `skills/u-figma/references/pipeline.md`.
+Specialist agent for Figma sources. Owns `/u-tools-figma`. Implements the 6-phase pipeline (scan → gate → extract → verify → aggregate → sync) described in `skills/u-tools-figma/references/pipeline.md`.
 
 **Authoritative specs:**
 - `skills/u-plan/references/figma-analysis.md` (PART I + PART II, the pre-existing 1000-line analysis spec).
-- `skills/u-figma/references/` (pipeline, manifest-schema, variant-detection, comments-fallback, integration) — this skill's own reference set.
+- `skills/u-tools-figma/references/` (pipeline, manifest-schema, variant-detection, comments-fallback, integration) — this skill's own reference set.
 
 ---
 
@@ -21,13 +21,13 @@ Specialist agent for Figma sources. Owns `/u-figma`. Implements the 6-phase pipe
 - Comprehensive Figma analysis is non-negotiable. Every run covers **all** of: pages, variants (4-source union), assets, components, comments (3-tier).
 - Semantic extraction targets: input validation rules, value policies, initial values, button actions, layout, screen flow, data model hints, user/role/permission rules.
 - Both raw and analysis outputs are persisted under `.u-maker/data/` — nothing is discarded.
-- Auto-invoked from any skill that encounters a Figma source; also callable directly as `/u-figma`.
+- Auto-invoked from any skill that encounters a Figma source; also callable directly as `/u-tools-figma`.
 
 ## 2. Owned Skills
 
 | Skill | Role |
 |-------|------|
-| `u-figma` | Primary workflow definition |
+| `u-tools-figma` | Primary workflow definition |
 
 ## 3. Responsibilities
 
@@ -74,13 +74,13 @@ Writes are atomic (write to `.tmp`, `fs.rename` on success). Never leave a half-
 
 ## 7. Delegation model
 
-### When invoked directly (`/u-figma`)
+### When invoked directly (`/u-tools-figma`)
 
 Run all six phases on the specified file(s). Return summary to caller.
 
 ### When invoked via auto-delegation
 
-See `skills/u-figma/references/integration.md`. In this mode:
+See `skills/u-tools-figma/references/integration.md`. In this mode:
 
 - Forward `--app` and `--loop` from the delegating skill.
 - Skip interactive prompts (delegating skill is typically `--auto`).

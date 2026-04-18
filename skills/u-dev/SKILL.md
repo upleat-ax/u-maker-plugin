@@ -34,9 +34,11 @@ Development sub-phase of the Build phase: generate FE + BE + DB code from Design
 ### Step 1: Generate FE Code
 
 1. Load `screens.json` + `design-system.json`
-2. For each screen → generate component files
-3. Apply design tokens from design-system
-4. Follow tech-rules for framework conventions
+2. **Load `references/fe-rules.md`** — authoritative React/Next.js rule set (Vercel react-best-practices + composition-patterns). The MUST-APPLY checklist (§0, 15 rules) is non-negotiable.
+3. For each screen → generate component files
+4. Apply design tokens from design-system
+5. Follow tech-rules for framework conventions
+6. **Self-review every file against `fe-rules.md` §0 MUST-APPLY before marking Final.** Hot-path code additionally checks §A5/§A6/§A7; shared components under `packages/ui-*/` additionally enforce §B1–B3 (and §B4 if React ≥ 19).
 
 ### Step 2: Generate BE Code
 
@@ -69,3 +71,4 @@ Development sub-phase of the Build phase: generate FE + BE + DB code from Design
 
 - **`references/code-gen-rules.md`** — Code generation patterns, file naming, component structure
 - **`references/tech-rules.md`** — Supported stacks, naming conventions, package management
+- **`references/fe-rules.md`** — React/Next.js rule set (Vercel react-best-practices 70 rules + composition-patterns 9 rules). Mandatory input for Step 1 FE generation.

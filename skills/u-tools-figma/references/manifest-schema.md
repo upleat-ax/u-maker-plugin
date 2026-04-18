@@ -1,6 +1,6 @@
 # figma/manifest.json — Coverage Ledger
 
-> Tracks per-frame analysis status for every Figma file the project has ever touched. Used by `/u-figma` to skip unchanged frames and by downstream phases to warn about incomplete coverage. Authoritative schema: `_meta/schemas/figma-manifest.schema.json` (to be added when the full pipeline is implemented).
+> Tracks per-frame analysis status for every Figma file the project has ever touched. Used by `/u-tools-figma` to skip unchanged frames and by downstream phases to warn about incomplete coverage. Authoritative schema: `_meta/schemas/figma-manifest.schema.json` (to be added when the full pipeline is implemented).
 
 ## Top-level shape
 
@@ -71,7 +71,7 @@ Emitted by Phase 4 (verify). Each warning has a `code` and a `suggestedFix`:
 
 ## Re-run semantics
 
-`/u-figma` uses the manifest as follows:
+`/u-tools-figma` uses the manifest as follows:
 
 1. Fetch current `nodeHash` for each targeted frame.
 2. Compare to stored hash in manifest.
@@ -79,4 +79,4 @@ Emitted by Phase 4 (verify). Each warning has a `code` and a `suggestedFix`:
 4. If differs → mark `stale`, re-extract in Phase 3.
 5. If not present → mark `pending`, extract.
 
-`/u-figma --verify` re-runs Phase 4 against existing digests without re-extracting — used to catch coverage gaps after the schema has been extended.
+`/u-tools-figma --verify` re-runs Phase 4 against existing digests without re-extracting — used to catch coverage gaps after the schema has been extended.

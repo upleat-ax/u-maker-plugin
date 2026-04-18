@@ -50,15 +50,17 @@ Before execution begins, verify the environment:
 
 ### 1.3 Execution Commands
 
-| Type | Command | Config |
-|------|---------|--------|
-| Unit | `bun run test:unit` | `vitest.config.ts` with `include: ["**/*.test.ts"]` |
-| Integration | `bun run test:integration` | `vitest.config.ts` with `include: ["**/*.integration.test.ts"]` |
-| E2E | `bun run test:e2e` | `playwright.config.ts` |
-| Accessibility | `bun run test:a11y` | `vitest.config.ts` with `include: ["**/*.a11y.test.ts"]` |
-| Performance | `bun run test:perf` | `vitest.config.ts` with `include: ["**/*.perf.test.ts"]` |
-| Security | `bun run test:security` | `vitest.config.ts` with `include: ["**/*.security.test.ts"]` |
-| All | `bun run test` | Runs all in order above |
+| Type | Command | Config | Browser engine |
+|------|---------|--------|----------------|
+| Unit | `bun run test:unit` | `vitest.config.ts` with `include: ["**/*.test.ts"]` | — |
+| Integration | `bun run test:integration` | `vitest.config.ts` with `include: ["**/*.integration.test.ts"]` | — |
+| E2E | `bun run test:e2e` | `playwright.config.ts` | **via `u-tools-browser` Step 6a** |
+| Accessibility | `bun run test:a11y` | `vitest.config.ts` with `include: ["**/*.a11y.test.ts"]` | via `u-tools-browser` (headless) |
+| Performance | `bun run test:perf` | `vitest.config.ts` with `include: ["**/*.perf.test.ts"]` | via `u-tools-browser` when browser-bound |
+| Security | `bun run test:security` | `vitest.config.ts` with `include: ["**/*.security.test.ts"]` | — |
+| All | `bun run test` | Runs all in order above | browser phases auto-routed |
+
+> **Browser tests must flow through `skills/u-tools-browser/SKILL.md`.** Do not call Playwright MCP tools (`browser_navigate`, `browser_take_screenshot`, …) or `agent-browser` CLI directly from this skill — the engine owns port detection, headed/headless prompting, error screenshots, and failure triage (fix / todo / skip).
 
 ### 1.4 Halt Conditions
 

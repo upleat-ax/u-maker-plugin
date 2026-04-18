@@ -32,7 +32,7 @@ UI Design sub-phase of the Build phase: generate `docs/{app}/design/` documents 
 3. Read `docs/{app}/plan/srs.json` and `ia.json` status
 4. Both must be `Final`
 5. If not → error: "Plan documents exist but are not Final. Run /u-plan --loop or manually set status to Final"
-6. **Figma freshness check:** if `data/figma/manifest.json` exists, compare file hashes against current Figma state. If stale, delegate to `/u-figma --verify` (or `/u-figma --refresh-comments` if the user just asked to "sync design from Figma"). Use the refreshed `data/figma/aggregate.json` as an input to Steps 1–4 below so ERD/API/Screens/DS pick up every variant, validation rule, default, action, and permission captured from Figma. See `skills/u-figma/references/integration.md`.
+6. **Figma freshness check:** if `data/figma/manifest.json` exists, compare file hashes against current Figma state. If stale, delegate to `/u-tools-figma --verify` (or `/u-tools-figma --refresh-comments` if the user just asked to "sync design from Figma"). Use the refreshed `data/figma/aggregate.json` as an input to Steps 1–4 below so ERD/API/Screens/DS pick up every variant, validation rule, default, action, and permission captured from Figma. See `skills/u-tools-figma/references/integration.md`.
 
 ### Step 1: Generate ERD
 
@@ -66,17 +66,21 @@ UI Design sub-phase of the Build phase: generate `docs/{app}/design/` documents 
 
 **Unlike other artifacts, the Design System uses an HTML-first pipeline.** The live HTML with CSS variables and component showcases is the primary artifact; MD and JSON are derived from it.
 
+**Rule pack:** Before starting Step 4, load `references/design-system-rules.md` into context. The §0 MUST-APPLY checklist (15 items — token architecture, 10 scales, dark mode, contrast, focus, ARIA, compound components) is non-negotiable and is verified at Step 4a.7.
+
 #### Step 4a: Generate HTML/CSS/Variables (Primary)
 
 1. Analyze SRS/IA for UI patterns, component needs, brand colors
 1a. **Figma source (if available):** Extract design tokens and component specs from Figma via `u-plan/references/figma-analysis.md` § 4.2 (Design System Context). Figma Variables → CSS custom properties, Paint/Text/Effect styles → token values, Local components → CMP-xxx mapping. Figma actuals override SRS/IA-derived defaults.
 1b. **Figma link traceability:** Figma 소스 URL을 `design-system.json`의 `figmaUrl` 필드에 기록, `design-system.md` 상단에 `> Figma: <url>` 기재. 개별 토큰/컴포넌트도 Figma 프레임 deep link 포함 권장.
 2. Load template: `_meta/templates/design-system.template.html`
-3. Render CSS custom properties in `:root` block with actual token values
-4. Render component styles (`.ds-btn`, `.ds-input`, `.ds-card`, etc.) with token references
-5. Render live showcases: color swatches, typography scale, component variants/sizes/states
-6. Apply ID convention (DS-010~DS-110 for tokens, CMP-010~CMP-070 for components)
-7. Write `out/{app}/design/design-system.html`
+3. Render CSS custom properties in `:root` block with actual token values — emit **all three token layers** (primitive → semantic → component) per `design-system-rules.md` §1
+4. Emit all 10 token scales per `design-system-rules.md` §2 (color OKLCH 50–950, spacing, type, shadow, radius, breakpoints, motion, z-index, responsive typography via `clamp()`)
+5. Render `[data-theme="dark"]` overrides on **semantic tokens only** (`design-system-rules.md` §3 dark-mode + §0#11)
+6. Render component styles (`.ds-btn`, `.ds-input`, `.ds-card`, etc.) using **compound-component API** for multi-part widgets (`design-system-rules.md` §3 + §0#15)
+7. Render live showcases: color swatches, typography scale, component variants/sizes/states; include an accessibility audit footer (WCAG AA/AAA contrast sweep + focus-state check) per `design-system-rules.md` §4
+8. Apply ID convention (DS-010~DS-110 for tokens, CMP-010~CMP-070 for components)
+9. Write `out/{app}/design/design-system.html`
 
 #### Step 4b: Derive MD + JSON from HTML
 
@@ -116,5 +120,6 @@ Design phase 완료 후 아래 안내를 출력한다:
 - **`references/erd-spec.md`** — Entity derivation, Mermaid erDiagram rules, constraint syntax
 - **`references/api-spec.md`** — Endpoint derivation, OpenAPI structure, auth/role mapping
 - **`references/screen-spec.md`** — Component taxonomy, state management, validation rules
-- **`references/design-system-spec.md`** — Token naming, component variants, responsive breakpoints
+- **`references/design-system-spec.md`** — Token naming, component variants, responsive breakpoints (HTML-first pipeline spec)
+- **`references/design-system-rules.md`** — **Rule pack for Step 4** (dylantarre/design-system-skills: 3-layer token architecture, 10 scales, dark-mode, contrast, focus, ARIA, compound components). Mandatory input.
 - **`../u-plan/references/figma-analysis.md`** — Figma frame analysis, content type detection, design token extraction from Figma

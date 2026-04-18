@@ -108,7 +108,7 @@ function parseCommand(input):
 | `wireframe` | `/u-wireframe` | Design |
 | `loop` | `/u-loop` | Automation |
 | `report` | `/u-report` | Reporting |
-| `git-pr` | `/u-git-pr` | Git |
+| `git-pr` | `/u-tools-git-pr` | Git |
 | `reverse` | `/u-reverse` | Lifecycle |
 
 ## 2. Intent Classification
@@ -292,7 +292,7 @@ function dispatch(parsed):
 | `wireframe` | u-wireframe |
 | `loop` | u-loop |
 | `report` | u-engine (html-engine) |
-| `git-pr` | u-git-pr |
+| `git-pr` | u-tools-git-pr |
 | `reverse` | u-reverse |
 
 ### Prerequisites

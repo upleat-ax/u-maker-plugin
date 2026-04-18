@@ -196,7 +196,7 @@ a:hover{text-decoration:underline}
 <span class="cmd">/u-reverse --app my-app</span>          <span class="comment"># Existing code → SSoT reverse engineering</span></code></pre>
 
 <h3>Figma Source Analysis</h3>
-<pre><code><span class="cmd">/u-figma &lt;figma-url&gt;</span>             <span class="comment"># Comprehensive Figma analyzer (pages + variants + assets + components + comments + semantics)</span>
+<pre><code><span class="cmd">/u-tools-figma &lt;figma-url&gt;</span>             <span class="comment"># Comprehensive Figma analyzer (pages + variants + assets + components + comments + semantics)</span>
 <span class="comment"># Auto-delegated from /u-prepare, /u-analyze, /u-reverse, /u-build on Figma sources</span></code></pre>
 
 <h3>Natural Language Also Works</h3>
@@ -314,7 +314,7 @@ a:hover{text-decoration:underline}
 </tbody>
 </table>
 
-<blockquote><strong>Figma analyzer</strong>: <code>/u-figma</code> (owned by <code>u-agent-figma</code>) runs as a cross-phase source analyzer — auto-delegated from <code>/u-prepare</code>, <code>/u-analyze</code>, <code>/u-reverse</code>, and <code>/u-build</code> when Figma URLs or files are present. v4.0.0-alpha.1 ships a reduced extraction path (<code>source.pipeline == "reduced"</code>); downstream consumers treat schema-optional fields as warnings via <code>coverageWarnings[]</code>.</blockquote>
+<blockquote><strong>Figma analyzer</strong>: <code>/u-tools-figma</code> (owned by <code>u-agent-figma</code>) runs as a cross-phase source analyzer — auto-delegated from <code>/u-prepare</code>, <code>/u-analyze</code>, <code>/u-reverse</code>, and <code>/u-build</code> when Figma URLs or files are present. v4.0.0-alpha.1 ships a reduced extraction path (<code>source.pipeline == "reduced"</code>); downstream consumers treat schema-optional fields as warnings via <code>coverageWarnings[]</code>.</blockquote>
 
 <h3>Gatekeeper Scorecard</h3>
 <p>Every gate validation <strong>must display the full 11-criteria scorecard</strong> (threshold 95, configurable). No abbreviation or omission allowed.</p>
@@ -455,7 +455,7 @@ a:hover{text-decoration:underline}
 <table>
 <thead><tr><th>Command</th><th>Description</th><th>Example</th></tr></thead>
 <tbody>
-<tr><td><code>/u-prepare</code></td><td>Preparation umbrella &mdash; foldertree + dropzone + analyze/reverse + requirements conversation. Auto-delegates to <code>/u-figma</code> when Figma sources are present</td><td><code>/u-prepare my-app</code></td></tr>
+<tr><td><code>/u-prepare</code></td><td>Preparation umbrella &mdash; foldertree + dropzone + analyze/reverse + requirements conversation. Auto-delegates to <code>/u-tools-figma</code> when Figma sources are present</td><td><code>/u-prepare my-app</code></td></tr>
 <tr><td><code>/u-prepare-foldertree</code></td><td><code>.u-maker/</code> folder/state scaffolding only. Supports <code>--migrate</code> for v3&rarr;v4 rename of <code>check/</code> &rarr; <code>gatekeeping/</code></td><td><code>/u-prepare-foldertree my-app --migrate</code></td></tr>
 <tr><td><code>/u-analyze</code></td><td>Dropzone &rarr; digest (12 categories). Extracted from legacy <code>/u-plan</code> Steps 1&ndash;2</td><td><code>/u-analyze my-app</code></td></tr>
 <tr><td><code>/u-reverse</code></td><td>Existing code &rarr; digest (reverse engineering). Supports <code>--db</code>, <code>--api</code>, <code>--pages</code></td><td><code>/u-reverse --app my-app</code></td></tr>
@@ -497,7 +497,7 @@ a:hover{text-decoration:underline}
 <table>
 <thead><tr><th>Command</th><th>Description</th><th>Example</th></tr></thead>
 <tbody>
-<tr><td><code>/u-figma</code></td><td>Comprehensive Figma analyzer &mdash; pages + variants + assets + components + comments + semantics. Auto-delegated from <code>/u-prepare</code>, <code>/u-analyze</code>, <code>/u-reverse</code>, <code>/u-build</code>. <em>v4.0.0-alpha.1: reduced extraction path</em></td><td><code>/u-figma &lt;figma-url&gt;</code></td></tr>
+<tr><td><code>/u-tools-figma</code></td><td>Comprehensive Figma analyzer &mdash; pages + variants + assets + components + comments + semantics. Auto-delegated from <code>/u-prepare</code>, <code>/u-analyze</code>, <code>/u-reverse</code>, <code>/u-build</code>. <em>v4.0.0-alpha.1: reduced extraction path</em></td><td><code>/u-tools-figma &lt;figma-url&gt;</code></td></tr>
 </tbody>
 </table>
 
@@ -519,7 +519,7 @@ a:hover{text-decoration:underline}
 <tbody>
 <tr><td><code>/u-loop</code></td><td>Unattended PBGD auto-execution Plan &rarr; Build &rarr; Gatekeeping &rarr; Deploy. Checkpoint-based resume</td><td><code>/u-loop --app my-app --from plan</code></td></tr>
 <tr><td><code>/u-discuss</code></td><td>Structured collaboration sessions (brainstorm, review, decision, workshop, retro)</td><td><code>/u-discuss brainstorm "Payment UX"</code></td></tr>
-<tr><td><code>/u-git-pr</code></td><td>Intelligent PR generation with commit grouping, split/merge, review guide</td><td><code>/u-git-pr main --draft</code></td></tr>
+<tr><td><code>/u-tools-git-pr</code></td><td>Intelligent PR generation with commit grouping, split/merge, review guide</td><td><code>/u-tools-git-pr main --draft</code></td></tr>
 <tr><td><code>/u-engine</code></td><td>Internal infrastructure engine (not user-invocable)</td><td>&mdash;</td></tr>
 </tbody>
 </table>
@@ -710,7 +710,7 @@ a:hover{text-decoration:underline}
 <table>
 <thead><tr><th>Scenario</th><th>Command</th></tr></thead>
 <tbody>
-<tr><td>Analyze a Figma file directly</td><td><code>/u-figma &lt;figma-url&gt;</code></td></tr>
+<tr><td>Analyze a Figma file directly</td><td><code>/u-tools-figma &lt;figma-url&gt;</code></td></tr>
 <tr><td>Auto-delegated during preparation</td><td><code>/u-prepare my-app</code> (detects Figma URLs in dropzone)</td></tr>
 <tr><td>Auto-delegated during build</td><td><code>/u-build my-app</code> (cross-checks design against Figma)</td></tr>
 </tbody>
@@ -797,8 +797,8 @@ a:hover{text-decoration:underline}
 <tr><td>Structured brainstorming</td><td><code>/u-discuss brainstorm "Payment UX"</code></td></tr>
 <tr><td>Design review</td><td><code>/u-discuss review "API v2"</code></td></tr>
 <tr><td>Decision meeting</td><td><code>/u-discuss decision "Auth Method"</code></td></tr>
-<tr><td>Generate a PR from current branch</td><td><code>/u-git-pr main</code></td></tr>
-<tr><td>Generate a draft PR</td><td><code>/u-git-pr main --draft</code></td></tr>
+<tr><td>Generate a PR from current branch</td><td><code>/u-tools-git-pr main</code></td></tr>
+<tr><td>Generate a draft PR</td><td><code>/u-tools-git-pr main --draft</code></td></tr>
 </tbody>
 </table>
 
@@ -813,7 +813,7 @@ a:hover{text-decoration:underline}
 <ul>
 <li><strong>Claude Code CLI</strong> installed and authenticated</li>
 <li><strong>Node.js 18+</strong> (for hooks)</li>
-<li><strong>Git</strong> (for /u-git-pr)</li>
+<li><strong>Git</strong> (for /u-tools-git-pr)</li>
 </ul>
 
 <h3>Installation</h3>
@@ -842,7 +842,7 @@ a:hover{text-decoration:underline}
 <li><strong>Pipeline</strong>: <code>Plan → Design → Dev → Check → Ship</code> (5) &rarr; <code>Plan → Build → Gatekeeping → Deploy</code> (4).</li>
 <li><strong>Rename</strong>: <code>u-init</code> is now an alias for <code>/u-prepare</code>; actual folder scaffolding is <code>/u-prepare-foldertree</code>.</li>
 <li><strong>Rename</strong>: <code>/u-check</code> is now an alias for <code>/u-gatekeeping</code>.</li>
-<li><strong>New</strong>: <code>/u-deploy</code> (was implicit in "Ship"), <code>/u-figma</code> (reduced path in alpha).</li>
+<li><strong>New</strong>: <code>/u-deploy</code> (was implicit in "Ship"), <code>/u-tools-figma</code> (reduced path in alpha).</li>
 <li><strong>Folder</strong>: <code>docs/{app}/check/</code> moves to <code>docs/{app}/gatekeeping/</code>. Use <code>--migrate</code> to rename automatically.</li>
 </ul>
 

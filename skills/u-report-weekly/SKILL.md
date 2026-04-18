@@ -95,22 +95,23 @@ WebFetch로 회의 목록 페이지를 읽고, 기간 내 날짜의 회의를 �
 | `most_unresolved_topics` | 미해결이 많은 주제 TOP 5 |
 | `most_decided_topics` | 결정이 많은 주제 TOP 5 |
 
-### Step 5: Playwright 화면 캡처 (선택)
+### Step 5: 화면 캡처 (선택) — via `u-tools-browser`
 
-`--no-screenshot` 미지정 시, 앱별 주요 화면을 캡처한다.
+`--no-screenshot` 미지정 시, **반드시 `u-tools-browser` 엔진을 통해** 앱별 주요 화면을 캡처한다. `browser_navigate` / `browser_take_screenshot` 등 MCP 브라우저 도구를 이 스킬에서 직접 호출하지 않는다.
 
-**캡처 대상:**
+**캡처 대상 (u-tools-browser Step 6b — Screen Capture):**
 1. `.u-maker/output/{app}/design/screens/` — 화면 설계서 HTML (앱별 최대 3개)
 2. `.u-maker/output/{app}/design/wireframes/` — 와이어프레임 (앱별 최대 3개)
 3. 실제 구현 화면 (dev server URL 있는 경우)
 
-**Playwright 워크플로우:**
-1. `browser_navigate` → 대상 URL
-2. `browser_take_screenshot` → PNG
-3. base64 인코딩 → HTML 인라인 삽입
+**위임 호출:**
+- `u-tools-browser` 로드
+- `--auto --headless --app {app}` 옵션으로 Step 1→9 실행
+- 엔진이 반환하는 요약(Summary Output)을 Step 7에서 HTML 리포트에 삽입
 
 ```
-저장: .u-maker/.state/screenshots/{date}/{app}-{page}.png
+저장 경로 (엔진이 관리): .u-maker/.state/screenshots/{date}/{app}-{page}.png
+base64 인코딩 → HTML 인라인 삽입은 이 스킬이 담당
 ```
 
 ### Step 6: Weekly Stats 저장

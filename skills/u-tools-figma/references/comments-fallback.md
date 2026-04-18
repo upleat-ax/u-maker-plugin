@@ -1,6 +1,6 @@
 # Comments — 3-Tier Fallback
 
-> `/u-figma` must capture design-time comments regardless of how the team records them. Three tiers, merged into one unified `comments.json`. Authoritative spec: `figma-analysis.md` PART II §11.
+> `/u-tools-figma` must capture design-time comments regardless of how the team records them. Three tiers, merged into one unified `comments.json`. Authoritative spec: `figma-analysis.md` PART II §11.
 
 ## Tier 1 — In-canvas sticky notes (FigJam + Figma)
 
@@ -21,9 +21,9 @@ Official design-review comments on `.figma.com/design/...` files. Requires:
 
 Returns a list of `{id, message, user, client_meta, order_id, parent_id, resolved_at, reactions[]}` entries. Each `client_meta` anchors the comment to a node or a canvas coordinate.
 
-Client: `skills/u-figma/lib/comment-rest.js` (per the implementation plan).
+Client: `skills/u-tools-figma/lib/comment-rest.js` (per the implementation plan).
 
-When `FIGMA_PERSONAL_ACCESS_TOKEN` is absent, `u-figma` logs a notice and proceeds with tiers 1 + 3 only.
+When `FIGMA_PERSONAL_ACCESS_TOKEN` is absent, `u-tools-figma` logs a notice and proceeds with tiers 1 + 3 only.
 
 ## Tier 3 — Inline review threads
 
@@ -70,4 +70,4 @@ Tier priority (high → low): **REST (tier 2) > inline review (tier 3) > sticky 
 
 ## Missing-comments policy
 
-If a file has zero comments across all tiers, `u-figma` flags this in `coverageSummary.commentsNote = "no-comments-found"` — not an error, but unusual for a design-in-review. Useful for downstream agents to adjust their extraction confidence.
+If a file has zero comments across all tiers, `u-tools-figma` flags this in `coverageSummary.commentsNote = "no-comments-found"` — not an error, but unusual for a design-in-review. Useful for downstream agents to adjust their extraction confidence.

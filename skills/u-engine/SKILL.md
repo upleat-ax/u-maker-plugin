@@ -17,6 +17,7 @@ Internal engine bundle providing cross-cutting capabilities for all u-maker phas
 | dep-engine | `references/dep-engine.md` | links.json dependency graph, cascade propagation |
 | digest-engine | `references/digest-engine.md` | dropzone→digest refinement, hash comparison, _index.json management |
 | router | `references/router.md` | Intent classification, command parsing, agent dispatch |
+| browser-engine | `../u-tools-browser/SKILL.md` | Unified browser automation — E2E execution, screen capture, visual verify, dev-server checks (all phase skills route browser work through here) |
 
 ## Document CRUD Protocol
 

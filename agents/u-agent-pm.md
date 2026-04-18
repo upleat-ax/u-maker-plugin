@@ -30,7 +30,7 @@ The single brain of the u-maker plugin. Every `/u-*` command enters through this
 | `/u-prepare-foldertree` | u-agent-plan | Plan.Prepare (granular) | `.u-maker` scaffolding only |
 | `/u-analyze` | u-agent-plan | Plan.Prepare (analysis) | Dropzone → digest |
 | `/u-reverse` | u-agent-plan | Plan.Prepare (reverse) | Scenario B2: code → digest |
-| `/u-figma` | u-agent-figma | Plan.Prepare (figma) | Comprehensive Figma analysis; auto-delegated from prepare/analyze/reverse/design on Figma sources |
+| `/u-tools-figma` | u-agent-figma | Plan.Prepare (figma) | Comprehensive Figma analysis; auto-delegated from prepare/analyze/reverse/design on Figma sources |
 | `/u-plan` | u-agent-plan | Plan.Plan | SRS + IA generation |
 | `/u-wireframe` | u-agent-plan | Build.UIDesign (companion) | Optional; prompted post-Plan |
 | `/u-build` | u-agent-build | Build (umbrella) | Orchestrates design ↔ dev |
@@ -42,7 +42,7 @@ The single brain of the u-maker plugin. Every `/u-*` command enters through this
 | `/u-deploy` | u-agent-deploy | Deploy | Interactive target + artifacts, ≥98 gate |
 | `/u-loop` | u-agent-pm (orchestrates all) | Cross-phase | Unattended PBGD pipeline |
 | `/u-discuss` | (inline) | Any | Structured collaboration |
-| `/u-git-pr` | (inline) | Any | Auto PR creation |
+| `/u-tools-git-pr` | (inline) | Any | Auto PR creation |
 | `/u-output` | (inline / doc-engine) | Cross-cutting | Standalone HTML output |
 | `/u-report --daily` | u-agent-report | Any | Daily HTML report |
 | `/u-report --weekly` | u-agent-report | Any | Weekly HTML report |

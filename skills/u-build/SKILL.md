@@ -70,6 +70,15 @@ Rules:
 - If the patch list is empty after a round, exit the loop successfully.
 - If still non-empty after max rounds, surface the gaps to the user and stop.
 
+**Design System gap routing:** When `/u-dev`'s gap report cites token/scale/a11y/component-API issues, route them to `/u-design` Step 4 with the relevant `design-system-rules.md` section:
+
+| Gap cited by `/u-dev` | `/u-design` section to re-run |
+|----------------------|-------------------------------|
+| Missing or inconsistent token scales | `design-system-rules.md` §2 (10 scales) |
+| Dark-mode tokens leak primitives | `design-system-rules.md` §3 dark-mode + §1 architecture |
+| WCAG contrast / focus / ARIA failures | `design-system-rules.md` §4 accessibility |
+| Component boolean-prop proliferation, prop drilling | `design-system-rules.md` §3 compound-components (+ `u-dev/references/fe-rules.md` §B) |
+
 ### Step 4: Handoff
 
 On successful completion:

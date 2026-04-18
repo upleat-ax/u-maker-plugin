@@ -1,6 +1,8 @@
 # Design System Specification Reference
 
 > Detailed rules for generating the Design System document. **HTML-first pipeline**: CSS variables, component styles, and a live showcase HTML are created first as the primary artifact. Markdown and JSON companions are then derived from the HTML.
+>
+> **Rule pack:** Token scales, dark mode, accessibility, and component-API shape are governed by **`design-system-rules.md`** (compiled from dylantarre/design-system-skills). This file defines *how* to assemble the HTML pipeline; `design-system-rules.md` defines *what* the tokens and components must look like. Both files are mandatory inputs for `/u-design` Step 4.
 
 ## 1. Overview
 

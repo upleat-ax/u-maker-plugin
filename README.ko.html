@@ -417,7 +417,7 @@ code {
   <p style="font-size:13px; color:#64748b; margin-bottom:12px;">Figma URL을 전달하면 페이지/컴포넌트/variants/에셋/코멘트/시맨틱을 자동 추출</p>
   <div class="code-block" style="margin-bottom:20px;">
 <code><span class="comment"># 직접 호출</span>
-<span class="cmd">/u-figma</span> &lt;figma-url&gt;
+<span class="cmd">/u-tools-figma</span> &lt;figma-url&gt;
 <span class="comment"># /u-prepare, /u-analyze, /u-reverse, /u-build가 Figma 소스 감지 시 자동 위임</span>
 <span class="comment"># v4.0.0-alpha.1은 reduced extraction path — source.pipeline == "reduced"</span></code>
   </div>
@@ -609,7 +609,7 @@ code {
   </div>
 
   <div class="callout callout-amber" style="margin-top:12px;">
-    <strong>Figma cross-phase:</strong> <code class="code-inline">/u-figma</code> (u-agent-figma)는 Phase 경계 없이 Figma 소스가 감지된 모든 명령(<code class="code-inline">/u-prepare</code>, <code class="code-inline">/u-analyze</code>, <code class="code-inline">/u-reverse</code>, <code class="code-inline">/u-build</code>)에서 자동 호출됩니다. v4.0.0-alpha.1은 reduced path(<code class="code-inline">source.pipeline == "reduced"</code>) — 다운스트림은 <code class="code-inline">coverageWarnings[]</code>를 warning으로 처리합니다.
+    <strong>Figma cross-phase:</strong> <code class="code-inline">/u-tools-figma</code> (u-agent-figma)는 Phase 경계 없이 Figma 소스가 감지된 모든 명령(<code class="code-inline">/u-prepare</code>, <code class="code-inline">/u-analyze</code>, <code class="code-inline">/u-reverse</code>, <code class="code-inline">/u-build</code>)에서 자동 호출됩니다. v4.0.0-alpha.1은 reduced path(<code class="code-inline">source.pipeline == "reduced"</code>) — 다운스트림은 <code class="code-inline">coverageWarnings[]</code>를 warning으로 처리합니다.
   </div>
 
   <div class="card" style="padding:24px; margin-top:16px;">
@@ -961,7 +961,7 @@ code {
           <td><strong style="color:#0f766e;">/u-prepare</strong></td>
           <td><span class="tag tag-plan">Plan</span></td>
           <td style="font-size:11px;"><code class="code-inline">/u-prepare [app]</code></td>
-          <td>Preparation umbrella &mdash; foldertree + dropzone + analyze/reverse + 요구사항 협의. Figma 소스 감지 시 <code class="code-inline">/u-figma</code> 자동 위임</td>
+          <td>Preparation umbrella &mdash; foldertree + dropzone + analyze/reverse + 요구사항 협의. Figma 소스 감지 시 <code class="code-inline">/u-tools-figma</code> 자동 위임</td>
         </tr>
         <tr>
           <td style="text-align:center;">2</td>
@@ -1128,9 +1128,9 @@ code {
       <tbody>
         <tr>
           <td style="text-align:center;">15</td>
-          <td><strong style="color:#be185d;">/u-figma</strong></td>
+          <td><strong style="color:#be185d;">/u-tools-figma</strong></td>
           <td><span class="tag tag-any">Cross</span></td>
-          <td style="font-size:11px;"><code class="code-inline">/u-figma &lt;figma-url&gt; [--app]</code></td>
+          <td style="font-size:11px;"><code class="code-inline">/u-tools-figma &lt;figma-url&gt; [--app]</code></td>
           <td>Figma 분석 &mdash; pages + variants + assets + components + comments + semantics. <code class="code-inline">/u-prepare</code>, <code class="code-inline">/u-analyze</code>, <code class="code-inline">/u-reverse</code>, <code class="code-inline">/u-build</code>에서 자동 위임. <em>v4.0.0-alpha.1: reduced path</em></td>
         </tr>
       </tbody>
@@ -1220,9 +1220,9 @@ code {
         </tr>
         <tr>
           <td style="text-align:center;">23</td>
-          <td><strong style="color:#ec4899;">/u-git-pr</strong></td>
+          <td><strong style="color:#ec4899;">/u-tools-git-pr</strong></td>
           <td><span class="tag tag-any">Any</span></td>
-          <td style="font-size:11px;"><code class="code-inline">/u-git-pr [--base branch]</code></td>
+          <td style="font-size:11px;"><code class="code-inline">/u-tools-git-pr [--base branch]</code></td>
           <td>변경 분석 &rarr; 자동 커밋+PR 생성</td>
         </tr>
         <tr>
@@ -1484,7 +1484,7 @@ code {
   <p style="font-size:13px; color:#64748b; margin-bottom:12px;">Figma URL이 포함되어 있으면 <code class="code-inline">u-agent-figma</code>가 자동 호출됩니다.</p>
   <div class="code-block" style="margin-bottom:24px;">
 <code><span class="comment"># 직접 호출</span>
-<span class="cmd">/u-figma</span> &lt;figma-url&gt; <span class="flag">--app</span> myapp
+<span class="cmd">/u-tools-figma</span> &lt;figma-url&gt; <span class="flag">--app</span> myapp
 
 <span class="comment"># dropzone에 Figma URL을 넣고 /u-prepare/analyze/build 실행 시 자동 위임</span>
 <span class="output"># → data/digest/figma/*.json (source.pipeline = "reduced" in alpha)</span></code>
@@ -1498,7 +1498,7 @@ code {
 <span class="cmd">/u-discuss</span> brainstorm "인증 시스템 아키텍처"
 
 <span class="comment"># PR 자동 생성</span>
-<span class="cmd">/u-git-pr</span> <span class="flag">--base</span> main
+<span class="cmd">/u-tools-git-pr</span> <span class="flag">--base</span> main
 
 <span class="comment"># 프론트엔드만 코드 재생성</span>
 <span class="cmd">/u-dev</span> <span class="flag">--app</span> myapp <span class="flag">--only</span> fe

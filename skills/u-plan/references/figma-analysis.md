@@ -1370,7 +1370,7 @@ Single source of truth for inventory, progress, change detection, and recovery. 
 
   "scan": {
     "scannedAt": "2026-04-18T10:00:00+09:00",
-    "scannedBy": "u-figma@<version>",
+    "scannedBy": "u-tools-figma@<version>",
     "mcpServer": "figma-mcp-go | plugin_figma",
     "scope": "file | page | frame"
   },
@@ -1487,7 +1487,7 @@ Figma: 설계-현진웹-HJW-테스트
 
 ---
 
-## 9. Command Surface — `/u-figma`
+## 9. Command Surface — `/u-tools-figma`
 
 ### 9.1 Decision: dedicated command with delegation
 
@@ -1498,19 +1498,19 @@ Figma: 설계-현진웹-HJW-테스트
 ### 9.2 Sub-commands
 
 ```
-/u-figma scan <url>     [--scope file|page|frame] [--refresh]
-/u-figma extract <url>  [--page <id>] [--frame <id>] [--retry-failed] [--limit N]
-/u-figma status <url>   [--verbose] [--warnings-only]
-/u-figma verify <url>   [--fix]
-/u-figma sync <url>     [--to plan|design|both]
-/u-figma skip <url> --frame <id> [--reason "..."]
-/u-figma ingest <url>                  # scan + gate + extract + verify + sync
+/u-tools-figma scan <url>     [--scope file|page|frame] [--refresh]
+/u-tools-figma extract <url>  [--page <id>] [--frame <id>] [--retry-failed] [--limit N]
+/u-tools-figma status <url>   [--verbose] [--warnings-only]
+/u-tools-figma verify <url>   [--fix]
+/u-tools-figma sync <url>     [--to plan|design|both]
+/u-tools-figma skip <url> --frame <id> [--reason "..."]
+/u-tools-figma ingest <url>                  # scan + gate + extract + verify + sync
 ```
 
 ### 9.3 Delegation from existing commands (auto-trigger ON by default)
 
-- **`/u-plan`** — scans `data/dropzone/` for `.figma-link | *.figma.txt | markdown with figma.com/design/…`; each URL triggers `/u-figma ingest <url> --to plan`.
-- **`/u-design`** — if SRS has `designSystemSource: figma:<url>` or `screenDesignSource: figma:<url>`, call `/u-figma sync <url> --to design`.
+- **`/u-plan`** — scans `data/dropzone/` for `.figma-link | *.figma.txt | markdown with figma.com/design/…`; each URL triggers `/u-tools-figma ingest <url> --to plan`.
+- **`/u-design`** — if SRS has `designSystemSource: figma:<url>` or `screenDesignSource: figma:<url>`, call `/u-tools-figma sync <url> --to design`.
 
 Configurable via `figma.integration.autoTriggerFromPlan` / `autoTriggerFromDesign` (§12.7).
 
@@ -1526,16 +1526,16 @@ Active inside `ingest` only. If `frames > autoExtractThreshold` (default 80) **o
 Proceed?
   [Y] Extract all
   [S] Scope — specify pages/frames
-  [M] Manifest only (scan done; run /u-figma extract later)
+  [M] Manifest only (scan done; run /u-tools-figma extract later)
   [N] Cancel
 ```
 
-Direct `/u-figma scan` + `/u-figma extract` invocations bypass the gate (explicit intent).
+Direct `/u-tools-figma scan` + `/u-tools-figma extract` invocations bypass the gate (explicit intent).
 
 ### 9.5 New files
 
 ```
-skills/u-figma/
+skills/u-tools-figma/
   SKILL.md
   references/
     manifest-schema.md       # §8
@@ -1555,7 +1555,7 @@ skills/u-plan/references/
 
 ## 10. Orchestrated Pipeline & Dense-Frame Chunking
 
-### 10.1 End-to-end pipeline (`/u-figma ingest`)
+### 10.1 End-to-end pipeline (`/u-tools-figma ingest`)
 
 ```
 [Phase 0] MCP server detection
@@ -1782,7 +1782,7 @@ data/figma/<file_key>/aggregate.json
 
 ### 12.2 Plan-side (auto-trigger ON)
 
-- `/u-plan` scans `data/dropzone/` for Figma URLs; each triggers `/u-figma ingest <url> --to plan`.
+- `/u-plan` scans `data/dropzone/` for Figma URLs; each triggers `/u-tools-figma ingest <url> --to plan`.
 - `aggregate.json` mirrored to `data/digest/figma_<fileKey>.digest.json`.
 - SRS/IA generation merges Figma digest with other digests.
 
@@ -1805,17 +1805,17 @@ From `screenDescriptions` + `prototype.flows`, emit US candidates with `status: 
 
 ### 12.3 Design-side
 
-- `/u-design` reads SRS; if `designSystemSource: figma:<url>` or `screenDesignSource: figma:<url>` present → `/u-figma sync <url> --to design`.
+- `/u-design` reads SRS; if `designSystemSource: figma:<url>` or `screenDesignSource: figma:<url>` present → `/u-tools-figma sync <url> --to design`.
 - `aggregate.designTokens` → CSS `:root` variables.
 - `aggregate.componentSets` → `CMP-xxx` with full variant/property matrices (directly addresses user's #1 pain).
 - `aggregate.screenDescriptions` → Screen Spec base; each variant becomes a state subsection (Error/Empty/Loading/etc.).
 
-### 12.4 `/u-figma sync` (manual re-sync)
+### 12.4 `/u-tools-figma sync` (manual re-sync)
 
 ```
-/u-figma sync <url> --to plan       # SRS/IA only
-/u-figma sync <url> --to design     # Design System only
-/u-figma sync <url> --to both       # both (default)
+/u-tools-figma sync <url> --to plan       # SRS/IA only
+/u-tools-figma sync <url> --to design     # Design System only
+/u-tools-figma sync <url> --to both       # both (default)
 ```
 
 Idempotent: diffs against current docs, patches only changed fields. User edits marked with `// user-edit` comments are preserved.
@@ -1832,7 +1832,7 @@ tools: Read, Write, Glob, Grep, Bash,
        mcp__plugin_figma_figma__*
 ```
 
-- `/u-figma ingest` → orchestrator delegates to `u-agent-figma`.
+- `/u-tools-figma ingest` → orchestrator delegates to `u-agent-figma`.
 - Agent runs the per-frame loop in its own context window.
 - Returns only the `aggregate.json` path on completion.
 
@@ -1845,7 +1845,7 @@ On `/u-gate` or `--loop`:
 - **Traceability gate** — every `aggregate.screenDescriptions[]` has a matching FR in SRS
 - **Sync freshness** — docs regenerated within N hours of `aggregate.scannedAt`
 
-Failed gates propose an auto `/u-figma verify --fix`.
+Failed gates propose an auto `/u-tools-figma verify --fix`.
 
 ### 12.7 Config block (`u-maker.config.json`)
 
@@ -1894,7 +1894,7 @@ Failed gates propose an auto `/u-figma verify --fix`.
 
 ### 12.8 Relation to `/u-sync`
 
-- `/u-figma sync` — Figma → docs only.
+- `/u-tools-figma sync` — Figma → docs only.
 - `/u-sync` — docs internal cross-refs (FR→US→FT, etc.) only.
 - Independent; `/u-sync` is unaware of Figma.
 
@@ -1916,7 +1916,7 @@ Auto-feed:
 #### 12.10.1 Promotion flow
 
 ```
-/u-figma sync <url> --to design
+/u-tools-figma sync <url> --to design
   └─▶ read aggregate.componentCandidates[]
        └─▶ for each c where c.status == "pending-promotion":
             1. if c.existingDsMatch != null:
@@ -2113,7 +2113,7 @@ Three user-supplied URLs serve as acceptance tests:
 
 ### 13.3 Regression suite
 
-`skills/u-figma/tests/` contains:
+`skills/u-tools-figma/tests/` contains:
 - Mock Figma fixtures (serialized node trees) for unit tests of variant detection, dense flagging, dedup.
 - Integration tests invoking `u-agent-figma` against recorded MCP responses.
 - Gatekeeper-style schema assertions on manifest/aggregate.
@@ -2124,13 +2124,13 @@ Three user-supplied URLs serve as acceptance tests:
 
 ### 14.1 Build sequence (high-level)
 
-1. `skills/u-figma/SKILL.md` + references (§7, §8, §10, §11, §12 authoring).
+1. `skills/u-tools-figma/SKILL.md` + references (§7, §8, §10, §11, §12 authoring).
 2. `agents/u-agent-figma.md` (Option B).
 3. Manifest schema file + validator in `_meta/schemas/figma-manifest.schema.json`.
-4. `/u-figma scan` + `status` (read-only subset — validates schema end-to-end).
-5. `/u-figma extract` + `verify` + chunking.
+4. `/u-tools-figma scan` + `status` (read-only subset — validates schema end-to-end).
+5. `/u-tools-figma extract` + `verify` + chunking.
 6. Comments Tier 1 (REST), then Tier 2/3.
-7. `/u-figma sync` + plan/design delegation + gatekeeper gates.
+7. `/u-tools-figma sync` + plan/design delegation + gatekeeper gates.
 8. Tests against the three corpora.
 
 ### 14.2 Back-compatibility
@@ -2155,8 +2155,8 @@ Three user-supplied URLs serve as acceptance tests:
 
 ### 14.5 Success criteria
 
-- Given the three test URLs: **0 orphan-base warnings** and **100% COMPONENT_SET variant coverage** reported by `/u-figma status`.
+- Given the three test URLs: **0 orphan-base warnings** and **100% COMPONENT_SET variant coverage** reported by `/u-tools-figma status`.
 - Mid-extract interruption resumable with zero loss.
 - `/u-plan` on a Figma-containing dropzone produces SRS with `businessRules` and `processingRules` derived from Figma planning text.
 - `/u-design` on an SRS with `designSystemSource: figma:…` produces a Design System HTML representing every COMPONENT_SET variant.
-- `/u-figma status <url>` surfaces coverage at any time.
+- `/u-tools-figma status <url>` surfaces coverage at any time.

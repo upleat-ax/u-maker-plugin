@@ -1,4 +1,4 @@
-# /u-figma — 6-Phase Pipeline
+# /u-tools-figma — 6-Phase Pipeline
 
 > High-level description of the scan → gate → extract → verify → aggregate → sync pipeline. Authoritative spec: `skills/u-plan/references/figma-analysis.md` PART II §10.
 
@@ -68,7 +68,7 @@ Digests that fail validation revert to `status: "error"` with details; the pipel
 2. Update `data/links.json`: add `digest` nodes for each new/changed digest with `phase: "plan"` (Preparation sub-phase).
 3. Emit a one-line summary to the caller:
    ```
-   /u-figma done: {files} files, {pages} pages, {frames} frames, {variants} variants,
+   /u-tools-figma done: {files} files, {pages} pages, {frames} frames, {variants} variants,
                   {comments} comments. Coverage: {pct}% (warnings: {n}).
    ```
 
@@ -83,7 +83,7 @@ With `--loop`:
 
 ## Idempotency
 
-Running `/u-figma` twice on unchanged Figma content produces zero writes:
+Running `/u-tools-figma` twice on unchanged Figma content produces zero writes:
 
 - Node hashes match → Phase 2 skips all targets.
 - `manifest.json` `lastFullScanAt` updates but artifacts are byte-identical.

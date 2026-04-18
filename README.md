@@ -52,7 +52,7 @@ claude plugin add upleat-ax/u-maker-plugin
 | `/u-prepare-foldertree` | `.u-maker/` folder/state scaffolding only |
 | `/u-analyze` | Dropzone → digest |
 | `/u-reverse` | Reverse-engineer existing code → digest |
-| `/u-figma` | Comprehensive Figma analyzer (pages + variants + assets + components + comments + semantics). Auto-delegated from `/u-prepare`, `/u-analyze`, `/u-reverse`, `/u-design` on Figma sources. |
+| `/u-tools-figma` | Comprehensive Figma analyzer (pages + variants + assets + components + comments + semantics). Auto-delegated from `/u-prepare`, `/u-analyze`, `/u-reverse`, `/u-design` on Figma sources. |
 
 ## PBGD Phases
 

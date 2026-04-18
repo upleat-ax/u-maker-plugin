@@ -1,6 +1,6 @@
 # Variant Detection — Four-Source Union
 
-> `/u-figma` must be **variant-exhaustive**: every variant of every component/screen must be detected, regardless of how the designer organized it. Four parallel heuristics; the union of their outputs is the final variant set. Authoritative spec: `skills/u-plan/references/figma-analysis.md` PART II §7.
+> `/u-tools-figma` must be **variant-exhaustive**: every variant of every component/screen must be detected, regardless of how the designer organized it. Four parallel heuristics; the union of their outputs is the final variant set. Authoritative spec: `skills/u-plan/references/figma-analysis.md` PART II §7.
 
 ## Why four sources
 

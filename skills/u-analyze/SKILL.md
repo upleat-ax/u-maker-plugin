@@ -49,7 +49,7 @@ For each `pending` or `error` entry:
 
 1. Set `_index.json` status to `processing` (crash-recovery marker).
 2. Read source file from `data/dropzone/{path}`.
-3. **Figma delegation:** if the file is a `.figma-link`, `.figma-make-link`, or its content is a `figma.com` URL, **delegate to `/u-figma --app {app}`** and skip the remaining steps for this entry. `/u-figma` handles the comprehensive analysis (pages + variants + assets + components + comments + semantic extraction) and writes outputs to `data/digest/figma/…` and `data/figma/…`. On return, mark the original entry in `_index.json` with `status: "delegated"` and `digestPath: "figma://{fileKey}"`. See `skills/u-figma/references/integration.md`.
+3. **Figma delegation:** if the file is a `.figma-link`, `.figma-make-link`, or its content is a `figma.com` URL, **delegate to `/u-tools-figma --app {app}`** and skip the remaining steps for this entry. `/u-tools-figma` handles the comprehensive analysis (pages + variants + assets + components + comments + semantic extraction) and writes outputs to `data/digest/figma/…` and `data/figma/…`. On return, mark the original entry in `_index.json` with `status: "delegated"` and `digestPath: "figma://{fileKey}"`. See `skills/u-tools-figma/references/integration.md`.
 4. Otherwise, apply type-specific extraction strategy (see `references/digest-extraction.md`).
 5. Extract: requirements, constraints, stakeholders, domain terms, workflows, pain points.
 6. Write `data/digest/{mirror-path}/{filename}.digest.json` conforming to `_meta/schemas/digest.schema.json`.

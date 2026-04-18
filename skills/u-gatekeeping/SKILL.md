@@ -61,6 +61,7 @@ Gatekeeping phase unifies two responsibilities:
 4. Define preconditions, steps, expected results, test data.
 5. Write `docs/{app}/gatekeeping/testcases.md` + `testcases.json`.
 6. Execute each TC against implemented code; record PASS/FAIL.
+   - **Browser-bound TCs (type = `e2e`, `accessibility`, browser-based `performance`) MUST route through `skills/u-tools-browser/SKILL.md`** — never call MCP Playwright tools or `agent-browser` CLI directly. The engine handles port detection, headed/headless selection, dev-server verification, error screenshots, and failure triage (fix/todo/skip).
 7. Aggregate results; calculate pass rate by type.
 8. Build coverage matrix (FR→US→FT→TC→Result).
 9. Write `docs/{app}/gatekeeping/test-results.md` + `test-results.json`.

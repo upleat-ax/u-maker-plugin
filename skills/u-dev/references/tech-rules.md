@@ -18,6 +18,8 @@ This reference defines the supported technology stacks, naming conventions, pack
 - If no config, default to **Next.js 15 App Router** for new projects
 - If existing project detected, match the existing stack
 
+> **React/Next.js rule set:** All React/Next.js generation MUST follow `references/fe-rules.md` (Vercel react-best-practices 70 rules + composition-patterns 9 rules). The §0 MUST-APPLY checklist (15 rules) is enforced on every FE file before it is marked Final.
+
 ### 1.2 Backend Frameworks
 
 | Framework | Versions | ORM | Validation |
@@ -56,12 +58,14 @@ This reference defines the supported technology stacks, naming conventions, pack
 
 ### 1.5 Testing
 
-| Layer | Tool | Config |
-|-------|------|--------|
-| Unit | Vitest | `vitest.config.ts` |
-| Component | Testing Library (React/Vue) | Integrated with Vitest |
-| E2E | Playwright | `playwright.config.ts` |
-| API | Vitest + supertest | Integrated with Vitest |
+| Layer | Tool | Config | Runner |
+|-------|------|--------|--------|
+| Unit | Vitest | `vitest.config.ts` | direct |
+| Component | Testing Library (React/Vue) | Integrated with Vitest | direct |
+| E2E | Playwright | `playwright.config.ts` | **via `skills/u-tools-browser/SKILL.md`** |
+| API | Vitest + supertest | Integrated with Vitest | direct |
+
+> Any time `/u-dev` needs to drive a browser (E2E sanity, Screen.md visual verify, wireframe preview), it **must** load `u-tools-browser` and follow its Step 1→9 protocol. Do not call MCP browser tools directly from `u-dev`.
 
 ## 2. Naming Conventions
 

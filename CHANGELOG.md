@@ -27,7 +27,7 @@ The plugin has been restructured from a 5-phase PDCA pipeline (Plan / Design / D
 - `/u-analyze` — Discrete dropzone → digest analysis skill (extracted from `/u-plan` Steps 1–2).
 - `/u-build` — Build-phase orchestrator (design ↔ dev ping-pong).
 - `/u-deploy` — Deploy-phase skill (interactive target + artifact selection, ≥ 98 gate, continuous regeneration).
-- `/u-figma` — Comprehensive Figma analyzer skill (pages + variants + assets + components + comments, semantic extraction). Auto-delegated from `/u-prepare`, `/u-analyze`, `/u-reverse`, `/u-design` on Figma sources. **Note:** v4.0.0-alpha.1 ships the reduced extraction path; full 6-phase pipeline (schema-strict manifest + 4-source variant detection) scheduled for the first post-GA release. Downstream consumers must tolerate `source.pipeline == "reduced"` digests (see `agents/u-agent-figma.md` §10).
+- `/u-tools-figma` — Comprehensive Figma analyzer skill (pages + variants + assets + components + comments, semantic extraction). Auto-delegated from `/u-prepare`, `/u-analyze`, `/u-reverse`, `/u-design` on Figma sources. **Note:** v4.0.0-alpha.1 ships the reduced extraction path; full 6-phase pipeline (schema-strict manifest + 4-source variant detection) scheduled for the first post-GA release. Downstream consumers must tolerate `source.pipeline == "reduced"` digests (see `agents/u-agent-figma.md` §10).
 - `u-agent-build` — Build-phase orchestrator agent.
 - `u-agent-deploy` — Deploy-phase agent.
 - `u-agent-figma` — Figma analyzer agent (reduced path in alpha).
