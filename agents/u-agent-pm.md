@@ -159,7 +159,7 @@ Every phase command (and every alias that routes to a phase command) must accept
 | Parameter | Semantics | Applies to |
 |-----------|-----------|-----------|
 | `--app [scope]` | Scope the invocation to an app inside a multi-app project. If omitted, single-app projects auto-select; multi-app projects prompt (or error in `--auto`). Positional `app-name` is also accepted where a command historically used that form. | ALL phase commands |
-| `--loop` | After the phase produces its output, invoke `u-agent-gatekeeper` to score it. If avg score < threshold (pass 95; deploy 98), generate an improvement list and re-run the phase. Retry up to `loopMaxRetries` (default 3). For commands with no scoreable output (`/u-prepare-foldertree`), `--loop` is accepted and silently ignored for parameter consistency. | ALL phase commands |
+| `--loop [N]` | After the phase produces its output, invoke `u-agent-gatekeeper` to score it using `N` criteria (1–11, **default N=5**; see `agents/u-agent-gatekeeper.md` §Criteria Selection). If avg score < threshold (pass 95; deploy 98), generate an improvement list and re-run the phase. Retry up to `loopMaxRetries` (default 3 — separate from `N`). Bare `--loop` = `--loop 5`. For commands with no scoreable output (`/u-prepare-foldertree`), `--loop` is accepted and silently ignored for parameter consistency. | ALL phase commands |
 
 Both params are also available on `/u-loop`, which forwards them to every phase it orchestrates. Individual skills may declare additional parameters; these two form the common baseline.
 

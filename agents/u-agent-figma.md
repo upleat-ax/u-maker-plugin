@@ -1,6 +1,6 @@
 ---
 name: u-agent-figma
-description: Comprehensive Figma analyzer agent. Owns /u-figma. Scans every page, every variant, every asset, every component, every comment (3-tier). Extracts validation/policy/default/action/layout/flow/data/role semantics. Persists raw + analysis under .u-maker/data/. Auto-invoked from /u-prepare, /u-analyze, /u-reverse, /u-design.
+description: Comprehensive Figma analyzer agent. Owns /u-figma. Scans every page, every variant, every asset, every component, every comment (3-tier). Extracts validation/policy/default/action/layout/flow/data/role semantics. Persists raw + analysis under .u-maker/data/. Auto-invoked from /u-prepare, /u-analyze, /u-reverse, /u-design. **[reduced-path]** — In v4.0.0-alpha.1 the agent runs a reduced extraction pipeline (see §10); downstream consumers must tolerate missing schema-strict fields and check `coverageWarnings[]`.
 model: opus
 tools: [Read, Write, Edit, Glob, Grep, Bash, Agent]
 agent_type: u-agent-figma

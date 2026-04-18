@@ -304,11 +304,6 @@ code {
 </style>
 </head>
 <body>
-<div style="background:#fef3c7;border-bottom:3px solid #f59e0b;padding:14px 20px;font-family:-apple-system,sans-serif;font-size:14px;color:#78350f;">
-  <strong>&#x26A0;&#xFE0F; v4.0.0-alpha.1 (PBGD) — in-progress migration.</strong>
-  The plugin is being refactored from PDCA to PBGD (Plan / Build / Gatekeeping / Deploy). Docs below still reflect v3.x PDCA terminology. See <a href="https://github.com/upleat-ax/u-maker-plugin/blob/main/CHANGELOG.md" style="color:#78350f;text-decoration:underline;">CHANGELOG.md</a> for the new command map and migration steps.
-</div>
-
 <button class="hamburger" onclick="toggleSidebar()" aria-label="Menu">&#9776;</button>
 <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
 
@@ -318,17 +313,17 @@ code {
 <nav class="sidebar" id="sidebar">
   <div class="sidebar-header">
     <h2>U-MAKER v4.0.0-alpha.1 (PBGD)</h2>
-    <p>PDCA SSoT Plugin for Claude Code</p>
+    <p>PBGD SSoT Plugin for Claude Code</p>
   </div>
   <div class="sidebar-nav">
     <ul>
       <li><a href="#hero" class="nav-link"><span class="nav-num">1</span> Hero</a></li>
       <li><a href="#tldr" class="nav-link"><span class="nav-num">2</span> TL;DR</a></li>
       <li><a href="#architecture" class="nav-link"><span class="nav-num">3</span> 아키텍처</a></li>
-      <li><a href="#pdca" class="nav-link"><span class="nav-num">4</span> PDCA 5-Phase</a></li>
+      <li><a href="#pbgd" class="nav-link"><span class="nav-num">4</span> PBGD 4-Phase</a></li>
       <li><a href="#pipeline" class="nav-link"><span class="nav-num">5</span> 데이터 파이프라인</a></li>
-      <li><a href="#agents" class="nav-link"><span class="nav-num">6</span> 7개 Agents</a></li>
-      <li><a href="#commands" class="nav-link"><span class="nav-num">7</span> 16개 Commands</a></li>
+      <li><a href="#agents" class="nav-link"><span class="nav-num">6</span> 10개 Agents</a></li>
+      <li><a href="#commands" class="nav-link"><span class="nav-num">7</span> 24개 Commands</a></li>
       <li><a href="#gate" class="nav-link"><span class="nav-num">8</span> Gate Criteria</a></li>
       <li><a href="#folder" class="nav-link"><span class="nav-num">9</span> 폴더 구조</a></li>
       <li><a href="#scenario" class="nav-link"><span class="nav-num">10</span> 시나리오 가이드</a></li>
@@ -349,16 +344,16 @@ code {
 <section id="hero" class="section">
   <div class="hero">
     <h1>U-MAKER Plugin v4.0.0-alpha.1 (PBGD)</h1>
-    <p>PDCA 기반 SSoT(Single Source of Truth) Claude Code 플러그인.<br>
-    기획 자료를 넣으면, 분석 &rarr; 설계 &rarr; 구현 &rarr; 검증까지 자동으로 수행합니다.</p>
+    <p>PBGD 기반 SSoT(Single Source of Truth) Claude Code 플러그인.<br>
+    기획 자료를 넣으면 Plan &rarr; Build &rarr; Gatekeeping &rarr; Deploy까지 자동으로 수행합니다.</p>
     <div class="hero-badges">
-      <span class="badge"><span class="badge-num">16</span> Skills</span>
-      <span class="badge"><span class="badge-num">7</span> Agents</span>
-      <span class="badge"><span class="badge-num">5</span> PDCA Phases</span>
+      <span class="badge"><span class="badge-num">24</span> Skills</span>
+      <span class="badge"><span class="badge-num">10</span> Agents</span>
+      <span class="badge"><span class="badge-num">4</span> PBGD Phases</span>
       <span class="badge"><span class="badge-num">11</span> Gate Criteria</span>
     </div>
     <div class="hero-meta">
-      <span><strong>Version</strong> 3.4.10</span>
+      <span><strong>Version</strong> 4.0.0-alpha.1</span>
       <span><strong>Config</strong> v4.0</span>
       <span><strong>License</strong> Proprietary</span>
       <span><strong>Runtime</strong> Claude Code CLI</span>
@@ -366,11 +361,11 @@ code {
   </div>
   <div class="grid-4" style="margin-top: 24px;">
     <div class="stat-card">
-      <div class="stat-num" style="color:#3b82f6;">16</div>
+      <div class="stat-num" style="color:#3b82f6;">24</div>
       <div class="stat-label">Skills</div>
     </div>
     <div class="stat-card">
-      <div class="stat-num" style="color:#10b981;">7</div>
+      <div class="stat-num" style="color:#10b981;">10</div>
       <div class="stat-label">AI Agents</div>
     </div>
     <div class="stat-card">
@@ -378,8 +373,8 @@ code {
       <div class="stat-label">Gate Criteria</div>
     </div>
     <div class="stat-card">
-      <div class="stat-num" style="color:#8b5cf6;">5</div>
-      <div class="stat-label">PDCA Phases</div>
+      <div class="stat-num" style="color:#8b5cf6;">4</div>
+      <div class="stat-label">PBGD Phases</div>
     </div>
   </div>
 </section>
@@ -390,23 +385,23 @@ code {
   <p style="margin-bottom: 16px; color: #475569;">세 가지 방식으로 U-MAKER를 활용할 수 있습니다.</p>
 
   <h3 style="font-size:14px; font-weight:700; color:#0f172a; margin-bottom:8px;">Forward Engineering (정방향)</h3>
-  <p style="font-size:13px; color:#64748b; margin-bottom:12px;">원시 자료 투입 &rarr; 설계 문서 &rarr; 코드 &rarr; 테스트까지 자동 생성</p>
+  <p style="font-size:13px; color:#64748b; margin-bottom:12px;">원시 자료 투입 &rarr; Plan &rarr; Build &rarr; Gatekeeping &rarr; Deploy까지 자동 실행</p>
   <div class="code-block" style="margin-bottom:20px;">
-<code><span class="comment"># A. 새 프로젝트를 처음부터 시작할 때</span>
-<span class="cmd">/u-createproject</span> myapp          <span class="comment"># 모노레포 스캐폴딩 + u-init 자동 실행</span>
+<code><span class="comment"># A. 새 모노레포를 처음부터 시작할 때</span>
+<span class="cmd">/u-createproject</span> myapp             <span class="comment"># Turborepo+Bun 스캐폴딩 + /u-prepare 자동 실행</span>
 <span class="comment"># ⚠️ 생성 후: cd myapp && claude  (새 폴더에서 CLI 재시작)</span>
 
-<span class="comment"># B. 이미 코드가 있는 프로젝트에 적용할 때</span>
-<span class="cmd">/u-init</span> myapp                    <span class="comment"># 기존 프로젝트에 .u-maker/ 구조만 추가</span>
+<span class="comment"># B. 기존 프로젝트에 u-maker 적용할 때 (/u-init 은 별칭)</span>
+<span class="cmd">/u-prepare</span> myapp                   <span class="comment"># foldertree + dropzone + analyze/reverse + 요구사항 협의</span>
 
-<span class="comment"># 이후 공통 흐름 (새 프로젝트는 cd 후 진행)</span>
-<span class="cmd">/u-plan</span> <span class="flag">--app</span> myapp             <span class="comment"># dropzone 자료 → SRS + IA</span>
-<span class="cmd">/u-design</span> <span class="flag">--app</span> myapp           <span class="comment"># ERD + API + Screens + Design System</span>
-<span class="cmd">/u-wireframe</span> <span class="flag">--app</span> myapp <span class="flag">--all</span>  <span class="comment"># Screen별 HTML 와이어프레임</span>
-<span class="cmd">/u-dev</span> <span class="flag">--app</span> myapp              <span class="comment"># FE + BE + DB 코드 생성</span>
-<span class="cmd">/u-check</span> <span class="flag">--app</span> myapp            <span class="comment"># 테스트 케이스 + 실행</span>
+<span class="comment"># PBGD 핵심 파이프라인</span>
+<span class="cmd">/u-plan</span> <span class="flag">--app</span> myapp                <span class="comment"># Plan: SRS + IA</span>
+<span class="cmd">/u-wireframe</span> <span class="flag">--app</span> myapp <span class="flag">--all</span>     <span class="comment"># (선택) Screen별 HTML 와이어프레임</span>
+<span class="cmd">/u-build</span> <span class="flag">--app</span> myapp               <span class="comment"># Build: Design(ERD/API/Screens/DS) ↔ Dev(FE/BE/DB) 오케스트레이션</span>
+<span class="cmd">/u-gatekeeping</span> <span class="flag">--app</span> myapp         <span class="comment"># Gatekeeping: 문서 점수 + 런타임 QA (별칭 /u-check)</span>
+<span class="cmd">/u-deploy</span> <span class="flag">--app</span> myapp              <span class="comment"># Deploy: 대화형 타겟+아티팩트 선택 (≥98 gate)</span>
 
-<span class="comment"># 전체 자동 실행 (위를 한 번에)</span>
+<span class="comment"># 또는 전체 자동 실행 (위를 한 번에)</span>
 <span class="cmd">/u-loop</span> <span class="flag">--app</span> myapp</code>
   </div>
 
@@ -414,15 +409,24 @@ code {
   <p style="font-size:13px; color:#64748b; margin-bottom:12px;">기존 코드베이스에서 SSoT 설계 문서를 역생성</p>
   <div class="code-block" style="margin-bottom:20px;">
 <code><span class="comment"># 기존 프로젝트 초기화 후 역공학</span>
-<span class="cmd">/u-init</span> myapp
+<span class="cmd">/u-prepare</span> myapp                   <span class="comment"># 별칭: /u-init</span>
 <span class="cmd">/u-reverse</span> <span class="flag">--app</span> myapp <span class="flag">--src</span> ./src <span class="flag">--db</span> ./prisma <span class="flag">--pages</span> ./app</code>
+  </div>
+
+  <h3 style="font-size:14px; font-weight:700; color:#0f172a; margin-bottom:8px;">Figma 소스 분석</h3>
+  <p style="font-size:13px; color:#64748b; margin-bottom:12px;">Figma URL을 전달하면 페이지/컴포넌트/variants/에셋/코멘트/시맨틱을 자동 추출</p>
+  <div class="code-block" style="margin-bottom:20px;">
+<code><span class="comment"># 직접 호출</span>
+<span class="cmd">/u-figma</span> &lt;figma-url&gt;
+<span class="comment"># /u-prepare, /u-analyze, /u-reverse, /u-build가 Figma 소스 감지 시 자동 위임</span>
+<span class="comment"># v4.0.0-alpha.1은 reduced extraction path — source.pipeline == "reduced"</span></code>
   </div>
 
   <h3 style="font-size:14px; font-weight:700; color:#0f172a; margin-bottom:8px;">Natural Language (자연어)</h3>
   <p style="font-size:13px; color:#64748b; margin-bottom:12px;">슬래시 커맨드 없이 자연어로 요청하면 PM 에이전트가 자동 라우팅</p>
   <div class="code-block" style="margin-bottom:0;">
 <code><span class="comment"># 자연어 요청 예시</span>
-<span class="cmd">"이 프로젝트의 ERD를 만들어줘"</span>       <span class="output">&rarr; /u-design 라우팅</span>
+<span class="cmd">"이 프로젝트의 ERD를 만들어줘"</span>       <span class="output">&rarr; /u-build --only erd 라우팅</span>
 <span class="cmd">"dropzone에 넣은 RFP를 분석해줘"</span>   <span class="output">&rarr; /u-plan 라우팅</span>
 <span class="cmd">"프론트엔드 코드만 생성해줘"</span>       <span class="output">&rarr; /u-dev --only fe 라우팅</span>
 <span class="cmd">"기존 소스를 분석해서 설계서 만들어줘"</span> <span class="output">&rarr; /u-reverse 라우팅</span></code>
@@ -432,7 +436,7 @@ code {
 <!-- ===== 3. Architecture Overview ===== -->
 <section id="architecture" class="section">
   <h2 class="section-title">3. 아키텍처 개요</h2>
-  <p style="margin-bottom: 20px; color: #475569;">U-MAKER는 7개 AI 에이전트가 PDCA 파이프라인을 수행하며, 16개 스킬을 통해 각 단계를 제어합니다. PM 에이전트가 모든 요청을 라우팅하고 Gatekeeper가 품질을 검증합니다.</p>
+  <p style="margin-bottom: 20px; color: #475569;">U-MAKER는 10개 AI 에이전트가 PBGD 4-phase 파이프라인을 수행하며, 24개 스킬(별칭 3개 포함)을 통해 각 단계를 제어합니다. PM 에이전트가 모든 요청을 라우팅하고 Gatekeeper가 품질을 검증합니다.</p>
 
   <div class="card" style="padding:24px; margin-bottom:20px;">
     <svg viewBox="0 0 720 340" class="pipeline-svg" xmlns="http://www.w3.org/2000/svg" style="font-family:'Noto Sans KR',sans-serif;">
@@ -456,46 +460,39 @@ code {
       <!-- Arrow to phases -->
       <line x1="260" y1="75" x2="290" y2="75" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrow)"/>
 
-      <!-- PDCA Phases Box -->
+      <!-- PBGD Phases Box -->
       <rect x="290" y="40" width="340" height="70" rx="10" fill="none" stroke="#e2e8f0" stroke-width="1.5" stroke-dasharray="4"/>
-      <text x="460" y="38" text-anchor="middle" font-size="9" fill="#94a3b8">PDCA Pipeline</text>
+      <text x="460" y="38" text-anchor="middle" font-size="9" fill="#94a3b8">PBGD Pipeline</text>
 
       <!-- Plan -->
-      <rect x="300" y="50" width="56" height="50" rx="6" fill="#dbeafe" stroke="#3b82f6" stroke-width="1.5"/>
-      <text x="328" y="72" text-anchor="middle" font-size="9" font-weight="700" fill="#1e40af">Plan</text>
-      <text x="328" y="84" text-anchor="middle" font-size="7" fill="#3b82f6">SRS+IA</text>
+      <rect x="300" y="50" width="76" height="50" rx="6" fill="#dbeafe" stroke="#3b82f6" stroke-width="1.5"/>
+      <text x="338" y="72" text-anchor="middle" font-size="9" font-weight="700" fill="#1e40af">Plan</text>
+      <text x="338" y="84" text-anchor="middle" font-size="7" fill="#3b82f6">SRS+IA</text>
 
-      <line x1="356" y1="75" x2="368" y2="75" stroke="#94a3b8" stroke-width="1" marker-end="url(#arrow-sm)"/>
+      <line x1="376" y1="75" x2="388" y2="75" stroke="#94a3b8" stroke-width="1" marker-end="url(#arrow-sm)"/>
 
-      <!-- Design -->
-      <rect x="368" y="50" width="56" height="50" rx="6" fill="#d1fae5" stroke="#10b981" stroke-width="1.5"/>
-      <text x="396" y="72" text-anchor="middle" font-size="9" font-weight="700" fill="#065f46">Design</text>
-      <text x="396" y="84" text-anchor="middle" font-size="7" fill="#10b981">ERD+API</text>
+      <!-- Build -->
+      <rect x="388" y="50" width="76" height="50" rx="6" fill="#d1fae5" stroke="#10b981" stroke-width="1.5"/>
+      <text x="426" y="72" text-anchor="middle" font-size="9" font-weight="700" fill="#065f46">Build</text>
+      <text x="426" y="84" text-anchor="middle" font-size="7" fill="#10b981">Design↔Dev</text>
 
-      <line x1="424" y1="75" x2="436" y2="75" stroke="#94a3b8" stroke-width="1" marker-end="url(#arrow-sm)"/>
+      <line x1="464" y1="75" x2="476" y2="75" stroke="#94a3b8" stroke-width="1" marker-end="url(#arrow-sm)"/>
 
-      <!-- Dev -->
-      <rect x="436" y="50" width="56" height="50" rx="6" fill="#ffedd5" stroke="#f97316" stroke-width="1.5"/>
-      <text x="464" y="72" text-anchor="middle" font-size="9" font-weight="700" fill="#9a3412">Dev</text>
-      <text x="464" y="84" text-anchor="middle" font-size="7" fill="#f97316">FE+BE+DB</text>
+      <!-- Gatekeeping -->
+      <rect x="476" y="50" width="76" height="50" rx="6" fill="#fef3c7" stroke="#f59e0b" stroke-width="1.5"/>
+      <text x="514" y="72" text-anchor="middle" font-size="9" font-weight="700" fill="#92400e">Gatekeep</text>
+      <text x="514" y="84" text-anchor="middle" font-size="7" fill="#f59e0b">Doc+QA</text>
 
-      <line x1="492" y1="75" x2="504" y2="75" stroke="#94a3b8" stroke-width="1" marker-end="url(#arrow-sm)"/>
+      <line x1="552" y1="75" x2="564" y2="75" stroke="#94a3b8" stroke-width="1" marker-end="url(#arrow-sm)"/>
 
-      <!-- Check -->
-      <rect x="504" y="50" width="56" height="50" rx="6" fill="#fef3c7" stroke="#f59e0b" stroke-width="1.5"/>
-      <text x="532" y="72" text-anchor="middle" font-size="9" font-weight="700" fill="#92400e">Check</text>
-      <text x="532" y="84" text-anchor="middle" font-size="7" fill="#f59e0b">TC+QA</text>
-
-      <line x1="560" y1="75" x2="572" y2="75" stroke="#94a3b8" stroke-width="1" marker-end="url(#arrow-sm)"/>
-
-      <!-- Ship -->
-      <rect x="572" y="50" width="48" height="50" rx="6" fill="#ede9fe" stroke="#8b5cf6" stroke-width="1.5"/>
-      <text x="596" y="72" text-anchor="middle" font-size="9" font-weight="700" fill="#5b21b6">Ship</text>
-      <text x="596" y="84" text-anchor="middle" font-size="7" fill="#8b5cf6">Done</text>
+      <!-- Deploy -->
+      <rect x="564" y="50" width="56" height="50" rx="6" fill="#ede9fe" stroke="#8b5cf6" stroke-width="1.5"/>
+      <text x="592" y="72" text-anchor="middle" font-size="9" font-weight="700" fill="#5b21b6">Deploy</text>
+      <text x="592" y="84" text-anchor="middle" font-size="7" fill="#8b5cf6">CI/CD</text>
 
       <!-- Gatekeeper bar -->
       <rect x="290" y="130" width="340" height="36" rx="6" fill="#fef2f2" stroke="#ef4444" stroke-width="1.5"/>
-      <text x="460" y="153" text-anchor="middle" font-size="10" font-weight="700" fill="#b91c1c">u-agent-gatekeeper &mdash; 11 Criteria, threshold 95</text>
+      <text x="460" y="153" text-anchor="middle" font-size="10" font-weight="700" fill="#b91c1c">u-agent-gatekeeper &mdash; 11 Criteria (pass &ge;95, deploy-gate &ge;98)</text>
 
       <!-- Arrow GK to Phases -->
       <line x1="460" y1="130" x2="460" y2="115" stroke="#ef4444" stroke-width="1" stroke-dasharray="3" marker-end="url(#arrow-red)"/>
@@ -505,15 +502,19 @@ code {
       <rect x="290" y="205" width="76" height="32" rx="6" fill="#dbeafe" stroke="#3b82f6" stroke-width="1"/>
       <text x="328" y="225" text-anchor="middle" font-size="8" font-weight="600" fill="#1e40af">agent-plan</text>
       <rect x="374" y="205" width="76" height="32" rx="6" fill="#d1fae5" stroke="#10b981" stroke-width="1"/>
-      <text x="412" y="225" text-anchor="middle" font-size="8" font-weight="600" fill="#065f46">agent-design</text>
+      <text x="412" y="225" text-anchor="middle" font-size="8" font-weight="600" fill="#065f46">agent-build</text>
       <rect x="458" y="205" width="76" height="32" rx="6" fill="#ffedd5" stroke="#f97316" stroke-width="1"/>
-      <text x="496" y="225" text-anchor="middle" font-size="8" font-weight="600" fill="#9a3412">agent-dev</text>
-      <rect x="542" y="205" width="76" height="32" rx="6" fill="#fef3c7" stroke="#f59e0b" stroke-width="1"/>
-      <text x="580" y="225" text-anchor="middle" font-size="8" font-weight="600" fill="#92400e">agent-qa</text>
+      <text x="496" y="225" text-anchor="middle" font-size="8" font-weight="600" fill="#9a3412">agent-qa</text>
+      <rect x="542" y="205" width="76" height="32" rx="6" fill="#ede9fe" stroke="#8b5cf6" stroke-width="1"/>
+      <text x="580" y="225" text-anchor="middle" font-size="8" font-weight="600" fill="#5b21b6">agent-deploy</text>
 
-      <!-- Report Agent -->
-      <rect x="10" y="205" width="100" height="32" rx="6" fill="#f3e8ff" stroke="#8b5cf6" stroke-width="1"/>
-      <text x="60" y="225" text-anchor="middle" font-size="8" font-weight="600" fill="#5b21b6">agent-report (sonnet)</text>
+      <!-- Figma + Report Agents -->
+      <rect x="10" y="205" width="92" height="32" rx="6" fill="#f3e8ff" stroke="#8b5cf6" stroke-width="1"/>
+      <text x="56" y="220" text-anchor="middle" font-size="8" font-weight="600" fill="#5b21b6">agent-figma</text>
+      <text x="56" y="231" text-anchor="middle" font-size="7" fill="#8b5cf6">(cross-phase)</text>
+      <rect x="108" y="205" width="92" height="32" rx="6" fill="#f3e8ff" stroke="#8b5cf6" stroke-width="1"/>
+      <text x="154" y="220" text-anchor="middle" font-size="8" font-weight="600" fill="#5b21b6">agent-report</text>
+      <text x="154" y="231" text-anchor="middle" font-size="7" fill="#8b5cf6">(sonnet)</text>
 
       <!-- Data flow -->
       <text x="360" y="268" text-anchor="middle" font-size="9" fill="#94a3b8">Data Pipeline</text>
@@ -545,104 +546,95 @@ code {
     </div>
     <div class="card" style="text-align:center;">
       <div style="font-size:13px; font-weight:700; color:#0f172a; margin-bottom:4px;">자동 캐스케이드</div>
-      <p style="font-size:12px; color:#64748b;">/u-dev 실행 시 Design 미존재면 자동 /u-design 호출</p>
+      <p style="font-size:12px; color:#64748b;">/u-build가 Plan 미존재면 자동 /u-plan 호출 (Design↔Dev 오케스트레이션)</p>
     </div>
     <div class="card" style="text-align:center;">
       <div style="font-size:13px; font-weight:700; color:#0f172a; margin-bottom:4px;">품질 게이트</div>
-      <p style="font-size:12px; color:#64748b;">11개 기준, 평균 95점 이상 통과. 최대 3회 자동 개선</p>
+      <p style="font-size:12px; color:#64748b;">11개 기준, --loop [N]으로 제어. pass ≥95 / deploy-gate ≥98. 최대 3회 자동 개선</p>
     </div>
   </div>
 </section>
 
-<!-- ===== 4. PDCA 5-Phase Process ===== -->
-<section id="pdca" class="section">
-  <h2 class="section-title">4. PDCA 5-Phase 프로세스</h2>
-  <p style="margin-bottom:20px; color:#475569;">U-MAKER는 5단계 PDCA 프로세스로 소프트웨어 개발 라이프사이클 전체를 관리합니다. 각 Phase에는 전담 에이전트가 배정되며, Phase 전환 시 Gatekeeper가 품질을 검증합니다.</p>
+<!-- ===== 4. PBGD 4-Phase Process ===== -->
+<section id="pbgd" class="section">
+  <h2 class="section-title">4. PBGD 4-Phase 프로세스</h2>
+  <p style="margin-bottom:20px; color:#475569;">U-MAKER는 v3.x PDCA 5-phase를 축약한 4-phase PBGD 파이프라인을 사용합니다. <strong>Plan</strong> &rarr; <strong>Build</strong>(Design &harr; Dev 오케스트레이션) &rarr; <strong>Gatekeeping</strong>(문서 점수 + 런타임 QA) &rarr; <strong>Deploy</strong>. 마이그레이션은 <a href="https://github.com/upleat-ax/u-maker-plugin/blob/main/CHANGELOG.md">CHANGELOG.md</a> 참조.</p>
 
   <div class="table-wrap">
     <table>
       <thead>
         <tr>
-          <th style="width:60px;">Phase</th>
-          <th>역할</th>
+          <th style="width:80px;">Phase</th>
+          <th>서브 단계</th>
+          <th>주요 Skills</th>
           <th>전담 Agent</th>
-          <th>주요 산출물</th>
           <th>Gate 조건</th>
         </tr>
       </thead>
       <tbody>
         <tr>
           <td><span class="tag tag-plan">Plan</span></td>
-          <td>원시 자료 분석, 요구사항 수립</td>
+          <td>Prepare (foldertree + dropzone + analyze/reverse + 요구사항) &harr; Plan (SRS + IA + 선택적 wireframe)</td>
+          <td style="font-size:11px;">u-prepare, u-prepare-foldertree, u-analyze, u-reverse, u-plan, u-wireframe</td>
           <td style="font-size:12px;"><strong>u-agent-plan</strong> (opus)</td>
-          <td style="font-size:12px;">SRS, IA, Roadmap</td>
+          <td style="font-size:12px;">SRS + IA Final</td>
+        </tr>
+        <tr>
+          <td><span class="tag tag-design">Build</span></td>
+          <td>UI Design &harr; Development 오케스트레이션</td>
+          <td style="font-size:11px;">u-build, u-design, u-dev</td>
+          <td style="font-size:12px;"><strong>u-agent-build</strong> (opus)<br>u-agent-design / u-agent-dev</td>
+          <td style="font-size:12px;">Design Final + code-complete</td>
+        </tr>
+        <tr>
+          <td><span class="tag tag-check">Gatekeeping</span></td>
+          <td>문서 Scoring + Runtime QA</td>
+          <td style="font-size:11px;">u-gatekeeping (aliases u-check, u-qa)</td>
+          <td style="font-size:12px;"><strong>u-agent-gatekeeper</strong> (opus)<br>u-agent-qa</td>
           <td style="font-size:12px;">avg &ge; 95 (11 criteria)</td>
         </tr>
         <tr>
-          <td><span class="tag tag-design">Design</span></td>
-          <td>설계 문서 생성</td>
-          <td style="font-size:12px;"><strong>u-agent-design</strong> (opus)</td>
-          <td style="font-size:12px;">ERD, API, Screens, DS</td>
-          <td style="font-size:12px;">avg &ge; 95 (11 criteria)</td>
-        </tr>
-        <tr>
-          <td><span class="tag tag-dev">Dev</span></td>
-          <td>명세 기반 코드 생성</td>
-          <td style="font-size:12px;"><strong>u-agent-dev</strong> (opus)</td>
-          <td style="font-size:12px;">FE, BE, DB 코드</td>
-          <td style="font-size:12px;">avg &ge; 95 (11 criteria)</td>
-        </tr>
-        <tr>
-          <td><span class="tag tag-check">Check</span></td>
-          <td>테스트 케이스 설계 + 실행</td>
-          <td style="font-size:12px;"><strong>u-agent-qa</strong> (opus)</td>
-          <td style="font-size:12px;">TC, Test Results</td>
-          <td style="font-size:12px;">avg &ge; 95 (11 criteria)</td>
-        </tr>
-        <tr>
-          <td><span class="tag" style="background:#ede9fe;color:#5b21b6;">Ship</span></td>
-          <td>최종 검증, 아카이브, 회고</td>
-          <td style="font-size:12px;"><strong>u-agent-pm</strong> (opus)</td>
-          <td style="font-size:12px;">Iteration Log, Retro</td>
-          <td style="font-size:12px;">Exit Criteria 충족</td>
+          <td><span class="tag" style="background:#ede9fe;color:#5b21b6;">Deploy</span></td>
+          <td>CI/CD (대화형 타겟 + 아티팩트 선택, continuous regeneration)</td>
+          <td style="font-size:11px;">u-deploy</td>
+          <td style="font-size:12px;"><strong>u-agent-deploy</strong> (opus)</td>
+          <td style="font-size:12px;">Deploy-gate &ge; 98</td>
         </tr>
       </tbody>
     </table>
   </div>
 
   <div class="callout callout-blue" style="margin-top:16px;">
-    <strong>Phase 전환 규칙:</strong> 현재 Phase의 Gatekeeper 평균 점수가 95 이상(configurable)이어야 다음 Phase로 진행합니다. 미달 시 자동 개선을 수행하며, 최대 <code class="code-inline">loopMaxRetries: 3</code>회 반복합니다.
+    <strong>Phase 전환 규칙:</strong> <code class="code-inline">--loop [N]</code>로 N개 criteria(기본 5, 최대 11) 채점. 평균이 pass ≥95(deploy ≥98) 미달 시 자동 개선 반복 (최대 <code class="code-inline">loopMaxRetries: 3</code>).
+  </div>
+
+  <div class="callout callout-amber" style="margin-top:12px;">
+    <strong>Figma cross-phase:</strong> <code class="code-inline">/u-figma</code> (u-agent-figma)는 Phase 경계 없이 Figma 소스가 감지된 모든 명령(<code class="code-inline">/u-prepare</code>, <code class="code-inline">/u-analyze</code>, <code class="code-inline">/u-reverse</code>, <code class="code-inline">/u-build</code>)에서 자동 호출됩니다. v4.0.0-alpha.1은 reduced path(<code class="code-inline">source.pipeline == "reduced"</code>) — 다운스트림은 <code class="code-inline">coverageWarnings[]</code>를 warning으로 처리합니다.
   </div>
 
   <div class="card" style="padding:24px; margin-top:16px;">
     <svg viewBox="0 0 680 80" class="pipeline-svg" xmlns="http://www.w3.org/2000/svg" style="font-family:'Noto Sans KR',sans-serif;">
-      <rect x="0" y="15" width="110" height="50" rx="8" fill="#dbeafe" stroke="#3b82f6" stroke-width="2"/>
-      <text x="55" y="38" text-anchor="middle" font-size="11" font-weight="700" fill="#1e40af">Plan</text>
-      <text x="55" y="52" text-anchor="middle" font-size="8" fill="#3b82f6">SRS + IA</text>
-      <text x="133" y="44" text-anchor="middle" font-size="8" fill="#94a3b8">Gate</text>
-      <line x1="110" y1="40" x2="156" y2="40" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arr)"/>
+      <rect x="0" y="15" width="140" height="50" rx="8" fill="#dbeafe" stroke="#3b82f6" stroke-width="2"/>
+      <text x="70" y="38" text-anchor="middle" font-size="12" font-weight="700" fill="#1e40af">Plan</text>
+      <text x="70" y="52" text-anchor="middle" font-size="8" fill="#3b82f6">SRS + IA + Wireframe</text>
+      <text x="163" y="44" text-anchor="middle" font-size="8" fill="#dc2626" font-weight="600">≥95</text>
+      <line x1="140" y1="40" x2="186" y2="40" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arr)"/>
 
-      <rect x="156" y="15" width="110" height="50" rx="8" fill="#d1fae5" stroke="#10b981" stroke-width="2"/>
-      <text x="211" y="38" text-anchor="middle" font-size="11" font-weight="700" fill="#065f46">Design</text>
-      <text x="211" y="52" text-anchor="middle" font-size="8" fill="#10b981">ERD+API+SCR+DS</text>
-      <text x="289" y="44" text-anchor="middle" font-size="8" fill="#94a3b8">Gate</text>
-      <line x1="266" y1="40" x2="312" y2="40" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arr)"/>
+      <rect x="186" y="15" width="140" height="50" rx="8" fill="#d1fae5" stroke="#10b981" stroke-width="2"/>
+      <text x="256" y="38" text-anchor="middle" font-size="12" font-weight="700" fill="#065f46">Build</text>
+      <text x="256" y="52" text-anchor="middle" font-size="8" fill="#10b981">Design ↔ Dev</text>
+      <text x="349" y="44" text-anchor="middle" font-size="8" fill="#dc2626" font-weight="600">≥95</text>
+      <line x1="326" y1="40" x2="372" y2="40" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arr)"/>
 
-      <rect x="312" y="15" width="110" height="50" rx="8" fill="#ffedd5" stroke="#f97316" stroke-width="2"/>
-      <text x="367" y="38" text-anchor="middle" font-size="11" font-weight="700" fill="#9a3412">Dev</text>
-      <text x="367" y="52" text-anchor="middle" font-size="8" fill="#f97316">FE+BE+DB</text>
-      <text x="445" y="44" text-anchor="middle" font-size="8" fill="#94a3b8">Gate</text>
-      <line x1="422" y1="40" x2="468" y2="40" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arr)"/>
+      <rect x="372" y="15" width="140" height="50" rx="8" fill="#fef3c7" stroke="#f59e0b" stroke-width="2"/>
+      <text x="442" y="38" text-anchor="middle" font-size="12" font-weight="700" fill="#92400e">Gatekeeping</text>
+      <text x="442" y="52" text-anchor="middle" font-size="8" fill="#f59e0b">Doc Score + QA</text>
+      <text x="535" y="44" text-anchor="middle" font-size="8" fill="#dc2626" font-weight="600">≥98</text>
+      <line x1="512" y1="40" x2="558" y2="40" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arr)"/>
 
-      <rect x="468" y="15" width="110" height="50" rx="8" fill="#fef3c7" stroke="#f59e0b" stroke-width="2"/>
-      <text x="523" y="38" text-anchor="middle" font-size="11" font-weight="700" fill="#92400e">Check</text>
-      <text x="523" y="52" text-anchor="middle" font-size="8" fill="#f59e0b">TC+Results</text>
-      <text x="601" y="44" text-anchor="middle" font-size="8" fill="#94a3b8">Gate</text>
-      <line x1="578" y1="40" x2="620" y2="40" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arr)"/>
-
-      <rect x="620" y="15" width="56" height="50" rx="8" fill="#ede9fe" stroke="#8b5cf6" stroke-width="2"/>
-      <text x="648" y="38" text-anchor="middle" font-size="11" font-weight="700" fill="#5b21b6">Ship</text>
-      <text x="648" y="52" text-anchor="middle" font-size="8" fill="#8b5cf6">Done</text>
+      <rect x="558" y="15" width="122" height="50" rx="8" fill="#ede9fe" stroke="#8b5cf6" stroke-width="2"/>
+      <text x="619" y="38" text-anchor="middle" font-size="12" font-weight="700" fill="#5b21b6">Deploy</text>
+      <text x="619" y="52" text-anchor="middle" font-size="8" fill="#8b5cf6">CI/CD (continuous)</text>
 
       <defs><marker id="arr" markerWidth="6" markerHeight="4" refX="6" refY="2" orient="auto"><path d="M0,0 L6,2 L0,4" fill="#94a3b8"/></marker></defs>
     </svg>
@@ -707,8 +699,8 @@ code {
 
 <!-- ===== 6. Agents ===== -->
 <section id="agents" class="section">
-  <h2 class="section-title">6. 7개 Agents</h2>
-  <p style="margin-bottom:20px; color:#475569;">각 에이전트는 특정 역할을 전담합니다. PM이 모든 커맨드를 라우팅하고, 나머지 에이전트가 Phase별 작업을 수행합니다.</p>
+  <h2 class="section-title">6. 10개 Agents</h2>
+  <p style="margin-bottom:20px; color:#475569;">각 에이전트는 PBGD 4-phase 중 특정 역할을 전담합니다. PM이 모든 커맨드를 라우팅하고, 나머지 에이전트가 Phase별 작업을 수행합니다.</p>
 
   <div class="table-wrap" style="margin-bottom:20px;">
     <table>
@@ -732,44 +724,65 @@ code {
         <tr>
           <td style="text-align:center;">2</td>
           <td><strong style="color:#3b82f6;">u-agent-plan</strong></td>
-          <td>Plan Phase 전담</td>
+          <td>Plan Phase 전담 &mdash; Prepare + SRS + IA + 와이어프레임</td>
           <td>opus</td>
           <td>Plan</td>
         </tr>
         <tr>
           <td style="text-align:center;">3</td>
-          <td><strong style="color:#10b981;">u-agent-design</strong></td>
-          <td>Design Phase 전담</td>
+          <td><strong style="color:#10b981;">u-agent-build</strong></td>
+          <td>Build Phase 오케스트레이터 &mdash; Design &harr; Dev ping-pong</td>
           <td>opus</td>
-          <td>Design</td>
+          <td>Build</td>
         </tr>
         <tr>
           <td style="text-align:center;">4</td>
-          <td><strong style="color:#f97316;">u-agent-dev</strong></td>
-          <td>Dev Phase 전담</td>
+          <td><strong style="color:#10b981;">u-agent-design</strong></td>
+          <td>UI 설계 실행 &mdash; ERD, API, Screens, Design System</td>
           <td>opus</td>
-          <td>Dev</td>
+          <td>Build</td>
         </tr>
         <tr>
           <td style="text-align:center;">5</td>
-          <td><strong style="color:#f59e0b;">u-agent-qa</strong></td>
-          <td>Check Phase 전담</td>
+          <td><strong style="color:#f97316;">u-agent-dev</strong></td>
+          <td>개발 실행 &mdash; FE + BE + DB 코드 생성</td>
           <td>opus</td>
-          <td>Check</td>
+          <td>Build</td>
         </tr>
         <tr>
           <td style="text-align:center;">6</td>
           <td><strong style="color:#ef4444;">u-agent-gatekeeper</strong></td>
-          <td>품질 검증, 11개 기준 점수 평가</td>
+          <td>품질 검증 &mdash; 11 criteria 점수 평가, consistency, RTM</td>
           <td>opus</td>
-          <td>Quality Gate</td>
+          <td>Gatekeeping</td>
         </tr>
         <tr>
           <td style="text-align:center;">7</td>
+          <td><strong style="color:#f59e0b;">u-agent-qa</strong></td>
+          <td>Runtime QA &mdash; TC 설계, 실행, 결과</td>
+          <td>opus</td>
+          <td>Gatekeeping</td>
+        </tr>
+        <tr>
+          <td style="text-align:center;">8</td>
+          <td><strong style="color:#8b5cf6;">u-agent-deploy</strong></td>
+          <td>Deploy 실행 &mdash; 대화형 타겟+아티팩트, continuous regeneration</td>
+          <td>opus</td>
+          <td>Deploy</td>
+        </tr>
+        <tr>
+          <td style="text-align:center;">9</td>
+          <td><strong style="color:#be185d;">u-agent-figma</strong></td>
+          <td>Figma 분석 &mdash; pages+variants+assets+components+comments+semantics (alpha: reduced path)</td>
+          <td>opus</td>
+          <td>Cross-phase</td>
+        </tr>
+        <tr>
+          <td style="text-align:center;">10</td>
           <td><strong style="color:#8b5cf6;">u-agent-report</strong></td>
-          <td>리포트 생성 전담</td>
+          <td>리포트 생성 &mdash; HTML 리포트, 산출물 포맷</td>
           <td>sonnet</td>
-          <td>Reporting</td>
+          <td>ALL</td>
         </tr>
       </tbody>
     </table>
@@ -798,20 +811,30 @@ code {
   </div>
   <div class="agent-card">
     <div class="agent-header">
+      <span class="agent-badge" style="background:#10b981;">BL</span>
+      <div>
+        <div class="agent-name">u-agent-build</div>
+        <div class="agent-role">Build Phase Orchestrator &middot; opus</div>
+      </div>
+    </div>
+    <p class="agent-desc"><code class="code-inline">/u-build</code>를 주관하여 <code class="code-inline">u-agent-design</code>과 <code class="code-inline">u-agent-dev</code>를 ping-pong 방식으로 오케스트레이션합니다. Design 문서 Final + code-complete 도달까지 반복합니다.</p>
+  </div>
+  <div class="agent-card">
+    <div class="agent-header">
       <span class="agent-badge" style="background:#10b981;">DS</span>
       <div>
         <div class="agent-name">u-agent-design</div>
-        <div class="agent-role">Design Phase &middot; opus</div>
+        <div class="agent-role">Build Phase (UI Design) &middot; opus</div>
       </div>
     </div>
-    <p class="agent-desc">SRS + IA를 기반으로 ERD, API Contract, Screen 명세, Design System 4개 설계 문서를 생성합니다.</p>
+    <p class="agent-desc">SRS + IA를 기반으로 ERD, API Contract, Screen 명세, Design System 4개 설계 문서를 생성합니다. Figma digest의 <code class="code-inline">source.pipeline == "reduced"</code> 시 schema-optional 필드는 warning으로 처리합니다.</p>
   </div>
   <div class="agent-card">
     <div class="agent-header">
       <span class="agent-badge" style="background:#f97316;">DV</span>
       <div>
         <div class="agent-name">u-agent-dev</div>
-        <div class="agent-role">Dev Phase &middot; opus</div>
+        <div class="agent-role">Build Phase (Development) &middot; opus</div>
       </div>
     </div>
     <p class="agent-desc">설계 명세(ERD, API, Screens, Design System)를 기반으로 FE 컴포넌트, BE 라우트, DB 스키마 코드를 생성합니다. Spec-Sync 100% 커버리지 검증을 수행합니다.</p>
@@ -821,7 +844,7 @@ code {
       <span class="agent-badge" style="background:#f59e0b;">QA</span>
       <div>
         <div class="agent-name">u-agent-qa</div>
-        <div class="agent-role">Check Phase &middot; opus</div>
+        <div class="agent-role">Gatekeeping Phase (Runtime QA) &middot; opus</div>
       </div>
     </div>
     <p class="agent-desc">SRS의 Feature(FT) 항목으로부터 테스트 케이스를 설계하고, 6가지 TC 유형(unit, integration, e2e, accessibility, performance, security)으로 검증합니다.</p>
@@ -838,6 +861,26 @@ code {
   </div>
   <div class="agent-card">
     <div class="agent-header">
+      <span class="agent-badge" style="background:#8b5cf6;">DP</span>
+      <div>
+        <div class="agent-name">u-agent-deploy</div>
+        <div class="agent-role">Deploy Phase &middot; opus</div>
+      </div>
+    </div>
+    <p class="agent-desc">대화형 타겟(GitHub Actions / Vercel / Docker)과 아티팩트 선택을 안내하고, deploy-gate &ge; 98을 만족하면 배포합니다. SSoT drift 감지 시 on-deploy-state hook으로 아티팩트를 stale로 표시합니다.</p>
+  </div>
+  <div class="agent-card">
+    <div class="agent-header">
+      <span class="agent-badge" style="background:#be185d;">FG</span>
+      <div>
+        <div class="agent-name">u-agent-figma</div>
+        <div class="agent-role">Cross-phase Figma Analyzer &middot; opus</div>
+      </div>
+    </div>
+    <p class="agent-desc">Figma URL이 감지되면 pages / variants / assets / components / comments / semantics(validation, policy, default, action, layout, flow, data, role)를 추출합니다. <code class="code-inline">/u-prepare</code>, <code class="code-inline">/u-analyze</code>, <code class="code-inline">/u-reverse</code>, <code class="code-inline">/u-build</code>에서 자동 위임됩니다. v4.0.0-alpha.1은 reduced extraction path.</p>
+  </div>
+  <div class="agent-card">
+    <div class="agent-header">
       <span class="agent-badge" style="background:#8b5cf6;">RP</span>
       <div>
         <div class="agent-name">u-agent-report</div>
@@ -848,10 +891,10 @@ code {
   </div>
 </section>
 
-<!-- ===== 7. Commands (16 Skills) ===== -->
+<!-- ===== 7. Commands (24 Skills) ===== -->
 <section id="commands" class="section">
-  <h2 class="section-title">7. 16개 Commands (Skills)</h2>
-  <p style="margin-bottom:16px; color:#475569;">모든 커맨드는 <code class="code-inline">/u-{name}</code> 형태로 호출됩니다. 13개 사용자 커맨드 + 1개 엔진 + 2개 리포트 스킬로 구성됩니다.</p>
+  <h2 class="section-title">7. 24개 Commands (Skills)</h2>
+  <p style="margin-bottom:16px; color:#475569;">모든 커맨드는 <code class="code-inline">/u-{name}</code> 형태로 호출됩니다. Plan(7) + Build(3) + Gatekeeping(1+2 aliases) + Deploy(1) + Cross-phase(1) + Output/Report(5) + Control(4) + Setup alias(1) = 24개.</p>
 
   <!-- Common options -->
   <h3 style="font-size:14px; font-weight:700; color:#0f172a; margin-bottom:12px;">공통 옵션</h3>
@@ -873,7 +916,7 @@ code {
         <tr>
           <td><code class="code-inline">--loop [N]</code></td>
           <td><span class="tag tag-any">OFF</span></td>
-          <td>Gatekeeper 검증 (N개 항목, 기본 5, 최대 11). 자동 개선 반복 (최대 3회)</td>
+          <td>Gatekeeper 검증 (N개 항목, 기본 5, 최대 11). pass ≥95 / deploy-gate ≥98. 자동 개선 반복 (최대 3회)</td>
         </tr>
         <tr>
           <td><code class="code-inline">--app {name}</code></td>
@@ -883,26 +926,30 @@ code {
         <tr>
           <td><code class="code-inline">--from / --to</code></td>
           <td>&mdash;</td>
-          <td><code class="code-inline">/u-loop</code> 전용. Phase 범위 지정 (plan/design/dev/check/ship)</td>
+          <td><code class="code-inline">/u-loop</code> 전용. Phase 범위 지정 (plan/build/gatekeeping/deploy)</td>
         </tr>
         <tr>
           <td><code class="code-inline">--diagram</code></td>
           <td><span class="tag tag-plan">svg</span></td>
           <td>다이어그램 렌더링: <code class="code-inline">svg</code> | <code class="code-inline">mermaid</code> | <code class="code-inline">all</code></td>
         </tr>
+        <tr>
+          <td><code class="code-inline">--migrate</code></td>
+          <td>&mdash;</td>
+          <td><code class="code-inline">/u-prepare-foldertree</code> 전용. v3.x PDCA &rarr; v4.x PBGD 폴더 리네임 (<code class="code-inline">check/</code> &rarr; <code class="code-inline">gatekeeping/</code>)</td>
+        </tr>
       </tbody>
     </table>
   </div>
 
-  <!-- Lifecycle Skills -->
-  <h3 style="font-size:14px; font-weight:700; color:#0f172a; margin-bottom:12px;">Lifecycle Skills (7)</h3>
+  <!-- Plan Phase Skills -->
+  <h3 style="font-size:14px; font-weight:700; color:#0f172a; margin-bottom:12px;">Plan Phase Skills (6 + 1 umbrella)</h3>
   <div class="table-wrap" style="margin-bottom:24px;">
     <table>
       <thead>
         <tr>
           <th>#</th>
           <th>커맨드</th>
-          <th>버전</th>
           <th>Phase</th>
           <th>구문</th>
           <th>설명</th>
@@ -911,51 +958,180 @@ code {
       <tbody>
         <tr>
           <td style="text-align:center;">1</td>
-          <td><strong style="color:#3b82f6;">/u-plan</strong></td>
-          <td>v4.0</td>
+          <td><strong style="color:#0f766e;">/u-prepare</strong></td>
           <td><span class="tag tag-plan">Plan</span></td>
-          <td style="font-size:11px;"><code class="code-inline">/u-plan [--auto] [--loop N] [--app name]</code></td>
-          <td>dropzone &rarr; digest &rarr; SRS + IA 생성. <code class="code-inline">/ingest</code> 포함</td>
+          <td style="font-size:11px;"><code class="code-inline">/u-prepare [app]</code></td>
+          <td>Preparation umbrella &mdash; foldertree + dropzone + analyze/reverse + 요구사항 협의. Figma 소스 감지 시 <code class="code-inline">/u-figma</code> 자동 위임</td>
         </tr>
         <tr>
           <td style="text-align:center;">2</td>
-          <td><strong style="color:#10b981;">/u-design</strong></td>
-          <td>v4.0</td>
-          <td><span class="tag tag-design">Design</span></td>
-          <td style="font-size:11px;"><code class="code-inline">/u-design [--auto] [--loop N] [--app name]</code></td>
-          <td>SRS/IA &rarr; ERD, API, Screens, Design System</td>
+          <td><strong style="color:#0f766e;">/u-prepare-foldertree</strong></td>
+          <td><span class="tag tag-setup">Setup</span></td>
+          <td style="font-size:11px;"><code class="code-inline">/u-prepare-foldertree [app] [--migrate]</code></td>
+          <td>.u-maker/ 폴더/state 스캐폴딩만. v3→v4 마이그레이션(<code class="code-inline">--migrate</code>) 포함</td>
         </tr>
         <tr>
           <td style="text-align:center;">3</td>
-          <td><strong style="color:#f97316;">/u-dev</strong></td>
-          <td>v4.0</td>
-          <td><span class="tag tag-dev">Dev</span></td>
-          <td style="font-size:11px;"><code class="code-inline">/u-dev [--auto] [--loop N] [--only fe|be|db]</code></td>
-          <td>ERD/API/Screens &rarr; FE+BE+DB 코드 생성</td>
+          <td><strong style="color:#3b82f6;">/u-analyze</strong></td>
+          <td><span class="tag tag-plan">Plan</span></td>
+          <td style="font-size:11px;"><code class="code-inline">/u-analyze [--app name]</code></td>
+          <td>Dropzone &rarr; digest (12 카테고리). 기존 <code class="code-inline">/u-plan</code> Step 1–2에서 분리</td>
         </tr>
         <tr>
           <td style="text-align:center;">4</td>
-          <td><strong style="color:#f59e0b;">/u-check</strong> <span style="font-size:10px;color:#94a3b8;">(= /u-qa)</span></td>
-          <td>v4.0</td>
-          <td><span class="tag tag-check">Check</span></td>
-          <td style="font-size:11px;"><code class="code-inline">/u-check [--auto] [--loop N] [--app name]</code></td>
-          <td>SRS FT &rarr; Test Cases + Test Results</td>
+          <td><strong style="color:#be185d;">/u-reverse</strong></td>
+          <td><span class="tag tag-reverse">Reverse</span></td>
+          <td style="font-size:11px;"><code class="code-inline">/u-reverse [--app] [--src] [--db] [--api] [--pages]</code></td>
+          <td>기존 코드 &rarr; digest (역공학)</td>
         </tr>
         <tr>
           <td style="text-align:center;">5</td>
-          <td><strong style="color:#be185d;">/u-reverse</strong></td>
-          <td>v4.0</td>
-          <td><span class="tag tag-reverse">Reverse</span></td>
-          <td style="font-size:11px;"><code class="code-inline">/u-reverse [--app] [--src] [--db] [--api] [--pages]</code></td>
-          <td>기존 코드 &rarr; SSoT 역공학</td>
+          <td><strong style="color:#3b82f6;">/u-plan</strong></td>
+          <td><span class="tag tag-plan">Plan</span></td>
+          <td style="font-size:11px;"><code class="code-inline">/u-plan [--loop N] [--app name]</code></td>
+          <td>Digest &rarr; SRS + IA 생성 (+ 선택적 wireframe)</td>
         </tr>
         <tr>
           <td style="text-align:center;">6</td>
-          <td><strong style="color:#4338ca;">/u-loop</strong></td>
-          <td>v3.2</td>
-          <td><span class="tag tag-all">All</span></td>
-          <td style="font-size:11px;"><code class="code-inline">/u-loop [--app] [--from] [--to] [--criteria N] [--dry-run]</code></td>
-          <td>Plan&rarr;Design&rarr;Dev&rarr;Check&rarr;Ship 무인 자동 실행</td>
+          <td><strong style="color:#0891b2;">/u-wireframe</strong></td>
+          <td><span class="tag tag-plan">Plan</span></td>
+          <td style="font-size:11px;"><code class="code-inline">/u-wireframe [--app] [--screen SCR-ID] [--all]</code></td>
+          <td>Screen spec &rarr; 화면별 HTML 와이어프레임</td>
+        </tr>
+        <tr>
+          <td style="text-align:center;">7</td>
+          <td><strong style="color:#0f766e;">/u-createproject</strong></td>
+          <td><span class="tag tag-setup">Setup</span></td>
+          <td style="font-size:11px;"><code class="code-inline">/u-createproject my-app</code></td>
+          <td>Turborepo + Bun 모노레포 스캐폴딩. <code class="code-inline">/u-prepare</code> 자동 실행</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Build Phase Skills -->
+  <h3 style="font-size:14px; font-weight:700; color:#0f172a; margin-bottom:12px;">Build Phase Skills (3)</h3>
+  <div class="table-wrap" style="margin-bottom:24px;">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>커맨드</th>
+          <th>Phase</th>
+          <th>구문</th>
+          <th>설명</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="text-align:center;">8</td>
+          <td><strong style="color:#10b981;">/u-build</strong></td>
+          <td><span class="tag tag-design">Build</span></td>
+          <td style="font-size:11px;"><code class="code-inline">/u-build [--loop N] [--app name]</code></td>
+          <td>Build 오케스트레이터 &mdash; Design &harr; Dev ping-pong</td>
+        </tr>
+        <tr>
+          <td style="text-align:center;">9</td>
+          <td><strong style="color:#10b981;">/u-design</strong></td>
+          <td><span class="tag tag-design">Build</span></td>
+          <td style="font-size:11px;"><code class="code-inline">/u-design [--only erd|api|screens|ds]</code></td>
+          <td>SRS/IA &rarr; ERD, API Contract, Screens, Design System</td>
+        </tr>
+        <tr>
+          <td style="text-align:center;">10</td>
+          <td><strong style="color:#f97316;">/u-dev</strong></td>
+          <td><span class="tag tag-dev">Build</span></td>
+          <td style="font-size:11px;"><code class="code-inline">/u-dev [--only fe|be|db]</code></td>
+          <td>ERD/API/Screens &rarr; FE+BE+DB 코드 생성</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Gatekeeping Phase Skills -->
+  <h3 style="font-size:14px; font-weight:700; color:#0f172a; margin-bottom:12px;">Gatekeeping Phase Skills (1 + 2 aliases)</h3>
+  <div class="table-wrap" style="margin-bottom:24px;">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>커맨드</th>
+          <th>Phase</th>
+          <th>구문</th>
+          <th>설명</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="text-align:center;">11</td>
+          <td><strong style="color:#f59e0b;">/u-gatekeeping</strong></td>
+          <td><span class="tag tag-check">Gatekeeping</span></td>
+          <td style="font-size:11px;"><code class="code-inline">/u-gatekeeping [--loop N] [--app name]</code></td>
+          <td>문서 scoring (11 criteria, pass &ge;95) + runtime QA (TC + Test Results)</td>
+        </tr>
+        <tr>
+          <td style="text-align:center;">12</td>
+          <td><strong style="color:#f59e0b;">/u-check</strong></td>
+          <td><span class="tag tag-check">Alias</span></td>
+          <td style="font-size:11px;"><code class="code-inline">/u-check [--app name]</code></td>
+          <td>alias &rarr; <code class="code-inline">/u-gatekeeping</code> (backward-compat)</td>
+        </tr>
+        <tr>
+          <td style="text-align:center;">13</td>
+          <td><strong style="color:#f59e0b;">/u-qa</strong></td>
+          <td><span class="tag tag-check">Alias</span></td>
+          <td style="font-size:11px;"><code class="code-inline">/u-qa [--app name]</code></td>
+          <td>alias &rarr; <code class="code-inline">/u-gatekeeping --only qa</code></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Deploy Phase Skills -->
+  <h3 style="font-size:14px; font-weight:700; color:#0f172a; margin-bottom:12px;">Deploy Phase Skills (1)</h3>
+  <div class="table-wrap" style="margin-bottom:24px;">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>커맨드</th>
+          <th>Phase</th>
+          <th>구문</th>
+          <th>설명</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="text-align:center;">14</td>
+          <td><strong style="color:#8b5cf6;">/u-deploy</strong></td>
+          <td><span class="tag" style="background:#ede9fe;color:#5b21b6;">Deploy</span></td>
+          <td style="font-size:11px;"><code class="code-inline">/u-deploy [--loop N] [--app name]</code></td>
+          <td>대화형 타겟 (GitHub Actions / Vercel / Docker) + 아티팩트 선택. deploy-gate &ge; 98. Continuous regeneration on SSoT drift</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Cross-phase Skills -->
+  <h3 style="font-size:14px; font-weight:700; color:#0f172a; margin-bottom:12px;">Cross-phase &amp; Source Skills (1)</h3>
+  <div class="table-wrap" style="margin-bottom:24px;">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>커맨드</th>
+          <th>Phase</th>
+          <th>구문</th>
+          <th>설명</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="text-align:center;">15</td>
+          <td><strong style="color:#be185d;">/u-figma</strong></td>
+          <td><span class="tag tag-any">Cross</span></td>
+          <td style="font-size:11px;"><code class="code-inline">/u-figma &lt;figma-url&gt; [--app]</code></td>
+          <td>Figma 분석 &mdash; pages + variants + assets + components + comments + semantics. <code class="code-inline">/u-prepare</code>, <code class="code-inline">/u-analyze</code>, <code class="code-inline">/u-reverse</code>, <code class="code-inline">/u-build</code>에서 자동 위임. <em>v4.0.0-alpha.1: reduced path</em></td>
         </tr>
       </tbody>
     </table>
@@ -969,7 +1145,6 @@ code {
         <tr>
           <th>#</th>
           <th>커맨드</th>
-          <th>버전</th>
           <th>Phase</th>
           <th>구문</th>
           <th>설명</th>
@@ -977,50 +1152,45 @@ code {
       </thead>
       <tbody>
         <tr>
-          <td style="text-align:center;">7</td>
+          <td style="text-align:center;">16</td>
           <td><strong style="color:#7c3aed;">/u-output</strong> <span style="font-size:10px;color:#94a3b8;">(= /u-html)</span></td>
-          <td>v4.0</td>
           <td><span class="tag tag-output">Output</span></td>
           <td style="font-size:11px;"><code class="code-inline">/u-output [--app] [--diagram svg|mermaid|all]</code></td>
           <td>.md+.json &rarr; HTML 렌더링</td>
         </tr>
         <tr>
-          <td style="text-align:center;">8</td>
-          <td><strong style="color:#0891b2;">/u-wireframe</strong></td>
-          <td>v3.2</td>
-          <td><span class="tag tag-design">Design</span></td>
-          <td style="font-size:11px;"><code class="code-inline">/u-wireframe [--app] [--screen SCR-ID] [--all]</code></td>
-          <td>Screen spec &rarr; 화면별 HTML 와이어프레임</td>
-        </tr>
-        <tr>
-          <td style="text-align:center;">9</td>
+          <td style="text-align:center;">17</td>
           <td><strong style="color:#be123c;">/u-report-daily</strong></td>
-          <td>v1.0</td>
           <td><span class="tag tag-report">Report</span></td>
           <td style="font-size:11px;"><code class="code-inline">/u-report-daily [--app name]</code></td>
           <td>git+회의+통계 기반 일일 리포트</td>
         </tr>
         <tr>
-          <td style="text-align:center;">10</td>
+          <td style="text-align:center;">18</td>
           <td><strong style="color:#be123c;">/u-report-weekly</strong></td>
-          <td>v1.0</td>
           <td><span class="tag tag-report">Report</span></td>
           <td style="font-size:11px;"><code class="code-inline">/u-report-weekly [--app name]</code></td>
           <td>주간 트렌드 + SVG 차트 리포트</td>
         </tr>
         <tr>
-          <td style="text-align:center;">11</td>
-          <td><strong style="color:#be123c;">/u-meeting-report</strong> <span style="font-size:10px;color:#94a3b8;">(= the-voice-meeting)</span></td>
-          <td>v1.0</td>
+          <td style="text-align:center;">19</td>
+          <td><strong style="color:#be123c;">/u-meeting-report</strong></td>
           <td><span class="tag tag-report">Report</span></td>
           <td style="font-size:11px;"><code class="code-inline">/u-meeting-report [topic]</code></td>
           <td>음성/텍스트 &rarr; 구조화된 회의록 HTML</td>
+        </tr>
+        <tr>
+          <td style="text-align:center;">20</td>
+          <td><strong style="color:#0f766e;">/u-init</strong></td>
+          <td><span class="tag tag-setup">Alias</span></td>
+          <td style="font-size:11px;"><code class="code-inline">/u-init [app]</code></td>
+          <td>alias &rarr; <code class="code-inline">/u-prepare</code> (backward-compat with v3.x)</td>
         </tr>
       </tbody>
     </table>
   </div>
 
-  <!-- Control Flow Skills -->
+  <!-- Control Flow / Utility Skills -->
   <h3 style="font-size:14px; font-weight:700; color:#0f172a; margin-bottom:12px;">Control Flow / Utility Skills (4)</h3>
   <div class="table-wrap">
     <table>
@@ -1028,7 +1198,6 @@ code {
         <tr>
           <th>#</th>
           <th>커맨드</th>
-          <th>버전</th>
           <th>Phase</th>
           <th>구문</th>
           <th>설명</th>
@@ -1036,41 +1205,29 @@ code {
       </thead>
       <tbody>
         <tr>
-          <td style="text-align:center;">12</td>
+          <td style="text-align:center;">21</td>
+          <td><strong style="color:#4338ca;">/u-loop</strong></td>
+          <td><span class="tag tag-all">All</span></td>
+          <td style="font-size:11px;"><code class="code-inline">/u-loop [--app] [--from] [--to] [--loop N] [--dry-run]</code></td>
+          <td>Plan&rarr;Build&rarr;Gatekeeping&rarr;Deploy 무인 자동 실행</td>
+        </tr>
+        <tr>
+          <td style="text-align:center;">22</td>
           <td><strong style="color:#7c3aed;">/u-discuss</strong></td>
-          <td>v4.0</td>
           <td><span class="tag tag-any">Any</span></td>
           <td style="font-size:11px;"><code class="code-inline">/u-discuss {type} [topic]</code></td>
           <td>brainstorm/review/decision/workshop/retro 세션</td>
         </tr>
         <tr>
-          <td style="text-align:center;">13</td>
+          <td style="text-align:center;">23</td>
           <td><strong style="color:#ec4899;">/u-git-pr</strong></td>
-          <td>v5.0</td>
           <td><span class="tag tag-any">Any</span></td>
           <td style="font-size:11px;"><code class="code-inline">/u-git-pr [--base branch]</code></td>
           <td>변경 분석 &rarr; 자동 커밋+PR 생성</td>
         </tr>
         <tr>
-          <td style="text-align:center;">14</td>
-          <td><strong style="color:#0f766e;">/u-init</strong></td>
-          <td>v4.0</td>
-          <td><span class="tag tag-setup">Setup</span></td>
-          <td style="font-size:11px;"><code class="code-inline">/u-init [--app name] [--migrate]</code></td>
-          <td>.u-maker/ 구조 생성 + config 초기화</td>
-        </tr>
-        <tr>
-          <td style="text-align:center;">15</td>
-          <td><strong style="color:#0f766e;">/u-createproject</strong></td>
-          <td>v1.0</td>
-          <td><span class="tag tag-setup">Setup</span></td>
-          <td style="font-size:11px;"><code class="code-inline">/u-createproject my-app</code></td>
-          <td>Turborepo + Bun 모노레포 프로젝트 스캐폴딩. u-init 자동 실행 포함</td>
-        </tr>
-        <tr>
-          <td style="text-align:center;">16</td>
+          <td style="text-align:center;">24</td>
           <td><strong style="color:#64748b;">/u-engine</strong></td>
-          <td>v4.0</td>
           <td><span class="tag tag-engine">Engine</span></td>
           <td style="font-size:11px;">&mdash;</td>
           <td>내부 인프라 (doc/html/dep/digest/router 통합). 사용자 직접 호출 불가</td>
@@ -1230,37 +1387,42 @@ code {
 <!-- ===== 9. Folder Structure ===== -->
 <section id="folder" class="section">
   <h2 class="section-title">9. .u-maker/ 폴더 구조</h2>
-  <p style="margin-bottom:16px; color:#475569;">프로젝트 루트에 생성되는 <code class="code-inline">.u-maker/</code> 디렉토리 구조입니다. <code class="code-inline">/u-init</code> 또는 최초 <code class="code-inline">/u-plan</code> 실행 시 자동 생성됩니다.</p>
+  <p style="margin-bottom:16px; color:#475569;">프로젝트 루트에 생성되는 <code class="code-inline">.u-maker/</code> 디렉토리 구조입니다. <code class="code-inline">/u-prepare</code> (별칭 <code class="code-inline">/u-init</code>) 또는 최초 <code class="code-inline">/u-plan</code> 실행 시 자동 생성됩니다.</p>
 
   <div class="card" style="padding:24px;">
     <pre class="folder-tree"><code>.u-maker/
 ├── u-maker.config.json          <span class="comment"># 프로젝트 설정 (v4.0)</span>
 ├── data/
-│   ├── dropzone/                <span class="comment"># 원시 입력 파일 (RFP, 회의록 등)</span>
+│   ├── dropzone/                <span class="comment"># 원시 입력 파일 (RFP, 회의록, Figma URL 등)</span>
 │   ├── digest/                  <span class="comment"># 정제된 분석 JSON</span>
 │   │   ├── _classified/         <span class="comment"># 12개 카테고리 분류 결과</span>
+│   │   ├── figma/               <span class="comment"># u-agent-figma가 생성 (source.pipeline 태깅)</span>
 │   │   └── _index.json          <span class="comment"># 해시 인덱스 (변경 감지)</span>
+│   ├── deploy/                  <span class="comment"># Deploy manifest (sourceHashes, artifacts)</span>
 │   └── _links.json              <span class="comment"># 글로벌 의존성 그래프</span>
 ├── docs/
 │   └── {app}/
 │       ├── _index.json          <span class="comment"># 문서 상태 인덱스</span>
-│       ├── plan/                <span class="comment"># SRS + IA (.md + .json)</span>
+│       ├── plan/                <span class="comment"># SRS + IA (.md + .json) + wireframes/</span>
 │       ├── design/              <span class="comment"># ERD + API + Screens + Design System</span>
-│       └── check/               <span class="comment"># Test Cases + Test Results</span>
+│       ├── dev/                 <span class="comment"># code.md + spec-sync-report.md</span>
+│       └── gatekeeping/         <span class="comment"># testcases.md + test-results.md (v3.x의 check/ 에서 리네임)</span>
 ├── output/
 │   └── {app}/
 │       ├── index.html           <span class="comment"># 산출물 내비게이션 인덱스</span>
 │       ├── plan/                <span class="comment"># Plan HTML (srs.html, ia.html)</span>
 │       ├── design/              <span class="comment"># Design HTML (erd, api, screens, ds)</span>
 │       │   └── wireframes/      <span class="comment"># 화면별 와이어프레임 HTML</span>
-│       └── check/               <span class="comment"># Check HTML (testcases, results)</span>
+│       ├── gatekeeping/         <span class="comment"># Gatekeeping HTML (testcases, results)</span>
+│       └── deploy/              <span class="comment"># Deploy runbook, release-notes, CI/CD 아티팩트</span>
 ├── reports/
-│   └── {YYYY-MM-DD}/           <span class="comment"># Daily/Weekly Report HTML</span>
+│   └── {YYYY-MM-DD}/            <span class="comment"># Daily/Weekly Report HTML</span>
 │       ├── daily-report.html
 │       └── weekly-report.html
 ├── discussions/                 <span class="comment"># 토론 세션 기록</span>
 └── .state/
-    └── loop-state.json          <span class="comment"># 런타임 상태 (현재 Phase, Loop 카운트)</span></code></pre>
+    ├── loop-state.json          <span class="comment"># 런타임 상태 (현재 Phase, Loop 카운트)</span>
+    └── deploy-stale.json        <span class="comment"># SSoT drift 감지 (on-deploy-state.js hook)</span></code></pre>
   </div>
 </section>
 
@@ -1271,31 +1433,31 @@ code {
 
   <!-- Scenario A: Forward -->
   <h3 style="font-size:14px; font-weight:700; color:#0f172a; margin-bottom:8px;">A. Forward Engineering (신규 프로젝트)</h3>
-  <p style="font-size:13px; color:#64748b; margin-bottom:12px;">원시 기획 자료로부터 전체 산출물을 처음부터 생성하는 시나리오입니다.</p>
+  <p style="font-size:13px; color:#64748b; margin-bottom:12px;">원시 기획 자료로부터 전체 PBGD 산출물을 처음부터 생성하는 시나리오입니다.</p>
   <div class="code-block" style="margin-bottom:24px;">
-<code><span class="comment"># 1A. 새 프로젝트 시작 (모노레포 스캐폴딩 + u-init 자동 포함)</span>
+<code><span class="comment"># 1A. 새 모노레포 시작 (Turborepo+Bun 스캐폴딩 + /u-prepare 자동)</span>
 <span class="cmd">/u-createproject</span> myapp
 <span class="comment"># ⚠️ 생성 후: cd myapp && claude  (새 폴더에서 CLI 재시작)</span>
 
-<span class="comment"># 1B. 기존 프로젝트에 적용할 때</span>
-<span class="cmd">/u-init</span> <span class="flag">--app</span> myapp
+<span class="comment"># 1B. 기존 프로젝트에 적용할 때 (/u-init 은 별칭)</span>
+<span class="cmd">/u-prepare</span> <span class="flag">--app</span> myapp
 
-<span class="comment"># 2. dropzone에 기획 자료 배치 (RFP, 회의록, 와이어프레임 등)</span>
+<span class="comment"># 2. dropzone에 기획 자료 배치 (RFP, 회의록, Figma URL, 와이어프레임 등)</span>
 <span class="output"># .u-maker/data/dropzone/ 에 파일 복사</span>
 
-<span class="comment"># 3. 전체 자동 실행 (Plan -> Design -> Dev -> Check -> Ship)</span>
+<span class="comment"># 3. 전체 자동 실행 (Plan → Build → Gatekeeping → Deploy)</span>
 <span class="cmd">/u-loop</span> <span class="flag">--app</span> myapp
 
 <span class="comment"># 또는 단계별 수동 실행</span>
-<span class="cmd">/u-plan</span> <span class="flag">--app</span> myapp <span class="flag">--loop</span> 11
-<span class="cmd">/u-design</span> <span class="flag">--app</span> myapp <span class="flag">--loop</span> 11
-<span class="cmd">/u-dev</span> <span class="flag">--app</span> myapp <span class="flag">--loop</span> 11
-<span class="cmd">/u-check</span> <span class="flag">--app</span> myapp <span class="flag">--loop</span> 11
+<span class="cmd">/u-plan</span> <span class="flag">--app</span> myapp <span class="flag">--loop</span>              <span class="comment"># Plan (SRS+IA), default N=5</span>
+<span class="cmd">/u-build</span> <span class="flag">--app</span> myapp <span class="flag">--loop</span>             <span class="comment"># Build (Design↔Dev)</span>
+<span class="cmd">/u-gatekeeping</span> <span class="flag">--app</span> myapp <span class="flag">--loop</span> 11     <span class="comment"># Gatekeeping (전체 11 criteria)</span>
+<span class="cmd">/u-deploy</span> <span class="flag">--app</span> myapp <span class="flag">--loop</span>            <span class="comment"># Deploy (gate ≥98)</span>
 
 <span class="comment"># 4. HTML 산출물 생성</span>
 <span class="cmd">/u-output</span> <span class="flag">--app</span> myapp <span class="flag">--diagram</span> svg
 
-<span class="comment"># 5. 와이어프레임 생성</span>
+<span class="comment"># 5. 와이어프레임 생성 (선택)</span>
 <span class="cmd">/u-wireframe</span> <span class="flag">--app</span> myapp <span class="flag">--all</span></code>
   </div>
 
@@ -1303,17 +1465,29 @@ code {
   <h3 style="font-size:14px; font-weight:700; color:#0f172a; margin-bottom:8px;">B. Reverse Engineering (기존 프로젝트)</h3>
   <p style="font-size:13px; color:#64748b; margin-bottom:12px;">이미 구현된 코드베이스에서 설계 문서를 역생성하는 시나리오입니다.</p>
   <div class="code-block" style="margin-bottom:24px;">
-<code><span class="comment"># 1. 초기화</span>
-<span class="cmd">/u-init</span> <span class="flag">--app</span> myapp
+<code><span class="comment"># 1. 초기화 (/u-init 은 /u-prepare 별칭)</span>
+<span class="cmd">/u-prepare</span> <span class="flag">--app</span> myapp
 
-<span class="comment"># 2. 기존 코드 분석 → SSoT 역생성</span>
+<span class="comment"># 2. 기존 코드 분석 → digest 역생성</span>
 <span class="cmd">/u-reverse</span> <span class="flag">--app</span> myapp <span class="flag">--src</span> ./src <span class="flag">--db</span> ./prisma <span class="flag">--api</span> ./api <span class="flag">--pages</span> ./app
 
-<span class="comment"># 3. 역생성된 문서를 HTML로 렌더링</span>
-<span class="cmd">/u-output</span> <span class="flag">--app</span> myapp
+<span class="comment"># 3. Plan → Build → Gatekeeping 파이프라인 진행</span>
+<span class="cmd">/u-plan</span> <span class="flag">--app</span> myapp
+<span class="cmd">/u-build</span> <span class="flag">--app</span> myapp
 
-<span class="comment"># 4. 이후 정방향 개발도 가능 (Design 문서 기반 코드 생성)</span>
-<span class="cmd">/u-dev</span> <span class="flag">--app</span> myapp <span class="flag">--only</span> fe</code>
+<span class="comment"># 4. 역생성된 문서를 HTML로 렌더링</span>
+<span class="cmd">/u-output</span> <span class="flag">--app</span> myapp</code>
+  </div>
+
+  <!-- Scenario Ba: Figma -->
+  <h3 style="font-size:14px; font-weight:700; color:#0f172a; margin-bottom:8px;">B'. Figma 소스 분석</h3>
+  <p style="font-size:13px; color:#64748b; margin-bottom:12px;">Figma URL이 포함되어 있으면 <code class="code-inline">u-agent-figma</code>가 자동 호출됩니다.</p>
+  <div class="code-block" style="margin-bottom:24px;">
+<code><span class="comment"># 직접 호출</span>
+<span class="cmd">/u-figma</span> &lt;figma-url&gt; <span class="flag">--app</span> myapp
+
+<span class="comment"># dropzone에 Figma URL을 넣고 /u-prepare/analyze/build 실행 시 자동 위임</span>
+<span class="output"># → data/digest/figma/*.json (source.pipeline = "reduced" in alpha)</span></code>
   </div>
 
   <!-- Scenario C: Daily Ops -->
@@ -1329,8 +1503,8 @@ code {
 <span class="comment"># 프론트엔드만 코드 재생성</span>
 <span class="cmd">/u-dev</span> <span class="flag">--app</span> myapp <span class="flag">--only</span> fe
 
-<span class="comment"># 기존 설정 마이그레이션</span>
-<span class="cmd">/u-init</span> <span class="flag">--migrate</span></code>
+<span class="comment"># v3.x PDCA → v4.x PBGD 마이그레이션 (docs/{app}/check/ → gatekeeping/)</span>
+<span class="cmd">/u-prepare-foldertree</span> <span class="flag">--app</span> myapp <span class="flag">--migrate</span></code>
   </div>
 
   <!-- Scenario D: Reports -->
@@ -1388,7 +1562,7 @@ code {
     </div>
     <div class="card">
       <div style="font-size:13px; font-weight:700; color:#0f172a; margin-bottom:4px;">버전 확인</div>
-      <p style="font-size:12px; color:#64748b;">u-maker.config.json &rarr; version: 3.4.10</p>
+      <p style="font-size:12px; color:#64748b;">.claude-plugin/plugin.json &rarr; version: 4.0.0-alpha.1</p>
     </div>
   </div>
 
@@ -1405,11 +1579,12 @@ code {
 
   <h3 style="font-size:14px; font-weight:700; color:#0f172a; margin:20px 0 12px;">초기화</h3>
   <div class="code-block">
-<code><span class="comment"># 프로젝트 초기화 (최초 1회)</span>
-<span class="cmd">/u-init</span> <span class="flag">--app</span> myapp
+<code><span class="comment"># 프로젝트 초기화 (최초 1회, /u-init 은 /u-prepare 별칭)</span>
+<span class="cmd">/u-prepare</span> <span class="flag">--app</span> myapp
 
-<span class="comment"># 기존 v3.x 프로젝트 마이그레이션</span>
-<span class="cmd">/u-init</span> <span class="flag">--migrate</span></code>
+<span class="comment"># 기존 v3.x PDCA 프로젝트 → v4.x PBGD 마이그레이션</span>
+<span class="cmd">/u-prepare-foldertree</span> <span class="flag">--app</span> myapp <span class="flag">--migrate</span>
+<span class="comment"># → docs/{app}/check/ 를 docs/{app}/gatekeeping/ 으로 리네임</span></code>
   </div>
 </section>
 
@@ -1439,7 +1614,7 @@ code {
           <td>FAIL 항목의 Findings를 확인하고 수동으로 문서를 수정한 후 재실행. threshold를 임시로 낮출 수도 있음 (<code class="code-inline">u-maker.config.json</code> &rarr; <code class="code-inline">gatekeeperThreshold</code>)</td>
         </tr>
         <tr>
-          <td><code class="code-inline">/u-design</code> 시 "Plan docs not found"</td>
+          <td><code class="code-inline">/u-build</code> 시 "Plan docs not found"</td>
           <td>Plan Phase 산출물(SRS, IA)이 없음</td>
           <td><code class="code-inline">/u-plan</code>을 먼저 실행. 또는 자동 캐스케이드가 동작하므로 그대로 진행하면 자동으로 <code class="code-inline">/u-plan</code> 호출됨</td>
         </tr>
@@ -1459,14 +1634,24 @@ code {
           <td><code class="code-inline">--src</code>, <code class="code-inline">--db</code>, <code class="code-inline">--api</code>, <code class="code-inline">--pages</code> 플래그로 정확한 디렉토리 경로를 지정</td>
         </tr>
         <tr>
-          <td>config 버전 불일치 경고</td>
-          <td>이전 버전의 config로 새 버전 실행</td>
-          <td><code class="code-inline">/u-init --migrate</code>로 config를 v4.0으로 마이그레이션</td>
+          <td>v3.x PDCA 프로젝트가 v4.x 파이프라인과 충돌</td>
+          <td><code class="code-inline">docs/{app}/check/</code>가 아직 존재, config 버전 불일치</td>
+          <td><code class="code-inline">/u-prepare-foldertree --app myapp --migrate</code>로 <code class="code-inline">check/</code> &rarr; <code class="code-inline">gatekeeping/</code> 리네임 및 config 업데이트</td>
+        </tr>
+        <tr>
+          <td><code class="code-inline">/u-deploy</code>가 아티팩트를 재생성하지 않음</td>
+          <td>manifest에 기록된 sourceHashes와 현재 SSoT가 동일</td>
+          <td>SSoT 문서를 실제로 수정하거나, <code class="code-inline">on-deploy-state.js</code> hook이 <code class="code-inline">.state/deploy-stale.json</code>에 drift를 기록하는지 확인</td>
+        </tr>
+        <tr>
+          <td>Figma digest에 <code class="code-inline">coverageWarnings[]</code> 다수</td>
+          <td>v4.0.0-alpha.1의 reduced extraction path (<code class="code-inline">source.pipeline == "reduced"</code>)</td>
+          <td>alpha의 의도된 동작. schema-optional 필드가 warning으로 처리됩니다. 정식 파이프라인은 GA 이후 제공</td>
         </tr>
         <tr>
           <td><code class="code-inline">/u-dev --only fe</code>에서 Screen 참조 오류</td>
           <td>screens.json과 코드 간 ID 불일치</td>
-          <td><code class="code-inline">/u-design</code>으로 Screen 명세를 재생성한 후 <code class="code-inline">/u-dev</code> 재실행</td>
+          <td><code class="code-inline">/u-design</code>으로 Screen 명세를 재생성한 후 <code class="code-inline">/u-dev</code> 재실행 (또는 <code class="code-inline">/u-build</code>로 오케스트레이션)</td>
         </tr>
       </tbody>
     </table>

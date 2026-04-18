@@ -41,6 +41,15 @@ Follow the execution flow defined in `skills/u-design/SKILL.md` exactly:
 4. Both must be `Final`
 5. If not → error: "Plan documents exist but are not Final. Run /u-plan --loop or manually set status to Final"
 
+### Step 0b: Verify Figma digest provenance (if Figma sources present)
+
+1. Inspect `data/digest/figma/` for digests produced by `u-agent-figma`.
+2. If any digest has `source.pipeline == "reduced"` (v4.0.0-alpha.1 reduced extraction path, see `agents/u-agent-figma.md` §10):
+   - Treat schema-optional fields as **warnings, not errors** during ERD/API/Screens generation.
+   - Merge `coverageWarnings[]` into `docs/{app}/design/*.json` under `sourceWarnings[]`.
+   - Do **not** block the Design phase on reduced-path output; gatekeeper handles downstream scoring.
+3. When the full Figma pipeline ships, `source.pipeline == "full"` restores schema-strict behavior (blocking errors on missing fields).
+
 ### Step 1: Generate ERD
 
 1. Load SRS entities and data models from `srs.json`

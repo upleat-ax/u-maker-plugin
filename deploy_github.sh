@@ -81,7 +81,7 @@ version = sys.argv[2]
 skills = sorted(root.joinpath("skills").glob("*/SKILL.md"))
 skills_total = len(skills)
 agents = len(list(root.joinpath("agents").glob("*.md")))
-phases = 5
+phases = 4
 parts = 13
 
 def apply(path_str, replacements):
@@ -98,7 +98,8 @@ def apply(path_str, replacements):
 shared_readme_html = [
     (r'(<div class="stat"><div class="stat-val">)\d+(</div><div class="stat-label">Skills</div></div>)', rf"\g<1>{skills_total}\g<2>"),
     (r'(<div class="stat"><div class="stat-val">)\d+(</div><div class="stat-label">Agents</div></div>)', rf"\g<1>{agents}\g<2>"),
-    (r'(<div class="stat"><div class="stat-val">)\d+(</div><div class="stat-label">PDCA Phases</div></div>)', rf"\g<1>{phases}\g<2>"),
+    (r'(<div class="stat"><div class="stat-val">)\d+(</div><div class="stat-label">)(?:PDCA|PBGD)( Phases</div></div>)', rf"\g<1>{phases}\g<2>PBGD\g<3>"),
+    (r'(<span class="badge"><span class="badge-num">)\d+(</span> )(?:PDCA|PBGD)( Phases</span>)', rf"\g<1>{phases}\g<2>PBGD\g<3>"),
 ]
 
 apply("README.ko.html", shared_readme_html)
@@ -110,7 +111,7 @@ apply("README.en.html", shared_readme_html + [
 apply("GET_STARTED.html", [
     (r'(<div class="stat"><div class="stat-val">)\d+(</div><div class="stat-label">Commands</div></div>)', rf"\g<1>{skills_total}\g<2>"),
     (r'(<div class="stat"><div class="stat-val">)\d+(</div><div class="stat-label">AI Agents</div></div>)', rf"\g<1>{agents}\g<2>"),
-    (r'(<div class="stat"><div class="stat-val">)\d+(</div><div class="stat-label">PDCA Phases</div></div>)', rf"\g<1>{phases}\g<2>"),
+    (r'(<div class="stat"><div class="stat-val">)\d+(</div><div class="stat-label">)(?:PDCA|PBGD)( Phases</div></div>)', rf"\g<1>{phases}\g<2>PBGD\g<3>"),
     (r'(<div class="stat"><div class="stat-val">)\d+(</div><div class="stat-label">Parts</div></div>)', rf"\g<1>{parts}\g<2>"),
 ])
 PY

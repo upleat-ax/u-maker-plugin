@@ -1,5 +1,7 @@
 # router Reference
 
+> ⚠️ **v4.0.0-alpha.1 status:** the Known Commands, Natural-Language Classifier, Dispatch Table, Skill Map, and Prerequisites tables below were authored in the PDCA era (v3.x) and still list retired commands (`/u-ingest`, `/u-check`, `/u-ship`, `/u-add`, `/u-update`, `/u-doc`, `/u-sync`, `/u-gate`, `/u-backlog`, `/u-status`, `/u-coverage`, `/u-trace`). For the PBGD-authoritative command routing table, see `agents/u-agent-pm.md` §2 (Command Routing Table) and §7 (Global aliases & forwarding). The parsing/dispatch/error-handling algorithms in this file remain valid patterns; only the command inventory is stale and pending rewrite.
+
 The router is the entry point for all u-maker interactions. It parses `/u-*` commands and natural language input, classifies intent, dispatches to the appropriate agent, and handles option parsing and error cases.
 
 ## 1. /u-* Command Parsing
