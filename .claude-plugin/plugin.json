@@ -1,20 +1,21 @@
 {
   "name": "u-maker",
-  "version": "3.4.10",
-  "description": "PDCA-based SSoT plugin for Claude Code. 5-phase pipeline (Plan/Design/Dev/Check/Ship), 7 agents, 16 skills (including /u-createproject for monorepo scaffolding, /u-output for standalone HTML generation, /u-reverse, /u-meeting-report, /u-qa alias), domain-split HTML output, 11-criteria quality gate with scoring.",
+  "version": "4.0.0-alpha.1",
+  "description": "PBGD-based SSoT plugin for Claude Code. 4-phase pipeline (Plan/Build/Gatekeeping/Deploy), 9 agents, 18+ skills (/u-prepare umbrella, /u-analyze, /u-build orchestrator, /u-gatekeeping, /u-deploy with interactive target + artifact selection, plus /u-createproject, /u-output, /u-reverse, /u-meeting-report). 11-criteria quality gate (pass ≥95, deploy-gate ≥98), continuous deploy regeneration, domain-split HTML output.",
   "author": {
     "name": "u-plugin"
   },
   "repository": "https://github.com/upleat-ax/u-maker-plugin",
   "homepage": "https://github.com/upleat-ax/u-maker-plugin",
   "keywords": [
-    "pdca",
+    "pbgd",
     "ssot",
     "gatekeeper",
     "agents",
     "digest-pipeline",
     "quality-gate",
     "scoring",
+    "deploy-phase",
     "html-engine",
     "reverse-engineering"
   ]

@@ -9,15 +9,17 @@ triggers:
   - "implement"
 ---
 
-# u-dev — Dev Phase
+# u-dev — Development Sub-phase (PBGD Build.Development)
 
 `/u-dev [--auto] [--loop] [--app {name}] [--only fe|be|db]`
 
-Dev phase: generate FE + BE + DB code from Design specifications.
+Development sub-phase of the Build phase: generate FE + BE + DB code from Design specifications. Callable standalone or via the `/u-build` orchestrator. On spec gaps, emits `.state/build-gap-report.json` so `/u-build` can ping-pong back to `/u-design`.
 
 **Primary Agent:** u-agent-dev
 **Engine Dependencies:** doc-engine, dep-engine
-**Gate Prerequisite:** Design phase gate passed (ERD, API, Screens, Design System = Final)
+**Gate Prerequisite:** UI Design sub-phase gate passed (ERD, API, Screens, Design System = Final)
+**PBGD Phase:** Build.Development
+**Parent orchestrator:** `/u-build`
 
 ## Execution Flow
 

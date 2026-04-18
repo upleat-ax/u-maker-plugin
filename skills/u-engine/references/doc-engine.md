@@ -47,8 +47,8 @@ Available templates:
 | `screens.template.md` | Screen Specification | `docs/{app}/design/screens.md` | Standard |
 | `design-system.template.html` | Design System | `out/{app}/design/design-system.html` | **HTML-first** (HTML→MD+JSON) |
 | `design-system.template.md` | Design System (derived) | `docs/{app}/design/design-system.md` | Derived from HTML |
-| `testcase.template.md` | Test Cases | `docs/{app}/check/testcases.md` | Standard |
-| `test-results.template.md` | Test Results | `docs/{app}/check/test-results.md` | Standard |
+| `testcase.template.md` | Test Cases | `docs/{app}/gatekeeping/testcases.md` | Standard |
+| `test-results.template.md` | Test Results | `docs/{app}/gatekeeping/test-results.md` | Standard |
 
 ### Design System: HTML-First Exception
 
@@ -119,7 +119,7 @@ Every `.md` SSoT document MUST have a corresponding `.json` companion file at th
 ```
 docs/{app}/plan/srs.md     ↔  docs/{app}/plan/srs.json
 docs/{app}/design/erd.md   ↔  docs/{app}/design/erd.json
-docs/{app}/check/testcases.md  ↔  docs/{app}/check/testcases.json
+docs/{app}/gatekeeping/testcases.md  ↔  docs/{app}/gatekeeping/testcases.json
 ```
 
 ### JSON Companion Schema

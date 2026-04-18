@@ -1,6 +1,8 @@
-# Ingest Flow Reference
+# Digest Extraction Reference
 
-> Detailed specification for dropzone scanning, file analysis, digest generation, and incremental processing within the u-plan skill.
+> Detailed specification for dropzone scanning, per-file-type extraction, digest generation, and incremental processing within the `/u-analyze` skill (PBGD Plan.Prepare sub-phase, v4.0).
+>
+> **Migration note:** In v3.x this reference lived at `skills/u-plan/references/ingest-flow.md`. Content unchanged; only the owning skill has moved from `/u-plan` to `/u-analyze`.
 
 ## 1. Overview
 

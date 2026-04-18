@@ -1,8 +1,9 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "Gatekeeper Validation Rules",
-  "description": "11 quality criteria for gatekeeper scoring",
+  "description": "11 quality criteria for gatekeeper scoring (PBGD workflow, v4.0)",
   "passThreshold": 95,
+  "deployThreshold": 98,
   "maxRetries": 3,
   "criteria": [
     {
@@ -95,32 +96,42 @@
     }
   ],
   "gates": {
-    "plan-to-design": {
+    "prepare-to-plan": {
+      "required": [
+        { "condition": "dropzone-has-content" },
+        { "condition": "digest-populated" }
+      ]
+    },
+    "plan-to-build": {
       "required": [
         { "doc": "srs", "status": "Final" },
         { "doc": "ia", "status": "Final" }
       ]
     },
-    "design-to-dev": {
+    "build-to-gatekeeping": {
       "required": [
         { "doc": "erd", "status": "Final" },
         { "doc": "api", "status": "Final" },
         { "doc": "screens", "status": "Final" },
-        { "doc": "design-system", "status": "Final" }
-      ]
-    },
-    "dev-to-check": {
-      "required": [
+        { "doc": "design-system", "status": "Final" },
         { "condition": "code-complete" },
         { "condition": "build-success" }
       ]
     },
-    "check-to-done": {
+    "gatekeeping-to-deploy": {
       "required": [
         { "doc": "testcases", "status": "Final" },
         { "doc": "test-results", "status": "Final" },
-        { "condition": "critical-defects-zero" }
+        { "condition": "critical-defects-zero" },
+        { "condition": "avg-score-ge-98", "threshold": 98 }
       ]
+    },
+    "x-deprecated-pdca": {
+      "description": "Historical PDCA gates kept for v3→v4 migration reference only. Do not use.",
+      "plan-to-design": { "_migratedTo": "plan-to-build" },
+      "design-to-dev": { "_migratedTo": "build-to-gatekeeping" },
+      "dev-to-check": { "_migratedTo": "build-to-gatekeeping" },
+      "check-to-done": { "_migratedTo": "gatekeeping-to-deploy" }
     }
   }
 }

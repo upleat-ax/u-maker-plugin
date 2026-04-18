@@ -297,12 +297,15 @@ function dispatch(parsed):
 
 | Command | Prerequisite | Error Message |
 |---------|-------------|---------------|
-| `plan` | `.u-maker/` exists, config initialized | "Run /u-init first" |
+| `prepare` | Write access to project root | "Cannot write to project root. Check permissions." |
+| `analyze` | `.u-maker/` exists + dropzone has content | "Run /u-prepare-foldertree first, then add files to data/dropzone/." |
+| `plan` | `data/digest/` populated | "Run /u-prepare (or /u-analyze) first." |
+| `build` | Plan phase complete (SRS=Final, IA=Final) | "Run /u-plan first. SRS and IA must be Final." |
 | `design` | Plan phase complete (SRS=Final, IA=Final) | "Run /u-plan first. SRS and IA must be Final." |
-| `dev` | Design phase complete (ERD, API, Screens, Design System = Final) | "Run /u-design first. All design docs must be Final." |
-| `check` | Dev phase complete (code generated) | "Run /u-dev first. Code must be generated." |
-| `ship` | Check phase complete (all TCs pass) | "Run /u-check first. All test cases must pass." |
-| `wireframe` | Design phase complete (Screens=Final) | "Run /u-design first. Screen spec must be Final." |
+| `dev` | UIDesign sub-phase complete (ERD, API, Screens, Design System = Final) | "Run /u-design first. All design docs must be Final." |
+| `gatekeeping` | Build phase complete (design docs Final + code generated) | "Run /u-build first. Design must be Final and code generated." |
+| `deploy` | Gatekeeping avg ≥ 98 (deployReady: true) | "Run /u-gatekeeping --loop to reach docScore ≥ 98." |
+| `wireframe` | Design sub-phase complete (Screens=Final) | "Run /u-design first. Screen spec must be Final." |
 | `gate` | At least one document exists | "No documents to validate. Run a phase command first." |
 | `report` | At least one document exists | "No documents to report on." |
 | `reverse` | Project source code exists (at least one recognized stack indicator) | "No recognizable project stack found. Use --src, --db, --api, --pages to specify paths." |
@@ -311,7 +314,7 @@ function dispatch(parsed):
 
 ### Global Options
 
-These options are available on ALL phase commands (plan, design, dev, check).
+These options are available on ALL phase commands (prepare, plan, build, design, dev, gatekeeping, deploy).
 
 | Option | Flag | Default | Description |
 |--------|------|---------|-------------|

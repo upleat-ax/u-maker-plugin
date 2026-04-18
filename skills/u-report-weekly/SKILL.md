@@ -52,8 +52,8 @@ done
 ```
 docs/{app}/plan/srs.json     → FR, US, FT
 docs/{app}/design/screens.json → SC (designed)
-docs/{app}/check/testcases.json → TC
-docs/{app}/check/test-results.json → test pass/fail
+docs/{app}/gatekeeping/testcases.json → TC
+docs/{app}/gatekeeping/test-results.json → test pass/fail
 output/{app}/design/wireframes/*.html  → Wireframe count
 ```
 

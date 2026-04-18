@@ -11,12 +11,15 @@ triggers:
 
 # u-wireframe — Screen Wireframe Generator
 
-`/u-wireframe [--app {name}] [--screen {SCR-ID}] [--all]`
+`/u-wireframe [--app {name}] [--loop] [--screen {SCR-ID}] [--all]`
 
 Generate individual HTML wireframe files for each screen defined in `docs/{app}/design/screens.md` + `screens.json`. Each wireframe is a self-contained HTML page with mockup UI, Design/Develop annotations, related ERD entities, Sequence Diagram, and Screen Flow.
 
 **Engine Dependencies:** doc-engine, html-engine, dep-engine
 **Gate Prerequisite:** Design phase documents exist (screens.json, erd.json, api.json)
+**PBGD Phase:** Build.UIDesign (companion — orthogonal to `/u-design`)
+
+> **PBGD invocation note (v4.0):** Wireframe generation is time-consuming. `/u-plan` prompts the user after SRS+IA are complete to note that wireframes are available as an optional post-Design step (wireframes need Screens.md from `/u-design`). Typical sequence: `/u-prepare` → `/u-plan` → `/u-design` → `/u-wireframe` → `/u-dev`. When `/u-build` is used as the Build orchestrator, it does *not* auto-invoke `/u-wireframe`; the user runs it explicitly at the point they want.
 
 ## Input Sources
 

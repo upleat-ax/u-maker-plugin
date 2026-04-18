@@ -14,9 +14,13 @@
         "required": ["id", "type", "path"],
         "properties": {
           "id": { "type": "string" },
-          "type": { "enum": ["digest", "doc", "item"] },
+          "type": { "enum": ["digest", "doc", "item", "deploy-artifact"] },
           "path": { "type": "string" },
-          "itemId": { "type": "string" }
+          "itemId": { "type": "string" },
+          "phase": {
+            "description": "PBGD phase ownership (v4.0)",
+            "enum": ["plan", "build", "gatekeeping", "deploy"]
+          }
         }
       }
     },
@@ -28,7 +32,7 @@
         "properties": {
           "from": { "type": "string" },
           "to": { "type": "string" },
-          "relation": { "enum": ["derives", "implements", "tests", "references"] }
+          "relation": { "enum": ["derives", "implements", "tests", "references", "deploys"] }
         }
       }
     }

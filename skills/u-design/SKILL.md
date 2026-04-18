@@ -11,15 +11,17 @@ triggers:
   - "design system"
 ---
 
-# u-design — Design Phase
+# u-design — UI Design Sub-phase (PBGD Build.UIDesign)
 
 `/u-design [--auto] [--loop] [--app {name}]`
 
-Design phase: generate `docs/{app}/design/` documents (ERD, API, Screens, Design System) from Plan phase documents (SRS + IA).
+UI Design sub-phase of the Build phase: generate `docs/{app}/design/` documents (ERD, API, Screens, Design System) from Plan phase documents (SRS + IA). Callable standalone or via the `/u-build` orchestrator.
 
 **Primary Agent:** u-agent-design
 **Engine Dependencies:** doc-engine, dep-engine
 **Gate Prerequisite:** Plan phase gate passed (SRS=Final, IA=Final)
+**PBGD Phase:** Build.UIDesign
+**Parent orchestrator:** `/u-build`
 
 ## Execution Flow
 
@@ -30,6 +32,7 @@ Design phase: generate `docs/{app}/design/` documents (ERD, API, Screens, Design
 3. Read `docs/{app}/plan/srs.json` and `ia.json` status
 4. Both must be `Final`
 5. If not → error: "Plan documents exist but are not Final. Run /u-plan --loop or manually set status to Final"
+6. **Figma freshness check:** if `data/figma/manifest.json` exists, compare file hashes against current Figma state. If stale, delegate to `/u-figma --verify` (or `/u-figma --refresh-comments` if the user just asked to "sync design from Figma"). Use the refreshed `data/figma/aggregate.json` as an input to Steps 1–4 below so ERD/API/Screens/DS pick up every variant, validation rule, default, action, and permission captured from Figma. See `skills/u-figma/references/integration.md`.
 
 ### Step 1: Generate ERD
 

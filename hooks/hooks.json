@@ -20,6 +20,13 @@
       "pattern": ".u-maker/.state/loop-state.json",
       "script": "on-gate-result.js",
       "timeout": 3000
+    },
+    {
+      "event": "PostToolUse",
+      "tool": "Write",
+      "pattern": ".u-maker/docs/**/*.md",
+      "script": "on-deploy-state.js",
+      "timeout": 3000
     }
   ]
 }

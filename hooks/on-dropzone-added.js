@@ -1,6 +1,8 @@
 // on-dropzone-added.js
 // Trigger: file added to data/dropzone/
 // Action: mark file for digest generation in _index.json
+// PBGD v4.0: downstream consumer is /u-analyze (Plan.Prepare sub-phase),
+//            NOT /u-plan (which now starts from a populated digest).
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');

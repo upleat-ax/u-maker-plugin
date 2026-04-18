@@ -55,8 +55,8 @@ For files under `.u-maker/output/{app}/{phase}/{doc}/`:
 | `output/{app}/design/api/` | `{app}-design-api` | {app} Design API |
 | `output/{app}/design/screens/` | `{app}-design-screens` | {app} Design Screens |
 | `output/{app}/design/design-system.*` | `{app}-design-ds` | {app} Design System |
-| `output/{app}/check/testcases/` | `{app}-check-tc` | {app} Check TestCases |
-| `output/{app}/check/test-results.*` | `{app}-check-tr` | {app} Check TestResults |
+| `output/{app}/gatekeeping/testcases/` | `{app}-gatekeeping-tc` | {app} Gatekeeping TestCases |
+| `output/{app}/gatekeeping/test-results.*` | `{app}-gatekeeping-tr` | {app} Gatekeeping TestResults |
 | `output/{app}/index.html` | `{app}-nav` | {app} Navigation |
 | `output/index.html` | `root-nav` | Root Navigation |
 
@@ -68,7 +68,7 @@ For files under `.u-maker/docs/{app}/{phase}/`:
 |-------------|-----------|------------|
 | `docs/{app}/plan/*` | `{app}-docs-plan` | {app} Plan Docs |
 | `docs/{app}/design/*` | `{app}-docs-design` | {app} Design Docs |
-| `docs/{app}/check/*` | `{app}-docs-check` | {app} Check Docs |
+| `docs/{app}/gatekeeping/*` | `{app}-docs-gatekeeping` | {app} Gatekeeping Docs |
 | `docs/common/*` | `common-docs` | Common Docs |
 
 #### Rule 3: Source code by directory

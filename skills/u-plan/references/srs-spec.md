@@ -101,7 +101,7 @@ Each User Story (US) must include at least one acceptance criterion. Acceptance 
 1. Each criterion must be independently testable (no compound criteria with AND/OR).
 2. Criteria must be specific and measurable -- avoid vague terms like "fast", "user-friendly", "seamless".
 3. Minimum 1 criterion per US, recommended 3-5.
-4. Each criterion should map to at least one test case in the Check phase.
+4. Each criterion should map to at least one test case in the Gatekeeping phase (Runtime QA sub-phase).
 5. Use the Given/When/Then format for behavioral criteria and simple declarative format for state-based criteria.
 
 ## 6. Stakeholder Mapping

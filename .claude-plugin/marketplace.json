@@ -7,10 +7,10 @@
     {
       "name": "u-maker",
       "source": "./",
-      "description": "PDCA-based SSoT plugin for Claude Code — 12 skills, 7 agents, 5 phases",
-      "version": "3.3.1",
+      "description": "PBGD-based SSoT plugin for Claude Code — 18+ skills, 9 agents, 4 phases (Plan/Build/Gatekeeping/Deploy)",
+      "version": "4.0.0-alpha.1",
       "category": "development",
-      "tags": ["pdca", "ssot", "agents", "gatekeeper", "quality-gate", "reverse-engineering", "html-engine", "scoring"]
+      "tags": ["pbgd", "ssot", "agents", "gatekeeper", "quality-gate", "deploy-phase", "reverse-engineering", "html-engine", "scoring"]
     }
   ]
 }

@@ -37,7 +37,7 @@ ls .u-maker/docs/
 # 각 앱별 문서 파일 목록
 ls .u-maker/docs/{app}/plan/    # srs.md+json, ia.md+json
 ls .u-maker/docs/{app}/design/  # erd.md+json, api.md+json, screens.md+json, design-system.md+json
-ls .u-maker/docs/{app}/check/   # testcases.md+json, test-results.md+json
+ls .u-maker/docs/{app}/gatekeeping/   # testcases.md+json, test-results.md+json
 ```
 
 **JSON companion에서 추출할 항목:**

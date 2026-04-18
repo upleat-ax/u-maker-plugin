@@ -6,7 +6,15 @@
   "required": ["docType", "app", "status", "version", "lastUpdated", "items"],
   "properties": {
     "docType": {
-      "enum": ["srs", "ia", "erd", "api", "screens", "design-system", "testcases", "test-results"]
+      "enum": ["srs", "ia", "erd", "api", "screens", "design-system", "testcases", "test-results", "deploy-manifest", "deploy-runbook"]
+    },
+    "phase": {
+      "description": "PBGD phase the document belongs to (v4.0)",
+      "enum": ["plan", "build", "gatekeeping", "deploy"]
+    },
+    "subPhase": {
+      "description": "PBGD sub-phase (v4.0)",
+      "enum": ["prepare", "plan", "ui-design", "development", "doc-scoring", "runtime-qa", "cicd"]
     },
     "app": { "type": "string" },
     "status": { "enum": ["Draft", "Review", "Final"] },

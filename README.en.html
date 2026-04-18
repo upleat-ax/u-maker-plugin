@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>U-MAKER Plugin v3.4.10 Documentation</title>
+<title>U-MAKER Plugin v4.0.0-alpha.1 (PBGD) Documentation</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{--sidebar-w:280px;--bg:#ffffff;--sidebar-bg:#ffffff;--main-bg:#ffffff;--text:#334155;--text-main:#334155;--heading:#0f172a;--accent:#3b82f6;--accent-hover:#2563eb;--code-bg:#f1f5f9;--code-text:#1e293b;--border:#e2e8f0;--active-bg:#f8fafc;--badge-bg:#e2e8f0;--badge-text:#64748b;--table-stripe:#f8fafc;--table-border:#e2e8f0;--table-header:#f1f5f9}
@@ -103,6 +103,10 @@ a:hover{text-decoration:underline}
 </style>
 </head>
 <body>
+<div style="background:#fef3c7;border-bottom:3px solid #f59e0b;padding:14px 20px;font-family:-apple-system,sans-serif;font-size:14px;color:#78350f;">
+  <strong>&#x26A0;&#xFE0F; v4.0.0-alpha.1 (PBGD) — in-progress migration.</strong>
+  The plugin is being refactored from PDCA to PBGD (Plan / Build / Gatekeeping / Deploy). Docs below still reflect v3.x PDCA terminology. See <a href="https://github.com/upleat-ax/u-maker-plugin/blob/main/CHANGELOG.md" style="color:#78350f;text-decoration:underline;">CHANGELOG.md</a> for the new command map and migration steps.
+</div>
 
 <button class="hamburger" onclick="toggleSidebar()" aria-label="Toggle menu">&#9776;</button>
 <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
@@ -110,7 +114,7 @@ a:hover{text-decoration:underline}
 <nav class="sidebar" id="sidebar">
   <div class="sidebar-header">
     <h1>U-MAKER</h1>
-    <p>v3.4.10 &mdash; Plugin Documentation</p>
+    <p>v4.0.0-alpha.1 (PBGD) &mdash; Plugin Documentation</p>
   </div>
   <div class="sidebar-nav">
 
@@ -149,7 +153,7 @@ a:hover{text-decoration:underline}
     </div>
 
   </div>
-  <div class="sidebar-footer">Proprietary &copy; 2026 U PLEAT &middot; v3.4.10</div>
+  <div class="sidebar-footer">Proprietary &copy; 2026 U PLEAT &middot; v4.0.0-alpha.1 (PBGD)</div>
 </nav>
 
 <main class="main">
@@ -782,11 +786,11 @@ a:hover{text-decoration:underline}
 <span class="cmd">curl.exe -fsSL --ssl-no-revoke https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/install.bat -o install.bat; .\install.bat; del install.bat</span></code></pre>
 
 <h3>Migration from Previous Version</h3>
-<pre><code><span class="cmd">/u-init my-project --migrate</span>    <span class="comment"># Upgrades .u-maker/ structure to v3.4.10</span></code></pre>
+<pre><code><span class="cmd">/u-init my-project --migrate</span>    <span class="comment"># Upgrades .u-maker/ structure to v4.0.0-alpha.1 (PBGD)</span></code></pre>
 
 <h3>Plugin Repository Layout</h3>
 <pre><code>u-maker-plugin/
-&#x251C;&#x2500;&#x2500; .claude-plugin/plugin.json        # v3.4.10
+&#x251C;&#x2500;&#x2500; .claude-plugin/plugin.json        # v4.0.0-alpha.1 (PBGD)
 &#x251C;&#x2500;&#x2500; agents/                           # 7 agent definitions
 &#x2502;   &#x251C;&#x2500;&#x2500; u-agent-pm.md
 &#x2502;   &#x251C;&#x2500;&#x2500; u-agent-plan.md
@@ -842,7 +846,7 @@ a:hover{text-decoration:underline}
 
 <!-- Footer -->
 <div class="footer">
-  <strong>U-MAKER Plugin</strong> v3.4.10 &mdash; PDCA-based SSoT Collaboration Orchestrator<br>
+  <strong>U-MAKER Plugin</strong> v4.0.0-alpha.1 (PBGD) &mdash; PDCA-based SSoT Collaboration Orchestrator<br>
   Proprietary &copy; 2026 U PLEAT &middot; All rights reserved
 </div>
 

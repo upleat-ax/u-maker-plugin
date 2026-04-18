@@ -1,59 +1,35 @@
 ---
 name: u-check
-description: "This skill should be used when the user asks to 'check', 'test', 'QA', 'generate test cases', 'run tests', '/u-check', or wants to perform quality assurance on implemented code."
+description: "Alias of /u-gatekeeping. Use when the user asks to 'check', '/u-check'. Routes directly to /u-gatekeeping (PBGD Gatekeeping phase: doc scoring + runtime QA)."
 version: 4.0.0
 triggers:
   - "/u-check"
-  - "/u-qa"
   - "check phase"
-  - "QA"
-  - "test cases"
-  - "run tests"
 ---
 
-# u-check — Check Phase
+# u-check — Alias for /u-gatekeeping
 
-`/u-check [--auto] [--loop] [--app {name}]`
-**Alias:** `/u-qa`
+`/u-check [--auto] [--loop] [--app {name}] [--only doc|qa]`
 
-Check phase: design test cases from SRS Features (FT), execute tests, record results, verify coverage.
+**This skill is a thin alias of `/u-gatekeeping`.** It exists for backward compatibility with v3.x users. All arguments are forwarded unchanged.
 
-**Primary Agent:** u-agent-qa
-**Engine Dependencies:** doc-engine, dep-engine
-**Gate Prerequisite:** Dev phase gate passed (code-complete, build-success)
+**PBGD Phase:** Gatekeeping (via alias)
+**Target skill:** `/u-gatekeeping`
 
-## Execution Flow
+## Behavior
 
-### Step 1: Design Test Cases
+1. Print a one-line alias notice: `"/u-check is an alias of /u-gatekeeping. Forwarding…"`
+2. Invoke `/u-gatekeeping` with the same arguments.
+3. Return `/u-gatekeeping`'s result unchanged.
 
-1. Load `docs/{app}/plan/srs.json` — extract FT items
-2. For each FT → generate TC (1:N mapping)
-3. TC types: unit, integration, e2e, accessibility, performance, security
-4. Apply ID 10-increment (TC-010, TC-020...)
-5. Define preconditions, steps, expected results, test data
-6. Write `docs/{app}/check/testcases.md` + `testcases.json`
-7. Update `data/links.json` (FT→TC edges)
+## Migration cheatsheet
 
-### Step 2: Execute Tests
+| v3.x invocation | v4.0 equivalent |
+|-----------------|-----------------|
+| `/u-check` | `/u-gatekeeping` |
+| `/u-check --loop` | `/u-gatekeeping --loop` |
 
-1. Load `testcases.json`
-2. Execute each TC against implemented code
-3. Record results: PASS/FAIL per TC
+## See also
 
-### Step 3: Record Results
-
-1. Aggregate execution results
-2. Calculate pass rate by type (unit/integration/e2e)
-3. Build coverage matrix (FR→US→FT→TC→Result)
-4. Write `docs/{app}/check/test-results.md` + `test-results.json`
-
-### Step 4: Gatekeeper (if --loop)
-
-1. Invoke u-agent-gatekeeper on check documents
-2. If avg score < 95 → improvement list → re-execute
-3. Max 3 retries
-
-## Reference Files
-
-- **`references/testcase-spec.md`** — TC derivation from FT, 6 TC types, priority mapping
-- **`references/test-execution.md`** — Execution protocol, result recording, defect classification
+- `/u-gatekeeping` — The canonical command (doc scoring + runtime QA).
+- `/u-qa` — Alias that scopes to runtime QA.

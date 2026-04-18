@@ -34,8 +34,8 @@ Step 12: Update root index files (output/index.html, reports/index.html, index.h
 | `docs/{app}/design/api.md` | `output/{app}/design/api/index.html` + `api/{group-slug}.html` | **Split** |
 | `docs/{app}/design/screens.md` | `output/{app}/design/screens/index.html` + `screens/{group-slug}.html` | **Split** |
 | `docs/{app}/design/design-system.md` | `output/{app}/design/design-system.html` | **HTML-first** (see below) |
-| `docs/{app}/check/testcases.md` | `output/{app}/check/testcases/index.html` + `testcases/{group-slug}.html` | **Split** |
-| `docs/{app}/check/test-results.md` | `output/{app}/check/test-results.html` | Single |
+| `docs/{app}/gatekeeping/testcases.md` | `output/{app}/gatekeeping/testcases/index.html` + `testcases/{group-slug}.html` | **Split** |
+| `docs/{app}/gatekeeping/test-results.md` | `output/{app}/gatekeeping/test-results.html` | Single |
 
 See § 12 "Domain Split Pipeline" for split mode details.
 
@@ -119,10 +119,11 @@ The "Default" column shows the rendering engine when `--diagram svg` (default). 
 3. **Curved connectors:** All arrows/lines MUST use `<path>` with cubic Bezier curves (`C` or `Q`). NEVER use `<line>` or straight `<polyline>`.
 4. **Arrowhead markers:** Define reusable `<marker id="arrowhead">` inside `<defs>`. Use `marker-end="url(#arrowhead)"` on paths.
 5. **Node labels:** Every node must display a human-readable label. Use `<text>` inside `<g>` groups with the node shape.
-6. **Color coding:**
+6. **Color coding (PBGD):**
    - Plan phase: `#3b82f6` (blue-500)
-   - Design phase: `#10b981` (green-500)
-   - Check phase: `#f59e0b` (amber-500)
+   - Build phase: `#10b981` (green-500)
+   - Gatekeeping phase: `#f59e0b` (amber-500)
+   - Deploy phase: `#8b5cf6` (violet-500)
    - Failed/blocked: `#ef4444` (red-500)
    - Neutral/border: `#334155` (slate-700)
    - Background: `#f8fafc` (slate-50)
