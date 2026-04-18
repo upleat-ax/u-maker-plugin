@@ -46,9 +46,12 @@ current_version() {
 
 bump_patch() {
   local ver="$1"
-  local major minor patch
-  IFS='.' read -r major minor patch <<< "$ver"
-  echo "${major}.${minor}.$((patch + 1))"
+  if [[ "$ver" =~ ^(.*[._-])([0-9]+)$ ]]; then
+    echo "${BASH_REMATCH[1]}$((BASH_REMATCH[2] + 1))"
+  else
+    err "Cannot bump version: $ver"
+    exit 1
+  fi
 }
 
 ensure_clean() {
