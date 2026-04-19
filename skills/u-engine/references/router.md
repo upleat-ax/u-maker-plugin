@@ -1,6 +1,6 @@
 # router Reference
 
-> ⚠️ **v4.0.0-alpha.1 status:** the Known Commands, Natural-Language Classifier, Dispatch Table, Skill Map, and Prerequisites tables below were authored in the PDCA era (v3.x) and still list retired commands (`/u-ingest`, `/u-check`, `/u-ship`, `/u-add`, `/u-update`, `/u-doc`, `/u-sync`, `/u-gate`, `/u-backlog`, `/u-status`, `/u-coverage`, `/u-trace`). For the PBGD-authoritative command routing table, see `agents/u-agent-pm.md` §2 (Command Routing Table) and §7 (Global aliases & forwarding). The parsing/dispatch/error-handling algorithms in this file remain valid patterns; only the command inventory is stale and pending rewrite.
+> **Source of truth:** the command routing tables below mirror `agents/u-agent-pm.md` §2 (Command Routing Table) and §7 (Global aliases & forwarding). If they ever diverge, treat `u-agent-pm.md` as authoritative and update this file. The parsing, dispatch, and error-handling algorithms in this file are implementation patterns and remain stable across command-inventory changes.
 
 The router is the entry point for all u-maker interactions. It parses `/u-*` commands and natural language input, classifies intent, dispatches to the appropriate agent, and handles option parsing and error cases.
 
@@ -33,16 +33,23 @@ function parseCommand(input):
     tokens = tokenize(input)
     command = tokens[0].replace("/u-", "")
 
-    // Step 3.5: Resolve aliases
-    ALIASES = { "qa": "check" }
+    // Step 3.5: Resolve aliases (PBGD v4.0)
+    ALIASES = {
+        "init": { canonical: "prepare" },
+        "check": { canonical: "gatekeeping" },
+        "qa": { canonical: "gatekeeping", inject: { only: "qa" } },
+    }
+    aliasInject = {}
     if command in ALIASES:
-        command = ALIASES[command]
+        aliasInject = ALIASES[command].inject or {}
+        command = ALIASES[command].canonical
 
     // Step 4: Parse options
     options = {
         auto: true,       // Default ON
         loop: false,      // Default OFF
         app: null,         // No default
+        ...aliasInject,   // e.g., `/u-qa` injects { only: "qa" }
     }
     args = []
 
@@ -84,32 +91,33 @@ function parseCommand(input):
     }
 ```
 
-### Known Commands
+### Known Commands (PBGD v4.0)
 
-| Command | Full Form | Category |
-|---------|-----------|----------|
-| `init` | `/u-init` | Lifecycle |
-| `ingest` | `/u-ingest` | Lifecycle |
-| `plan` | `/u-plan` | Lifecycle |
-| `design` | `/u-design` | Lifecycle |
-| `dev` | `/u-dev` | Lifecycle |
-| `check` | `/u-check` (alias: `/u-qa`) | Lifecycle |
-| `ship` | `/u-ship` | Lifecycle |
-| `add` | `/u-add` | Operations |
-| `update` | `/u-update` | Operations |
-| `doc` | `/u-doc` | Operations |
-| `sync` | `/u-sync` | Operations |
-| `gate` | `/u-gate` | Operations |
-| `backlog` | `/u-backlog` | Backlog |
-| `status` | `/u-status` | Observability |
-| `coverage` | `/u-coverage` | Observability |
-| `trace` | `/u-trace` | Observability |
-| `discuss` | `/u-discuss` | Collaboration |
-| `wireframe` | `/u-wireframe` | Design |
-| `loop` | `/u-loop` | Automation |
-| `report` | `/u-report` | Reporting |
-| `git-pr` | `/u-tools-git-pr` | Git |
-| `reverse` | `/u-reverse` | Lifecycle |
+| Command | Full Form | PBGD Phase | Category |
+|---------|-----------|-----------|----------|
+| `prepare` | `/u-prepare` | Plan.Prepare (umbrella) | Phase |
+| `init` | `/u-init` → `/u-prepare` | Plan.Prepare | Alias |
+| `prepare-foldertree` | `/u-prepare-foldertree` | Plan.Prepare (granular) | Phase |
+| `analyze` | `/u-analyze` | Plan.Prepare (analysis) | Phase |
+| `reverse` | `/u-reverse` | Plan.Prepare (reverse) | Phase |
+| `tools-figma` | `/u-tools-figma` | Plan.Prepare (figma) | Tool |
+| `plan` | `/u-plan` | Plan.Plan | Phase |
+| `wireframe` | `/u-wireframe` | Build.UIDesign (companion) | Phase |
+| `build` | `/u-build` | Build (umbrella) | Phase |
+| `design` | `/u-design` | Build.UIDesign | Phase |
+| `dev` | `/u-dev` | Build.Development | Phase |
+| `gatekeeping` | `/u-gatekeeping` | Gatekeeping (umbrella) | Phase |
+| `check` | `/u-check` → `/u-gatekeeping` | Gatekeeping | Alias |
+| `qa` | `/u-qa` → `/u-gatekeeping --only qa` | Gatekeeping.RuntimeQA | Alias |
+| `deploy` | `/u-deploy` | Deploy | Phase |
+| `loop` | `/u-loop` | Cross-phase | Automation |
+| `discuss` | `/u-discuss` | Any | Collaboration |
+| `tools-git-pr` | `/u-tools-git-pr` | Any | Tool |
+| `output` | `/u-output` | Cross-cutting | Rendering |
+| `report` | `/u-report --daily` / `--weekly` | Any | Reporting |
+| `meeting-report` | `/u-meeting-report` | Any | Reporting |
+| `createproject` | `/u-createproject` | Any | Scaffolding |
+| `engine` | `/u-engine` | Any | Internal |
 
 ## 2. Intent Classification
 
@@ -119,24 +127,25 @@ When the input is not a `/u-*` command, the router classifies intent from natura
 
 | Pattern | Detected Intent | Dispatches To |
 |---------|----------------|---------------|
-| "start project", "initialize", "new project" | `init` | u-agent-pm |
-| "analyze input", "process files", "ingest data" | `ingest` | u-agent-plan |
-| "create requirements", "write SRS", "plan phase" | `plan` | u-agent-plan |
-| "design the system", "create ERD", "API design" | `design` | u-agent-design |
-| "generate code", "implement", "build the app" | `dev` | u-agent-dev |
-| "run tests", "test cases", "QA", "check phase" | `check` | u-agent-qa |
-| "deploy", "release", "ship it" | `ship` | u-agent-pm |
-| "add requirement", "add feature", "add user story" | `add` | u-agent-pm |
-| "update FR-010", "modify screen", "change API" | `update` | u-agent-pm |
-| "show status", "project status", "dashboard" | `status` | u-agent-pm |
-| "show coverage", "trace coverage" | `coverage` | u-agent-pm |
-| "trace FR-010", "where does this come from" | `trace` | u-agent-pm |
-| "let's discuss", "brainstorm", "review session" | `discuss` | u-agent-pm |
-| "wireframe", "mockup", "screen preview" | `wireframe` | u-agent-design |
-| "auto loop", "run loop", "unattended" | `loop` | u-agent-pm |
-| "generate report", "daily report" | `report` | u-agent-report |
-| "create PR", "pull request" | `git-pr` | u-agent-pm |
-| "reverse engineer", "analyze code", "code to docs", "extract from code" | `reverse` | u-agent-pm |
+| "prepare", "start project", "initialize", "new project", "setup u-maker" | `prepare` | u-agent-plan |
+| "foldertree", "scaffold .u-maker", "only folders" | `prepare-foldertree` | u-agent-plan |
+| "analyze dropzone", "process files", "rescan data", "generate digest" | `analyze` | u-agent-plan |
+| "reverse engineer", "code to docs", "extract docs from code", "analyze existing code" | `reverse` | u-agent-plan |
+| "figma", "analyze figma", "figma.com" | `tools-figma` | u-agent-figma |
+| "plan phase", "write SRS", "generate IA", "requirements" | `plan` | u-agent-plan |
+| "wireframe", "mockup", "screen preview" | `wireframe` | u-agent-plan |
+| "build phase", "design + dev", "run build", "ping-pong design dev" | `build` | u-agent-build |
+| "design the system", "create ERD", "API contract", "screen spec", "design system" | `design` | u-agent-design |
+| "generate code", "implement", "build frontend/backend", "code gen" | `dev` | u-agent-dev |
+| "gatekeep", "quality gate", "score documents", "run tests", "test cases", "QA" | `gatekeeping` | u-agent-gatekeeper + u-agent-qa |
+| "deploy", "release", "ship", "CI/CD", "generate pipeline" | `deploy` | u-agent-deploy |
+| "auto loop", "run loop", "unattended", "run all phases" | `loop` | u-agent-pm |
+| "let's discuss", "brainstorm", "review session", "decision session" | `discuss` | u-agent-pm |
+| "create PR", "pull request", "open PR" | `tools-git-pr` | u-agent-pm |
+| "generate HTML", "render output", "rebuild HTML" | `output` | u-agent-pm |
+| "daily report", "weekly report", "generate report" | `report` | u-agent-report |
+| "meeting minutes", "transcribe audio", "회의록" | `meeting-report` | u-agent-report |
+| "create project", "new monorepo", "scaffold project" | `createproject` | u-agent-pm |
 
 ### Classification Algorithm
 
@@ -144,49 +153,48 @@ When the input is not a `/u-*` command, the router classifies intent from natura
 function classifyNaturalLanguage(input):
     lowered = input.toLowerCase()
 
-    // Priority-ordered pattern matching
+    // Priority-ordered pattern matching (PBGD v4.0)
     patterns = [
-        { keywords: ["initialize", "init", "start project", "new project", "setup"],
-          intent: "init" },
-        { keywords: ["ingest", "analyze input", "process files", "scan dropzone"],
-          intent: "ingest" },
-        { keywords: ["plan", "requirements", "srs", "information architecture"],
-          intent: "plan" },
-        { keywords: ["design", "erd", "api contract", "screen spec", "design system"],
-          intent: "design" },
-        { keywords: ["dev", "implement", "generate code", "build", "code gen"],
-          intent: "dev" },
-        { keywords: ["test", "check", "qa", "test case", "testcases"],
-          intent: "check" },
-        { keywords: ["ship", "deploy", "release"],
-          intent: "ship" },
-        { keywords: ["add requirement", "add feature", "add user story", "add fr", "add nfr"],
-          intent: "add" },
-        { keywords: ["update", "modify", "change", "edit"],
-          intent: "update" },
-        { keywords: ["status", "dashboard", "progress"],
-          intent: "status" },
-        { keywords: ["coverage"],
-          intent: "coverage" },
-        { keywords: ["trace", "traceability", "where does"],
-          intent: "trace" },
-        { keywords: ["discuss", "brainstorm", "review session", "workshop", "retro"],
-          intent: "discuss" },
-        { keywords: ["wireframe", "mockup", "screen preview", "ui preview"],
-          intent: "wireframe" },
-        { keywords: ["loop", "auto loop", "unattended", "run all phases"],
-          intent: "loop" },
-        { keywords: ["report", "daily report"],
-          intent: "report" },
-        { keywords: ["pull request", "pr", "merge request"],
-          intent: "git-pr" },
+        { keywords: ["prepare", "initialize", "init", "start project", "new project", "setup u-maker"],
+          intent: "prepare" },
+        { keywords: ["foldertree", "scaffold .u-maker", "only folders"],
+          intent: "prepare-foldertree" },
+        { keywords: ["analyze", "process files", "scan dropzone", "rescan data", "generate digest"],
+          intent: "analyze" },
         { keywords: ["reverse", "reverse-engineer", "reverse engineer", "code to docs",
                      "extract from code", "analyze existing code", "code analysis"],
           intent: "reverse" },
-        { keywords: ["sync", "synchronize", "consistency"],
-          intent: "sync" },
-        { keywords: ["gate", "quality gate", "validate"],
-          intent: "gate" },
+        { keywords: ["figma", "figma.com", "analyze figma", "extract figma"],
+          intent: "tools-figma" },
+        { keywords: ["plan", "requirements", "srs", "information architecture", "ia"],
+          intent: "plan" },
+        { keywords: ["wireframe", "mockup", "screen preview", "ui preview"],
+          intent: "wireframe" },
+        { keywords: ["build phase", "ping-pong", "design dev", "run build"],
+          intent: "build" },
+        { keywords: ["design", "erd", "api contract", "screen spec", "design system"],
+          intent: "design" },
+        { keywords: ["dev", "implement", "generate code", "code gen", "frontend", "backend"],
+          intent: "dev" },
+        { keywords: ["gatekeep", "gatekeeping", "quality gate", "score documents",
+                     "test", "check", "qa", "test case", "testcases"],
+          intent: "gatekeeping" },
+        { keywords: ["deploy", "release", "ship", "ci/cd", "generate pipeline"],
+          intent: "deploy" },
+        { keywords: ["loop", "auto loop", "unattended", "run all phases"],
+          intent: "loop" },
+        { keywords: ["discuss", "brainstorm", "review session", "workshop", "retro", "decision session"],
+          intent: "discuss" },
+        { keywords: ["pull request", "create pr", "open pr", "merge request"],
+          intent: "tools-git-pr" },
+        { keywords: ["generate html", "render output", "rebuild html", "regenerate output"],
+          intent: "output" },
+        { keywords: ["daily report", "weekly report", "generate report"],
+          intent: "report" },
+        { keywords: ["meeting minutes", "transcribe audio", "회의록", "m4a"],
+          intent: "meeting-report" },
+        { keywords: ["create project", "new monorepo", "scaffold project"],
+          intent: "createproject" },
     ]
 
     for each pattern in patterns:
@@ -195,7 +203,7 @@ function classifyNaturalLanguage(input):
                 return { command: pattern.intent, confidence: "high", source: "natural-language" }
 
     // No match — ask user for clarification
-    return { error: "unclassified", input, suggestion: "Try /u-status or /u-plan" }
+    return { error: "unclassified", input, suggestion: "Try /u-prepare or /u-plan" }
 ```
 
 ### Confidence Levels
@@ -210,32 +218,30 @@ function classifyNaturalLanguage(input):
 
 Once intent is classified, the router dispatches to the appropriate agent.
 
-### Dispatch Table
+### Dispatch Table (PBGD v4.0)
 
 | Command | Primary Agent | Fallback |
 |---------|--------------|----------|
-| `init` | u-agent-pm | (none) |
-| `ingest` | u-agent-plan | u-agent-pm |
+| `prepare` | u-agent-plan | u-agent-pm |
+| `prepare-foldertree` | u-agent-plan | u-agent-pm |
+| `analyze` | u-agent-plan | u-agent-pm |
+| `reverse` | u-agent-plan | u-agent-pm |
+| `tools-figma` | u-agent-figma | u-agent-plan |
 | `plan` | u-agent-plan | u-agent-pm |
-| `design` | u-agent-design | u-agent-pm |
-| `dev` | u-agent-dev | u-agent-pm |
-| `check` | u-agent-qa | u-agent-pm |
-| `ship` | u-agent-pm | (none) |
-| `add` | u-agent-pm | (none) |
-| `update` | u-agent-pm | (none) |
-| `doc` | u-agent-pm | (none) |
-| `sync` | u-agent-pm | (none) |
-| `gate` | u-agent-gatekeeper | u-agent-pm |
-| `backlog` | u-agent-pm | (none) |
-| `status` | u-agent-pm | (none) |
-| `coverage` | u-agent-pm | (none) |
-| `trace` | u-agent-pm | (none) |
+| `wireframe` | u-agent-plan | u-agent-pm |
+| `build` | u-agent-build | u-agent-pm |
+| `design` | u-agent-design | u-agent-build |
+| `dev` | u-agent-dev | u-agent-build |
+| `gatekeeping` | u-agent-gatekeeper + u-agent-qa | u-agent-pm |
+| `deploy` | u-agent-deploy | u-agent-pm |
+| `loop` | u-agent-pm (orchestrates all) | (none) |
 | `discuss` | u-agent-pm (inline) | (none) |
-| `wireframe` | u-agent-design | u-agent-pm |
-| `loop` | u-agent-pm | (none) |
+| `tools-git-pr` | u-agent-pm (inline) | (none) |
+| `output` | u-agent-pm (inline via doc-engine) | (none) |
 | `report` | u-agent-report | u-agent-pm |
-| `git-pr` | u-agent-pm (inline) | (none) |
-| `reverse` | u-agent-pm | (none) |
+| `meeting-report` | u-agent-report | u-agent-pm |
+| `createproject` | u-agent-pm (inline) | (none) |
+| `engine` | u-agent-pm (inline) | (none) |
 
 ### Dispatch Algorithm
 
@@ -268,49 +274,49 @@ function dispatch(parsed):
     return payload
 ```
 
-### Skill Mapping
+### Skill Mapping (PBGD v4.0)
 
 | Command | Skill |
 |---------|-------|
-| `init` | u-init |
-| `ingest` | u-plan (digest phase) |
+| `prepare` | u-prepare |
+| `prepare-foldertree` | u-prepare-foldertree |
+| `analyze` | u-analyze |
+| `reverse` | u-reverse |
+| `tools-figma` | u-tools-figma |
 | `plan` | u-plan |
+| `wireframe` | u-wireframe |
+| `build` | u-build |
 | `design` | u-design |
 | `dev` | u-dev |
-| `check` | u-check |
-| `ship` | (inline in u-agent-pm) |
-| `add` | u-engine (doc-engine) |
-| `update` | u-engine (doc-engine) |
-| `doc` | u-engine (doc-engine) |
-| `sync` | u-engine (dep-engine) |
-| `gate` | u-check (validator) |
-| `backlog` | u-plan (backlog) |
-| `status` | (inline in u-agent-pm) |
-| `coverage` | u-engine (dep-engine) |
-| `trace` | u-engine (dep-engine) |
-| `discuss` | u-discuss |
-| `wireframe` | u-wireframe |
+| `gatekeeping` | u-gatekeeping |
+| `deploy` | u-deploy |
 | `loop` | u-loop |
-| `report` | u-engine (html-engine) |
-| `git-pr` | u-tools-git-pr |
-| `reverse` | u-reverse |
+| `discuss` | u-discuss |
+| `tools-git-pr` | u-tools-git-pr |
+| `output` | u-output |
+| `report` | u-engine (html-engine) via u-agent-report |
+| `meeting-report` | u-meeting-report |
+| `createproject` | u-createproject |
+| `engine` | u-engine |
 
-### Prerequisites
+### Prerequisites (PBGD v4.0)
 
 | Command | Prerequisite | Error Message |
 |---------|-------------|---------------|
 | `prepare` | Write access to project root | "Cannot write to project root. Check permissions." |
+| `prepare-foldertree` | Write access to project root | "Cannot write to project root. Check permissions." |
 | `analyze` | `.u-maker/` exists + dropzone has content | "Run /u-prepare-foldertree first, then add files to data/dropzone/." |
+| `reverse` | Project source code exists (at least one recognized stack indicator) | "No recognizable project stack found. Use --src, --db, --api, --pages to specify paths." |
+| `tools-figma` | Figma URL or source reference provided | "No Figma source detected. Pass a figma.com URL or add it to the dropzone." |
 | `plan` | `data/digest/` populated | "Run /u-prepare (or /u-analyze) first." |
+| `wireframe` | Plan sub-phase complete (Screens=Final after /u-design) | "Run /u-design first. Screen spec must be Final." |
 | `build` | Plan phase complete (SRS=Final, IA=Final) | "Run /u-plan first. SRS and IA must be Final." |
 | `design` | Plan phase complete (SRS=Final, IA=Final) | "Run /u-plan first. SRS and IA must be Final." |
 | `dev` | UIDesign sub-phase complete (ERD, API, Screens, Design System = Final) | "Run /u-design first. All design docs must be Final." |
 | `gatekeeping` | Build phase complete (design docs Final + code generated) | "Run /u-build first. Design must be Final and code generated." |
 | `deploy` | Gatekeeping avg ≥ 98 (deployReady: true) | "Run /u-gatekeeping --loop to reach docScore ≥ 98." |
-| `wireframe` | Design sub-phase complete (Screens=Final) | "Run /u-design first. Screen spec must be Final." |
-| `gate` | At least one document exists | "No documents to validate. Run a phase command first." |
 | `report` | At least one document exists | "No documents to report on." |
-| `reverse` | Project source code exists (at least one recognized stack indicator) | "No recognizable project stack found. Use --src, --db, --api, --pages to specify paths." |
+| `meeting-report` | At least one supported source file (m4a/txt) available | "No meeting source file found. Provide an m4a or txt input." |
 
 ## 4. Option Parsing
 
@@ -324,27 +330,28 @@ These options are available on ALL phase commands (prepare, plan, build, design,
 | Loop mode | `--loop [N]` | OFF (default N=5) | When ON, after phase completion, invoke u-agent-gatekeeper for scoring. N = number of criteria to validate (1-11, default 5). If avg < 95, re-invoke phase with improvement items. Max 3 iterations. |
 | App target | `--app {name}` | (from config) | Target app name. If not specified, uses the default app from `u-maker.config.json`. If config has multiple apps, this is required. |
 
-### Command-Specific Options
+### Command-Specific Options (PBGD v4.0)
 
 | Command | Option | Description |
 |---------|--------|-------------|
-| `/u-add` | `--type {FR\|NFR\|US\|FT\|SC\|TC\|ENT\|API}` | Item type to add |
-| `/u-add` | `--to {docType}` | Target document (srs, erd, api, screens) |
-| `/u-update` | `--id {ITEM-ID}` | Item ID to update (e.g., FR-010) |
-| `/u-update` | `--force` | Force update even if document is Final |
-| `/u-doc` | `--format {md\|json\|html}` | Output format when viewing |
-| `/u-discuss` | `--type {brainstorm\|review\|decision\|workshop\|retro}` | Discussion session type |
-| `/u-backlog` | `--action {add\|sprint\|prioritize\|groom\|move\|burn}` | Backlog sub-action |
-| `/u-report` | `--daily` | Generate daily report |
-| `/u-ingest` | `--force` | Re-analyze all files regardless of hash |
-| `/u-assume` | `--action {approve\|reject\|list}` | Assumption management action |
-| `/u-gate` | `--phase {plan\|design\|dev\|check}` | Specific phase to gate |
+| `/u-prepare` | `--scenario {new\|existing}` | Skip scenario detection and pick Prepare flow explicitly |
+| `/u-analyze` | `--force` | Re-analyze all dropzone files regardless of hash |
 | `/u-reverse` | `--src {path}` | Source code root directory |
 | `/u-reverse` | `--db {path}` | DB schema/migration path |
 | `/u-reverse` | `--api {path}` | API route/controller path |
 | `/u-reverse` | `--pages {path}` | Page/screen component path |
-| `/u-coverage` | `--from {type}` | Source item type for coverage check |
-| `/u-trace` | `--id {ITEM-ID}` | Item ID to trace |
+| `/u-tools-figma` | `--url {figma-url}` | Explicit Figma file URL |
+| `/u-plan` | `--wireframe` | Auto-run `/u-wireframe` after Plan completes |
+| `/u-wireframe` | `--screen {screen-id}` | Restrict rendering to a single screen |
+| `/u-build` | `--max-rounds {N}` | Override max ping-pong rounds between `/u-design` and `/u-dev` |
+| `/u-gatekeeping` | `--only {docs\|qa}` | Run only the doc-scoring or runtime-QA sub-phase |
+| `/u-gatekeeping` | `--criteria {N}` | Number of doc-scoring criteria (1–11; default 5). Equivalent to `--loop N` |
+| `/u-deploy` | `--target {vercel\|docker\|github-actions\|...}` | Deployment target platform |
+| `/u-deploy` | `--artifacts {ci\|config\|scripts\|runbook\|env\|release-notes\|smoke-tests}` | Artifact scope (comma-separated) |
+| `/u-deploy` | `--watch` | Continuous regeneration on SSoT hash changes |
+| `/u-discuss` | `--type {brainstorm\|review\|decision\|workshop\|retro}` | Discussion session type |
+| `/u-report` | `--daily` / `--weekly` | Report cadence |
+| `/u-tools-git-pr` | `--group {auto\|single}` | Grouping mode for multi-domain PR splitting |
 
 ### Option Parsing Example
 
@@ -352,13 +359,18 @@ These options are available on ALL phase commands (prepare, plan, build, design,
 Input:  /u-plan --app my-app --loop
 Parsed: { command: "plan", options: { auto: true, loop: true, app: "my-app" }, args: [] }
 
-Input:  /u-add --type FR --to srs "User authentication feature"
-Parsed: { command: "add", options: { auto: true, loop: false, app: null, type: "FR", to: "srs" },
-          args: ["User authentication feature"] }
-
-Input:  /u-update --id FR-010 --force
-Parsed: { command: "update", options: { auto: true, loop: false, app: null, id: "FR-010", force: true },
+Input:  /u-gatekeeping --only qa --app my-app
+Parsed: { command: "gatekeeping", options: { auto: true, loop: false, app: "my-app", only: "qa" },
           args: [] }
+
+Input:  /u-qa --app my-app
+Parsed: { command: "gatekeeping", options: { auto: true, loop: false, app: "my-app", only: "qa" },
+          args: [] }
+// `qa` resolved via alias → `gatekeeping --only qa`
+
+Input:  /u-deploy --target vercel --artifacts ci,config
+Parsed: { command: "deploy", options: { auto: true, loop: false, app: null, target: "vercel",
+          artifacts: "ci,config" }, args: [] }
 
 Input:  /u-discuss --type brainstorm "API architecture"
 Parsed: { command: "discuss", options: { auto: true, loop: false, app: null, type: "brainstorm" },
@@ -387,7 +399,7 @@ function handleUnknownCommand(command):
             error: "unknown-command",
             message: "Unknown command: /u-{command}",
             suggestions: [],
-            hint: "Run /u-status to see available commands."
+            hint: "Run /u-prepare to start a new project, or see agents/u-agent-pm.md §2 for the full command list."
         }
 ```
 
