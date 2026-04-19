@@ -81,6 +81,11 @@ UI Design sub-phase of the Build phase: generate `docs/{app}/design/` documents 
 7. Render live showcases: color swatches, typography scale, component variants/sizes/states; include an accessibility audit footer (WCAG AA/AAA contrast sweep + focus-state check) per `design-system-rules.md` §4
 8. Apply ID convention (DS-010~DS-110 for tokens, CMP-010~CMP-070 for components)
 9. Write `out/{app}/design/design-system.html`
+10. **Browser verify the HTML (mandatory)** — delegate to `/u-tools-browser` Step 6e. The engine opens the file via `file://`, samples every token from `:root`, asserts every `CMP-xxx` showcase is present, toggles `[data-theme="dark"]`, runs a Lighthouse / axe-core a11y audit, and captures full-page screenshots in both modes.
+   - On `--auto` → run headless, no prompts.
+   - Verification result is read from `.u-maker/.state/visual-verify/{app}-design-system.json`.
+   - If `result == "fail"` (missing tokens/components, dark-mode broken, or any WCAG-AA contrast violation) → re-execute Steps 4a.3–9 with the diff as the improvement list. Max 3 retries before surfacing to the user.
+   - If `result == "partial"` → log to `.u-maker/.state/figma-sync-todos.json` (priority p2) and continue.
 
 #### Step 4b: Derive MD + JSON from HTML
 

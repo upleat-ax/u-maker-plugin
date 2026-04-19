@@ -40,6 +40,20 @@ Development sub-phase of the Build phase: generate FE + BE + DB code from Design
 5. Follow tech-rules for framework conventions
 6. **Self-review every file against `fe-rules.md` §0 MUST-APPLY before marking Final.** Hot-path code additionally checks §A5/§A6/§A7; shared components under `packages/ui-*/` additionally enforce §B1–B3 (and §B4 if React ≥ 19).
 
+### Step 1.5: Browser-verify implemented components (mandatory when components were generated/modified)
+
+After component files are written, delegate to `/u-tools-browser` Step 6f to render every `CMP-{nnn}` (and its variants/states) in a real browser and compare against the spec.
+
+1. **Resolve render target** — Storybook on port 6006 if `packages/ui-*/.storybook` exists, else app routes on the app's dev port, else static demo HTML under `apps/{app}/public/_demo/`.
+2. **Start dev server if needed** — `/u-tools-browser` Step 5 prints the start hint (`bun run storybook --filter=ui-common` or `bun run dev --filter={app}`) and HALTs until the server is reachable. Pass `--auto` to skip the headed/headless prompt.
+3. **Per-component verification** — the engine samples computed styles, asserts variant/state selectors, optionally pixel-diffs against the linked Figma component (when `figmaKey` is present in `design-system.json`), and runs a per-subtree a11y audit.
+4. **Read result** — `.u-maker/.state/visual-verify/{app}-components.json`.
+5. **Failure handling**:
+   - `result == "fail"` → re-execute Step 1 for the failing components only (using `tokenDrift` and `figmaDiff` rows as the improvement list). Max 3 retries before surfacing to the user.
+   - `result == "partial"` → continue but emit a `.state/build-gap-report.json` entry so `/u-build` can ping-pong back to `/u-design` if the gap is in the spec rather than the implementation.
+
+Skip Step 1.5 entirely when `--only be` or `--only db` is passed (no FE work happened) or when the FE generation produced zero changed files.
+
 ### Step 2: Generate BE Code
 
 1. Load `api.json` + `erd.json`
@@ -72,3 +86,4 @@ Development sub-phase of the Build phase: generate FE + BE + DB code from Design
 - **`references/code-gen-rules.md`** — Code generation patterns, file naming, component structure
 - **`references/tech-rules.md`** — Supported stacks, naming conventions, package management
 - **`references/fe-rules.md`** — React/Next.js rule set (Vercel react-best-practices 70 rules + composition-patterns 9 rules). Mandatory input for Step 1 FE generation.
+- **`../u-tools-browser/SKILL.md`** Step 6f — Component visual verification engine (Step 1.5 delegation target).

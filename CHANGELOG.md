@@ -2,6 +2,28 @@
 
 All notable changes to u-maker-plugin.
 
+## [4.0.0-alpha.4] — 2026-04-19
+
+**Added: Browser-driven visual verification for HTML-first DS and implemented components.**
+
+After `/u-design` Step 4a writes `out/{app}/design/design-system.html` and after `/u-dev` Step 1 generates FE components, the browser now verifies them automatically — no manual "open the file and look" loop.
+
+### Added
+
+- `/u-tools-browser` Step 6e — **Design System HTML Verification**. Opens the static `design-system.html` via `file://`, samples every `:root` CSS variable, asserts every `CMP-{nnn}` showcase + variant + state selector is present, toggles `[data-theme="dark"]`, runs a Lighthouse / axe-core a11y audit, and captures full-page light + dark screenshots. Result persisted at `.u-maker/.state/visual-verify/{app}-design-system.json`.
+- `/u-tools-browser` Step 6f — **Component Implementation Verification**. Renders each `CMP-{nnn}` in Storybook (preferred) or the app, samples computed styles, asserts variant/state selectors, optionally pixel-diffs against the linked Figma component (when `figmaKey` is set), runs per-subtree a11y audit. Result at `.u-maker/.state/visual-verify/{app}-components.json`.
+
+### Wired
+
+- `/u-design` Step 4a.10 — auto-delegates to `/u-tools-browser` Step 6e after `design-system.html` is written. On `result == "fail"` (missing tokens, broken dark mode, WCAG-AA contrast violation), re-runs Steps 4a.3–9 with the diff as improvement list (max 3 retries).
+- `/u-dev` Step 1.5 — auto-delegates to `/u-tools-browser` Step 6f after FE components are generated. On `result == "fail"`, re-runs Step 1 for failing components only (max 3 retries). Skipped when `--only be|db` or zero FE files changed.
+- `/u-tools-browser` Consumer Integration Table — two new rows for the 6e / 6f entries.
+
+### Notes
+
+- Both verifications are **mandatory** under default mode (`--auto` runs them headless). The `--no-screenshot` flag suppresses captures but still runs the assertions.
+- The Figma diff sub-step in 6f is **opt-in** — only runs when `mcp__plugin_figma_figma__get_screenshot` is reachable AND `components[*].figmaKey` is populated by `/u-tools-figma-ds`.
+
 ## [4.0.0-alpha.3] — 2026-04-19
 
 **Added: Figma writer skills.**

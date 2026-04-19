@@ -202,6 +202,108 @@ Open a local wireframe file in the browser for human review:
 browser_navigate url: file://{absolute-path-to-output}/design/wireframes/{screen}.html
 ```
 
+#### 6e. Design System HTML Verification (`/u-design` Step 4a)
+
+Verify the HTML-first DS artifact (`out/{app}/design/design-system.html`) renders correctly. Runs against `file://` (no dev server required).
+
+1. **Load expected inventory** from `docs/{app}/design/design-system.json`:
+   - `tokens[]` — every token row (color / spacing / type / shadow / radius / motion / breakpoint / z-index)
+   - `components[]` — every component (CMP-xxx) with variants and states
+   - `themes[]` — should include `light` and `dark` (per `design-system-rules.md` §0#11)
+2. **Navigate** the static HTML:
+   ```
+   browser_navigate url: file://{absolute-path-to-out}/design/design-system.html
+   browser_wait_for text: <DS title from JSON>
+   ```
+3. **Token render check** — query the rendered `:root` CSS variables via `browser_evaluate`:
+   ```js
+   () => {
+     const cs = getComputedStyle(document.documentElement);
+     const sample = {};
+     // sample at least 1 token per scale
+     ['--color-primary-500','--space-4','--radius-md','--shadow-md','--font-base','--motion-base'].forEach(k => {
+       sample[k] = cs.getPropertyValue(k).trim();
+     });
+     return sample;
+   }
+   ```
+   Compare every sampled value to the JSON expectation. Missing or empty → record under `mismatches[]`.
+4. **Component showcase check** — for each `components[*]`, assert the live showcase exists:
+   ```
+   browser_snapshot                                                  # collect element refs
+   ```
+   Verify a `[data-cmp-id="CMP-{nnn}"]` (or fallback `data-component={key}`) element is present and visible. For each `variants[*]` and `states[*]`, verify the `[data-variant=...]` / `[data-state=...]` selector exists.
+5. **Dark-mode toggle** — flip `[data-theme="dark"]` via `browser_evaluate`:
+   ```js
+   () => { document.documentElement.dataset.theme = 'dark'; }
+   ```
+   Re-sample the same tokens (Step 3). Assert at least the semantic-layer tokens differ from light. Take a second screenshot.
+6. **Accessibility audit** (mandatory per `design-system-rules.md` §0#7) — when running on chrome-devtools MCP, request a Lighthouse a11y audit:
+   ```
+   mcp__plugin_chrome-devtools-mcp_chrome-devtools__lighthouse_audit  categories: ["accessibility"]
+   ```
+   When running on Playwright MCP, run an axe-core injection via `browser_evaluate`. WCAG-AA contrast violations and missing focus indicators are recorded under `a11yViolations[]`.
+7. **Screenshots** — full-page light + dark, written to:
+   - `.u-maker/.state/screenshots/{YYYY-MM-DD}/{app}-design-system-light.png`
+   - `.u-maker/.state/screenshots/{YYYY-MM-DD}/{app}-design-system-dark.png`
+8. **Diff record** — write the verification result to `.u-maker/.state/visual-verify/{app}-design-system.json`:
+   ```json
+   {
+     "verifiedAt": "ISO-8601",
+     "html": "out/{app}/design/design-system.html",
+     "expectedTokens": N,
+     "renderedTokens": M,
+     "missingTokens": [],
+     "expectedComponents": K,
+     "renderedComponents": L,
+     "missingComponents": [],
+     "darkModeToggled": true,
+     "a11yViolations": [],
+     "screenshots": ["…light.png","…dark.png"],
+     "result": "pass|partial|fail"
+   }
+   ```
+
+#### 6f. Component Implementation Verification (`/u-dev` Step 1.5)
+
+Verify directly-implemented FE components render correctly against their Screen.json + design-system.json specs. Requires a dev server (Storybook on port 6006 OR app routes on the app port).
+
+1. **Choose render target** (priority):
+   1. Storybook on port 6006 (`packages/ui-*/.storybook` exists) — use `iframe.html?id={story-id}` deep links.
+   2. App route (`apps/{app}/src/app/**/page.tsx` rendering the component).
+   3. Static demo file (`apps/{app}/public/_demo/{cmp-id}.html`) if neither of the above is available.
+2. **Per-component loop** — load the component list from `docs/{app}/design/design-system.json` `components[]`. For each `CMP-{nnn}`:
+   - Navigate to its render target.
+   - `browser_snapshot` to collect element refs.
+   - Assert prop default values render (text content, icon presence, default variant CSS class).
+   - For each `variants[*]` / `states[*]` combination: navigate to the variant URL (Storybook story ID `cmp-{nnn}--{variant}-{state}`), screenshot it, assert variant-specific selectors.
+3. **Token binding check** — for each rendered component, sample the resolved fill / border / spacing via `browser_evaluate`:
+   ```js
+   (selector) => {
+     const el = document.querySelector(selector);
+     if (!el) return null;
+     const cs = getComputedStyle(el);
+     return { bg: cs.backgroundColor, fg: cs.color, padding: cs.padding, radius: cs.borderRadius };
+   }
+   ```
+   Compare to the expected token resolution from `design-system.json`. Drift → record under `tokenDrift[]`.
+4. **Figma diff (optional, when `figmaKey` present)** — if `components[*].figmaKey` is set in `design-system.json` AND `mcp__plugin_figma_figma__get_screenshot` is reachable, fetch the Figma component screenshot and pixel-diff against the implementation screenshot. Diff > 10% → log to `figmaDiff[]`.
+5. **Per-component a11y** — same audit pattern as Step 6e.6, scoped to the component subtree.
+6. **Screenshots** — `.u-maker/.state/screenshots/{YYYY-MM-DD}/{app}-cmp-{nnn}-{variant}-{state}.png`
+7. **Diff record** — write `.u-maker/.state/visual-verify/{app}-components.json`:
+   ```json
+   {
+     "verifiedAt": "ISO-8601",
+     "renderTarget": "storybook|app|demo",
+     "totalComponents": K,
+     "verified": L,
+     "tokenDrift": [{ "cmpId": "CMP-010", "variant": "primary", "field": "bg", "expected": "...", "actual": "..." }],
+     "figmaDiff": [{ "cmpId": "CMP-020", "diffPct": 14.2, "screenshot": "..." }],
+     "a11yViolations": [],
+     "result": "pass|partial|fail"
+   }
+   ```
+
 ### Step 7: Human Verification (only when flow requires it)
 
 Pause for confirmation when the journey crosses an external boundary:
@@ -300,9 +402,11 @@ The calling phase skill consumes this summary (not the raw MCP output) and integ
 | `/u-gatekeeping` (runtime QA) | Step 6a | E2E via `bun run test:e2e` | `docs/{app}/gatekeeping/test-results.{md,json}` |
 | `/u-report-weekly` | Step 6b | Screen capture | `.u-maker/.state/screenshots/{date}/{app}-{page}.png` |
 | `/u-report-daily` | Step 6b | Live URL capture (optional) | `.u-maker/.state/screenshots/{date}/{app}-*.png` |
-| `/u-dev --verify` | Step 6c | Visual verify vs Screen.json | `.u-maker/.state/visual-verify/{app}-{screen}.json` |
+| `/u-dev --verify` (screen-level) | Step 6c | Visual verify vs Screen.json | `.u-maker/.state/visual-verify/{app}-{screen}.json` |
 | `/u-wireframe --preview` | Step 6d | Open wireframe HTML | — |
 | `/u-output --verify` | Step 6c | Assert generated HTML renders | `.u-maker/.state/visual-verify/{app}-index.json` |
+| `/u-design` Step 4a (auto) | **Step 6e** | DS HTML token + component + dark + a11y verification | `.u-maker/.state/visual-verify/{app}-design-system.json` |
+| `/u-dev` Step 1.5 (auto) | **Step 6f** | Per-component visual + token-binding + (optional) Figma diff + a11y | `.u-maker/.state/visual-verify/{app}-components.json` |
 
 ## Options
 
