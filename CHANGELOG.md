@@ -2,6 +2,32 @@
 
 All notable changes to u-maker-plugin.
 
+## [4.0.0-alpha.3] — 2026-04-19
+
+**Added: Figma writer skills.**
+
+Adds two new write-side skills under the `u-tools-*` namespace, complementing the existing read-only `/u-tools-figma` analyzer. Both delegate Figma mutations to the `figma` plugin (`figma:figma-generate-design`, `figma:figma-generate-library`) so u-maker stays as the orchestration layer.
+
+### Added
+
+- `/u-tools-figma-screen` — Screen-spec writer. Inputs: (Figma URL │ `screens.{md,json}`) + (Figma DS URL │ `design-system.{md,json,tsx,css}`). Outputs: Figma frames, `screens.md+json`, or both. Source-resolution matrix, conflict log under `.u-maker/.state/figma-screen-conflicts.json`, idempotent `--rerun` via persisted bundles. References: `source-resolution.md`, `conflict-resolution.md`, `delegation-bundle.md`.
+- `/u-tools-figma-ds` — Code → Figma design-system writer. Input: `.tsx + .json + .css` (W3C tokens / Style Dictionary / CSS custom properties / Tailwind config). Output: Figma Variables (3 layers, light/dark modes, 10 scales) + master components + variants. References: `token-extraction.md`, `component-extraction.md`, `delegation-bundle.md`.
+
+### Wired
+
+- `/u-plan` Step 2.5 — auto-delegates to `/u-tools-figma-screen --output md` when both a screen-plan source and a design-system source are detected after IA generation. Pre-populates `screens.{md,json}` so `/u-design` Step 3 verifies-and-finalises instead of generating from scratch.
+- `/u-analyze` Step 2.4 — auto-delegates to `/u-tools-figma-ds` when DS-applied source code (token files, `packages/tokens`, `packages/ui-*`) is detected in dropzone. Falls back to `--dry-run` when Figma is unauthenticated; bundle persisted for later replay.
+- `/u-design` Step 4.5 — opt-in outbound sync to Figma for both screens (`/u-tools-figma-screen --output figma --prefer md`) and DS (`/u-tools-figma-ds`). Doc completion never blocks on Figma availability.
+
+### Changed
+
+- `.claude-plugin/plugin.json` — version `4.0.0-alpha.2` → `4.0.0-alpha.3`; skill count 25 → 27; description updated to mention the writer skills.
+- README.md, README.ko.html, README.en.html, GET_STARTED.html — `u-tools-*` tables expanded with the two new entries.
+
+### Removed
+
+- `u-maker__u-ocean-wireframe2figma` — separately-installed legacy skill removed from `~/.claude/skills/` (the new u-tools-figma-screen replaces it).
+
 ## [4.0.0-alpha.1] — 2026-04-18
 
 **Breaking change: PDCA → PBGD workflow migration.**

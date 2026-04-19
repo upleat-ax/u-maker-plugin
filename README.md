@@ -59,7 +59,9 @@ Wrappers around external programs/services. All u-maker phase skills route throu
 
 | Command | External tool | Used by |
 |---------|--------------|---------|
-| `/u-tools-figma` | Figma API / Plugin | `/u-prepare`, `/u-analyze`, `/u-reverse`, `/u-design` (auto-delegated on Figma sources) |
+| `/u-tools-figma` | Figma API / Plugin (read-only analyzer) | `/u-prepare`, `/u-analyze`, `/u-reverse`, `/u-design` (auto-delegated on Figma sources) |
+| `/u-tools-figma-screen` | `figma:figma-generate-design` (writer) | `/u-plan` Step 2.5 (auto), `/u-design` Step 4.5 (opt-in), `/u-build` (gap-fill) |
+| `/u-tools-figma-ds` | `figma:figma-generate-library` (writer) | `/u-analyze` Step 2.4 (auto on DS code), `/u-design` Step 4.5 (opt-in) |
 | `/u-tools-browser` | agent-browser CLI → Playwright MCP → chrome-devtools MCP | `/u-gatekeeping` (E2E), `/u-report-weekly` (capture), `/u-dev --verify`, `/u-wireframe --preview` |
 | `/u-tools-git-pr` | git + `gh` CLI + GitHub API | Standalone PR generator with intelligent grouping |
 

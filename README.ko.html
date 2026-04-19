@@ -1136,13 +1136,27 @@ code {
         </tr>
         <tr>
           <td style="text-align:center;">16</td>
+          <td><strong style="color:#be185d;">/u-tools-figma-screen</strong></td>
+          <td><span class="tag tag-any">Tools</span></td>
+          <td style="font-size:11px;"><code class="code-inline">/u-tools-figma-screen [--app] [--screen-source] [--ds-source] [--output figma|md|both] [--prefer figma|md]</code></td>
+          <td>화면기획 생성 (Figma 쓰기) &mdash; (Figma URL │ screens.md+json) + (Figma DS URL │ design-system.md+json+tsx+css) → Figma frames + screens.md+json. <code class="code-inline">figma:figma-generate-design</code>에 위임. <code class="code-inline">/u-plan</code> Step 2.5(자동), <code class="code-inline">/u-design</code> Step 4.5(opt-in)에서 위임</td>
+        </tr>
+        <tr>
+          <td style="text-align:center;">17</td>
+          <td><strong style="color:#be185d;">/u-tools-figma-ds</strong></td>
+          <td><span class="tag tag-any">Tools</span></td>
+          <td style="font-size:11px;"><code class="code-inline">/u-tools-figma-ds [--app] [--source] [--target-figma] [--mode foundations|components|both] [--theme light|dark|both]</code></td>
+          <td>Figma 디자인시스템 생성 &mdash; DS-applied 소스코드(.tsx + .json + .css) → Figma DS (Variables + 모드 + 스타일 + 마스터 컴포넌트). <code class="code-inline">figma:figma-generate-library</code>에 위임. <code class="code-inline">/u-analyze</code> Step 2.4(자동), <code class="code-inline">/u-design</code> Step 4.5(opt-in)에서 위임</td>
+        </tr>
+        <tr>
+          <td style="text-align:center;">18</td>
           <td><strong style="color:#be185d;">/u-tools-browser</strong></td>
           <td><span class="tag tag-any">Tools</span></td>
           <td style="font-size:11px;"><code class="code-inline">/u-tools-browser [--app] [--headless|--headed] [--port N]</code></td>
           <td>통합 브라우저 엔진 &mdash; agent-browser CLI &rarr; Playwright MCP &rarr; chrome-devtools MCP 순 우선. E2E 테스트, 화면 캡처, 비주얼 검증, wireframe 프리뷰. <code class="code-inline">/u-gatekeeping</code>, <code class="code-inline">/u-report-weekly</code>, <code class="code-inline">/u-dev --verify</code>, <code class="code-inline">/u-wireframe --preview</code>에서 위임. 9-step 프로토콜</td>
         </tr>
         <tr>
-          <td style="text-align:center;">17</td>
+          <td style="text-align:center;">19</td>
           <td><strong style="color:#be185d;">/u-tools-git-pr</strong></td>
           <td><span class="tag tag-any">Tools</span></td>
           <td style="font-size:11px;"><code class="code-inline">/u-tools-git-pr [--base branch] [--strategy single|group|auto] [--dry-run]</code></td>

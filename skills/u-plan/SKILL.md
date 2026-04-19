@@ -51,6 +51,23 @@ If preconditions are not met → fail fast with: `"Run /u-prepare (or /u-analyze
 5. Generate `docs/{app}/plan/ia.json` (doc-companion schema, `phase: "plan"`, `subPhase: "plan"`).
 6. Update `data/links.json` with `references` edges IA→SRS.
 
+### Step 2.5: Pre-populate Screen Spec via `/u-tools-figma-screen` (when sources detected)
+
+After IA is written, check whether **both** of these inputs exist:
+
+1. A screen-plan source — Figma frame digest classified as `screen-design`/`screen-planning` in `data/figma/aggregate.json`, OR a pre-existing `docs/{app}/design/screens.{md,json}`, OR a `.figma-link` in `data/dropzone/` tagged `screens`.
+2. A design-system source — Figma frame digest classified as `design-tokens`/`assets`, OR `docs/{app}/design/design-system.{md,json}`, OR DS source code under `packages/tokens` + `packages/ui-*`.
+
+If both are present **AND** `docs/{app}/design/screens.json` is missing or `status` ∈ {`Draft`, `pending`} → delegate to `/u-tools-figma-screen --app {app} --output md` (default; pass `--output both` only if the user explicitly opts in to Figma writes here). The delegated skill writes `docs/{app}/design/screens.{md,json}` (or `screens.proposal.{md,json}` when an existing Final file is present) so `/u-design` Step 3 has a verified pre-populated spec to finalise instead of generating from scratch.
+
+If only one input is present → skip silently, leaving Step 3's prompt to mention the missing piece.
+
+If neither is present → skip silently.
+
+> **Why here, not in `/u-design`?** The user-supplied screen-plan + DS sources are typically present at planning time (dropped into `data/dropzone/` before `/u-prepare`). Pre-populating during Plan keeps `/u-design` as the verifier-and-finaliser instead of forcing it to recompute from raw inputs.
+
+Auto-flag mode (`--auto`) skips the opt-in prompt for `--output both` and stays at `--output md`.
+
 ### Step 3: Prompt for wireframe (interactive only)
 
 After Plan docs are saved, prompt:
@@ -77,10 +94,12 @@ Skipped when `--auto` is set (unless `--auto --wireframe` is passed).
 - **`references/srs-spec.md`** — SRS structure rules, 4-tier hierarchy (FR→US→FT), ID conventions.
 - **`references/ia-spec.md`** — IA structure rules, site map generation, user flow patterns.
 - **`references/figma-analysis.md`** — Figma-specific planning content consumption (when digests carry Figma extraction).
+- **`../u-tools-figma-screen/SKILL.md`** — Step 2.5 delegation target (screen-spec pre-population from screens + DS sources).
 
 ## Related Commands
 
 - `/u-prepare` — Upstream umbrella that populates `data/digest/` before `/u-plan` can run.
 - `/u-analyze` — Upstream discrete analysis command (same role within `/u-prepare`).
+- `/u-tools-figma-screen` — Auto-invoked in Step 2.5 when screens + DS sources are detected.
 - `/u-wireframe` — Downstream, prompted after `/u-plan` completes.
 - `/u-build` — Next phase after Plan (orchestrates `/u-design` ↔ `/u-dev`).

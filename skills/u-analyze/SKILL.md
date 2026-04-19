@@ -50,11 +50,22 @@ For each `pending` or `error` entry:
 1. Set `_index.json` status to `processing` (crash-recovery marker).
 2. Read source file from `data/dropzone/{path}`.
 3. **Figma delegation:** if the file is a `.figma-link`, `.figma-make-link`, or its content is a `figma.com` URL, **delegate to `/u-tools-figma --app {app}`** and skip the remaining steps for this entry. `/u-tools-figma` handles the comprehensive analysis (pages + variants + assets + components + comments + semantic extraction) and writes outputs to `data/digest/figma/…` and `data/figma/…`. On return, mark the original entry in `_index.json` with `status: "delegated"` and `digestPath: "figma://{fileKey}"`. See `skills/u-tools-figma/references/integration.md`.
-4. Otherwise, apply type-specific extraction strategy (see `references/digest-extraction.md`).
-5. Extract: requirements, constraints, stakeholders, domain terms, workflows, pain points.
-6. Write `data/digest/{mirror-path}/{filename}.digest.json` conforming to `_meta/schemas/digest.schema.json`.
-7. Update `_index.json`: status=`done`, `analyzedAt`=ISO-8601 now, `digestPath`=relative path, `hash`=computed SHA-256.
-8. On failure → status=`error` with `error` field; continue to next file.
+4. **DS-code delegation:** if the file (or directory referenced by a `.ds-source-link` pointer file) is a DS-applied source bundle — detected by any of:
+   - A `.ds-source-link` pointer file containing a path to `packages/tokens/` and/or `packages/ui-*/`
+   - A `package.json` whose name matches `*tokens*`, `*design-system*`, `*ui-kit*`, or whose `keywords` includes `design-system`
+   - A directory dropped under `data/dropzone/ds/` containing any combination of `.tokens.json`, `tailwind.config.{js,ts}`, `globals.css` with `--token-`/`--ds-` prefixes, plus at least one `.tsx` component
+   
+   then **delegate to `/u-tools-figma-ds --app {app} --source <resolved-path>`**. The skill extracts tokens + components and pushes a new (or updated) Figma DS file. On return:
+   - Mark the original entry in `_index.json` with `status: "delegated"` and `digestPath: "figma-ds://{fileKey}"`.
+   - Capture the resulting `dsFileKey` into `data/figma/manifest.json` so subsequent `/u-tools-figma-screen` and `/u-design` runs find the DS automatically.
+   - If the user has not authenticated against Figma yet, fall back to `--dry-run` and persist the bundle under `.u-maker/.state/figma-ds-bundles/{runId}.json` for later replay; mark `_index.json` status as `"deferred"` (not `error`).
+   
+   See `skills/u-tools-figma-ds/SKILL.md`.
+5. Otherwise, apply type-specific extraction strategy (see `references/digest-extraction.md`).
+6. Extract: requirements, constraints, stakeholders, domain terms, workflows, pain points.
+7. Write `data/digest/{mirror-path}/{filename}.digest.json` conforming to `_meta/schemas/digest.schema.json`.
+8. Update `_index.json`: status=`done`, `analyzedAt`=ISO-8601 now, `digestPath`=relative path, `hash`=computed SHA-256.
+9. On failure → status=`error` with `error` field; continue to next file.
 
 ### Step 3: Aggregate (light)
 
@@ -85,4 +96,6 @@ For each `pending` or `error` entry:
 
 - `/u-prepare` — umbrella that orchestrates foldertree + dropzone ingestion + this skill (or `/u-reverse`).
 - `/u-reverse` — alternative analysis path for existing projects (reverse-engineers code → digest).
-- `/u-plan` — consumes `data/digest/` to produce SRS + IA.
+- `/u-tools-figma` — auto-delegated for Figma sources (Step 2.3).
+- `/u-tools-figma-ds` — auto-delegated for DS-applied source code bundles (Step 2.4).
+- `/u-plan` — consumes `data/digest/` to produce SRS + IA; also auto-delegates to `/u-tools-figma-screen` in its Step 2.5.

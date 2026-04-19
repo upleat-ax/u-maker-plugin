@@ -493,12 +493,14 @@ a:hover{text-decoration:underline}
 </tbody>
 </table>
 
-<h3>6.5 External-tool Skills (3) &mdash; <code>u-tools-*</code> namespace</h3>
+<h3>6.5 External-tool Skills (5) &mdash; <code>u-tools-*</code> namespace</h3>
 <p>Wrappers around external programs/services. Phase skills must route through these rather than calling the underlying MCP / CLI directly.</p>
 <table>
 <thead><tr><th>Command</th><th>External tool</th><th>Example</th></tr></thead>
 <tbody>
-<tr><td><code>/u-tools-figma</code></td><td>Figma API / Plugin. Comprehensive analyzer &mdash; pages + variants + assets + components + comments + semantics. Auto-delegated from <code>/u-prepare</code>, <code>/u-analyze</code>, <code>/u-reverse</code>, <code>/u-build</code>. <em>v4.0.0-alpha.1: reduced extraction path</em></td><td><code>/u-tools-figma &lt;figma-url&gt;</code></td></tr>
+<tr><td><code>/u-tools-figma</code></td><td>Figma API / Plugin. Comprehensive <strong>analyzer</strong> (read-only) &mdash; pages + variants + assets + components + comments + semantics. Auto-delegated from <code>/u-prepare</code>, <code>/u-analyze</code>, <code>/u-reverse</code>, <code>/u-build</code>. <em>v4.0.0-alpha.1: reduced extraction path</em></td><td><code>/u-tools-figma &lt;figma-url&gt;</code></td></tr>
+<tr><td><code>/u-tools-figma-screen</code></td><td>Screen-spec <strong>writer</strong>. Inputs: (Figma URL │ screens.md+json) + (Figma DS URL │ design-system.md+json+tsx+css). Outputs: Figma frames, screens.md+json, or both. Delegates to <code>figma:figma-generate-design</code>. Auto-invoked from <code>/u-plan</code> Step 2.5; opt-in from <code>/u-design</code> Step 4.5</td><td><code>/u-tools-figma-screen --app my-app --output md</code></td></tr>
+<tr><td><code>/u-tools-figma-ds</code></td><td>Figma design-system <strong>writer</strong>. Input: DS-applied source code (.tsx + .json + .css). Output: Figma DS (Variables + modes + styles + master components). Delegates to <code>figma:figma-generate-library</code>. Auto-invoked from <code>/u-analyze</code> Step 2.4; opt-in from <code>/u-design</code> Step 4.5</td><td><code>/u-tools-figma-ds --app my-app --source ./packages/ui-*</code></td></tr>
 <tr><td><code>/u-tools-browser</code></td><td>Unified browser engine. agent-browser CLI &rarr; Playwright MCP &rarr; chrome-devtools MCP fallback. Used for E2E, screen capture, visual verify, wireframe preview. Consumed by <code>/u-gatekeeping</code>, <code>/u-report-weekly</code>, <code>/u-dev --verify</code>, <code>/u-wireframe --preview</code>. 9-step protocol</td><td><code>/u-tools-browser --app my-app</code></td></tr>
 <tr><td><code>/u-tools-git-pr</code></td><td>git + <code>gh</code> CLI + GitHub API. Intelligent PR generation with commit grouping, split/merge, review guide, multiline numeric confirmation prompt</td><td><code>/u-tools-git-pr</code><br><code>/u-tools-git-pr --base main --dry-run</code></td></tr>
 </tbody>

@@ -91,6 +91,24 @@ UI Design sub-phase of the Build phase: generate `docs/{app}/design/` documents 
 5. Verify sync: every token/component in HTML is documented in MD and JSON
 6. Update `data/links.json`
 
+### Step 4.5: Optional Outbound Figma Sync
+
+After the doc layer is written and (if `--loop`) gatekept to Final, offer to mirror the design system + screens back into Figma:
+
+1. **DS sync — `/u-tools-figma-ds`** — invoked when `design-system.json` has changed and either:
+   - `data/figma/manifest.json.dsFileKey` is set (update existing Figma DS), OR
+   - The user explicitly opts in to creating a new DS file (interactive prompt; skipped under `--auto`).
+   
+   Pass `--source docs/{app}/design/design-system.json` to round-trip the doc into Figma. The skill writes back `figmaKey` per component into `design-system.json`.
+
+2. **Screen sync — `/u-tools-figma-screen --output figma --prefer md`** — invoked when `screens.json` has changed and a Figma destination is known (manifest or `--target-figma`). The `--prefer md` flag ensures dev-validated md wins over any stale Figma content.
+
+3. Both delegations are **opt-in by default** (interactive prompt). They become opt-out under `--auto` only when `data/figma/manifest.json` already records a destination — implying the user has previously opted in.
+
+4. If either sync fails, write the failure to `.u-maker/.state/figma-sync-todos.json` (priority p2) and continue with `/u-design` Step 5; do NOT block the doc-layer completion on Figma availability.
+
+> **Why opt-in?** Figma writes are slow (5–30 min for a full DS, 1–10 min per screen) and require an active Figma session. We surface the option but don't gate doc completion on it.
+
 ### Step 5: Gatekeeper (if --loop)
 
 1. Invoke u-agent-gatekeeper on design documents
@@ -123,3 +141,5 @@ Design phase 완료 후 아래 안내를 출력한다:
 - **`references/design-system-spec.md`** — Token naming, component variants, responsive breakpoints (HTML-first pipeline spec)
 - **`references/design-system-rules.md`** — **Rule pack for Step 4** (dylantarre/design-system-skills: 3-layer token architecture, 10 scales, dark-mode, contrast, focus, ARIA, compound components). Mandatory input.
 - **`../u-plan/references/figma-analysis.md`** — Figma frame analysis, content type detection, design token extraction from Figma
+- **`../u-tools-figma-screen/SKILL.md`** — Step 4.5 outbound sync target for screens
+- **`../u-tools-figma-ds/SKILL.md`** — Step 4.5 outbound sync target for design system
