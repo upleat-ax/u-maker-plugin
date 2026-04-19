@@ -81,11 +81,12 @@ UI Design sub-phase of the Build phase: generate `docs/{app}/design/` documents 
 7. Render live showcases: color swatches, typography scale, component variants/sizes/states; include an accessibility audit footer (WCAG AA/AAA contrast sweep + focus-state check) per `design-system-rules.md` §4
 8. Apply ID convention (DS-010~DS-110 for tokens, CMP-010~CMP-070 for components)
 9. Write `out/{app}/design/design-system.html`
-10. **Browser verify the HTML (mandatory)** — delegate to `/u-tools-browser` Step 6e. The engine opens the file via `file://`, samples every token from `:root`, asserts every `CMP-xxx` showcase is present, toggles `[data-theme="dark"]`, runs a Lighthouse / axe-core a11y audit, and captures full-page screenshots in both modes.
-   - On `--auto` → run headless, no prompts.
+10. **Browser verify the HTML — mandatory hard gate** — delegate to `/u-tools-browser` Step 6e. The engine opens the file via `file://`, samples every token from `:root`, asserts every `CMP-xxx` showcase is present, toggles `[data-theme="dark"]`, runs a Lighthouse / axe-core a11y audit, captures full-page screenshots in both modes, AND (when the DS originated from Figma) performs the mandatory Figma parity sub-step (6e.8: token parity + per-frame screenshot diff at SSIM ≥ 0.95 / pixel diff ≤ 5 % + coverage parity).
+   - On `--auto` → run headless, no prompts. **Even in `--auto` the Figma parity is NOT skippable** unless the user explicitly passed `--no-figma-parity` (which is logged to the run summary).
    - Verification result is read from `.u-maker/.state/visual-verify/{app}-design-system.json`.
-   - If `result == "fail"` (missing tokens/components, dark-mode broken, or any WCAG-AA contrast violation) → re-execute Steps 4a.3–9 with the diff as the improvement list. Max 3 retries before surfacing to the user.
-   - If `result == "partial"` → log to `.u-maker/.state/figma-sync-todos.json` (priority p2) and continue.
+   - **`result == "fail"` is a hard gate.** Re-execute Steps 4a.3–9 with the full diff (`missingTokens` + `missingComponents` + `figmaParity.tokenDrift` + `figmaParity.screenshotDiffs` + `figmaParity.coverageGaps`) as the improvement list. Max 3 retries; on the third failure, surface to the user — do NOT mark the DS as Final and do NOT proceed to Step 4b.
+   - `result == "partial"` is allowed only for non-parity issues (a11y warnings without contrast violations, low-priority drift). Logged to `.u-maker/.state/figma-sync-todos.json` (priority p2) and continues.
+   - Any Figma parity failure (`figmaParity.result == "fail"`) MUST surface as the top-level `result == "fail"` — it cannot be downgraded to `partial`.
 
 #### Step 4b: Derive MD + JSON from HTML
 

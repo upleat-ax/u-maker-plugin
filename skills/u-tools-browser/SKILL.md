@@ -246,7 +246,17 @@ Verify the HTML-first DS artifact (`out/{app}/design/design-system.html`) render
 7. **Screenshots** — full-page light + dark, written to:
    - `.u-maker/.state/screenshots/{YYYY-MM-DD}/{app}-design-system-light.png`
    - `.u-maker/.state/screenshots/{YYYY-MM-DD}/{app}-design-system-dark.png`
-8. **Diff record** — write the verification result to `.u-maker/.state/visual-verify/{app}-design-system.json`:
+8. **Figma parity check (MANDATORY when a Figma DS source is registered)** — when `data/figma/manifest.json` records a `dsFileKey` AND `design-system.json.figmaUrl` is set, this sub-step runs unconditionally. It is the gate the user requires when "design system was extracted from Figma → implemented as HTML/CSS → verify identical".
+   1. Pull the Figma reference once per run via `mcp__plugin_figma_figma__get_screenshot` for the DS file's documentation page (or each component frame). Cache under `.u-maker/.state/figma-ref/{dsFileKey}/{frameId}.png`.
+   2. Pull the Figma Variables list via `mcp__plugin_figma_figma__get_variable_defs` for the DS file. Build a name→resolved-value map (`color`, `dimension`, `number`, `string`).
+   3. **Token parity** — for every Figma Variable that maps to a CSS variable (per `design-system.json` `tokens[*].figmaVarKey`), assert the resolved value matches the rendered `:root` value (Step 3). Tolerance: colors → ΔE < 1 in OKLCH; dimensions → ±0.5 px; others → exact. Mismatches → `figmaTokenDrift[]`.
+   4. **Component / page screenshot diff** — for each documentation page in the Figma DS file (or each `CMP-{nnn}` showcase frame when frame mapping is available), pixel-diff against the corresponding rendered region of `design-system.html` (use the `data-cmp-id` selector to crop). Pass threshold: SSIM ≥ 0.95 AND pixel-diff ≤ 5 %. Write each comparison PNG triplet (figma / impl / diff) to `.u-maker/.state/visual-verify/diffs/{app}-ds-{frameSlug}.{figma,impl,diff}.png`.
+   5. **Coverage parity** — every Figma component MUST have a corresponding `CMP-{nnn}` in `design-system.json`, and every `CMP-{nnn}` MUST be rendered in the HTML. One-sided gaps → `figmaCoverageGaps[]`.
+   
+   When `dsFileKey` is unset → skip silently (this DS was not extracted from Figma).
+   When `dsFileKey` is set but the user is not authenticated against Figma → **HALT** with the message `"Figma parity is mandatory for Figma-sourced DS. Authenticate via mcp__plugin_figma_figma__authenticate or pass --no-figma-parity to skip explicitly."` Never silently skip.
+
+9. **Diff record** — write the verification result to `.u-maker/.state/visual-verify/{app}-design-system.json`:
    ```json
    {
      "verifiedAt": "ISO-8601",
@@ -259,10 +269,25 @@ Verify the HTML-first DS artifact (`out/{app}/design/design-system.html`) render
      "missingComponents": [],
      "darkModeToggled": true,
      "a11yViolations": [],
+     "figmaParity": {
+       "dsFileKey": "abc123",
+       "checked": true,
+       "tokenDrift": [],
+       "screenshotDiffs": [
+         { "frame": "Buttons", "ssim": 0.97, "pixelDiffPct": 2.1, "pass": true }
+       ],
+       "coverageGaps": [],
+       "result": "pass|fail"
+     },
      "screenshots": ["…light.png","…dark.png"],
      "result": "pass|partial|fail"
    }
    ```
+
+   `result` rules:
+   - `result == "pass"` requires **all** of: zero `missingTokens`, zero `missingComponents`, dark-mode toggled, zero WCAG-AA contrast violations, AND (when Figma parity ran) `figmaParity.result == "pass"`.
+   - `result == "fail"` when **any** Figma parity violation exists (`figmaTokenDrift`, `coverageGaps`, or any screenshot diff below threshold).
+   - `result == "partial"` only for non-Figma-parity issues (e.g., a11y warnings, low-priority drift).
 
 #### 6f. Component Implementation Verification (`/u-dev` Step 1.5)
 
@@ -287,7 +312,12 @@ Verify directly-implemented FE components render correctly against their Screen.
    }
    ```
    Compare to the expected token resolution from `design-system.json`. Drift → record under `tokenDrift[]`.
-4. **Figma diff (optional, when `figmaKey` present)** — if `components[*].figmaKey` is set in `design-system.json` AND `mcp__plugin_figma_figma__get_screenshot` is reachable, fetch the Figma component screenshot and pixel-diff against the implementation screenshot. Diff > 10% → log to `figmaDiff[]`.
+4. **Figma parity (MANDATORY when `figmaKey` is present)** — for every `CMP-{nnn}` whose `design-system.json` row has `figmaKey` set, this sub-step runs unconditionally. When `figmaKey` is **not** set → skip that single component (HTML-only origin); when ANY component has `figmaKey` AND the user is not authenticated → **HALT** with the same message as Step 6e.8 (`"Figma parity is mandatory…"`). Never silently skip.
+   1. Fetch the Figma component screenshot via `mcp__plugin_figma_figma__get_screenshot` (cache under `.u-maker/.state/figma-ref/{dsFileKey}/{figmaKey}.png`).
+   2. Fetch the Figma component's variant grid (each variant + state combination) via `mcp__plugin_figma_figma__get_node`. For each combination, capture an individual screenshot.
+   3. Pixel-diff the Figma reference against the implementation screenshot for the same variant/state combination. Pass threshold: SSIM ≥ 0.95 AND pixel-diff ≤ 5 % per component instance. Bounds (width / height / padding / gap) must match within ±2 px (extracted via `getBoundingClientRect()` and Figma node `absoluteBoundingBox`).
+   4. **Token resolution parity** — sample the rendered component's resolved CSS variables (Step 3), then compare against the Figma component's bound variable values (`mcp__plugin_figma_figma__get_variable_defs`). Mismatch → `figmaTokenDrift[]`.
+   5. Write each comparison PNG triplet (figma / impl / diff) to `.u-maker/.state/visual-verify/diffs/{app}-cmp-{nnn}-{variant}-{state}.{figma,impl,diff}.png`.
 5. **Per-component a11y** — same audit pattern as Step 6e.6, scoped to the component subtree.
 6. **Screenshots** — `.u-maker/.state/screenshots/{YYYY-MM-DD}/{app}-cmp-{nnn}-{variant}-{state}.png`
 7. **Diff record** — write `.u-maker/.state/visual-verify/{app}-components.json`:
@@ -298,11 +328,27 @@ Verify directly-implemented FE components render correctly against their Screen.
      "totalComponents": K,
      "verified": L,
      "tokenDrift": [{ "cmpId": "CMP-010", "variant": "primary", "field": "bg", "expected": "...", "actual": "..." }],
-     "figmaDiff": [{ "cmpId": "CMP-020", "diffPct": 14.2, "screenshot": "..." }],
+     "figmaParity": {
+       "checked": L_figma,
+       "passed": P,
+       "failed": F,
+       "diffs": [
+         { "cmpId": "CMP-020", "variant": "primary", "state": "default",
+           "ssim": 0.91, "pixelDiffPct": 8.4, "boundsDelta": { "w": 3, "h": 0 },
+           "diffScreenshot": ".u-maker/.state/visual-verify/diffs/...diff.png", "pass": false }
+       ],
+       "tokenDrift": [],
+       "result": "pass|fail"
+     },
      "a11yViolations": [],
      "result": "pass|partial|fail"
    }
    ```
+
+   `result` rules (mandatory parity):
+   - `result == "pass"` requires zero `tokenDrift`, zero a11y violations, AND (for every component with `figmaKey`) `figmaParity.result == "pass"`.
+   - `result == "fail"` when ANY Figma-bound component has a screenshot diff below threshold OR a `figmaTokenDrift` row.
+   - `result == "partial"` reserved for HTML-only components with non-Figma drift.
 
 ### Step 7: Human Verification (only when flow requires it)
 
@@ -419,6 +465,9 @@ The calling phase skill consumes this summary (not the raw MCP output) and integ
 | `--app {name}` | — | Scope to a single app (required for multi-app ops) |
 | `--route {path}` | — | Scope to a single route |
 | `--no-screenshot` | OFF | Skip screenshot steps (6b) |
+| `--no-figma-parity` | OFF | Explicitly skip Figma parity sub-steps (6e.8 / 6f.4). **Use only when intentionally diverging from Figma**; logged to the run summary so reviewers can see the override. Without this flag, Figma parity runs unconditionally whenever a Figma source is registered. |
+| `--figma-diff-threshold {pct}` | 5 | Pixel-diff threshold for Figma parity (Step 6e.8 + 6f.4). Lowering tightens the gate. |
+| `--figma-ssim-threshold {0..1}` | 0.95 | SSIM threshold for Figma parity. Raising tightens the gate. |
 | `--retry {N}` | 2 | Retry count for flaky steps |
 
 ## Anti-patterns
@@ -428,6 +477,8 @@ The calling phase skill consumes this summary (not the raw MCP output) and integ
 - ❌ Writing screenshots outside `.u-maker/.state/screenshots/`
 - ❌ Running E2E tests without first verifying the dev server via Step 5
 - ❌ Hard-coding port 3000 for backend (should be 2920)
+- ❌ **Silently skipping Figma parity when `dsFileKey` or `figmaKey` is set** — Steps 6e.8 / 6f.4 must run, HALT, or be explicitly overridden via `--no-figma-parity` (with the override recorded in the summary). Never `try/catch` the parity check away.
+- ❌ Treating a Figma parity failure as `partial` — it MUST surface as `fail` so the caller (`/u-design`, `/u-dev`) re-iterates.
 - ✅ Load `u-tools-browser`, follow Steps 1→9, consume the summary
 
 ## Error Handling

@@ -2,6 +2,39 @@
 
 All notable changes to u-maker-plugin.
 
+## [4.0.0-alpha.5] — 2026-04-19
+
+**Changed: Figma parity is now a mandatory hard gate.**
+
+When a Design System originated from Figma (extracted via `/u-tools-figma-ds` or registered with `dsFileKey` in `data/figma/manifest.json`) and is implemented as HTML/CSS, the browser MUST verify identity with Figma. Previously this was an opt-in pixel diff; now it is a non-skippable parity check that blocks `/u-design` and `/u-dev` from completing on failure.
+
+### Changed
+
+- `/u-tools-browser` Step 6e (DS HTML Verification) — added sub-step **6e.8 Figma parity check (mandatory)**:
+  - Pulls Figma reference screenshots via `mcp__plugin_figma_figma__get_screenshot` and Variable defs via `get_variable_defs`.
+  - Token parity: every Figma Variable mapped to a CSS variable must match (color ΔE < 1 in OKLCH; dimensions ±0.5 px).
+  - Per-frame screenshot diff: SSIM ≥ 0.95 AND pixel diff ≤ 5 %.
+  - Coverage parity: every Figma component ↔ every `CMP-{nnn}` in the HTML.
+  - Unauthenticated Figma session → HALT (never silent skip). Override with `--no-figma-parity` (logged).
+  - `result` rules tightened: any parity failure forces top-level `result == "fail"` (cannot be downgraded to `partial`).
+- `/u-tools-browser` Step 6f (Component Verification) — Figma diff promoted from "optional" to **mandatory** when `components[*].figmaKey` is set:
+  - Per-variant / per-state pixel diff (SSIM ≥ 0.95, pixel diff ≤ 5 %, bounds ±2 px).
+  - Token resolution parity against Figma Variable bindings.
+  - Same HALT-on-unauthenticated rule as Step 6e.
+- `/u-tools-browser` Options — added `--no-figma-parity`, `--figma-diff-threshold {pct}` (default 5), `--figma-ssim-threshold {0..1}` (default 0.95).
+- `/u-tools-browser` Anti-patterns — explicit prohibitions: silently skipping parity, downgrading parity failure to `partial`, try/catch-ing the parity check away.
+- `/u-design` Step 4a.10 — promoted to **hard gate**. On parity `fail`, re-runs Steps 4a.3–9 (max 3 retries); never proceeds to Step 4b without parity pass. `partial` allowed only for non-parity issues.
+- `/u-dev` Step 1.5 — promoted to **hard gate**. On parity `fail`, re-runs Step 1 for failing components only (max 3 retries); never proceeds to Step 2 (BE) without parity pass.
+
+### Rationale
+
+When the user describes the workflow as "extract DS from Figma → implement in HTML/CSS → verify identical", the browser is the only authority that can confirm "identical". Anything weaker (token-only diff, manual review) misses CSS specificity, browser rendering quirks, and unbound hardcoded values. Making the gate mandatory ensures the implemented DS cannot ship with silent visual drift from its Figma source.
+
+### Added
+
+- `--no-figma-parity` flag for explicit, audited overrides (e.g., when intentionally diverging).
+- Per-component diff PNG triplets (figma / impl / diff) under `.u-maker/.state/visual-verify/diffs/`.
+
 ## [4.0.0-alpha.4] — 2026-04-19
 
 **Added: Browser-driven visual verification for HTML-first DS and implemented components.**
