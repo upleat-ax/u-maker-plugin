@@ -28,7 +28,7 @@
 ├── packages/
 │   ├── ui-backoffice/          → @{{PROJECT_NAME}}/ui-backoffice
 │   ├── ui-common/              → @{{PROJECT_NAME}}/ui-common
-│   ├── ui-grigo/               → @{{PROJECT_NAME}}/ui-grigo
+│   ├── ui-app/               → @{{PROJECT_NAME}}/ui-app
 │   ├── hooks/                  → @{{PROJECT_NAME}}/hooks
 │   ├── data/                   → @{{PROJECT_NAME}}/data
 │   ├── domain/                 → @{{PROJECT_NAME}}/domain
@@ -965,9 +965,9 @@ export * from "./mutations";
 
 ---
 
-### §6.7 packages/ui-common (ui-backoffice, ui-grigo도 동일 구조)
+### §6.7 packages/ui-common (ui-backoffice, ui-app도 동일 구조)
 
-세 UI 패키지 모두 아래 구조를 따른다. `{{UI_PACKAGE}}`는 각각 `ui-common`, `ui-backoffice`, `ui-grigo`로 치환.
+세 UI 패키지 모두 아래 구조를 따른다. `{{UI_PACKAGE}}`는 각각 `ui-common`, `ui-backoffice`, `ui-app`로 치환.
 
 #### package.json
 
@@ -1265,7 +1265,7 @@ const nextConfig: NextConfig = {
   transpilePackages: [
     "@{{PROJECT_NAME}}/ui-common",
     "@{{PROJECT_NAME}}/ui-backoffice",
-    "@{{PROJECT_NAME}}/ui-grigo",
+    "@{{PROJECT_NAME}}/ui-app",
     "@{{PROJECT_NAME}}/hooks",
     "@{{PROJECT_NAME}}/data",
     "@{{PROJECT_NAME}}/domain",

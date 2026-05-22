@@ -1363,10 +1363,10 @@ Single source of truth for inventory, progress, change detection, and recovery. 
 ```json
 {
   "schemaVersion": "1.0",
-  "fileKey": "rthR0h9cahAAFfWL1JyAMq",
+  "fileKey": "<your-figma-file-key>",
   "fileName": "...",
   "figmaUrl": "https://www.figma.com/design/...",
-  "figmaFileUrl": "https://www.figma.com/design/rthR0h9cahAAFfWL1JyAMq",
+  "figmaFileUrl": "https://www.figma.com/design/<your-figma-file-key>",
 
   "scan": {
     "scannedAt": "2026-04-18T10:00:00+09:00",
@@ -1475,7 +1475,7 @@ pending → in_progress → done
 ### 8.6 User-facing coverage report
 
 ```
-Figma: 설계-현진웹-HJW-테스트
+Figma: My Project File
   Pages:          15/15 enumerated
   Frames:         247 total  (219 primary + 28 variants)
   Extracted:      ████████████████░░░░  201/247  (81%)
@@ -2093,13 +2093,13 @@ Adding to §12.6 list:
 
 Three user-supplied URLs serve as acceptance tests:
 
-1. **현진웹 HJW (spec doc)** — `https://www.figma.com/design/rthR0h9cahAAFfWL1JyAMq/…?node-id=3163-50673`
+1. **Project A (spec doc)** — `https://www.figma.com/design/<project-a-file-key>/…?node-id=3163-50673`
    - Expected content types: `screen-planning + annotation + specification`
    - Validates: planning-text extraction depth, business/processing rule coverage.
-2. **그리고라이프 화면디자인 (hi-fi)** — `https://www.figma.com/design/dbzjO8T5hWQXvuNc6IiwIH/…?node-id=532-48007`
+2. **Project B (hi-fi)** — `https://www.figma.com/design/<project-b-file-key>/…?node-id=532-48007`
    - Expected content types: `screen-design + prototype + annotation`
    - Validates: variant detection (sources B + C + D), prototype reactions, screenshot fidelity.
-3. **그리고라이프 컴포넌트 V.02 (design system)** — `https://www.figma.com/design/LgSNuJWOrRx1K9iPVUgFKE/…?node-id=0-1`
+3. **Project C (design system)** — `https://www.figma.com/design/<project-c-file-key>/…?node-id=0-1`
    - Expected content types: `design-tokens + assets`; heavy COMPONENT_SET usage
    - Validates: Source A — **every** COMPONENT_SET variant enumerated; zero orphans.
 

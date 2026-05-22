@@ -80,8 +80,8 @@ Turborepo + Bun 기반 모노레포 프로젝트를 처음부터 스캐폴딩한
 │   ├── ui-common/.storybook/
 │   ├── ui-backoffice/src/components/Button/
 │   ├── ui-backoffice/.storybook/
-│   ├── ui-grigo/src/components/Button/
-│   └── ui-grigo/.storybook/
+│   ├── ui-app/src/components/Button/
+│   └── ui-app/.storybook/
 └── .u-maker/docs/
 ```
 
@@ -106,7 +106,7 @@ Turborepo + Bun 기반 모노레포 프로젝트를 처음부터 스캐폴딩한
 6. **packages/hooks** — TanStack Query 훅 (→ data, domain)
 7. **packages/ui-common** — Button 컴포넌트 + Storybook (→ tokens)
 8. **packages/ui-backoffice** — Button 컴포넌트 + Storybook (→ tokens)
-9. **packages/ui-grigo** — Button 컴포넌트 + Storybook (→ tokens)
+9. **packages/ui-app** — Button 컴포넌트 + Storybook (→ tokens)
 
 각 패키지 상세: `references/scaffolding-spec.md` §6 참조.
 
@@ -136,7 +136,7 @@ git commit -m "chore: scaffold {project-name}-monorepo
 
 Turborepo + Bun monorepo with Clean Architecture layers.
 Apps: web, admin, backend
-Packages: domain, data, hooks, infrastructure, ui-common, ui-backoffice, ui-grigo, tokens, config"
+Packages: domain, data, hooks, infrastructure, ui-common, ui-backoffice, ui-app, tokens, config"
 ```
 
 ### Step 7: Install Dependencies
@@ -170,7 +170,7 @@ bun run lint
 
 📁 Structure:
   apps/     — web, admin, backend
-  packages/ — domain, data, hooks, infrastructure, ui-common, ui-backoffice, ui-grigo, tokens, config
+  packages/ — domain, data, hooks, infrastructure, ui-common, ui-backoffice, ui-app, tokens, config
 
 🚀 Next Steps:
   1. cd {PROJECT_DIR}

@@ -243,6 +243,39 @@ with open(ip_file, 'w') as f:
 }
 
 # ============================================================
+# 5b. Update enabledPlugins in ~/.claude/settings.json
+# ============================================================
+
+update_enabled_plugins() {
+  local settings_file="$CLAUDE_HOME/settings.json"
+
+  if [[ ! -f "$settings_file" ]]; then
+    warn "settings.json not found at $settings_file, skipping enabledPlugins toggle"
+    return 0
+  fi
+
+  python3 -c "
+import json
+sf = '$settings_file'
+key = '${PLUGIN_NAME}@${PLUGIN_NAME}'
+
+with open(sf, 'r') as f:
+    data = json.load(f)
+
+ep = data.setdefault('enabledPlugins', {})
+if ep.get(key) is True:
+    print('already-on')
+else:
+    ep[key] = True
+    with open(sf, 'w') as f:
+        json.dump(data, f, indent=2)
+        f.write('\n')
+    print('toggled-on')
+" >/dev/null
+  ok "settings.json enabledPlugins → on ($PLUGIN_NAME@$PLUGIN_NAME)"
+}
+
+# ============================================================
 # 6. Setup Codex symlinks
 # ============================================================
 
@@ -492,47 +525,51 @@ deploy() {
   mkdir -p "$MARKETPLACES_DIR" "$CACHE_DIR"
 
   # Step 1: Cache sync (must run BEFORE symlink so the target exists)
-  log "1/11  Cache sync"
+  log "1/12  Cache sync"
   sync_to_cache
 
   # Step 2: Marketplace symlink (points to cache, not SCRIPT_DIR — survives temp dir cleanup)
-  log "2/11  Marketplace symlink"
+  log "2/12  Marketplace symlink"
   local cache_dest="$CACHE_DIR/$PLUGIN_NAME/$PLUGIN_NAME/$PLUGIN_VERSION"
   make_link "$cache_dest" "$MARKETPLACES_DIR/$MARKETPLACE_NAME"
 
   # Step 3: known_marketplaces.json
-  log "3/11  known_marketplaces.json"
+  log "3/12  known_marketplaces.json"
   update_known_marketplaces
 
   # Step 4: installed_plugins.json
-  log "4/11  installed_plugins.json"
+  log "4/12  installed_plugins.json"
   update_installed_plugins
 
-  # Step 5: Clean stale symlinks
-  log "5/11  Clean stale skill symlinks"
+  # Step 5: settings.json enabledPlugins toggle (otherwise Claude Code won't load the plugin)
+  log "5/12  settings.json enabledPlugins"
+  update_enabled_plugins
+
+  # Step 6: Clean stale symlinks
+  log "6/12  Clean stale skill symlinks"
   clean_stale_skill_symlinks
 
-  log "6/11  Clean stale agent symlinks"
+  log "7/12  Clean stale agent symlinks"
   clean_stale_agent_symlinks
 
-  # Step 7: Skill symlinks
-  log "7/11  Skill symlinks"
+  # Step 8: Skill symlinks
+  log "8/12  Skill symlinks"
   register_skill_symlinks
 
-  # Step 8: Agent symlinks
-  log "8/11  Agent symlinks"
+  # Step 9: Agent symlinks
+  log "9/12  Agent symlinks"
   register_agent_symlinks
 
-  # Step 9: _meta symlinks (templates, schemas, etc.)
-  log "9/11  _meta symlinks (templates, schemas)"
+  # Step 10: _meta symlinks (templates, schemas, etc.)
+  log "10/12 _meta symlinks (templates, schemas)"
   register_meta_symlinks
 
-  # Step 10: Codex
-  log "10/11 Codex integration"
+  # Step 11: Codex
+  log "11/12 Codex integration"
   setup_codex
 
-  # Step 11: Gemini
-  log "11/11 Gemini integration"
+  # Step 12: Gemini
+  log "12/12 Gemini integration"
   setup_gemini
 
   echo ""
@@ -590,6 +627,25 @@ with open('$INSTALLED_PL', 'w') as f:
     f.write('\n')
 "
     ok "installed_plugins.json cleaned"
+  fi
+
+  # Remove from settings.json enabledPlugins
+  local settings_file="$CLAUDE_HOME/settings.json"
+  if [[ -f "$settings_file" ]]; then
+    python3 -c "
+import json
+sf = '$settings_file'
+key = '${PLUGIN_NAME}@${PLUGIN_NAME}'
+with open(sf, 'r') as f:
+    data = json.load(f)
+ep = data.get('enabledPlugins', {})
+if key in ep:
+    del ep[key]
+    with open(sf, 'w') as f:
+        json.dump(data, f, indent=2)
+        f.write('\n')
+"
+    ok "settings.json enabledPlugins → off"
   fi
 
   # Remove skill symlinks
@@ -710,6 +766,21 @@ check() {
   else
     err "installed_plugins.json not found"
     all_ok=false
+  fi
+
+  # settings.json enabledPlugins
+  local settings_file="$CLAUDE_HOME/settings.json"
+  if [[ -f "$settings_file" ]]; then
+    local enabled
+    enabled="$(python3 -c "import json; d=json.load(open('$settings_file')); print('yes' if d.get('enabledPlugins',{}).get('${PLUGIN_NAME}@${PLUGIN_NAME}') is True else 'no')")"
+    if [[ "$enabled" == "yes" ]]; then
+      ok "settings.json enabledPlugins → on"
+    else
+      err "settings.json enabledPlugins → off (plugin will not load)"
+      all_ok=false
+    fi
+  else
+    warn "settings.json not found at $settings_file"
   fi
 
   # _meta symlinks

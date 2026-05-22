@@ -39,12 +39,12 @@
     "decisions_made": 4,
     "unresolved_issues": 2,
     "top_unresolved": [
-      { "topic": "발주 자동화 범위", "app": "fsms", "related_fr": ["FR-005"] },
-      { "topic": "권한 상속 규칙", "app": "fsms", "related_fr": ["FR-003"] }
+      { "topic": "발주 자동화 범위", "app": "app1", "related_fr": ["FR-005"] },
+      { "topic": "권한 상속 규칙", "app": "app1", "related_fr": ["FR-003"] }
     ],
     "top_decided": [
-      { "topic": "3단 코드 구조 채택", "app": "fsms", "related_fr": ["FR-001"] },
-      { "topic": "RBAC 권한 전환", "app": "fsms", "related_fr": ["FR-003"] }
+      { "topic": "3단 코드 구조 채택", "app": "app1", "related_fr": ["FR-001"] },
+      { "topic": "RBAC 권한 전환", "app": "app1", "related_fr": ["FR-003"] }
     ]
   },
 
@@ -54,8 +54,8 @@
     "failed": 2,
     "skipped": 0,
     "top_failures": [
-      { "id": "TC-012", "name": "권한 검증", "fr": "FR-003", "app": "fsms" },
-      { "id": "TC-015", "name": "옵션 조합", "fr": "FR-007", "app": "fsms" }
+      { "id": "TC-012", "name": "권한 검증", "fr": "FR-003", "app": "app1" },
+      { "id": "TC-015", "name": "옵션 조합", "fr": "FR-007", "app": "app1" }
     ]
   },
 
@@ -73,8 +73,8 @@
   "screenshots": {
     "count": 5,
     "files": [
-      ".u-maker/.state/screenshots/2026-04-10/fsms-dashboard.png",
-      ".u-maker/.state/screenshots/2026-04-10/fsms-order-list.png"
+      ".u-maker/.state/screenshots/2026-04-10/app1-dashboard.png",
+      ".u-maker/.state/screenshots/2026-04-10/app1-order-list.png"
     ]
   }
 }

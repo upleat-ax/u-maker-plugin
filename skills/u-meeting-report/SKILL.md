@@ -137,7 +137,7 @@ curl -X POST 'https://m7d.firestick.live/v4/docs?bucketId=69cd33f60b6f1e9c6e7398
     -H 'Content-Type: application/json' \
     -H 'x-m7-api-key: m7_2e5834e5cb97e5f07be58d524a536c7f22362e0806ae80a0' \
     -d '[{
-      "type": "WIKI", "subtype": "HYUNJIN", "substatus": "MEETING",
+      "type": "WIKI", "subtype": "PROJECT", "substatus": "MEETING",
       "title": "<회의제목>", "subtitle": "<핵심요약 plain text 150자>",
       "content": "<HTML 전체>",
       "bucketId": "69cd33f60b6f1e9c6e7398f1",

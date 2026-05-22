@@ -253,7 +253,7 @@ SVG 차트 규칙:
 ```
 u-report-daily complete.
   Date:        2026-04-10
-  App(s):      fsms, portal
+  App(s):      app1, portal
   Stats saved: .u-maker/.state/stats/2026-04-10.json
   Report:      .u-maker/reports/2026-04-10-daily.html
   Screenshots: 5 captured

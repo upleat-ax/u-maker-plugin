@@ -138,13 +138,13 @@ Force grouping even for small changesets.
 u-tools-git-pr: {N} groups detected (strategy: {auto|single|group})
 Files: {total} ({modified} modified, {new} new, {deleted} deleted)
 
-  Group 1: hjw-design-erd
-    Branch: feat/hjw-design-erd
+  Group 1: myapp-design-erd
+    Branch: feat/myapp-design-erd
     12 files — ERD index + 9 domain pages + ctr-group (new)
-    PR: "feat(hjw): regenerate ERD HTML with Ctr domain (52 tables)"
+    PR: "feat(myapp): regenerate ERD HTML with Ctr domain (52 tables)"
 
-  Group 2: hjw-nav  (merged → Group 1)
-    1 file — hjw/index.html count update
+  Group 2: myapp-nav  (merged → Group 1)
+    1 file — myapp/index.html count update
 ```
 
 #### 4.2 전략 선택 프롬프트 (표준 양식)
@@ -219,9 +219,9 @@ for group in groups:
 {type}/{group-key}
 
 Examples:
-  feat/hjw-design-erd
-  fix/hjw-nav-update
-  docs/hjw-docs-plan
+  feat/myapp-design-erd
+  fix/myapp-nav-update
+  docs/myapp-docs-plan
   chore/config-update
 ```
 
@@ -237,9 +237,9 @@ Examples:
 {type}({scope}): {summary}
 
 Examples:
-  feat(hjw/erd): add 계약(Ctr) domain ERD page with 24 tables
-  fix(hjw/erd): update sidebar navigation for 9 domains
-  docs(hjw): regenerate ERD HTML output
+  feat(myapp/erd): add 계약(Ctr) domain ERD page with 24 tables
+  fix(myapp/erd): update sidebar navigation for 9 domains
+  docs(myapp): regenerate ERD HTML output
 ```
 
 If a group has mixed new + modified files, combine into a single descriptive commit.
@@ -262,11 +262,11 @@ u-tools-git-pr complete.
   Groups:    2
   PRs:       2
 
-  #1 feat/hjw-design-erd → PR #42
+  #1 feat/myapp-design-erd → PR #42
      12 files, 1 commit
      https://github.com/org/repo/pull/42
 
-  #2 docs/hjw-docs-design → PR #43
+  #2 docs/myapp-docs-design → PR #43
      3 files, 1 commit
      https://github.com/org/repo/pull/43
 ```

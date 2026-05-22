@@ -286,7 +286,7 @@ SVG 차트 규칙:
 ```
 u-report-weekly complete.
   Period:      2026-04-04 ~ 2026-04-10
-  App(s):      fsms, portal
+  App(s):      app1, portal
   Stats used:  7 daily snapshots
   Weekly saved: .u-maker/.state/stats/2026-04-04--2026-04-10-weekly.json
   Report:      .u-maker/reports/2026-04-10-weekly.html
