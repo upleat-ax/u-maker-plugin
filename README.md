@@ -1,10 +1,10 @@
-# U-MAKER Plugin v4.0.0-alpha.1
+# U-MAKER Plugin v4.0.0-alpha.10
 
 PBGD-based SSoT (Single Source of Truth) plugin for Claude Code.
 
 Drop planning materials, and it automatically performs Preparation → Plan → Build → Gatekeeping → Deploy.
 
-**25 Skills** (incl. 3 aliases) · **10 Agents** · **4 PBGD Phases** (Plan · Build · Gatekeeping · Deploy) · **11 Gate Criteria** (configurable via `--loop [N]`, default 5) · **Pass ≥ 95** · **Deploy-gate ≥ 98**
+**27 Skills** (incl. 3 aliases) · **10 Agents** · **4 PBGD Phases** (Plan · Build · Gatekeeping · Deploy) · **11 Gate Criteria** (configurable via `--loop [N]`, default 5) · **Pass ≥ 95** · **Deploy-gate ≥ 98**
 
 ## Documentation
 
