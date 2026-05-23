@@ -1,0 +1,39 @@
+# .u-maker/.env  —  Local credentials for u-maker skills.
+#
+# This file is NEVER committed (added to .gitignore by /u-prepare-foldertree).
+# Copy `.env.example` → `.env` and fill in only the keys you actually use.
+# Skills load it via `set -a; . .u-maker/.env; set +a` and then prefer
+# env values over interactive prompts.
+#
+# Keys are grouped by integration. Empty / unset = "ask interactively when needed".
+
+# ── Jenkins server (used by /u-tools-jenkins-deploy) ───────────────
+JENKINS_URL=               # e.g. http://jenkins.example.com:8888
+JENKINS_USER=              # Jenkins admin / API user
+JENKINS_TOKEN=             # API token OR password (token preferred)
+
+# ── Jenkins host SSH (diagnosis only — firewall / tcpdump) ─────────
+JENKINS_SSH_HOST=          # IP or hostname of the Jenkins host
+JENKINS_SSH_USER=          # SSH user (e.g. root)
+JENKINS_SSH_PASS=          # SSH password (or leave blank if using key auth)
+JENKINS_SSH_PORT=22        # default 22
+
+# ── Docker Hub (push credential registration in Jenkins) ───────────
+DOCKERHUB_NAMESPACE=       # e.g. acme
+DOCKERHUB_USER=            # Docker Hub username
+DOCKERHUB_TOKEN=           # Docker Hub access token with push scope
+
+# ── Git source (clone credential registration in Jenkins) ──────────
+GIT_HOST=                  # gitlab | github
+GIT_HOST_USER=             # Git host username (for credential ID suffix)
+GIT_HOST_PAT=              # Personal access token with push rights
+
+# ── Deploy target (target-ssh credential registration in Jenkins) ──
+DEPLOY_TARGET_HOST=        # Target host IP / domain for `ssh deploy`
+DEPLOY_TARGET_USER=        # SSH user on the target
+DEPLOY_TARGET_PASS=        # SSH password (or leave blank if using key auth)
+DEPLOY_TARGET_PORT=22      # default 22
+
+# ── (future) Other integrations ────────────────────────────────────
+# Reserved for additional credentials (Figma PAT, registry tokens, …).
+# Skills add their own keys here as they start using `.u-maker/.env`.

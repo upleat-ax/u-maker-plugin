@@ -52,6 +52,8 @@ Create the v4 folder structure:
 ```
 .u-maker/
 ├── u-maker.config.json          # Project config (from config.schema.json)
+├── .env.example                 # Credential template (committed, no secrets)
+├── .env                         # Local credentials (NEVER committed)
 ├── data/
 │   ├── dropzone/                # Raw file drop zone
 │   ├── digest/                  # Analyzed digest JSONs
@@ -135,6 +137,14 @@ Create all directories listed above. Replace `{app}` with the provided `app-name
 }
 ```
 
+#### 1.5.1 Write `.env.example` and bootstrap `.env`
+
+Copy `_meta/templates/u-maker-env.template` to **`.u-maker/.env.example`** verbatim (no rendering — placeholders stay blank so the user fills them in).
+
+If `.u-maker/.env` does **not** already exist, also copy the same template to `.u-maker/.env`. This gives the user an immediately-editable starter file. If `.u-maker/.env` already exists, leave it untouched — never overwrite real credentials.
+
+The template enumerates credential keys consumed by skills that need them (Jenkins via `/u-tools-jenkins-deploy`, Docker Hub, Git PAT, deploy-target SSH). Skills load it with `set -a; . .u-maker/.env; set +a` and prefer those values over interactive prompts.
+
 #### 1.6 Generate Initial Index Files
 
 Render the three root index HTML files from their templates with empty/initial data:
@@ -157,7 +167,10 @@ Append these lines to the project root `.gitignore` (create if absent, skip line
 .u-maker/.state/
 .u-maker/output/
 .u-maker/reports/
+.u-maker/.env
 ```
+
+`.u-maker/.env.example` is committed; only the real `.env` (with secrets) is ignored.
 
 #### 1.8 Print summary
 
@@ -224,7 +237,7 @@ After moving files, ensure all v4 directories exist (same as Step 1.1), includin
 
 #### 2.3 Ensure required files exist
 
-Create `data/links.json`, `data/digest/_index.json`, `.state/loop-state.json` if they don't exist (same as Steps 1.3–1.5).
+Create `data/links.json`, `data/digest/_index.json`, `.state/loop-state.json` if they don't exist (same as Steps 1.3–1.5). Also run Step 1.5.1 to write `.env.example` and bootstrap `.env` (existing `.env` is never overwritten), and Step 1.7 to ensure `.u-maker/.env` is in the project `.gitignore`.
 
 #### 2.3.1 Generate missing index files
 
@@ -268,4 +281,5 @@ u-maker migrated from {detected-version} → v4.
 ## Reference Files
 
 - **`_meta/schemas/config.schema.json`** — Config file schema (version, project, defaults)
+- **`_meta/templates/u-maker-env.template`** — `.u-maker/.env.example` content (credential keys consumed by skills)
 - **`skills/u-engine/references/dep-engine.md`** — links.json initialization spec
