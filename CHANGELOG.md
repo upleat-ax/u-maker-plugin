@@ -2,6 +2,28 @@
 
 All notable changes to u-maker-plugin.
 
+## [4.0.0-alpha.12] — 2026-05-23
+
+**Added: `.u-maker/.env` credential file + `/u-tools-jenkins-deploy` skill.**
+
+Introduces a project-local credential file at `.u-maker/.env` (gitignored) for skills that need to authenticate to external systems, and ports the `u-tools-jenkins-deploy` skill into the plugin as the inaugural consumer.
+
+### Added
+
+- **`_meta/templates/u-maker-env.template`** — `.env.example` content. Enumerates credential keys consumed by skills: Jenkins (`JENKINS_URL`/`JENKINS_USER`/`JENKINS_TOKEN`, plus optional `JENKINS_SSH_*`), Docker Hub (`DOCKERHUB_NAMESPACE`/`DOCKERHUB_USER`/`DOCKERHUB_TOKEN`), Git host PAT (`GIT_HOST_USER`/`GIT_HOST_PAT`), and deploy-target SSH (`DEPLOY_TARGET_HOST`/`DEPLOY_TARGET_USER`/`DEPLOY_TARGET_PASS`/`DEPLOY_TARGET_PORT`). Empty values mean "ask interactively when needed."
+- **`/u-prepare-foldertree` Step 1.5.1** — On fresh init, writes `.u-maker/.env.example` and bootstraps `.u-maker/.env` from the template (never overwrites an existing `.env`). Migration path (Step 2.3) does the same for legacy projects.
+- **`/u-prepare-foldertree` Step 1.7** — Adds `.u-maker/.env` to the project `.gitignore` so secrets never land in git. `.env.example` is committed.
+- **`skills/u-tools-jenkins-deploy/`** (new) — Jenkins CI/CD setup skill ported from `~/.claude/skills/u-maker__u-tools-jenkins-deploy/`. Same Phase 1–8 pipeline (Jenkinsfile generation → credential registration → job creation → nginx + TLS → webhook/polling → first build) plus a new **Phase 0** that loads `.u-maker/.env` and resolves Jenkins/Docker Hub/Git/target-SSH credentials before prompting. Precedence: CLI flag → `.u-maker/.env` → interactive prompt. Templates (`Jenkinsfile`, `Dockerfile`, `Dockerfile.dockerignore`, `nginx-server-block`) ship under `templates/`.
+
+### Why
+
+Without `.u-maker/.env`, every Jenkins / Docker Hub / SSH setup forced the user to paste tokens and passwords directly into chat — captured in transcripts, easily leaked, and re-asked on every session. A project-local, gitignored env file lets users set credentials once and have skills consume them on demand. The `/u-tools-jenkins-deploy` skill is the first consumer; subsequent skills can extend the same file rather than each inventing their own location.
+
+### Notes
+
+- `.u-maker/.env.example` is committed verbatim from `_meta/templates/u-maker-env.template`. Adding a new key for another skill = edit the template; future `/u-prepare-foldertree` runs propagate it to new projects.
+- Existing projects pick up the file on the next `/u-prepare-foldertree --migrate` (or any rerun — Step 2.3 is idempotent).
+
 ## [4.0.0-alpha.5] — 2026-04-19
 
 **Changed: Figma parity is now a mandatory hard gate.**
