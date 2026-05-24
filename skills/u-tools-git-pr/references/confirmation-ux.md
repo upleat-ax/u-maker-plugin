@@ -42,7 +42,9 @@ Files: {total} ({modified} modified, {new} new, {deleted} deleted)
           ...
 
   [3] 부분 선택
-      - 예: "3: A,C" → A와 C만 PR 생성, 나머지는 working tree에 보존
+      - 예: "3: A,C" → A와 C만 PR 생성
+      - 선택되지 않은 그룹의 파일은 **Step 5.5에서 다시 확인** 후 misc 그룹으로 commit + push
+        (working tree에 남기지 않는 것이 기본 정책 — v5.1 Completeness Policy)
       - 그룹 라벨 조합 자유 (A, B, C, ...)
 
   [4] Dry-run
@@ -70,4 +72,14 @@ Files: {total} ({modified} modified, {new} new, {deleted} deleted)
 
 ## 4.4 `--dry-run` 플래그
 
-플래그가 켜져 있으면 4.1 요약 + 4.2 박스를 표시하되 사용자 응답을 기다리지 않고 즉시 종료 (Step 5 실행 금지).
+플래그가 켜져 있으면 4.1 요약 + 4.2 박스 + **Step 5.5 leftover 예측**을 표시하되 사용자 응답을 기다리지 않고 즉시 종료 (Step 5 실행 금지).
+
+예시 dry-run 출력:
+```
+[dry-run] 4.1 plan + 4.2 box 표시 완료
+[dry-run] Step 5.5 preview:
+  Working tree after planned groups: 0 files would remain  ✓
+  (또는 {N} files → would route to misc group: chore/misc-leftover-{timestamp})
+```
+
+`--dry-run`은 Step 5와 Step 5.5의 실제 commit/push를 일절 수행하지 않는다.
