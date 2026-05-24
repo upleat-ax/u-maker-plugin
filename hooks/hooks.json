@@ -1,32 +1,32 @@
 {
-  "hooks": [
-    {
-      "event": "PostToolUse",
-      "tool": ["Write", "Edit", "MultiEdit"],
-      "pattern": ".u-maker/data/dropzone/**",
-      "script": "on-dropzone-added.js",
-      "timeout": 5000
-    },
-    {
-      "event": "PostToolUse",
-      "tool": ["Write", "Edit", "MultiEdit"],
-      "pattern": ".u-maker/docs/**/*.md",
-      "script": "on-doc-change.js",
-      "timeout": 3000
-    },
-    {
-      "event": "PostToolUse",
-      "tool": ["Write", "Edit", "MultiEdit"],
-      "pattern": ".u-maker/.state/loop-state.json",
-      "script": "on-gate-result.js",
-      "timeout": 3000
-    },
-    {
-      "event": "PostToolUse",
-      "tool": ["Write", "Edit", "MultiEdit"],
-      "pattern": ".u-maker/docs/**/*.md",
-      "script": "on-deploy-state.js",
-      "timeout": 3000
-    }
-  ]
+  "description": "u-maker reactive hooks — keep dropzone index, doc<->JSON sync, gate loop state, and deploy staleness in sync after file mutations. Each hook is dispatched through _dispatch.js, which bridges Claude Code's stdin contract to the per-event Node modules in this folder.",
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/_dispatch.js\" on-dropzone-added",
+            "timeout": 10
+          },
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/_dispatch.js\" on-doc-change",
+            "timeout": 10
+          },
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/_dispatch.js\" on-gate-result",
+            "timeout": 10
+          },
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/_dispatch.js\" on-deploy-state",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
 }
