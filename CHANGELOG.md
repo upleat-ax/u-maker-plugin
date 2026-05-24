@@ -2,6 +2,24 @@
 
 All notable changes to u-maker-plugin.
 
+## [4.0.0-alpha.15] — 2026-05-24
+
+**Bugfix: plugin hook loader.** Restores reactive hooks that were silently failing to load since the Claude Code plugin hook schema migration. No user-facing functional changes; this only re-enables the four PostToolUse hooks that maintain `.u-maker/data/digest/_index.json`, doc↔JSON sync flags, loop-state thresholds, and deploy-staleness manifest.
+
+### Fixed
+
+- **`hooks/hooks.json`** — migrated from the legacy custom array format (`[{event, tool[], pattern, script, timeout(ms)}]`) to Claude Code's current plugin hook schema (event-keyed record with `matcher` + `command` shape). Single `PostToolUse` / `Write|Edit|MultiEdit` matcher routes all four hooks; timeouts converted ms → s. The plugin loader had been erroring at session start (`expected record, received array`), suppressing every hook.
+
+### Added
+
+- **`hooks/_dispatch.js`** — new shim that bridges Claude Code's stdin-JSON subprocess contract to the existing CommonJS hook modules (`on-dropzone-added.js`, `on-doc-change.js`, `on-gate-result.js`, `on-deploy-state.js`). Reads `tool_input.file_path` and `CLAUDE_PROJECT_DIR` from the hook payload, requires the legacy module, and invokes it with `({filePath, projectRoot})`. Always exits 0 — reactive hooks never block the agent. Per-hook path filtering inside each `on-*.js` is preserved unchanged.
+
+### Notes
+
+- Tested end-to-end via dispatcher: `on-dropzone-added` produces the expected `_index.json` (sha256 + status:pending) for a sample dropzone write. Mismatched path / empty stdin / non-matching tool name all exit 0 silently.
+- No script bodies were modified — this release is purely a wiring fix.
+- See PR [#89](https://github.com/thinoo-v2/u-maker-plugin/pull/89) for full diff and root-cause writeup.
+
 ## [4.0.0-alpha.14] — 2026-05-24
 
 **Internal: CI/CD automation — Release + Vercel deploy GitHub Actions workflows.**

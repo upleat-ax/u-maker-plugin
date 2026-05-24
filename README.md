@@ -1,4 +1,4 @@
-# U-MAKER Plugin v4.0.0-alpha.14
+# U-MAKER Plugin v4.0.0-alpha.15
 
 PBGD-based SSoT (Single Source of Truth) plugin for Claude Code.
 
