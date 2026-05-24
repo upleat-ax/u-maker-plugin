@@ -2,6 +2,31 @@
 
 All notable changes to u-maker-plugin.
 
+## [4.0.0-alpha.14] — 2026-05-24
+
+**Internal: CI/CD automation — Release + Vercel deploy GitHub Actions workflows.**
+
+No user-facing plugin changes. Adds GitHub Actions to automate the release flow that previously required running `deploy_github.sh` + `deploy_vercel.sh` by hand. This is the first release executed end-to-end through the new pipeline.
+
+### Added
+
+- **`.github/workflows/release.yml`** — on `git push origin v*` (tag push): build `u-maker-plugin-${TAG}.zip` → GitHub Release on this repo (via `softprops/action-gh-release`) → force-sync README + HTML + install scripts to `upleat-ax/u-maker-plugin` → GitHub Release on the public repo with the same zip.
+- **`.github/workflows/vercel-deploy.yml`** — on `main` push touching `README*.html` / `GET_STARTED.html` / `.claude-plugin/plugin.json` / the workflow file itself, plus manual `workflow_dispatch`: copy the 3 HTML docs + project link → `vercel pull` → `vercel deploy --prod` → curl-verify each public URL on `umaker.upleat.ai`.
+- **`.github/AUTOMATION.md`** — maintainer guide covering both workflows, required secrets (`UPLEAT_PUBLISH_TOKEN`, `VERCEL_TOKEN`), the standard release flow after automation, the local fallback scripts, and what is still manual (CHANGELOG narrative, catalog table rows, SVG layer breakdown).
+
+### Removed
+
+- **`.github/workflows/publish.yml`** — superseded by `release.yml`. The old workflow only mirrored README + install scripts on tag push without building a zip or creating a Release.
+
+### Notes
+
+- Required secret `VERCEL_TOKEN` was added to repo settings; existing `UPLEAT_PUBLISH_TOKEN` is reused for the public-repo sync.
+- Local scripts `deploy_github.sh` / `deploy_vercel.sh` remain as authoritative fallbacks; the workflows mirror their logic rather than extend it. Keep them in sync if you change the publishable file set.
+- Post-automation standard release flow (see AUTOMATION.md):
+  1. Edit `CHANGELOG.md` + bump `plugin.json` + sync README/HTML version strings.
+  2. Open a PR, merge to main — `vercel-deploy.yml` refreshes `umaker.upleat.ai` automatically.
+  3. `git tag -a vX.Y.Z` + `git push origin vX.Y.Z` — `release.yml` handles zip + both Releases + public-repo sync automatically.
+
 ## [4.0.0-alpha.13] — 2026-05-24
 
 **Changed: 28-skill quality review fixes — sanitize, trigger hardening, progressive disclosure, Korean coverage, official-schema compliance.**
