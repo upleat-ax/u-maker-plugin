@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>U-MAKER Plugin v4.0.0-alpha.15 (PBGD) Documentation</title>
+<title>U-MAKER Plugin v4.0.0-alpha.16 (PBGD) Documentation</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{--sidebar-w:280px;--bg:#ffffff;--sidebar-bg:#ffffff;--main-bg:#ffffff;--text:#334155;--text-main:#334155;--heading:#0f172a;--accent:#3b82f6;--accent-hover:#2563eb;--code-bg:#f1f5f9;--code-text:#1e293b;--border:#e2e8f0;--active-bg:#f8fafc;--badge-bg:#e2e8f0;--badge-text:#64748b;--table-stripe:#f8fafc;--table-border:#e2e8f0;--table-header:#f1f5f9}
@@ -109,7 +109,7 @@ a:hover{text-decoration:underline}
 <nav class="sidebar" id="sidebar">
   <div class="sidebar-header">
     <h1>U-MAKER</h1>
-    <p>v4.0.0-alpha.15 (PBGD) &mdash; Plugin Documentation</p>
+    <p>v4.0.0-alpha.16 (PBGD) &mdash; Plugin Documentation</p>
   </div>
   <div class="sidebar-nav">
 
@@ -148,7 +148,7 @@ a:hover{text-decoration:underline}
     </div>
 
   </div>
-  <div class="sidebar-footer">Proprietary &copy; 2026 U PLEAT &middot; v4.0.0-alpha.15 (PBGD)</div>
+  <div class="sidebar-footer">Proprietary &copy; 2026 U PLEAT &middot; v4.0.0-alpha.16 (PBGD)</div>
 </nav>
 
 <main class="main">
@@ -502,7 +502,7 @@ a:hover{text-decoration:underline}
 <tr><td><code>/u-tools-figma-screen</code></td><td>Screen-spec <strong>writer</strong>. Inputs: (Figma URL │ screens.md+json) + (Figma DS URL │ design-system.md+json+tsx+css). Outputs: Figma frames, screens.md+json, or both. Delegates to <code>figma:figma-generate-design</code>. Auto-invoked from <code>/u-plan</code> Step 2.5; opt-in from <code>/u-design</code> Step 4.5</td><td><code>/u-tools-figma-screen --app my-app --output md</code></td></tr>
 <tr><td><code>/u-tools-figma-ds</code></td><td>Figma design-system <strong>writer</strong>. Input: DS-applied source code (.tsx + .json + .css). Output: Figma DS (Variables + modes + styles + master components). Delegates to <code>figma:figma-generate-library</code>. Auto-invoked from <code>/u-analyze</code> Step 2.4; opt-in from <code>/u-design</code> Step 4.5</td><td><code>/u-tools-figma-ds --app my-app --source ./packages/ui-*</code></td></tr>
 <tr><td><code>/u-tools-browser</code></td><td>Unified browser engine. agent-browser CLI &rarr; Playwright MCP &rarr; chrome-devtools MCP fallback. Used for E2E, screen capture, visual verify, wireframe preview. Consumed by <code>/u-gatekeeping</code>, <code>/u-report-weekly</code>, <code>/u-dev --verify</code>, <code>/u-wireframe --preview</code>. 9-step protocol</td><td><code>/u-tools-browser --app my-app</code></td></tr>
-<tr><td><code>/u-tools-git-pr</code></td><td>git + <code>gh</code> CLI + GitHub API. Intelligent PR generation with commit grouping, split/merge, review guide, multiline numeric confirmation prompt</td><td><code>/u-tools-git-pr</code><br><code>/u-tools-git-pr --base main --dry-run</code></td></tr>
+<tr><td><code>/u-tools-git-pr</code></td><td>git + <code>gh</code> CLI + GitHub API. Intelligent PR generation with commit grouping, split/merge, review guide, table-based numeric confirmation prompt. <strong>v5.1 Completeness Policy</strong> (since alpha.16): Step 5.5 safety-net sweep guarantees <code>git status --porcelain</code> ends empty &mdash; <code>.gitignore</code>'d files excluded, leftover files auto-routed to a <code>chore/misc-leftover-{ts}</code> PR after user confirmation</td><td><code>/u-tools-git-pr</code><br><code>/u-tools-git-pr --base main --dry-run</code></td></tr>
 <tr><td><code>/u-tools-jenkins-deploy</code></td><td>Jenkins API + Docker Hub + ssh + nginx-certbot. CI/CD setup for Docker-based deploys. Reads <code>.u-maker/.env</code> for Jenkins / Docker Hub / Git PAT / target-SSH credentials. 8-phase flow: discovery → decisions → Jenkinsfile + Dockerfile generation → credentials → job creation → nginx + TLS → webhook (with polling fallback) → first build</td><td><code>/u-tools-jenkins-deploy --app apps/myapp --domain myapp.example.com</code></td></tr>
 </tbody>
 </table>
@@ -864,7 +864,7 @@ a:hover{text-decoration:underline}
 
 <h3>Plugin Repository Layout</h3>
 <pre><code>u-maker-plugin/
-&#x251C;&#x2500;&#x2500; .claude-plugin/plugin.json        # v4.0.0-alpha.15 (PBGD)
+&#x251C;&#x2500;&#x2500; .claude-plugin/plugin.json        # v4.0.0-alpha.16 (PBGD)
 &#x251C;&#x2500;&#x2500; agents/                           # 10 agent definitions
 &#x2502;   &#x251C;&#x2500;&#x2500; u-agent-pm.md
 &#x2502;   &#x251C;&#x2500;&#x2500; u-agent-plan.md
@@ -928,7 +928,7 @@ a:hover{text-decoration:underline}
 
 <!-- Footer -->
 <div class="footer">
-  <strong>U-MAKER Plugin</strong> v4.0.0-alpha.15 (PBGD) &mdash; PBGD-based SSoT Collaboration Orchestrator<br>
+  <strong>U-MAKER Plugin</strong> v4.0.0-alpha.16 (PBGD) &mdash; PBGD-based SSoT Collaboration Orchestrator<br>
   Proprietary &copy; 2026 U PLEAT &middot; All rights reserved
 </div>
 

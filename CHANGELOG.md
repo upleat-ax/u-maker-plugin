@@ -2,6 +2,25 @@
 
 All notable changes to u-maker-plugin.
 
+## [4.0.0-alpha.16] — 2026-05-24
+
+**Changed: `/u-tools-git-pr` v5.1 — guaranteed clean working tree + table-based confirmation UI.**
+
+Two refinements to the standalone PR generator skill. No new commands, no plugin-wide functional changes.
+
+### Changed
+
+- **`skills/u-tools-git-pr/SKILL.md` (v5.0.0 → v5.1.0)** — adds **Completeness Policy** at the top: the skill must terminate with `git status --porcelain` empty. `.gitignore`'d files are excluded automatically (git default — `--ignored` flag explicitly forbidden); `git add -A` / `git add .` forbidden in favor of per-group explicit file lists.
+- **New Step 5.5: Verify Working Tree (safety net)** inserted between the group loop (Step 5) and the summary (Step 6). After the user-selected groups are processed, `git status --porcelain` is re-checked regardless of branch state. If files remain (e.g., partial `[3]` selection, unclassified paths on a feature branch with uncommitted local changes), a structured multiline-box prompt asks the user `[1] commit leftovers as misc PR (recommended)` or `[2] terminate with files retained`. The `misc` path creates a `chore/misc-leftover-{ts}` branch and re-verifies after commit. `--dry-run` shows the leftover count without executing.
+- **Step 6 summary** now prints `Working tree clean ✓` when post-5.5 status is empty, or `Working tree has {N} uncommitted files (user-skipped)` when the user chose `[2]`.
+- **`skills/u-tools-git-pr/references/confirmation-ux.md`** — full rewrite from ASCII-box prompts to a **table-based UI**. Groups now use `A`/`B`/`C` letter labels (consistent with the `3 A,B` partial-selection grammar). Stats line uses `M`/`A`/`D` shorthand; recommended strategy is surfaced inline. Adds an explicit **Edge cases** section (lone `Y` no longer auto-accepts; undefined labels re-prompt; single-group `3 ...` input re-confirms) and a `Dry-run summary` trace block aligned with the new Step 4 → Step 5 → Step 5.5 flow.
+
+### Notes
+
+- Partial-selection `[3] A,C` behavior changed: previously the unselected files were left in the working tree; now they are routed to Step 5.5 for misc-commit confirmation. Default policy is "no leftover files."
+- Skill-level version bump only (`5.0.0 → 5.1.0` in skill frontmatter); plugin version follows the standard alpha increment.
+- Feature-branch users with both committed-since-divergence changes **and** uncommitted local edits will now see the Step 5.5 sweep run unconditionally — surfacing the uncommitted files instead of silently leaving them.
+
 ## [4.0.0-alpha.15] — 2026-05-24
 
 **Bugfix: plugin hook loader.** Restores reactive hooks that were silently failing to load since the Claude Code plugin hook schema migration. No user-facing functional changes; this only re-enables the four PostToolUse hooks that maintain `.u-maker/data/digest/_index.json`, doc↔JSON sync flags, loop-state thresholds, and deploy-staleness manifest.

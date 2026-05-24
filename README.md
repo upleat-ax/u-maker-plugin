@@ -1,4 +1,4 @@
-# U-MAKER Plugin v4.0.0-alpha.15
+# U-MAKER Plugin v4.0.0-alpha.16
 
 PBGD-based SSoT (Single Source of Truth) plugin for Claude Code.
 
@@ -63,7 +63,7 @@ Wrappers around external programs/services. All u-maker phase skills route throu
 | `/u-tools-figma-screen` | `figma:figma-generate-design` (writer) | `/u-plan` Step 2.5 (auto), `/u-design` Step 4.5 (opt-in), `/u-build` (gap-fill) |
 | `/u-tools-figma-ds` | `figma:figma-generate-library` (writer) | `/u-analyze` Step 2.4 (auto on DS code), `/u-design` Step 4.5 (opt-in) |
 | `/u-tools-browser` | agent-browser CLI → Playwright MCP → chrome-devtools MCP | `/u-gatekeeping` (E2E), `/u-report-weekly` (capture), `/u-dev --verify`, `/u-wireframe --preview` |
-| `/u-tools-git-pr` | git + `gh` CLI + GitHub API | Standalone PR generator with intelligent grouping |
+| `/u-tools-git-pr` | git + `gh` CLI + GitHub API | Standalone PR generator — intelligent grouping + **v5.1 Completeness Policy** (guarantees `git status` clean; `.gitignore`'d files excluded) + table-based confirmation UI |
 | `/u-tools-jenkins-deploy` | Jenkins API + Docker Hub + ssh + nginx-certbot | Standalone Jenkins CI/CD setup for Docker-based deploys (reads `.u-maker/.env`) |
 
 ### Rule packs (external reference integrations)
