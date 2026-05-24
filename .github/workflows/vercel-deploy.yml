@@ -24,6 +24,13 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    env:
+      # Project link is provided via env vars instead of .vercel/project.json
+      # (which is gitignored). These IDs are not secrets — they appear in any
+      # deploy log — so they're embedded here.
+      VERCEL_ORG_ID: team_oUBrSN4gMg91nG644GP3z5zq
+      VERCEL_PROJECT_ID: prj_Pdd6rpdL5qy3QNiQgb963GqmKmuk
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -62,21 +69,12 @@ jobs:
           VJSON
           ls -la site/
 
-      - name: Copy vercel project link
-        run: |
-          mkdir -p site/.vercel
-          cp .vercel/project.json site/.vercel/project.json
-
       - name: Pull Vercel env (production)
-        env:
-          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
         run: |
           cd site
           vercel pull --yes --environment=production --token="$VERCEL_TOKEN"
 
       - name: Deploy to Vercel (production)
-        env:
-          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
         run: |
           cd site
           DEPLOY_URL=$(vercel deploy --prod --yes --token="$VERCEL_TOKEN" 2>&1 | tee /tmp/deploy.log | grep -oE 'https://[a-zA-Z0-9._-]+\.vercel\.app' | tail -1)
