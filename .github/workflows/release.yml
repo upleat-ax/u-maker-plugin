@@ -1,0 +1,156 @@
+name: Release
+
+# Triggered by `git push origin v*` (e.g. `git push origin v4.0.0-alpha.14`).
+# Replaces the role previously played by deploy_github.sh's Steps 4–7.
+#
+# What it does:
+#   1. Build u-maker-plugin-${TAG}.zip with all plugin assets (skills/, agents/, hooks/,
+#      _meta/, install scripts, README*.html, GET_STARTED.html).
+#   2. Create GitHub Release on this repo (thinoo-v2/u-maker-plugin) with the zip attached.
+#   3. Sync README + HTML + install scripts to the public repo (upleat-ax/u-maker-plugin)
+#      so external users can install via `curl ... install.sh | bash`.
+#   4. Create GitHub Release on the public repo with the same zip.
+#
+# Required secrets:
+#   - UPLEAT_PUBLISH_TOKEN — PAT with `repo` scope for upleat-ax/u-maker-plugin
+#     (used to force-push README/install + create release).
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Resolve version
+        id: ver
+        run: |
+          TAG="${GITHUB_REF#refs/tags/}"          # e.g. v4.0.0-alpha.14
+          VERSION="${TAG#v}"                       # e.g. 4.0.0-alpha.14
+          echo "tag=${TAG}" >> "$GITHUB_OUTPUT"
+          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+          echo "Releasing ${TAG} (version ${VERSION})"
+
+      - name: Build plugin zip
+        id: zip
+        run: |
+          ZIP_PATH="/tmp/u-maker-plugin-${{ steps.ver.outputs.tag }}.zip"
+          zip -r "$ZIP_PATH" \
+            .claude-plugin/ \
+            skills/ \
+            agents/ \
+            hooks/ \
+            _meta/ \
+            deploy_local.sh \
+            deploy_local.bat \
+            install.sh \
+            install.bat \
+            install.ps1 \
+            uninstall_local.sh \
+            README.ko.html \
+            README.en.html \
+            GET_STARTED.html \
+            -x "*.DS_Store" "*__pycache__*" "*.pyc"
+          echo "zip_path=${ZIP_PATH}" >> "$GITHUB_OUTPUT"
+          ls -lh "$ZIP_PATH"
+
+      - name: Create Release on this repo
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.ver.outputs.tag }}
+          name: u-maker ${{ steps.ver.outputs.tag }}
+          generate_release_notes: true
+          files: ${{ steps.zip.outputs.zip_path }}
+
+      - name: Sync to public repo (upleat-ax/u-maker-plugin)
+        env:
+          UPLEAT_PUBLISH_TOKEN: ${{ secrets.UPLEAT_PUBLISH_TOKEN }}
+        run: |
+          if [ -z "$UPLEAT_PUBLISH_TOKEN" ]; then
+            echo "::warning::UPLEAT_PUBLISH_TOKEN not set — skipping public repo sync"
+            exit 0
+          fi
+
+          TAG="${{ steps.ver.outputs.tag }}"
+          PUBLIC_DIR="$(mktemp -d)"
+
+          cp README.md          "$PUBLIC_DIR/README.md"
+          cp README.ko.html     "$PUBLIC_DIR/README.ko.html"
+          cp README.en.html     "$PUBLIC_DIR/README.en.html"
+          cp GET_STARTED.html   "$PUBLIC_DIR/GET_STARTED.html"
+          cp install.sh         "$PUBLIC_DIR/install.sh"
+          cp install.bat        "$PUBLIC_DIR/install.bat"
+          cp install.ps1        "$PUBLIC_DIR/install.ps1"
+
+          cat > "$PUBLIC_DIR/.gitignore" <<'GITIGNORE'
+          .DS_Store
+          .u-maker/
+          .claude/
+          node_modules/
+          *.log
+          __pycache__
+          GITIGNORE
+          # un-indent the heredoc
+          sed -i 's/^          //' "$PUBLIC_DIR/.gitignore"
+
+          cd "$PUBLIC_DIR"
+          git init -q -b main
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -q -m "Release ${TAG}"
+          git tag -a "${TAG}" -m "Release ${TAG}"
+
+          git remote add upleat "https://x-access-token:${UPLEAT_PUBLISH_TOKEN}@github.com/upleat-ax/u-maker-plugin.git"
+          git push upleat main --force
+          git push upleat "${TAG}" --force
+
+      - name: Create Release on public repo
+        if: success()
+        env:
+          GH_TOKEN: ${{ secrets.UPLEAT_PUBLISH_TOKEN }}
+        run: |
+          if [ -z "$GH_TOKEN" ]; then
+            echo "::warning::UPLEAT_PUBLISH_TOKEN not set — skipping public release"
+            exit 0
+          fi
+
+          TAG="${{ steps.ver.outputs.tag }}"
+          ZIP="${{ steps.zip.outputs.zip_path }}"
+          NOTES=$(cat <<EOF
+          ## u-maker ${TAG}
+
+          ### Install
+
+          **macOS / Linux:**
+          \`\`\`bash
+          curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/install.sh | bash
+          \`\`\`
+
+          **Windows (CMD):**
+          \`\`\`cmd
+          curl -fsSL --ssl-no-revoke https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/install.bat -o install.bat && install.bat && del install.bat
+          \`\`\`
+
+          **Windows (PowerShell):**
+          \`\`\`powershell
+          curl.exe -fsSL --ssl-no-revoke https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/install.bat -o install.bat; .\\install.bat; del install.bat
+          \`\`\`
+          EOF
+          )
+
+          gh release create "${TAG}" "${ZIP}" \
+            --title "u-maker ${TAG}" \
+            --notes "${NOTES}" \
+            --repo upleat-ax/u-maker-plugin \
+          || gh release upload "${TAG}" "${ZIP}" --clobber --repo upleat-ax/u-maker-plugin

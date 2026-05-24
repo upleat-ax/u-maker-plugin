@@ -1,0 +1,92 @@
+name: Vercel Deploy (umaker.upleat.ai)
+
+# Triggered when docs assets land on main. Replaces the role previously played
+# by deploy_vercel.sh — running locally is still possible, but on push the
+# umaker.upleat.ai site is refreshed automatically.
+#
+# Required secrets:
+#   - VERCEL_TOKEN — personal token from https://vercel.com/account/tokens
+#
+# Project link metadata (orgId / projectId) is committed to .vercel/project.json,
+# so no extra secrets are needed for that.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'README.ko.html'
+      - 'README.en.html'
+      - 'GET_STARTED.html'
+      - '.claude-plugin/plugin.json'
+      - '.github/workflows/vercel-deploy.yml'
+  workflow_dispatch: {}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Vercel CLI
+        run: npm install --global vercel@latest
+
+      - name: Build static site
+        run: |
+          mkdir -p site
+          cp README.ko.html   site/README.ko.html
+          cp README.en.html   site/README.en.html
+          cp GET_STARTED.html site/GET_STARTED.html
+          # root index → mirror README.ko.html
+          cp README.ko.html   site/index.html
+
+          cat > site/vercel.json <<'VJSON'
+          {
+            "projectSettings": { "framework": null },
+            "headers": [
+              {
+                "source": "/(.*)",
+                "headers": [
+                  { "key": "Cache-Control", "value": "public, max-age=3600, s-maxage=86400" },
+                  { "key": "X-Content-Type-Options", "value": "nosniff" }
+                ]
+              }
+            ],
+            "cleanUrls": false
+          }
+          VJSON
+          ls -la site/
+
+      - name: Copy vercel project link
+        run: |
+          mkdir -p site/.vercel
+          cp .vercel/project.json site/.vercel/project.json
+
+      - name: Pull Vercel env (production)
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: |
+          cd site
+          vercel pull --yes --environment=production --token="$VERCEL_TOKEN"
+
+      - name: Deploy to Vercel (production)
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: |
+          cd site
+          DEPLOY_URL=$(vercel deploy --prod --yes --token="$VERCEL_TOKEN" 2>&1 | tee /tmp/deploy.log | grep -oE 'https://[a-zA-Z0-9._-]+\.vercel\.app' | tail -1)
+          echo "Deployed: $DEPLOY_URL"
+          echo "Aliased: https://umaker.upleat.ai"
+
+      - name: Verify live URLs
+        run: |
+          for path in '' 'README.ko.html' 'README.en.html' 'GET_STARTED.html'; do
+            url="https://umaker.upleat.ai/${path}"
+            code=$(curl -s -o /dev/null -w '%{http_code}' "$url" || echo "000")
+            echo "  $url → $code"
+          done
