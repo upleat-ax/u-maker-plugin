@@ -69,6 +69,11 @@ jobs:
           VJSON
           ls -la site/
 
+      - name: Link Vercel project
+        run: |
+          cd site
+          vercel link --yes --project u-maker-plugin --token="$VERCEL_TOKEN"
+
       - name: Pull Vercel env (production)
         run: |
           cd site
