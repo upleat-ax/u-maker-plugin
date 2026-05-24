@@ -1,10 +1,7 @@
 ---
 name: u-check
-description: "Alias of /u-gatekeeping. Use when the user asks to 'check', '/u-check'. Routes directly to /u-gatekeeping (PBGD Gatekeeping phase: doc scoring + runtime QA)."
+description: "Alias of /u-gatekeeping. Use when the user asks to '/u-check', 'u-maker check', 'u-maker gatekeeping check', 'u-maker 검사', or 'u-maker 게이트키핑 검사'. Routes directly to /u-gatekeeping (PBGD Gatekeeping phase: doc scoring + runtime QA)."
 version: 4.0.0
-triggers:
-  - "/u-check"
-  - "check phase"
 ---
 
 # u-check — Alias for /u-gatekeeping

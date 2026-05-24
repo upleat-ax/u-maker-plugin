@@ -1,14 +1,7 @@
 ---
 name: u-tools-figma-screen
-description: "Generate Screen Specifications in Figma and/or markdown+JSON from existing screen-plan + design-system inputs. Use when the user asks to 'generate screen plan', 'create screens in Figma', 'screens to figma', '/u-tools-figma-screen', or auto-delegated from /u-plan when both screen-plan source and design-system source are detected. Inputs: (Figma URL | screens.{md,json}) for the screen plan, (Figma DS URL | design-system.{md,json,tsx,css}) for the design system. Outputs: Figma frames, screens.md+screens.json, or both."
+description: "Generate Screen Specifications in Figma and/or markdown+JSON from existing screen-plan + design-system inputs. Use when the user asks to '/u-tools-figma-screen', 'generate screen plan', 'screens to figma', 'wireframe to figma', 'figma 화면기획', 'screen specification generation', '피그마 화면 생성', '화면 스펙 피그마', or 'screens.md 생성'. Auto-delegated from /u-plan when both screen-plan source and design-system source are detected. Inputs: (Figma URL | screens.{md,json}) for the screen plan, (Figma DS URL | design-system.{md,json,tsx,css}) for the design system."
 version: 1.0.0
-triggers:
-  - "/u-tools-figma-screen"
-  - "generate screen plan"
-  - "screens to figma"
-  - "wireframe to figma"
-  - "figma 화면기획"
-  - "screen specification generation"
 ---
 
 # u-tools-figma-screen — Screen Specification Generator

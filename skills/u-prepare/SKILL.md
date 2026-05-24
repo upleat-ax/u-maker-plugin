@@ -1,13 +1,7 @@
 ---
 name: u-prepare
-description: "This skill should be used when the user asks to 'prepare', 'start', 'initialize + ingest', 'set up project for u-maker', '/u-prepare', or '/u-init' (alias). Umbrella for the Preparation sub-phase: foldertree init + dropzone ingest + analysis (u-analyze) or reverse-engineering (u-reverse) + 요구사항 협의."
+description: "This skill should be used when the user asks to '/u-prepare', '/u-init', 'prepare project', 'start project', 'initialize u-maker', 'u-maker 준비', 'u-maker 시작', '프로젝트 준비', '요구사항 협의', or wants to set up a project for u-maker. Umbrella for the Preparation sub-phase: foldertree init + dropzone ingest + analysis (u-analyze) or reverse-engineering (u-reverse)."
 version: 4.0.0
-triggers:
-  - "/u-prepare"
-  - "/u-init"
-  - "prepare project"
-  - "start project"
-  - "initialize u-maker"
 ---
 
 # u-prepare — Preparation Umbrella (PBGD Plan.Prepare)

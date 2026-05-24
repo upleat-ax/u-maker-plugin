@@ -1,6 +1,6 @@
 ---
 name: u-engine
-description: "This skill should be used when any u-maker command needs internal engine support — document CRUD, HTML generation, dependency graph management, digest processing, or command routing. Provides shared infrastructure for all phase skills."
+description: "INTERNAL INFRASTRUCTURE — not directly invoked by users. Referenced by other u-* phase skills for shared engines: doc-engine (document CRUD), html-engine (HTML generation), dep-engine (dependency graph), digest-engine (dropzone processing), router (command dispatch). Do not auto-load on user requests; phase skills load specific engine references on demand."
 version: 4.0.0
 ---
 
@@ -42,54 +42,12 @@ Every `.md` SSoT document has a `.json` companion following `_meta/schemas/doc-c
 
 ## HTML Generation Protocol
 
-### Single-file Pipeline (IA, Design System, Test Results)
+Full pipeline (Single-file, Domain Split, Index Updates, Standalone, HTML Rules) → **see `references/html-engine.md`**.
 
-1. Read `.md` source document
-2. Parse frontmatter metadata
-3. Resolve `--diagram` mode (default: `svg`)
-4. Convert markdown → HTML body
-5. Generate diagrams per mode (see html-engine § 2)
-6. Encode images as base64
-7. Apply `_meta/templates/output-page.template.html` wrapper
-8. Generate TOC from headings
-9. Load Mermaid CDN only if mode = `mermaid` or `all`
-10. Write to `output/{app}/{phase}/{docName}.html`
-11. Update index navigation
-
-### Domain Split Pipeline (SRS, ERD, API, Screens, Test Cases)
-
-Large documents are split by domain into multiple pages — see `html-engine.md` § 12:
-
-1. Read companion `.json` → determine domain groups
-2. Create `output/{app}/{phase}/{doc}/` directory
-3. Render index page from `_meta/templates/output-split-index.template.html`
-4. Render each domain page from `_meta/templates/output-split-page.template.html`
-5. Inject sidebar navigation + prev/next links
-6. Update index navigation (point to `{doc}/index.html`)
-
-### Index Updates (both modes)
-
-- Update `output/{app}/index.html` navigation
-- Update root index files (`output/index.html`, `reports/index.html`, `index.html`) — see `html-engine.md` § 8
-
-### Standalone HTML Generation
-
-Use `/u-output` to regenerate HTML from existing `docs/` without re-running phase logic.
-
-### HTML Rules
-
-- Light mode default
-- Tailwind CSS utility classes
-- Dark/light toggle switcher (page only — Mermaid stays light)
-- **`--diagram` mode**: `svg` (default) | `mermaid` | `all`
-  - `svg`: All diagrams inline SVG, Mermaid CDN not loaded. Mermaid 스타일에 구애받지 않고 자유로운 SVG 표현 가능 (UML 박스, 카드형 노드, 타임라인 컬럼, 커넥터 등)
-  - `mermaid`: All diagrams via Mermaid CDN
-  - `all`: SVG primary + Mermaid fallback for UML only
-- **No ASCII art (folder tree 제외):** folder tree(`├──`, `└──`)만 ASCII 허용. 레이아웃, ERD, 플로우, 노드맵 등 모든 다이어그램은 반드시 inline SVG
-- **Mermaid always light mode**: `theme: 'default'` fixed, wrapped in `.mermaid-wrapper` (white bg)
-- SVG curved connectors only (Bezier `C`/`Q`, no `<line>`)
-- Images embedded as base64
-- Footer: `Copyright(c) 2026 U PLEAT`
+Key invariants enforced by html-engine:
+- `--diagram` mode: `svg` (default) | `mermaid` | `all`
+- No ASCII art except folder tree; Mermaid always light mode
+- Use `/u-output` to regenerate HTML from existing `docs/` without re-running phase logic
 
 ## Command Options (All Phase Skills)
 

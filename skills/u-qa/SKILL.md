@@ -1,10 +1,7 @@
 ---
 name: u-qa
-description: "Alias of /u-gatekeeping --only qa. Use when the user asks for 'QA', '/u-qa'. Routes directly to /u-gatekeeping scoped to the runtime-QA sub-phase."
+description: "Alias of /u-gatekeeping --only qa. Use when the user asks to '/u-qa', 'u-maker QA', 'u-qa runtime QA', 'u-maker QA 실행', or 'u-maker 런타임 테스트'. Routes directly to /u-gatekeeping scoped to the runtime-QA sub-phase."
 version: 4.0.0
-triggers:
-  - "/u-qa"
-  - "QA"
 ---
 
 # u-qa — Alias for /u-gatekeeping --only qa

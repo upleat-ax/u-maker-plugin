@@ -1,16 +1,7 @@
 ---
 name: u-gatekeeping
-description: "This skill should be used when the user asks to 'gatekeep', 'quality gate', 'QA', 'generate test cases', 'run tests', 'score documents', '/u-gatekeeping', '/u-check', or '/u-qa'. Covers both document scoring (11-criteria gatekeeper) and runtime QA (testcases + execution)."
+description: "This skill should be used when the user asks to '/u-gatekeeping', '/u-check', '/u-qa', 'gatekeep', 'quality gate', 'u-maker QA', 'test cases', 'run tests', 'u-maker 검수', '검수 단계', '품질 게이트', '테스트 케이스 생성', 'u-maker 테스트', 'generate test cases', or 'score documents'. Covers both document scoring (11-criteria gatekeeper) and runtime QA (testcases + execution)."
 version: 4.0.0
-triggers:
-  - "/u-gatekeeping"
-  - "/u-check"
-  - "/u-qa"
-  - "gatekeep"
-  - "quality gate"
-  - "QA"
-  - "test cases"
-  - "run tests"
 ---
 
 # u-gatekeeping — Gatekeeping Phase (PBGD Gatekeeping)

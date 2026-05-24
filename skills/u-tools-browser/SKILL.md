@@ -1,16 +1,7 @@
 ---
 name: u-tools-browser
-description: "This skill should be used when any u-maker command needs browser automation — E2E test execution (Playwright), screen capture for reports, dev-server verification, visual regression, or live-render inspection. All u-maker phase skills MUST route browser work through this engine instead of calling MCP browser tools directly."
+description: "This skill should be used when any u-maker command needs browser automation. Use when the user asks to '/u-tools-browser', 'u-tools-browser', 'playwright', 'agent-browser', 'browser automation', 'e2e test', 'E2E', 'headless browser', 'screen capture', 'screenshot', 'visual regression', 'a11y audit', 'figma parity', 'Playwright 캡처', or '브라우저 자동화'. Covers E2E test execution (Playwright), screen capture for reports, dev-server verification, visual regression, or live-render inspection. All u-maker phase skills MUST route browser work through this engine instead of calling MCP browser tools directly."
 version: 1.0.0
-triggers:
-  - "u-tools-browser"
-  - "browser automation"
-  - "e2e test"
-  - "E2E"
-  - "headless browser"
-  - "screen capture"
-  - "Playwright 캡처"
-  - "브라우저 자동화"
 ---
 
 # u-tools-browser — Unified Browser Automation Engine
@@ -39,18 +30,9 @@ If the platform offers multiple ways to control a browser, always pick **agent-b
 
 ### Tool Detection
 
-Before step 1, verify that a browser backend is reachable. Check in this order:
+Before Step 1, verify that a browser backend is reachable. Priority: **agent-browser CLI > Playwright MCP > chrome-devtools MCP**. If none available, HALT with install instructions.
 
-1. Check the shell for `agent-browser`:
-   ```bash
-   command -v agent-browser >/dev/null 2>&1 && echo "Installed" || echo "NOT INSTALLED"
-   ```
-   If installed → use **agent-browser CLI** (primary).
-2. Else if `mcp__plugin_playwright_playwright__browser_navigate` is listed in the available tools → proceed with **Playwright MCP** (fallback).
-3. Else if `mcp__plugin_chrome-devtools-mcp_chrome-devtools__navigate_page` is available → proceed with **chrome-devtools MCP** (last resort).
-4. Else → inform user:
-   > "No browser automation backend available. Install the `agent-browser` CLI, or enable the `plugin_playwright` plugin as a fallback."
-   Then HALT.
+Full detection protocol → **see `references/backend-detection.md` § Tool Detection**.
 
 ## Workflow
 
@@ -83,29 +65,9 @@ When scope comes from a file diff, translate paths to URLs:
 
 ### Step 3: Detect Dev Server Port
 
-Priority (u-maker-specific):
+Priority: `--port` arg > `.u-maker/data/ports.json` > `apps/{app}/package.json` dev script > `.env*` PORT line > `AGENTS.md/CLAUDE.md` regex > per-app defaults (web 3000 / admin 3001 / backend 2920 / storybook 6006).
 
-1. **Explicit argument** — caller passed `--port {N}` → use it.
-2. **`.u-maker/data/ports.json`** — if exists, look up `{app}` → port.
-3. **`apps/{app}/package.json`** — `dev` script `--port` flag.
-4. **`.env`, `.env.local`, `.env.development`** inside `apps/{app}/` — `PORT=` line.
-5. **`AGENTS.md` / `CLAUDE.md`** — regex `(port\s*[:=]\s*|localhost:)(\d{4,5})`.
-6. **Default per app:**
-   - `web` → 3000
-   - `admin` → 3001
-   - `backend` → 2920
-   - `storybook` → 6006
-   - Unknown → 3000
-
-```bash
-# Reference snippet
-PORT="${EXPLICIT_PORT:-}"
-[ -z "$PORT" ] && [ -f ".u-maker/data/ports.json" ] && PORT=$(jq -r ".apps.${APP} // empty" .u-maker/data/ports.json)
-[ -z "$PORT" ] && PORT=$(grep -Eo '\-\-port[= ]+[0-9]{4,5}' apps/${APP}/package.json 2>/dev/null | grep -Eo '[0-9]{4,5}' | head -1)
-[ -z "$PORT" ] && PORT=$(grep -h '^PORT=' apps/${APP}/.env* 2>/dev/null | tail -1 | cut -d= -f2)
-PORT="${PORT:-3000}"
-echo "Using dev server port: $PORT"
-```
+Full priority list + bash snippet → **see `references/backend-detection.md` § Port Detection**.
 
 ### Step 4: Ask Browser Mode (skippable with `--auto`)
 
@@ -204,205 +166,31 @@ browser_navigate url: file://{absolute-path-to-output}/design/wireframes/{screen
 
 #### 6e. Design System HTML Verification (`/u-design` Step 4a)
 
-Verify the HTML-first DS artifact (`out/{app}/design/design-system.html`) renders correctly. Runs against `file://` (no dev server required).
+Verifies the HTML-first DS artifact (`out/{app}/design/design-system.html`) renders correctly. Runs against `file://` (no dev server). 9 sub-steps: load inventory → navigate → token render → component showcase → dark-mode toggle → a11y audit → screenshots → **Figma parity (MANDATORY when `dsFileKey` set)** → diff record.
 
-1. **Load expected inventory** from `docs/{app}/design/design-system.json`:
-   - `tokens[]` — every token row (color / spacing / type / shadow / radius / motion / breakpoint / z-index)
-   - `components[]` — every component (CMP-xxx) with variants and states
-   - `themes[]` — should include `light` and `dark` (per `design-system-rules.md` §0#11)
-2. **Navigate** the static HTML:
-   ```
-   browser_navigate url: file://{absolute-path-to-out}/design/design-system.html
-   browser_wait_for text: <DS title from JSON>
-   ```
-3. **Token render check** — query the rendered `:root` CSS variables via `browser_evaluate`:
-   ```js
-   () => {
-     const cs = getComputedStyle(document.documentElement);
-     const sample = {};
-     // sample at least 1 token per scale
-     ['--color-primary-500','--space-4','--radius-md','--shadow-md','--font-base','--motion-base'].forEach(k => {
-       sample[k] = cs.getPropertyValue(k).trim();
-     });
-     return sample;
-   }
-   ```
-   Compare every sampled value to the JSON expectation. Missing or empty → record under `mismatches[]`.
-4. **Component showcase check** — for each `components[*]`, assert the live showcase exists:
-   ```
-   browser_snapshot                                                  # collect element refs
-   ```
-   Verify a `[data-cmp-id="CMP-{nnn}"]` (or fallback `data-component={key}`) element is present and visible. For each `variants[*]` and `states[*]`, verify the `[data-variant=...]` / `[data-state=...]` selector exists.
-5. **Dark-mode toggle** — flip `[data-theme="dark"]` via `browser_evaluate`:
-   ```js
-   () => { document.documentElement.dataset.theme = 'dark'; }
-   ```
-   Re-sample the same tokens (Step 3). Assert at least the semantic-layer tokens differ from light. Take a second screenshot.
-6. **Accessibility audit** (mandatory per `design-system-rules.md` §0#7) — when running on chrome-devtools MCP, request a Lighthouse a11y audit:
-   ```
-   mcp__plugin_chrome-devtools-mcp_chrome-devtools__lighthouse_audit  categories: ["accessibility"]
-   ```
-   When running on Playwright MCP, run an axe-core injection via `browser_evaluate`. WCAG-AA contrast violations and missing focus indicators are recorded under `a11yViolations[]`.
-7. **Screenshots** — full-page light + dark, written to:
-   - `.u-maker/.state/screenshots/{YYYY-MM-DD}/{app}-design-system-light.png`
-   - `.u-maker/.state/screenshots/{YYYY-MM-DD}/{app}-design-system-dark.png`
-8. **Figma parity check (MANDATORY when a Figma DS source is registered)** — when `data/figma/manifest.json` records a `dsFileKey` AND `design-system.json.figmaUrl` is set, this sub-step runs unconditionally. It is the gate the user requires when "design system was extracted from Figma → implemented as HTML/CSS → verify identical".
-   1. Pull the Figma reference once per run via `mcp__plugin_figma_figma__get_screenshot` for the DS file's documentation page (or each component frame). Cache under `.u-maker/.state/figma-ref/{dsFileKey}/{frameId}.png`.
-   2. Pull the Figma Variables list via `mcp__plugin_figma_figma__get_variable_defs` for the DS file. Build a name→resolved-value map (`color`, `dimension`, `number`, `string`).
-   3. **Token parity** — for every Figma Variable that maps to a CSS variable (per `design-system.json` `tokens[*].figmaVarKey`), assert the resolved value matches the rendered `:root` value (Step 3). Tolerance: colors → ΔE < 1 in OKLCH; dimensions → ±0.5 px; others → exact. Mismatches → `figmaTokenDrift[]`.
-   4. **Component / page screenshot diff** — for each documentation page in the Figma DS file (or each `CMP-{nnn}` showcase frame when frame mapping is available), pixel-diff against the corresponding rendered region of `design-system.html` (use the `data-cmp-id` selector to crop). Pass threshold: SSIM ≥ 0.95 AND pixel-diff ≤ 5 %. Write each comparison PNG triplet (figma / impl / diff) to `.u-maker/.state/visual-verify/diffs/{app}-ds-{frameSlug}.{figma,impl,diff}.png`.
-   5. **Coverage parity** — every Figma component MUST have a corresponding `CMP-{nnn}` in `design-system.json`, and every `CMP-{nnn}` MUST be rendered in the HTML. One-sided gaps → `figmaCoverageGaps[]`.
-   
-   When `dsFileKey` is unset → skip silently (this DS was not extracted from Figma).
-   When `dsFileKey` is set but the user is not authenticated against Figma → **HALT** with the message `"Figma parity is mandatory for Figma-sourced DS. Authenticate via mcp__plugin_figma_figma__authenticate or pass --no-figma-parity to skip explicitly."` Never silently skip.
+Full protocol (9 sub-steps + result rules + JSON schema) → **see `references/visual-verify-ds.md`**.
 
-9. **Diff record** — write the verification result to `.u-maker/.state/visual-verify/{app}-design-system.json`:
-   ```json
-   {
-     "verifiedAt": "ISO-8601",
-     "html": "out/{app}/design/design-system.html",
-     "expectedTokens": N,
-     "renderedTokens": M,
-     "missingTokens": [],
-     "expectedComponents": K,
-     "renderedComponents": L,
-     "missingComponents": [],
-     "darkModeToggled": true,
-     "a11yViolations": [],
-     "figmaParity": {
-       "dsFileKey": "abc123",
-       "checked": true,
-       "tokenDrift": [],
-       "screenshotDiffs": [
-         { "frame": "Buttons", "ssim": 0.97, "pixelDiffPct": 2.1, "pass": true }
-       ],
-       "coverageGaps": [],
-       "result": "pass|fail"
-     },
-     "screenshots": ["…light.png","…dark.png"],
-     "result": "pass|partial|fail"
-   }
-   ```
-
-   `result` rules:
-   - `result == "pass"` requires **all** of: zero `missingTokens`, zero `missingComponents`, dark-mode toggled, zero WCAG-AA contrast violations, AND (when Figma parity ran) `figmaParity.result == "pass"`.
-   - `result == "fail"` when **any** Figma parity violation exists (`figmaTokenDrift`, `coverageGaps`, or any screenshot diff below threshold).
-   - `result == "partial"` only for non-Figma-parity issues (e.g., a11y warnings, low-priority drift).
+Output: `.u-maker/.state/visual-verify/{app}-design-system.json` with `result: pass | partial | fail`.
 
 #### 6f. Component Implementation Verification (`/u-dev` Step 1.5)
 
-Verify directly-implemented FE components render correctly against their Screen.json + design-system.json specs. Requires a dev server (Storybook on port 6006 OR app routes on the app port).
+Verifies implemented FE components against their `Screen.json` + `design-system.json` specs. Requires dev server (Storybook 6006 > app routes > static demo). 7 sub-steps: choose render target → per-component loop → token binding → **Figma parity (MANDATORY when `figmaKey` set)** → a11y → screenshots → diff record.
 
-1. **Choose render target** (priority):
-   1. Storybook on port 6006 (`packages/ui-*/.storybook` exists) — use `iframe.html?id={story-id}` deep links.
-   2. App route (`apps/{app}/src/app/**/page.tsx` rendering the component).
-   3. Static demo file (`apps/{app}/public/_demo/{cmp-id}.html`) if neither of the above is available.
-2. **Per-component loop** — load the component list from `docs/{app}/design/design-system.json` `components[]`. For each `CMP-{nnn}`:
-   - Navigate to its render target.
-   - `browser_snapshot` to collect element refs.
-   - Assert prop default values render (text content, icon presence, default variant CSS class).
-   - For each `variants[*]` / `states[*]` combination: navigate to the variant URL (Storybook story ID `cmp-{nnn}--{variant}-{state}`), screenshot it, assert variant-specific selectors.
-3. **Token binding check** — for each rendered component, sample the resolved fill / border / spacing via `browser_evaluate`:
-   ```js
-   (selector) => {
-     const el = document.querySelector(selector);
-     if (!el) return null;
-     const cs = getComputedStyle(el);
-     return { bg: cs.backgroundColor, fg: cs.color, padding: cs.padding, radius: cs.borderRadius };
-   }
-   ```
-   Compare to the expected token resolution from `design-system.json`. Drift → record under `tokenDrift[]`.
-4. **Figma parity (MANDATORY when `figmaKey` is present)** — for every `CMP-{nnn}` whose `design-system.json` row has `figmaKey` set, this sub-step runs unconditionally. When `figmaKey` is **not** set → skip that single component (HTML-only origin); when ANY component has `figmaKey` AND the user is not authenticated → **HALT** with the same message as Step 6e.8 (`"Figma parity is mandatory…"`). Never silently skip.
-   1. Fetch the Figma component screenshot via `mcp__plugin_figma_figma__get_screenshot` (cache under `.u-maker/.state/figma-ref/{dsFileKey}/{figmaKey}.png`).
-   2. Fetch the Figma component's variant grid (each variant + state combination) via `mcp__plugin_figma_figma__get_node`. For each combination, capture an individual screenshot.
-   3. Pixel-diff the Figma reference against the implementation screenshot for the same variant/state combination. Pass threshold: SSIM ≥ 0.95 AND pixel-diff ≤ 5 % per component instance. Bounds (width / height / padding / gap) must match within ±2 px (extracted via `getBoundingClientRect()` and Figma node `absoluteBoundingBox`).
-   4. **Token resolution parity** — sample the rendered component's resolved CSS variables (Step 3), then compare against the Figma component's bound variable values (`mcp__plugin_figma_figma__get_variable_defs`). Mismatch → `figmaTokenDrift[]`.
-   5. Write each comparison PNG triplet (figma / impl / diff) to `.u-maker/.state/visual-verify/diffs/{app}-cmp-{nnn}-{variant}-{state}.{figma,impl,diff}.png`.
-5. **Per-component a11y** — same audit pattern as Step 6e.6, scoped to the component subtree.
-6. **Screenshots** — `.u-maker/.state/screenshots/{YYYY-MM-DD}/{app}-cmp-{nnn}-{variant}-{state}.png`
-7. **Diff record** — write `.u-maker/.state/visual-verify/{app}-components.json`:
-   ```json
-   {
-     "verifiedAt": "ISO-8601",
-     "renderTarget": "storybook|app|demo",
-     "totalComponents": K,
-     "verified": L,
-     "tokenDrift": [{ "cmpId": "CMP-010", "variant": "primary", "field": "bg", "expected": "...", "actual": "..." }],
-     "figmaParity": {
-       "checked": L_figma,
-       "passed": P,
-       "failed": F,
-       "diffs": [
-         { "cmpId": "CMP-020", "variant": "primary", "state": "default",
-           "ssim": 0.91, "pixelDiffPct": 8.4, "boundsDelta": { "w": 3, "h": 0 },
-           "diffScreenshot": ".u-maker/.state/visual-verify/diffs/...diff.png", "pass": false }
-       ],
-       "tokenDrift": [],
-       "result": "pass|fail"
-     },
-     "a11yViolations": [],
-     "result": "pass|partial|fail"
-   }
-   ```
+Full protocol → **see `references/visual-verify-components.md`**.
 
-   `result` rules (mandatory parity):
-   - `result == "pass"` requires zero `tokenDrift`, zero a11y violations, AND (for every component with `figmaKey`) `figmaParity.result == "pass"`.
-   - `result == "fail"` when ANY Figma-bound component has a screenshot diff below threshold OR a `figmaTokenDrift` row.
-   - `result == "partial"` reserved for HTML-only components with non-Figma drift.
+Output: `.u-maker/.state/visual-verify/{app}-components.json` with `result: pass | partial | fail`.
 
-### Step 7: Human Verification (only when flow requires it)
+### Step 7: Human Verification (when flow requires it)
 
-Pause for confirmation when the journey crosses an external boundary:
+Pause for `AskUserQuestion` confirmation when the journey crosses an external boundary: OAuth, Payments, Email, SMS, External APIs.
 
-| Flow | Question |
-|------|----------|
-| OAuth | "Please sign in with {provider} and confirm the redirect returned to the app." |
-| Payments | "Complete the sandbox purchase and confirm order appears in dashboard." |
-| Email | "Check inbox for `{subject}` and confirm content." |
-| SMS | "Confirm receipt of the verification code." |
-| External APIs | "Confirm the {service} integration responded successfully." |
-
-Use `AskUserQuestion`:
-
-```
-Human Verification Needed
-This scenario requires {flow}. Please:
-1. {Action}
-2. {Verify}
-
-Did it work correctly?
-  Yes — continue testing
-  No  — describe the issue
-```
+Full prompts per flow → **see `references/failure-handling.md` § Step 7**.
 
 ### Step 8: Handle Failures
 
-When a step fails (assertion, navigation, timeout):
+On assertion/navigation/timeout failures: capture error screenshot → collect console + network → ask user `Fix now / Create todo / Skip` → execute the choice.
 
-1. Capture an error screenshot:
-   ```
-   browser_take_screenshot  path: .u-maker/.state/screenshots/errors/{YYYY-MM-DD}-{slug}.png  fullPage: true
-   ```
-2. Collect console + network evidence:
-   ```
-   browser_console_messages
-   browser_network_requests
-   ```
-3. Ask the caller via `AskUserQuestion`:
-   ```
-   Test Failed: {route}
-   Issue: {description}
-   Console errors: {n}
-
-   How to proceed?
-     Fix now  — investigate and patch
-     Create todo — defer via /u-gatekeeping todo with priority p1
-     Skip     — record as skipped, continue
-   ```
-4. Per choice:
-   - **Fix now** → debug → propose patch → re-run Step 6 for that route only
-   - **Create todo** → append to `.u-maker/.state/todos.json` with `priority=p1`, `source=u-tools-browser`, `route={route}`
-   - **Skip** → mark result `skipped` and continue
+Full protocol → **see `references/failure-handling.md` § Step 8**.
 
 ### Step 9: Summary Output
 

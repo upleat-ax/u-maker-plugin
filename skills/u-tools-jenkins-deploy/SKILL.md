@@ -1,14 +1,7 @@
 ---
 name: u-tools-jenkins-deploy
-description: "This skill should be used when the user asks to set up Jenkins CI/CD for a Docker-based deploy — e.g. 'Jenkins 배포 추가', 'Jenkins job 만들어줘', '/u-tools-jenkins-deploy', 'Docker Hub push + ssh deploy', or wants to replicate an existing Jenkins+Docker pipeline pattern for a new app. Reads Jenkins/Docker/SSH credentials from `.u-maker/.env` (set once, never paste in chat). Covers: Jenkinsfile generation, Jenkins job creation via API, credentials registration, target host nginx + TLS setup, GitLab/GitHub webhook + cron polling fallback, end-to-end verification."
+description: "This skill should be used when the user asks to '/u-tools-jenkins-deploy', 'Jenkins 배포', 'jenkins deploy', 'jenkins job 만들어', 'jenkins ci 추가', 'docker hub push + ssh deploy', or wants to set up Jenkins CI/CD for a Docker-based deploy. Reads Jenkins/Docker/SSH credentials from `.u-maker/.env` (set once, never paste in chat). Covers: Jenkinsfile generation, Jenkins job creation via API, credentials registration, target host nginx + TLS setup, GitLab/GitHub webhook + cron polling fallback, end-to-end verification."
 version: 1.0.0
-triggers:
-  - "/u-tools-jenkins-deploy"
-  - "Jenkins 배포"
-  - "jenkins deploy"
-  - "jenkins job 만들어"
-  - "jenkins ci 추가"
-  - "docker hub push + ssh deploy"
 ---
 
 # u-tools-jenkins-deploy — Jenkins CI/CD for Docker-based deploys
@@ -33,39 +26,11 @@ nginx-certbot (existing) → proxy_pass http://172.17.0.1:{PORT}
 
 ## Phase 0 — Load credentials from `.u-maker/.env`
 
-Before asking the user for anything, load credentials from the project's `.u-maker/.env` file. This is the single source of truth so the user does not paste tokens or passwords into chat.
+Load `.u-maker/.env` with `set -a; . .u-maker/.env; set +a` BEFORE asking the user for anything. **Precedence:** CLI flag → `.u-maker/.env` → interactive prompt. Never paste secrets into chat — write them only to `.u-maker/.env` (gitignored). If the file doesn't exist, run `/u-prepare-foldertree` first.
 
-```bash
-ENV_FILE=".u-maker/.env"
-if [ -f "$ENV_FILE" ]; then
-  set -a; . "$ENV_FILE"; set +a
-fi
-```
+After loading, print a summary of resolved (`✓`) vs. missing (`✗`) keys — without the values.
 
-Keys consumed by this skill (all optional — missing values fall back to interactive prompts or CLI flags):
-
-| Env var | Used by | Notes |
-|---------|---------|-------|
-| `JENKINS_URL`, `JENKINS_USER`, `JENKINS_TOKEN` | Phases 1, 4, 5, 7, 8 | Jenkins API auth. Token preferred over password. |
-| `JENKINS_SSH_HOST`, `JENKINS_SSH_USER`, `JENKINS_SSH_PASS`, `JENKINS_SSH_PORT` | Phase 1 / Phase 7 diagnosis | Used only for `tcpdump` firewall diagnosis. Optional. |
-| `DOCKERHUB_NAMESPACE`, `DOCKERHUB_USER`, `DOCKERHUB_TOKEN` | Phase 4 (credential `dockerhub-{ns}`) | Token must have push scope. |
-| `GIT_HOST`, `GIT_HOST_USER`, `GIT_HOST_PAT` | Phase 4 (credential `{gitlab\|github}-clone-{user}`) | PAT must have push rights. |
-| `DEPLOY_TARGET_HOST`, `DEPLOY_TARGET_USER`, `DEPLOY_TARGET_PASS`, `DEPLOY_TARGET_PORT` | Phases 1, 4, 6, 8 | Target host SSH + nginx + healthcheck. |
-
-**Precedence (highest wins):** CLI flag → `.u-maker/.env` → interactive prompt.
-
-If `.u-maker/.env` does not exist, run `/u-prepare-foldertree` first (or `cp .u-maker/.env.example .u-maker/.env` and fill in). Never write secrets the user pastes back into chat — write them only to `.u-maker/.env` (which is gitignored).
-
-After loading, print a short summary of which keys were resolved vs. still missing — without printing the values themselves — so the user knows what they still need to provide.
-
-```
-.u-maker/.env loaded.
-  ✓ JENKINS_URL, JENKINS_USER, JENKINS_TOKEN
-  ✓ DOCKERHUB_NAMESPACE, DOCKERHUB_USER, DOCKERHUB_TOKEN
-  ✓ DEPLOY_TARGET_HOST, DEPLOY_TARGET_USER, DEPLOY_TARGET_PASS
-  ✗ GIT_HOST_PAT       (will ask)
-  ✗ JENKINS_SSH_HOST   (diagnostic — optional)
-```
+Full env-var schema (Jenkins/Docker/Git/SSH/diagnostic keys) → **see `references/credentials.md` § Phase 0**.
 
 ## Required context (collect upfront — saves 50% of session time)
 
@@ -149,21 +114,9 @@ Run `bun run lint` (or framework equivalent) per CLAUDE.md push-gate, commit, pu
 
 ### Phase 4: Jenkins credentials
 
-Register 3–4 credentials via API (POST to `/credentials/store/system/domain/_/createCredentials`). Source credentials directly from `.u-maker/.env` — do NOT prompt the user for values that are already loaded. Required IDs:
+Register 3–4 credentials via API (POST to `/credentials/store/system/domain/_/createCredentials`). Source values directly from `.u-maker/.env` — do NOT prompt for already-loaded values. IDs: `dockerhub-{ns}`, `{job}-target-ssh`, `gitlab-clone-{user}` (or `github-clone-{user}`), `{job}-env-prod` (Secret File, skip if no env vars). Verify with XML API.
 
-| ID | Type | Contents (from `.u-maker/.env`) | Used by |
-|----|------|---------------------------------|---------|
-| `dockerhub-{ns}` | UsernamePassword | `$DOCKERHUB_USER` + `$DOCKERHUB_TOKEN` (namespace from `$DOCKERHUB_NAMESPACE`) | Push stage |
-| `{job}-target-ssh` | UsernamePassword | `$DEPLOY_TARGET_USER` + `$DEPLOY_TARGET_PASS` | sshCommand in Deploy |
-| `gitlab-clone-{user}` or `github-clone-{user}` | UsernamePassword | `$GIT_HOST_USER` + `$GIT_HOST_PAT` | GitSCM checkout |
-| `{job}-env-prod` | Secret File | `.env` with NEXT_PUBLIC_* + runtime keys | Build (--build-arg) + Deploy (--env-file) |
-
-If an env-file credential is not needed (app has no env vars), skip and remove the `withCredentials([file(...)])` blocks from the Jenkinsfile.
-
-Verify with XML API (JSON API is sometimes flaky on this Jenkins setup):
-```bash
-curl -s -u "$JENKINS_USER:$JENKINS_TOKEN" "$JENKINS_URL/credentials/store/system/domain/_/api/xml?depth=1"
-```
+Full credential ID table + verification command → **see `references/credentials.md` § Phase 4**.
 
 ### Phase 5: Jenkins job creation
 
@@ -203,16 +156,9 @@ print(t.replace('__B64__', base64.b64encode(open('Jenkinsfile','rb').read()).dec
 
 ### Phase 6: Target host — nginx + TLS
 
-For each deploy domain (SSH using `$DEPLOY_TARGET_HOST` / `$DEPLOY_TARGET_USER` / `$DEPLOY_TARGET_PASS`):
+For each deploy domain: cert check (reuse wildcard if covers subdomain) → cert issue with two-step workaround for acme-challenge 404 (HTTP-only stub first → reload → certbot → full HTTP+HTTPS) → server block from `templates/nginx-server-block.template` → `nginx -t && nginx -s reload`.
 
-1. **Cert check**: `openssl x509 -in /data/nginx/letsencrypt/live/{cert}/fullchain.pem -text -noout | grep DNS` — if existing wildcard (`*.domain`) covers the new subdomain, **reuse** (no issuance).
-2. **Cert issue** (if needed): The `conf.d/default.conf` may absorb unknown Host headers → write an HTTP-only stub server block first (acme location + 503 placeholder), reload nginx, run certbot, then write the full HTTP+HTTPS config and reload again:
-   ```bash
-   docker exec nginx certbot certonly --webroot --webroot-path=/var/www/html \
-     --non-interactive --agree-tos --register-unsafely-without-email -d {DOMAIN}
-   ```
-3. **Server block** from `templates/nginx-server-block.template`: HTTP→HTTPS redirect + HTTPS proxy_pass to `http://172.17.0.1:{PORT}` (Docker bridge gateway from inside the nginx container). Include `client_max_body_size 250m;` for apps with large image uploads.
-4. **Reload**: `docker exec nginx nginx -t && docker exec nginx nginx -s reload`.
+Full protocol + acme-challenge 404 workaround → **see `references/nginx-tls.md`**.
 
 ### Phase 7: Webhook (GitLab) or skip
 
@@ -248,18 +194,9 @@ Update CLAUDE.md and memory if useful for future invocations.
 
 ## Key gotchas baked into the templates
 
-All of these tripped up real prior setups — the templates avoid them:
+10 known failure modes from prior runs (sandbox restrictions, BlueOcean-image missing tools, Groovy/bash `${...}` collision, docker prune stalls, cache-mount expectations, dockerignore Jenkinsfile, nginx default-server absorbing acme-challenge, wildcard cert reuse, multi-job tag collisions). Templates in `templates/*.template` are written to avoid each.
 
-1. **Jenkins agent has no python3 / jq** (BlueOcean image). Use `grep -oE '"name":"[^"]+"'` + `sed` for trivial JSON parsing; for complex JSON, install `pipeline-utility-steps` plugin to get `readJSON`.
-2. **Pipeline runs in sandbox** by default. `new java.io.File(String)` is rejected — use `sh "cat ${path}"` and `sh "printf '%s\n' '${val}' > '${path}'"` for state file I/O.
-3. **`parameters {}` block in Jenkinsfile resets job-level defaults on first build** — set the right values in the Jenkinsfile directly, don't rely on UI-set defaults.
-4. **Bash heredoc + Groovy `${...}` collision**: when building Groovy via shell heredoc, use **non-expanding** `<<'EOF'` + placeholder substitution (`__B64__`) via Python, not bash variable expansion.
-5. **`docker image prune` in deploy** stalled multi-minute on hosts with 30+ dangling layers — the template omits it. Run via separate cron if disk needs reclaim.
-6. **First-build cache mounts** populate; subsequent builds hit them. Communicate this expectation to the user (first build ~7–10 min, repeats ~30 s on no-change, 2–4 min on source change).
-7. **`Dockerfile*` excluded by `.dockerignore`** — Jenkinsfile is NOT, so Jenkinsfile commits invalidate the COPY layer. If many CI-only commits are expected, add `**/Jenkinsfile` to `.dockerignore` (the template does).
-8. **`conf.d/default.conf`'s `server_name localhost` becomes default server** on a fresh nginx-certbot image → it absorbs unknown Host headers → certbot HTTP-01 returns 404. Add the HTTP-only stub server block for the new domain FIRST, then certbot, then upgrade to full HTTP+HTTPS.
-9. **Wildcard certs** (`*.example.com`) cover subdomains for free — always check before issuing a new cert.
-10. **Two jobs deploy on the same dev-* tag** — both polling and both webhooks fire independently per job. State files dedup per job.
+Full catalogue with mitigations → **see `references/jenkins-gotchas.md`**.
 
 ## Templates (in this skill's directory)
 

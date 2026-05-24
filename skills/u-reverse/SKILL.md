@@ -1,14 +1,7 @@
 ---
 name: u-reverse
-description: "This skill should be used when the user asks to 'reverse', 'reverse-engineer', 'analyze existing code', 'extract docs from code', 'code to docs', '/u-reverse', or wants to generate SSoT documents from an existing codebase."
+description: "This skill should be used when the user asks to '/u-reverse', 'reverse engineer', 'reverse-engineer', 'code to docs', 'extract from code', 'analyze existing code', 'u-maker 역공학', '리버스 엔지니어링', '코드에서 문서 추출', '기존 코드 분석', or wants to generate SSoT documents from an existing codebase."
 version: 4.0.0
-triggers:
-  - "/u-reverse"
-  - "reverse engineer"
-  - "reverse-engineer"
-  - "code to docs"
-  - "extract from code"
-  - "analyze existing code"
 ---
 
 # u-reverse — Reverse Engineering Phase

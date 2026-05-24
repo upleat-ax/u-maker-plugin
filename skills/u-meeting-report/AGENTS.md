@@ -8,7 +8,7 @@ m4a 음성 녹음 파일이나 이미 존재하는 텍스트 트랜스크립트�
 
 이 스킬의 리소스는 아래 경로에 있다:
 
-- Template: `/Users/thinoo/.claude/skills/the-voice-meeting/assets/template.html`
+- Template: `${CLAUDE_PLUGIN_ROOT}/skills/u-meeting-report/assets/template.html`
 
 ## Processing policy
 
@@ -37,13 +37,13 @@ m4a 파일을 macOS 내장 Apple Speech Recognition으로 전사한다. 추가 �
 
 ```bash
 # 한국어 (기본)
-swift ~/.claude/skills/the-voice-meeting/scripts/transcribe-apple.swift "<m4a파일경로>"
+swift ${CLAUDE_PLUGIN_ROOT}/skills/u-meeting-report/scripts/transcribe-apple.swift "<m4a파일경로>"
 
 # JSON 출력 (타임스탬프 + 세그먼트 포함)
-swift ~/.claude/skills/the-voice-meeting/scripts/transcribe-apple.swift "<m4a파일경로>" ko-KR --json
+swift ${CLAUDE_PLUGIN_ROOT}/skills/u-meeting-report/scripts/transcribe-apple.swift "<m4a파일경로>" ko-KR --json
 
 # 영어 회의
-swift ~/.claude/skills/the-voice-meeting/scripts/transcribe-apple.swift "<m4a파일경로>" en-US
+swift ${CLAUDE_PLUGIN_ROOT}/skills/u-meeting-report/scripts/transcribe-apple.swift "<m4a파일경로>" en-US
 ```
 
 - 텍스트 트랜스크립트(`.txt`, `.md`, `.srt`, `.vtt`)가 이미 있으면 전사를 건너뛰고 해당 파일을 우선 사용
@@ -62,7 +62,7 @@ swift ~/.claude/skills/the-voice-meeting/scripts/transcribe-apple.swift "<m4a파
 
 ### Step 4: HTML 회의록 생성
 
-입력 파일의 전체 내용을 분석하여 아래 구조의 HTML 회의록을 작성한다. `/Users/thinoo/.claude/skills/the-voice-meeting/assets/template.html`의 스타일을 사용한다.
+입력 파일의 전체 내용을 분석하여 아래 구조의 HTML 회의록을 작성한다. `${CLAUDE_PLUGIN_ROOT}/skills/u-meeting-report/assets/template.html`의 스타일을 사용한다.
 
 화자 정보가 있으면 분석 기본 단위는 개별 문장이 아니라 화자의 연속 발화 turn이다. 즉, 요약도 화자별 발화 맥락 기준으로 정리해야 한다.
 

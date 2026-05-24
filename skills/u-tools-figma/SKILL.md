@@ -1,13 +1,7 @@
 ---
 name: u-tools-figma
-description: "Comprehensive Figma analyzer. Use when the user mentions 'figma', shares a figma.com URL, asks to 'analyze figma', 'extract figma', '/u-tools-figma'. Also auto-delegated from /u-prepare, /u-analyze, /u-reverse when any Figma source is detected. Covers every page, every variant, every asset, every component, and every comment — never a partial scan."
+description: "Comprehensive Figma analyzer. Use when the user asks to '/u-tools-figma', mentions 'figma', shares a 'figma.com' URL, asks to 'analyze figma', 'extract figma', '피그마', '피그마 분석', '피그마 추출', or '피그마 파일 분석'. Also auto-delegated from /u-prepare, /u-analyze, /u-reverse when any Figma source is detected. Covers every page, every variant, every asset, every component, and every comment — never a partial scan."
 version: 4.0.0
-triggers:
-  - "/u-tools-figma"
-  - "figma"
-  - "figma.com"
-  - "analyze figma"
-  - "extract figma"
 ---
 
 # u-tools-figma — Comprehensive Figma Analyzer

@@ -1,5 +1,5 @@
 ---
-name: the-voice-meeting
+name: u-meeting-report
 description: This skill should be used when the user asks to "회의록 작성", "회의록 만들어", "m4a 트랜스크립션", "음성 파일 분석", "녹음 파일 정리", "meeting minutes", "transcribe audio", or mentions m4a/txt files in meeting-related context. 2개의 에이전트(Minutes Writer + Minutes Reviewer)가 협업하여 품질 95점 이상까지 반복 보완하는 구조화된 HTML 회의록을 자동 생성.
 ---
 
@@ -56,13 +56,13 @@ m4a 음성 녹음 파일이나 텍스트 트랜스크립트(`.txt`, `.md`, `.srt
 
 ```bash
 # 한국어 (기본)
-swift ~/.claude/skills/the-voice-meeting/scripts/transcribe-apple.swift "<m4a파일경로>"
+swift ${CLAUDE_PLUGIN_ROOT}/skills/u-meeting-report/scripts/transcribe-apple.swift "<m4a파일경로>"
 
 # JSON 출력 (타임스탬프 + 세그먼트)
-swift ~/.claude/skills/the-voice-meeting/scripts/transcribe-apple.swift "<m4a파일경로>" ko-KR --json
+swift ${CLAUDE_PLUGIN_ROOT}/skills/u-meeting-report/scripts/transcribe-apple.swift "<m4a파일경로>" ko-KR --json
 
 # 영어 회의
-swift ~/.claude/skills/the-voice-meeting/scripts/transcribe-apple.swift "<m4a파일경로>" en-US
+swift ${CLAUDE_PLUGIN_ROOT}/skills/u-meeting-report/scripts/transcribe-apple.swift "<m4a파일경로>" en-US
 ```
 
 - 텍스트 트랜스크립트(`.txt` 등)가 이미 있으면 전사 건너뜀
@@ -130,7 +130,7 @@ Writer가 생성한 HTML 파일을 Minutes Reviewer 에이전트가 평가한다
 
 ### Step 6: 서버 업로드
 
-생성된 HTML 회의록을 서버에 업로드한다. `.env` 파일(`~/.claude/skills/the-voice-meeting/.env`) 참조.
+생성된 HTML 회의록을 서버에 업로드한다. `.env` 파일(`${CLAUDE_PLUGIN_ROOT}/skills/u-meeting-report/.env`) 참조.
 
 ```bash
 curl -X POST 'https://m7d.firestick.live/v4/docs?bucketId=69cd33f60b6f1e9c6e7398f1' \

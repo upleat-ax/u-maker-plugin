@@ -1,14 +1,7 @@
 ---
 name: u-design
-description: "This skill should be used when the user asks to 'design', 'create ERD', 'generate API contract', 'screen specification', 'design system', '/u-design', or wants to produce Design phase documents from Plan documents."
+description: "This skill should be used when the user asks to '/u-design', 'design phase', 'ERD', 'API contract', 'screen spec', 'design system', 'u-maker 설계', '설계 단계', 'ERD 생성', 'API 명세', '화면 정의', '디자인 시스템 생성', or wants to produce Design phase documents from Plan documents."
 version: 4.0.0
-triggers:
-  - "/u-design"
-  - "design phase"
-  - "ERD"
-  - "API contract"
-  - "screen spec"
-  - "design system"
 ---
 
 # u-design — UI Design Sub-phase (PBGD Build.UIDesign)
