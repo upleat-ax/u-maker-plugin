@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>U-MAKER Plugin v4.0.0-alpha.13 (PBGD) — README (Korean)</title>
+<title>U-MAKER Plugin v4.0.0-alpha.14 (PBGD) — README (Korean)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
@@ -312,7 +312,7 @@ code {
 <!-- ==================== Sidebar ==================== -->
 <nav class="sidebar" id="sidebar">
   <div class="sidebar-header">
-    <h2>U-MAKER v4.0.0-alpha.13 (PBGD)</h2>
+    <h2>U-MAKER v4.0.0-alpha.14 (PBGD)</h2>
     <p>PBGD SSoT Plugin for Claude Code</p>
   </div>
   <div class="sidebar-nav">
@@ -343,7 +343,7 @@ code {
 <!-- ===== 1. Hero ===== -->
 <section id="hero" class="section">
   <div class="hero">
-    <h1>U-MAKER Plugin v4.0.0-alpha.13 (PBGD)</h1>
+    <h1>U-MAKER Plugin v4.0.0-alpha.14 (PBGD)</h1>
     <p>PBGD 기반 SSoT(Single Source of Truth) Claude Code 플러그인.<br>
     기획 자료를 넣으면 Plan &rarr; Build &rarr; Gatekeeping &rarr; Deploy까지 자동으로 수행합니다.</p>
     <div class="hero-badges">
@@ -353,7 +353,7 @@ code {
       <span class="badge"><span class="badge-num">11</span> Gate Criteria</span>
     </div>
     <div class="hero-meta">
-      <span><strong>Version</strong> 4.0.0-alpha.13</span>
+      <span><strong>Version</strong> 4.0.0-alpha.14</span>
       <span><strong>Config</strong> v4.0</span>
       <span><strong>License</strong> Proprietary</span>
       <span><strong>Runtime</strong> Claude Code CLI</span>
@@ -419,7 +419,7 @@ code {
 <code><span class="comment"># 직접 호출</span>
 <span class="cmd">/u-tools-figma</span> &lt;figma-url&gt;
 <span class="comment"># /u-prepare, /u-analyze, /u-reverse, /u-build가 Figma 소스 감지 시 자동 위임</span>
-<span class="comment"># v4.0.0-alpha.13은 reduced extraction path — source.pipeline == "reduced"</span></code>
+<span class="comment"># v4.0.0-alpha.14은 reduced extraction path — source.pipeline == "reduced"</span></code>
   </div>
 
   <h3 style="font-size:14px; font-weight:700; color:#0f172a; margin-bottom:8px;">Natural Language (자연어)</h3>
@@ -609,7 +609,7 @@ code {
   </div>
 
   <div class="callout callout-amber" style="margin-top:12px;">
-    <strong>Figma cross-phase:</strong> <code class="code-inline">/u-tools-figma</code> (u-agent-figma)는 Phase 경계 없이 Figma 소스가 감지된 모든 명령(<code class="code-inline">/u-prepare</code>, <code class="code-inline">/u-analyze</code>, <code class="code-inline">/u-reverse</code>, <code class="code-inline">/u-build</code>)에서 자동 호출됩니다. v4.0.0-alpha.13은 reduced path(<code class="code-inline">source.pipeline == "reduced"</code>) — 다운스트림은 <code class="code-inline">coverageWarnings[]</code>를 warning으로 처리합니다.
+    <strong>Figma cross-phase:</strong> <code class="code-inline">/u-tools-figma</code> (u-agent-figma)는 Phase 경계 없이 Figma 소스가 감지된 모든 명령(<code class="code-inline">/u-prepare</code>, <code class="code-inline">/u-analyze</code>, <code class="code-inline">/u-reverse</code>, <code class="code-inline">/u-build</code>)에서 자동 호출됩니다. v4.0.0-alpha.14은 reduced path(<code class="code-inline">source.pipeline == "reduced"</code>) — 다운스트림은 <code class="code-inline">coverageWarnings[]</code>를 warning으로 처리합니다.
   </div>
 
   <div class="card" style="padding:24px; margin-top:16px;">
@@ -877,7 +877,7 @@ code {
         <div class="agent-role">Cross-phase Figma Analyzer &middot; opus</div>
       </div>
     </div>
-    <p class="agent-desc">Figma URL이 감지되면 pages / variants / assets / components / comments / semantics(validation, policy, default, action, layout, flow, data, role)를 추출합니다. <code class="code-inline">/u-prepare</code>, <code class="code-inline">/u-analyze</code>, <code class="code-inline">/u-reverse</code>, <code class="code-inline">/u-build</code>에서 자동 위임됩니다. v4.0.0-alpha.13은 reduced extraction path.</p>
+    <p class="agent-desc">Figma URL이 감지되면 pages / variants / assets / components / comments / semantics(validation, policy, default, action, layout, flow, data, role)를 추출합니다. <code class="code-inline">/u-prepare</code>, <code class="code-inline">/u-analyze</code>, <code class="code-inline">/u-reverse</code>, <code class="code-inline">/u-build</code>에서 자동 위임됩니다. v4.0.0-alpha.14은 reduced extraction path.</p>
   </div>
   <div class="agent-card">
     <div class="agent-header">
@@ -1132,7 +1132,7 @@ code {
           <td><strong style="color:#be185d;">/u-tools-figma</strong></td>
           <td><span class="tag tag-any">Tools</span></td>
           <td style="font-size:11px;"><code class="code-inline">/u-tools-figma &lt;figma-url&gt; [--app]</code></td>
-          <td>Figma 분석 &mdash; pages + variants + assets + components + comments + semantics. <code class="code-inline">/u-prepare</code>, <code class="code-inline">/u-analyze</code>, <code class="code-inline">/u-reverse</code>, <code class="code-inline">/u-build</code>에서 자동 위임. <em>v4.0.0-alpha.13: reduced path</em></td>
+          <td>Figma 분석 &mdash; pages + variants + assets + components + comments + semantics. <code class="code-inline">/u-prepare</code>, <code class="code-inline">/u-analyze</code>, <code class="code-inline">/u-reverse</code>, <code class="code-inline">/u-build</code>에서 자동 위임. <em>v4.0.0-alpha.14: reduced path</em></td>
         </tr>
         <tr>
           <td style="text-align:center;">16</td>
@@ -1623,7 +1623,7 @@ code {
     </div>
     <div class="card">
       <div style="font-size:13px; font-weight:700; color:#0f172a; margin-bottom:4px;">버전 확인</div>
-      <p style="font-size:12px; color:#64748b;">.claude-plugin/plugin.json &rarr; version: 4.0.0-alpha.13</p>
+      <p style="font-size:12px; color:#64748b;">.claude-plugin/plugin.json &rarr; version: 4.0.0-alpha.14</p>
     </div>
   </div>
 
@@ -1706,7 +1706,7 @@ code {
         </tr>
         <tr>
           <td>Figma digest에 <code class="code-inline">coverageWarnings[]</code> 다수</td>
-          <td>v4.0.0-alpha.13의 reduced extraction path (<code class="code-inline">source.pipeline == "reduced"</code>)</td>
+          <td>v4.0.0-alpha.14의 reduced extraction path (<code class="code-inline">source.pipeline == "reduced"</code>)</td>
           <td>alpha의 의도된 동작. schema-optional 필드가 warning으로 처리됩니다. 정식 파이프라인은 GA 이후 제공</td>
         </tr>
         <tr>
@@ -1743,7 +1743,7 @@ code {
 
 <!-- Footer -->
 <footer style="margin-top:40px; padding-top:24px; border-top:1px solid #e2e8f0; text-align:center; font-size:12px; color:#94a3b8;">
-  U-MAKER Plugin v4.0.0-alpha.13 (PBGD) &mdash; Copyright &copy; 2026 U PLEAT
+  U-MAKER Plugin v4.0.0-alpha.14 (PBGD) &mdash; Copyright &copy; 2026 U PLEAT
 </footer>
 
 </main>

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>U-MAKER v4.0.0-alpha.13 (PBGD) — Get Started Guide</title>
+<title>U-MAKER v4.0.0-alpha.14 (PBGD) — Get Started Guide</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;800&display=swap');
 
@@ -234,7 +234,7 @@
   <aside class="sidebar">
     <div class="sidebar-header">
       <h2>Get Started</h2>
-      <p>U-MAKER v4.0.0-alpha.13 (PBGD) Guide</p>
+      <p>U-MAKER v4.0.0-alpha.14 (PBGD) Guide</p>
     </div>
     <ul class="sidebar-nav">
       <li><a href="#what"><span class="nav-icon">01</span>U-MAKER란?</a></li>
@@ -250,7 +250,7 @@
       <li><a href="#faq"><span class="nav-icon">11</span>FAQ</a></li>
       <li><a href="#next"><span class="nav-icon">12</span>다음 단계</a></li>
     </ul>
-    <div class="sidebar-footer">U-MAKER Plugin v4.0.0-alpha.13 (PBGD) &middot; Get Started</div>
+    <div class="sidebar-footer">U-MAKER Plugin v4.0.0-alpha.14 (PBGD) &middot; Get Started</div>
   </aside>
 
   <!-- ═══════════════ MAIN CONTENT ═══════════════ -->
@@ -262,7 +262,7 @@
         <h1>U-MAKER 시작하기</h1>
         <p>핵심 개념부터 전체 명령어, 실전 시나리오까지 단계별로 안내합니다.<br>전체 레퍼런스는 <a href="README.ko.html">README</a>를 참고하세요.</p>
         <div class="doc-meta">
-          <div class="doc-meta-item"><strong>Version</strong> &nbsp;4.0.0-alpha.13</div>
+          <div class="doc-meta-item"><strong>Version</strong> &nbsp;4.0.0-alpha.14</div>
           <div class="doc-meta-item"><strong>Config</strong> &nbsp;v4.0</div>
           <div class="doc-meta-item"><strong>Skills</strong> &nbsp;24</div>
           <div class="doc-meta-item"><strong>Agents</strong> &nbsp;10</div>
@@ -571,7 +571,7 @@
 "배포 준비해줘"                    <span class="comment"># → /u-deploy</span></pre></div>
 
       <div class="highlight-box purple">
-        <strong>Tip:</strong> 자연어 라우팅이 작동하지 않으면 슬래시 커맨드를 직접 사용하세요. PM Agent는 v4.0.0-alpha.13의 27개 스킬(별칭 3개 포함)을 모두 인지합니다.
+        <strong>Tip:</strong> 자연어 라우팅이 작동하지 않으면 슬래시 커맨드를 직접 사용하세요. PM Agent는 v4.0.0-alpha.14의 27개 스킬(별칭 3개 포함)을 모두 인지합니다.
       </div>
 
       <!-- ═══════════════════════════════════════════════════════════ -->
@@ -776,7 +776,7 @@
           <tbody>
             <tr>
               <td class="col-abbr">/u-tools-figma</td>
-              <td class="col-desc">Figma <strong>분석(read-only)</strong> &mdash; pages + variants + assets + components + comments + semantics. <code>/u-prepare</code>, <code>/u-analyze</code>, <code>/u-reverse</code>, <code>/u-build</code>에서 자동 위임. <strong>v4.0.0-alpha.13: reduced extraction path</strong></td>
+              <td class="col-desc">Figma <strong>분석(read-only)</strong> &mdash; pages + variants + assets + components + comments + semantics. <code>/u-prepare</code>, <code>/u-analyze</code>, <code>/u-reverse</code>, <code>/u-build</code>에서 자동 위임. <strong>v4.0.0-alpha.14: reduced extraction path</strong></td>
               <td><code>/u-tools-figma &lt;figma-url&gt;</code><br><code>/u-tools-figma &lt;url&gt; --app myapp</code></td>
             </tr>
             <tr>
@@ -948,7 +948,7 @@
         <div class="feature-card yellow">
           <h3>Scenario 3: Figma 소스 기반 설계</h3>
           <p>Figma URL을 <code>.u-maker/data/dropzone/</code>에 드롭 &rarr; <code>/u-prepare --app myapp</code> (자동으로 <code>/u-tools-figma</code> 위임) &rarr; <code>/u-plan</code> &rarr; <code>/u-build</code></p>
-          <div class="annotation">v4.0.0-alpha.13은 reduced extraction path (<code>source.pipeline == "reduced"</code>). downstream은 <code>coverageWarnings[]</code>를 warning으로 처리합니다.</div>
+          <div class="annotation">v4.0.0-alpha.14은 reduced extraction path (<code>source.pipeline == "reduced"</code>). downstream은 <code>coverageWarnings[]</code>를 warning으로 처리합니다.</div>
         </div>
         <div class="feature-card purple">
           <h3>Scenario 4: PR 생성</h3>
@@ -976,7 +976,7 @@
       <div class="section-divider" id="folder"><h2>09. 폴더 구조 (PBGD)</h2></div>
       <p class="section-desc"><code>/u-prepare</code> (별칭 <code>/u-init</code>) 또는 <code>/u-prepare-foldertree</code> 실행 시 생성되는 <code>.u-maker/</code> 디렉터리 구조입니다.</p>
 
-      <div class="code-block"><pre style="margin:0;white-space:pre;overflow-x:auto"><span class="comment"># .u-maker/ 프로젝트 구조 (v4.0.0-alpha.13 PBGD)</span>
+      <div class="code-block"><pre style="margin:0;white-space:pre;overflow-x:auto"><span class="comment"># .u-maker/ 프로젝트 구조 (v4.0.0-alpha.14 PBGD)</span>
 .u-maker/
 ├── <span class="cmd">u-maker.config.json</span>         <span class="comment"># 전역 설정 (Config v4.0)</span>
 ├── <span class="cmd">data/</span>
@@ -1062,7 +1062,7 @@
         </li>
         <li>
           <span class="decision-check">Q</span>
-          <div class="decision-body"><strong>Figma 파일로 시작하고 싶어요</strong><br><span>Figma URL을 dropzone에 넣고 <code>/u-prepare</code>를 실행하세요. <code>/u-tools-figma</code>가 자동 위임됩니다. 또는 직접 <code>/u-tools-figma &lt;url&gt;</code>도 가능합니다. v4.0.0-alpha.13은 reduced extraction path를 사용합니다.</span></div>
+          <div class="decision-body"><strong>Figma 파일로 시작하고 싶어요</strong><br><span>Figma URL을 dropzone에 넣고 <code>/u-prepare</code>를 실행하세요. <code>/u-tools-figma</code>가 자동 위임됩니다. 또는 직접 <code>/u-tools-figma &lt;url&gt;</code>도 가능합니다. v4.0.0-alpha.14은 reduced extraction path를 사용합니다.</span></div>
         </li>
         <li>
           <span class="decision-check">Q</span>
@@ -1106,7 +1106,7 @@
         </div>
         <div class="feature-card purple">
           <h3>Figma 소스 분석</h3>
-          <p><code>/u-tools-figma &lt;url&gt;</code>로 Figma 파일을 직접 분석하거나, dropzone에 URL을 넣어 <code>/u-prepare</code>의 자동 위임을 활용하세요. v4.0.0-alpha.13은 reduced extraction path를 제공합니다.</p>
+          <p><code>/u-tools-figma &lt;url&gt;</code>로 Figma 파일을 직접 분석하거나, dropzone에 URL을 넣어 <code>/u-prepare</code>의 자동 위임을 활용하세요. v4.0.0-alpha.14은 reduced extraction path를 제공합니다.</p>
         </div>
         <div class="feature-card yellow">
           <h3>팀 협업</h3>
@@ -1120,7 +1120,7 @@
 
       <!-- ────────── Footer ────────── -->
       <div class="report-footer">
-        U-MAKER Plugin v4.0.0-alpha.13 (PBGD) &middot; Config v4.0 &middot; Proprietary &middot; Copyright &copy; 2026 U PLEAT
+        U-MAKER Plugin v4.0.0-alpha.14 (PBGD) &middot; Config v4.0 &middot; Proprietary &middot; Copyright &copy; 2026 U PLEAT
       </div>
 
     </div>
