@@ -1,13 +1,7 @@
 ---
 name: u-loop
-description: "Unattended PBGD auto-execution loop. Runs Prepare → Plan → Build → Gatekeeping → Deploy sequentially with gatekeeper validation at each phase. Use when automating the full project pipeline or resuming from a specific phase."
+description: "Unattended PBGD auto-execution loop. Use when the user asks to '/u-loop', 'u-maker auto loop', 'u-maker run all phases', 'u-maker full pipeline', 'u-maker unattended pipeline', 'u-maker 자동 실행', 'u-maker 전체 파이프라인', or 'u-maker 무인 실행'. Runs Prepare → Plan → Build → Gatekeeping → Deploy sequentially with gatekeeper validation at each phase."
 version: 4.0.0
-triggers:
-  - "/u-loop"
-  - "auto loop"
-  - "run all phases"
-  - "full pipeline"
-  - "unattended"
 ---
 
 # u-loop — Unattended PBGD Auto-Execution Loop

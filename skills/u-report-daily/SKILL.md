@@ -1,13 +1,7 @@
 ---
 name: u-report-daily
-description: "This skill should be used when the user asks to 'daily report', 'generate daily report', '일일 리포트', '데일리 리포트', '/u-report-daily', or wants to generate a daily HTML report summarizing git history, meeting notes, document changes, and project statistics with trend charts."
+description: "This skill should be used when the user asks to '/u-report-daily', 'daily report', 'generate daily report', '일일 리포트', '데일리 리포트', or '오늘 보고서'. Generates a daily HTML report summarizing git history, meeting notes, document changes, and project statistics with trend charts."
 version: 1.0.0
-triggers:
-  - "/u-report-daily"
-  - "daily report"
-  - "일일 리포트"
-  - "데일리 리포트"
-  - "오늘 보고서"
 ---
 
 # u-report-daily — Daily Project Report

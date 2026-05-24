@@ -1,12 +1,7 @@
 ---
 name: u-dev
-description: "This skill should be used when the user asks to 'develop', 'generate code', 'implement', 'build frontend/backend', '/u-dev', or wants to generate code from Design phase specifications."
+description: "This skill should be used when the user asks to '/u-dev', 'dev phase', 'code generation', 'implement', 'u-maker 개발', '개발 단계', '코드 생성', 'FE BE 생성', '구현 단계', or wants to generate code from Design phase specifications."
 version: 4.0.0
-triggers:
-  - "/u-dev"
-  - "dev phase"
-  - "code generation"
-  - "implement"
 ---
 
 # u-dev — Development Sub-phase (PBGD Build.Development)

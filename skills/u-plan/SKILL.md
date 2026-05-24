@@ -1,13 +1,7 @@
 ---
 name: u-plan
-description: "This skill should be used when the user asks to 'plan', 'create SRS', 'generate IA', 'add requirements', '/u-plan', or wants to produce Plan phase documents (SRS + IA) from an already-prepared digest."
+description: "This skill should be used when the user asks to '/u-plan', 'plan phase', 'SRS', 'IA', 'requirements', 'u-maker 기획', '기획 단계', '요구사항 정의', 'SRS 생성', 'IA 생성', or wants to produce Plan phase documents (SRS + IA) from an already-prepared digest."
 version: 4.0.0
-triggers:
-  - "/u-plan"
-  - "plan phase"
-  - "SRS"
-  - "IA"
-  - "requirements"
 ---
 
 # u-plan — Plan Phase (SRS + IA Generation)

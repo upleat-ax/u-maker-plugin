@@ -1,14 +1,7 @@
 ---
 name: u-tools-figma-ds
-description: "Generate a Figma design system (Variables, styles, master components) from existing DS-applied source code (.tsx + .json + .css). Use when the user asks to 'generate Figma DS', 'code to Figma DS', 'sync DS to Figma', '/u-tools-figma-ds', or auto-delegated from /u-analyze when DS source code is detected, and from /u-design Step 4.5 for outbound sync. Delegates Figma writes to figma:figma-generate-library; never calls use_figma directly."
+description: "Generate a Figma design system (Variables, styles, master components) from existing DS-applied source code (.tsx + .json + .css). Use when the user asks to '/u-tools-figma-ds', 'code to figma ds', 'design system to figma', 'figma 디자인시스템 생성', 'DS to Figma', 'tokens to Figma', '코드에서 피그마 DS', '디자인시스템 피그마 동기화', or '피그마 변수 생성'. Auto-delegated from /u-analyze when DS source code is detected, and from /u-design Step 4.5 for outbound sync. Delegates Figma writes to figma:figma-generate-library; never calls use_figma directly."
 version: 1.0.0
-triggers:
-  - "/u-tools-figma-ds"
-  - "code to figma ds"
-  - "design system to figma"
-  - "figma 디자인시스템 생성"
-  - "DS to Figma"
-  - "tokens to Figma"
 ---
 
 # u-tools-figma-ds — Code → Figma Design System Generator

@@ -1,13 +1,7 @@
 ---
 name: u-report-weekly
-description: "This skill should be used when the user asks to 'weekly report', 'generate weekly report', '주간 리포트', '위클리 리포트', '/u-report-weekly', or wants to generate a weekly HTML report with per-app FR/US/FT/TC/SC stats, trend charts, meeting summaries, and Playwright screenshots."
+description: "This skill should be used when the user asks to '/u-report-weekly', 'weekly report', 'generate weekly report', '주간 리포트', '위클리 리포트', or '주간 보고서'. Generates a weekly HTML report with per-app FR/US/FT/TC/SC stats, trend charts, meeting summaries, and Playwright screenshots."
 version: 1.0.0
-triggers:
-  - "/u-report-weekly"
-  - "weekly report"
-  - "주간 리포트"
-  - "위클리 리포트"
-  - "주간 보고서"
 ---
 
 # u-report-weekly — Weekly Project Report

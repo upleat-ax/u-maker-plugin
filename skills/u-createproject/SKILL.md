@@ -1,16 +1,7 @@
 ---
 name: u-createproject
-description: "This skill should be used when the user asks to 'create project', 'new monorepo', 'scaffold project', 'createproject', '/u-createproject', '프로젝트 생성', '새 프로젝트', '모노레포 생성', or wants to generate a new Turborepo + Bun monorepo project with the standard Clean Architecture layer structure."
+description: "This skill should be used when the user asks to '/u-createproject', 'u-createproject', 'createproject', 'u-maker 프로젝트 생성', 'u-maker 새 프로젝트', 'Turborepo 모노레포 스캐폴드', 'u-maker monorepo scaffold', or 'u-maker scaffold project'. Generates a new Turborepo + Bun monorepo project with the standard Clean Architecture layer structure."
 version: 1.0.0
-triggers:
-  - "/u-createproject"
-  - "create project"
-  - "new project"
-  - "scaffold project"
-  - "새 프로젝트"
-  - "프로젝트 생성"
-  - "모노레포 생성"
-  - "createproject"
 ---
 
 # u-createproject — Turborepo + Bun Monorepo Project Scaffolding

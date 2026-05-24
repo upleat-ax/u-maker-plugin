@@ -1,12 +1,7 @@
 ---
 name: u-tools-git-pr
-description: "This skill should be used when the user asks to 'create PR', 'make pull request', 'git PR', '/u-tools-git-pr', or wants to auto-generate a Git pull request with structured description. Supports intelligent grouping to split changes into multiple PRs by domain/phase."
+description: "This skill should be used when the user asks to '/u-tools-git-pr', 'create PR', 'pull request', 'git PR', 'u-maker PR 생성', 'u-maker 풀 리퀘스트', 'git PR 분리', or '변경사항 PR로'. Auto-generates a Git pull request with structured description. Supports intelligent grouping to split changes into multiple PRs by domain/phase."
 version: 5.0.0
-triggers:
-  - "/u-tools-git-pr"
-  - "create PR"
-  - "pull request"
-  - "git PR"
 ---
 
 # u-tools-git-pr — Git Pull Request Generator
@@ -41,58 +36,14 @@ Analyze uncommitted/committed changes, intelligently decide grouping strategy, c
 
 ### Step 2: Classify Files into Groups
 
-Classify each changed file into a **group** using these rules (evaluated in order):
+Classify each changed file into a **group** using 5 ordered rules (first match wins):
+1. **u-maker output structure** (`output/{app}/{phase}/{doc}/`) — 10 patterns covering plan/design/gatekeeping splits + navigation
+2. **u-maker docs structure** (`docs/{app}/{phase}/`) — 4 patterns
+3. **Source code by directory** (`src/app`, `components`, `lib`, `prisma`, `api`)
+4. **Config and CI** (config files, `.github/`, `.gitlab-ci*`)
+5. **Fallback** → `misc`
 
-#### Rule 1: u-maker output directory structure
-
-For files under `.u-maker/output/{app}/{phase}/{doc}/`:
-
-| Path Pattern | Group Key | Group Name |
-|-------------|-----------|------------|
-| `output/{app}/plan/srs/` | `{app}-plan-srs` | {app} Plan SRS |
-| `output/{app}/plan/ia.*` | `{app}-plan-ia` | {app} Plan IA |
-| `output/{app}/design/erd/` | `{app}-design-erd` | {app} Design ERD |
-| `output/{app}/design/api/` | `{app}-design-api` | {app} Design API |
-| `output/{app}/design/screens/` | `{app}-design-screens` | {app} Design Screens |
-| `output/{app}/design/design-system.*` | `{app}-design-ds` | {app} Design System |
-| `output/{app}/gatekeeping/testcases/` | `{app}-gatekeeping-tc` | {app} Gatekeeping TestCases |
-| `output/{app}/gatekeeping/test-results.*` | `{app}-gatekeeping-tr` | {app} Gatekeeping TestResults |
-| `output/{app}/index.html` | `{app}-nav` | {app} Navigation |
-| `output/index.html` | `root-nav` | Root Navigation |
-
-#### Rule 2: u-maker docs directory structure
-
-For files under `.u-maker/docs/{app}/{phase}/`:
-
-| Path Pattern | Group Key | Group Name |
-|-------------|-----------|------------|
-| `docs/{app}/plan/*` | `{app}-docs-plan` | {app} Plan Docs |
-| `docs/{app}/design/*` | `{app}-docs-design` | {app} Design Docs |
-| `docs/{app}/gatekeeping/*` | `{app}-docs-gatekeeping` | {app} Gatekeeping Docs |
-| `docs/common/*` | `common-docs` | Common Docs |
-
-#### Rule 3: Source code by directory
-
-For application source code:
-
-| Path Pattern | Group Key | Group Name |
-|-------------|-----------|------------|
-| `src/app/**` or `app/**` | `app-{nearest-dir}` | App {NearestDir} |
-| `src/components/**` | `components` | Components |
-| `src/lib/**` or `lib/**` | `lib` | Library |
-| `prisma/**` | `db-schema` | DB Schema |
-| `src/api/**` or `api/**` | `api` | API |
-
-#### Rule 4: Config and CI
-
-| Path Pattern | Group Key | Group Name |
-|-------------|-----------|------------|
-| `*.config.*`, `.*rc`, `package.json` | `config` | Config |
-| `.github/**`, `.gitlab-ci*` | `ci` | CI/CD |
-
-#### Rule 5: Fallback
-
-Files that don't match any pattern: group as `misc` (Miscellaneous).
+Full pattern → group-key tables → **see `references/classification-rules.md`**.
 
 ### Step 3: Decide Strategy
 
@@ -126,77 +77,9 @@ Force grouping even for small changesets.
 
 ### Step 4: Present Plan (MANDATORY Confirmation)
 
-**IMPORTANT: 절대 사용자 확인 없이 실행하지 않는다.** 반드시 아래 계획을 보여주고 명시적 승인을 받은 후에만 Step 5로 진행한다.
+**절대 사용자 확인 없이 실행하지 않는다.** 4.1 Plan 요약(그룹/파일/PR 제목) → 4.2 표준 multiline box (5개 번호 선택지: `[1] Single` `[2] Group/Stacked` `[3] 부분 선택` `[4] Dry-run` `[5] Abort` + `[edit]`) → 4.3 응답 grammar 매칭. 한 줄 압축 형식 `[Y/n]` 금지.
 
-확인 프롬프트는 **반드시 multiline box + 번호 선택지** 형식으로 표시한다. 한 줄 압축 형식(`[Y/n/edit]`)은 금지.
-
-#### 4.1 Plan 요약
-
-먼저 감지된 그룹/변경 요약을 보여준다:
-
-```
-u-tools-git-pr: {N} groups detected (strategy: {auto|single|group})
-Files: {total} ({modified} modified, {new} new, {deleted} deleted)
-
-  Group 1: myapp-design-erd
-    Branch: feat/myapp-design-erd
-    12 files — ERD index + 9 domain pages + ctr-group (new)
-    PR: "feat(myapp): regenerate ERD HTML with Ctr domain (52 tables)"
-
-  Group 2: myapp-nav  (merged → Group 1)
-    1 file — myapp/index.html count update
-```
-
-#### 4.2 전략 선택 프롬프트 (표준 양식)
-
-```
-┌─────────────────────────────────────────────────────────────┐
-│  실행 전략을 선택하세요                                     │
-└─────────────────────────────────────────────────────────────┘
-
-  [1] Single PR (권장 여부: {recommended ? "권장" : "대안"})
-      - 브랜치: {single-branch-name}
-      - {total}개 파일 전부 1개 PR
-      - Title: {single-pr-title}
-
-  [2] Group / {N} stacked PRs
-      - {group-1-label} → {group-2-label} → ... 순서로 {N}개 PR 생성
-      - 각 PR은 직전 PR merge 후에 rebase 필요
-      - 브랜치 네이밍:
-          A: {branch-A}
-          B: {branch-B}
-          ...
-
-  [3] 부분 선택
-      - 예: "3: A,C" → A와 C만 PR 생성, 나머지는 working tree에 보존
-      - 그룹 라벨 조합 자유 (A, B, C, ...)
-
-  [4] Dry-run
-      - 실제 브랜치/PR 생성 없이 계획만 확인 후 종료
-
-  [5] Abort (아무것도 하지 않음)
-
-  [edit] 파일을 다른 그룹으로 수동 재배치 / 브랜치명·PR 제목 수정
-```
-
-#### 4.3 수용 가능한 응답
-
-| 응답 | 해석 |
-|------|------|
-| `1` | Single PR 실행 |
-| `2` | 전체 그룹 stacked PR 실행 |
-| `3: A,C` 또는 `3 A C` | 지정 그룹만 실행 (라벨은 대·소문자 무시) |
-| `4` | Dry-run 결과 출력 후 종료 |
-| `5` 또는 `n` | 중단 |
-| `edit` | 파일 재배치 / 브랜치명·PR 제목 인라인 수정 세션으로 진입 |
-| (공백 / Enter 단독) | 재질문. 묵시적 진행 절대 금지 |
-
-- `Y` 단독 응답은 과거 단축 표기였으나 v5.1부터 **지원 중단**. 사용자가 `Y`라고 답하면 "`1` (Single PR)로 해석할까요?" 재확인 후 진행.
-- 그룹이 1개뿐이면 `[2]`와 `[3]`은 숨기고 `[1]/[4]/[5]/[edit]`만 제시.
-
-#### 4.4 `--dry-run` 플래그
-
-플래그가 켜져 있으면 4.1 요약 + 4.2 박스를 표시하되 사용자 응답을 기다리지 않고 즉시 종료 (Step 5 실행 금지).
+전체 박스 양식 + 응답 표 + `--dry-run` 플래그 동작 → **see `references/confirmation-ux.md`**.
 
 ### Step 5: Execute Per Group
 

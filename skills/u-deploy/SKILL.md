@@ -1,13 +1,7 @@
 ---
 name: u-deploy
-description: "This skill should be used when the user asks to 'deploy', 'ship', 'release', 'generate CI/CD', '/u-deploy'. Interactive: asks for target platform(s) and artifact scope. Gates on Gatekeeping doc score ≥ 98. Supports continuous regeneration when SSoT changes."
+description: "This skill should be used when the user asks to '/u-deploy', 'deploy phase', 'ship', 'release', 'CI/CD', 'u-maker 배포', '배포 단계', '릴리스', '배포 파이프라인 생성', or to 'generate CI/CD'. Interactive: asks for target platform(s) and artifact scope. Gates on Gatekeeping doc score ≥ 98. Supports continuous regeneration when SSoT changes."
 version: 4.0.0
-triggers:
-  - "/u-deploy"
-  - "deploy phase"
-  - "ship"
-  - "release"
-  - "CI/CD"
 ---
 
 # u-deploy — Deploy Phase (PBGD Deploy)

@@ -1,12 +1,7 @@
 ---
 name: u-discuss
-description: "This skill should be used when the user asks to 'discuss', 'brainstorm', 'review meeting', 'decision session', '/u-discuss', or wants to run a structured collaboration session."
+description: "This skill should be used when the user asks to '/u-discuss', 'brainstorm', 'review session', 'decision', 'u-maker 토론', 'u-maker 브레인스토밍', '회의 검토 세션', or '의사결정 세션'. Runs a structured collaboration session."
 version: 4.0.0
-triggers:
-  - "/u-discuss"
-  - "brainstorm"
-  - "review session"
-  - "decision"
 ---
 
 # u-discuss — Structured Discussion

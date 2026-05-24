@@ -1,11 +1,7 @@
 ---
 name: u-init
-description: "Alias of /u-prepare. Use when the user asks to 'init', 'initialize', 'start', '/u-init'. Routes directly to /u-prepare (Preparation umbrella)."
+description: "Alias of /u-prepare. Use when the user asks to '/u-init', 'u-maker init', 'u-maker initialize project', 'u-maker 초기화', or 'u-maker 프로젝트 시작'. Routes directly to /u-prepare (Preparation umbrella)."
 version: 4.0.0
-triggers:
-  - "/u-init"
-  - "init project"
-  - "initialize"
 ---
 
 # u-init — Alias for /u-prepare

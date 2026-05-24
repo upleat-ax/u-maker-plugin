@@ -1,12 +1,7 @@
 ---
 name: u-build
-description: "This skill should be used when the user asks to 'build', 'generate design + code', 'run the build phase', '/u-build'. Orchestrates /u-design ↔ /u-dev ping-pong under the PBGD Build phase."
+description: "This skill should be used when the user asks to '/u-build', 'build phase', 'design + dev', 'ui + code', 'u-maker 빌드', '빌드 단계', '디자인+개발', 'u-maker ping-pong', or wants to orchestrate /u-design ↔ /u-dev ping-pong under the PBGD Build phase."
 version: 4.0.0
-triggers:
-  - "/u-build"
-  - "build phase"
-  - "design + dev"
-  - "ui + code"
 ---
 
 # u-build — Build Phase Orchestrator (PBGD Build)

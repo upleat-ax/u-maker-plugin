@@ -1,12 +1,7 @@
 ---
 name: u-analyze
-description: "This skill should be used when the user asks to 'analyze dropzone', 'generate digest', 'rescan data', '/u-analyze', or wants to convert raw files/links in data/dropzone/ into structured digest JSONs under data/digest/."
+description: "This skill should be used when the user asks to '/u-analyze', 'analyze dropzone', 'generate digest', 'rescan', 'u-maker 분석', '드롭존 분석', '다이제스트 생성', '데이터 재스캔', or wants to convert raw files/links in data/dropzone/ into structured digest JSONs under data/digest/."
 version: 4.0.0
-triggers:
-  - "/u-analyze"
-  - "analyze dropzone"
-  - "generate digest"
-  - "rescan"
 ---
 
 # u-analyze — Dropzone Analysis (Digest Generation)
