@@ -358,148 +358,53 @@ register_meta_symlinks() {
 }
 
 # ============================================================
-# 6e. Register skill symlinks in ~/.claude/skills/
+# 6e. Remove legacy ~/.claude/skills/${PLUGIN_NAME}__* symlinks
+#
+# These were registered by older versions of this script for cross-CLI
+# (Codex/Gemini) discovery. They are now redundant — Claude Code's plugin
+# system loads plugin skills natively under the `${PLUGIN_NAME}:skill`
+# namespace, and Codex/Gemini share the plugin cache via the
+# `setup_codex` / `setup_gemini` symlinks. Keeping both forms causes every
+# skill to appear twice in `/plugin` and the skill picker.
 # ============================================================
 
-register_skill_symlinks() {
+remove_legacy_skill_symlinks() {
   local skills_root="$CLAUDE_HOME/skills"
-  local cache_skills="$CACHE_DIR/$PLUGIN_NAME/$PLUGIN_NAME/$PLUGIN_VERSION/skills"
-
-  mkdir -p "$skills_root"
-
-  if [[ ! -d "$cache_skills" ]]; then
-    warn "No skills directory in cache, skipping skill symlinks"
-    return 0
-  fi
+  [[ -d "$skills_root" ]] || { ok "No legacy skill symlinks to clean"; return 0; }
 
   local count=0
-  for skill_dir in "$cache_skills"/*/; do
-    [[ -d "$skill_dir" ]] || continue
-    local skill_name
-    skill_name="$(basename "$skill_dir")"
-    local link_name="${PLUGIN_NAME}__${skill_name}"
-    local link_path="${skills_root}/${link_name}"
-
-    if [[ -L "$link_path" ]]; then
-      local current
-      current="$(readlink "$link_path")"
-      if [[ "$current" == "$skill_dir" ]]; then
-        continue
-      fi
-      rm "$link_path"
-    elif [[ -e "$link_path" ]]; then
-      rm -rf "$link_path"
-    fi
-
-    ln -s "$skill_dir" "$link_path"
-    count=$((count + 1))
-  done
-
-  if [[ $count -gt 0 ]]; then
-    ok "Registered $count skill symlinks in ~/.claude/skills/"
-  else
-    ok "All skill symlinks up to date"
-  fi
-}
-
-# ============================================================
-# 6f. Register agent symlinks in ~/.claude/agents/
-# ============================================================
-
-register_agent_symlinks() {
-  local agents_root="$CLAUDE_HOME/agents"
-  local cache_agents="$CACHE_DIR/$PLUGIN_NAME/$PLUGIN_NAME/$PLUGIN_VERSION/agents"
-
-  mkdir -p "$agents_root"
-
-  if [[ ! -d "$cache_agents" ]]; then
-    warn "No agents directory in cache, skipping agent symlinks"
-    return 0
-  fi
-
-  local count=0
-  for agent_file in "$cache_agents"/*.md; do
-    [[ -f "$agent_file" ]] || continue
-    local agent_name
-    agent_name="$(basename "$agent_file")"
-    local link_name="${PLUGIN_NAME}__${agent_name}"
-    local link_path="${agents_root}/${link_name}"
-
-    if [[ -L "$link_path" ]]; then
-      local current
-      current="$(readlink "$link_path")"
-      if [[ "$current" == "$agent_file" ]]; then
-        continue
-      fi
-      rm "$link_path"
-    elif [[ -e "$link_path" ]]; then
-      rm -rf "$link_path"
-    fi
-
-    ln -s "$agent_file" "$link_path"
-    count=$((count + 1))
-  done
-
-  if [[ $count -gt 0 ]]; then
-    ok "Registered $count agent symlinks in ~/.claude/agents/"
-  else
-    ok "All agent symlinks up to date"
-  fi
-}
-
-# ============================================================
-# 6g. Clean stale agent symlinks
-# ============================================================
-
-clean_stale_agent_symlinks() {
-  local agents_root="$CLAUDE_HOME/agents"
-  local cache_agents="$CACHE_DIR/$PLUGIN_NAME/$PLUGIN_NAME/$PLUGIN_VERSION/agents"
-  local count=0
-
-  for link in "$agents_root"/${PLUGIN_NAME}__*; do
-    [[ -L "$link" ]] || continue
-    local link_name
-    link_name="$(basename "$link")"
-    local agent_name="${link_name#${PLUGIN_NAME}__}"
-    if [[ ! -f "$cache_agents/$agent_name" ]]; then
-      rm "$link"
-      count=$((count + 1))
-    fi
-  done
-
-  if [[ $count -gt 0 ]]; then
-    ok "Removed $count stale agent symlinks"
-  else
-    ok "No stale agent symlinks found"
-  fi
-}
-
-# ============================================================
-# 6h. Clean stale skill symlinks
-# ============================================================
-
-clean_stale_skill_symlinks() {
-  local skills_root="$CLAUDE_HOME/skills"
-  local cache_skills="$CACHE_DIR/$PLUGIN_NAME/$PLUGIN_NAME/$PLUGIN_VERSION/skills"
-  local count=0
-
   for link in "$skills_root"/${PLUGIN_NAME}__*; do
-    [[ -L "$link" ]] || continue
-    local link_name
-    link_name="$(basename "$link")"
-    # Extract skill name after plugin prefix
-    local skill_name="${link_name#${PLUGIN_NAME}__}"
-    # If this skill dir no longer exists in cache, remove the stale symlink
-    if [[ ! -d "$cache_skills/$skill_name" ]]; then
-      rm "$link"
-      count=$((count + 1))
-    fi
+    [[ -e "$link" || -L "$link" ]] || continue
+    rm -rf "$link"
+    count=$((count + 1))
   done
 
   if [[ $count -gt 0 ]]; then
-    ok "Removed $count stale skill symlinks"
+    ok "Removed $count legacy skill symlinks (now loaded via plugin system)"
   else
-    ok "No stale skill symlinks found"
+    ok "No legacy skill symlinks to clean"
+  fi
+}
+
+# ============================================================
+# 6f. Remove legacy ~/.claude/agents/${PLUGIN_NAME}__* symlinks
+# ============================================================
+
+remove_legacy_agent_symlinks() {
+  local agents_root="$CLAUDE_HOME/agents"
+  [[ -d "$agents_root" ]] || { ok "No legacy agent symlinks to clean"; return 0; }
+
+  local count=0
+  for link in "$agents_root"/${PLUGIN_NAME}__*; do
+    [[ -e "$link" || -L "$link" ]] || continue
+    rm -rf "$link"
+    count=$((count + 1))
+  done
+
+  if [[ $count -gt 0 ]]; then
+    ok "Removed $count legacy agent symlinks (now loaded via plugin system)"
+  else
+    ok "No legacy agent symlinks to clean"
   fi
 }
 
@@ -525,51 +430,46 @@ deploy() {
   mkdir -p "$MARKETPLACES_DIR" "$CACHE_DIR"
 
   # Step 1: Cache sync (must run BEFORE symlink so the target exists)
-  log "1/12  Cache sync"
+  log "1/10  Cache sync"
   sync_to_cache
 
   # Step 2: Marketplace symlink (points to cache, not SCRIPT_DIR — survives temp dir cleanup)
-  log "2/12  Marketplace symlink"
+  log "2/10  Marketplace symlink"
   local cache_dest="$CACHE_DIR/$PLUGIN_NAME/$PLUGIN_NAME/$PLUGIN_VERSION"
   make_link "$cache_dest" "$MARKETPLACES_DIR/$MARKETPLACE_NAME"
 
   # Step 3: known_marketplaces.json
-  log "3/12  known_marketplaces.json"
+  log "3/10  known_marketplaces.json"
   update_known_marketplaces
 
   # Step 4: installed_plugins.json
-  log "4/12  installed_plugins.json"
+  log "4/10  installed_plugins.json"
   update_installed_plugins
 
   # Step 5: settings.json enabledPlugins toggle (otherwise Claude Code won't load the plugin)
-  log "5/12  settings.json enabledPlugins"
+  log "5/10  settings.json enabledPlugins"
   update_enabled_plugins
 
-  # Step 6: Clean stale symlinks
-  log "6/12  Clean stale skill symlinks"
-  clean_stale_skill_symlinks
+  # Step 6: Remove legacy duplicate symlinks
+  # Claude Code's plugin system loads plugin skills/agents natively under the
+  # `${PLUGIN_NAME}:skill` namespace. The old `${PLUGIN_NAME}__skill` symlinks
+  # produced a second copy of every skill in /plugin — purge them.
+  log "6/10  Remove legacy skill symlinks (${PLUGIN_NAME}__*)"
+  remove_legacy_skill_symlinks
 
-  log "7/12  Clean stale agent symlinks"
-  clean_stale_agent_symlinks
+  log "7/10  Remove legacy agent symlinks (${PLUGIN_NAME}__*)"
+  remove_legacy_agent_symlinks
 
-  # Step 8: Skill symlinks
-  log "8/12  Skill symlinks"
-  register_skill_symlinks
-
-  # Step 9: Agent symlinks
-  log "9/12  Agent symlinks"
-  register_agent_symlinks
-
-  # Step 10: _meta symlinks (templates, schemas, etc.)
-  log "10/12 _meta symlinks (templates, schemas)"
+  # Step 8: _meta symlinks (templates, schemas, etc.)
+  log "8/10  _meta symlinks (templates, schemas)"
   register_meta_symlinks
 
-  # Step 11: Codex
-  log "11/12 Codex integration"
+  # Step 9: Codex
+  log "9/10  Codex integration"
   setup_codex
 
-  # Step 12: Gemini
-  log "12/12 Gemini integration"
+  # Step 10: Gemini
+  log "10/10 Gemini integration"
   setup_gemini
 
   echo ""
