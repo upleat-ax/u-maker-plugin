@@ -1,10 +1,10 @@
-# U-MAKER Plugin v4.0.0-alpha.10
+# U-MAKER Plugin v4.0.0-alpha.13
 
 PBGD-based SSoT (Single Source of Truth) plugin for Claude Code.
 
 Drop planning materials, and it automatically performs Preparation → Plan → Build → Gatekeeping → Deploy.
 
-**27 Skills** (incl. 3 aliases) · **10 Agents** · **4 PBGD Phases** (Plan · Build · Gatekeeping · Deploy) · **11 Gate Criteria** (configurable via `--loop [N]`, default 5) · **Pass ≥ 95** · **Deploy-gate ≥ 98**
+**28 Skills** (incl. 3 aliases) · **10 Agents** · **4 PBGD Phases** (Plan · Build · Gatekeeping · Deploy) · **11 Gate Criteria** (configurable via `--loop [N]`, default 5) · **Pass ≥ 95** · **Deploy-gate ≥ 98**
 
 ## Documentation
 
@@ -64,6 +64,7 @@ Wrappers around external programs/services. All u-maker phase skills route throu
 | `/u-tools-figma-ds` | `figma:figma-generate-library` (writer) | `/u-analyze` Step 2.4 (auto on DS code), `/u-design` Step 4.5 (opt-in) |
 | `/u-tools-browser` | agent-browser CLI → Playwright MCP → chrome-devtools MCP | `/u-gatekeeping` (E2E), `/u-report-weekly` (capture), `/u-dev --verify`, `/u-wireframe --preview` |
 | `/u-tools-git-pr` | git + `gh` CLI + GitHub API | Standalone PR generator with intelligent grouping |
+| `/u-tools-jenkins-deploy` | Jenkins API + Docker Hub + ssh + nginx-certbot | Standalone Jenkins CI/CD setup for Docker-based deploys (reads `.u-maker/.env`) |
 
 ### Rule packs (external reference integrations)
 

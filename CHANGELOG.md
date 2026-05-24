@@ -2,6 +2,52 @@
 
 All notable changes to u-maker-plugin.
 
+## [4.0.0-alpha.13] — 2026-05-24
+
+**Changed: 28-skill quality review fixes — sanitize, trigger hardening, progressive disclosure, Korean coverage, official-schema compliance.**
+
+Comprehensive cleanup pass on all 28 skills following a multi-agent (5 reviewer) quality review. Touches every `skills/*/SKILL.md`, sanitizes `u-meeting-report/AGENTS.md`, and introduces 14 new `references/*.md` files for progressive disclosure. Plugin remains backward-compatible — no command renames, no behaviour changes; only documentation, frontmatter, and split-file organization.
+
+### Fixed (Critical)
+
+- **`skills/u-meeting-report/`** — frontmatter `name` was incorrectly `the-voice-meeting` (a separate system skill) → corrected to `u-meeting-report`. All 9 internal references to `~/.claude/skills/the-voice-meeting/...` (scripts, assets, `.env`) replaced with `${CLAUDE_PLUGIN_ROOT}/skills/u-meeting-report/...`. Removed `/Users/thinoo/...` absolute path leak from `AGENTS.md`. The plugin's bundled `scripts/`, `assets/`, and `references/` for this skill are now actually consumed; the plugin is standalone-portable.
+- **`skills/u-wireframe/SKILL.md`** — frontmatter `version: 3.2.0` → `4.0.0` (matches all peer phase skills).
+
+### Changed (High)
+
+- **Generic trigger hijack mitigation (6 skills)** — replaced overly-broad triggers that intercepted unrelated input with `u-maker`/`Turborepo` prefix qualifiers:
+  - `u-qa`: `"QA"` → `"u-maker QA"`, `"u-qa runtime QA"`
+  - `u-init`: `"initialize"` → `"u-maker init"`, `"u-maker initialize project"`
+  - `u-check`: `"check phase"` → `"u-maker check"`, `"u-maker gatekeeping check"`
+  - `u-createproject`: Korean generic `"프로젝트 생성"`/`"새 프로젝트"`/`"모노레포 생성"` → `"u-maker 프로젝트 생성"`/`"Turborepo 모노레포 스캐폴드"` etc.
+  - `u-loop`: `"auto loop"`/`"full pipeline"` → `"u-maker auto loop"`/`"u-maker full pipeline"`
+  - `u-tools-browser`: added missing `"playwright"`, `"agent-browser"`, `"screenshot"`, `"visual regression"`, `"a11y audit"`, `"figma parity"` so DS verify / capture flows match correctly.
+- **`skills/u-engine/SKILL.md`** — description rewritten as internal-only (`INTERNAL INFRASTRUCTURE — not directly invoked by users`) to prevent LLM auto-invocation. 50-line `HTML Generation Protocol` body collapsed into pointer to existing `references/html-engine.md`. 110 → 68 lines.
+- **Progressive disclosure refactor (6 large skills → 14 new `references/*.md`)** — total 2,050 → 1,339 lines (-35%):
+
+  | Skill | Before | After | Δ | new refs |
+  |---|---:|---:|---:|---:|
+  | `u-tools-browser` | 501 | 305 | -39% | 4 (`backend-detection`, `visual-verify-ds`, `visual-verify-components`, `failure-handling`) |
+  | `u-prepare-foldertree` | 285 | 126 | -56% | 2 (`foldertree-layout`, `migration-rules`) |
+  | `u-output` | 286 | 175 | -39% | 2 (`screens-rendering`, `erd-rendering`) — folder newly created |
+  | `u-tools-jenkins-deploy` | 365 | 309 | -15% | 3 (`credentials`, `nginx-tls`, `jenkins-gotchas`) |
+  | `u-tools-git-pr` | 301 | 189 | -37% | 2 (`classification-rules`, `confirmation-ux`) |
+  | `u-wireframe` | 312 | 235 | -25% | 1 (`wireframe-rendering-rules`) |
+
+### Added
+
+- **Korean trigger coverage** — 22 skills enriched. 26/28 skills are now Korean-searchable in addition to English (e.g., `"u-maker 기획"`, `"와이어프레임 생성"`, `"u-maker 배포"`, `"피그마 분석"`). `u-engine` is internal-only by design; `u-meeting-report` is covered via description-only Korean keywords.
+
+### Changed (Frontmatter standardization)
+
+- **All 26 skills** with a non-standard `triggers:` array migrated to the **official Claude Code schema** (`name`/`description`/`version` only). Every trigger keyword (English + Korean) was preserved by integrating them into `description` as quoted strings, matching the convention of all 5 official `plugin-dev/*` skills. Max resulting description length: 637 chars (`u-tools-browser`). This guarantees skill matching works even if the runtime ignores the non-spec `triggers:` field. `u-engine` and `u-meeting-report` were already description-only.
+
+### Notes
+
+- File stats: 43 files changed in PR #85, +1,118 / −1,019.
+- Smoke test (manual, post-merge): in a fresh Claude Code session, type `/u-` to confirm all 28 skills autocomplete without duplicates, and try Korean phrases (`"u-maker 기획"`, `"와이어프레임 생성"`, `"회의록 작성"`) to confirm description-only matching.
+- No migration required for existing projects — only documentation/frontmatter changed; no command renames or behavior changes.
+
 ## [4.0.0-alpha.12] — 2026-05-23
 
 **Added: `.u-maker/.env` credential file + `/u-tools-jenkins-deploy` skill.**
