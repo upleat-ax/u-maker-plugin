@@ -1,6 +1,6 @@
 {
   "name": "u-maker",
-  "version": "4.0.0-alpha.16",
+  "version": "4.0.0-alpha.17",
   "description": "PBGD-based SSoT plugin for Claude Code. 4-phase pipeline (Plan/Build/Gatekeeping/Deploy), 10 agents, 28 skills (/u-prepare umbrella, /u-analyze, /u-tools-figma analyzer + /u-tools-figma-screen + /u-tools-figma-ds writers, /u-build orchestrator, /u-gatekeeping, /u-deploy with interactive target + artifact selection, /u-tools-jenkins-deploy reading credentials from .u-maker/.env, plus /u-createproject, /u-output, /u-reverse, /u-meeting-report, u-tools-browser unified browser automation, and backward-compat aliases /u-init, /u-check, /u-qa). 11-criteria quality gate (pass \u226595, deploy-gate \u226598), continuous deploy regeneration, domain-split HTML output.",
   "author": {
     "name": "u-plugin"
