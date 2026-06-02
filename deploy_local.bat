@@ -307,7 +307,7 @@ echo   [OK] %AG_COUNT% agent links registered
 
 :: _meta junction
 if exist "%CLAUDE_HOME%\_meta\%PLUGIN_NAME%" (
-    echo   [OK] _meta junction exists ^(templates, schemas^)
+    echo   [OK] _meta junction exists [templates, schemas]
 ) else (
     echo   [ERR] _meta junction missing at %CLAUDE_HOME%\_meta\%PLUGIN_NAME%
     set "ALL_OK=0"
@@ -321,7 +321,7 @@ if exist "%CODEX_HOME%" (
         echo   [WARN] Codex plugins junction missing
     )
 ) else (
-    echo   [WARN] Codex not installed ^(skipped^)
+    echo   [WARN] Codex not installed [skipped]
 )
 
 :: Gemini
@@ -332,7 +332,7 @@ if exist "%GEMINI_HOME%" (
         echo   [WARN] Gemini plugins junction missing
     )
 ) else (
-    echo   [WARN] Gemini not installed ^(skipped^)
+    echo   [WARN] Gemini not installed [skipped]
 )
 
 echo.
@@ -381,15 +381,22 @@ mkdir "%DEST%" 2>nul
 
 :: Use robocopy for efficient sync (exit codes 0-7 are success)
 robocopy "%SCRIPT_DIR%" "%DEST%" /E /XD .git node_modules /XF .DS_Store .orphaned_at /NFL /NDL /NJH /NJS /NC /NS /NP >nul 2>&1
-if !errorlevel! LEQ 7 (
-    echo   [OK] Cache synced: cache\%PLUGIN_NAME%\%PLUGIN_NAME%\%PLUGIN_VERSION%
-) else (
+if !errorlevel! GTR 7 (
     echo   [WARN] Robocopy returned code !errorlevel!, trying xcopy fallback...
     xcopy "%SCRIPT_DIR%\*" "%DEST%\" /E /I /Y /Q >nul 2>&1
     :: Remove excluded items
     if exist "%DEST%\.git" rd /s /q "%DEST%\.git"
     if exist "%DEST%\node_modules" rd /s /q "%DEST%\node_modules"
-    echo   [OK] Cache synced via xcopy fallback
+)
+
+:: Verify the copy actually landed. Guards against silent robocopy/xcopy failures
+:: (e.g. System32 missing from PATH so neither tool can run) that would otherwise
+:: leave an empty cache while still reporting success.
+if exist "%DEST%\skills" (
+    echo   [OK] Cache synced: cache\%PLUGIN_NAME%\%PLUGIN_NAME%\%PLUGIN_VERSION%
+) else (
+    echo   [ERR] Cache sync failed: "%DEST%" is empty or incomplete.
+    echo        robocopy/xcopy could not run. Ensure C:\Windows\System32 is on PATH, then retry.
 )
 goto :eof
 
@@ -564,7 +571,7 @@ for %%H in ("%CLAUDE_HOME%" "%CODEX_HOME%" "%GEMINI_HOME%") do (
 )
 
 if !META_COUNT! GTR 0 (
-    echo   [OK] Registered !META_COUNT! _meta junction(s) ^(templates, schemas, session-protocols, tech-rules^)
+    echo   [OK] Registered !META_COUNT! _meta junctions [templates, schemas, session-protocols, tech-rules]
 ) else (
     echo   [ERR] Failed to create _meta junction. Try running as Administrator.
 )
@@ -873,7 +880,12 @@ exit /b 1
 :refresh_path
 for /f "usebackq tokens=2,*" %%a in (`reg query "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Environment" /v Path 2^>nul`) do set "SYS_PATH=%%b"
 for /f "usebackq tokens=2,*" %%a in (`reg query "HKCU\Environment" /v Path 2^>nul`) do set "USR_PATH=%%b"
-if defined SYS_PATH if defined USR_PATH set "PATH=!SYS_PATH!;!USR_PATH!"
+:: Append (do NOT overwrite) so System32 etc. stay on PATH. The registry values
+:: are REG_EXPAND_SZ and contain literal %SystemRoot% which Windows does NOT expand
+:: inside PATH at lookup time — overwriting here would drop C:\Windows\System32 and
+:: break robocopy/xcopy/findstr (robocopy then returns 9009 = command not found).
+if defined SYS_PATH set "PATH=!PATH!;!SYS_PATH!"
+if defined USR_PATH set "PATH=!PATH!;!USR_PATH!"
 
 :: Also add common install locations that may not be in PATH yet
 if exist "%USERPROFILE%\.bun\bin" set "PATH=!PATH!;%USERPROFILE%\.bun\bin"
