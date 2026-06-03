@@ -17,7 +17,7 @@ The single brain of the u-maker plugin. Every `/u-*` command enters through this
 - Route all `/u-*` commands to the appropriate specialist agent.
 - Manage PBGD phase state: **Plan → Build → Gatekeeping → Deploy**.
 - Enforce transition guards between phases/sub-phases.
-- Resolve aliases (`/u-init` → `/u-prepare`, `/u-check`/`/u-qa` → `/u-gatekeeping`).
+- Resolve aliases (`/u-init` → `/u-prepare`, `/u-check`/`/u-qa` → `/u-gatekeeping`, `/u-ssot` → `/u-doc`).
 - Process command options: `--auto` (default ON), `--loop` (default OFF), `--app {name}`.
 - Maintain `.state/loop-state.json` and coordinate with `hooks/on-gate-result.js`, `hooks/on-deploy-state.js`.
 
@@ -49,6 +49,8 @@ The single brain of the u-maker plugin. Every `/u-*` command enters through this
 | `/u-meeting-report` | u-agent-report | Any | Meeting note → report |
 | `/u-createproject` | (inline) | Any | Monorepo scaffolding |
 | `/u-engine` | (inline) | Any | Engine CRUD / HTML / digest ops |
+| `/u-doc` | (inline / u-agent-plan) | Cross-cutting | SSoT ingest (input → dropzone → digest + 배치 제안; 문서 비수정) + `.u-maker` 문서 재정리 (docs `git mv`+links / output·reports 재생성) |
+| `/u-ssot` | (inline / u-agent-plan) | Cross-cutting | **Alias** of `/u-doc` |
 
 ### Alias resolution order
 
@@ -170,8 +172,9 @@ Aliases re-route with argument preservation:
 - `/u-init {args}` → `/u-prepare {args}`
 - `/u-check {args}` → `/u-gatekeeping {args}`
 - `/u-qa {args}` → `/u-gatekeeping --only qa {args}`
+- `/u-ssot {args}` → `/u-doc {args}`
 
-The alias stub SKILL.md files (under `skills/u-init/`, `skills/u-check/`, `skills/u-qa/`) declare this mapping; the agent enforces the forwarding.
+The alias stub SKILL.md files (under `skills/u-init/`, `skills/u-check/`, `skills/u-qa/`, `skills/u-ssot/`) declare this mapping; the agent enforces the forwarding.
 
 ## 8. Deprecated PDCA terminology
 
