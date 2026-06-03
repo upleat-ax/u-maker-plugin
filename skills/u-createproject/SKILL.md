@@ -1,7 +1,7 @@
 ---
 name: u-createproject
-description: "This skill should be used when the user asks to '/u-createproject', 'u-createproject', 'createproject', 'u-maker 프로젝트 생성', 'u-maker 새 프로젝트', 'Turborepo 모노레포 스캐폴드', 'u-maker monorepo scaffold', or 'u-maker scaffold project'. Generates a new Turborepo + Bun monorepo project with the standard Clean Architecture layer structure."
-version: 1.0.0
+description: "This skill should be used when the user asks to '/u-createproject', 'u-createproject', 'createproject', 'u-maker 프로젝트 생성', 'u-maker 새 프로젝트', 'Turborepo 모노레포 스캐폴드', 'u-maker monorepo scaffold', or 'u-maker scaffold project'. Generates a new Turborepo + Bun monorepo project with the standard Clean Architecture layer structure, including a project-specific CLAUDE.md agent guide."
+version: 1.1.0
 ---
 
 # u-createproject — Turborepo + Bun Monorepo Project Scaffolding
@@ -84,6 +84,7 @@ Turborepo + Bun 기반 모노레포 프로젝트를 처음부터 스캐폴딩한
 2. `turbo.json` — task pipeline (build, dev, lint, storybook, test)
 3. `tsconfig.json` — root references
 4. `.gitignore` — node_modules, .next, dist, .turbo, bun.lockb, .env*.local, .u-maker/.state/, .u-maker/output/, .u-maker/reports/
+5. `CLAUDE.md` — 프로젝트 AI 에이전트 가이드 (개요·디자인시스템·명령어·앱·아키텍처·SSoT·코딩 컨벤션·금지사항·Git). `references/scaffolding-spec.md` §7 의 CLAUDE.md 템플릿을 `{{PROJECT_NAME}}` 치환하여 생성한다. **실제 스캐폴드된 구조만** 기술하고(스캐폴드에 없는 컴포넌트를 강제하지 않음), Step 6 git commit 에 포함된다.
 
 ### Step 3: Generate packages/* (의존 순서 준수)
 
@@ -162,6 +163,7 @@ bun run lint
 📁 Structure:
   apps/     — web, admin, backend
   packages/ — domain, data, hooks, infrastructure, ui-common, ui-backoffice, ui-app, tokens, config
+  CLAUDE.md — AI 에이전트 가이드 (프로젝트 규칙·아키텍처·금지사항)
 
 🚀 Next Steps:
   1. cd {PROJECT_DIR}
