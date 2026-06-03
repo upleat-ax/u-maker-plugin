@@ -2,6 +2,43 @@
 
 All notable changes to u-maker-plugin.
 
+## [4.0.0-alpha.18] — 2026-06-03
+
+**Added: `/u-doc` (alias `/u-ssot`) — SSoT ingest + document reorganization. Changed: `/u-createproject` now scaffolds a project-specific `CLAUDE.md`.**
+
+A new cross-cutting skill plus a scaffolding enhancement. Skill count 28 → 30.
+
+### Added
+
+- **`skills/u-doc/SKILL.md` (+ `references/ingest-rules.md`, `references/reorg-rules.md`)** — new two-mode SSoT helper.
+  - **Ingest** — normalizes an arbitrary input (file / image / link / text) into `data/dropzone/`, reuses the `/u-analyze` digest pipeline (digest-engine), and **suggests** which app / SSoT doc / section it belongs to. Does **not** edit SSoT docs directly; actual document reflection stays with `/u-plan` · `/u-design` (chosen non-destructive policy). Figma sources auto-delegate to `/u-tools-figma`.
+  - **Reorganize** — tidies `.u-maker/docs · output · reports` to the standard structure. Tree-aware: `docs/` (tracked SSoT) → `git mv` + `links.json` path sync; `output/` · `reports/` (gitignored, generated) → regenerate via `/u-output` · `/u-report` (no hand-move of artifacts). Always dry-run + confirm; never deletes.
+  - Provides the previously-absent user entry point that `doc-engine.md` referenced as `/u-add` · `/u-update` (input side only — collection + placement suggestion).
+- **`skills/u-ssot/SKILL.md`** — thin alias of `/u-doc` (mirrors the `/u-init` · `/u-check` · `/u-qa` stub pattern).
+
+### Changed
+
+- **`agents/u-agent-pm.md`** — registered `/u-doc` + `/u-ssot` in alias resolution (§1), the command routing table (§2), and global alias forwarding (§7, `/u-ssot → /u-doc`).
+- **`skills/u-createproject/SKILL.md` (1.0.0 → 1.1.0) + `references/scaffolding-spec.md`** — project scaffolding now generates a project-specific **`CLAUDE.md`** agent guide (§7 template, `{{PROJECT_NAME}}` substituted), wired into Step 2 so it lands in the first git commit. The guide documents only the actually-scaffolded structure (web:3000 / admin:3001 / backend:2920, ui-common/ui-backoffice/ui-app, Clean Architecture, conventions, prohibitions). Also fixed the starter `page.tsx` inline-style padding (`.page-main` class) so the scaffold obeys the layout rule its own generated CLAUDE.md mandates.
+- **`.claude-plugin/plugin.json`** — version `4.0.0-alpha.17 → 4.0.0-alpha.18`; description skill count 28 → 30, `/u-doc` + `/u-ssot` listed.
+
+### Notes
+
+- `/u-doc` Ingest is intentionally non-destructive (digest + placement suggestion only); it overlaps `/u-analyze` for digest generation and reuses that logic rather than reimplementing it.
+- Reorganize `output/` ↔ `out/` root: `doc-engine.md` uses a legacy `out/` path for design-system while the standard is `output/`. The drift-detector treats both roots as valid and confirms before moving, to avoid false positives. Reconciling the source inconsistency is tracked separately.
+- The `/u-doc` skill and the `/u-createproject` CLAUDE.md change are independent features and may ship as separate PRs.
+
+## [4.0.0-alpha.17] — 2026-06-02
+
+**Fixed: `deploy_local` — Windows install + duplicate skill symlinks.**
+
+Maintenance release. No new commands or plugin-wide functional changes.
+
+### Fixed
+
+- **`deploy_local.bat`** — repaired Windows install: a `PATH` clobber and a `cmd` parenthesis parse error that broke the installer.
+- **`deploy_local.sh`** — removed legacy `u-maker__*` skill symlinks that duplicated the plugin's own skill entries (see PR [#90](https://github.com/thinoo-v2/u-maker-plugin/pull/90)).
+
 ## [4.0.0-alpha.16] — 2026-05-24
 
 **Changed: `/u-tools-git-pr` v5.1 — guaranteed clean working tree + table-based confirmation UI.**
