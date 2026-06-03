@@ -1319,6 +1319,10 @@ body {
   background-color: var(--color-background);
   line-height: 1.6;
 }
+
+.page-main {
+  padding: var(--spacing-xl);
+}
 ```
 
 #### src/app/layout.tsx
@@ -1348,7 +1352,7 @@ import { Button } from "@{{PROJECT_NAME}}/ui-common";
 
 export default function HomePage() {
   return (
-    <main style={{ padding: "var(--spacing-xl)" }}>
+    <main className="page-main">
       <h1>{{APP_NAME}}</h1>
       <p>Welcome to {{APP_NAME}}</p>
       <Button variant="primary">Get Started</Button>
@@ -1658,6 +1662,79 @@ bun.lockb
 .u-maker/output/
 .u-maker/reports/
 *.tsbuildinfo
+```
+
+### CLAUDE.md
+
+프로젝트 루트에 생성하는 **AI 에이전트 가이드**. Claude Code가 이 프로젝트에서 작업할 때 컨텍스트로 로드되어 동작 기준이 된다. **실제 스캐폴드된 구조·스택·규칙만** 기술한다 — 스캐폴드에 없는 컴포넌트(예: 아직 추출하지 않은 layout primitive)를 강제하지 않는다. `{{PROJECT_NAME}}` 치환을 적용하고, Step 6 git commit 에 포함된다.
+
+```markdown
+# {{PROJECT_NAME}}
+
+Turborepo 모노레포. 패키지 매니저 `bun@1.2.0`, Clean Architecture 레이어 구조.
+
+## 디자인시스템
+
+- 각 앱은 raw HTML / inline style 대신 `@{{PROJECT_NAME}}/ui-*` 컴포넌트와 `@{{PROJECT_NAME}}/tokens` design token 만 사용한다.
+- `ui-common`: 공통 컴포넌트(모든 앱). `ui-backoffice`: 관리자/백오피스(admin). `ui-app`: 엔드유저 앱 UI.
+- inline style 금지 — 색·간격·타이포 등 모든 값은 design token(`var(--*)`)으로 표현한다.
+- 레이아웃(`display`/`flex*`/`grid*`/`gap`/`padding`/`margin`)을 `<div>` + inline style 로 직접 짜지 말 것. 반복되는 레이아웃 컴포지션은 `ui-*` 패키지에 layout primitive 컴포넌트로 추출해 재사용한다.
+
+## 명령어
+
+- 전체: `bun run dev|build|lint|storybook`
+- 단일 앱/패키지: `bun --filter @{{PROJECT_NAME}}/<name> run dev|build`
+- Push 전 필수: `bun run build && bun run lint` 통과 확인
+
+## 앱
+
+| 앱 | 포트 | 스택 |
+|----|------|------|
+| web | 3000 | Next.js 15 App Router |
+| admin | 3001 | Next.js 15 App Router (관리자 대시보드) |
+| backend | 2920 | Nest.js API, prefix `/v1`, Swagger (`GET /v1/reference`, `GET /v1/openapi.json`) |
+
+## 아키텍처 (Clean Architecture)
+
+의존 흐름: `apps/* → hooks → data → domain ← infrastructure`, `apps/* → ui-* → tokens`
+
+- **domain** (`@{{PROJECT_NAME}}/domain`): 타입, 인터페이스, Zod 검증, 서비스. 외부 의존 없음.
+- **data** (`@{{PROJECT_NAME}}/data`): Repository 구현, Mapper, queryKeys, routes. → domain.
+- **infrastructure** (`@{{PROJECT_NAME}}/infrastructure`): axios apiClient, storage. → domain.
+- **hooks** (`@{{PROJECT_NAME}}/hooks`): TanStack Query 훅 = usecase. → data, domain.
+- **ui** (`@{{PROJECT_NAME}}/ui-common|ui-backoffice|ui-app`): 컴포넌트 + Storybook. → tokens.
+
+Repository: 인터페이스는 `domain/src/repositories/`, 구현은 `data/src/repositories/`. API 호출 실패 시 mock fallback (`try { await api(...) } catch { return mockData }`).
+
+Import alias: `@/` → 앱의 `src/`, `@{{PROJECT_NAME}}/` → `packages/*`.
+
+## SSoT
+
+설계 문서(`.u-maker/docs/`): SRS → ERD → API Contract → Screen 이 구현 기준. 코드와 문서가 어긋나면(gap) 문서를 먼저 갱신한 뒤 구현한다.
+
+## 코딩 컨벤션
+
+- TypeScript strict, 함수형(class 금지 — Nest.js 제외), Named export(Next.js page/layout 제외).
+- 네이밍: 변수/함수 `camelCase`, 타입 `PascalCase`, 상수 `UPPER_SNAKE_CASE`, 파일 `kebab-case.ts`(컴포넌트 `PascalCase.tsx`).
+- Server Component 기본, 필요 시에만 `'use client'`.
+- 서버 상태는 TanStack Query(설치됨). 클라이언트 상태가 필요하면 Zustand 권장(스캐폴드 미포함 — 필요 시 추가).
+- 스타일: 순수 CSS(`.css`) + design token. CSS-in-JS / Sass / SCSS / inline style 금지.
+- 공통 모듈은 `packages/*` 에 구현.
+
+## 금지사항
+
+1. **앱에서 API 직접 호출 금지** — 반드시 `domain → data → hooks → apps` 경유.
+2. **Next.js API Route / Route Handler 금지** — 백엔드는 `apps/backend`(Nest.js, `/v1`) 가 담당.
+3. **클래스 금지** — 함수형만 (Nest.js 제외).
+4. **역방향 의존 금지** — domain 이 data/infrastructure/hooks 를 import 불가.
+5. **`packages/` 새 폴더 생성 금지** — 기존 패키지만 사용.
+6. **layout 용도 inline style 금지** — design token + `ui-*` 컴포넌트로 표현.
+
+## Git
+
+- Commit: `type(scope): message` (type: feat/fix/refactor/chore/docs/style/test, scope: 패키지·앱명).
+- Branch: `feat/|fix/|refactor/|chore/`.
+- Push 전 `bun run build && bun run lint` 통과 필수.
 ```
 
 ---
