@@ -2,6 +2,19 @@
 
 All notable changes to u-maker-plugin.
 
+## [4.0.0-alpha.20] — 2026-06-06
+
+**Changed: `/u-createproject` now scaffolds a project-level `DESIGN.md` (디자인/UI 공통 룰), auto-loaded by both Claude Code (`@DESIGN.md` import) and Codex (`AGENTS.md` symlink).**
+
+### Changed
+
+- **`skills/u-createproject/SKILL.md` (1.1.0 → 1.2.0) + `references/scaffolding-spec.md`** — project scaffolding now generates a root **`DESIGN.md`** documenting the design/UI rules shared by every frontend app (`web`, `admin`). The template (§7, `{{PROJECT_NAME}}` substituted) is **adapted to the actually-scaffolded packages** — the source rules (written for a different `@hyunjin/ui-*` 3-app-group repo) were remapped to this scaffold's surfaces: `admin → @{{PROJECT_NAME}}/ui-backoffice (+ ui-common)`, `web → @{{PROJECT_NAME}}/ui-app (+ ui-common)`, `backend` UI-less; token references point at the real `@{{PROJECT_NAME}}/tokens` names (`var(--color-*|--spacing-*|--radius-*|--font-*|--shadow-*)`). Per the existing scaffold philosophy ("실제 스캐폴드된 구조만 기술 — 없는 컴포넌트를 강제하지 않음"), rules that would contradict the scaffold were reconciled rather than copied verbatim: the "no `className`/`style` prop" rule became "variations via `variant`/`size`/`tone` props; `className` only for token-based class composition" (matching the scaffolded `Button`); layout primitives (Container/Stack/Grid) are framed as "extract into `ui-common` when a pattern repeats" rather than mandated; `SSoT 우선` points at the flat `.u-maker/docs/` location. Wired into Step 1 (dir tree), Step 2 (root files #6/#7), and Step 10 (completion summary) so it lands in the first git commit (Step 6 `git add -A`).
+- **Cross-agent auto-load wiring** — a standalone `DESIGN.md` is auto-discovered by *neither* Claude Code nor Codex, so it's now reliably reachable from both:
+  - **Claude Code** — the CLAUDE.md template's 디자인시스템 section ends with a literal **`@DESIGN.md`** import line (Claude Code import syntax, max 4 hops), pulling DESIGN.md fully into context whenever the auto-loaded CLAUDE.md loads.
+  - **Codex** — scaffolding now also creates **`AGENTS.md` as a symlink to `CLAUDE.md`** (`ln -s CLAUDE.md AGENTS.md`, after CLAUDE.md/DESIGN.md exist), since Codex auto-discovers `AGENTS.md` and does **not** read `CLAUDE.md`. Codex has no import syntax, so it reads DESIGN.md **on-demand** following the guide's "작업 전 DESIGN.md 반드시 참조" instruction. git tracks the symlink (Step 6 `git add -A`); Windows checkout needs `core.symlinks=true` (noted in §7 AGENTS.md).
+- **`references/scaffolding-spec.md` — CLAUDE.md template** — the CLAUDE.md 디자인시스템 section is trimmed to a **pointer** to `DESIGN.md` (single source of truth), keeping a one-line summary; `DESIGN.md` in turn points back to `CLAUDE.md` for non-design rules. Avoids the two docs drifting. New `### AGENTS.md` subsection documents the symlink + cross-agent load behavior.
+- **`.claude-plugin/plugin.json`** — version `4.0.0-alpha.19 → 4.0.0-alpha.20`.
+
 ## [4.0.0-alpha.19] — 2026-06-05
 
 **Added: `/u-reports-roadmap`. Removed: `/u-tools-jenkins-deploy` and `/u-meeting-report` skills.** Skill count 30 → 28 → 29.
