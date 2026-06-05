@@ -1666,7 +1666,9 @@ bun.lockb
 
 ### CLAUDE.md
 
-프로젝트 루트에 생성하는 **AI 에이전트 가이드**. Claude Code가 이 프로젝트에서 작업할 때 컨텍스트로 로드되어 동작 기준이 된다. **실제 스캐폴드된 구조·스택·규칙만** 기술한다 — 스캐폴드에 없는 컴포넌트(예: 아직 추출하지 않은 layout primitive)를 강제하지 않는다. `{{PROJECT_NAME}}` 치환을 적용하고, Step 6 git commit 에 포함된다.
+프로젝트 루트에 생성하는 **AI 에이전트 가이드**(정본). Claude Code가 이 프로젝트에서 작업할 때 컨텍스트로 로드되어 동작 기준이 된다. **실제 스캐폴드된 구조·스택·규칙만** 기술한다 — 스캐폴드에 없는 컴포넌트(예: 아직 추출하지 않은 layout primitive)를 강제하지 않는다. `{{PROJECT_NAME}}` 치환을 적용하고, Step 6 git commit 에 포함된다.
+
+디자인시스템 섹션 끝의 `@DESIGN.md` 한 줄은 Claude Code 의 **import 문법** — CLAUDE.md 로드 시 `DESIGN.md` 전체를 컨텍스트로 함께 끌어온다(최대 4 hop). 별도 `AGENTS.md`(§AGENTS.md 참조)가 이 CLAUDE.md 를 심볼릭 링크해 Codex CLI 등 AGENTS.md 기반 에이전트도 동일 가이드를 자동 로드한다.
 
 ```markdown
 # {{PROJECT_NAME}}
@@ -1675,10 +1677,11 @@ Turborepo 모노레포. 패키지 매니저 `bun@1.2.0`, Clean Architecture 레�
 
 ## 디자인시스템
 
-- 각 앱은 raw HTML / inline style 대신 `@{{PROJECT_NAME}}/ui-*` 컴포넌트와 `@{{PROJECT_NAME}}/tokens` design token 만 사용한다.
-- `ui-common`: 공통 컴포넌트(모든 앱). `ui-backoffice`: 관리자/백오피스(admin). `ui-app`: 엔드유저 앱 UI.
-- inline style 금지 — 색·간격·타이포 등 모든 값은 design token(`var(--*)`)으로 표현한다.
-- 레이아웃(`display`/`flex*`/`grid*`/`gap`/`padding`/`margin`)을 `<div>` + inline style 로 직접 짜지 말 것. 반복되는 레이아웃 컴포지션은 `ui-*` 패키지에 layout primitive 컴포넌트로 추출해 재사용한다.
+- 디자인/UI 공통 룰은 **`DESIGN.md`** 가 단일 출처(SSoT). 화면·컴포넌트 작업 전 반드시 참조한다.
+- 요약: 각 앱은 `@{{PROJECT_NAME}}/ui-*` 컴포넌트 + `@{{PROJECT_NAME}}/tokens` design token(`var(--*)`) 만 사용. raw HTML / inline style 금지. `ui-common`(공통) · `ui-backoffice`(admin) · `ui-app`(web 엔드유저).
+- layout·token·props 변형·폼 정렬·상태 표현·접근성 등 세부 규칙은 `DESIGN.md` 참조. DESIGN.md 와 충돌하면 DESIGN.md 가 우선한다.
+
+@DESIGN.md
 
 ## 명령어
 
@@ -1736,6 +1739,111 @@ Import alias: `@/` → 앱의 `src/`, `@{{PROJECT_NAME}}/` → `packages/*`.
 - Branch: `feat/|fix/|refactor/|chore/`.
 - Push 전 `bun run build && bun run lint` 통과 필수.
 ```
+
+### DESIGN.md
+
+프로젝트 루트에 생성하는 **디자인/UI 공통 룰**. 모든 프론트엔드 앱(`web`, `admin`)에 공통 적용되며, CLAUDE.md 의 디자인시스템 섹션이 이 문서를 단일 출처로 가리킨다. **실제 스캐폴드된 UI 패키지(`ui-common` / `ui-backoffice` / `ui-app`)와 token(`@{{PROJECT_NAME}}/tokens`) 구조에 맞춰** 기술한다 — 스캐폴드에 없는 컴포넌트(예: 아직 추출하지 않은 layout primitive)를 강제하지 않는다. `{{PROJECT_NAME}}` 치환을 적용하고, Step 6 git commit 에 포함된다.
+
+```markdown
+# DESIGN.md — 디자인/UI 공통 룰
+
+이 문서는 `{{PROJECT_NAME}}` 모노레포의 **모든 프론트엔드 앱에 공통으로 적용**되는 디자인/UI 원칙을 정의한다.
+
+| 앱 | UI surface | 사용 UI 패키지 |
+|----|-----------|----------------|
+| `apps/admin` | 관리자/백오피스 | `@{{PROJECT_NAME}}/ui-backoffice` (+ `@{{PROJECT_NAME}}/ui-common`) |
+| `apps/web` | 엔드유저 앱 | `@{{PROJECT_NAME}}/ui-app` (+ `@{{PROJECT_NAME}}/ui-common`) |
+| `apps/backend` | — | UI 없음 (Nest.js API) |
+
+모든 앱은 `@{{PROJECT_NAME}}/tokens` 의 design token(`var(--*)`)을 단일 출처로 사용한다. 앱별 세부 룰(화면 패턴 등)은 각 `apps/<app>/` 내부 컨벤션을 따른다. 운영·아키텍처·금지사항·git 등 디자인 외 룰은 루트 `CLAUDE.md` 참조. DESIGN.md 의 원칙과 충돌하면 DESIGN.md 가 우선한다.
+
+---
+
+## 1. 디자인시스템 우선
+
+- 각 앱은 **지정된 UI 패키지의 컴포넌트만** 사용해 화면을 구성한다.
+- raw HTML 최소화 — `<button>` / `<input>` / `<select>` / `<textarea>` / `<table>` 등 form·interactive 요소는 **반드시** UI 패키지 컴포넌트로 대체.
+- 앱 내부에 ad-hoc 컴포넌트 만들지 않는다. 새 패턴이 필요하면 해당 UI 패키지에 추가한 뒤 사용.
+- 두 곳 이상에서 쓰이는 컴포넌트·훅·유틸은 앱이 아니라 패키지로 이동 — 공통이면 `ui-common`, 백오피스 전용이면 `ui-backoffice`, 엔드유저 앱 전용이면 `ui-app`. **새 `packages/` 폴더 생성 금지** — 기존 패키지에만 추가.
+
+## 2. layout 은 token + 재사용 컴포넌트로
+
+- **layout 용도 inline style 전면 금지**: `display`, `flex*`, `grid*`, `gap`, `padding`, `margin`, `alignItems`, `justifyContent` 등을 `<div style={{…}}>` 로 직접 짜지 않는다.
+- layout 은 순수 CSS 클래스로 표현하고, 간격·여백 값은 token(`var(--spacing-*)`)만 사용 — `gap: 8px` 같은 raw 값 금지.
+- 동일 layout 패턴이 두 곳 이상에서 반복되면 layout primitive 컴포넌트(Container / Stack / Grid / Section 등)로 `ui-common` 에 추출해 재사용한다. (스캐폴드에는 아직 없음 — 패턴이 생길 때 추가.)
+- 인접 sibling 간격은 child 의 `marginLeft/Top` 이 아닌 **부모의 `gap`** 으로 해결.
+
+## 3. design token 만 사용
+
+- color·spacing·radius·typography·shadow 모두 `@{{PROJECT_NAME}}/tokens` 의 **design token** 만 사용. raw px / hex / rgb 직접 지정 금지.
+  - color → `var(--color-*)`, spacing/padding/gap → `var(--spacing-*)`, radius → `var(--radius-*)`, typography → `var(--font-size-*)` · `var(--font-weight-*)` · `var(--font-family-*)`, shadow → `var(--shadow-*)`.
+- `padding: 8px` / `gap: 12px` 같은 raw 값 금지 → `var(--spacing-sm)` · `var(--spacing-md)`.
+- font-size·line-height·font-weight 도 token.
+
+## 4. 시각 효과 inline style 금지
+
+- 색·border·radius·shadow·opacity 등 visual 속성도 inline style 금지 → token 기반 CSS 클래스 / variant props 로 표현.
+- 예외: 동적 계산값(progress bar width, 차트 좌표 등)이 꼭 필요할 때만 한정 사용.
+
+## 5. UI 패키지 컴포넌트는 props 로 변형
+
+- `ui-common` / `ui-backoffice` / `ui-app` 컴포넌트의 시각 변형은 컴포넌트 props (`variant`, `size`, `tone`, `surface`, `density` 등) 로 표현한다.
+- 사용 측에서 컴포넌트에 inline `style={…}` 을 넘겨 색·간격·layout 을 override 하지 않는다.
+- `className` 은 **token 기반 클래스 합성** 용도로만 전달 — raw px/hex 를 담은 임의 클래스 금지. 필요한 변형이 없으면 UI 패키지에서 prop 을 확장한다. (스캐폴드 `Button` 은 `variant`/`size` props + token 클래스 합성 방식을 따른다. 새 컴포넌트도 동일 패턴 유지.)
+
+## 6. 폼 정렬 일관성
+
+- 한 화면의 모든 form row 는 **동일 labelWidth** 사용 — 컴포넌트 상단에 상수로 선언.
+- form 컨트롤 폭은 token 또는 `width:100%` — raw px (`width: 320`) 지정 금지.
+- multi-column 폼은 **grid 기반** 만 사용. row 들이 column 경계에서 정확히 정렬되어야 한다.
+- multi-line 컨트롤(Textarea 등) 의 label 은 control 첫 줄 baseline 에 정렬.
+
+## 7. 입력 컨트롤 상태 표현 통일
+
+- `disabled` / `readOnly` / `error` / `focus` 등 상태는 UI 패키지가 제공하는 변형(variant·tone)으로 표현. 사용 측에서 색·border 를 직접 override 하지 않는다.
+- 상태별 색/배경은 token(`var(--color-*)`)으로 정의하며, 정책이 바뀌면 UI 패키지 컴포넌트에서 일괄 수정한다.
+
+## 8. 접근성·반응형
+
+- 모든 interactive 요소는 키보드로 도달·조작 가능해야 한다.
+- 의미 전달용 이미지·아이콘은 `alt` / `aria-label` 필수. 장식용은 `aria-hidden`.
+- breakpoint 는 공통 token/유틸로 정의한 값만 사용 — 앱마다 제각각인 임의 media query 금지.
+
+## 9. SSoT 우선
+
+- 화면·컴포넌트는 `.u-maker/docs/` 의 설계 문서(SRS / ERD / API-Contract / Screen) 가 구현 기준.
+- 구현이 문서와 어긋나면 **문서를 먼저 갱신**한 뒤 코드를 맞춘다.
+
+---
+
+## 자가 점검 체크리스트
+
+PR 올리기 전 한 번 훑어본다:
+
+- [ ] raw HTML form / interactive 요소를 쓰지 않았다.
+- [ ] inline `style={{ display, flex*, grid*, gap, padding, margin }}` 를 쓰지 않았다.
+- [ ] raw px / hex 값 대신 `@{{PROJECT_NAME}}/tokens` 의 token 을 썼다.
+- [ ] UI 패키지 컴포넌트에 색·간격·layout 을 inline `style` 로 override 하지 않았다.
+- [ ] form 의 labelWidth · 컨트롤 폭이 row 마다 일치한다.
+- [ ] 새 공통 패턴은 앱이 아닌 UI 패키지에 추가했다.
+- [ ] 화면이 설계 문서와 일치하거나, 문서를 함께 갱신했다.
+```
+
+### AGENTS.md
+
+프로젝트 루트에 생성하는 **`CLAUDE.md` 로의 심볼릭 링크**. Codex CLI 등 `AGENTS.md` 를 정본으로 자동 로드하는 에이전트가 `CLAUDE.md` 와 **동일한 가이드**를 읽도록 한다 (Codex 는 `CLAUDE.md` 를 읽지 않는다).
+
+PROJECT_DIR 에서 CLAUDE.md · DESIGN.md 를 먼저 생성한 뒤 실행:
+
+```bash
+ln -s CLAUDE.md AGENTS.md
+```
+
+동작 방식 / 주의:
+
+- **Claude Code** — `CLAUDE.md` 를 자동 로드하고, 그 안의 `@DESIGN.md` import 로 `DESIGN.md` 전체를 컨텍스트에 인라인한다.
+- **Codex** — `AGENTS.md`(→ `CLAUDE.md`) 를 자동 로드한다. Codex 에는 import 문법이 없어 `@DESIGN.md` 는 확장되지 않지만, 가이드의 "화면·컴포넌트 작업 전 `DESIGN.md` 반드시 참조" 지시에 따라 `DESIGN.md` 를 **on-demand** 로 읽는다.
+- git 은 심볼릭 링크를 그대로 추적하므로 Step 6 `git add -A` 에 포함된다. (Windows 체크아웃은 `core.symlinks=true` 필요 — 미지원 환경에선 `AGENTS.md` 가 일반 텍스트 파일로 풀릴 수 있다.)
 
 ---
 
