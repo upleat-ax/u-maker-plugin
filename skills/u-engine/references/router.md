@@ -115,7 +115,7 @@ function parseCommand(input):
 | `tools-git-pr` | `/u-tools-git-pr` | Any | Tool |
 | `output` | `/u-output` | Cross-cutting | Rendering |
 | `report` | `/u-report --daily` / `--weekly` | Any | Reporting |
-| `meeting-report` | `/u-meeting-report` | Any | Reporting |
+| `reports-roadmap` | `/u-reports-roadmap` | Any | Reporting |
 | `createproject` | `/u-createproject` | Any | Scaffolding |
 | `engine` | `/u-engine` | Any | Internal |
 
@@ -144,7 +144,7 @@ When the input is not a `/u-*` command, the router classifies intent from natura
 | "create PR", "pull request", "open PR" | `tools-git-pr` | u-agent-pm |
 | "generate HTML", "render output", "rebuild HTML" | `output` | u-agent-pm |
 | "daily report", "weekly report", "generate report" | `report` | u-agent-report |
-| "meeting minutes", "transcribe audio", "회의록" | `meeting-report` | u-agent-report |
+| "roadmap", "gantt roadmap", "estimate timeline", "로드맵", "일정 산정" | `reports-roadmap` | u-agent-report |
 | "create project", "new monorepo", "scaffold project" | `createproject` | u-agent-pm |
 
 ### Classification Algorithm
@@ -191,8 +191,8 @@ function classifyNaturalLanguage(input):
           intent: "output" },
         { keywords: ["daily report", "weekly report", "generate report"],
           intent: "report" },
-        { keywords: ["meeting minutes", "transcribe audio", "회의록", "m4a"],
-          intent: "meeting-report" },
+        { keywords: ["roadmap", "gantt roadmap", "estimate timeline", "로드맵", "일정 산정"],
+          intent: "reports-roadmap" },
         { keywords: ["create project", "new monorepo", "scaffold project"],
           intent: "createproject" },
     ]
@@ -239,7 +239,7 @@ Once intent is classified, the router dispatches to the appropriate agent.
 | `tools-git-pr` | u-agent-pm (inline) | (none) |
 | `output` | u-agent-pm (inline via doc-engine) | (none) |
 | `report` | u-agent-report | u-agent-pm |
-| `meeting-report` | u-agent-report | u-agent-pm |
+| `reports-roadmap` | u-agent-report | u-agent-pm |
 | `createproject` | u-agent-pm (inline) | (none) |
 | `engine` | u-agent-pm (inline) | (none) |
 
@@ -295,7 +295,7 @@ function dispatch(parsed):
 | `tools-git-pr` | u-tools-git-pr |
 | `output` | u-output |
 | `report` | u-engine (html-engine) via u-agent-report |
-| `meeting-report` | u-meeting-report |
+| `reports-roadmap` | u-reports-roadmap |
 | `createproject` | u-createproject |
 | `engine` | u-engine |
 
@@ -316,7 +316,7 @@ function dispatch(parsed):
 | `gatekeeping` | Build phase complete (design docs Final + code generated) | "Run /u-build first. Design must be Final and code generated." |
 | `deploy` | Gatekeeping avg ≥ 98 (deployReady: true) | "Run /u-gatekeeping --loop to reach docScore ≥ 98." |
 | `report` | At least one document exists | "No documents to report on." |
-| `meeting-report` | At least one supported source file (m4a/txt) available | "No meeting source file found. Provide an m4a or txt input." |
+| `reports-roadmap` | Project source code + git history exists | "No source/git found. /u-reports-roadmap scans code+git to scope a roadmap." |
 
 ## 4. Option Parsing
 

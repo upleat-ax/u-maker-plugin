@@ -1,10 +1,10 @@
-# U-MAKER Plugin v4.0.0-alpha.16
+# U-MAKER Plugin v4.0.0-alpha.19
 
 PBGD-based SSoT (Single Source of Truth) plugin for Claude Code.
 
 Drop planning materials, and it automatically performs Preparation → Plan → Build → Gatekeeping → Deploy.
 
-**28 Skills** (incl. 3 aliases) · **10 Agents** · **4 PBGD Phases** (Plan · Build · Gatekeeping · Deploy) · **11 Gate Criteria** (configurable via `--loop [N]`, default 5) · **Pass ≥ 95** · **Deploy-gate ≥ 98**
+**29 Skills** (incl. 3 aliases) · **10 Agents** · **4 PBGD Phases** (Plan · Build · Gatekeeping · Deploy) · **11 Gate Criteria** (configurable via `--loop [N]`, default 5) · **Pass ≥ 95** · **Deploy-gate ≥ 98**
 
 ## Documentation
 
@@ -64,7 +64,6 @@ Wrappers around external programs/services. All u-maker phase skills route throu
 | `/u-tools-figma-ds` | `figma:figma-generate-library` (writer) | `/u-analyze` Step 2.4 (auto on DS code), `/u-design` Step 4.5 (opt-in) |
 | `/u-tools-browser` | agent-browser CLI → Playwright MCP → chrome-devtools MCP | `/u-gatekeeping` (E2E), `/u-report-weekly` (capture), `/u-dev --verify`, `/u-wireframe --preview` |
 | `/u-tools-git-pr` | git + `gh` CLI + GitHub API | Standalone PR generator — intelligent grouping + **v5.1 Completeness Policy** (guarantees `git status` clean; `.gitignore`'d files excluded) + table-based confirmation UI |
-| `/u-tools-jenkins-deploy` | Jenkins API + Docker Hub + ssh + nginx-certbot | Standalone Jenkins CI/CD setup for Docker-based deploys (reads `.u-maker/.env`) |
 
 ### Rule packs (external reference integrations)
 
@@ -75,6 +74,17 @@ Authoritative rule sets applied automatically during code/design generation.
 | `fe-rules.md` | [vercel-labs/agent-skills](https://github.com/vercel-labs/agent-skills) — react-best-practices (70) + composition-patterns (9) | `/u-dev` Step 1 (FE generation) |
 | `design-system-rules.md` | [dylantarre/design-system-skills](https://github.com/dylantarre/design-system-skills) — 28 skills (tokens, patterns, a11y, frameworks, tools, docs) | `/u-design` Step 4 (DS HTML-first), `/u-build` Step 3 (ping-pong gap routing) |
 | Browser engine | [EveryInc/compound-engineering-plugin](https://github.com/EveryInc/compound-engineering-plugin) — `test-browser` pattern | `/u-tools-browser` 9-step protocol |
+
+### Reporting & roadmap
+
+Cross-cutting output skills (HTML reports). All render under `.u-maker/reports/`.
+
+| Command | Role |
+|---------|------|
+| `/u-output` (`= /u-html`) | Existing docs (`.md` + `.json`) → HTML output |
+| `/u-report-daily` | Daily report — git + meetings + stats |
+| `/u-report-weekly` | Weekly report — per-app FR/US/FT/TC/SC trends + charts |
+| `/u-reports-roadmap` | Code+git → interactive editable Gantt roadmap (scope analysis + team-capacity estimate + risk analysis) in the reference roadmap style |
 
 ## PBGD Phases
 

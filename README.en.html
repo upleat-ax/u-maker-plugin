@@ -159,9 +159,9 @@ a:hover{text-decoration:underline}
 <div class="hero" id="hero">
   <h2>U-MAKER Plugin</h2>
   <p>PBGD-based SSoT (Single Source of Truth) collaboration orchestrator for Claude Code.<br>
-  Automates the entire software development lifecycle with 10 specialized agents, 28 skills (incl. 3 aliases), and a structured data pipeline.</p>
+  Automates the entire software development lifecycle with 10 specialized agents, 29 skills (incl. 3 aliases), and a structured data pipeline.</p>
   <div class="stats">
-    <div class="stat"><div class="stat-val">28</div><div class="stat-label">Skills</div></div>
+    <div class="stat"><div class="stat-val">29</div><div class="stat-label">Skills</div></div>
     <div class="stat"><div class="stat-val">10</div><div class="stat-label">Agents</div></div>
     <div class="stat"><div class="stat-val">4</div><div class="stat-label">PBGD Phases</div></div>
     <div class="stat"><div class="stat-val">11</div><div class="stat-label">Gate Criteria (threshold 95)</div></div>
@@ -503,7 +503,6 @@ a:hover{text-decoration:underline}
 <tr><td><code>/u-tools-figma-ds</code></td><td>Figma design-system <strong>writer</strong>. Input: DS-applied source code (.tsx + .json + .css). Output: Figma DS (Variables + modes + styles + master components). Delegates to <code>figma:figma-generate-library</code>. Auto-invoked from <code>/u-analyze</code> Step 2.4; opt-in from <code>/u-design</code> Step 4.5</td><td><code>/u-tools-figma-ds --app my-app --source ./packages/ui-*</code></td></tr>
 <tr><td><code>/u-tools-browser</code></td><td>Unified browser engine. agent-browser CLI &rarr; Playwright MCP &rarr; chrome-devtools MCP fallback. Used for E2E, screen capture, visual verify, wireframe preview. Consumed by <code>/u-gatekeeping</code>, <code>/u-report-weekly</code>, <code>/u-dev --verify</code>, <code>/u-wireframe --preview</code>. 9-step protocol</td><td><code>/u-tools-browser --app my-app</code></td></tr>
 <tr><td><code>/u-tools-git-pr</code></td><td>git + <code>gh</code> CLI + GitHub API. Intelligent PR generation with commit grouping, split/merge, review guide, table-based numeric confirmation prompt. <strong>v5.1 Completeness Policy</strong> (since alpha.16): Step 5.5 safety-net sweep guarantees <code>git status --porcelain</code> ends empty &mdash; <code>.gitignore</code>'d files excluded, leftover files auto-routed to a <code>chore/misc-leftover-{ts}</code> PR after user confirmation</td><td><code>/u-tools-git-pr</code><br><code>/u-tools-git-pr --base main --dry-run</code></td></tr>
-<tr><td><code>/u-tools-jenkins-deploy</code></td><td>Jenkins API + Docker Hub + ssh + nginx-certbot. CI/CD setup for Docker-based deploys. Reads <code>.u-maker/.env</code> for Jenkins / Docker Hub / Git PAT / target-SSH credentials. 8-phase flow: discovery → decisions → Jenkinsfile + Dockerfile generation → credentials → job creation → nginx + TLS → webhook (with polling fallback) → first build</td><td><code>/u-tools-jenkins-deploy --app apps/myapp --domain myapp.example.com</code></td></tr>
 </tbody>
 </table>
 
@@ -525,7 +524,7 @@ a:hover{text-decoration:underline}
 <tr><td><code>/u-output</code></td><td>.md + .json &rarr; HTML rendering. <code>--diagram svg|mermaid|all</code></td><td><code>/u-output --app my-app --diagram svg</code></td></tr>
 <tr><td><code>/u-report-daily</code></td><td>Daily report (git + meetings + stats)</td><td><code>/u-report-daily</code></td></tr>
 <tr><td><code>/u-report-weekly</code></td><td>Weekly trend report with SVG charts</td><td><code>/u-report-weekly</code></td></tr>
-<tr><td><code>/u-meeting-report</code></td><td>Audio/text &rarr; structured meeting minutes HTML</td><td><code>/u-meeting-report my-app</code></td></tr>
+<tr><td><code>/u-reports-roadmap</code></td><td>Code + git &rarr; interactive editable Gantt roadmap (scope analysis + team-capacity estimate + risk analysis)</td><td><code>/u-reports-roadmap --deadline 2026-08-11</code></td></tr>
 <tr><td><code>/u-init</code></td><td><small>alias &rarr; <code>/u-prepare</code></small> (backward-compat with v3.x)</td><td><code>/u-init my-app</code></td></tr>
 </tbody>
 </table>
@@ -802,7 +801,7 @@ a:hover{text-decoration:underline}
 <tr><td>Generate with SVG diagrams</td><td><code>/u-output --app my-app --diagram svg</code></td></tr>
 <tr><td>Daily team report</td><td><code>/u-report-daily</code></td></tr>
 <tr><td>Weekly trend report</td><td><code>/u-report-weekly</code></td></tr>
-<tr><td>Meeting minutes from notes</td><td><code>/u-meeting-report my-app</code></td></tr>
+<tr><td>Interactive Gantt roadmap from code+git</td><td><code>/u-reports-roadmap --deadline 2026-08-11</code></td></tr>
 </tbody>
 </table>
 
@@ -876,7 +875,7 @@ a:hover{text-decoration:underline}
 &#x2502;   &#x251C;&#x2500;&#x2500; u-agent-deploy.md             # NEW
 &#x2502;   &#x251C;&#x2500;&#x2500; u-agent-figma.md              # NEW (reduced path in alpha)
 &#x2502;   &#x2514;&#x2500;&#x2500; u-agent-report.md
-&#x251C;&#x2500;&#x2500; skills/                           # 28 skills (incl. 3 backward-compat aliases)
+&#x251C;&#x2500;&#x2500; skills/                           # 29 skills (incl. 3 backward-compat aliases)
 &#x2502;   &#x2514;&#x2500;&#x2500; u-*/SKILL.md
 &#x251C;&#x2500;&#x2500; hooks/                            # Event hooks (Write/Edit/MultiEdit matcher)
 &#x2502;   &#x251C;&#x2500;&#x2500; hooks.json

@@ -436,7 +436,7 @@ code {
 <!-- ===== 3. Architecture Overview ===== -->
 <section id="architecture" class="section">
   <h2 class="section-title">3. 아키텍처 개요</h2>
-  <p style="margin-bottom: 20px; color: #475569;">U-MAKER는 10개 AI 에이전트가 PBGD 4-phase 파이프라인을 수행하며, 27개 스킬(별칭 3개 포함)을 통해 각 단계를 제어합니다. PM 에이전트가 모든 요청을 라우팅하고 Gatekeeper가 품질을 검증합니다.</p>
+  <p style="margin-bottom: 20px; color: #475569;">U-MAKER는 10개 AI 에이전트가 PBGD 4-phase 파이프라인을 수행하며, 28개 스킬(별칭 3개 포함)을 통해 각 단계를 제어합니다. PM 에이전트가 모든 요청을 라우팅하고 Gatekeeper가 품질을 검증합니다.</p>
 
   <div class="card" style="padding:24px; margin-bottom:20px;">
     <svg viewBox="0 0 720 340" class="pipeline-svg" xmlns="http://www.w3.org/2000/svg" style="font-family:'Noto Sans KR',sans-serif;">
@@ -887,14 +887,14 @@ code {
         <div class="agent-role">Reporting &middot; sonnet</div>
       </div>
     </div>
-    <p class="agent-desc">프로젝트 상태, 문서 진행률, Gatekeeper 점수, 변경사항을 집계하여 Daily/Weekly Report HTML과 회의록을 생성합니다.</p>
+    <p class="agent-desc">프로젝트 상태, 문서 진행률, Gatekeeper 점수, 변경사항을 집계하여 Daily/Weekly Report HTML을 생성합니다.</p>
   </div>
 </section>
 
-<!-- ===== 7. Commands (28 Skills) ===== -->
+<!-- ===== 7. Commands (29 Skills) ===== -->
 <section id="commands" class="section">
-  <h2 class="section-title">7. 25개 Commands (Skills)</h2>
-  <p style="margin-bottom:16px; color:#475569;">모든 커맨드는 <code class="code-inline">/u-{name}</code> 형태로 호출됩니다. Plan(7) + Build(3) + Gatekeeping(1+2 aliases) + Deploy(1) + Tools(3) + Output/Report(5) + Control(3) + Setup alias(1) = 25개.</p>
+  <h2 class="section-title">7. 28개 Commands (Skills)</h2>
+  <p style="margin-bottom:16px; color:#475569;">모든 커맨드는 <code class="code-inline">/u-{name}</code> 형태로 호출됩니다. Plan(7) + Build(3) + Gatekeeping(1+2 aliases) + Deploy(1) + Tools(5) + Output/Report(5) + Control(3) + Setup alias(1) = 28개.</p>
 
   <!-- Common options -->
   <h3 style="font-size:14px; font-weight:700; color:#0f172a; margin-bottom:12px;">공통 옵션</h3>
@@ -1162,13 +1162,6 @@ code {
           <td style="font-size:11px;"><code class="code-inline">/u-tools-git-pr [--base branch] [--strategy single|group|auto] [--dry-run]</code></td>
           <td>PR/MR 자동 생성 &mdash; 변경 분석 + 커밋 그루핑 + 구조화된 PR body + 리뷰 가이드. <strong>v5.1 Completeness Policy</strong> (alpha.16~): Step 5.5 안전망이 <code class="code-inline">git status --porcelain</code> 결과를 비울 때까지 책임 &mdash; <code class="code-inline">.gitignore</code> 파일은 자동 제외, 남은 파일은 사용자 확인 후 <code class="code-inline">chore/misc-leftover-{ts}</code> PR로 자동 처리. 테이블 기반 확인 프롬프트</td>
         </tr>
-        <tr>
-          <td style="text-align:center;">20</td>
-          <td><strong style="color:#be185d;">/u-tools-jenkins-deploy</strong></td>
-          <td><span class="tag tag-any">Tools</span></td>
-          <td style="font-size:11px;"><code class="code-inline">/u-tools-jenkins-deploy [--app PATH] [--domain DOMAIN] [--jenkins-job NAME] [--dry-run]</code></td>
-          <td>Jenkins CI/CD 셋업 &mdash; Docker 기반 배포. <code class="code-inline">.u-maker/.env</code>에서 Jenkins / Docker Hub / Git PAT / 배포 타겟 SSH 자격증명 로드. 8-phase: discovery → decisions → Jenkinsfile/Dockerfile 생성 → credentials → job 생성 → nginx + TLS → webhook (polling fallback) → first build</td>
-        </tr>
       </tbody>
     </table>
   </div>
@@ -1242,10 +1235,10 @@ code {
         </tr>
         <tr>
           <td style="text-align:center;">21</td>
-          <td><strong style="color:#be123c;">/u-meeting-report</strong></td>
+          <td><strong style="color:#be123c;">/u-reports-roadmap</strong></td>
           <td><span class="tag tag-report">Report</span></td>
-          <td style="font-size:11px;"><code class="code-inline">/u-meeting-report [topic]</code></td>
-          <td>음성/텍스트 &rarr; 구조화된 회의록 HTML</td>
+          <td style="font-size:11px;"><code class="code-inline">/u-reports-roadmap [--deadline] [--devs N] [--rerender]</code></td>
+          <td>코드+git 분석 → 편집형 간트 로드맵 (스코프·팀capacity 추정·위험분석)</td>
         </tr>
         <tr>
           <td style="text-align:center;">22</td>
@@ -1576,10 +1569,7 @@ code {
 <span class="cmd">/u-report-daily</span> <span class="flag">--app</span> myapp
 
 <span class="comment"># 주간 리포트 (트렌드 + SVG 차트)</span>
-<span class="cmd">/u-report-weekly</span> <span class="flag">--app</span> myapp
-
-<span class="comment"># 회의록 → 구조화된 HTML</span>
-<span class="cmd">/u-meeting-report</span> "스프린트 5 킥오프 미팅"</code>
+<span class="cmd">/u-report-weekly</span> <span class="flag">--app</span> myapp</code>
   </div>
 </section>
 

@@ -46,7 +46,7 @@ The single brain of the u-maker plugin. Every `/u-*` command enters through this
 | `/u-output` | (inline / doc-engine) | Cross-cutting | Standalone HTML output |
 | `/u-report --daily` | u-agent-report | Any | Daily HTML report |
 | `/u-report --weekly` | u-agent-report | Any | Weekly HTML report |
-| `/u-meeting-report` | u-agent-report | Any | Meeting note → report |
+| `/u-reports-roadmap` | u-agent-report | Any | Code-grounded interactive Gantt roadmap (scope+capacity+risk) |
 | `/u-createproject` | (inline) | Any | Monorepo scaffolding |
 | `/u-engine` | (inline) | Any | Engine CRUD / HTML / digest ops |
 | `/u-doc` | (inline / u-agent-plan) | Cross-cutting | SSoT ingest (input → dropzone → digest + 배치 제안; 문서 비수정) + `.u-maker` 문서 재정리 (docs `git mv`+links / output·reports 재생성) |

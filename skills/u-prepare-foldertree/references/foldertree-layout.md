@@ -98,4 +98,4 @@ Copy `_meta/templates/u-maker-env.template` to **`.u-maker/.env.example`** verba
 
 If `.u-maker/.env` does **not** already exist, also copy the same template to `.u-maker/.env`. This gives the user an immediately-editable starter file. If `.u-maker/.env` already exists, leave it untouched — never overwrite real credentials.
 
-The template enumerates credential keys consumed by skills that need them (Jenkins via `/u-tools-jenkins-deploy`, Docker Hub, Git PAT, deploy-target SSH). Skills load it with `set -a; . .u-maker/.env; set +a` and prefer those values over interactive prompts.
+The template provides the `.u-maker/.env` scaffold for skills that need local credentials. Skills add their own keys to the template as they start consuming `.u-maker/.env`, then load it with `set -a; . .u-maker/.env; set +a` and prefer those values over interactive prompts.

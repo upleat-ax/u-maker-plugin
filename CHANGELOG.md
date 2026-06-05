@@ -2,6 +2,20 @@
 
 All notable changes to u-maker-plugin.
 
+## [4.0.0-alpha.19] — 2026-06-05
+
+**Added: `/u-reports-roadmap`. Removed: `/u-tools-jenkins-deploy` and `/u-meeting-report` skills.** Skill count 30 → 28 → 29.
+
+### Added
+
+- **`skills/u-reports-roadmap/`** — code-grounded interactive Gantt roadmap generator. Scans source code + git directly to scope the work (routes/screens, mock vs implemented, BE dependencies, branch/MR mining, churn), estimates a schedule from **measured git velocity modulated by team size** (dev/planner/designer counts — git-estimated then user-confirmed via `AskUserQuestion`), runs per-track **risk analysis**, and renders an **editable interactive Gantt HTML** in the reference roadmap style (vanilla CSS, light-only, draggable phase bars, milestone timeline, per-track positioning/highlights/risk notes, width switcher, localStorage autosave). Ships `assets/roadmap-template.html` (the reusable engine — copied then only its data block is edited; all calendar values derive from start+deadline via `buildTimeline()`) plus 4 references (scope-analysis, estimation-model, risk-analysis, html-template). Output: `.u-maker/reports/<date>/roadmap-<slug>-<deadline>.html` + sidecar `.data.json` for `--rerender`. Registered in `router.md`, `agents/u-agent-pm.md`, and `plugin.json` (dispatches to `u-agent-report`; prereq = source+git present).
+
+### Removed
+
+- **`skills/u-tools-jenkins-deploy/`** — Jenkins CI/CD setup skill removed. The `_meta/templates/u-maker-env.template` is slimmed accordingly: all Jenkins / Docker Hub / Git PAT / deploy-target SSH credential keys (consumed only by this skill) are dropped, leaving the `.u-maker/.env` scaffold header for future integrations. `/u-prepare-foldertree` still bootstraps `.u-maker/.env(.example)` from the (now-minimal) template.
+- **`skills/u-meeting-report/`** — audio/text → meeting-minutes HTML skill removed.
+- **References cleaned up** — removed routing entries from `skills/u-engine/references/router.md` (dispatch table, intent classification, skill map, prerequisites) and `agents/u-agent-pm.md`; updated `plugin.json` description (28 skills); removed command rows from `README.md` and the published HTML docs (`README.ko.html`, `README.en.html`, `GET_STARTED.html`). The deleted commands' history remains in earlier changelog entries (alpha.12).
+
 ## [4.0.0-alpha.18] — 2026-06-03
 
 **Added: `/u-doc` (alias `/u-ssot`) — SSoT ingest + document reorganization. Changed: `/u-createproject` now scaffolds a project-specific `CLAUDE.md`.**
