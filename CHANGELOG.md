@@ -2,6 +2,19 @@
 
 All notable changes to u-maker-plugin.
 
+## [4.0.0-alpha.22] — 2026-06-06
+
+**Changed: project-scaffolded `DESIGN.md` now leads with a 디자인 의존 파이프라인 (`apps/* → ui-* → tokens`) — a 2-tier apps↔ui-* boundary with explicit Do/Don't, and `/u-dev` surfaces unbuildable-with-`ui-*` UI as a gap instead of emitting raw HTML.**
+
+### Changed
+
+- **`skills/u-createproject` (1.2.0 → 1.3.0) — DESIGN.md template (`references/scaffolding-spec.md` §7)** — new headline section **`## 0. 디자인 의존 파이프라인 (apps ↔ ui-* 경계)`** establishes that the code dependency flow applies to design too, as a two-tier model with **explicit Do ✅ / Don't ❌ blocks per tier**:
+  - **`apps/*` (소비자)** — compose `ui-*` components only; variations via **props**; minimize raw HTML/CSS/inline style/`className`; semantic structural HTML (`<main>`/`<h1>`/`<p>`) is allowed and is *not* "raw HTML"; form·interactive elements and layout/visual inline `style` stay **hard-banned**. When `ui-*` **can't** express a screen, **stop and tell the user** + extend `ui-*` — never paper over the gap in `apps/*`.
+  - **`packages/ui-*` (생산자)** — owns all visual styling; must comply with **both** design tokens (`var(--*)`) *and* the design-system doc; **CSS Modules (`*.module.css`) explicitly allowed in `ui-*`** (still pure CSS) alongside global `.css`.
+- **Internal-consistency reconciliation (same file + `SKILL.md`)** — the soft "minimize" wording is preserved (not escalated to a ban); §5 `className` rule now scopes class composition as a **`ui-*`-internal** concern (apps don't pass `className` to override); the self-check checklist gains apps/*- and ui-*-tier items; the starter `apps/web/src/app/page.tsx` is annotated as an **intentional minimal placeholder**; CLAUDE.md summary, §3 의존 흐름, §4 기술 스택, §5 핵심 규칙, §10 금지사항 all updated to carry the pipeline + `ui-*`-only CSS-Modules allowance so no two lines contradict.
+- **`skills/u-dev` (4.0.0 → 4.1.0)** — FE Step 1 gains rule #7: honor the `apps/* → ui-* → tokens` pipeline (project `DESIGN.md` §0 is the SSoT when present); when a screen needs UI `ui-*` can't express, extend `ui-*` or emit a `.state/build-gap-report.json` entry and **surface it to the user** for `/u-build` ping-pong — never silently emit raw HTML/inline style in `apps/*`.
+- **`.claude-plugin/plugin.json`** — version `4.0.0-alpha.21 → 4.0.0-alpha.22`.
+
 ## [4.0.0-alpha.20] — 2026-06-06
 
 **Changed: `/u-createproject` now scaffolds a project-level `DESIGN.md` (디자인/UI 공통 룰), auto-loaded by both Claude Code (`@DESIGN.md` import) and Codex (`AGENTS.md` symlink).**

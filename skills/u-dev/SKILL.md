@@ -1,7 +1,7 @@
 ---
 name: u-dev
 description: "This skill should be used when the user asks to '/u-dev', 'dev phase', 'code generation', 'implement', 'u-maker 개발', '개발 단계', '코드 생성', 'FE BE 생성', '구현 단계', or wants to generate code from Design phase specifications."
-version: 4.0.0
+version: 4.1.0
 ---
 
 # u-dev — Development Sub-phase (PBGD Build.Development)
@@ -34,6 +34,7 @@ Development sub-phase of the Build phase: generate FE + BE + DB code from Design
 4. Apply design tokens from design-system
 5. Follow tech-rules for framework conventions
 6. **Self-review every file against `fe-rules.md` §0 MUST-APPLY before marking Final.** Hot-path code additionally checks §A5/§A6/§A7; shared components under `packages/ui-*/` additionally enforce §B1–B3 (and §B4 if React ≥ 19).
+7. **Honor the design dependency pipeline `apps/* → ui-* → tokens` (project `DESIGN.md` §0 is the SSoT when present).** `apps/*` screens are composed from `@{ns}/ui-*` components only — no raw form/interactive HTML, no layout/visual inline `style`, minimal raw CSS/`className`; styling is owned by `ui-*`. When a screen needs UI that the existing `ui-*` components **cannot express** (missing component / variant / state), do **not** silently emit raw HTML or inline style in `apps/*`. Instead: (a) extend the relevant `ui-*` package (token + design-system compliant; CSS Modules `*.module.css` allowed in `ui-*`), or (b) if the gap is a missing spec, emit a `.state/build-gap-report.json` entry and **surface it to the user** so `/u-build` can ping-pong back to `/u-design`. Never paper over a `ui-*` gap inside `apps/*`.
 
 ### Step 1.5: Browser-verify implemented components — mandatory hard gate
 

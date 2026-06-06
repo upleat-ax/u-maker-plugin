@@ -63,6 +63,8 @@ apps/* → ui-*  → tokens
 
 **역방향 의존 절대 금지.**
 
+**디자인(UI/UX)도 이 파이프라인을 따른다** — `apps/*` 는 `ui-*` 컴포넌트 **조립**만 담당하고, 시각 스타일은 `ui-*` 가 소유하며 token·design-system 을 준수한다. `apps/* → ui-* → tokens`. 상세 do/don't 는 생성되는 `DESIGN.md` §0 참조.
+
 ---
 
 ## §4. 기술 스택
@@ -73,7 +75,7 @@ apps/* → ui-*  → tokens
 | BE Framework | Nest.js 10+ | apps/backend 전용 |
 | 서버 상태 | TanStack Query v5 | packages/hooks |
 | 클라이언트 상태 | Zustand | 최소한으로 사용 |
-| 스타일링 | 순수 CSS (.css 파일) | CSS-in-JS, Sass, inline 금지 |
+| 스타일링 | 순수 CSS (.css 파일) | `ui-*` 한정 CSS Modules(.module.css) 허용; CSS-in-JS·Sass·inline 금지. `apps/*` 는 스타일 미소유(조립만) |
 | 디자인 토큰 | CSS Custom Properties | packages/tokens |
 | 컴포넌트 문서화 | Storybook 8 | packages/ui-* |
 | 린트 | ESLint 9 (Flat Config) | eslint-plugin-header 사용 금지 |
@@ -86,9 +88,10 @@ apps/* → ui-*  → tokens
 1. **함수형 Only** — class 사용 절대 금지 (Nest.js 제외)
 2. **TanStack Query 훅 = usecase** — 별도 usecase 레이어 없음
 3. **Server Component 기본** — `'use client'`는 필요 시에만
-4. **순수 CSS + Design Tokens** — `var(--*)` 참조, inline style 금지
+4. **순수 CSS + Design Tokens** — `var(--*)` 참조, inline style 금지. `ui-*` 에 한해 CSS Modules(`*.module.css`) 허용
 5. **Named export만 사용** — default export 금지 (Next.js page/layout 제외)
 6. **Import alias**: `@/` → `src/` (앱 내부), `@{{PROJECT_NAME}}/` → `packages/*`
+7. **디자인 의존 파이프라인** — `apps/*` 는 `ui-*` 컴포넌트 조립만, 시각 스타일은 `ui-*` 가 소유(token·design-system 준수). `ui-*` 로 구현 불가 시 사용자에게 알리고 `ui-*` 확장 (DESIGN.md §0)
 
 ---
 
@@ -1362,6 +1365,7 @@ export default function HomePage() {
 ```
 
 > Note: `page.tsx`와 `layout.tsx`는 Next.js 규칙상 default export를 사용한다.
+> 이 시작 `page.tsx`(`<main className="page-main">` + bare `<h1>`/`<p>`)는 **의도적인 최소 placeholder**다 — 실제 화면 구현 시 DESIGN.md §0 의 apps/* 계층 규칙(ui-* 조립, raw CSS·className 최소화)에 맞춰 교체한다.
 
 #### src/lib/api.ts
 
@@ -1678,7 +1682,10 @@ Turborepo 모노레포. 패키지 매니저 `bun@1.2.0`, Clean Architecture 레�
 ## 디자인시스템
 
 - 디자인/UI 공통 룰은 **`DESIGN.md`** 가 단일 출처(SSoT). 화면·컴포넌트 작업 전 반드시 참조한다.
-- 요약: 각 앱은 `@{{PROJECT_NAME}}/ui-*` 컴포넌트 + `@{{PROJECT_NAME}}/tokens` design token(`var(--*)`) 만 사용. raw HTML / inline style 금지. `ui-common`(공통) · `ui-backoffice`(admin) · `ui-app`(web 엔드유저).
+- 요약 — **디자인 의존 파이프라인 `apps/* → ui-* → tokens`** (2-tier):
+  - **`apps/*` (소비자)**: 화면을 `@{{PROJECT_NAME}}/ui-*` 컴포넌트 **조립만**으로 구현. raw HTML/CSS/inline style/`className` 최소화, form·interactive 요소는 반드시 `ui-*`. `ui-*` 로 구현 불가 시 우회하지 말고 **사용자에게 알리고** `ui-*` 확장.
+  - **`ui-*` (생산자)**: 모든 시각 스타일을 소유. `@{{PROJECT_NAME}}/tokens` design token(`var(--*)`) + design-system 문서 준수 하에 global `.css` 또는 CSS Modules(`*.module.css`).
+  - `ui-common`(공통) · `ui-backoffice`(admin) · `ui-app`(web 엔드유저). 상세는 DESIGN.md §0.
 - layout·token·props 변형·폼 정렬·상태 표현·접근성 등 세부 규칙은 `DESIGN.md` 참조. DESIGN.md 와 충돌하면 DESIGN.md 가 우선한다.
 
 @DESIGN.md
@@ -1721,7 +1728,7 @@ Import alias: `@/` → 앱의 `src/`, `@{{PROJECT_NAME}}/` → `packages/*`.
 - 네이밍: 변수/함수 `camelCase`, 타입 `PascalCase`, 상수 `UPPER_SNAKE_CASE`, 파일 `kebab-case.ts`(컴포넌트 `PascalCase.tsx`).
 - Server Component 기본, 필요 시에만 `'use client'`.
 - 서버 상태는 TanStack Query(설치됨). 클라이언트 상태가 필요하면 Zustand 권장(스캐폴드 미포함 — 필요 시 추가).
-- 스타일: 순수 CSS(`.css`) + design token. CSS-in-JS / Sass / SCSS / inline style 금지.
+- 스타일: 순수 CSS(`.css`, `ui-*` 한정 CSS Modules `*.module.css` 도 가능) + design token. CSS-in-JS / Sass / SCSS / inline style 금지. 스타일은 `ui-*` 가 소유하고 `apps/*` 는 조립만(DESIGN.md §0).
 - 공통 모듈은 `packages/*` 에 구현.
 
 ## 금지사항
@@ -1755,7 +1762,46 @@ Import alias: `@/` → 앱의 `src/`, `@{{PROJECT_NAME}}/` → `packages/*`.
 | `apps/web` | 엔드유저 앱 | `@{{PROJECT_NAME}}/ui-app` (+ `@{{PROJECT_NAME}}/ui-common`) |
 | `apps/backend` | — | UI 없음 (Nest.js API) |
 
-모든 앱은 `@{{PROJECT_NAME}}/tokens` 의 design token(`var(--*)`)을 단일 출처로 사용한다. 앱별 세부 룰(화면 패턴 등)은 각 `apps/<app>/` 내부 컨벤션을 따른다. 운영·아키텍처·금지사항·git 등 디자인 외 룰은 루트 `CLAUDE.md` 참조. DESIGN.md 의 원칙과 충돌하면 DESIGN.md 가 우선한다.
+모든 앱은 `@{{PROJECT_NAME}}/tokens` 의 design token(`var(--*)`)을 단일 출처로 사용한다. UI 구현은 **`apps/*`(소비자) ↔ `packages/ui-*`(생산자)** 두 계층으로 나뉘며 계층마다 규칙이 다르다 — **§0 디자인 의존 파이프라인을 먼저 읽는다.** 앱별 세부 룰(화면 패턴 등)은 각 `apps/<app>/` 내부 컨벤션을 따른다. 운영·아키텍처·금지사항·git 등 디자인 외 룰은 루트 `CLAUDE.md` 참조. DESIGN.md 의 원칙과 충돌하면 DESIGN.md 가 우선한다.
+
+---
+
+## 0. 디자인 의존 파이프라인 (apps ↔ ui-* 경계)
+
+코드의 의존 흐름(`apps/* → ui-* → tokens`)은 **디자인(UI/UX)에도 그대로 적용된다.** UI 구현은 두 계층으로 나뉘며, 스타일의 소유 주체가 계층마다 다르다.
+
+| 계층 | 역할 | 스타일 소유 | 사용 가능한 도구 |
+|------|------|------------|------------------|
+| **`apps/*`** (소비자) | 화면을 `ui-*` 컴포넌트의 **조립(composition)** 으로 구성 | 거의 없음 — 페이지 레벨 레이아웃 한정 | `ui-*` 컴포넌트 + props |
+| **`packages/ui-*`** (생산자) | UI 의 모양·변형·상태를 **소유**하고 구현 | 전부 — 모든 시각 스타일이 여기 산다 | design token + design-system 문서 준수 하에 global `.css` / **CSS Modules(`*.module.css`)** |
+
+**역방향 금지:** `ui-*` 가 `apps/*` 를 알면 안 되고(`apps/*` 만 `ui-*` 를 import), token·design-system 은 `ui-*` 를 모른다. → 디자인도 의존 파이프라인 위에서만 움직인다.
+
+### apps/* 계층 — Do / Don't
+
+✅ **Do**
+- 화면은 `@{{PROJECT_NAME}}/ui-*` 컴포넌트의 **조립만**으로 구현하고, 변형은 **props**(`variant`/`size`/`tone`/`surface`/`density` 등)로만 준다.
+- 구조·의미 마크업(`<main>`, `<section>`, `<header>`, `<h1>`~`<h3>`, `<p>`, `<ul>`/`<li>` 등 semantic HTML)은 그대로 써도 된다 — 이건 "raw HTML" 이 아니다.
+- `ui-*` 컴포넌트만으로 화면을 구성할 수 **없으면**(필요한 컴포넌트·변형·상태가 없으면) **구현을 멈추고 사용자에게 알린다.** → 해당 `ui-*` 패키지에 컴포넌트/변형을 추가한 뒤 그것을 사용한다.
+
+❌ **Don't**
+- `<button>`/`<input>`/`<select>`/`<textarea>`/`<table>`/`<dialog>` 등 form·interactive 요소를 raw HTML 로 직접 쓰지 않는다 → **반드시** `ui-*` 컴포넌트. **(하드 금지)**
+- layout·visual 용 inline `style={{…}}` 사용 금지. **(하드 금지)**
+- apps 안에서 raw CSS(`.css`)·`className` 사용을 **최소화**한다 — 스타일은 `ui-*` 가 소유한다. 부득이한 페이지 레벨 레이아웃 클래스만 token 기반으로 최소한 둔다.
+- apps 안에서 ad-hoc 비주얼 컴포넌트를 만들거나 raw HTML/inline style 로 `ui-*` 의 공백을 우회하지 않는다 → `ui-*` 로 올린다.
+
+### packages/ui-* 계층 — Do / Don't
+
+✅ **Do**
+- 모든 시각 스타일(color·spacing·radius·typography·shadow·state)을 **design token(`var(--*)`)** 으로 표현하고, `.u-maker/docs/{app}/design/` 의 **design-system 문서**(variant·size·state·접근성 규격)를 준수한다 — token *과* design-system 문서를 **둘 다** 따른다.
+- 스타일링은 global `.css` 또는 **CSS Modules(`*.module.css`)** 로 작성한다. 둘 다 순수 CSS 이며 token 만 참조한다 — `ui-*` 에 한해 CSS Modules 허용.
+- 변형은 컴포넌트 props 로 노출하고, 같은 패턴이 두 곳 이상 반복되면 컴포넌트로 추출한다.
+
+❌ **Don't**
+- raw px / hex / rgb 직접 지정 금지 → token 만. CSS-in-JS / Sass / SCSS / inline style 금지. (CSS Modules `*.module.css` 는 순수 CSS 이므로 예외적으로 허용)
+- design-system 문서에 없는 임의 변형을 그때그때 만들지 않는다 → 문서를 먼저 갱신(SSoT)한 뒤 구현.
+
+> **한 줄 요약:** apps 는 조립만, `ui-*` 가 스타일을 소유한다. `ui-*` 로 안 되면 만들지 말고 **알린다.**
 
 ---
 
@@ -1789,7 +1835,7 @@ Import alias: `@/` → 앱의 `src/`, `@{{PROJECT_NAME}}/` → `packages/*`.
 
 - `ui-common` / `ui-backoffice` / `ui-app` 컴포넌트의 시각 변형은 컴포넌트 props (`variant`, `size`, `tone`, `surface`, `density` 등) 로 표현한다.
 - 사용 측에서 컴포넌트에 inline `style={…}` 을 넘겨 색·간격·layout 을 override 하지 않는다.
-- `className` 은 **token 기반 클래스 합성** 용도로만 전달 — raw px/hex 를 담은 임의 클래스 금지. 필요한 변형이 없으면 UI 패키지에서 prop 을 확장한다. (스캐폴드 `Button` 은 `variant`/`size` props + token 클래스 합성 방식을 따른다. 새 컴포넌트도 동일 패턴 유지.)
+- `className` 합성은 **`ui-*` 패키지 내부 구현**의 몫이다(§0) — `ui-*` 컴포넌트가 `variant`/`size` 를 token 기반 클래스로 합성한다. **`apps/*` 사용 측에서 `ui-*` 컴포넌트에 `className` 을 넘겨 색·간격·layout 을 override 하지 않는다.** 필요한 변형이 없으면 사용 측에서 임의 클래스로 때우지 말고 UI 패키지에서 prop 을 확장한다. (스캐폴드 `Button` 은 `variant`/`size` props + token 클래스 합성 방식을 따른다. 새 컴포넌트도 동일 패턴 유지.)
 
 ## 6. 폼 정렬 일관성
 
@@ -1820,10 +1866,13 @@ Import alias: `@/` → 앱의 `src/`, `@{{PROJECT_NAME}}/` → `packages/*`.
 
 PR 올리기 전 한 번 훑어본다:
 
+- [ ] (apps/*) 화면을 `ui-*` 컴포넌트 조립으로 구성했고, raw CSS·`className` 사용을 최소화했다.
+- [ ] (apps/*) `ui-*` 로 표현 불가한 UI 는 raw HTML/inline style 로 우회하지 않고, 사용자에게 알린 뒤 `ui-*` 를 확장했다.
 - [ ] raw HTML form / interactive 요소를 쓰지 않았다.
 - [ ] inline `style={{ display, flex*, grid*, gap, padding, margin }}` 를 쓰지 않았다.
 - [ ] raw px / hex 값 대신 `@{{PROJECT_NAME}}/tokens` 의 token 을 썼다.
-- [ ] UI 패키지 컴포넌트에 색·간격·layout 을 inline `style` 로 override 하지 않았다.
+- [ ] (ui-*) 스타일을 token + design-system 문서에 맞춰 global `.css` 또는 `*.module.css` 로 작성했다.
+- [ ] UI 패키지 컴포넌트에 색·간격·layout 을 inline `style`·`className` 으로 override 하지 않았다.
 - [ ] form 의 labelWidth · 컨트롤 폭이 row 마다 일치한다.
 - [ ] 새 공통 패턴은 앱이 아닌 UI 패키지에 추가했다.
 - [ ] 화면이 설계 문서와 일치하거나, 문서를 함께 갱신했다.
@@ -2010,7 +2059,8 @@ App: {{PROJECT_NAME}}
 
 - class 컴포넌트 / 클래스 (Nest.js 제외)
 - 별도 usecase 레이어
-- CSS-in-JS / Sass / SCSS / inline style
+- CSS-in-JS / Sass / SCSS / inline style (단, `ui-*` 의 CSS Modules `*.module.css` 는 순수 CSS 로 허용)
+- `apps/*` 에서 raw HTML form·interactive 요소 / 스타일 직접 소유 (조립만 — DESIGN.md §0)
 - eslint-plugin-header
 - npm / yarn / pnpm 관련 설정
 - Next.js API Route / Route Handler

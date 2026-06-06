@@ -1,7 +1,7 @@
 ---
 name: u-createproject
 description: "This skill should be used when the user asks to '/u-createproject', 'u-createproject', 'createproject', 'u-maker 프로젝트 생성', 'u-maker 새 프로젝트', 'Turborepo 모노레포 스캐폴드', 'u-maker monorepo scaffold', or 'u-maker scaffold project'. Generates a new Turborepo + Bun monorepo project with the standard Clean Architecture layer structure, including project-specific CLAUDE.md and DESIGN.md agent guides."
-version: 1.2.0
+version: 1.3.0
 ---
 
 # u-createproject — Turborepo + Bun Monorepo Project Scaffolding
@@ -88,7 +88,7 @@ Turborepo + Bun 기반 모노레포 프로젝트를 처음부터 스캐폴딩한
 3. `tsconfig.json` — root references
 4. `.gitignore` — node_modules, .next, dist, .turbo, bun.lockb, .env*.local, .u-maker/.state/, .u-maker/output/, .u-maker/reports/
 5. `CLAUDE.md` — 프로젝트 AI 에이전트 가이드(정본) (개요·디자인시스템·명령어·앱·아키텍처·SSoT·코딩 컨벤션·금지사항·Git). `references/scaffolding-spec.md` §7 의 CLAUDE.md 템플릿을 `{{PROJECT_NAME}}` 치환하여 생성한다. **실제 스캐폴드된 구조만** 기술하고(스캐폴드에 없는 컴포넌트를 강제하지 않음), 디자인시스템 섹션은 `DESIGN.md` 를 단일 출처로 가리키며 끝에 `@DESIGN.md` import 한 줄을 둬 Claude Code 가 DESIGN.md 전체를 컨텍스트로 로드하게 한다. Step 6 git commit 에 포함된다.
-6. `DESIGN.md` — 디자인/UI 공통 룰 (디자인시스템 우선·layout·design token·시각효과·props 변형·폼 정렬·상태 표현·접근성·SSoT + 자가 점검 체크리스트). `references/scaffolding-spec.md` §7 의 DESIGN.md 템플릿을 `{{PROJECT_NAME}}` 치환하여 생성한다. 실제 스캐폴드된 UI 패키지(`ui-common`/`ui-backoffice`/`ui-app`)와 token 구조에 맞춰 기술하며, Step 6 git commit 에 포함된다.
+6. `DESIGN.md` — 디자인/UI 공통 룰 (§0 디자인 의존 파이프라인 `apps/* → ui-* → tokens` 의 apps↔ui-* 2-tier Do/Don't 가 머리말 · 디자인시스템 우선·layout·design token·시각효과·props 변형·폼 정렬·상태 표현·접근성·SSoT + 자가 점검 체크리스트). `references/scaffolding-spec.md` §7 의 DESIGN.md 템플릿을 `{{PROJECT_NAME}}` 치환하여 생성한다. 실제 스캐폴드된 UI 패키지(`ui-common`/`ui-backoffice`/`ui-app`)와 token 구조에 맞춰 기술하며, Step 6 git commit 에 포함된다.
 7. `AGENTS.md` — `CLAUDE.md` 로의 심볼릭 링크. CLAUDE.md · DESIGN.md 생성 후 PROJECT_DIR 에서 `ln -s CLAUDE.md AGENTS.md` 실행. Codex CLI 등 AGENTS.md 기반 에이전트가 동일 가이드를 자동 로드하도록 한다 (Codex 는 CLAUDE.md 를 읽지 않고 AGENTS.md 만 읽으며, import 문법이 없어 DESIGN.md 는 가이드 지시에 따라 on-demand 로 읽는다). `references/scaffolding-spec.md` §7 AGENTS.md 참조. Step 6 git commit 에 포함된다.
 
 ### Step 3: Generate packages/* (의존 순서 준수)
@@ -212,8 +212,9 @@ apps/* → ui-*  → tokens
 | 규칙 | 설명 |
 |------|------|
 | 함수형 Only | class 사용 금지 (Nest.js 제외) |
-| 순수 CSS | CSS-in-JS, Sass, SCSS, inline style 금지 |
+| 순수 CSS | CSS-in-JS, Sass, SCSS, inline style 금지 (`ui-*` 한정 CSS Modules `*.module.css` 허용) |
 | Design Tokens | `var(--*)` 참조만 허용 |
+| 디자인 파이프라인 | `apps/*` 는 `ui-*` 조립만, `ui-*` 가 스타일 소유(token·design-system 준수). `ui-*` 로 불가 시 사용자 통지 후 `ui-*` 확장 (DESIGN.md §0) |
 | Named export | default export 금지 (Next.js page/layout 제외) |
 | TypeScript strict | 모든 패키지 strict 모드 |
 | ESLint 9 Flat Config | eslint-plugin-header 사용 금지 |
