@@ -33,7 +33,7 @@ Compare to the expected token resolution from `design-system.json`. Drift → re
 
 ## 4. Figma parity (MANDATORY when `figmaKey` is present)
 
-For every `CMP-{nnn}` whose `design-system.json` row has `figmaKey` set, this sub-step runs unconditionally. When `figmaKey` is **not** set → skip that single component (HTML-only origin); when ANY component has `figmaKey` AND the user is not authenticated → **HALT** with the same message as Step 6e.8 (`"Figma parity is mandatory…"`). Never silently skip.
+For every `CMP-{nnn}` whose `design-system.json` row has `figmaKey` set, this sub-step runs unconditionally. When `figmaKey` is **not** set → skip that single component (HTML-only origin) **UNLESS** the component has Figma provenance elsewhere (its screen's `figmaUrl`, or a `data/digest/figma/**` entry), in which case record `figmaSourceUnlinked: true` for that component so Gatekeeping **GK-12** flags it as unverified rather than silently passing. When ANY component has `figmaKey` AND the user is not authenticated → **HALT** with the same message as Step 6e.8 (`"Figma parity is mandatory…"`). Never silently skip.
 
 1. Fetch the Figma component screenshot via `mcp__plugin_figma_figma__get_screenshot` (cache under `.u-maker/.state/figma-ref/{dsFileKey}/{figmaKey}.png`).
 2. Fetch the Figma component's variant grid (each variant + state combination) via `mcp__plugin_figma_figma__get_node`. For each combination, capture an individual screenshot.

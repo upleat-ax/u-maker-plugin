@@ -1,7 +1,7 @@
 ---
 name: u-build
 description: "This skill should be used when the user asks to '/u-build', 'build phase', 'design + dev', 'ui + code', 'u-maker 빌드', '빌드 단계', '디자인+개발', 'u-maker ping-pong', or wants to orchestrate /u-design ↔ /u-dev ping-pong under the PBGD Build phase."
-version: 4.0.0
+version: 4.1.0
 ---
 
 # u-build — Build Phase Orchestrator (PBGD Build)
@@ -42,6 +42,8 @@ Skip this step if `--only dev` was set.
 ### Step 2: Development sub-phase
 
 Invoke `/u-dev --app {app} [--auto] [--loop]`. On success, FE/BE/DB code trees are generated/updated.
+
+> **Side-effect gate is NOT bypassed by `--auto`.** `/u-dev` Step 0.5 (`references/change-safety.md`) still requires explicit user approval before any modification to **existing** code (the `hooks/on-edit-guard.js` PreToolUse guard enforces this). `--auto` may batch the approval questions but never auto-approves deletions, renames, or signature/schema/route changes. Treat an unapproved side-effect as a first-class halt, not a silent retry.
 
 Skip this step if `--only design` was set.
 

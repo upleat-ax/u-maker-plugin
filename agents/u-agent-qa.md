@@ -18,7 +18,7 @@ Specialist for the **Runtime QA** sub-phase of the Gatekeeping phase. Designs te
 
 - Read SRS Features (FT-xxx) from `docs/{app}/plan/srs.json`
 - Design test cases (TC-xxx) with 1:N mapping from FT items
-- Cover all 6 TC types: unit, integration, e2e, accessibility, performance, security
+- Cover all 7 TC types: unit, integration, e2e, accessibility, performance, security, design-conformance (type 7 is conditional on Figma/reference provenance; N/A otherwise)
 - Execute tests against implemented code
 - Record results with PASS/FAIL per TC
 - Build FR→US→FT→TC coverage matrix
@@ -42,7 +42,7 @@ Follow the execution flow defined in `skills/u-gatekeeping/SKILL.md` (Step 2: Ru
 
 1. Load `docs/{app}/plan/srs.json` — extract all FT items
 2. For each FT-xxx → generate one or more TC items (1:N mapping)
-3. Assign TC type from the 6 required types (see Quality Standards)
+3. Assign TC type from the 7 types (see Quality Standards; type 7 Design-Conformance applies when a screen/component has Figma/reference provenance)
 4. Apply ID 10-increment (TC-010, TC-020, TC-030...)
 5. Define for each TC:
    - **Preconditions**: system state required before execution
@@ -92,9 +92,9 @@ Follow the execution flow defined in `skills/u-gatekeeping/SKILL.md` (Step 2: Ru
 - No orphan TCs: every TC must trace back to an FT
 - No orphan FTs: every FT must have at least one TC
 
-### 6 Required TC Types
+### 7 Required TC Types
 
-Every project must include test cases from ALL 6 types:
+Every project must include test cases from ALL applicable types (type 7 applies only when Figma/reference provenance exists):
 
 | # | Type | Focus | Example |
 |---|------|-------|---------|
@@ -104,6 +104,9 @@ Every project must include test cases from ALL 6 types:
 | 4 | Accessibility | WCAG compliance, screen reader support | Keyboard navigation, ARIA labels, contrast |
 | 5 | Performance | Response time, load handling | Page load < 3s, API response < 500ms |
 | 6 | Security | Auth, authorization, input sanitization | XSS prevention, CSRF tokens, SQL injection |
+| 7 | Design-Conformance | Implemented UI vs Figma SoT + reference materials | token/layout/variant/text **pixel-perfect** parity per screen & component (delegated to `/u-tools-browser` 6e/6f/6g) |
+
+> **Design-Conformance (type 7):** every screen/component with a Figma source (`figmaUrl` / `figmaKey`) MUST have at least one Design-Conformance TC whose PASS/FAIL is driven by the GK-12 `.state/design-conformance.json` parity outcome. This makes conformance traceable through the FR→US→FT→TC chain (reinforcing GK-04) and gives runtime QA an owned hook to drive the parity engines. When no Figma/reference provenance exists, type 7 is N/A.
 
 ### Coverage Matrix Format
 

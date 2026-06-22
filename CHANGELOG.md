@@ -2,6 +2,25 @@
 
 All notable changes to u-maker-plugin.
 
+## [4.0.0-alpha.23] — 2026-06-22
+
+**Three gatekeeping hardenings: (1) HTML 산출물에서 '한쪽 border만 강조' 장식 스타일 전면 금지, (2) 개발 시 기존 코드 수정에 대한 strict·adversarial 사이드이펙트 게이트(사용자 승인 필수, especially 버그 수정), (3) Figma/참고자료 ↔ 구현 pixel-perfect 일치성 게이트(GK-12).**
+
+### Added
+
+- **Side-effect gatekeeping (GOAL 2) — `hooks/on-edit-guard.js` (NEW, PreToolUse) + `skills/u-dev/references/change-safety.md` (NEW)** — a strict, default-deny gate that forces explicit **user approval** before any modification of **existing** code in a u-maker project (Edit/Write/MultiEdit and mutating Bash: `sed -i` / redirects / `rm` / `mv` …). The guard is wired **directly** in `hooks/hooks.json` as a new `PreToolUse` entry (matcher `Write|Edit|MultiEdit|Bash`), NOT through `_dispatch.js` (whose contract is "never block"). It emits `permissionDecision: "ask"` (native user confirmation) unless a fresh per-file approval marker exists under `.u-maker/.state/edit-approvals/{sha1(path)}.json` (session-TTL allowlist, `U_MAKER_EDIT_APPROVAL_TTL_MIN`, default 480m). NEW files, `.u-maker/**`, non-u-maker projects, and read-only Bash are out of scope. `change-safety.md` defines the agent-side protocol: NEW-vs-EXISTING classification → blast-radius/impact analysis → adversarial self-review → mandatory `AskUserQuestion` → approval marker → scope-lock. Applies especially to **bug fixes**.
+- **Design Conformance gate (GOAL 3) — GK-12 in `_meta/schemas/gate-rules.json`** — a 12th gatekeeper criterion ("Design Conformance / 디자인 일치성") asserting the implemented UI is **pixel-perfect** to the Figma source of truth + ingested reference materials (token/layout/variant/text parity, reference-rule coverage, zero drift). Pixel-perfect GATE thresholds **SSIM ≥ 0.99 / pixel ≤ 1% / bounds ± 1px** (stricter than the Build-phase 0.95/5%/±2px). Added to `gates.gatekeeping-to-deploy.required` (`design-conformance-pass`); N/A-auto-pass only when no Figma/reference provenance exists.
+- **`skills/u-tools-browser` Step 6g (screen/route ↔ Figma frame parity)** with its new reference **`skills/u-tools-browser/references/visual-verify-screens.md`**, and **`skills/u-gatekeeping` Step 2.5 (Design Conformance)** which delegates screen parity to that step — closes the screen-level parity gap (only DS-level 6e + component-level 6f existed) and makes Gatekeeping (not just transient Build-phase state) the durable owner of conformance via `.u-maker/.state/design-conformance.json`.
+
+### Changed
+
+- **HTML: no single-side accent borders (GOAL 1)** — `skills/u-engine` (4.0.0 → 4.1.0): `references/html-engine.md` §6 gains a **"Border / Accent Style Rules"** section banning decorative/active single-side colored borders (좌측 액센트 바, nav/tab active 컬러 바, 컬러 heading 밑줄); 강조는 전체 4변 border + 배경 틴트 + `font-weight`로. Only **1px 중립 divider / focus ring / 차트·타임라인 마커** keep a single side. Mirrored in `SKILL.md` invariants, `u-design/references/design-system-rules.md` §0 (#16), and `u-dev/references/fe-rules.md` §0 (#16). Output templates brought into compliance: `_meta/templates/output-index.template.html`, `output-page.template.html`, `output-split-page.template.html`, and `skills/u-wireframe` (4.0.0 → 4.1.0) `references/wireframe-page.template.html` (nav-active bars → bg-fill+weight, colored h2 underline → 1px neutral, tab indicator → bg-fill). Repo docs `GET_STARTED.html` / `README.ko.html` / `README.en.html` fixed (callout/feature-card left-accent bars, nav-active bars, colored heading underlines).
+- **`skills/u-dev` (4.1.0 → 4.2.0)** — new **Step 0.5: Side-Effect Gatekeeping** (mandatory hard gate before editing existing code) in `SKILL.md` + `agents/u-agent-dev.md` (§3 Step 0.5 + §4 Side-Effect Safety FAIL rules); `references/code-gen-rules.md` §7.1/§7.2 tightened so `--force` / "manual confirmation" defer to the mandatory approval gate.
+- **`skills/u-build` (4.0.0 → 4.1.0)** + `agents/u-agent-build.md` — `--auto` explicitly does NOT bypass the side-effect gate; an unapproved side-effect is a first-class halt.
+- **`skills/u-gatekeeping` (4.0.0 → 4.1.0)** + `agents/u-agent-gatekeeper.md` — adds GK-12 to the criteria table, scorecard, and per-criterion details (default 5, **max 12**; GK-12 always gates Deploy regardless of `--loop N`); `deploy-readiness.json` now carries `designConformance` and requires it `∈ {pass, na}` for `deployReady: true`. `agents/u-agent-qa.md` adds a 7th TC type **Design-Conformance** so parity is traceable through FR→US→FT→TC.
+- **`skills/u-tools-browser` (1.0.0 → 1.1.0)** — Step 6g + consumer-table row; `references/visual-verify-ds.md` / `visual-verify-components.md` silent-skip tightened (Figma provenance present but un-round-tripped → `figmaSourceUnlinked` = GK-12 fail, not a silent pass).
+- **`.claude-plugin/plugin.json`** — version `4.0.0-alpha.22 → 4.0.0-alpha.23`.
+
 ## [4.0.0-alpha.22] — 2026-06-06
 
 **Changed: project-scaffolded `DESIGN.md` now leads with a 디자인 의존 파이프라인 (`apps/* → ui-* → tokens`) — a 2-tier apps↔ui-* boundary with explicit Do/Don't, and `/u-dev` surfaces unbuildable-with-`ui-*` UI as a gap instead of emitting raw HTML.**

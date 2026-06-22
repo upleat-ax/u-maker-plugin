@@ -31,6 +31,7 @@ If a generated file conflicts with these rules, the rule wins. `u-agent-dev` mus
 | 13 | `react19-no-forwardref` | React 19+ only — drop `forwardRef`; use `ref` as a normal prop and `use()` over `useContext()` |
 | 14 | `client-swr-dedup` | SWR (or TanStack Query with `queryKey` hashing) for dedup + revalidation |
 | 15 | `server-serialization` | Strip server-only fields before passing data to Client Components |
+| 16 | `style-no-single-side-accent-border` | 한쪽 border만 강조하는 장식/active 스타일 금지 — 카드·콜아웃 좌측 액센트 바, nav/tab active 컬러 바, 컬러 heading 밑줄 모두 금지. 전체 border + 배경 틴트 + `font-weight`로 강조. 1px 중립 divider·focus ring·차트 마커만 단면 허용 (html-engine.md §6) |
 
 ---
 
@@ -193,7 +194,7 @@ Applies to every shared/reusable component under `packages/ui-*/` and `apps/*/sr
 ## Integration with `/u-dev` FE generation
 
 1. **Before writing any component file**, load this reference (`fe-rules.md`) into the generator context.
-2. For every generated file, run a mental checklist against `§0 MUST-APPLY` (15 rules).
+2. For every generated file, run a mental checklist against `§0 MUST-APPLY` (16 rules).
 3. For hot-path code (lists, scroll handlers, forms with many inputs, data tables), also scan `§A5 / §A6 / §A7`.
 4. For shared components under `packages/ui-*/`, additionally enforce `§B1–B3` (and `§B4` if React 19+).
 5. On `u-agent-dev` self-review: if a generated file breaks a MUST-APPLY rule, regenerate before marking Final.

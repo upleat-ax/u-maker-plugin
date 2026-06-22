@@ -1,7 +1,7 @@
 ---
 name: u-tools-browser
 description: "This skill should be used when any u-maker command needs browser automation. Use when the user asks to '/u-tools-browser', 'u-tools-browser', 'playwright', 'agent-browser', 'browser automation', 'e2e test', 'E2E', 'headless browser', 'screen capture', 'screenshot', 'visual regression', 'a11y audit', 'figma parity', 'Playwright 캡처', or '브라우저 자동화'. Covers E2E test execution (Playwright), screen capture for reports, dev-server verification, visual regression, or live-render inspection. All u-maker phase skills MUST route browser work through this engine instead of calling MCP browser tools directly."
-version: 1.0.0
+version: 1.1.0
 ---
 
 # u-tools-browser — Unified Browser Automation Engine
@@ -180,6 +180,15 @@ Full protocol → **see `references/visual-verify-components.md`**.
 
 Output: `.u-maker/.state/visual-verify/{app}-components.json` with `result: pass | partial | fail`.
 
+#### 6g. Screen / Route Implementation Verification (`/u-gatekeeping` Step 2.5)
+
+Verifies a fully rendered app **route** against its Figma **frame** — the screen-level parity that 6e (DS) and 6f (components) do not cover. Requires the app dev server. For each `screens.json` item with `figmaUrl` set: navigate to the route, capture a full-page screenshot, fetch the Figma frame via `mcp__plugin_figma_figma__get_screenshot`, pixel-diff each labelled region, check critical text parity, and sample token resolution on key regions.
+
+- **PIXEL-PERFECT gate thresholds** (stricter than the Build-phase 6e/6f defaults of SSIM 0.95 / 5 % / ±2 px): **SSIM ≥ 0.99, pixel diff ≤ 1 %, region bounds ± 1 px** (fixed gate default from `_meta/schemas/gate-rules.json` GK-12.thresholds; `--figma-ssim-threshold` / `--figma-diff-threshold` may only **tighten** it, never loosen).
+- Mandatory whenever any screen carries `figmaUrl`; HALT (auth) or explicit recorded `--no-figma-parity` otherwise — never silently skip.
+
+Full protocol → **see `references/visual-verify-screens.md`**. Output: `.u-maker/.state/visual-verify/{app}-screens.json` with per-screen `figmaParity{}` and `result: pass | fail`.
+
 ### Step 7: Human Verification (when flow requires it)
 
 Pause for `AskUserQuestion` confirmation when the journey crosses an external boundary: OAuth, Payments, Email, SMS, External APIs.
@@ -241,6 +250,7 @@ The calling phase skill consumes this summary (not the raw MCP output) and integ
 | `/u-output --verify` | Step 6c | Assert generated HTML renders | `.u-maker/.state/visual-verify/{app}-index.json` |
 | `/u-design` Step 4a (auto) | **Step 6e** | DS HTML token + component + dark + a11y verification | `.u-maker/.state/visual-verify/{app}-design-system.json` |
 | `/u-dev` Step 1.5 (auto) | **Step 6f** | Per-component visual + token-binding + (optional) Figma diff + a11y | `.u-maker/.state/visual-verify/{app}-components.json` |
+| `/u-gatekeeping` Step 2.5 (auto) | **Step 6g** | Per-screen route vs Figma frame **pixel-perfect** parity (GK-12) | `.u-maker/.state/visual-verify/{app}-screens.json` |
 
 ## Options
 
@@ -253,9 +263,9 @@ The calling phase skill consumes this summary (not the raw MCP output) and integ
 | `--app {name}` | — | Scope to a single app (required for multi-app ops) |
 | `--route {path}` | — | Scope to a single route |
 | `--no-screenshot` | OFF | Skip screenshot steps (6b) |
-| `--no-figma-parity` | OFF | Explicitly skip Figma parity sub-steps (6e.8 / 6f.4). **Use only when intentionally diverging from Figma**; logged to the run summary so reviewers can see the override. Without this flag, Figma parity runs unconditionally whenever a Figma source is registered. |
-| `--figma-diff-threshold {pct}` | 5 | Pixel-diff threshold for Figma parity (Step 6e.8 + 6f.4). Lowering tightens the gate. |
-| `--figma-ssim-threshold {0..1}` | 0.95 | SSIM threshold for Figma parity. Raising tightens the gate. |
+| `--no-figma-parity` | OFF | Explicitly skip Figma parity sub-steps (6e.8 / 6f.4 / **6g**). **Use only when intentionally diverging from Figma**; logged to the run summary so reviewers can see the override. Without this flag, Figma parity runs unconditionally whenever a Figma source is registered. **At the GK-12 GATE (6g) an override must be explicitly acknowledged and still blocks Deploy.** |
+| `--figma-diff-threshold {pct}` | 5 | Pixel-diff threshold — **Build-phase default for 6e.8 / 6f.4 only**. The GK-12 **GATE (6g)** uses the fixed `gate-rules.json` GK-12.thresholds (≤ 1%); this flag may only **tighten** the gate, never loosen it. |
+| `--figma-ssim-threshold {0..1}` | 0.95 | SSIM threshold — **Build-phase default for 6e.8 / 6f.4 only**. The GK-12 **GATE (6g)** uses the fixed GK-12.thresholds (≥ 0.99); this flag may only **tighten** (raise) it. |
 | `--retry {N}` | 2 | Retry count for flaky steps |
 
 ## Anti-patterns

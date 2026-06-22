@@ -1,7 +1,7 @@
 ---
 name: u-gatekeeping
-description: "This skill should be used when the user asks to '/u-gatekeeping', '/u-check', '/u-qa', 'gatekeep', 'quality gate', 'u-maker QA', 'test cases', 'run tests', 'u-maker 검수', '검수 단계', '품질 게이트', '테스트 케이스 생성', 'u-maker 테스트', 'generate test cases', or 'score documents'. Covers both document scoring (11-criteria gatekeeper) and runtime QA (testcases + execution)."
-version: 4.0.0
+description: "This skill should be used when the user asks to '/u-gatekeeping', '/u-check', '/u-qa', 'gatekeep', 'quality gate', 'u-maker QA', 'test cases', 'run tests', 'u-maker 검수', '검수 단계', '품질 게이트', '테스트 케이스 생성', 'u-maker 테스트', 'generate test cases', '디자인 일치성', 'Figma 일치', 'design conformance', or 'score documents'. Covers document scoring (11-criteria gatekeeper), runtime QA (testcases + execution), and design conformance (GK-12 Figma/reference ↔ implementation pixel-perfect)."
+version: 4.1.0
 ---
 
 # u-gatekeeping — Gatekeeping Phase (PBGD Gatekeeping)
@@ -9,10 +9,11 @@ version: 4.0.0
 `/u-gatekeeping [--auto] [--loop] [--app {name}] [--only doc|qa]`
 **Aliases:** `/u-check`, `/u-qa`
 
-Gatekeeping phase unifies two responsibilities:
+Gatekeeping phase unifies three responsibilities:
 
 - **Doc scoring** (Gatekeeping.DocScoring) — 11-criteria gatekeeper validation with avg ≥ 95 pass threshold (and ≥ 98 deploy-readiness threshold).
 - **Runtime QA** (Gatekeeping.RuntimeQA) — testcase design from SRS Features (FT), test execution, result recording, coverage matrix.
+- **Design Conformance** (Gatekeeping.DesignConformance) — GK-12: implemented UI is **pixel-perfect** to the Figma source of truth + ingested reference materials (token/layout/variant/text parity, reference-rule coverage, zero drift). Gates Deploy.
 
 **Primary Agents:** u-agent-gatekeeper (doc scoring), u-agent-qa (runtime QA)
 **Engine Dependencies:** doc-engine, dep-engine
@@ -31,12 +32,14 @@ Gatekeeping phase unifies two responsibilities:
 | `--only doc` | Run doc scoring only (skip runtime QA) |
 | `--only qa` | Run runtime QA only (skip doc scoring) |
 
+> **Step 2.5 (Design Conformance) ALWAYS runs** — it is a deploy-readiness gate, not doc/QA work, so it is **not** skipped by `--only doc` or `--only qa`. When no Figma/reference provenance exists it is a fast N/A.
+
 ## Execution Flow
 
 ### Step 1: Doc Scoring (Gatekeeping.DocScoring)
 
 1. Invoke `u-agent-gatekeeper` with scope = all docs of the current app.
-2. Score each doc against the 11 criteria in `_meta/schemas/gate-rules.json`.
+2. Score each doc against the 11 doc-quality criteria (GK-01..GK-11) in `_meta/schemas/gate-rules.json`. (GK-12 Design Conformance is scored separately in **Step 2.5**, not per-doc here.)
 3. Compute avg score.
 4. Write `reports/gatekeeper/{app}-{timestamp}.md` + companion JSON.
 5. Result states:
@@ -58,12 +61,40 @@ Gatekeeping phase unifies two responsibilities:
 9. Write `docs/{app}/gatekeeping/test-results.md` + `test-results.json`.
 10. Update `data/links.json` (FT→TC `tests` edges).
 
+### Step 2.5: Design Conformance (Gatekeeping.DesignConformance) — Figma/reference ↔ implementation, PIXEL-PERFECT
+
+Verifies the implemented UI is **pixel-perfect** to the Figma source of truth and the ingested reference materials (참고자료). Feeds **GK-12** and the Deploy gate. Routes **all** browser/Figma work through `/u-tools-browser` — never call MCP Playwright/Figma tools directly.
+
+1. **Provenance discovery.** Collect every registered design source: `data/figma/manifest.json.dsFileKey`, `design-system.json.components[*].figmaKey`, `screens.json[*].figmaUrl`, and any `data/digest/figma/**`. If NONE exist → write `.state/design-conformance.json {"result":"na"}` and skip (GK-12 auto-passes).
+2. **DS + component parity (re-verify — do NOT trust stale state).** Re-run `/u-tools-browser` Step 6e (Design System) and Step 6f (components) when the recorded `.state/visual-verify/*.json` is missing or older than the current code/Figma hash. Apply the **pixel-perfect GATE thresholds** (SSIM ≥ 0.99, pixel diff ≤ 1 %, bounds ± 1 px — `gate-rules.json` GK-12.thresholds), stricter than the Build-phase iteration thresholds (0.95 / 5 % / ±2 px).
+3. **Screen/route parity (NEW — Step 6g).** Run `/u-tools-browser` Step 6g for every `screens.json` item with `figmaUrl`: render the route, diff against the Figma frame at the pixel-perfect thresholds, check critical text + token resolution.
+4. **Reference-rule coverage.** Assert every digest `validationRules[] / domainRules[] / permissionRules[] / processingRules[]` maps to an implemented guard or a TC. List orphans as `coverageGaps`.
+5. **Override policy.** A `--no-figma-parity` used here (at the GATE) **without an explicit acknowledged record is a FAIL** — it is not silently defeatable at the gate the way it is during fast Build iteration.
+6. **Aggregate** into `.state/design-conformance.json`:
+
+```json
+{
+  "app": "{app}",
+  "result": "pass | fail | na",
+  "thresholds": { "ssimMin": 0.99, "pixelDiffMaxPct": 1, "boundsTolerancePx": 1 },
+  "figmaParity": { "designSystem": "pass", "components": "pass", "screens": "pass" },
+  "referenceCoverage": "pass",
+  "coverageGaps": [],
+  "drift": [],
+  "overrides": [],
+  "checkedAt": "…"
+}
+```
+
+7. **Gate.** ANY `fail` / stale / missing-while-provenance-exists / `figmaSourceUnlinked` / unacknowledged override → block Gatekeeping pass and feed **GK-12** a critical (< 95) score. Requires the app dev server + an authenticated Figma session; when unavailable, HALT with the same instructions UX as Steps 6e/6f, or take an explicit **acknowledged** skip that is recorded and **still blocks Deploy**.
+
 ### Step 3: Loop (if `--loop`)
 
 1. If avg doc score < 95 → surface improvement list to `u-agent-design` / `u-agent-dev` (escalate via `u-agent-pm`).
 2. If any critical-severity test failed → same escalation path.
-3. Max 3 retries.
-4. After 3 failed attempts → alert user; do not proceed to Deploy.
+3. If `design-conformance.json.result == "fail"` (GK-12) → surface the `drift[]` / `coverageGaps[]` to `u-agent-dev` (implementation drift) or `u-agent-design` (spec/Figma drift), fix to pixel-perfect, then re-run **Step 2.5**.
+4. Max 3 retries.
+5. After 3 failed attempts → alert user; do not proceed to Deploy.
 
 ### Step 4: Deploy gate readiness
 
@@ -73,13 +104,18 @@ After a successful run, emit a `deploy-readiness.json` snapshot:
 {
   "app": "{app}",
   "docScore": 97.2,
+  "designConformance": "pass",
   "deployReady": false,
   "reason": "docScore 97.2 < deployThreshold 98; improve doc quality before /u-deploy.",
   "checkedAt": "…"
 }
 ```
 
-This file is read by `/u-deploy` to enforce the ≥ 98 gate.
+`deployReady` is `true` only when **BOTH** `docScore ≥ 98` **AND** `designConformance ∈ {"pass","na"}` (GK-12, copied from `.state/design-conformance.json.result`). A `designConformance: "fail"` forces `deployReady: false` with `reason: "design conformance (GK-12) fail — implementation drifts from Figma/reference"`, regardless of doc score.
+
+> **Staleness guard (do NOT copy a stale pass):** if `.state/design-conformance.json` is **missing or older than the current code/Figma hash** while Figma/reference provenance exists, treat `designConformance` as `"fail"` and re-run **Step 2.5** — never inherit a prior `"pass"`. (Mirrors the gatekeeper agent's GK-12 staleness rule.)
+
+This file is read by `/u-deploy` to enforce the ≥ 98 + pixel-perfect-conformance gate.
 
 ## Output Files
 
@@ -89,6 +125,7 @@ This file is read by `/u-deploy` to enforce the ≥ 98 gate.
 | `reports/gatekeeper/{app}-{ts}.json` | DocScoring | Machine-readable scores |
 | `docs/{app}/gatekeeping/testcases.{md,json}` | RuntimeQA | Test case definitions |
 | `docs/{app}/gatekeeping/test-results.{md,json}` | RuntimeQA | Execution results |
+| `.state/design-conformance.json` | DesignConformance | GK-12 Figma/reference ↔ implementation **pixel-perfect** drift report; consumed by GK-12 + the Deploy gate |
 | `.state/deploy-readiness.json` | Gate | Consumed by `/u-deploy` |
 
 > **Note on `docs/{app}/gatekeeping/`:** In v3.x these docs lived under `docs/{app}/check/`. New projects in v4.0 use `gatekeeping/`. The `/u-prepare-foldertree` migration step renames `check/` → `gatekeeping/` on v3→v4 upgrade.

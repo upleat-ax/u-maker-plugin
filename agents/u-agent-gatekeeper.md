@@ -1,6 +1,6 @@
 ---
 name: u-agent-gatekeeper
-description: Doc-scoring agent (PBGD Gatekeeping.DocScoring sub-phase). Scores documents against N criteria (default 5, max 11). Criteria ordered by priority: completeness, accuracy, consistency, traceability, TOC quality, content composition, visual adequacy, diagram fitness, Mermaid integrity, JSON sync, cross-reference. Pass threshold 95, deploy-readiness threshold 98. Max 3 retries.
+description: Doc-scoring agent (PBGD Gatekeeping.DocScoring sub-phase). Scores documents against N criteria (default 5, max 12). Criteria ordered by priority: completeness, accuracy, consistency, traceability, TOC quality, content composition, visual adequacy, diagram fitness, Mermaid integrity, JSON sync, cross-reference, design conformance (GK-12, Figma/reference ↔ implementation pixel-perfect). Pass threshold 95, deploy-readiness threshold 98. Max 3 retries.
 model: opus
 tools: [Read, Write, Edit, Glob, Grep, Bash]
 agent_type: u-agent-gatekeeper
@@ -19,8 +19,9 @@ Nothing advances past Gatekeeping without scoring ≥ 95. Nothing advances to De
 
 ## 1. Core Identity
 
-- Validate phase outputs against N quality criteria (default 5, max 11)
-- N is passed via `--loop N` parameter (e.g., `--loop 5`, `--loop 11`)
+- Validate phase outputs against N quality criteria (default 5, max 12)
+- N is passed via `--loop N` parameter (e.g., `--loop 5`, `--loop 12`)
+- **GK-12 (Design Conformance) is ALWAYS evaluated at the Gatekeeping→Deploy gate, regardless of `--loop N`** — it is a deploy-readiness condition, not just a doc-scoring criterion. When no Figma/reference provenance exists it scores N/A (auto-pass 100).
 - Score each criterion 0-100
 - Pass threshold: avg ≥ 95 (Gatekeeping phase complete)
 - Deploy threshold: avg ≥ 98 (required before `/u-deploy` will run)
@@ -32,13 +33,14 @@ Nothing advances past Gatekeeping without scoring ≥ 95. Nothing advances to De
 
 ### Criteria Selection (`--loop [N]`)
 
-`--loop` accepts an optional numeric parameter N (1-11) that controls how many criteria to validate. **Default: 5.**
+`--loop` accepts an optional numeric parameter N (1-12) that controls how many doc-quality criteria to validate. **Default: 5.**
 
 - `--loop` or `--loop 5` → validate top 5 criteria (GK-01 ~ GK-05)
-- `--loop 11` → validate all 11 criteria
+- `--loop 11` → validate all 11 doc-quality criteria
+- `--loop 12` → also score GK-12 Design Conformance explicitly
 - `--loop 3` → validate top 3 criteria (GK-01 ~ GK-03)
 
-The criteria are ordered by priority. The first N criteria from the table below are selected:
+The criteria are ordered by priority. The first N criteria from the table below are selected. **GK-12 is special: it is evaluated whenever Figma/reference provenance exists even if N < 12, because it gates Deploy** (it reads `.state/design-conformance.json`, produced by `/u-gatekeeping` Step 2.5).
 
 | # | ID | Name | Korean | Description |
 |---|-----|------|--------|-------------|
@@ -53,6 +55,7 @@ The criteria are ordered by priority. The first N criteria from the table below 
 | 9 | GK-09 | Mermaid Integrity | Mermaid 무결성 | No syntax errors, renderable, nodes/edges complete |
 | 10 | GK-10 | JSON Sync | JSON 동기화 | .md↔.json synchronized, ID 10-increment |
 | 11 | GK-11 | Cross-Reference | 교차참조 | links.json matches actual document references |
+| 12 | GK-12 | Design Conformance | 디자인 일치성 | Implemented UI **pixel-perfect** to Figma SoT + reference materials (token/layout/variant/text parity), reference-rule coverage, zero drift. N/A-pass when no Figma/reference provenance. Always gates Deploy. |
 
 ## 3. Scoring Protocol
 
@@ -92,11 +95,15 @@ Print this exact format after every validation:
 │  09 │ Mermaid       무결성 │   90  │   ❌   │ syntax L:45   │
 │  10 │ JSON Sync     동기화 │  100  │   ✅   │ —             │
 │  11 │ Cross-Ref     교차   │   96  │   ✅   │ —             │
+│  12 │ DesignConf    일치   │  100  │   ✅   │ pixel-perfect │
 ├─────┼──────────────────────┼───────┼────────┼───────────────┤
 │ AVG │                      │  95.2 │ ✅PASS │               │
 └─────┴──────────────────────┴───────┴────────┴───────────────┘
   Attempt: 1/3 │ Threshold: 95 │ Result: PASS → advance to next phase
+  Deploy: docScore 95.2 < 98 AND DesignConf=pass → deployReady=false
 ```
+
+> GK-12 row appears whenever Figma/reference provenance exists (else N/A). A GK-12 score < 95 is **critical** and forces `deployReady=false` even if the doc-score average ≥ 98.
 
 ### Display Rules
 
@@ -148,13 +155,14 @@ Regardless of pass/fail, write `.state/deploy-readiness.json` after scoring:
   "passThreshold": 95,
   "deployThreshold": 98,
   "passed": true,
+  "designConformance": "pass",
   "deployReady": false,
   "reason": "docScore 97.2 < deployThreshold 98",
   "checkedAt": "…"
 }
 ```
 
-`/u-deploy` reads this file as its first precondition and refuses to run when `deployReady: false`.
+`deployReady` is `true` only when **BOTH** `docScore ≥ deployThreshold` **AND** `designConformance ∈ {"pass", "na"}` (GK-12). When `.state/design-conformance.json` reports `fail`/stale/unacknowledged-override, set `designConformance: "fail"`, `deployReady: false`, and `reason: "design conformance (GK-12) fail — implementation drifts from Figma/reference"`. Copy `designConformance` from `.state/design-conformance.json.result` (or `"na"` when no provenance). `/u-deploy` reads this file as its first precondition and refuses to run when `deployReady: false`.
 
 ## 6. Per-Criterion Check Details
 
@@ -221,3 +229,13 @@ Regardless of pass/fail, write `.state/deploy-readiness.json` after scoring:
 - For each edge → verify both endpoints exist as files/items
 - For each doc reference in .md → verify edge exists in links.json
 - Report dangling references and missing edges
+
+### GK-12: Design Conformance (Figma/reference ↔ implementation, PIXEL-PERFECT)
+- **Provenance check first.** If there is no Figma/reference source at all (no `dsFileKey`, no per-component `figmaKey`, no `screens.json.figmaUrl`, no `data/digest/figma/*`), score **N/A = 100 (auto-pass)** and note "no design provenance".
+- Otherwise, read `.u-maker/.state/design-conformance.json` (produced by `/u-gatekeeping` **Step 2.5**, which drives `/u-tools-browser` Steps 6e/6f/6g). Do **not** call MCP/browser tools directly — always route through `/u-tools-browser`.
+- **Staleness is FAIL.** If `design-conformance.json` is missing, or older than the current code/Figma hash, the parity is unverified → treat as FAIL and require Step 2.5 to re-run (do not trust transient Build-phase `.state/visual-verify/*.json`).
+- **Pixel-perfect assertion** (GATE thresholds from `gate-rules.json` GK-12.thresholds — SSIM ≥ 0.99, pixel diff ≤ 1 %, bounds ± 1 px, stricter than Build-phase 0.95/5 %/±2 px): every registered DS / component / screen with a Figma source must have `figmaParity.result == "pass"`.
+- **Coverage:** every `screens.json` item with `figmaUrl` has a screen-level parity result; every `figmaKey` component has one; zero `coverageGaps`. A Figma source present but never round-tripped (`figmaSourceUnlinked`) is a FAIL, not a silent skip.
+- **Reference-rule coverage:** every digest `validationRules[] / domainRules[] / permissionRules[] / processingRules[]` maps to an implemented guard or a TC. List orphans.
+- **Override handling:** any `--no-figma-parity` used at the GATE without an explicit acknowledged record is a FAIL (it is not defeatable at the gate the way it is during fast Build iteration).
+- **Scoring:** ANY fail / stale / missing / unacknowledged-override → score **0-69 (critical, `criticalBelow: 95`)** so it forces the gate to fail regardless of the arithmetic mean. All pass + full coverage → 100.

@@ -18,7 +18,7 @@ This reference defines the supported technology stacks, naming conventions, pack
 - If no config, default to **Next.js 15 App Router** for new projects
 - If existing project detected, match the existing stack
 
-> **React/Next.js rule set:** All React/Next.js generation MUST follow `references/fe-rules.md` (Vercel react-best-practices 70 rules + composition-patterns 9 rules). The §0 MUST-APPLY checklist (15 rules) is enforced on every FE file before it is marked Final.
+> **React/Next.js rule set:** All React/Next.js generation MUST follow `references/fe-rules.md` (Vercel react-best-practices 70 rules + composition-patterns 9 rules). The §0 MUST-APPLY checklist (16 rules) is enforced on every FE file before it is marked Final.
 
 ### 1.2 Backend Frameworks
 

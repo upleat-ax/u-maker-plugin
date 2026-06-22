@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "Gatekeeper Validation Rules",
-  "description": "11 quality criteria for gatekeeper scoring (PBGD workflow, v4.0)",
+  "description": "12 quality criteria for gatekeeper scoring (PBGD workflow, v4.0). GK-01..GK-11 are documentation-quality; GK-12 is Figma/reference ↔ implementation pixel-perfect conformance.",
   "passThreshold": 95,
   "deployThreshold": 98,
   "maxRetries": 3,
@@ -93,6 +93,17 @@
       "description": "links.json dependency graph matches actual document references",
       "maxScore": 100,
       "checks": ["links-json-matches-refs", "no-dangling-refs", "no-missing-edges"]
+    },
+    {
+      "id": "GK-12",
+      "name": "Design Conformance",
+      "nameKo": "디자인 일치성",
+      "description": "Implemented UI is PIXEL-PERFECT to the Figma source of truth and ingested reference materials: token parity, layout/bounds parity, component variant/state parity, text parity, plus reference-material semantic-rule coverage (validation/domain/permission/processing rules). Zero unresolved drift. Scored N/A (auto-pass 100) ONLY when no Figma/reference provenance exists (no dsFileKey, no figmaKey, no screens.figmaUrl, no data/digest/figma/*).",
+      "maxScore": 100,
+      "criticalBelow": 95,
+      "appliesWhen": "figma-or-reference-provenance-exists",
+      "thresholds": { "ssimMin": 0.99, "pixelDiffMaxPct": 1, "boundsTolerancePx": 1, "note": "Pixel-perfect GATE thresholds — stricter than the Build-phase iteration thresholds (SSIM 0.95 / 5% / ±2px) in visual-verify-ds.md / visual-verify-components.md. Tunable via --figma-ssim-threshold / --figma-diff-threshold." },
+      "checks": ["figma-token-parity", "figma-screenshot-parity-pixel-perfect", "figma-coverage-parity", "screen-route-parity", "reference-rule-coverage", "no-unacknowledged-no-figma-parity-override"]
     }
   ],
   "gates": {
@@ -123,7 +134,8 @@
         { "doc": "testcases", "status": "Final" },
         { "doc": "test-results", "status": "Final" },
         { "condition": "critical-defects-zero" },
-        { "condition": "avg-score-ge-98", "threshold": 98 }
+        { "condition": "avg-score-ge-98", "threshold": 98 },
+        { "condition": "design-conformance-pass", "note": "GK-12 pixel-perfect. All registered Figma sources (dsFileKey, per-component figmaKey, per-screen figmaUrl) and ingested reference materials show design-conformance.json result==pass with zero coverageGaps. Any --no-figma-parity override at the GATE blocks deploy unless explicitly acknowledged. N/A-pass only when no Figma/reference provenance exists." }
       ]
     },
     "x-deprecated-pdca": {

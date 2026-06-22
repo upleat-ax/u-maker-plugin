@@ -1,6 +1,18 @@
 {
-  "description": "u-maker reactive hooks — keep dropzone index, doc<->JSON sync, gate loop state, and deploy staleness in sync after file mutations. Each hook is dispatched through _dispatch.js, which bridges Claude Code's stdin contract to the per-event Node modules in this folder.",
+  "description": "u-maker hooks. PreToolUse: on-edit-guard.js is the STRICT side-effect gatekeeper — it asks for explicit user approval before EXISTING code in a u-maker project is modified (Edit/Write/MultiEdit/Bash), so dev/bug-fix changes cannot introduce silent side-effects (wired directly, NOT through _dispatch.js, which never blocks). PostToolUse: reactive hooks keep dropzone index, doc<->JSON sync, gate loop state, and deploy staleness in sync after file mutations, dispatched through _dispatch.js.",
   "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit|Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/on-edit-guard.js\"",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
     "PostToolUse": [
       {
         "matcher": "Write|Edit|MultiEdit",

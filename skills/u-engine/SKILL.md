@@ -1,7 +1,7 @@
 ---
 name: u-engine
 description: "INTERNAL INFRASTRUCTURE — not directly invoked by users. Referenced by other u-* phase skills for shared engines: doc-engine (document CRUD), html-engine (HTML generation), dep-engine (dependency graph), digest-engine (dropzone processing), router (command dispatch). Do not auto-load on user requests; phase skills load specific engine references on demand."
-version: 4.0.0
+version: 4.1.0
 ---
 
 # u-engine — Shared Engine Infrastructure
@@ -47,6 +47,7 @@ Full pipeline (Single-file, Domain Split, Index Updates, Standalone, HTML Rules)
 Key invariants enforced by html-engine:
 - `--diagram` mode: `svg` (default) | `mermaid` | `all`
 - No ASCII art except folder tree; Mermaid always light mode
+- No single-side accent borders (한쪽 border만 강조하는 장식/active 스타일 금지) — 전체 4변 border + 배경 채움 + font-weight로 강조; 1px 중립 구분선·focus·차트 마커만 단면 허용 (html-engine.md §6 "Border / Accent Style Rules")
 - Use `/u-output` to regenerate HTML from existing `docs/` without re-running phase logic
 
 ## Command Options (All Phase Skills)

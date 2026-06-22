@@ -42,6 +42,10 @@ Follow the execution flow defined in `skills/u-dev/SKILL.md` exactly:
 4. All must be `Final`: `erd.json`, `api.json`, `screens.json`, `design-system.json`
 5. If not → error with missing doc list and statuses
 
+### Step 0.5: Side-Effect Gatekeeping (mandatory, default-deny)
+
+Follow `skills/u-dev/references/change-safety.md` exactly. Before generating, classify every target path as **NEW** or **EXISTING**. For every EXISTING file you would modify or delete: run a blast-radius analysis (reverse-dep grep, public-surface delta, behavior delta, test coverage, necessity), perform an adversarial self-review, then obtain explicit user approval via `AskUserQuestion` and write the approval marker under `.u-maker/.state/edit-approvals/`. You MUST NOT Edit/Write/Bash-mutate an existing file without a fresh approval marker — the PreToolUse guard `hooks/on-edit-guard.js` will force a native approval prompt otherwise. `--auto` batches the questions but never auto-approves deletions, renames, or signature/schema/route changes. Applies especially to **bug fixes**.
+
 ### Step 1: Generate FE Code
 
 1. Load `screens.json` + `design-system.json`
@@ -107,6 +111,13 @@ Follow the execution flow defined in `skills/u-dev/SKILL.md` exactly:
 - Error handling must cover all API error responses defined in `api.json`
 - Type definitions must match ERD column types and API schemas exactly
 - Design tokens must be used via theme/token system, never hardcoded values
+
+### Side-Effect Safety (STRICT — see `skills/u-dev/references/change-safety.md`)
+
+- Editing **existing** code without a recorded user-approval marker is a hard **FAIL**. The PreToolUse guard (`hooks/on-edit-guard.js`) forces a native approval prompt for any un-approved mutation of existing code (Edit/Write/MultiEdit/Bash) in a u-maker project.
+- Any change to an **exported signature, component prop, API route, or DB column/schema** requires an explicit Approve (never `--auto`).
+- Touching a file **outside the approved set** to complete a task is scope creep = hard FAIL — raise a new approval instead. Bug fixes must be the smallest reversible change.
+- When blast radius is ambiguous or unverifiable, default to **UNSAFE** and ask the user.
 
 ### Traceability
 

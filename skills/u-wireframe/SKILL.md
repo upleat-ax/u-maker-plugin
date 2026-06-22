@@ -1,7 +1,7 @@
 ---
 name: u-wireframe
 description: "This skill should be used when the user asks to '/u-wireframe', 'wireframe', 'generate wireframe', 'screen wireframe', 'u-maker 와이어프레임', '화면 와이어프레임', or '와이어프레임 생성'. Produces per-screen HTML wireframe files from Screen Specification documents."
-version: 4.0.0
+version: 4.1.0
 ---
 
 # u-wireframe — Screen Wireframe Generator

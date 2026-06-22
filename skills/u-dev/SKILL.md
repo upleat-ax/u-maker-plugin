@@ -1,7 +1,7 @@
 ---
 name: u-dev
 description: "This skill should be used when the user asks to '/u-dev', 'dev phase', 'code generation', 'implement', 'u-maker 개발', '개발 단계', '코드 생성', 'FE BE 생성', '구현 단계', or wants to generate code from Design phase specifications."
-version: 4.1.0
+version: 4.2.0
 ---
 
 # u-dev — Development Sub-phase (PBGD Build.Development)
@@ -25,6 +25,21 @@ Development sub-phase of the Build phase: generate FE + BE + DB code from Design
 3. Read design doc statuses from companion JSONs
 4. All must be `Final`: erd.json, api.json, screens.json, design-system.json
 5. If not → error with missing doc list and statuses
+
+### Step 0.5: Side-Effect Gatekeeping — mandatory hard gate for edits to EXISTING code
+
+Before Steps 1–3 generation, and before **every** individual Edit/Write/Bash that could mutate an
+**existing** file, enforce the adversarial change-safety protocol in `references/change-safety.md`.
+This gate is **STRICT / default-deny** and applies especially to **bug fixes**.
+
+1. **Classify each target path as NEW or EXISTING** (EXISTING = already on disk). NEW files create freely; EXISTING files are gated. `.u-maker/**` is out of scope.
+2. **For every EXISTING file you intend to modify or delete, produce an Impact / Side-Effect (blast-radius) analysis**: reverse-dependency scan (who imports/calls it), public-surface delta (exported signature / prop / API route / DB column / env), behavior delta, test/spec coverage, and whether the edit is strictly required by the spec/bug or is scope creep. Default the verdict to **UNSAFE** when anything is ambiguous or unverifiable.
+3. **Adversarial self-review**: argue against the change — name the worst plausible regression. If you can't rule it out, treat as UNSAFE and make the smallest reversible change.
+4. **Mandatory user approval (gatekeeping)**: present a single `AskUserQuestion` per file (or per `--auto` batch) — path · NEW/EXISTING · intent + diff · blast-radius · top regression risk. Options: Approve / Approve-batch / Skip / Abort. **You MUST NOT apply an edit to EXISTING code until the user Approves.** `--auto` may batch but **never** auto-approves deletions, renames, or signature/schema/route changes.
+5. **Record approval**: on Approve, write the marker `.u-maker/.state/edit-approvals/{sha1(absPath)}.json` so the PreToolUse guard (`hooks/on-edit-guard.js`) authorizes the edit instead of re-prompting (TTL `U_MAKER_EDIT_APPROVAL_TTL_MIN`, default 480 min). Without a fresh marker the guard forces a native approval prompt (`permissionDecision: "ask"`).
+6. **Scope lock**: only approved paths may be touched. Touching an unapproved existing file to "finish" the task is scope creep = FAIL — raise a new approval instead.
+
+Skip this gate only for purely NEW files. It is never skippable for edits/deletes of existing code, regardless of `--auto` / `--loop`. Full protocol + marker schema → **`references/change-safety.md`**.
 
 ### Step 1: Generate FE Code
 
@@ -81,6 +96,7 @@ Skip Step 1.5 entirely when `--only be` or `--only db` is passed (no FE work hap
 ## Reference Files
 
 - **`references/code-gen-rules.md`** — Code generation patterns, file naming, component structure
+- **`references/change-safety.md`** — **Side-effect gatekeeping (Step 0.5)**: NEW-vs-EXISTING classification, blast-radius/impact analysis, mandatory AskUserQuestion approval before editing existing code, and the approval-marker contract for the `hooks/on-edit-guard.js` PreToolUse guard. STRICT / default-deny. Mandatory whenever a run could modify existing files.
 - **`references/tech-rules.md`** — Supported stacks, naming conventions, package management
 - **`references/fe-rules.md`** — React/Next.js rule set (Vercel react-best-practices 70 rules + composition-patterns 9 rules). Mandatory input for Step 1 FE generation.
 - **`../u-tools-browser/SKILL.md`** Step 6f — Component visual verification engine (Step 1.5 delegation target).

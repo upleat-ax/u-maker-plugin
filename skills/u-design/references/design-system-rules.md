@@ -26,6 +26,7 @@ Compiled from **dylantarre/design-system-skills** (28 skills). The upstream SKIL
 | 13 | Focus states (`focus-states`) | Visible focus indicator on every interactive primitive — 2px min outline with offset, not `outline:none` |
 | 14 | ARIA patterns (`aria-patterns`) | Every interactive primitive maps to a WAI-ARIA authoring-practice pattern (Dialog, Listbox, Tabs, Combobox, Menu, Disclosure…) |
 | 15 | Compound-component API (`compound-components`) | Multi-part widgets ship as `<X>`, `<X.Trigger>`, `<X.Content>` with context-driven state — not prop-driven monoliths |
+| 16 | No single-side accent border (`no-single-side-border`) | 카드·콜아웃·배너를 한 변만 색 입힌 border(`border-left:4px solid`)로 강조 금지; nav/tab **active**도 한쪽 컬러 바 금지 → 전체 4변 `border` + 배경 틴트 + `font-weight`로 강조. 1px 중립 divider·focus ring·차트 마커만 단면 허용 (전면 배제, html-engine.md §6) |
 
 ---
 
@@ -121,7 +122,7 @@ For React output: combine with `skills/u-dev/references/fe-rules.md` (Vercel rea
 The Design System pipeline is HTML-first (`design-system-spec.md` §1.1). Apply these rules at the points below.
 
 1. **Before writing the HTML template** — load this rule pack into context.
-2. **Token resolution step** — run `§0 MUST-APPLY` items 1–10 as a checklist. Output must pass every row.
+2. **Token resolution step** — run all `§0 MUST-APPLY` items as a checklist (incl. #16 no-single-side-accent-border). Output must pass every row.
 3. **CSS custom-property emission** — all three layers present (primitive block, semantic block, component block, in that order inside `:root`).
 4. **`[data-theme="dark"]` block** — only overrides semantic tokens; never redeclares primitives.
 5. **Live showcase region** — every token scale visualized (swatches / typography ramp / spacing ruler / shadow ladder / radius ramp / motion demo / z-index stack).

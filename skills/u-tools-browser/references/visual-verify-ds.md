@@ -80,7 +80,7 @@ When `data/figma/manifest.json` records a `dsFileKey` AND `design-system.json.fi
 4. **Component / page screenshot diff** — for each documentation page in the Figma DS file (or each `CMP-{nnn}` showcase frame when frame mapping is available), pixel-diff against the corresponding rendered region of `design-system.html` (use the `data-cmp-id` selector to crop). Pass threshold: SSIM ≥ 0.95 AND pixel-diff ≤ 5 %. Write each comparison PNG triplet (figma / impl / diff) to `.u-maker/.state/visual-verify/diffs/{app}-ds-{frameSlug}.{figma,impl,diff}.png`.
 5. **Coverage parity** — every Figma component MUST have a corresponding `CMP-{nnn}` in `design-system.json`, and every `CMP-{nnn}` MUST be rendered in the HTML. One-sided gaps → `figmaCoverageGaps[]`.
 
-When `dsFileKey` is unset → skip silently (this DS was not extracted from Figma).
+When `dsFileKey` is unset BUT Figma provenance exists elsewhere (`design-system.json.figmaUrl`, or any `data/digest/figma/**`), do **NOT** skip silently — record `figmaSourceUnlinked: true` in the result and emit a `figma-sync-todos.json` p1 so Gatekeeping **GK-12** flags "Figma source present but never round-tripped → parity unverifiable". Only skip silently when there is **no** Figma provenance at all (this DS was genuinely not derived from Figma).
 When `dsFileKey` is set but the user is not authenticated against Figma → **HALT** with the message `"Figma parity is mandatory for Figma-sourced DS. Authenticate via mcp__plugin_figma_figma__authenticate or pass --no-figma-parity to skip explicitly."` Never silently skip.
 
 ## 9. Diff record

@@ -471,6 +471,25 @@ All generated HTML uses Tailwind CSS utility classes for styling. Tailwind is lo
 | `<p>` | `text-base leading-7 mb-4 text-gray-700 dark:text-gray-300` |
 | `<code>` inline | `bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded text-sm font-mono` |
 
+### Border / Accent Style Rules (CSS) — 한쪽 border 강조 금지
+
+**한쪽(단면) border만 색으로 강조하는 장식 스타일을 전면 금지한다 (No single-side accent borders).** 카드·콜아웃·하이라이트 박스·배너를 한 변에만 색을 입힌 막대(`border-left: 4px solid …` 류)로 꾸미지 않는다. active/선택 상태도 한쪽 컬러 border로 표시하지 않는다. 강조는 **전체 4변 `border` + 배경 채움(background tint) + `font-weight`**로 표현한다.
+
+| Prohibited (금지 — 장식/강조용 단면 border) | Use instead (대체) |
+|---|---|
+| `border-left: 4px solid {accent}` accent bar on a card/callout/banner | `border: 1px solid {color}` + tinted `background` (예: `background:#eff6ff`) |
+| nav/list/tab **active** 상태를 `border-left-color` / `border-bottom-color` 컬러 바로 표시 | `background: rgba(accent,.12)` + `font-weight:600~700` (막대 없음) |
+| 제목 `h1~h6` 컬러 밑줄 `border-bottom: 2px solid {accent}` | 밑줄 제거, 또는 `border-bottom: 1px solid {neutral-border}` (1px 중립선만) |
+| Tailwind `border-l-4`/`border-t-4`/`border-s-2` 등을 카드 액센트로 사용 | `border` + `bg-*` tint |
+
+**Allowed (구조·기능 요소 — 장식 아님, 허용):**
+- **1px 중립색 구분선**: 테이블 행/셀, 섹션·푸터 divider, 사이드바 header/footer separator (`border-bottom`/`border-top: 1px solid {neutral}`). 색은 accent가 아닌 중립 border 토큰.
+- **접근성 focus ring/outline** (`outline: 2px solid …`) — 단면 강조가 아니라 4변 outline.
+- **차트·타임라인 데이터 마커**: Gantt 마감 핀, 축선 등 데이터 시각화 요소(SVG/CSS line). 콘텐츠 데이터이므로 단면선 허용.
+- **전체 4변 `border`** (`border: 1px solid …`).
+
+**판단 기준:** "박스/요소를 한쪽 색 막대로 **꾸미거나**, active를 한쪽 컬러 바로 **표시**"하면 → **금지**. "내용을 **가르는** 중립 구분선 · focus · 차트 마커"면 → 허용. 애매하면 **색**으로 판단한다: **accent색** 단면이면 금지(굵기 무관), **중립색** 단면은 구분선으로 허용(1px 권장, 구조용 section/footer/table 구분선은 2px도 허용).
+
 ## 7. Dark/Light Toggle
 
 Every generated HTML page includes a dark/light mode toggle switcher in the top-right corner of the page header.

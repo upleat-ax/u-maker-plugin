@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>U-MAKER Plugin v4.0.0-alpha.22 (PBGD) Documentation</title>
+<title>U-MAKER Plugin v4.0.0-alpha.23 (PBGD) Documentation</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{--sidebar-w:280px;--bg:#ffffff;--sidebar-bg:#ffffff;--main-bg:#ffffff;--text:#334155;--text-main:#334155;--heading:#0f172a;--accent:#3b82f6;--accent-hover:#2563eb;--code-bg:#f1f5f9;--code-text:#1e293b;--border:#e2e8f0;--active-bg:#f8fafc;--badge-bg:#e2e8f0;--badge-text:#64748b;--table-stripe:#f8fafc;--table-border:#e2e8f0;--table-header:#f1f5f9}
@@ -23,15 +23,15 @@ a:hover{text-decoration:underline}
 .nav-group{margin-bottom:4px}
 .nav-group-title{display:flex;align-items:center;justify-content:space-between;padding:10px 20px;font-size:12px;font-weight:700;color:var(--badge-text);text-transform:uppercase;letter-spacing:.5px;user-select:none}
 .nav-group-title .badge{background:var(--badge-bg);color:var(--badge-text);font-size:10px;padding:2px 8px;border-radius:10px;font-weight:500}
-.nav-item{display:block;padding:6px 20px 6px 28px;font-size:13px;color:var(--text);cursor:pointer;transition:all .15s ease;border-left:3px solid transparent}
-.nav-item:hover{background:var(--active-bg);text-decoration:none;border-left-color:var(--accent)}
-.nav-item.active{background:var(--active-bg);color:var(--heading);font-weight:600;border-left-color:var(--accent)}
+.nav-item{display:block;padding:6px 20px 6px 28px;font-size:13px;color:var(--text);cursor:pointer;transition:all .15s ease}
+.nav-item:hover{background:var(--active-bg);text-decoration:none}
+.nav-item.active{background:var(--active-bg);color:var(--heading);font-weight:600}
 .nav-item .num{display:inline-block;background:var(--badge-bg);color:var(--badge-text);font-size:10px;padding:1px 6px;border-radius:3px;margin-right:6px;font-family:'SF Mono',Monaco,monospace;min-width:22px;text-align:center}
 .sidebar-footer{padding:16px 20px;border-top:1px solid var(--border);font-size:11px;color:var(--badge-text);text-align:center}
 
 /* Main */
 .main{margin-left:var(--sidebar-w);flex:1;padding:40px 60px 80px;max-width:960px}
-.main h2{font-size:26px;font-weight:700;margin:48px 0 16px;padding-bottom:10px;border-bottom:2px solid var(--border);color:var(--heading)}
+.main h2{font-size:26px;font-weight:700;margin:48px 0 16px;padding-bottom:10px;border-bottom:1px solid var(--border);color:var(--heading)}
 .main h2:first-child{margin-top:0}
 .main h3{font-size:18px;font-weight:600;margin:28px 0 12px;color:var(--heading)}
 .main h4{font-size:15px;font-weight:600;margin:20px 0 8px;color:#475569}
@@ -39,7 +39,7 @@ a:hover{text-decoration:underline}
 .main ul,.main ol{margin:8px 0 16px 24px;line-height:1.8}
 .main li{margin-bottom:4px;font-size:15px}
 .main strong{font-weight:600}
-.main blockquote{border-left:3px solid var(--accent);padding:10px 16px;margin:12px 0;background:#eff6ff;border-radius:0 6px 6px 0;font-size:14px;color:#1e40af}
+.main blockquote{border:1px solid var(--accent);padding:10px 16px;margin:12px 0;background:#eff6ff;border-radius:6px;font-size:14px;color:#1e40af}
 .main hr{border:none;border-top:1px solid var(--border);margin:36px 0}
 .main code{background:var(--code-bg);padding:2px 6px;border-radius:4px;font-size:13px;font-family:'SF Mono',Monaco,'Cascadia Code',monospace;color:#be185d}
 .main pre{background:var(--code-bg);color:var(--code-text);padding:20px 24px;border-radius:8px;overflow-x:auto;margin:12px 0 20px;font-size:13px;line-height:1.7;border:1px solid var(--border)}
@@ -109,7 +109,7 @@ a:hover{text-decoration:underline}
 <nav class="sidebar" id="sidebar">
   <div class="sidebar-header">
     <h1>U-MAKER</h1>
-    <p>v4.0.0-alpha.22 (PBGD) &mdash; Plugin Documentation</p>
+    <p>v4.0.0-alpha.23 (PBGD) &mdash; Plugin Documentation</p>
   </div>
   <div class="sidebar-nav">
 
@@ -148,7 +148,7 @@ a:hover{text-decoration:underline}
     </div>
 
   </div>
-  <div class="sidebar-footer">Proprietary &copy; 2026 U PLEAT &middot; v4.0.0-alpha.22 (PBGD)</div>
+  <div class="sidebar-footer">Proprietary &copy; 2026 U PLEAT &middot; v4.0.0-alpha.23 (PBGD)</div>
 </nav>
 
 <main class="main">
@@ -863,7 +863,7 @@ a:hover{text-decoration:underline}
 
 <h3>Plugin Repository Layout</h3>
 <pre><code>u-maker-plugin/
-&#x251C;&#x2500;&#x2500; .claude-plugin/plugin.json        # v4.0.0-alpha.22 (PBGD)
+&#x251C;&#x2500;&#x2500; .claude-plugin/plugin.json        # v4.0.0-alpha.23 (PBGD)
 &#x251C;&#x2500;&#x2500; agents/                           # 10 agent definitions
 &#x2502;   &#x251C;&#x2500;&#x2500; u-agent-pm.md
 &#x2502;   &#x251C;&#x2500;&#x2500; u-agent-plan.md
@@ -927,7 +927,7 @@ a:hover{text-decoration:underline}
 
 <!-- Footer -->
 <div class="footer">
-  <strong>U-MAKER Plugin</strong> v4.0.0-alpha.22 (PBGD) &mdash; PBGD-based SSoT Collaboration Orchestrator<br>
+  <strong>U-MAKER Plugin</strong> v4.0.0-alpha.23 (PBGD) &mdash; PBGD-based SSoT Collaboration Orchestrator<br>
   Proprietary &copy; 2026 U PLEAT &middot; All rights reserved
 </div>
 

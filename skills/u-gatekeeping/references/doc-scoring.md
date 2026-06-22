@@ -1,6 +1,6 @@
 # Doc Scoring — Gatekeeping.DocScoring
 
-> 11-criteria gatekeeper scoring methodology. Pass threshold **≥ 95**; deploy-readiness threshold **≥ 98**. PBGD v4.0.
+> 11-criteria gatekeeper scoring methodology (GK-01..GK-11). Pass threshold **≥ 95**; deploy-readiness threshold **≥ 98**. PBGD v4.0. (GK-12 Design Conformance is scored separately in `/u-gatekeeping` Step 2.5 and is **not** part of this 11-criterion mean, but it independently gates Deploy.)
 
 ## 1. Criteria
 
@@ -62,13 +62,14 @@ After any Gatekeeping run, write `.state/deploy-readiness.json`:
   "passThreshold": 95,
   "deployThreshold": 98,
   "passed": true,
+  "designConformance": "pass",
   "deployReady": false,
   "reason": "docScore 97.2 < deployThreshold 98",
   "checkedAt": "…"
 }
 ```
 
-`/u-deploy` reads this file as its first precondition check.
+`deployReady` is `true` only when `docScore ≥ 98` **AND** `designConformance ∈ {"pass","na"}` — the latter is **GK-12 Design Conformance**, scored separately in `/u-gatekeeping` **Step 2.5** (Figma/reference ↔ implementation pixel-perfect), NOT part of the 11-criterion doc-score mean. `/u-deploy` reads this file as its first precondition check.
 
 ## 5. Retry policy
 
