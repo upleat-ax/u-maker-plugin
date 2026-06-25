@@ -44,7 +44,7 @@ Follow the execution flow defined in `skills/u-dev/SKILL.md` exactly:
 
 ### Step 0.5: Side-Effect Gatekeeping (mandatory, default-deny)
 
-Follow `skills/u-dev/references/change-safety.md` exactly. Before generating, classify every target path as **NEW** or **EXISTING**. For every EXISTING file you would modify or delete: run a blast-radius analysis (reverse-dep grep, public-surface delta, behavior delta, test coverage, necessity), perform an adversarial self-review, then obtain explicit user approval via `AskUserQuestion` and write the approval marker under `.u-maker/.state/edit-approvals/`. You MUST NOT Edit/Write/Bash-mutate an existing file without a fresh approval marker — the PreToolUse guard `hooks/on-edit-guard.js` will force a native approval prompt otherwise. `--auto` batches the questions but never auto-approves deletions, renames, or signature/schema/route changes. Applies especially to **bug fixes**.
+Follow `skills/u-dev/references/change-safety.md` exactly. Before generating, classify every target path as **NEW**, **IN-PROGRESS** (untracked/dirty), or **IMPLEMENTED** (git-tracked + clean vs HEAD = committed/shipped). NEW and IN-PROGRESS files build/iterate freely. For every IMPLEMENTED file you would modify or delete: run a blast-radius analysis (reverse-dep grep, public-surface delta, behavior delta, test coverage, necessity), perform an adversarial self-review, then obtain explicit user approval via `AskUserQuestion` and write the approval marker under `.u-maker/.state/edit-approvals/`. You MUST NOT Edit/Write/Bash-mutate an already-implemented file without a fresh approval marker — the PreToolUse guard `hooks/on-edit-guard.js` (mode `U_MAKER_EDIT_GATE`, default `auto`) will force a native approval prompt otherwise. `--auto` batches the questions but never auto-approves deletions, renames, or signature/schema/route changes. Applies especially to **bug fixes** and changes to shipped features / UI-UX.
 
 ### Step 1: Generate FE Code
 
@@ -114,7 +114,7 @@ Follow `skills/u-dev/references/change-safety.md` exactly. Before generating, cl
 
 ### Side-Effect Safety (STRICT — see `skills/u-dev/references/change-safety.md`)
 
-- Editing **existing** code without a recorded user-approval marker is a hard **FAIL**. The PreToolUse guard (`hooks/on-edit-guard.js`) forces a native approval prompt for any un-approved mutation of existing code (Edit/Write/MultiEdit/Bash) in a u-maker project.
+- Editing **already-implemented** code (git-tracked + clean = committed) without a recorded user-approval marker is a hard **FAIL**. The PreToolUse guard (`hooks/on-edit-guard.js`, default mode `auto`) forces a native approval prompt for any un-approved mutation of implemented code (Edit/Write/MultiEdit/Bash) in a u-maker project. New + in-progress (untracked/dirty) files are not gated.
 - Any change to an **exported signature, component prop, API route, or DB column/schema** requires an explicit Approve (never `--auto`).
 - Touching a file **outside the approved set** to complete a task is scope creep = hard FAIL — raise a new approval instead. Bug fixes must be the smallest reversible change.
 - When blast radius is ambiguous or unverifiable, default to **UNSAFE** and ask the user.

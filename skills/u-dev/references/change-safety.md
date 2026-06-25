@@ -1,29 +1,47 @@
-# Change-Safety / Side-Effect Gatekeeping (STRICT · ADVERSARIAL · 사용자 승인 필수)
+# Change-Safety / Side-Effect Gatekeeping (ADVERSARIAL · 사용자 승인 필수)
 
 **Purpose:** stop the dev pipeline from introducing **side-effects** (regressions, breakage of
-dependent code, scope creep) when it **MODIFIES existing code** — especially during **bug fixes**.
-Minimum bar = **explicit user approval per existing-file change** ("최소 사용자에게 승인 / 물어보고 확인").
+dependent code, scope creep) when it **fixes a bug or changes an already-implemented feature / UI-UX**
+— i.e. when it modifies code that is **already built and committed**. Forward construction (building
+something new, or iterating on a file that is still in progress) is **not** gated.
+Minimum bar for a fix = **explicit user approval per already-implemented file change**
+("최소 사용자에게 승인 / 물어보고 확인").
 
 This protocol is the agent-side counterpart of the PreToolUse guard `hooks/on-edit-guard.js`.
-The guard makes it **non-bypassable**: any Edit/Write/MultiEdit/Bash that mutates an existing,
-un-approved source file in a u-maker project is forced to a native user-approval prompt
-(`permissionDecision: "ask"`). The Bash coverage is broad — `sed -i` / `perl -i`, output redirects
-(incl. `1>` / `>|`), `rm` / `mv` / `cp` / `install` / `tee` / `dd`, `git rm` / `git checkout --` /
-`git restore` / `git apply` / `patch`, and **interpreter inline writes** (`python -c open(…, "w")`,
-`node -e fs.writeFileSync(…)`, etc.) — so you cannot route around the gate through the shell.
-Follow this protocol so approval is **informed**, not a bare prompt.
+The guard makes it **non-bypassable for fixes**: any Edit/Write/MultiEdit/Bash that mutates an
+**already-implemented**, un-approved file in a u-maker project is forced to a native user-approval
+prompt (`permissionDecision: "ask"`). The Bash coverage is broad — `sed -i` / `perl -i`, output
+redirects (incl. `1>` / `>|`), `rm` / `mv` / `cp`-or-`tee`-or-`dd` **destinations**,
+`git rm` / `git checkout --` / `git restore` / `git apply` / `patch`, and **interpreter inline
+writes** (`python -c open(…, "w")`, `node -e fs.writeFileSync(…)`, etc.) — so you cannot route a fix
+around the gate through the shell. Follow this protocol so approval is **informed**, not a bare prompt.
+
+### Gate mode — `U_MAKER_EDIT_GATE` (default `auto`)
+
+| Mode | What gets gated |
+| --- | --- |
+| `auto` *(default)* | **Only already-implemented files** — git-**tracked AND clean vs HEAD**. New (untracked) and in-progress (dirty/uncommitted) files pass freely. This is the "fix-only" policy. |
+| `strict` | **Every existing file** (the pre-`4.0.0-alpha.24` always-on behavior). Use for git-less projects or maximum caution. |
+| `off` | Nothing — the side-effect gate is disabled. |
+
+> **Boundary:** `auto` protects already-**committed** code from regressions. It does **not** guard
+> uncommitted in-progress work (e.g. `git restore` on a dirty file) — commit to make work "implemented",
+> or set `U_MAKER_EDIT_GATE=strict`.
 
 ---
 
-## 1. Classify every target path: NEW vs EXISTING
+## 1. Classify every target path: NEW · IN-PROGRESS · IMPLEMENTED
 
 - **NEW** — path does not exist on disk → create freely, **no gate**.
-- **EXISTING** — path is already on disk → **gated** (edits, refactors, renames, deletions all gated).
-- **Ambiguous** (symlink, generated-but-hand-edited, present-but-untracked) → treat as **EXISTING** (default-deny posture).
+- **IN-PROGRESS** — exists but is **untracked** (never committed) or **dirty** (has uncommitted
+  changes) → you are still building it → **no gate** in `auto`.
+- **IMPLEMENTED** — exists, git-**tracked AND clean vs HEAD** (committed/shipped) → a change here is a
+  **fix to already-built code** → **gated** (edits, refactors, renames, deletions all gated).
+- **Ambiguous** (symlink, generated-but-hand-edited) → treat as **IMPLEMENTED** (default-deny posture).
 
 `.u-maker/**` (SSoT docs / state) is out of scope here — it is managed by the doc/sync flows.
 
-## 2. Impact / Blast-Radius Analysis — required per EXISTING target
+## 2. Impact / Blast-Radius Analysis — required per IMPLEMENTED target
 
 Produce this BEFORE proposing the edit:
 
@@ -43,15 +61,15 @@ must be the **smallest reversible step** that fixes the issue — no drive-by re
 
 ## 4. Approval gate — mandatory `AskUserQuestion` (default-deny)
 
-For each EXISTING file (or, under `--auto`, one consolidated batch), present:
+For each IMPLEMENTED file (or, under `--auto`, one consolidated batch), present:
 
-- file path · **NEW/EXISTING** · the exact intent + diff · blast-radius summary · top regression risk · verdict
+- file path · **NEW/IN-PROGRESS/IMPLEMENTED** · the exact intent + diff · blast-radius summary · top regression risk · verdict
 
 Options: **Approve** · **Approve all in batch** · **Skip this file** · **Abort run**.
 
-- **No edit to existing code is applied without an explicit Approve.**
+- **No edit to already-implemented code is applied without an explicit Approve.**
 - `--auto` / `--loop` may **batch** the questions but **never auto-approve** deletions, renames, or
-  signature / schema / route changes. Bug-fix edits to existing code **always** require an Approve.
+  signature / schema / route changes. Bug-fix edits to implemented code **always** require an Approve.
 
 ## 5. Approval marker contract (consumed by `hooks/on-edit-guard.js`)
 
@@ -75,12 +93,12 @@ Create the marker with the `Write` tool or `mkdir -p .u-maker/.state/edit-approv
 
 ## 6. Scope lock
 
-Only **approved** paths may be touched. Touching an unapproved existing file to "finish" a task is
+Only **approved** paths may be touched. Touching an unapproved implemented file to "finish" a task is
 **scope creep = hard FAIL** — raise a fresh approval for that file instead. Never widen a bug fix into
 an unrequested refactor.
 
 ## 7. Relationship to `code-gen-rules.md` §7
 
 This protocol **supersedes** the advisory §7.1 (`--force`) and §7.3 (three-options) guidance for
-**EXISTING-code edits**: approval is **mandatory and default-deny**, not opt-in. `--force` alone is
-**never** sufficient to overwrite a hand-modified file.
+**already-implemented-code edits**: approval is **mandatory and default-deny** (in `auto`/`strict`),
+not opt-in. `--force` alone is **never** sufficient to overwrite a committed file.

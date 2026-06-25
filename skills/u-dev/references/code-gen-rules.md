@@ -333,7 +333,7 @@ When specs change after initial code generation:
 1. **Detect changed specs**: Compare current spec JSON hash against stored `@sync-hash` in generated files
 2. **Scope the change**: Identify which spec items changed (added, modified, deleted)
 3. **Generate only affected files**: Do not regenerate files whose spec items are unchanged
-4. **Preserve manual edits**: If a generated file has been manually modified (detected via git diff), this is an **EXISTING-code edit** and falls under the mandatory side-effect gate in **`change-safety.md`** — `--force` is **NOT** sufficient; explicit per-file user approval (AskUserQuestion + recorded marker) is required before overwriting.
+4. **Preserve manual edits**: If a generated file is already-implemented (git-tracked + clean = committed), overwriting it is a **side-effect on shipped code** and falls under the mandatory side-effect gate in **`change-safety.md`** — `--force` is **NOT** sufficient; explicit per-file user approval (AskUserQuestion + recorded marker) is required before overwriting. (New + in-progress untracked/dirty files are not gated in the default `auto` mode.)
 
 ### 7.2 Change Impact Analysis
 
@@ -351,7 +351,7 @@ ENT column modified  → Update Prisma model, generate migration
 ENT relation changed → Update both sides of relation in Prisma
 ```
 
-> **NOTE (side-effect gate):** Every row above that **modifies or removes an existing artifact** is gated by **`change-safety.md`**. "manual confirmation" / "Mark for removal" here means the **mandatory AskUserQuestion approval + recorded marker** (default-deny), never a silent overwrite or delete. The PreToolUse guard `hooks/on-edit-guard.js` enforces this.
+> **NOTE (side-effect gate):** Every row above that **modifies or removes an already-implemented (committed) artifact** is gated by **`change-safety.md`**. "manual confirmation" / "Mark for removal" here means the **mandatory AskUserQuestion approval + recorded marker** (default-deny), never a silent overwrite or delete. The PreToolUse guard `hooks/on-edit-guard.js` (default mode `auto`) enforces this; new + in-progress (untracked/dirty) artifacts are not gated.
 
 ### 7.3 Conflict Resolution
 

@@ -2,6 +2,19 @@
 
 All notable changes to u-maker-plugin.
 
+## [4.0.0-alpha.24] — 2026-06-25
+
+**Side-effect gate de-noised: it now fires only on FIXES to already-implemented code, not on every edit.**
+
+The `4.0.0-alpha.23` side-effect gate asked for approval before modifying **any** existing file, so during normal development it fired on almost everything. It now scopes to the user's actual intent — *"버그나 이미 구현된 기능이나 UI/UX를 fix하는 경우에만"* — by detecting "already-implemented" automatically via git.
+
+### Changed
+
+- **`hooks/on-edit-guard.js` — gate scope narrowed to ALREADY-IMPLEMENTED code.** A file is gated only when it is git-**tracked AND clean vs HEAD** (committed/shipped). **NEW (untracked)** and **IN-PROGRESS (dirty/uncommitted)** files now pass freely — so forward construction and iterating on a file you just created are no longer interrupted. Touching committed code (a bug fix / change to a shipped feature or UI) still gates. No-git / not-a-repo → not gated (favor low friction; use `strict` for git-less projects).
+- **New `U_MAKER_EDIT_GATE` env switch** — `auto` (default, fix-only), `strict` (every existing file = the alpha.23 behavior), `off` (disabled).
+- **Bash false-positives fixed** — `install` removed from the in-place verb set (it matched package managers: `pip install -r requirements.txt`, `npm/cargo install …`); `cp` / `tee` / `dd` now gate only their **write destination**, not read-only sources/stdin (`cp shipped.ts /tmp/x` no longer fires on `shipped.ts`). Redirects, `rm` / `mv` / `sed -i` / `perl -i` / `git rm|checkout --|restore`, `git apply` / `patch`, and interpreter inline writes remain covered.
+- **Docs realigned to the NEW / IN-PROGRESS / IMPLEMENTED model** — `skills/u-dev/references/change-safety.md` (classification + gate-mode table + boundary note), `skills/u-dev/SKILL.md` Step 0.5, `agents/u-agent-dev.md`, `skills/u-build/SKILL.md`, `agents/u-agent-build.md`, `skills/u-dev/references/code-gen-rules.md`, and the `hooks/hooks.json` description.
+
 ## [4.0.0-alpha.23] — 2026-06-22
 
 **Three gatekeeping hardenings: (1) HTML 산출물에서 '한쪽 border만 강조' 장식 스타일 전면 금지, (2) 개발 시 기존 코드 수정에 대한 strict·adversarial 사이드이펙트 게이트(사용자 승인 필수, especially 버그 수정), (3) Figma/참고자료 ↔ 구현 pixel-perfect 일치성 게이트(GK-12).**
