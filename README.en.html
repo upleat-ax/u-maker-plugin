@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>U-MAKER Plugin v4.0.0-alpha.23 (PBGD) Documentation</title>
+<title>U-MAKER Plugin v4.0.0-alpha.25 (PBGD) Documentation</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{--sidebar-w:280px;--bg:#ffffff;--sidebar-bg:#ffffff;--main-bg:#ffffff;--text:#334155;--text-main:#334155;--heading:#0f172a;--accent:#3b82f6;--accent-hover:#2563eb;--code-bg:#f1f5f9;--code-text:#1e293b;--border:#e2e8f0;--active-bg:#f8fafc;--badge-bg:#e2e8f0;--badge-text:#64748b;--table-stripe:#f8fafc;--table-border:#e2e8f0;--table-header:#f1f5f9}
@@ -109,7 +109,7 @@ a:hover{text-decoration:underline}
 <nav class="sidebar" id="sidebar">
   <div class="sidebar-header">
     <h1>U-MAKER</h1>
-    <p>v4.0.0-alpha.23 (PBGD) &mdash; Plugin Documentation</p>
+    <p>v4.0.0-alpha.25 (PBGD) &mdash; Plugin Documentation</p>
   </div>
   <div class="sidebar-nav">
 
@@ -148,7 +148,7 @@ a:hover{text-decoration:underline}
     </div>
 
   </div>
-  <div class="sidebar-footer">Proprietary &copy; 2026 U PLEAT &middot; v4.0.0-alpha.23 (PBGD)</div>
+  <div class="sidebar-footer">Proprietary &copy; 2026 U PLEAT &middot; v4.0.0-alpha.25 (PBGD)</div>
 </nav>
 
 <main class="main">
@@ -314,7 +314,7 @@ a:hover{text-decoration:underline}
 </tbody>
 </table>
 
-<blockquote><strong>Figma analyzer</strong>: <code>/u-tools-figma</code> (owned by <code>u-agent-figma</code>) runs as a cross-phase source analyzer — auto-delegated from <code>/u-prepare</code>, <code>/u-analyze</code>, <code>/u-reverse</code>, and <code>/u-build</code> when Figma URLs or files are present. v4.0.0-alpha.14 ships a reduced extraction path (<code>source.pipeline == "reduced"</code>); downstream consumers treat schema-optional fields as warnings via <code>coverageWarnings[]</code>.</blockquote>
+<blockquote><strong>Figma analyzer</strong>: <code>/u-tools-figma</code> (owned by <code>u-agent-figma</code>) runs as a cross-phase source analyzer — auto-delegated from <code>/u-prepare</code>, <code>/u-analyze</code>, <code>/u-reverse</code>, and <code>/u-build</code> when Figma URLs or files are present. v4.0.0-alpha.25 ships a reduced extraction path (<code>source.pipeline == "reduced"</code>); downstream consumers treat schema-optional fields as warnings via <code>coverageWarnings[]</code>.</blockquote>
 
 <h3>Gatekeeper Scorecard</h3>
 <p>Every gate validation <strong>must display the full 11-criteria scorecard</strong> (threshold 95, configurable). No abbreviation or omission allowed.</p>
@@ -498,7 +498,7 @@ a:hover{text-decoration:underline}
 <table>
 <thead><tr><th>Command</th><th>External tool</th><th>Example</th></tr></thead>
 <tbody>
-<tr><td><code>/u-tools-figma</code></td><td>Figma API / Plugin. Comprehensive <strong>analyzer</strong> (read-only) &mdash; pages + variants + assets + components + comments + semantics. Auto-delegated from <code>/u-prepare</code>, <code>/u-analyze</code>, <code>/u-reverse</code>, <code>/u-build</code>. <em>v4.0.0-alpha.14: reduced extraction path</em></td><td><code>/u-tools-figma &lt;figma-url&gt;</code></td></tr>
+<tr><td><code>/u-tools-figma</code></td><td>Figma API / Plugin. Comprehensive <strong>analyzer</strong> (read-only) &mdash; pages + variants + assets + components + comments + semantics. Auto-delegated from <code>/u-prepare</code>, <code>/u-analyze</code>, <code>/u-reverse</code>, <code>/u-build</code>. <em>v4.0.0-alpha.25: reduced extraction path</em></td><td><code>/u-tools-figma &lt;figma-url&gt;</code></td></tr>
 <tr><td><code>/u-tools-figma-screen</code></td><td>Screen-spec <strong>writer</strong>. Inputs: (Figma URL │ screens.md+json) + (Figma DS URL │ design-system.md+json+tsx+css). Outputs: Figma frames, screens.md+json, or both. Delegates to <code>figma:figma-generate-design</code>. Auto-invoked from <code>/u-plan</code> Step 2.5; opt-in from <code>/u-design</code> Step 4.5</td><td><code>/u-tools-figma-screen --app my-app --output md</code></td></tr>
 <tr><td><code>/u-tools-figma-ds</code></td><td>Figma design-system <strong>writer</strong>. Input: DS-applied source code (.tsx + .json + .css). Output: Figma DS (Variables + modes + styles + master components). Delegates to <code>figma:figma-generate-library</code>. Auto-invoked from <code>/u-analyze</code> Step 2.4; opt-in from <code>/u-design</code> Step 4.5</td><td><code>/u-tools-figma-ds --app my-app --source ./packages/ui-*</code></td></tr>
 <tr><td><code>/u-tools-browser</code></td><td>Unified browser engine. agent-browser CLI &rarr; Playwright MCP &rarr; chrome-devtools MCP fallback. Used for E2E, screen capture, visual verify, wireframe preview. Consumed by <code>/u-gatekeeping</code>, <code>/u-report-weekly</code>, <code>/u-dev --verify</code>, <code>/u-wireframe --preview</code>. 9-step protocol</td><td><code>/u-tools-browser --app my-app</code></td></tr>
@@ -536,6 +536,16 @@ a:hover{text-decoration:underline}
 <tr><td><code>/u-loop</code></td><td>Unattended PBGD auto-execution Plan &rarr; Build &rarr; Gatekeeping &rarr; Deploy. Checkpoint-based resume</td><td><code>/u-loop --app my-app --from plan</code></td></tr>
 <tr><td><code>/u-discuss</code></td><td>Structured collaboration sessions (brainstorm, review, decision, workshop, retro)</td><td><code>/u-discuss brainstorm "Payment UX"</code></td></tr>
 <tr><td><code>/u-engine</code></td><td>Internal infrastructure engine (not user-invocable)</td><td>&mdash;</td></tr>
+</tbody>
+</table>
+
+<h3>6.8 SSoT / Docs Skills (2)</h3>
+<p>Cross-cutting SSoT document utilities &mdash; not bound to a phase, callable any time.</p>
+<table>
+<thead><tr><th>Command</th><th>Description</th><th>Example</th></tr></thead>
+<tbody>
+<tr><td><code>/u-doc</code> <small>(= <code>/u-ssot</code>)</small></td><td><strong>Ingest</strong> &mdash; normalize a file/image/link/text into <code>data/dropzone/</code>, generate a digest, and suggest placement (does <em>not</em> edit SSoT docs directly). <strong>Reorg</strong> (<code>--reorg</code>) &mdash; move/rename misplaced <code>docs/</code> files (git mv + <code>links.json</code>) and regenerate <code>output/</code> + <code>reports/</code></td><td><code>/u-doc ./spec.pdf --app my-app</code><br><code>/u-doc --reorg --dry-run</code></td></tr>
+<tr><td><code>/u-ssot</code></td><td><small>alias &rarr; <code>/u-doc</code></small> (same skill, all args forwarded)</td><td><code>/u-ssot --reorg</code></td></tr>
 </tbody>
 </table>
 
@@ -863,7 +873,7 @@ a:hover{text-decoration:underline}
 
 <h3>Plugin Repository Layout</h3>
 <pre><code>u-maker-plugin/
-&#x251C;&#x2500;&#x2500; .claude-plugin/plugin.json        # v4.0.0-alpha.23 (PBGD)
+&#x251C;&#x2500;&#x2500; .claude-plugin/plugin.json        # v4.0.0-alpha.25 (PBGD)
 &#x251C;&#x2500;&#x2500; agents/                           # 10 agent definitions
 &#x2502;   &#x251C;&#x2500;&#x2500; u-agent-pm.md
 &#x2502;   &#x251C;&#x2500;&#x2500; u-agent-plan.md
@@ -908,7 +918,7 @@ a:hover{text-decoration:underline}
 <tr><td>HTML output missing diagrams</td><td>Diagram mode not specified</td><td>Use <code>/u-output --diagram svg</code> or <code>--diagram all</code></td></tr>
 <tr><td>Upgrading from v3.x PDCA</td><td><code>docs/{app}/check/</code> still present</td><td>Run <code>/u-prepare-foldertree my-app --migrate</code> to rename to <code>gatekeeping/</code></td></tr>
 <tr><td><code>/u-deploy</code> refuses to regenerate</td><td>Source docs not updated since last manifest</td><td>Edit any SSoT doc; the <code>on-deploy-state.js</code> hook marks artifacts stale automatically</td></tr>
-<tr><td>Figma digest has <code>coverageWarnings[]</code></td><td>Reduced extraction path in v4.0.0-alpha.14</td><td>Expected in alpha; schema-optional fields become warnings, not errors. Full pipeline ships post-GA</td></tr>
+<tr><td>Figma digest has <code>coverageWarnings[]</code></td><td>Reduced extraction path in v4.0.0-alpha.25</td><td>Expected in alpha; schema-optional fields become warnings, not errors. Full pipeline ships post-GA</td></tr>
 </tbody>
 </table>
 
@@ -927,7 +937,7 @@ a:hover{text-decoration:underline}
 
 <!-- Footer -->
 <div class="footer">
-  <strong>U-MAKER Plugin</strong> v4.0.0-alpha.23 (PBGD) &mdash; PBGD-based SSoT Collaboration Orchestrator<br>
+  <strong>U-MAKER Plugin</strong> v4.0.0-alpha.25 (PBGD) &mdash; PBGD-based SSoT Collaboration Orchestrator<br>
   Proprietary &copy; 2026 U PLEAT &middot; All rights reserved
 </div>
 

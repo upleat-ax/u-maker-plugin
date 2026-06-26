@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>U-MAKER Plugin v4.0.0-alpha.23 (PBGD) — README (Korean)</title>
+<title>U-MAKER Plugin v4.0.0-alpha.25 (PBGD) — README (Korean)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
@@ -311,7 +311,7 @@ code {
 <!-- ==================== Sidebar ==================== -->
 <nav class="sidebar" id="sidebar">
   <div class="sidebar-header">
-    <h2>U-MAKER v4.0.0-alpha.23 (PBGD)</h2>
+    <h2>U-MAKER v4.0.0-alpha.25 (PBGD)</h2>
     <p>PBGD SSoT Plugin for Claude Code</p>
   </div>
   <div class="sidebar-nav">
@@ -342,7 +342,7 @@ code {
 <!-- ===== 1. Hero ===== -->
 <section id="hero" class="section">
   <div class="hero">
-    <h1>U-MAKER Plugin v4.0.0-alpha.23 (PBGD)</h1>
+    <h1>U-MAKER Plugin v4.0.0-alpha.25 (PBGD)</h1>
     <p>PBGD 기반 SSoT(Single Source of Truth) Claude Code 플러그인.<br>
     기획 자료를 넣으면 Plan &rarr; Build &rarr; Gatekeeping &rarr; Deploy까지 자동으로 수행합니다.</p>
     <div class="hero-badges">
@@ -352,7 +352,7 @@ code {
       <span class="badge"><span class="badge-num">11</span> Gate Criteria</span>
     </div>
     <div class="hero-meta">
-      <span><strong>Version</strong> 4.0.0-alpha.23</span>
+      <span><strong>Version</strong> 4.0.0-alpha.25</span>
       <span><strong>Config</strong> v4.0</span>
       <span><strong>License</strong> Proprietary</span>
       <span><strong>Runtime</strong> Claude Code CLI</span>
@@ -418,7 +418,7 @@ code {
 <code><span class="comment"># 직접 호출</span>
 <span class="cmd">/u-tools-figma</span> &lt;figma-url&gt;
 <span class="comment"># /u-prepare, /u-analyze, /u-reverse, /u-build가 Figma 소스 감지 시 자동 위임</span>
-<span class="comment"># v4.0.0-alpha.14은 reduced extraction path — source.pipeline == "reduced"</span></code>
+<span class="comment"># v4.0.0-alpha.25은 reduced extraction path — source.pipeline == "reduced"</span></code>
   </div>
 
   <h3 style="font-size:14px; font-weight:700; color:#0f172a; margin-bottom:8px;">Natural Language (자연어)</h3>
@@ -608,7 +608,7 @@ code {
   </div>
 
   <div class="callout callout-amber" style="margin-top:12px;">
-    <strong>Figma cross-phase:</strong> <code class="code-inline">/u-tools-figma</code> (u-agent-figma)는 Phase 경계 없이 Figma 소스가 감지된 모든 명령(<code class="code-inline">/u-prepare</code>, <code class="code-inline">/u-analyze</code>, <code class="code-inline">/u-reverse</code>, <code class="code-inline">/u-build</code>)에서 자동 호출됩니다. v4.0.0-alpha.14은 reduced path(<code class="code-inline">source.pipeline == "reduced"</code>) — 다운스트림은 <code class="code-inline">coverageWarnings[]</code>를 warning으로 처리합니다.
+    <strong>Figma cross-phase:</strong> <code class="code-inline">/u-tools-figma</code> (u-agent-figma)는 Phase 경계 없이 Figma 소스가 감지된 모든 명령(<code class="code-inline">/u-prepare</code>, <code class="code-inline">/u-analyze</code>, <code class="code-inline">/u-reverse</code>, <code class="code-inline">/u-build</code>)에서 자동 호출됩니다. v4.0.0-alpha.25은 reduced path(<code class="code-inline">source.pipeline == "reduced"</code>) — 다운스트림은 <code class="code-inline">coverageWarnings[]</code>를 warning으로 처리합니다.
   </div>
 
   <div class="card" style="padding:24px; margin-top:16px;">
@@ -876,7 +876,7 @@ code {
         <div class="agent-role">Cross-phase Figma Analyzer &middot; opus</div>
       </div>
     </div>
-    <p class="agent-desc">Figma URL이 감지되면 pages / variants / assets / components / comments / semantics(validation, policy, default, action, layout, flow, data, role)를 추출합니다. <code class="code-inline">/u-prepare</code>, <code class="code-inline">/u-analyze</code>, <code class="code-inline">/u-reverse</code>, <code class="code-inline">/u-build</code>에서 자동 위임됩니다. v4.0.0-alpha.14은 reduced extraction path.</p>
+    <p class="agent-desc">Figma URL이 감지되면 pages / variants / assets / components / comments / semantics(validation, policy, default, action, layout, flow, data, role)를 추출합니다. <code class="code-inline">/u-prepare</code>, <code class="code-inline">/u-analyze</code>, <code class="code-inline">/u-reverse</code>, <code class="code-inline">/u-build</code>에서 자동 위임됩니다. v4.0.0-alpha.25은 reduced extraction path.</p>
   </div>
   <div class="agent-card">
     <div class="agent-header">
@@ -892,8 +892,8 @@ code {
 
 <!-- ===== 7. Commands (29 Skills) ===== -->
 <section id="commands" class="section">
-  <h2 class="section-title">7. 28개 Commands (Skills)</h2>
-  <p style="margin-bottom:16px; color:#475569;">모든 커맨드는 <code class="code-inline">/u-{name}</code> 형태로 호출됩니다. Plan(7) + Build(3) + Gatekeeping(1+2 aliases) + Deploy(1) + Tools(5) + Output/Report(5) + Control(3) + Setup alias(1) = 28개.</p>
+  <h2 class="section-title">7. 29개 Commands (Skills)</h2>
+  <p style="margin-bottom:16px; color:#475569;">모든 커맨드는 <code class="code-inline">/u-{name}</code> 형태로 호출됩니다. Plan(7) + Build(3) + Gatekeeping(1+2 aliases) + Deploy(1) + Tools(5) + Output/Report(5) + SSoT/Docs(2) + Control(3) = 29개.</p>
 
   <!-- Common options -->
   <h3 style="font-size:14px; font-weight:700; color:#0f172a; margin-bottom:12px;">공통 옵션</h3>
@@ -1112,7 +1112,7 @@ code {
   </div>
 
   <!-- External-tool Skills (u-tools-*) -->
-  <h3 style="font-size:14px; font-weight:700; color:#0f172a; margin-bottom:12px;">External-tool Skills (3) &mdash; <code class="code-inline">u-tools-*</code> 네임스페이스</h3>
+  <h3 style="font-size:14px; font-weight:700; color:#0f172a; margin-bottom:12px;">External-tool Skills (5) &mdash; <code class="code-inline">u-tools-*</code> 네임스페이스</h3>
   <p style="font-size:12px; color:#64748b; margin-bottom:8px;">외부 프로그램/서비스 래퍼. phase skill은 MCP/CLI를 직접 호출하지 않고 이 스킬들을 경유해야 합니다.</p>
   <div class="table-wrap" style="margin-bottom:24px;">
     <table>
@@ -1131,7 +1131,7 @@ code {
           <td><strong style="color:#be185d;">/u-tools-figma</strong></td>
           <td><span class="tag tag-any">Tools</span></td>
           <td style="font-size:11px;"><code class="code-inline">/u-tools-figma &lt;figma-url&gt; [--app]</code></td>
-          <td>Figma 분석 &mdash; pages + variants + assets + components + comments + semantics. <code class="code-inline">/u-prepare</code>, <code class="code-inline">/u-analyze</code>, <code class="code-inline">/u-reverse</code>, <code class="code-inline">/u-build</code>에서 자동 위임. <em>v4.0.0-alpha.14: reduced path</em></td>
+          <td>Figma 분석 &mdash; pages + variants + assets + components + comments + semantics. <code class="code-inline">/u-prepare</code>, <code class="code-inline">/u-analyze</code>, <code class="code-inline">/u-reverse</code>, <code class="code-inline">/u-build</code>에서 자동 위임. <em>v4.0.0-alpha.25: reduced path</em></td>
         </tr>
         <tr>
           <td style="text-align:center;">16</td>
@@ -1284,6 +1284,39 @@ code {
           <td><span class="tag tag-engine">Engine</span></td>
           <td style="font-size:11px;">&mdash;</td>
           <td>내부 인프라 (doc/html/dep/digest/router 통합). 사용자 직접 호출 불가</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- SSoT / Docs Skills -->
+  <h3 style="font-size:14px; font-weight:700; color:#0f172a; margin-bottom:12px;">SSoT / Docs Skills (2)</h3>
+  <p style="font-size:12px; color:#64748b; margin-bottom:8px;">SSoT 문서 수집·재정리 유틸리티. Phase에 묶이지 않고 어느 시점에서나 호출됩니다.</p>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>커맨드</th>
+          <th>Phase</th>
+          <th>구문</th>
+          <th>설명</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="text-align:center;">26</td>
+          <td><strong style="color:#0ea5e9;">/u-doc</strong> <span style="font-size:10px;color:#94a3b8;">(= /u-ssot)</span></td>
+          <td><span class="tag tag-any">Any</span></td>
+          <td style="font-size:11px;"><code class="code-inline">/u-doc [input…] [--app name] [--reorg] [--dry-run] [--force]</code></td>
+          <td>SSoT 인제스트 + 문서 재정리. (1) Ingest &mdash; 파일/이미지/링크/텍스트 &rarr; dropzone 정규화 + digest 생성 + 배치 위치 제안(SSoT 직접 수정 안 함). (2) Reorg(<code class="code-inline">--reorg</code>) &mdash; 잘못 놓인 docs/ 파일 이동·리네임(git mv + links.json) + output/·reports/ 재생성</td>
+        </tr>
+        <tr>
+          <td style="text-align:center;">27</td>
+          <td><strong style="color:#0ea5e9;">/u-ssot</strong></td>
+          <td><span class="tag tag-any">Alias</span></td>
+          <td style="font-size:11px;"><code class="code-inline">/u-ssot [input…] [--app] [--reorg] [--dry-run] [--force]</code></td>
+          <td>alias &rarr; <code class="code-inline">/u-doc</code> (동일 스킬, 모든 인자 그대로 전달)</td>
         </tr>
       </tbody>
     </table>
@@ -1612,7 +1645,7 @@ code {
     </div>
     <div class="card">
       <div style="font-size:13px; font-weight:700; color:#0f172a; margin-bottom:4px;">버전 확인</div>
-      <p style="font-size:12px; color:#64748b;">.claude-plugin/plugin.json &rarr; version: 4.0.0-alpha.23</p>
+      <p style="font-size:12px; color:#64748b;">.claude-plugin/plugin.json &rarr; version: 4.0.0-alpha.25</p>
     </div>
   </div>
 
@@ -1695,7 +1728,7 @@ code {
         </tr>
         <tr>
           <td>Figma digest에 <code class="code-inline">coverageWarnings[]</code> 다수</td>
-          <td>v4.0.0-alpha.14의 reduced extraction path (<code class="code-inline">source.pipeline == "reduced"</code>)</td>
+          <td>v4.0.0-alpha.25의 reduced extraction path (<code class="code-inline">source.pipeline == "reduced"</code>)</td>
           <td>alpha의 의도된 동작. schema-optional 필드가 warning으로 처리됩니다. 정식 파이프라인은 GA 이후 제공</td>
         </tr>
         <tr>
@@ -1732,7 +1765,7 @@ code {
 
 <!-- Footer -->
 <footer style="margin-top:40px; padding-top:24px; border-top:1px solid #e2e8f0; text-align:center; font-size:12px; color:#94a3b8;">
-  U-MAKER Plugin v4.0.0-alpha.23 (PBGD) &mdash; Copyright &copy; 2026 U PLEAT
+  U-MAKER Plugin v4.0.0-alpha.25 (PBGD) &mdash; Copyright &copy; 2026 U PLEAT
 </footer>
 
 </main>

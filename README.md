@@ -1,4 +1,4 @@
-# U-MAKER Plugin v4.0.0-alpha.23
+# U-MAKER Plugin v4.0.0-alpha.25
 
 PBGD-based SSoT (Single Source of Truth) plugin for Claude Code.
 
@@ -44,6 +44,7 @@ claude plugin add upleat-ax/u-maker-plugin
 | `/u-init` | `/u-prepare` |
 | `/u-check` | `/u-gatekeeping` |
 | `/u-qa` | `/u-gatekeeping --only qa` |
+| `/u-ssot` | `/u-doc` |
 
 ### Granular commands inside Preparation
 
@@ -52,6 +53,14 @@ claude plugin add upleat-ax/u-maker-plugin
 | `/u-prepare-foldertree` | `.u-maker/` folder/state scaffolding only |
 | `/u-analyze` | Dropzone → digest |
 | `/u-reverse` | Reverse-engineer existing code → digest |
+
+### SSoT ingest & document management
+
+Cross-cutting SSoT document utilities — not bound to a phase, callable any time.
+
+| Command | Role |
+|---------|------|
+| `/u-doc` (`= /u-ssot`) | **Ingest** — normalize a file/image/link/text into `data/dropzone/`, generate a digest, and suggest placement (does *not* edit SSoT docs directly). **Reorg** (`--reorg`) — move/rename misplaced `docs/` files (git mv + `links.json`) and regenerate `output/` + `reports/` |
 
 ### External-tool skills (`u-tools-*`)
 
