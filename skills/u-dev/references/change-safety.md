@@ -17,7 +17,7 @@ side-effect banner** (`⚠️ SIDE-EFFECT IMPACT — 사이드이펙트 영향�
 > to committed code can actually regress dependents — not on every edit.
 
 This protocol is the agent-side counterpart of the PreToolUse guard `hooks/on-edit-guard.js`.
-The guard makes it **non-bypassable for risky fixes**: any Edit/Write/MultiEdit/Bash that mutates an
+The guard, **when enabled** (it is **OFF by default** — opt-in via `U_MAKER_EDIT_GATE=on`/`strict`), makes it **non-bypassable for risky fixes**: any Edit/Write/MultiEdit/Bash that mutates an
 **already-implemented, depended-upon**, un-approved file in a u-maker project is forced to a native
 user-approval prompt (`permissionDecision: "ask"`) that names the affected dependents. The Bash
 coverage is broad — `sed -i` / `perl -i`, output redirects (incl. `1>` / `>|`), `rm` / `mv` /
@@ -26,15 +26,22 @@ coverage is broad — `sed -i` / `perl -i`, output redirects (incl. `1>` / `>|`)
 cannot route a risky fix around the gate through the shell. Follow this protocol so approval is
 **informed**, not a bare prompt.
 
-### Gate mode — `U_MAKER_EDIT_GATE` (default `auto`)
+### Gate mode — `U_MAKER_EDIT_GATE` (default `off` — opt-in)
+
+> The side-effect gate is **OFF by default** — it does nothing until you explicitly enable it.
+> Enable it from any of three sources (**highest precedence first**): (1) env `U_MAKER_EDIT_GATE`;
+> (2) the **`--sideeffect {off|on|strict}`** param on `/u-dev`·`/u-build`, persisted to the state file
+> `.u-maker/.state/edit-gate-mode`; (3) that state file directly. Use **`on`** (low-noise — recommended)
+> or **`strict`** (maximum caution). **`on` and `auto` are synonyms;** env overrides the state file.
 
 | Mode | What gets gated |
 | --- | --- |
-| `auto` *(default)* | **Only a behavior-MODIFYING fix to an already-implemented file that has dependents** — git-**tracked AND clean vs HEAD** AND imported/referenced by ≥1 other source file AND the edit **changes/removes existing code** (not a purely additive insertion). New (untracked), in-progress (dirty/uncommitted), **leaf** (no-dependent), and **additive-only** edits all pass freely. This is the "fix-with-real-blast-radius-only" policy. |
+| `off` *(default)* | **Nothing — the side-effect gate is disabled.** This is the default; set `on` / `auto` / `strict` to enable it. |
+| `on` *(= `auto`)* | **Only a behavior-MODIFYING fix to an already-implemented file that has dependents** — git-**tracked AND clean vs HEAD** AND imported/referenced by ≥1 other source file AND the edit **changes/removes existing code** (not a purely additive insertion). New (untracked), in-progress (dirty/uncommitted), **leaf** (no-dependent), and **additive-only** edits all pass freely. This is the "fix-with-real-blast-radius-only" policy. |
+| `auto` | Explicit synonym of `on` (back-compat with pre-default-off configs). |
 | `strict` | **Every change to every existing file** — modify *or* add (the pre-`4.0.0-alpha.24` always-on behavior; no implemented/dependent/additive checks; `git apply`/`patch` also gated). Use for git-less projects or maximum caution. |
-| `off` | Nothing — the side-effect gate is disabled. |
 
-> **Boundary 1 (commit):** `auto` protects already-**committed** code. It does **not** guard
+> **Boundary 1 (commit):** once enabled, `on`/`auto` protects already-**committed** code. It does **not** guard
 > uncommitted in-progress work (e.g. `git restore` on a dirty file) — commit to make work "implemented",
 > or set `U_MAKER_EDIT_GATE=strict`.
 >

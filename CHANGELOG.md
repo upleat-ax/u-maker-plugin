@@ -2,6 +2,22 @@
 
 All notable changes to u-maker-plugin.
 
+## [4.0.0-alpha.28] — 2026-06-27
+
+**The side-effect gate is now OFF by default, and its mode is settable three ways — env `U_MAKER_EDIT_GATE`, the new `/u-dev`·`/u-build --sideeffect {off|on|strict}` skill param, or the project state file — with `on` as a friendly alias of `auto`.**
+
+Since `4.0.0-alpha.24` the gate defaulted to `auto`, so a behavior-modifying fix to shared, already-implemented code always forced a native approval prompt. Per the user requests — *"sideeffect check/guard를 on/off 할 수 있도록 해줘. default는 off"* and *"skill의 param으로 설정할 수 있도록"* — the gate is now **disabled by default** and runs only when explicitly enabled, and the mode can be set from a skill param (persisted per project) in addition to the environment. `on` = `auto` makes it a simple on/off switch; `auto` and `strict` keep working unchanged for back-compat.
+
+### Added
+
+- **`/u-dev`·`/u-build --sideeffect {off|on|strict}` skill param + a project state file.** Passing the param persists the mode to `.u-maker/.state/edit-gate-mode` (a raw token, or `{"mode":…}`), so the gate is toggled without touching the environment. `/u-build` writes it once in Step 0 — before its design/dev sub-phases — so it applies to **every** edit in the build; `/u-dev` does the same for a standalone run. `on` = `auto`.
+
+### Changed
+
+- **`hooks/on-edit-guard.js` — default flipped `auto` → `off`, `on` added as an alias of `auto`, and the mode is now resolved PER PROJECT.** Precedence (highest first): env `U_MAKER_EDIT_GATE` > state file `.u-maker/.state/edit-gate-mode` > default `off`. Each source maps `on` / `auto` → the 3-signal low-noise policy (already-implemented · depended-upon · behavior-modifying), `strict` → every add+modify to every existing file, and `off` / unset / unrecognized → abstain (fall through to the next source; final default `off`). The gate logic is otherwise unchanged (`on` normalizes to `auto`), so once enabled the behavior is identical to before. **With no source enabling it, no side-effect approval prompt ever fires** — forward construction and fixes alike proceed uninterrupted.
+- **Docs synced to the new default + param** — `hooks/hooks.json` description; `skills/u-dev/SKILL.md` (usage + Step 0.5 persist action) and `skills/u-build/SKILL.md` (usage, args table, Step 0 persist action, gate note); `skills/u-dev/references/change-safety.md` (Gate-mode header lists the three sources, `off (default)` + `on (= auto)` table rows) and `code-gen-rules.md`; `agents/u-agent-dev.md` and `agents/u-agent-build.md` (gate OFF by default, opt-in via `--sideeffect` / env).
+- **To restore the previous protection**, set `U_MAKER_EDIT_GATE=on` (or run `/u-dev --sideeffect on`), or `=strict` for maximum caution. The agent-side Step 0.5 change-safety analysis remains available as guidance regardless of gate mode.
+
 ## [4.0.0-alpha.27] — 2026-06-26
 
 **Single-side accent border ban is now gate-ENFORCED, not just documented: GK-07 gains a `no-single-side-accent-border` check, and the rule is wired into every HTML generator + the report agent.**

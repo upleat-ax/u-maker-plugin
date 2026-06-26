@@ -6,7 +6,7 @@
 // when that change can actually ripple into OTHER features / UI. It must never nag during forward
 // construction, and it must not nag when fixing a self-contained (leaf) file that nothing depends on.
 //
-// THREE signals are required (in the default `auto` mode) before we ask the user:
+// THREE signals are required (when the gate is enabled via `on`/`auto`; it is OFF by default) before we ask the user:
 //   (A) ALREADY-IMPLEMENTED — detected via git, no intent flag:
 //         • git-TRACKED and CLEAN vs HEAD → committed/shipped code → a change is a FIX → candidate.
 //         • UNTRACKED (new) or DIRTY (uncommitted) → still being built → ALLOW (forward construction).
@@ -35,12 +35,16 @@
 // design (to keep the gate low-noise). Those remain the AGENT's responsibility under the /u-dev Step
 // 0.5 change-safety protocol (reverse-dependency + public-surface delta + AskUserQuestion).
 //
-// Gate mode — `U_MAKER_EDIT_GATE` (default `auto`):
-//   • auto   — gate only a MODIFYING fix to an already-implemented file THAT HAS DEPENDENTS.
-//              DEFAULT (low-noise, fix-only). Additive edits / new / in-progress / leaf files pass.
-//   • strict — gate EVERY change (modify OR add) to EVERY existing file (no implemented / dependent /
-//              additive checks; pre-4.0.0-alpha.24 always-on). Use for git-less projects / max caution.
-//   • off    — never gate (disable the side-effect gate entirely).
+// Gate mode (default `off`) — resolved PER PROJECT, highest precedence first: env `U_MAKER_EDIT_GATE`
+// > state file `.u-maker/.state/edit-gate-mode` (set by the skill param `/u-dev`·`/u-build
+// --sideeffect {off|on|strict}`) > default `off`. Mode values:
+//   • off          — never gate (disable the side-effect gate entirely). DEFAULT — the gate does
+//                    nothing unless a user explicitly opts in via `on`/`auto`/`strict`.
+//   • on  (= auto) — gate only a MODIFYING fix to an already-implemented file THAT HAS DEPENDENTS
+//                    (low-noise, fix-only). Additive edits / new / in-progress / leaf files pass.
+//   • auto         — explicit synonym of `on` (back-compat with pre-default-off configs).
+//   • strict       — gate EVERY change (modify OR add) to EVERY existing file (no implemented /
+//                    dependent / additive checks; pre-4.0.0-alpha.24 always-on). git-less / max caution.
 //
 // This guard is INTENTIONALLY NOT routed through _dispatch.js, whose contract is
 // "never block Claude / always exit(0)". A PreToolUse gate must be able to return a
@@ -50,7 +54,7 @@
 // that forces the USER to confirm the tool call. We deliberately use ASK (not DENY) so the
 // gate is strict but never bricks a run, and the user is always the final authority.
 //
-// Scope (in `auto`, only fires when ALL hold):
+// Scope (when enabled — `on`/`auto` — only fires when ALL hold):
 //   1. The target is inside a u-maker-managed project (a `.u-maker/` dir exists at/above it).
 //   2. The target is an EXISTING file (already on disk) — NEW file creation is allowed freely.
 //   3. The target is NOT under `.u-maker/` (SSoT docs/state are managed by other flows).
@@ -70,11 +74,46 @@ const path = require('path');
 const crypto = require('crypto');
 const { spawnSync } = require('child_process');
 
-// --- Gate mode: off | strict | auto (default). Override via env. ---
-const GATE_MODE = (() => {
-  const v = (process.env.U_MAKER_EDIT_GATE || 'auto').trim().toLowerCase();
-  return (v === 'off' || v === 'strict') ? v : 'auto';
-})();
+// --- Gate mode resolution: env > project state file > default off -----------------------------
+// off (DEFAULT) | on (= auto) | auto | strict. The side-effect gate is OFF by default — it only runs
+// when explicitly enabled. The effective mode for a target is resolved PER PROJECT, highest first:
+//   1. env `U_MAKER_EDIT_GATE`                       — lets a shell / CI force a mode everywhere.
+//   2. state file `<root>/.u-maker/.state/edit-gate-mode` — written by the skill param
+//      `/u-dev`·`/u-build --sideeffect {off|on|strict}`; persists the choice for the project.
+//   3. default `off`.
+// `on` is the friendly alias of `auto` (both → the 3-signal low-noise policy); `strict` gates every
+// add+modify to every existing file. A source that is unset/unrecognized ABSTAINS (falls through).
+function parseMode(v) {
+  if (typeof v !== 'string') return null;
+  const s = v.trim().toLowerCase();
+  if (s === 'strict') return 'strict';
+  if (s === 'on' || s === 'auto') return 'auto';        // `on` normalizes to `auto`
+  if (s === 'off') return 'off';
+  return null;                                          // unset / unrecognized → abstain
+}
+
+// Env override (highest precedence). null when unset/unrecognized → defer to state file / default.
+const ENV_MODE = parseMode(process.env.U_MAKER_EDIT_GATE);
+
+// Project-persisted mode written by the skill param. The file holds either a raw token (`on`) or a
+// small JSON object (`{"mode":"on"}`). Missing / unreadable / blank → abstain (null).
+function stateMode(umakerRoot) {
+  if (!umakerRoot) return null;
+  try {
+    const raw = fs.readFileSync(
+      path.join(umakerRoot, '.u-maker', '.state', 'edit-gate-mode'), 'utf8').trim();
+    if (!raw) return null;
+    const tok = raw[0] === '{' ? (JSON.parse(raw) || {}).mode : raw;
+    return parseMode(tok);
+  } catch (_) {
+    return null;                                        // no file / bad JSON → no opinion
+  }
+}
+
+// Effective mode for a target whose u-maker root is `umakerRoot`: env > state > default off.
+function effectiveMode(umakerRoot) {
+  return ENV_MODE || stateMode(umakerRoot) || 'off';
+}
 
 // --- approval marker TTL (minutes). Override via env. Default ~ one working session. ---
 const TTL_MIN = (() => {
@@ -108,7 +147,7 @@ function impactReason(relPath, deps, channel) {
     ' Explicit user approval is required before this side-effecting change is applied.';
 }
 
-function ask(reason) {
+function ask(reason, mode) {
   const payload = {
     hookSpecificOutput: {
       hookEventName: 'PreToolUse',
@@ -117,7 +156,7 @@ function ask(reason) {
     },
     systemMessage:
       '[u-maker side-effect gate] ' + reason +
-      ' (Gate mode: ' + GATE_MODE + '.) In `auto`, only already-implemented (committed) files that ' +
+      ' (Gate mode: ' + mode + '.) In `on`/`auto`, only already-implemented (committed) files that ' +
       'OTHER code imports/depends on are gated — new, in-progress, and leaf (no-dependent) files pass ' +
       'freely. Run the /u-dev Step 0.5 impact analysis (reverse-dependency / blast-radius + adversarial ' +
       'regression review), get explicit user approval (AskUserQuestion), then record a marker under ' +
@@ -125,7 +164,9 @@ function ask(reason) {
       '(see skills/u-dev/references/change-safety.md). ' +
       'Note: HTTP API routes, DB schema/migrations, and env contracts are cross-feature surfaces NOT ' +
       'detected by the import-graph heuristic — assess those in Step 0.5 even if this gate stays silent. ' +
-      'To change scope: U_MAKER_EDIT_GATE=off|strict|auto (default auto).',
+      'To change mode: `/u-dev` or `/u-build --sideeffect on|off|strict` (persists to ' +
+      '.u-maker/.state/edit-gate-mode), or env U_MAKER_EDIT_GATE=on|auto|strict|off (env overrides ' +
+      'the state file; default off).',
   };
   process.stdout.write(JSON.stringify(payload));
   process.exit(0);
@@ -315,27 +356,30 @@ function isModifyingEdit(toolName, toolInput, abs) {
   return true;
 }
 
-// Assess whether a target is GATED at the PATH level, and (in `auto`) which dependents a change
+// Assess whether a target is GATED at the PATH level, and (in `on`/`auto`) which dependents a change
 // could regress. This covers signals (A) ALREADY-IMPLEMENTED and (B) HAS DEPENDENTS. Signal (C)
 // MODIFIES-vs-ADDITIVE is content-dependent and applied by the CALLER (isModifyingEdit) for file
-// tools; Bash mutations are inherently modifying so they gate on (A)+(B) alone.
-// auto → path-gated iff: existing real file inside a u-maker project, outside `.u-maker/`, no fresh
+// tools; Bash mutations are inherently modifying so they gate on (A)+(B) alone. The effective mode is
+// resolved PER PROJECT (env > state file > off) from the target's own u-maker root, and returned on
+// the result so the caller can apply the additive bypass and label the prompt.
+// on/auto → path-gated iff: existing real file inside a u-maker project, outside `.u-maker/`, no fresh
 // marker, ALREADY-IMPLEMENTED (tracked+clean), AND HAS DEPENDENTS (other files import it).
 // strict → gated for every existing file (no implemented/dependent/additive checks). off → never.
 function gateInfo(abs, cwd) {
-  if (GATE_MODE === 'off') return NOT_GATED;
   try {
     if (!abs) return NOT_GATED;
     if (!fs.existsSync(abs) || !fs.statSync(abs).isFile()) return NOT_GATED; // new / not a regular file
     const root = findUmakerRoot(path.dirname(abs)) || findUmakerRoot(cwd);
     if (!root) return NOT_GATED;                        // not inside a u-maker project
+    const mode = effectiveMode(root);                   // env > state file > default off (per project)
+    if (mode === 'off') return NOT_GATED;               // gate disabled for this project
     if (isUnderUmakerState(abs, root)) return NOT_GATED; // SSoT/state → managed elsewhere
     if (hasFreshApprovalMarker(abs, root)) return NOT_GATED; // already approved this session
-    if (GATE_MODE === 'strict') return { gated: true, dependents: [] };
+    if (mode === 'strict') return { gated: true, dependents: [], mode };
     if (!isImplementedFile(abs)) return NOT_GATED;      // new/in-progress → forward construction
     const deps = dependentsOf(abs);
     if (deps.length === 0) return NOT_GATED;            // leaf → a fix can't side-effect other features
-    return { gated: true, dependents: deps };
+    return { gated: true, dependents: deps, mode };
   } catch (_) {
     return NOT_GATED;
   }
@@ -446,7 +490,7 @@ function bashGate(command, cwd) {
   for (const t of collectWriteTargets(cmd)) {
     const abs = resolveAbs(t, cwd);
     const info = gateInfo(abs, cwd);
-    if (info.gated) return { abs, dependents: info.dependents, root: umakerRootFor(abs, cwd) };
+    if (info.gated) return { abs, dependents: info.dependents, root: umakerRootFor(abs, cwd), mode: info.mode };
   }
   return null;
 }
@@ -466,32 +510,33 @@ function bashGate(command, cwd) {
     const cwd = process.env.CLAUDE_PROJECT_DIR || payload.cwd || process.cwd();
 
     if (!toolName) return exitAllow();
-    if (GATE_MODE === 'off') return exitAllow(); // gate disabled entirely
+    if (ENV_MODE === 'off') return exitAllow(); // env explicitly disables the gate everywhere → fast exit
 
     // ---- File tools: Write / Edit / MultiEdit ----
     if (toolName === 'Write' || toolName === 'Edit' || toolName === 'MultiEdit') {
       const abs = resolveAbs(toolInput.file_path || toolInput.path, cwd);
       const info = gateInfo(abs, cwd);
       if (!info.gated) return exitAllow();
-      // Signal (C): in `auto`, a purely ADDITIVE edit to a shared file leaves existing behavior intact
-      // → it cannot side-effect dependents → allow silently. Only a MODIFYING edit is gated. `strict`
-      // gates both add and modify (it never reaches this branch's bypass).
-      if (GATE_MODE === 'auto' && !isModifyingEdit(toolName, toolInput, abs)) return exitAllow();
+      // Signal (C): in `on`/`auto`, a purely ADDITIVE edit to a shared file leaves existing behavior
+      // intact → it cannot side-effect dependents → allow silently. Only a MODIFYING edit is gated.
+      // `strict` gates both add and modify (its result.mode is 'strict', so it skips this bypass).
+      if (info.mode === 'auto' && !isModifyingEdit(toolName, toolInput, abs)) return exitAllow();
       const root = umakerRootFor(abs, cwd);
-      return ask(impactReason(path.relative(root, abs), info.dependents, null));
+      return ask(impactReason(path.relative(root, abs), info.dependents, null), info.mode);
     }
 
     // ---- Bash: catch sed -i / redirects / rm / mv / interpreter writes / patch on implemented code ----
     if (toolName === 'Bash') {
       const cmd = toolInput.command || '';
       // Patch application mutates tracked files we cannot enumerate from argv → blast radius is
-      // unknowable. Only gate in `strict`; in `auto` we cannot prove a side-effect → allow.
-      if (GATE_MODE === 'strict' && PATCH_LIKE.test(cmd) &&
-          (findUmakerRoot(cwd) || findUmakerRoot(process.cwd()))) {
+      // unknowable. Only gate in `strict`; in `on`/`auto` we cannot prove a side-effect → allow.
+      const bashRoot = findUmakerRoot(cwd) || findUmakerRoot(process.cwd());
+      if (bashRoot && effectiveMode(bashRoot) === 'strict' && PATCH_LIKE.test(cmd)) {
         return ask(
           IMPACT_BANNER +
           '\nThis Bash command applies a patch / restores tracked files, mutating already-implemented ' +
-          'code whose blast radius cannot be enumerated. Explicit user approval is required.'
+          'code whose blast radius cannot be enumerated. Explicit user approval is required.',
+          'strict'
         );
       }
       const g = bashGate(cmd, cwd);
@@ -499,7 +544,7 @@ function bashGate(command, cwd) {
         return ask(impactReason(
           path.relative(g.root, g.abs), g.dependents,
           'in-place edit / redirect / rm / mv / interpreter write'
-        ));
+        ), g.mode);
       }
       return exitAllow();
     }

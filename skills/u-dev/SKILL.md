@@ -6,7 +6,7 @@ version: 4.2.0
 
 # u-dev — Development Sub-phase (PBGD Build.Development)
 
-`/u-dev [--auto] [--loop] [--app {name}] [--only fe|be|db]`
+`/u-dev [--auto] [--loop] [--app {name}] [--only fe|be|db] [--sideeffect off|on|strict]`
 
 Development sub-phase of the Build phase: generate FE + BE + DB code from Design specifications. Callable standalone or via the `/u-build` orchestrator. On spec gaps, emits `.state/build-gap-report.json` so `/u-build` can ping-pong back to `/u-design`.
 
@@ -46,7 +46,7 @@ the emphasized banner **`⚠️ SIDE-EFFECT IMPACT — 사이드이펙트 영향
 5. **Record approval**: on Approve, write the marker `.u-maker/.state/edit-approvals/{sha1(absPath)}.json` so the PreToolUse guard (`hooks/on-edit-guard.js`) authorizes the edit instead of re-prompting (TTL `U_MAKER_EDIT_APPROVAL_TTL_MIN`, default 480 min). Without a fresh marker the guard forces a native approval prompt (`permissionDecision: "ask"`).
 6. **Scope lock**: only approved paths may be touched. Touching an unapproved implemented file to "finish" the task is scope creep = FAIL — raise a new approval instead.
 
-Skip this gate for NEW, IN-PROGRESS (untracked/dirty), IMPLEMENTED·LEAF (no-dependent), and IMPLEMENTED·SHARED·ADDITIVE (insert-only) edits. It is never skippable for behavior-modifying edits/deletes of already-implemented code that **has dependents** (IMPLEMENTED·SHARED·MODIFYING), regardless of `--auto` / `--loop`. Gate scope is set by `U_MAKER_EDIT_GATE` (`auto` default = implemented **and** depended-upon **and** modifying · `strict` = every add+modify to every existing file · `off` = disabled). Full protocol + marker schema → **`references/change-safety.md`**.
+Skip this gate for NEW, IN-PROGRESS (untracked/dirty), IMPLEMENTED·LEAF (no-dependent), and IMPLEMENTED·SHARED·ADDITIVE (insert-only) edits. It is never skippable for behavior-modifying edits/deletes of already-implemented code that **has dependents** (IMPLEMENTED·SHARED·MODIFYING), regardless of `--auto` / `--loop`. Gate scope is set by `U_MAKER_EDIT_GATE` (**`off` default = disabled** — the gate is OFF unless you opt in · `on`=`auto` = implemented **and** depended-upon **and** modifying · `strict` = every add+modify to every existing file). **The `--sideeffect {off|on|strict}` skill param sets this mode per-project**: when passed, FIRST persist it **before any generation** — `mkdir -p .u-maker/.state && printf '<mode>\n' > .u-maker/.state/edit-gate-mode` (writes under `.u-maker/` are never gated; `on`=`auto`) — and the PreToolUse guard reads it on every edit (env `U_MAKER_EDIT_GATE` still overrides the file). Omit the param to keep the current state-file value (or `off` if none). Full protocol + marker schema → **`references/change-safety.md`**.
 
 ### Step 1: Generate FE Code
 

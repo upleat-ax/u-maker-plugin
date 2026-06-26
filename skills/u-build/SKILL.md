@@ -6,7 +6,7 @@ version: 4.1.0
 
 # u-build — Build Phase Orchestrator (PBGD Build)
 
-`/u-build [--auto] [--loop] [--app {name}] [--only design|dev] [--max-pingpong {n}]`
+`/u-build [--auto] [--loop] [--app {name}] [--only design|dev] [--max-pingpong {n}] [--sideeffect off|on|strict]`
 
 Build-phase orchestrator. Runs the UI Design sub-phase (`/u-design`) and Development sub-phase (`/u-dev`) in sequence, with optional design↔dev ping-pong when Dev surfaces spec gaps. Both sub-phases remain callable standalone — this skill is an umbrella for the common case of running them together.
 
@@ -25,6 +25,7 @@ Build-phase orchestrator. Runs the UI Design sub-phase (`/u-design`) and Develop
 | `--only design` | No | Run UI Design sub-phase only; skip Dev. |
 | `--only dev` | No | Run Dev sub-phase only; assumes Design is Final. |
 | `--max-pingpong {n}` | No | Maximum design↔dev ping-pong rounds (default: 2). |
+| `--sideeffect off\|on\|strict` | No | Side-effect gate mode for this build. Persisted to `.u-maker/.state/edit-gate-mode` and applied to **every** `/u-design`·`/u-dev` edit (`on`=`auto` low-noise · `strict` all edits · `off` disabled). Env `U_MAKER_EDIT_GATE` overrides. Default: unchanged, else `off`. |
 
 ## Execution Flow
 
@@ -32,6 +33,7 @@ Build-phase orchestrator. Runs the UI Design sub-phase (`/u-design`) and Develop
 
 1. Verify `docs/{app}/plan/srs.json` and `ia.json` exist with `status: "Final"`.
 2. If not → error `"Plan documents not Final. Run /u-plan [--loop] first."` and exit.
+3. **Resolve the side-effect gate mode.** If `--sideeffect {off|on|strict}` was passed, persist it **before any sub-phase** so it applies to every `/u-design`·`/u-dev` edit: `mkdir -p .u-maker/.state && printf '<mode>\n' > .u-maker/.state/edit-gate-mode` (`on`=`auto`; writes under `.u-maker/` are never gated). The `hooks/on-edit-guard.js` guard reads this on every edit; env `U_MAKER_EDIT_GATE` still overrides it. If omitted, the existing state file (or `off`) stands.
 
 ### Step 1: UI Design sub-phase
 
@@ -43,7 +45,7 @@ Skip this step if `--only dev` was set.
 
 Invoke `/u-dev --app {app} [--auto] [--loop]`. On success, FE/BE/DB code trees are generated/updated.
 
-> **Side-effect gate is NOT bypassed by `--auto`.** `/u-dev` Step 0.5 (`references/change-safety.md`) still requires explicit user approval — via an `AskUserQuestion` **led by the `⚠️ SIDE-EFFECT IMPACT — 사이드이펙트 영향도 있음` banner** — before a **behavior-modifying** change to **already-implemented code that other code depends on** (git-tracked + clean **and** imported/referenced elsewhere **and** the edit rewrites/deletes existing lines = IMPLEMENTED·SHARED·MODIFYING; the `hooks/on-edit-guard.js` PreToolUse guard enforces this in its default `auto` mode). New, in-progress (untracked/dirty), leaf (no-dependent), and purely additive (insert-only) edits are not gated. `--auto` may batch the approval questions but never auto-approves deletions, renames, or signature/schema/route changes. Treat an unapproved side-effect as a first-class halt, not a silent retry.
+> **Side-effect gate is NOT bypassed by `--auto`.** `/u-dev` Step 0.5 (`references/change-safety.md`) still requires explicit user approval — via an `AskUserQuestion` **led by the `⚠️ SIDE-EFFECT IMPACT — 사이드이펙트 영향도 있음` banner** — before a **behavior-modifying** change to **already-implemented code that other code depends on** (git-tracked + clean **and** imported/referenced elsewhere **and** the edit rewrites/deletes existing lines = IMPLEMENTED·SHARED·MODIFYING; the `hooks/on-edit-guard.js` PreToolUse guard enforces this **when the gate is enabled** — it is **OFF by default**, opt-in via `--sideeffect on`/`strict` or env `U_MAKER_EDIT_GATE`). New, in-progress (untracked/dirty), leaf (no-dependent), and purely additive (insert-only) edits are not gated. `--auto` may batch the approval questions but never auto-approves deletions, renames, or signature/schema/route changes. Treat an unapproved side-effect as a first-class halt, not a silent retry.
 
 Skip this step if `--only design` was set.
 
