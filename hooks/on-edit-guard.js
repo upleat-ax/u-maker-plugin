@@ -6,16 +6,29 @@
 // when that change can actually ripple into OTHER features / UI. It must never nag during forward
 // construction, and it must not nag when fixing a self-contained (leaf) file that nothing depends on.
 //
-// Two signals are required (in the default `auto` mode) before we ask the user:
+// THREE signals are required (in the default `auto` mode) before we ask the user:
 //   (A) ALREADY-IMPLEMENTED — detected via git, no intent flag:
 //         • git-TRACKED and CLEAN vs HEAD → committed/shipped code → a change is a FIX → candidate.
 //         • UNTRACKED (new) or DIRTY (uncommitted) → still being built → ALLOW (forward construction).
 //   (B) HAS DEPENDENTS — other source files import/reference this module. If something depends on it,
-//         a fix here can regress those dependents → a real cross-feature side-effect → ASK.
+//         a fix here can regress those dependents → a real cross-feature side-effect → candidate.
 //         If NOTHING imports it (a leaf: a standalone page / route / entry / test), a fix cannot
 //         side-effect other features → ALLOW silently.
+//   (C) MODIFIES EXISTING CODE — the edit changes/removes existing lines, not just ADDS new ones.
+//         A purely ADDITIVE edit (the new content keeps every existing line verbatim — e.g. a new
+//         function / branch / import inserted around untouched code) leaves what dependents rely on
+//         intact → it cannot regress them → ALLOW silently, even in a shared file. Only a MODIFYING
+//         edit (existing behavior rewritten/deleted) is a real fix-with-blast-radius → ASK.
+//         Edit/MultiEdit: additive iff every new_string contains its old_string verbatim. Write:
+//         additive iff the new content contains the whole existing file verbatim (append/prepend/wrap).
+//         Bash mutations (sed -i / redirect / rm / mv / …) are inherently modifying → always candidate.
 // "fix하는 경우에만 다른 기능이나 UI/UX에 사이드이펙트가 있을지 검토하고, 있을 수 있는 경우에만 물어본다."
-// (A) = "fix하는 경우", (B) = "사이드이펙트가 있을 수 있는 경우" (reverse-dependency 검토).
+// (A) = "fix하는 경우", (B)+(C) = "사이드이펙트가 있을 수 있는 경우" (의존성 + 기존 동작 변경 검토).
+//
+// Boundary 3 (additive-edit heuristic): an INSERTION that still alters runtime behavior for existing
+// callers (e.g. an early `return` spliced into a function) reads as additive here and passes silently.
+// That residual semantic risk is the AGENT's to catch in the /u-dev Step 0.5 behavior-delta review;
+// use `strict` to gate every modify+add to existing files regardless.
 //
 // NOTE on coverage: (B) is an import-graph heuristic. Cross-feature contracts that are NOT expressed as
 // imports — e.g. an HTTP API route, a DB schema/migration, an env contract — are NOT caught here by
@@ -23,8 +36,10 @@
 // 0.5 change-safety protocol (reverse-dependency + public-surface delta + AskUserQuestion).
 //
 // Gate mode — `U_MAKER_EDIT_GATE` (default `auto`):
-//   • auto   — gate only already-implemented files THAT HAVE DEPENDENTS. DEFAULT (low-noise, fix-only).
-//   • strict — gate EVERY existing file (no implemented / dependent checks; pre-4.0.0-alpha.24 always-on).
+//   • auto   — gate only a MODIFYING fix to an already-implemented file THAT HAS DEPENDENTS.
+//              DEFAULT (low-noise, fix-only). Additive edits / new / in-progress / leaf files pass.
+//   • strict — gate EVERY change (modify OR add) to EVERY existing file (no implemented / dependent /
+//              additive checks; pre-4.0.0-alpha.24 always-on). Use for git-less projects / max caution.
 //   • off    — never gate (disable the side-effect gate entirely).
 //
 // This guard is INTENTIONALLY NOT routed through _dispatch.js, whose contract is
@@ -43,6 +58,8 @@
 //      analysis via /u-dev Step 0.5 — see change-safety.md).
 //   5. The file is already-implemented: git-tracked AND clean vs HEAD.
 //   6. The file HAS DEPENDENTS: at least one other source file imports/references it.
+//   7. The edit MODIFIES existing code (not a purely additive insertion). [file tools only; Bash
+//      mutations are inherently modifying]
 //
 // Anything else → allow (exit 0). Internal errors → fail-open (allow).
 
@@ -75,6 +92,20 @@ function depSummary(deps) {
   const sample = deps.slice(0, 5).join(', ');
   const more = deps.length > 5 ? ` (+${deps.length - 5} more)` : '';
   return ` ${deps.length} other file(s) import/reference it: ${sample}${more}.`;
+}
+
+// EMPHASIZED banner shown at the top of every side-effect prompt so the impact is unmistakable
+// ("사이드이펙트 영향도가 있다는 강조된 표현"). Kept on its own line for prominence in the native prompt.
+const IMPACT_BANNER = '⚠️  SIDE-EFFECT IMPACT — 사이드이펙트 영향도 있음  ⚠️';
+
+// Compose an emphasized approval reason that NAMES the affected dependents and the mutation channel.
+function impactReason(relPath, deps, channel) {
+  const chan = channel ? ' (' + channel + ')' : '';
+  return IMPACT_BANNER +
+    '\nThis fix MODIFIES already-implemented, depended-upon code — "' + relPath + '"' + chan +
+    ' — changing existing behavior that OTHER features/UI rely on, so it MAY REGRESS them.' +
+    depSummary(deps) +
+    ' Explicit user approval is required before this side-effecting change is applied.';
 }
 
 function ask(reason) {
@@ -244,10 +275,53 @@ function resolveAbs(p, cwd) {
   return path.isAbsolute(p) ? path.normalize(p) : path.normalize(path.join(cwd, p));
 }
 
-// Assess whether a target is GATED, and (in `auto`) which dependents a change could regress.
-// auto → gated iff: existing real file inside a u-maker project, outside `.u-maker/`, no fresh
+// Signal (C): does this file-tool call MODIFY existing code (change/remove existing lines) — vs
+// purely ADD to it? An additive edit keeps every existing line dependents rely on verbatim, so it
+// cannot regress them → not gated. A modifying edit rewrites/deletes existing behavior → gated.
+//   Edit       → additive iff new_string contains old_string verbatim (an insertion around it);
+//                empty old_string is a pure insertion → additive.
+//   MultiEdit  → additive iff EVERY sub-edit is additive (any modifying sub-edit ⇒ modifying).
+//   Write      → additive iff the new content contains the entire existing file verbatim
+//                (append / prepend / wrap); unreadable or empty-new → treat as modifying.
+// Unknown / malformed input → MODIFYING (conservative, default-deny posture).
+function isAdditivePair(oldS, newS) {
+  if (typeof oldS !== 'string' || typeof newS !== 'string') return false; // unknown → not additive
+  if (oldS === '') return true;                 // pure insertion, nothing existing replaced
+  return newS.includes(oldS);                   // new keeps old verbatim → wrapped/extended → additive
+}
+
+function isModifyingEdit(toolName, toolInput, abs) {
+  try {
+    if (toolName === 'Edit') {
+      return !isAdditivePair(toolInput.old_string, toolInput.new_string);
+    }
+    if (toolName === 'MultiEdit') {
+      const edits = Array.isArray(toolInput.edits) ? toolInput.edits : null;
+      if (!edits || edits.length === 0) return true;
+      return !edits.every((e) => e && isAdditivePair(e.old_string, e.new_string));
+    }
+    if (toolName === 'Write') {
+      const content = toolInput.content;
+      if (typeof content !== 'string' || content === '') return true; // truncate/clear → modifying
+      let existing = null;
+      try { existing = fs.readFileSync(abs, 'utf8'); } catch (_) { existing = null; }
+      if (existing == null) return true;          // can't compare old → modifying (conservative)
+      if (existing === '') return false;          // writing into an empty file → additive
+      return !content.includes(existing);         // new keeps whole old file verbatim → additive
+    }
+  } catch (_) {
+    return true;
+  }
+  return true;
+}
+
+// Assess whether a target is GATED at the PATH level, and (in `auto`) which dependents a change
+// could regress. This covers signals (A) ALREADY-IMPLEMENTED and (B) HAS DEPENDENTS. Signal (C)
+// MODIFIES-vs-ADDITIVE is content-dependent and applied by the CALLER (isModifyingEdit) for file
+// tools; Bash mutations are inherently modifying so they gate on (A)+(B) alone.
+// auto → path-gated iff: existing real file inside a u-maker project, outside `.u-maker/`, no fresh
 // marker, ALREADY-IMPLEMENTED (tracked+clean), AND HAS DEPENDENTS (other files import it).
-// strict → gated for every existing file (no implemented/dependent checks). off → never.
+// strict → gated for every existing file (no implemented/dependent/additive checks). off → never.
 function gateInfo(abs, cwd) {
   if (GATE_MODE === 'off') return NOT_GATED;
   try {
@@ -399,11 +473,12 @@ function bashGate(command, cwd) {
       const abs = resolveAbs(toolInput.file_path || toolInput.path, cwd);
       const info = gateInfo(abs, cwd);
       if (!info.gated) return exitAllow();
+      // Signal (C): in `auto`, a purely ADDITIVE edit to a shared file leaves existing behavior intact
+      // → it cannot side-effect dependents → allow silently. Only a MODIFYING edit is gated. `strict`
+      // gates both add and modify (it never reaches this branch's bypass).
+      if (GATE_MODE === 'auto' && !isModifyingEdit(toolName, toolInput, abs)) return exitAllow();
       const root = umakerRootFor(abs, cwd);
-      return ask(
-        'Modifying already-implemented file "' + path.relative(root, abs) + '" can regress code that ' +
-        'depends on it.' + depSummary(info.dependents) + ' It requires explicit user approval.'
-      );
+      return ask(impactReason(path.relative(root, abs), info.dependents, null));
     }
 
     // ---- Bash: catch sed -i / redirects / rm / mv / interpreter writes / patch on implemented code ----
@@ -414,17 +489,17 @@ function bashGate(command, cwd) {
       if (GATE_MODE === 'strict' && PATCH_LIKE.test(cmd) &&
           (findUmakerRoot(cwd) || findUmakerRoot(process.cwd()))) {
         return ask(
-          'This Bash command applies a patch / restores tracked files, mutating already-implemented ' +
-          'code whose blast radius cannot be enumerated. It requires explicit user approval.'
+          IMPACT_BANNER +
+          '\nThis Bash command applies a patch / restores tracked files, mutating already-implemented ' +
+          'code whose blast radius cannot be enumerated. Explicit user approval is required.'
         );
       }
       const g = bashGate(cmd, cwd);
       if (g) {
-        return ask(
-          'This Bash command modifies already-implemented file "' + path.relative(g.root, g.abs) +
-          '" (in-place edit / redirect / rm / mv / interpreter write), which can regress code that ' +
-          'depends on it.' + depSummary(g.dependents) + ' It requires explicit user approval.'
-        );
+        return ask(impactReason(
+          path.relative(g.root, g.abs), g.dependents,
+          'in-place edit / redirect / rm / mv / interpreter write'
+        ));
       }
       return exitAllow();
     }

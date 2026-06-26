@@ -43,7 +43,7 @@ Skip this step if `--only dev` was set.
 
 Invoke `/u-dev --app {app} [--auto] [--loop]`. On success, FE/BE/DB code trees are generated/updated.
 
-> **Side-effect gate is NOT bypassed by `--auto`.** `/u-dev` Step 0.5 (`references/change-safety.md`) still requires explicit user approval before modifying **already-implemented code that other code depends on** (git-tracked + clean **and** imported/referenced elsewhere = IMPLEMENTED·SHARED; the `hooks/on-edit-guard.js` PreToolUse guard enforces this in its default `auto` mode). New, in-progress (untracked/dirty), and leaf (no-dependent) files are not gated. `--auto` may batch the approval questions but never auto-approves deletions, renames, or signature/schema/route changes. Treat an unapproved side-effect as a first-class halt, not a silent retry.
+> **Side-effect gate is NOT bypassed by `--auto`.** `/u-dev` Step 0.5 (`references/change-safety.md`) still requires explicit user approval — via an `AskUserQuestion` **led by the `⚠️ SIDE-EFFECT IMPACT — 사이드이펙트 영향도 있음` banner** — before a **behavior-modifying** change to **already-implemented code that other code depends on** (git-tracked + clean **and** imported/referenced elsewhere **and** the edit rewrites/deletes existing lines = IMPLEMENTED·SHARED·MODIFYING; the `hooks/on-edit-guard.js` PreToolUse guard enforces this in its default `auto` mode). New, in-progress (untracked/dirty), leaf (no-dependent), and purely additive (insert-only) edits are not gated. `--auto` may batch the approval questions but never auto-approves deletions, renames, or signature/schema/route changes. Treat an unapproved side-effect as a first-class halt, not a silent retry.
 
 Skip this step if `--only design` was set.
 

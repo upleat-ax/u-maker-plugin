@@ -26,25 +26,27 @@ Development sub-phase of the Build phase: generate FE + BE + DB code from Design
 4. All must be `Final`: erd.json, api.json, screens.json, design-system.json
 5. If not → error with missing doc list and statuses
 
-### Step 0.5: Side-Effect Gatekeeping — mandatory hard gate for fixes to ALREADY-IMPLEMENTED, DEPENDED-UPON code
+### Step 0.5: Side-Effect Gatekeeping — mandatory hard gate for behavior-MODIFYING fixes to ALREADY-IMPLEMENTED, DEPENDED-UPON code
 
 Before Steps 1–3 generation, and before **every** individual Edit/Write/Bash that could mutate an
 **already-implemented file that other code depends on**, enforce the adversarial change-safety
 protocol in `references/change-safety.md`. The policy (사용자 지시) is *"fix하는 경우에만 다른 기능이나
 UI/UX에 사이드이펙트가 있을지 검토하고, 사이드이펙트가 있을 수 있는 경우에만 물어본다"* — so the prompt fires
-**only** when a fix to committed code can actually regress dependents. It is **default-deny** for such
-risky fixes (especially **bug fixes** to shipped features / UI-UX). Forward construction (new files, or
-iterating on untracked/dirty in-progress files) is **not** gated, and neither is fixing a **leaf** file
-that nothing imports.
+**only** when a fix **rewrites/deletes existing behavior** in committed code that other code depends on.
+It is **default-deny** for such risky fixes (especially **bug fixes** to shipped features / UI-UX).
+Forward construction (new files, or iterating on untracked/dirty in-progress files) is **not** gated;
+neither is fixing a **leaf** file that nothing imports; neither is a **purely additive** edit (inserting
+new code while leaving every existing line intact). Every prompt — the guard's and yours — leads with
+the emphasized banner **`⚠️ SIDE-EFFECT IMPACT — 사이드이펙트 영향도 있음`**.
 
-1. **Classify each target as NEW / IN-PROGRESS / IMPLEMENTED·LEAF / IMPLEMENTED·SHARED** (IMPLEMENTED = git-tracked AND clean vs HEAD; **LEAF** = nothing imports/references it; **SHARED** = ≥1 other source file imports/references it). NEW + IN-PROGRESS (untracked/dirty) create/iterate freely; **IMPLEMENTED·LEAF** is not gated (a fix can't side-effect other features); only **IMPLEMENTED·SHARED** is gated. `.u-maker/**` is out of scope. *Caveat:* API routes / DB schema / env contracts are cross-feature surfaces the import-graph can't detect — treat them as SHARED and prompt on public-surface changes even though the guard stays silent.
-2. **For every IMPLEMENTED file you intend to modify or delete, produce an Impact / Side-Effect (blast-radius) analysis**: reverse-dependency scan (who imports/calls it), public-surface delta (exported signature / prop / API route / DB column / env), behavior delta, test/spec coverage, and whether the edit is strictly required by the spec/bug or is scope creep. Default the verdict to **UNSAFE** when anything is ambiguous or unverifiable.
+1. **Classify each target as NEW / IN-PROGRESS / IMPLEMENTED·LEAF / IMPLEMENTED·SHARED, then for SHARED split ADDITIVE vs MODIFYING** (IMPLEMENTED = git-tracked AND clean vs HEAD; **LEAF** = nothing imports/references it; **SHARED** = ≥1 other source file imports/references it; **ADDITIVE** = the edit only inserts new code, keeping every existing line verbatim; **MODIFYING** = it rewrites/deletes existing behavior). NEW + IN-PROGRESS (untracked/dirty) create/iterate freely; **IMPLEMENTED·LEAF** and **IMPLEMENTED·SHARED·ADDITIVE** are not gated (neither can side-effect other features); only **IMPLEMENTED·SHARED·MODIFYING** is gated. `.u-maker/**` is out of scope. *Caveat (Boundary 2/3):* API routes / DB schema / env contracts are cross-feature surfaces the import-graph can't detect — treat them as SHARED; and an insertion that still alters behavior reads as ADDITIVE — judge the behavior-delta yourself even when the guard stays silent.
+2. **For every IMPLEMENTED·SHARED·MODIFYING file you intend to change or delete, produce an Impact / Side-Effect (blast-radius) analysis**: reverse-dependency scan (who imports/calls it), public-surface delta (exported signature / prop / API route / DB column / env), behavior delta, test/spec coverage, and whether the edit is strictly required by the spec/bug or is scope creep. Default the verdict to **UNSAFE** when anything is ambiguous or unverifiable.
 3. **Adversarial self-review**: argue against the change — name the worst plausible regression. If you can't rule it out, treat as UNSAFE and make the smallest reversible change.
-4. **Mandatory user approval (gatekeeping)**: present a single `AskUserQuestion` per file (or per `--auto` batch) — path · NEW/IN-PROGRESS/IMPLEMENTED · intent + diff · blast-radius · top regression risk. Options: Approve / Approve-batch / Skip / Abort. **You MUST NOT apply an edit to IMPLEMENTED code until the user Approves.** `--auto` may batch but **never** auto-approves deletions, renames, or signature/schema/route changes.
+4. **Mandatory user approval (gatekeeping)**: present a single `AskUserQuestion` per file (or per `--auto` batch), **led by the `⚠️ SIDE-EFFECT IMPACT — 사이드이펙트 영향도 있음` banner** — path · NEW/IN-PROGRESS/IMPLEMENTED·LEAF/IMPLEMENTED·SHARED(ADDITIVE|MODIFYING) · intent + diff · blast-radius · top regression risk. Options: Approve / Approve-batch / Skip / Abort. **You MUST NOT apply a behavior-modifying edit to IMPLEMENTED·SHARED code until the user Approves.** `--auto` may batch but **never** auto-approves deletions, renames, or signature/schema/route changes.
 5. **Record approval**: on Approve, write the marker `.u-maker/.state/edit-approvals/{sha1(absPath)}.json` so the PreToolUse guard (`hooks/on-edit-guard.js`) authorizes the edit instead of re-prompting (TTL `U_MAKER_EDIT_APPROVAL_TTL_MIN`, default 480 min). Without a fresh marker the guard forces a native approval prompt (`permissionDecision: "ask"`).
 6. **Scope lock**: only approved paths may be touched. Touching an unapproved implemented file to "finish" the task is scope creep = FAIL — raise a new approval instead.
 
-Skip this gate for NEW, IN-PROGRESS (untracked/dirty), and IMPLEMENTED·LEAF (no-dependent) files. It is never skippable for edits/deletes of already-implemented code that **has dependents** (IMPLEMENTED·SHARED), regardless of `--auto` / `--loop`. Gate scope is set by `U_MAKER_EDIT_GATE` (`auto` default = implemented **and** depended-upon · `strict` = every existing file · `off` = disabled). Full protocol + marker schema → **`references/change-safety.md`**.
+Skip this gate for NEW, IN-PROGRESS (untracked/dirty), IMPLEMENTED·LEAF (no-dependent), and IMPLEMENTED·SHARED·ADDITIVE (insert-only) edits. It is never skippable for behavior-modifying edits/deletes of already-implemented code that **has dependents** (IMPLEMENTED·SHARED·MODIFYING), regardless of `--auto` / `--loop`. Gate scope is set by `U_MAKER_EDIT_GATE` (`auto` default = implemented **and** depended-upon **and** modifying · `strict` = every add+modify to every existing file · `off` = disabled). Full protocol + marker schema → **`references/change-safety.md`**.
 
 ### Step 1: Generate FE Code
 
