@@ -26,22 +26,25 @@ Development sub-phase of the Build phase: generate FE + BE + DB code from Design
 4. All must be `Final`: erd.json, api.json, screens.json, design-system.json
 5. If not → error with missing doc list and statuses
 
-### Step 0.5: Side-Effect Gatekeeping — mandatory hard gate for fixes to ALREADY-IMPLEMENTED code
+### Step 0.5: Side-Effect Gatekeeping — mandatory hard gate for fixes to ALREADY-IMPLEMENTED, DEPENDED-UPON code
 
 Before Steps 1–3 generation, and before **every** individual Edit/Write/Bash that could mutate an
-**already-implemented** file (git-tracked + clean = committed/shipped), enforce the adversarial
-change-safety protocol in `references/change-safety.md`. This gate is **default-deny for fixes** and
-applies especially to **bug fixes** and changes to shipped features / UI-UX. Forward construction
-(new files, or iterating on untracked/dirty in-progress files) is **not** gated.
+**already-implemented file that other code depends on**, enforce the adversarial change-safety
+protocol in `references/change-safety.md`. The policy (사용자 지시) is *"fix하는 경우에만 다른 기능이나
+UI/UX에 사이드이펙트가 있을지 검토하고, 사이드이펙트가 있을 수 있는 경우에만 물어본다"* — so the prompt fires
+**only** when a fix to committed code can actually regress dependents. It is **default-deny** for such
+risky fixes (especially **bug fixes** to shipped features / UI-UX). Forward construction (new files, or
+iterating on untracked/dirty in-progress files) is **not** gated, and neither is fixing a **leaf** file
+that nothing imports.
 
-1. **Classify each target path as NEW / IN-PROGRESS / IMPLEMENTED** (IMPLEMENTED = git-tracked AND clean vs HEAD). NEW + IN-PROGRESS (untracked/dirty) create/iterate freely; IMPLEMENTED files are gated. `.u-maker/**` is out of scope.
+1. **Classify each target as NEW / IN-PROGRESS / IMPLEMENTED·LEAF / IMPLEMENTED·SHARED** (IMPLEMENTED = git-tracked AND clean vs HEAD; **LEAF** = nothing imports/references it; **SHARED** = ≥1 other source file imports/references it). NEW + IN-PROGRESS (untracked/dirty) create/iterate freely; **IMPLEMENTED·LEAF** is not gated (a fix can't side-effect other features); only **IMPLEMENTED·SHARED** is gated. `.u-maker/**` is out of scope. *Caveat:* API routes / DB schema / env contracts are cross-feature surfaces the import-graph can't detect — treat them as SHARED and prompt on public-surface changes even though the guard stays silent.
 2. **For every IMPLEMENTED file you intend to modify or delete, produce an Impact / Side-Effect (blast-radius) analysis**: reverse-dependency scan (who imports/calls it), public-surface delta (exported signature / prop / API route / DB column / env), behavior delta, test/spec coverage, and whether the edit is strictly required by the spec/bug or is scope creep. Default the verdict to **UNSAFE** when anything is ambiguous or unverifiable.
 3. **Adversarial self-review**: argue against the change — name the worst plausible regression. If you can't rule it out, treat as UNSAFE and make the smallest reversible change.
 4. **Mandatory user approval (gatekeeping)**: present a single `AskUserQuestion` per file (or per `--auto` batch) — path · NEW/IN-PROGRESS/IMPLEMENTED · intent + diff · blast-radius · top regression risk. Options: Approve / Approve-batch / Skip / Abort. **You MUST NOT apply an edit to IMPLEMENTED code until the user Approves.** `--auto` may batch but **never** auto-approves deletions, renames, or signature/schema/route changes.
 5. **Record approval**: on Approve, write the marker `.u-maker/.state/edit-approvals/{sha1(absPath)}.json` so the PreToolUse guard (`hooks/on-edit-guard.js`) authorizes the edit instead of re-prompting (TTL `U_MAKER_EDIT_APPROVAL_TTL_MIN`, default 480 min). Without a fresh marker the guard forces a native approval prompt (`permissionDecision: "ask"`).
 6. **Scope lock**: only approved paths may be touched. Touching an unapproved implemented file to "finish" the task is scope creep = FAIL — raise a new approval instead.
 
-Skip this gate for NEW and IN-PROGRESS (untracked/dirty) files. It is never skippable for edits/deletes of already-implemented (committed) code, regardless of `--auto` / `--loop`. Gate scope is set by `U_MAKER_EDIT_GATE` (`auto` default · `strict` = every existing file · `off` = disabled). Full protocol + marker schema → **`references/change-safety.md`**.
+Skip this gate for NEW, IN-PROGRESS (untracked/dirty), and IMPLEMENTED·LEAF (no-dependent) files. It is never skippable for edits/deletes of already-implemented code that **has dependents** (IMPLEMENTED·SHARED), regardless of `--auto` / `--loop`. Gate scope is set by `U_MAKER_EDIT_GATE` (`auto` default = implemented **and** depended-upon · `strict` = every existing file · `off` = disabled). Full protocol + marker schema → **`references/change-safety.md`**.
 
 ### Step 1: Generate FE Code
 
@@ -98,7 +101,7 @@ Skip Step 1.5 entirely when `--only be` or `--only db` is passed (no FE work hap
 ## Reference Files
 
 - **`references/code-gen-rules.md`** — Code generation patterns, file naming, component structure
-- **`references/change-safety.md`** — **Side-effect gatekeeping (Step 0.5)**: NEW / IN-PROGRESS / IMPLEMENTED classification, blast-radius/impact analysis, mandatory AskUserQuestion approval before editing already-implemented (git-tracked + clean) code, the `U_MAKER_EDIT_GATE` mode switch, and the approval-marker contract for the `hooks/on-edit-guard.js` PreToolUse guard. Default-deny for fixes. Mandatory whenever a run could modify already-implemented files.
+- **`references/change-safety.md`** — **Side-effect gatekeeping (Step 0.5)**: NEW / IN-PROGRESS / IMPLEMENTED·LEAF / IMPLEMENTED·SHARED classification, reverse-dependency-driven blast-radius/impact analysis, mandatory AskUserQuestion approval before editing already-implemented code **that has dependents** (git-tracked + clean **and** imported elsewhere), the `U_MAKER_EDIT_GATE` mode switch, and the approval-marker contract for the `hooks/on-edit-guard.js` PreToolUse guard. Default-deny for risky fixes; leaf/no-dependent fixes pass freely. Mandatory whenever a run could modify a depended-upon already-implemented file.
 - **`references/tech-rules.md`** — Supported stacks, naming conventions, package management
 - **`references/fe-rules.md`** — React/Next.js rule set (Vercel react-best-practices 70 rules + composition-patterns 9 rules). Mandatory input for Step 1 FE generation.
 - **`../u-tools-browser/SKILL.md`** Step 6f — Component visual verification engine (Step 1.5 delegation target).

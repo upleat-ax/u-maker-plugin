@@ -2,6 +2,20 @@
 
 All notable changes to u-maker-plugin.
 
+## [4.0.0-alpha.25] — 2026-06-26
+
+**Side-effect gate de-noised again: it now fires only on fixes to already-implemented code THAT OTHER CODE DEPENDS ON — not on every committed file.**
+
+The `4.0.0-alpha.24` gate scoped to *already-implemented* (git-tracked + clean) files. But in a settled repo **almost every file is tracked + clean**, so "already-implemented" effectively meant "everything" and the gate fired on nearly every edit. This release adds the missing discriminator the user asked for — *"fix하는 경우에만 다른 기능이나 UI/UX에 사이드이펙트가 있을지 검토하고, 사이드이펙트가 있을 수 있는 경우에만 물어본다"*: a fix is only gated when the file is **depended upon** (imported/referenced by another source file), so changing it can actually ripple into other features. Self-contained **leaf** files (standalone pages, framework entries, tests, modules nothing imports) now pass freely.
+
+### Changed
+
+- **`hooks/on-edit-guard.js` — `auto` mode now requires TWO signals, not one.** A file is gated only when it is **(A) already-implemented** (git-tracked AND clean vs HEAD) **AND (B) has dependents** (≥1 other source file imports/references it). (B) is a reverse-dependency scan via `git grep` over a quoted module-specifier whose last path segment matches the file's module name (basename without extension; parent-dir name for `index.*`; framework entries like `page`/`route`/`layout`/`middleware`/`_app` are treated as leaves since they are loaded by convention, not imported). **Leaf** implemented files (no importers) now pass freely — a fix there cannot side-effect other features. The native approval prompt now **names the affected dependents** (e.g. *"2 other file(s) import/reference it: src/App.tsx, …"*) so approval is informed.
+- **`strict` mode unchanged** — still gates every existing file (incl. `git apply`/`patch`), for git-less projects or maximum caution. **`off` unchanged.**
+- **`auto` no longer gates `git apply` / `patch`** — their targets live in the patch body, so the blast radius is unknowable; gating them was pure noise. They remain gated in `strict`. (`sed -i` / `perl -i` / redirects / `rm` / `mv` / `cp`·`tee`·`dd` destinations / `git rm`·`checkout --`·`restore` / interpreter inline writes are still resolved to concrete targets and gated only when the target is implemented·shared.)
+- **Known boundary (documented, by design):** the dependent check is an **import-graph heuristic**. Cross-feature contracts not expressed as imports — **HTTP API routes, DB schema/migrations, env contracts** — do NOT trip the guard; they remain the agent's responsibility under the `/u-dev` Step 0.5 change-safety protocol.
+- **Docs realigned to the NEW / IN-PROGRESS / IMPLEMENTED·LEAF / IMPLEMENTED·SHARED model** — `skills/u-dev/references/change-safety.md` (purpose, gate-mode table, §1 LEAF/SHARED classification + Boundary 2, §2/§4 scoped to SHARED), `skills/u-dev/SKILL.md` Step 0.5, `agents/u-agent-dev.md` (Step 0.5 + Side-Effect Safety FAIL), `skills/u-build/SKILL.md`, `agents/u-agent-build.md`, `skills/u-dev/references/code-gen-rules.md`, and the `hooks/hooks.json` description.
+
 ## [4.0.0-alpha.24] — 2026-06-25
 
 **Side-effect gate de-noised: it now fires only on FIXES to already-implemented code, not on every edit.**

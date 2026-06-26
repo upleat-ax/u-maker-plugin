@@ -89,7 +89,7 @@ On success, hands off to `u-agent-gatekeeper` via:
 | Dev sub-phase build error | Surface compiler/runtime error; do not re-enter ping-pong. |
 | Plan-level escalation needed | Write `.state/build-escalation.json`; exit non-zero; `u-agent-pm` routes back to `u-agent-plan`. |
 | Max ping-pong rounds exceeded | Warn; persist remaining gaps; allow user to decide next step. |
-| Unapproved side-effect (edit to already-implemented/committed code without user approval) | **First-class halt**, not a silent retry. `/u-dev` Step 0.5 + the `hooks/on-edit-guard.js` PreToolUse guard (default `auto`: only git-tracked + clean files) require explicit user approval (`change-safety.md`); `--auto` does not bypass it. New + in-progress files are not gated. Surface the pending approval to the user. |
+| Unapproved side-effect (edit to already-implemented/committed code **that other code depends on** without user approval) | **First-class halt**, not a silent retry. `/u-dev` Step 0.5 + the `hooks/on-edit-guard.js` PreToolUse guard (default `auto`: only git-tracked + clean files that are imported/referenced elsewhere — IMPLEMENTED·SHARED) require explicit user approval (`change-safety.md`); `--auto` does not bypass it. New, in-progress, and leaf (no-dependent) files are not gated. Surface the pending approval to the user. |
 
 ## 8. Notes for `u-agent-pm`
 
