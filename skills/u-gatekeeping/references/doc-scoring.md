@@ -14,7 +14,7 @@ Authoritative list: `_meta/schemas/gate-rules.json` `criteria[]`. Summary:
 | GK-04 | Traceability | FR→US→FT→TC chain complete |
 | GK-05 | TOC Quality | TOC depth, order, entries match sections |
 | GK-06 | Content Composition | Logical flow, appropriate info placement |
-| GK-07 | Visual Adequacy | Stars/cards/tables used appropriately |
+| GK-07 | Visual Adequacy | Stars/cards/tables used appropriately; **no single-side accent borders** (단면 강조 막대·컬러바 active 금지 → 4변 border + bg tint + weight) |
 | GK-08 | Diagram Fitness | Diagram types match subject, SVG renders |
 | GK-09 | Mermaid Integrity | No syntax errors, renderable |
 | GK-10 | JSON Sync | `.md` and `.json` synchronized, 10-increment IDs |

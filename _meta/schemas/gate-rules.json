@@ -58,9 +58,9 @@
       "id": "GK-07",
       "name": "Visual Adequacy",
       "nameKo": "시각 표현 적정성",
-      "description": "Stars, cards, tables, lists used appropriately for content type",
+      "description": "Stars, cards, tables, lists used appropriately for content type. No single-side accent borders (decorative border-left/right/top/bottom bars or color-bar active states) — emphasis via full 4-side border + background tint + font-weight only (per html-engine.md §Border/Accent rules). Neutral 1px dividers, focus rings, and chart/timeline data markers are allowed.",
       "maxScore": 100,
-      "checks": ["visual-element-fit", "no-over-decoration", "no-under-representation"]
+      "checks": ["visual-element-fit", "no-over-decoration", "no-under-representation", "no-single-side-accent-border"]
     },
     {
       "id": "GK-08",

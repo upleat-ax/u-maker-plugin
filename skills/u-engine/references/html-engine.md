@@ -471,9 +471,9 @@ All generated HTML uses Tailwind CSS utility classes for styling. Tailwind is lo
 | `<p>` | `text-base leading-7 mb-4 text-gray-700 dark:text-gray-300` |
 | `<code>` inline | `bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded text-sm font-mono` |
 
-### Border / Accent Style Rules (CSS) — 한쪽 border 강조 금지
+### Border / Accent Style Rules (CSS) — 한쪽 border 강조 금지 (HARD RULE · 게이트 검사)
 
-**한쪽(단면) border만 색으로 강조하는 장식 스타일을 전면 금지한다 (No single-side accent borders).** 카드·콜아웃·하이라이트 박스·배너를 한 변에만 색을 입힌 막대(`border-left: 4px solid …` 류)로 꾸미지 않는다. active/선택 상태도 한쪽 컬러 border로 표시하지 않는다. 강조는 **전체 4변 `border` + 배경 채움(background tint) + `font-weight`**로 표현한다.
+**한쪽(단면) border만 색으로 강조하는 장식 스타일을 전면 금지한다 (No single-side accent borders).** 카드·콜아웃·하이라이트 박스·배너를 한 변에만 색을 입힌 막대(`border-left: 4px solid …` 류)로 꾸미지 않는다. active/선택 상태도 한쪽 컬러 border로 표시하지 않는다. 강조는 **전체 4변 `border` + 배경 채움(background tint) + `font-weight`**로 표현한다. 이 규칙은 **모든 HTML 산출물**(문서 출력·와이어프레임·디자인시스템·리포트·로드맵)에 적용되며, **Gatekeeping GK-07(Visual Adequacy)의 `no-single-side-accent-border` 체크로 강제**된다 — 위반 시 감점/FAIL.
 
 | Prohibited (금지 — 장식/강조용 단면 border) | Use instead (대체) |
 |---|---|

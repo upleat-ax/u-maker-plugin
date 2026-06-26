@@ -53,6 +53,7 @@ Generates daily HTML reports summarizing project progress.
    - Document status table (all docs across phases)
    - Gatekeeper scores table with pass/fail badges
    - Changes list
+   - **Any inline markup/styles you inject MUST obey the single-side accent border ban** — no decorative `border-left/right/top/bottom` color bars and no color-bar active/badge states; emphasize with full 4-side `border` + background tint + `font-weight` (see `skills/u-engine/references/html-engine.md` §Border/Accent rules; enforced by Gatekeeping GK-07). Neutral 1px dividers and data markers stay fine.
 3. Write to `reports/{YYYY-MM-DD}/daily-report.html`
 
 ### Step 5: Summary Output

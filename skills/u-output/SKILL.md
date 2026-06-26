@@ -66,7 +66,7 @@ For each document to process:
 
 ### Step 3: Generate HTML via html-engine
 
-Process each document according to its type.
+Process each document according to its type. **Apply html-engine's full CSS rules — including the HARD RULE `§Border/Accent — 한쪽 border 강조 금지`**: no single-side accent borders (decorative `border-left/right/top/bottom` color bars, color-bar nav/tab active states, accent heading underlines); emphasize with full 4-side `border` + background tint + `font-weight`. Neutral 1px dividers, focus rings, and chart/data markers are allowed. Enforced by Gatekeeping GK-07.
 
 #### Split Documents (Domain Split)
 

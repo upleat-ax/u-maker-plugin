@@ -2,6 +2,34 @@
 
 All notable changes to u-maker-plugin.
 
+## [4.0.0-alpha.27] — 2026-06-26
+
+**Single-side accent border ban is now gate-ENFORCED, not just documented: GK-07 gains a `no-single-side-accent-border` check, and the rule is wired into every HTML generator + the report agent.**
+
+The "한쪽 border만 강조 금지" rule has existed in `html-engine.md` since `4.0.0-alpha.23` and the shipped templates already comply — but it was a generation-time guideline with **no verification step**, so a decorative single-side border could still slip into HTML output (e.g. an agent injecting `border-left: 4px solid {accent}` or a color-bar `active` state) without being caught. This release gives the ban teeth and closes the coverage gaps the user asked to exclude.
+
+### Changed
+
+- **`_meta/schemas/gate-rules.json` — GK-07 (Visual Adequacy) gains the `no-single-side-accent-border` check** and an expanded description: emphasis must use a full 4-side `border` + background tint + `font-weight`; decorative single-side `border-left/right/top/bottom` bars and color-bar active states are a violation. Neutral 1px dividers, focus rings, and chart/timeline data markers remain allowed. Violations now cost GK-07 score → can drop a doc below the pass (95) / deploy (98) thresholds.
+- **`skills/u-engine/references/html-engine.md` §Border/Accent — promoted to a HARD RULE** explicitly scoped to **all** HTML output (document output, wireframe, design system, reports, roadmap) and cross-linked to the GK-07 enforcement check (violation ⇒ 감점/FAIL).
+- **Generation-time reinforcement at the two riskiest free-form HTML paths** — `skills/u-output/SKILL.md` Step 3 and `agents/u-agent-report.md` Step 4 now call out the single-side accent border ban inline (with the 4-side border + bg-tint + weight alternative), so the agent applies it while emitting markup rather than relying solely on reading the full engine reference.
+- **`skills/u-gatekeeping/references/doc-scoring.md` — GK-07 row** updated to name the single-side accent border ban.
+- **No template changes needed** — an audit of all `_meta/templates/*.html` + skill templates (output, split, daily-report, design-system, wireframe, roadmap) confirmed every existing single-side border is a **neutral** divider or an **allowed** Gantt/chart data-marker; none are decorative accent bars. The change is enforcement + visibility, not a template fix.
+
+## [4.0.0-alpha.26] — 2026-06-26
+
+**Side-effect gate de-noised a THIRD time + an emphasized impact banner: in `auto` it now fires ONLY on a behavior-MODIFYING fix to shared, implemented code — purely additive edits pass silently — and every prompt leads with `⚠️ SIDE-EFFECT IMPACT — 사이드이펙트 영향도 있음`.**
+
+The `4.0.0-alpha.25` gate required two signals — *already-implemented* (git-tracked + clean) **AND** *depended-upon* (imported by another file). But in a settled repo almost every meaningful file is **both** tracked+clean **and** imported somewhere, so the gate still fired on the first touch of nearly every shared file. This release adds the missing discriminator the user asked for — *"fix하는 경우에만 … 사이드이펙트가 있을 수 있는 경우에만 물어본다"* — distinguishing a **fix that changes existing behavior** from **forward construction that merely adds code**: a third signal **(C) MODIFYING** gates only when the edit rewrites/deletes existing lines, while **purely additive** insertions to a shared file (which leave every existing line dependents rely on intact) now pass freely. It also makes the impact **unmistakable**: every approval prompt leads with an emphasized side-effect banner.
+
+### Changed
+
+- **`hooks/on-edit-guard.js` — `auto` mode now requires THREE signals, not two.** A file is gated only when it is **(A) already-implemented** (git-tracked AND clean vs HEAD) **AND (B) has dependents** (≥1 other source file imports/references it) **AND (C) the edit MODIFIES existing code** rather than purely adding to it. (C) is computed from the tool input: **Edit/MultiEdit** are additive iff every `new_string` contains its `old_string` verbatim (an insertion around untouched code); **Write** is additive iff the new content contains the entire existing file verbatim (append/prepend/wrap); **Bash** mutations (`sed -i` / redirect / `rm` / `mv` / interpreter writes) are inherently modifying. **Purely additive** edits to shared, implemented files now pass freely — forward construction in an existing file no longer prompts. Only a genuine behavior-changing fix to depended-upon code is gated.
+- **Emphasized impact banner on every prompt.** The native approval prompt (`permissionDecisionReason`) and the injected `systemMessage` now **lead with** `⚠️  SIDE-EFFECT IMPACT — 사이드이펙트 영향도 있음  ⚠️`, then name the affected dependents — so it is immediately clear the change can ripple into other features/UI (사용자 지시: *"사이드이펙트 영향도가 있다는 강조된 표현을 꼭 보여주도록"*).
+- **`strict` mode unchanged in spirit** — still gates EVERY change (add *or* modify) to EVERY existing file (no implemented/dependent/additive checks; `git apply`/`patch` also gated), for git-less projects or maximum caution. **`off` unchanged.**
+- **Known boundary (new, documented, by design):** **Boundary 3 — the additive/modifying split is structural.** An insertion that still alters runtime behavior for existing callers (e.g. an early `return` / guard clause spliced into a function) reads as *additive* and passes silently. That residual **behavior-delta** remains the agent's responsibility under the `/u-dev` Step 0.5 impact analysis. (Boundary 2 stands: HTTP API routes / DB schema / env contracts are cross-feature surfaces the import-graph heuristic does not detect.)
+- **Docs realigned to the NEW / IN-PROGRESS / IMPLEMENTED·LEAF / IMPLEMENTED·SHARED·(ADDITIVE|MODIFYING) model** — `skills/u-dev/references/change-safety.md` (purpose, gate-mode table, §1 ADDITIVE/MODIFYING split + Boundary 3, §2/§4 scoped to MODIFYING + banner), `skills/u-dev/SKILL.md` Step 0.5, `agents/u-agent-dev.md`, `skills/u-build/SKILL.md`, `agents/u-agent-build.md`, `skills/u-dev/references/code-gen-rules.md`, and the `hooks/hooks.json` description.
+
 ## [4.0.0-alpha.25] — 2026-06-26
 
 **Side-effect gate de-noised again: it now fires only on fixes to already-implemented code THAT OTHER CODE DEPENDS ON — not on every committed file.**
