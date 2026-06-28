@@ -26,9 +26,9 @@
 │   ├── admin/                  → Next.js 15 (App Router) — 관리자 대시보드
 │   └── backend/                → Nest.js API 서버 (포트 2920, prefix /v1)
 ├── packages/
-│   ├── ui-backoffice/          → @{{PROJECT_NAME}}/ui-backoffice
-│   ├── ui-common/              → @{{PROJECT_NAME}}/ui-common
-│   ├── ui-app/               → @{{PROJECT_NAME}}/ui-app
+│   ├── ui-atomics/             → @{{PROJECT_NAME}}/ui-atomics    (atoms: raw HTML + css + inline style)
+│   ├── ui-molecules/           → @{{PROJECT_NAME}}/ui-molecules  (atomics 조합만)
+│   ├── ui-organisms/           → @{{PROJECT_NAME}}/ui-organisms  (molecules + atomics 조합만)
 │   ├── hooks/                  → @{{PROJECT_NAME}}/hooks
 │   ├── data/                   → @{{PROJECT_NAME}}/data
 │   ├── domain/                 → @{{PROJECT_NAME}}/domain
@@ -45,8 +45,10 @@
 
 ```
 apps/* → hooks → data → domain ← infrastructure
-apps/* → ui-*  → tokens
+apps/* → ui-organisms → ui-molecules → ui-atomics → tokens
 ```
+
+UI 패키지는 **Atomic Design 계층**으로 나뉘며, 각 계층은 **자신보다 엄격히 하위인 계층만** 의존한다 (역방향·동위 의존 금지).
 
 패키지별 의존 관계:
 
@@ -58,12 +60,14 @@ apps/* → ui-*  → tokens
 | `data` | `@{{PROJECT_NAME}}/domain` |
 | `infrastructure` | `@{{PROJECT_NAME}}/domain` |
 | `hooks` | `@{{PROJECT_NAME}}/data`, `@{{PROJECT_NAME}}/domain` |
-| `ui-*` | `@{{PROJECT_NAME}}/tokens` |
-| `apps/*` | `@{{PROJECT_NAME}}/hooks`, `@{{PROJECT_NAME}}/ui-*`, `@{{PROJECT_NAME}}/infrastructure`, `@{{PROJECT_NAME}}/domain` |
+| `ui-atomics` | `@{{PROJECT_NAME}}/tokens` |
+| `ui-molecules` | `@{{PROJECT_NAME}}/ui-atomics`, `@{{PROJECT_NAME}}/tokens` |
+| `ui-organisms` | `@{{PROJECT_NAME}}/ui-molecules`, `@{{PROJECT_NAME}}/ui-atomics`, `@{{PROJECT_NAME}}/tokens` |
+| `apps/*` | `@{{PROJECT_NAME}}/hooks`, `@{{PROJECT_NAME}}/ui-organisms`(+`ui-molecules`/`ui-atomics`), `@{{PROJECT_NAME}}/infrastructure`, `@{{PROJECT_NAME}}/domain` |
 
 **역방향 의존 절대 금지.**
 
-**디자인(UI/UX)도 이 파이프라인을 따른다** — `apps/*` 는 `ui-*` 컴포넌트 **조립**만 담당하고, 시각 스타일은 `ui-*` 가 소유하며 token·design-system 을 준수한다. `apps/* → ui-* → tokens`. 상세 do/don't 는 생성되는 `DESIGN.md` §0 참조.
+**디자인(UI/UX)도 이 파이프라인을 따른다** — `apps/*` 는 `ui-*` 컴포넌트 **조립**만 담당하고, UI 패키지 내부는 Atomic Design 계층(atomics → molecules → organisms)으로 흐른다. **raw HTML·CSS·inline style 은 오직 `ui-atomics`(원자) 에서만 허용**되고, `ui-molecules`·`ui-organisms`·`apps/*` 는 하위 컴포넌트를 **조립만** 한다. 상세 do/don't 는 생성되는 `DESIGN.md` §0 참조.
 
 ---
 
@@ -75,9 +79,9 @@ apps/* → ui-*  → tokens
 | BE Framework | Nest.js 10+ | apps/backend 전용 |
 | 서버 상태 | TanStack Query v5 | packages/hooks |
 | 클라이언트 상태 | Zustand | 최소한으로 사용 |
-| 스타일링 | 순수 CSS (.css 파일) | `ui-*` 한정 CSS Modules(.module.css) 허용; CSS-in-JS·Sass·inline 금지. `apps/*` 는 스타일 미소유(조립만) |
-| 디자인 토큰 | CSS Custom Properties | packages/tokens |
-| 컴포넌트 문서화 | Storybook 8 | packages/ui-* |
+| 스타일링 | 순수 CSS (.css 파일) + token | **`ui-atomics` 한정** raw HTML·CSS Modules(.module.css)·inline style(`style={{…}}`) 허용. `ui-molecules`·`ui-organisms` 는 하위 컴포넌트 조립만(자체 CSS·inline·raw HTML 금지). `apps/*` 도 조립만. CSS-in-JS·Sass·SCSS 는 전 계층 금지 |
+| 디자인 토큰 | CSS Custom Properties | packages/tokens. atomics 의 inline style 도 themeable 값은 `var(--*)` 우선(동적 계산값만 raw 허용) |
+| 컴포넌트 문서화 | Storybook 8 | packages/ui-atomics · ui-molecules · ui-organisms |
 | 린트 | ESLint 9 (Flat Config) | eslint-plugin-header 사용 금지 |
 | 타입 | TypeScript 5.x (Strict) | 공유 tsconfig 상속 |
 
@@ -88,10 +92,10 @@ apps/* → ui-*  → tokens
 1. **함수형 Only** — class 사용 절대 금지 (Nest.js 제외)
 2. **TanStack Query 훅 = usecase** — 별도 usecase 레이어 없음
 3. **Server Component 기본** — `'use client'`는 필요 시에만
-4. **순수 CSS + Design Tokens** — `var(--*)` 참조, inline style 금지. `ui-*` 에 한해 CSS Modules(`*.module.css`) 허용
+4. **Atomic Design 스타일 경계** — **raw HTML·CSS·inline style 은 `ui-atomics`(원자) 에서만.** `ui-molecules`·`ui-organisms`·`apps/*` 는 하위 컴포넌트 조립만(자체 raw HTML·inline style·CSS 금지). atomics 의 inline style 도 themeable 값은 `var(--*)` 우선. CSS Modules(`*.module.css`)는 `ui-atomics` 한정 허용
 5. **Named export만 사용** — default export 금지 (Next.js page/layout 제외)
 6. **Import alias**: `@/` → `src/` (앱 내부), `@{{PROJECT_NAME}}/` → `packages/*`
-7. **디자인 의존 파이프라인** — `apps/*` 는 `ui-*` 컴포넌트 조립만, 시각 스타일은 `ui-*` 가 소유(token·design-system 준수). `ui-*` 로 구현 불가 시 사용자에게 알리고 `ui-*` 확장 (DESIGN.md §0)
+7. **디자인 의존 파이프라인** — `apps/* → ui-organisms → ui-molecules → ui-atomics → tokens`. 각 상위 계층은 하위 계층 컴포넌트를 **조립만** 한다. 필요한 atom·molecule·organism 이 없으면 우회(raw HTML/inline style)하지 말고 **사용자에게 알린 뒤** 해당 계층 패키지를 확장 (DESIGN.md §0)
 
 ---
 
@@ -968,15 +972,17 @@ export * from "./mutations";
 
 ---
 
-### §6.7 packages/ui-common (ui-backoffice, ui-app도 동일 구조)
+### §6.7 packages/ui-atomics
 
-세 UI 패키지 모두 아래 구조를 따른다. `{{UI_PACKAGE}}`는 각각 `ui-common`, `ui-backoffice`, `ui-app`로 치환.
+**원자(atom) 계층.** raw HTML 요소를 감싸 디자인 시스템의 기본 빌딩블록을 만든다. **이 모노레포에서 raw HTML·CSS(`.css`/CSS Modules)·inline style(`style={{…}}`)·`style` 속성을 직접 쓸 수 있는 유일한 패키지**다. 상위 계층(`ui-molecules`·`ui-organisms`)과 `apps/*` 는 atomics 를 **조립만** 한다. inline style 의 themeable 값(색·간격·radius 등)은 `var(--*)` 토큰을 우선 사용하고, 동적 계산값(progress width·차트 좌표 등)만 raw 값을 허용한다. → `@{{PROJECT_NAME}}/tokens` 의존.
+
+원자 세트(스캐폴드 기본): 콘텐츠·인터랙션 atom `Button`·`Input`·`Label`·`Text`·`Form`, 레이아웃 atom `Box`·`Stack`. 상위 계층이 raw HTML 없이 조립할 수 있도록 레이아웃 atom 을 함께 제공한다.
 
 #### package.json
 
 ```json
 {
-  "name": "@{{PROJECT_NAME}}/{{UI_PACKAGE}}",
+  "name": "@{{PROJECT_NAME}}/ui-atomics",
   "version": "0.0.0",
   "private": true,
   "main": "src/index.ts",
@@ -1210,15 +1216,464 @@ export const Ghost: Story = {
 export { Button, type ButtonProps } from "./Button";
 ```
 
-#### src/index.ts
+#### src/components/Input/Input.tsx
+
+```tsx
+import type { InputHTMLAttributes } from "react";
+import "./Input.css";
+
+interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
+  invalid?: boolean;
+}
+
+const Input = ({ invalid = false, className = "", ...props }: InputProps) => {
+  return (
+    <input
+      className={`input ${invalid ? "input--invalid" : ""} ${className}`.trim()}
+      aria-invalid={invalid || undefined}
+      {...props}
+    />
+  );
+};
+
+export { Input, type InputProps };
+```
+
+#### src/components/Input/Input.css
+
+```css
+.input {
+  width: 100%;
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-family: var(--font-family-sans);
+  font-size: var(--font-size-base);
+  color: var(--color-text);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+.input:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 1px;
+}
+
+.input--invalid {
+  border-color: var(--color-error);
+}
+```
+
+#### src/components/Input/index.ts
+
+```ts
+export { Input, type InputProps } from "./Input";
+```
+
+#### src/components/Label/Label.tsx
+
+```tsx
+import type { LabelHTMLAttributes, ReactNode } from "react";
+import "./Label.css";
+
+interface LabelProps extends LabelHTMLAttributes<HTMLLabelElement> {
+  children: ReactNode;
+}
+
+const Label = ({ children, className = "", ...props }: LabelProps) => {
+  return (
+    <label className={`label ${className}`.trim()} {...props}>
+      {children}
+    </label>
+  );
+};
+
+export { Label, type LabelProps };
+```
+
+#### src/components/Label/Label.css
+
+```css
+.label {
+  display: inline-block;
+  font-family: var(--font-family-sans);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text);
+}
+```
+
+#### src/components/Label/index.ts
+
+```ts
+export { Label, type LabelProps } from "./Label";
+```
+
+#### src/components/Text/Text.tsx
+
+```tsx
+import type { ElementType, ReactNode } from "react";
+import "./Text.css";
+
+interface TextProps {
+  as?: ElementType;
+  size?: "sm" | "base" | "lg" | "xl";
+  weight?: "regular" | "medium" | "semibold" | "bold";
+  tone?: "default" | "muted" | "error";
+  children: ReactNode;
+}
+
+const Text = ({
+  as: Tag = "span",
+  size = "base",
+  weight = "regular",
+  tone = "default",
+  children,
+}: TextProps) => {
+  return (
+    <Tag className={`text text--${size} text--${weight} text--${tone}`}>
+      {children}
+    </Tag>
+  );
+};
+
+export { Text, type TextProps };
+```
+
+#### src/components/Text/Text.css
+
+```css
+.text { font-family: var(--font-family-sans); }
+.text--sm { font-size: var(--font-size-sm); }
+.text--base { font-size: var(--font-size-base); }
+.text--lg { font-size: var(--font-size-lg); }
+.text--xl { font-size: var(--font-size-xl); }
+.text--regular { font-weight: var(--font-weight-regular); }
+.text--medium { font-weight: var(--font-weight-medium); }
+.text--semibold { font-weight: var(--font-weight-semibold); }
+.text--bold { font-weight: var(--font-weight-bold); }
+.text--default { color: var(--color-text); }
+.text--muted { color: var(--color-text-muted); }
+.text--error { color: var(--color-error); }
+```
+
+#### src/components/Text/index.ts
+
+```ts
+export { Text, type TextProps } from "./Text";
+```
+
+#### src/components/Form/Form.tsx
+
+```tsx
+import type { FormHTMLAttributes, ReactNode } from "react";
+
+interface FormProps extends FormHTMLAttributes<HTMLFormElement> {
+  children: ReactNode;
+}
+
+// raw <form> 은 atom 에서만. 상위 계층은 이 Form 을 조립한다.
+const Form = ({ children, ...props }: FormProps) => {
+  return <form {...props}>{children}</form>;
+};
+
+export { Form, type FormProps };
+```
+
+#### src/components/Form/index.ts
+
+```ts
+export { Form, type FormProps } from "./Form";
+```
+
+#### src/components/Box/Box.tsx
+
+```tsx
+import type { CSSProperties, ElementType, ReactNode } from "react";
+
+interface BoxProps {
+  as?: ElementType;
+  padding?: string;
+  background?: string;
+  radius?: string;
+  style?: CSSProperties;
+  children?: ReactNode;
+}
+
+// 레이아웃 atom — inline style 로 표현(atomics 한정 허용). themeable 값은 token 우선.
+const Box = ({ as: Tag = "div", padding, background, radius, style, children }: BoxProps) => {
+  return (
+    <Tag
+      style={{
+        padding,
+        background,
+        borderRadius: radius,
+        ...style,
+      }}
+    >
+      {children}
+    </Tag>
+  );
+};
+
+export { Box, type BoxProps };
+```
+
+#### src/components/Box/index.ts
+
+```ts
+export { Box, type BoxProps } from "./Box";
+```
+
+#### src/components/Stack/Stack.tsx
+
+```tsx
+import type { CSSProperties, ReactNode } from "react";
+
+interface StackProps {
+  direction?: "row" | "column";
+  gap?: string;
+  align?: CSSProperties["alignItems"];
+  justify?: CSSProperties["justifyContent"];
+  children?: ReactNode;
+}
+
+// 레이아웃 atom — flex 를 inline style 로 표현(atomics 한정 허용). gap 은 token 우선.
+const Stack = ({
+  direction = "column",
+  gap = "var(--spacing-md)",
+  align,
+  justify,
+  children,
+}: StackProps) => {
+  return (
+    <div
+      style={{
+        display: "flex",
+        flexDirection: direction,
+        gap,
+        alignItems: align,
+        justifyContent: justify,
+      }}
+    >
+      {children}
+    </div>
+  );
+};
+
+export { Stack, type StackProps };
+```
+
+#### src/components/Stack/index.ts
+
+```ts
+export { Stack, type StackProps } from "./Stack";
+```
+
+#### src/index.ts (barrel — 모든 atom)
 
 ```ts
 export * from "./components/Button";
+export * from "./components/Input";
+export * from "./components/Label";
+export * from "./components/Text";
+export * from "./components/Form";
+export * from "./components/Box";
+export * from "./components/Stack";
+```
+
+> **ui-atomics 규칙:** atom 만 raw HTML·CSS·inline style 을 쓴다. 같은 raw 패턴(같은 native 요소 + 스타일)이 두 번 이상 필요하면 그때마다 새 atom 으로 만들고, 상위 계층은 atom 을 조립한다. inline style 의 themeable 값은 `var(--*)` 우선.
+
+---
+
+### §6.8 packages/ui-molecules
+
+**분자(molecule) 계층.** `ui-atomics` 의 atom 들을 **조립만** 해 한 단계 높은 재사용 단위(예: 라벨+입력+에러로 구성된 `Field`)를 만든다. **raw HTML·inline style·자체 `.css` 를 쓰지 않는다** — 시각 표현은 atom 의 props 로만 준다. 필요한 시각 기능이 없으면 molecule 에서 때우지 말고 `ui-atomics` 의 atom 을 추가/확장한다. → `@{{PROJECT_NAME}}/ui-atomics`, `@{{PROJECT_NAME}}/tokens` 의존.
+
+#### package.json
+
+```json
+{
+  "name": "@{{PROJECT_NAME}}/ui-molecules",
+  "version": "0.0.0",
+  "private": true,
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "scripts": {
+    "build": "tsc --project tsconfig.json",
+    "lint": "eslint .",
+    "storybook": "storybook dev -p 6007",
+    "build-storybook": "storybook build"
+  },
+  "dependencies": {
+    "@{{PROJECT_NAME}}/ui-atomics": "workspace:*",
+    "@{{PROJECT_NAME}}/tokens": "workspace:*"
+  },
+  "peerDependencies": {
+    "react": "^18.0.0 || ^19.0.0",
+    "react-dom": "^18.0.0 || ^19.0.0"
+  },
+  "devDependencies": {
+    "@{{PROJECT_NAME}}/config": "workspace:*",
+    "@storybook/react": "^8.0.0",
+    "@storybook/react-vite": "^8.0.0",
+    "storybook": "^8.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "typescript": "^5.0.0",
+    "eslint": "^9.0.0"
+  }
+}
+```
+
+`tsconfig.json` · `eslint.config.js` · `.storybook/main.ts` · `.storybook/preview.ts` 는 **§6.7 ui-atomics 와 동일**(storybook 포트만 6007).
+
+#### src/components/Field/Field.tsx
+
+```tsx
+import { useId } from "react";
+import { Stack, Label, Input, Text, type InputProps } from "@{{PROJECT_NAME}}/ui-atomics";
+
+interface FieldProps extends InputProps {
+  label: string;
+  error?: string;
+}
+
+// molecule: atomics 조합만 — raw HTML·inline style·자체 CSS 없음.
+const Field = ({ label, error, id, ...inputProps }: FieldProps) => {
+  const autoId = useId();
+  const fieldId = id ?? autoId;
+  return (
+    <Stack gap="var(--spacing-xs)">
+      <Label htmlFor={fieldId}>{label}</Label>
+      <Input id={fieldId} invalid={!!error} {...inputProps} />
+      {error ? (
+        <Text size="sm" tone="error">
+          {error}
+        </Text>
+      ) : null}
+    </Stack>
+  );
+};
+
+export { Field, type FieldProps };
+```
+
+#### src/components/Field/index.ts
+
+```ts
+export { Field, type FieldProps } from "./Field";
+```
+
+#### src/index.ts
+
+```ts
+export * from "./components/Field";
 ```
 
 ---
 
-### §6.8 apps/web, apps/admin (Next.js)
+### §6.9 packages/ui-organisms
+
+**유기체(organism) 계층.** `ui-molecules` 와 `ui-atomics` 를 **조립만** 해 한 화면 안의 독립 섹션(예: `LoginForm`)을 만든다. molecule 과 마찬가지로 **raw HTML·inline style·자체 `.css` 금지** — 하위 컴포넌트 조립과 props 로만 구성한다. `apps/*` 는 주로 이 organism 들을 가져다 화면을 조립한다. → `@{{PROJECT_NAME}}/ui-molecules`, `@{{PROJECT_NAME}}/ui-atomics`, `@{{PROJECT_NAME}}/tokens` 의존.
+
+#### package.json
+
+```json
+{
+  "name": "@{{PROJECT_NAME}}/ui-organisms",
+  "version": "0.0.0",
+  "private": true,
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "scripts": {
+    "build": "tsc --project tsconfig.json",
+    "lint": "eslint .",
+    "storybook": "storybook dev -p 6008",
+    "build-storybook": "storybook build"
+  },
+  "dependencies": {
+    "@{{PROJECT_NAME}}/ui-molecules": "workspace:*",
+    "@{{PROJECT_NAME}}/ui-atomics": "workspace:*",
+    "@{{PROJECT_NAME}}/tokens": "workspace:*"
+  },
+  "peerDependencies": {
+    "react": "^18.0.0 || ^19.0.0",
+    "react-dom": "^18.0.0 || ^19.0.0"
+  },
+  "devDependencies": {
+    "@{{PROJECT_NAME}}/config": "workspace:*",
+    "@storybook/react": "^8.0.0",
+    "@storybook/react-vite": "^8.0.0",
+    "storybook": "^8.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "typescript": "^5.0.0",
+    "eslint": "^9.0.0"
+  }
+}
+```
+
+`tsconfig.json` · `eslint.config.js` · `.storybook/main.ts` · `.storybook/preview.ts` 는 **§6.7 ui-atomics 와 동일**(storybook 포트만 6008).
+
+#### src/components/LoginForm/LoginForm.tsx
+
+```tsx
+"use client";
+
+import type { FormEvent } from "react";
+import { Form, Stack, Button } from "@{{PROJECT_NAME}}/ui-atomics";
+import { Field } from "@{{PROJECT_NAME}}/ui-molecules";
+
+interface LoginFormProps {
+  onSubmit?: (data: { email: string; password: string }) => void;
+}
+
+// organism: molecules + atomics 조합만 — raw HTML·inline style·자체 CSS 없음.
+const LoginForm = ({ onSubmit }: LoginFormProps) => {
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const data = new FormData(event.currentTarget);
+    onSubmit?.({
+      email: String(data.get("email") ?? ""),
+      password: String(data.get("password") ?? ""),
+    });
+  };
+
+  return (
+    <Form onSubmit={handleSubmit}>
+      <Stack gap="var(--spacing-md)">
+        <Field label="Email" name="email" type="email" required />
+        <Field label="Password" name="password" type="password" required />
+        <Button type="submit" variant="primary">
+          Sign In
+        </Button>
+      </Stack>
+    </Form>
+  );
+};
+
+export { LoginForm, type LoginFormProps };
+```
+
+#### src/components/LoginForm/index.ts
+
+```ts
+export { LoginForm, type LoginFormProps } from "./LoginForm";
+```
+
+#### src/index.ts
+
+```ts
+export * from "./components/LoginForm";
+```
+
+---
+
+### §6.10 apps/web, apps/admin (Next.js)
 
 두 Next.js 앱 모두 동일 구조. `{{APP_NAME}}`은 각각 `web`, `admin`으로 치환.
 포트: web=3000, admin=3001.
@@ -1241,7 +1696,9 @@ export * from "./components/Button";
     "@{{PROJECT_NAME}}/hooks": "workspace:*",
     "@{{PROJECT_NAME}}/infrastructure": "workspace:*",
     "@{{PROJECT_NAME}}/tokens": "workspace:*",
-    "@{{PROJECT_NAME}}/ui-common": "workspace:*",
+    "@{{PROJECT_NAME}}/ui-atomics": "workspace:*",
+    "@{{PROJECT_NAME}}/ui-molecules": "workspace:*",
+    "@{{PROJECT_NAME}}/ui-organisms": "workspace:*",
     "@tanstack/react-query": "^5.0.0",
     "next": "^15.0.0",
     "react": "^19.0.0",
@@ -1257,7 +1714,7 @@ export * from "./components/Button";
 }
 ```
 
-`apps/admin`은 추가로 `@{{PROJECT_NAME}}/ui-backoffice` 의존 포함.
+`web`·`admin` 두 앱 모두 동일하게 UI 계층(`ui-organisms` → `ui-molecules` → `ui-atomics`)을 의존한다. admin/web 의 시각 차이는 organism 의 variant props 또는 앱별 token 테마로 표현하며, 별도 surface 패키지를 만들지 않는다.
 
 #### next.config.ts
 
@@ -1266,9 +1723,9 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   transpilePackages: [
-    "@{{PROJECT_NAME}}/ui-common",
-    "@{{PROJECT_NAME}}/ui-backoffice",
-    "@{{PROJECT_NAME}}/ui-app",
+    "@{{PROJECT_NAME}}/ui-atomics",
+    "@{{PROJECT_NAME}}/ui-molecules",
+    "@{{PROJECT_NAME}}/ui-organisms",
     "@{{PROJECT_NAME}}/hooks",
     "@{{PROJECT_NAME}}/data",
     "@{{PROJECT_NAME}}/domain",
@@ -1351,21 +1808,25 @@ export default function RootLayout({ children }: { children: ReactNode }) {
 #### src/app/page.tsx
 
 ```tsx
-import { Button } from "@{{PROJECT_NAME}}/ui-common";
+import { Stack, Text, Button } from "@{{PROJECT_NAME}}/ui-atomics";
 
 export default function HomePage() {
   return (
     <main className="page-main">
-      <h1>{{APP_NAME}}</h1>
-      <p>Welcome to {{APP_NAME}}</p>
-      <Button variant="primary">Get Started</Button>
+      <Stack gap="var(--spacing-md)">
+        <Text as="h1" size="xl" weight="bold">
+          {{APP_NAME}}
+        </Text>
+        <Text tone="muted">Welcome to {{APP_NAME}}</Text>
+        <Button variant="primary">Get Started</Button>
+      </Stack>
     </main>
   );
 }
 ```
 
 > Note: `page.tsx`와 `layout.tsx`는 Next.js 규칙상 default export를 사용한다.
-> 이 시작 `page.tsx`(`<main className="page-main">` + bare `<h1>`/`<p>`)는 **의도적인 최소 placeholder**다 — 실제 화면 구현 시 DESIGN.md §0 의 apps/* 계층 규칙(ui-* 조립, raw CSS·className 최소화)에 맞춰 교체한다.
+> 이 시작 `page.tsx` 는 **의도적인 최소 placeholder**다 — `<main className="page-main">` 은 허용되는 페이지 레벨 semantic wrapper 이고, 내용은 `ui-atomics` atom(`Stack`/`Text`/`Button`) 조립으로 구성했다. 실제 화면 구현 시 DESIGN.md §0 의 apps/* 계층 규칙(주로 `ui-organisms` 조립, raw HTML/inline style·raw CSS·className 최소화)에 맞춰 교체한다.
 
 #### src/lib/api.ts
 
@@ -1381,7 +1842,7 @@ export const apiClient = createApiClient();
 
 ---
 
-### §6.9 apps/backend (Nest.js)
+### §6.11 apps/backend (Nest.js)
 
 #### package.json
 
@@ -1607,7 +2068,7 @@ export class UsersService {
     "dev": "turbo dev",
     "build": "turbo build",
     "lint": "turbo lint",
-    "storybook": "turbo storybook --filter=@{{PROJECT_NAME}}/ui-common",
+    "storybook": "turbo storybook --filter=@{{PROJECT_NAME}}/ui-atomics",
     "clean": "turbo clean && rm -rf node_modules"
   },
   "devDependencies": {
@@ -1682,10 +2143,11 @@ Turborepo 모노레포. 패키지 매니저 `bun@1.2.0`, Clean Architecture 레�
 ## 디자인시스템
 
 - 디자인/UI 공통 룰은 **`DESIGN.md`** 가 단일 출처(SSoT). 화면·컴포넌트 작업 전 반드시 참조한다.
-- 요약 — **디자인 의존 파이프라인 `apps/* → ui-* → tokens`** (2-tier):
-  - **`apps/*` (소비자)**: 화면을 `@{{PROJECT_NAME}}/ui-*` 컴포넌트 **조립만**으로 구현. raw HTML/CSS/inline style/`className` 최소화, form·interactive 요소는 반드시 `ui-*`. `ui-*` 로 구현 불가 시 우회하지 말고 **사용자에게 알리고** `ui-*` 확장.
-  - **`ui-*` (생산자)**: 모든 시각 스타일을 소유. `@{{PROJECT_NAME}}/tokens` design token(`var(--*)`) + design-system 문서 준수 하에 global `.css` 또는 CSS Modules(`*.module.css`).
-  - `ui-common`(공통) · `ui-backoffice`(admin) · `ui-app`(web 엔드유저). 상세는 DESIGN.md §0.
+- 요약 — **Atomic Design 의존 파이프라인 `apps/* → ui-organisms → ui-molecules → ui-atomics → tokens`**:
+  - **`ui-atomics` (원자)**: raw HTML·CSS·inline style·`style` 속성을 쓸 수 있는 **유일한** 계층. native 요소를 감싼 기본 빌딩블록(`Button`/`Input`/`Label`/`Text`/`Form`/`Box`/`Stack` 등). inline style 의 themeable 값은 `var(--*)` 토큰 우선.
+  - **`ui-molecules` (분자)**: `ui-atomics` 조립만. raw HTML·inline style·자체 CSS **금지**.
+  - **`ui-organisms` (유기체)**: `ui-molecules`+`ui-atomics` 조립만. raw HTML·inline style·자체 CSS **금지**.
+  - **`apps/*` (소비자)**: 화면을 `ui-*`(주로 organisms) 컴포넌트 **조립만**으로 구현. raw form·interactive HTML / inline style 금지, raw CSS·`className` 최소화. 필요한 atom·molecule·organism 이 없으면 우회하지 말고 **사용자에게 알리고** 해당 계층 패키지를 확장.
 - layout·token·props 변형·폼 정렬·상태 표현·접근성 등 세부 규칙은 `DESIGN.md` 참조. DESIGN.md 와 충돌하면 DESIGN.md 가 우선한다.
 
 @DESIGN.md
@@ -1706,13 +2168,15 @@ Turborepo 모노레포. 패키지 매니저 `bun@1.2.0`, Clean Architecture 레�
 
 ## 아키텍처 (Clean Architecture)
 
-의존 흐름: `apps/* → hooks → data → domain ← infrastructure`, `apps/* → ui-* → tokens`
+의존 흐름: `apps/* → hooks → data → domain ← infrastructure`, `apps/* → ui-organisms → ui-molecules → ui-atomics → tokens`
 
 - **domain** (`@{{PROJECT_NAME}}/domain`): 타입, 인터페이스, Zod 검증, 서비스. 외부 의존 없음.
 - **data** (`@{{PROJECT_NAME}}/data`): Repository 구현, Mapper, queryKeys, routes. → domain.
 - **infrastructure** (`@{{PROJECT_NAME}}/infrastructure`): axios apiClient, storage. → domain.
 - **hooks** (`@{{PROJECT_NAME}}/hooks`): TanStack Query 훅 = usecase. → data, domain.
-- **ui** (`@{{PROJECT_NAME}}/ui-common|ui-backoffice|ui-app`): 컴포넌트 + Storybook. → tokens.
+- **ui-atomics** (`@{{PROJECT_NAME}}/ui-atomics`): 원자 — raw HTML+CSS+inline style 허용 + Storybook. → tokens.
+- **ui-molecules** (`@{{PROJECT_NAME}}/ui-molecules`): 분자 — atomics 조합 + Storybook. → ui-atomics, tokens.
+- **ui-organisms** (`@{{PROJECT_NAME}}/ui-organisms`): 유기체 — molecules+atomics 조합 + Storybook. → ui-molecules, ui-atomics, tokens.
 
 Repository: 인터페이스는 `domain/src/repositories/`, 구현은 `data/src/repositories/`. API 호출 실패 시 mock fallback (`try { await api(...) } catch { return mockData }`).
 
@@ -1728,7 +2192,7 @@ Import alias: `@/` → 앱의 `src/`, `@{{PROJECT_NAME}}/` → `packages/*`.
 - 네이밍: 변수/함수 `camelCase`, 타입 `PascalCase`, 상수 `UPPER_SNAKE_CASE`, 파일 `kebab-case.ts`(컴포넌트 `PascalCase.tsx`).
 - Server Component 기본, 필요 시에만 `'use client'`.
 - 서버 상태는 TanStack Query(설치됨). 클라이언트 상태가 필요하면 Zustand 권장(스캐폴드 미포함 — 필요 시 추가).
-- 스타일: 순수 CSS(`.css`, `ui-*` 한정 CSS Modules `*.module.css` 도 가능) + design token. CSS-in-JS / Sass / SCSS / inline style 금지. 스타일은 `ui-*` 가 소유하고 `apps/*` 는 조립만(DESIGN.md §0).
+- 스타일: **raw HTML·CSS(`.css`/CSS Modules `*.module.css`)·inline style 은 `ui-atomics`(원자) 에서만** + design token. `ui-molecules`·`ui-organisms`·`apps/*` 는 하위 컴포넌트 조립만(자체 raw HTML·inline style·CSS 금지). atomics 의 inline style 도 themeable 값은 `var(--*)` 우선. CSS-in-JS / Sass / SCSS 는 전 계층 금지(DESIGN.md §0).
 - 공통 모듈은 `packages/*` 에 구현.
 
 ## 금지사항
@@ -1736,9 +2200,9 @@ Import alias: `@/` → 앱의 `src/`, `@{{PROJECT_NAME}}/` → `packages/*`.
 1. **앱에서 API 직접 호출 금지** — 반드시 `domain → data → hooks → apps` 경유.
 2. **Next.js API Route / Route Handler 금지** — 백엔드는 `apps/backend`(Nest.js, `/v1`) 가 담당.
 3. **클래스 금지** — 함수형만 (Nest.js 제외).
-4. **역방향 의존 금지** — domain 이 data/infrastructure/hooks 를 import 불가.
-5. **`packages/` 새 폴더 생성 금지** — 기존 패키지만 사용.
-6. **layout 용도 inline style 금지** — design token + `ui-*` 컴포넌트로 표현.
+4. **역방향 의존 금지** — domain 이 data/infrastructure/hooks 를 import 불가. UI 계층도 `ui-atomics → ui-molecules → ui-organisms` 단방향(상위가 하위만 import).
+5. **`packages/` 새 폴더 생성 금지** — 기존 패키지만 사용(원자/분자/유기체는 `ui-atomics`/`ui-molecules`/`ui-organisms` 에만 추가).
+6. **`ui-atomics` 밖에서 raw HTML·inline style 금지** — molecules·organisms·apps 는 하위 컴포넌트 조립 + props 로만 표현. 필요한 원시 표현이 없으면 atom 을 추가/확장.
 
 ## Git
 
@@ -1749,7 +2213,7 @@ Import alias: `@/` → 앱의 `src/`, `@{{PROJECT_NAME}}/` → `packages/*`.
 
 ### DESIGN.md
 
-프로젝트 루트에 생성하는 **디자인/UI 공통 룰**. 모든 프론트엔드 앱(`web`, `admin`)에 공통 적용되며, CLAUDE.md 의 디자인시스템 섹션이 이 문서를 단일 출처로 가리킨다. **실제 스캐폴드된 UI 패키지(`ui-common` / `ui-backoffice` / `ui-app`)와 token(`@{{PROJECT_NAME}}/tokens`) 구조에 맞춰** 기술한다 — 스캐폴드에 없는 컴포넌트(예: 아직 추출하지 않은 layout primitive)를 강제하지 않는다. `{{PROJECT_NAME}}` 치환을 적용하고, Step 6 git commit 에 포함된다.
+프로젝트 루트에 생성하는 **디자인/UI 공통 룰**. 모든 프론트엔드 앱(`web`, `admin`)에 공통 적용되며, CLAUDE.md 의 디자인시스템 섹션이 이 문서를 단일 출처로 가리킨다. **실제 스캐폴드된 Atomic Design UI 패키지(`ui-atomics` / `ui-molecules` / `ui-organisms`)와 token(`@{{PROJECT_NAME}}/tokens`) 구조에 맞춰** 기술한다 — 스캐폴드에 없는 컴포넌트를 강제하지 않되, **계층별 스타일 경계(원자만 raw HTML·inline style)** 는 항상 강제한다. `{{PROJECT_NAME}}` 치환을 적용하고, Step 6 git commit 에 포함된다.
 
 ```markdown
 # DESIGN.md — 디자인/UI 공통 룰
@@ -1758,66 +2222,77 @@ Import alias: `@/` → 앱의 `src/`, `@{{PROJECT_NAME}}/` → `packages/*`.
 
 | 앱 | UI surface | 사용 UI 패키지 |
 |----|-----------|----------------|
-| `apps/admin` | 관리자/백오피스 | `@{{PROJECT_NAME}}/ui-backoffice` (+ `@{{PROJECT_NAME}}/ui-common`) |
-| `apps/web` | 엔드유저 앱 | `@{{PROJECT_NAME}}/ui-app` (+ `@{{PROJECT_NAME}}/ui-common`) |
+| `apps/web` | 엔드유저 앱 | `@{{PROJECT_NAME}}/ui-organisms` → `ui-molecules` → `ui-atomics` |
+| `apps/admin` | 관리자/백오피스 | `@{{PROJECT_NAME}}/ui-organisms` → `ui-molecules` → `ui-atomics` |
 | `apps/backend` | — | UI 없음 (Nest.js API) |
 
-모든 앱은 `@{{PROJECT_NAME}}/tokens` 의 design token(`var(--*)`)을 단일 출처로 사용한다. UI 구현은 **`apps/*`(소비자) ↔ `packages/ui-*`(생산자)** 두 계층으로 나뉘며 계층마다 규칙이 다르다 — **§0 디자인 의존 파이프라인을 먼저 읽는다.** 앱별 세부 룰(화면 패턴 등)은 각 `apps/<app>/` 내부 컨벤션을 따른다. 운영·아키텍처·금지사항·git 등 디자인 외 룰은 루트 `CLAUDE.md` 참조. DESIGN.md 의 원칙과 충돌하면 DESIGN.md 가 우선한다.
+모든 앱은 `@{{PROJECT_NAME}}/tokens` 의 design token(`var(--*)`)을 단일 출처로 사용한다. UI 구현은 **Atomic Design 4 계층**(`apps/*` 소비자 → `ui-organisms` → `ui-molecules` → `ui-atomics` 원자)으로 나뉘며 계층마다 규칙이 다르다 — **§0 디자인 의존 파이프라인을 먼저 읽는다.** 핵심: **raw HTML·CSS·inline style 은 `ui-atomics` 에서만**, 그 위는 전부 **조립(composition)**. admin/web 의 시각 차이는 organism 의 variant props 또는 앱별 token 테마로 표현하며 별도 surface 패키지를 만들지 않는다. 운영·아키텍처·금지사항·git 등 디자인 외 룰은 루트 `CLAUDE.md` 참조. DESIGN.md 의 원칙과 충돌하면 DESIGN.md 가 우선한다.
 
 ---
 
-## 0. 디자인 의존 파이프라인 (apps ↔ ui-* 경계)
+## 0. 디자인 의존 파이프라인 (Atomic Design 계층 경계)
 
-코드의 의존 흐름(`apps/* → ui-* → tokens`)은 **디자인(UI/UX)에도 그대로 적용된다.** UI 구현은 두 계층으로 나뉘며, 스타일의 소유 주체가 계층마다 다르다.
+코드의 의존 흐름(`apps/* → ui-organisms → ui-molecules → ui-atomics → tokens`)은 **디자인(UI/UX)에도 그대로 적용된다.** UI 는 네 계층으로 나뉘고, **raw HTML·CSS·inline style 을 쓸 수 있는 계층은 `ui-atomics`(원자) 하나뿐**이다. 그 위 계층은 전부 하위 컴포넌트를 **조립**만 한다.
 
-| 계층 | 역할 | 스타일 소유 | 사용 가능한 도구 |
-|------|------|------------|------------------|
-| **`apps/*`** (소비자) | 화면을 `ui-*` 컴포넌트의 **조립(composition)** 으로 구성 | 거의 없음 — 페이지 레벨 레이아웃 한정 | `ui-*` 컴포넌트 + props |
-| **`packages/ui-*`** (생산자) | UI 의 모양·변형·상태를 **소유**하고 구현 | 전부 — 모든 시각 스타일이 여기 산다 | design token + design-system 문서 준수 하에 global `.css` / **CSS Modules(`*.module.css`)** |
+| 계층 | 역할 | raw HTML·inline style·자체 CSS | 사용 가능한 도구 |
+|------|------|:---:|------------------|
+| **`ui-atomics`** (원자) | native 요소를 감싼 기본 빌딩블록 | ✅ **허용 (유일)** | raw HTML + token 기반 `.css`/CSS Modules + inline `style={{…}}` (themeable 값은 `var(--*)` 우선, 동적 계산값만 raw) |
+| **`ui-molecules`** (분자) | atomics 를 묶은 재사용 단위 (예: Field) | ❌ 금지 | `ui-atomics` 컴포넌트 + props |
+| **`ui-organisms`** (유기체) | molecules+atomics 로 만든 화면 섹션 (예: LoginForm) | ❌ 금지 | `ui-molecules`·`ui-atomics` 컴포넌트 + props |
+| **`apps/*`** (소비자) | 화면을 ui-* 조립으로 구성 | ❌ 금지 (페이지 semantic wrapper 제외) | `ui-*`(주로 organisms) 컴포넌트 + props |
 
-**역방향 금지:** `ui-*` 가 `apps/*` 를 알면 안 되고(`apps/*` 만 `ui-*` 를 import), token·design-system 은 `ui-*` 를 모른다. → 디자인도 의존 파이프라인 위에서만 움직인다.
+**역방향·동위 금지:** 각 계층은 **자신보다 엄격히 하위인 계층만** import 한다(`atomics ← molecules ← organisms ← apps`). token·design-system 은 어느 ui 계층도 모른다.
 
-### apps/* 계층 — Do / Don't
+### ui-atomics 계층 (원자) — Do / Don't
 
 ✅ **Do**
-- 화면은 `@{{PROJECT_NAME}}/ui-*` 컴포넌트의 **조립만**으로 구현하고, 변형은 **props**(`variant`/`size`/`tone`/`surface`/`density` 등)로만 준다.
-- 구조·의미 마크업(`<main>`, `<section>`, `<header>`, `<h1>`~`<h3>`, `<p>`, `<ul>`/`<li>` 등 semantic HTML)은 그대로 써도 된다 — 이건 "raw HTML" 이 아니다.
-- `ui-*` 컴포넌트만으로 화면을 구성할 수 **없으면**(필요한 컴포넌트·변형·상태가 없으면) **구현을 멈추고 사용자에게 알린다.** → 해당 `ui-*` 패키지에 컴포넌트/변형을 추가한 뒤 그것을 사용한다.
+- native 요소(`<button>`/`<input>`/`<label>`/`<form>`/`<div>` 등)를 감싼 atom 을 만들고, **여기서만** raw HTML·`.css`/CSS Modules·inline `style={{…}}` 을 쓴다.
+- inline style·CSS 의 themeable 값(color·spacing·radius·typography·shadow)은 `@{{PROJECT_NAME}}/tokens` 의 **token(`var(--*)`)** 을 우선 사용한다. 변형은 컴포넌트 props(`variant`/`size`/`tone` 등)로 노출한다.
+- 상위 계층이 raw HTML 없이 조립할 수 있도록 **레이아웃 atom(`Box`/`Stack` 등)** 을 제공한다 — 간격·정렬은 이 atom 의 props 로.
+
+❌ **Don't**
+- raw px / hex / rgb 를 themeable 값에 직접 박지 않는다 → token. 단, **동적 계산값**(progress width, 차트 좌표 등)은 inline style 에 raw 값 허용.
+- CSS-in-JS / Sass / SCSS 금지(전 계층 공통). design-system 문서에 없는 임의 변형을 즉석에서 만들지 않는다 → 문서 먼저 갱신(SSoT).
+
+### ui-molecules / ui-organisms 계층 — Do / Don't
+
+✅ **Do**
+- 화면 조각을 **하위 계층 컴포넌트 조립만**으로 구현한다(molecules=atomics, organisms=molecules+atomics). 변형은 하위 컴포넌트 **props** 로만 준다.
+- 필요한 atom·molecule 이 없으면 **여기서 때우지 말고** 하위 계층 패키지에 추가/확장한 뒤 가져다 쓴다.
+
+❌ **Don't**
+- raw HTML(`<div>`/`<button>`/`<form>` …)·inline `style={{…}}`·자체 `.css` **금지(하드)**. 레이아웃이 필요하면 `Box`/`Stack` 같은 **레이아웃 atom** 을 조립한다.
+- 하위 컴포넌트에 inline `style`·`className` 을 넘겨 색·간격·layout 을 override 하지 않는다 → 하위 계층에서 prop 확장.
+
+### apps/* 계층 (소비자) — Do / Don't
+
+✅ **Do**
+- 화면은 `@{{PROJECT_NAME}}/ui-*`(주로 **organisms**) 컴포넌트의 **조립만**으로 구현하고, 변형은 **props** 로만 준다.
+- 구조·의미 마크업(`<main>`, `<section>`, `<header>` 등 페이지 레벨 semantic wrapper)은 그대로 써도 된다 — 이건 "raw HTML" 이 아니다. 콘텐츠·인터랙션은 ui-* atom/organism 으로.
+- `ui-*` 만으로 화면을 구성할 수 **없으면** 구현을 멈추고 **사용자에게 알린다.** → 해당 계층(atomics/molecules/organisms)에 추가한 뒤 사용.
 
 ❌ **Don't**
 - `<button>`/`<input>`/`<select>`/`<textarea>`/`<table>`/`<dialog>` 등 form·interactive 요소를 raw HTML 로 직접 쓰지 않는다 → **반드시** `ui-*` 컴포넌트. **(하드 금지)**
-- layout·visual 용 inline `style={{…}}` 사용 금지. **(하드 금지)**
-- apps 안에서 raw CSS(`.css`)·`className` 사용을 **최소화**한다 — 스타일은 `ui-*` 가 소유한다. 부득이한 페이지 레벨 레이아웃 클래스만 token 기반으로 최소한 둔다.
-- apps 안에서 ad-hoc 비주얼 컴포넌트를 만들거나 raw HTML/inline style 로 `ui-*` 의 공백을 우회하지 않는다 → `ui-*` 로 올린다.
+- layout·visual 용 inline `style={{…}}` 금지 **(하드 금지)**. raw CSS·`className` 은 페이지 레벨 레이아웃에 한해 최소한만.
+- apps 안에서 ad-hoc 비주얼 컴포넌트를 만들거나 raw HTML/inline style 로 ui-* 의 공백을 우회하지 않는다 → 해당 ui 계층으로 올린다.
 
-### packages/ui-* 계층 — Do / Don't
-
-✅ **Do**
-- 모든 시각 스타일(color·spacing·radius·typography·shadow·state)을 **design token(`var(--*)`)** 으로 표현하고, `.u-maker/docs/{app}/design/` 의 **design-system 문서**(variant·size·state·접근성 규격)를 준수한다 — token *과* design-system 문서를 **둘 다** 따른다.
-- 스타일링은 global `.css` 또는 **CSS Modules(`*.module.css`)** 로 작성한다. 둘 다 순수 CSS 이며 token 만 참조한다 — `ui-*` 에 한해 CSS Modules 허용.
-- 변형은 컴포넌트 props 로 노출하고, 같은 패턴이 두 곳 이상 반복되면 컴포넌트로 추출한다.
-
-❌ **Don't**
-- raw px / hex / rgb 직접 지정 금지 → token 만. CSS-in-JS / Sass / SCSS / inline style 금지. (CSS Modules `*.module.css` 는 순수 CSS 이므로 예외적으로 허용)
-- design-system 문서에 없는 임의 변형을 그때그때 만들지 않는다 → 문서를 먼저 갱신(SSoT)한 뒤 구현.
-
-> **한 줄 요약:** apps 는 조립만, `ui-*` 가 스타일을 소유한다. `ui-*` 로 안 되면 만들지 말고 **알린다.**
+> **한 줄 요약:** **원자(`ui-atomics`)만 raw HTML·inline style**, molecules·organisms·apps 는 **조립만**. 안 되면 만들지 말고 **알린다.**
 
 ---
 
 ## 1. 디자인시스템 우선
 
-- 각 앱은 **지정된 UI 패키지의 컴포넌트만** 사용해 화면을 구성한다.
-- raw HTML 최소화 — `<button>` / `<input>` / `<select>` / `<textarea>` / `<table>` 등 form·interactive 요소는 **반드시** UI 패키지 컴포넌트로 대체.
-- 앱 내부에 ad-hoc 컴포넌트 만들지 않는다. 새 패턴이 필요하면 해당 UI 패키지에 추가한 뒤 사용.
-- 두 곳 이상에서 쓰이는 컴포넌트·훅·유틸은 앱이 아니라 패키지로 이동 — 공통이면 `ui-common`, 백오피스 전용이면 `ui-backoffice`, 엔드유저 앱 전용이면 `ui-app`. **새 `packages/` 폴더 생성 금지** — 기존 패키지에만 추가.
+- 각 앱은 **UI 패키지의 컴포넌트만**(주로 `ui-organisms`) 사용해 화면을 구성한다.
+- `ui-atomics` 밖에서 raw HTML 금지 — `<button>` / `<input>` / `<select>` / `<textarea>` / `<table>` 등 form·interactive 요소는 **반드시** atom 으로 만든 뒤 조립한다.
+- 앱·molecule·organism 내부에 ad-hoc 비주얼 컴포넌트(raw HTML+inline style)를 만들지 않는다. 새 원시 표현이 필요하면 `ui-atomics` 에 atom 을 추가한 뒤 사용.
+- 두 곳 이상에서 쓰이는 컴포넌트는 추상화 수준에 맞는 계층으로 이동 — 원시 빌딩블록이면 `ui-atomics`, atom 조합이면 `ui-molecules`, 화면 섹션이면 `ui-organisms`. **새 `packages/` 폴더 생성 금지** — 이 세 패키지에만 추가.
 
-## 2. layout 은 token + 재사용 컴포넌트로
+## 2. layout 은 레이아웃 atom 으로
 
-- **layout 용도 inline style 전면 금지**: `display`, `flex*`, `grid*`, `gap`, `padding`, `margin`, `alignItems`, `justifyContent` 등을 `<div style={{…}}>` 로 직접 짜지 않는다.
-- layout 은 순수 CSS 클래스로 표현하고, 간격·여백 값은 token(`var(--spacing-*)`)만 사용 — `gap: 8px` 같은 raw 값 금지.
-- 동일 layout 패턴이 두 곳 이상에서 반복되면 layout primitive 컴포넌트(Container / Stack / Grid / Section 등)로 `ui-common` 에 추출해 재사용한다. (스캐폴드에는 아직 없음 — 패턴이 생길 때 추가.)
-- 인접 sibling 간격은 child 의 `marginLeft/Top` 이 아닌 **부모의 `gap`** 으로 해결.
+- molecules·organisms·apps 에서는 **layout 용 inline style·raw `<div>` 전면 금지**: `display`, `flex*`, `grid*`, `gap`, `padding`, `margin`, `alignItems`, `justifyContent` 를 직접 짜지 않는다.
+- 대신 `ui-atomics` 의 **레이아웃 atom(`Box`/`Stack`, 필요 시 `Grid`/`Section` 추가)** 을 조립하고, 간격·정렬은 그 atom 의 props 로 준다 — gap 값은 token(`var(--spacing-*)`).
+- 레이아웃 atom 내부(`ui-atomics`)에서는 inline style 로 flex/grid 를 표현해도 된다(원자 한정 허용). themeable 값은 token 우선.
+- 인접 sibling 간격은 child 의 `marginLeft/Top` 이 아닌 **부모 `Stack` 의 `gap`** 으로 해결.
 
 ## 3. design token 만 사용
 
@@ -1826,16 +2301,17 @@ Import alias: `@/` → 앱의 `src/`, `@{{PROJECT_NAME}}/` → `packages/*`.
 - `padding: 8px` / `gap: 12px` 같은 raw 값 금지 → `var(--spacing-sm)` · `var(--spacing-md)`.
 - font-size·line-height·font-weight 도 token.
 
-## 4. 시각 효과 inline style 금지
+## 4. 시각 효과 inline style — 원자(`ui-atomics`)만 허용
 
-- 색·border·radius·shadow·opacity 등 visual 속성도 inline style 금지 → token 기반 CSS 클래스 / variant props 로 표현.
-- 예외: 동적 계산값(progress bar width, 차트 좌표 등)이 꼭 필요할 때만 한정 사용.
+- molecules·organisms·apps 에서 색·border·radius·shadow·opacity 등 visual inline style **금지** → `ui-atomics` atom 의 variant props 로 표현.
+- `ui-atomics` 원자는 inline style 로 visual 을 표현해도 된다 — 단 themeable 값은 token(`var(--*)`) 우선.
+- raw 값 inline 은 **동적 계산값**(progress bar width, 차트 좌표 등)에 한해, 그것도 원자 안에서만.
 
-## 5. UI 패키지 컴포넌트는 props 로 변형
+## 5. UI 컴포넌트는 props 로 변형
 
-- `ui-common` / `ui-backoffice` / `ui-app` 컴포넌트의 시각 변형은 컴포넌트 props (`variant`, `size`, `tone`, `surface`, `density` 등) 로 표현한다.
-- 사용 측에서 컴포넌트에 inline `style={…}` 을 넘겨 색·간격·layout 을 override 하지 않는다.
-- `className` 합성은 **`ui-*` 패키지 내부 구현**의 몫이다(§0) — `ui-*` 컴포넌트가 `variant`/`size` 를 token 기반 클래스로 합성한다. **`apps/*` 사용 측에서 `ui-*` 컴포넌트에 `className` 을 넘겨 색·간격·layout 을 override 하지 않는다.** 필요한 변형이 없으면 사용 측에서 임의 클래스로 때우지 말고 UI 패키지에서 prop 을 확장한다. (스캐폴드 `Button` 은 `variant`/`size` props + token 클래스 합성 방식을 따른다. 새 컴포넌트도 동일 패턴 유지.)
+- `ui-atomics` / `ui-molecules` / `ui-organisms` 컴포넌트의 시각 변형은 컴포넌트 props (`variant`, `size`, `tone`, `surface`, `density` 등) 로 표현한다.
+- 사용 측(상위 계층)에서 컴포넌트에 inline `style={…}` 을 넘겨 색·간격·layout 을 override 하지 않는다.
+- `className` 합성은 **`ui-atomics` 원자 내부 구현**의 몫이다(§0) — atom 이 `variant`/`size` 를 token 기반 클래스로 합성한다. **상위 계층에서 컴포넌트에 `className` 을 넘겨 색·간격·layout 을 override 하지 않는다.** 필요한 변형이 없으면 임의 클래스로 때우지 말고 해당 계층에서 prop 을 확장한다. (스캐폴드 `Button` atom 은 `variant`/`size` props + token 클래스 합성, `Box`/`Stack` atom 은 props + token inline style 방식을 따른다. 새 컴포넌트도 동일 패턴 유지.)
 
 ## 6. 폼 정렬 일관성
 
@@ -1866,15 +2342,15 @@ Import alias: `@/` → 앱의 `src/`, `@{{PROJECT_NAME}}/` → `packages/*`.
 
 PR 올리기 전 한 번 훑어본다:
 
-- [ ] (apps/*) 화면을 `ui-*` 컴포넌트 조립으로 구성했고, raw CSS·`className` 사용을 최소화했다.
-- [ ] (apps/*) `ui-*` 로 표현 불가한 UI 는 raw HTML/inline style 로 우회하지 않고, 사용자에게 알린 뒤 `ui-*` 를 확장했다.
-- [ ] raw HTML form / interactive 요소를 쓰지 않았다.
-- [ ] inline `style={{ display, flex*, grid*, gap, padding, margin }}` 를 쓰지 않았다.
-- [ ] raw px / hex 값 대신 `@{{PROJECT_NAME}}/tokens` 의 token 을 썼다.
-- [ ] (ui-*) 스타일을 token + design-system 문서에 맞춰 global `.css` 또는 `*.module.css` 로 작성했다.
-- [ ] UI 패키지 컴포넌트에 색·간격·layout 을 inline `style`·`className` 으로 override 하지 않았다.
+- [ ] **raw HTML·inline style 은 `ui-atomics` 안에만 있다.** molecules·organisms·apps 에는 raw `<div>`/form 요소·`style={{…}}`·자체 `.css` 가 없다.
+- [ ] (molecules/organisms/apps) 하위 계층 컴포넌트 **조립 + props** 로만 구성했다. 레이아웃은 `Box`/`Stack` atom 으로 했다.
+- [ ] (apps/*) 화면을 `ui-*`(주로 organisms) 조립으로 구성했고, raw CSS·`className` 사용을 최소화했다.
+- [ ] 표현 불가한 UI 는 raw HTML/inline style 로 우회하지 않고, 사용자에게 알린 뒤 해당 계층(atomics/molecules/organisms)을 확장했다.
+- [ ] (ui-atomics) inline style·CSS 의 themeable 값은 `@{{PROJECT_NAME}}/tokens` 의 token 을 썼다(동적 계산값만 raw).
+- [ ] 상위 계층에서 컴포넌트에 색·간격·layout 을 inline `style`·`className` 으로 override 하지 않았다.
+- [ ] UI 계층 의존이 단방향이다(`atomics ← molecules ← organisms ← apps`, 역방향·동위 import 없음).
 - [ ] form 의 labelWidth · 컨트롤 폭이 row 마다 일치한다.
-- [ ] 새 공통 패턴은 앱이 아닌 UI 패키지에 추가했다.
+- [ ] 새 패턴은 추상화 수준에 맞는 계층(atomics/molecules/organisms)에 추가했다.
 - [ ] 화면이 설계 문서와 일치하거나, 문서를 함께 갱신했다.
 ```
 
@@ -2059,11 +2535,11 @@ App: {{PROJECT_NAME}}
 
 - class 컴포넌트 / 클래스 (Nest.js 제외)
 - 별도 usecase 레이어
-- CSS-in-JS / Sass / SCSS / inline style (단, `ui-*` 의 CSS Modules `*.module.css` 는 순수 CSS 로 허용)
-- `apps/*` 에서 raw HTML form·interactive 요소 / 스타일 직접 소유 (조립만 — DESIGN.md §0)
+- CSS-in-JS / Sass / SCSS (전 계층)
+- raw HTML·inline style·자체 CSS 를 `ui-atomics` 밖(`ui-molecules`·`ui-organisms`·`apps/*`)에서 사용 — 이들은 하위 컴포넌트 조립만 (DESIGN.md §0)
 - eslint-plugin-header
 - npm / yarn / pnpm 관련 설정
 - Next.js API Route / Route Handler
 - apps에서 API 직접 호출 (반드시 domain → data → hooks 경유)
-- 역방향 의존 (domain이 data/hooks를 import하는 등)
+- 역방향 의존 (domain이 data/hooks를 import / UI 계층의 역방향·동위 import 등)
 - packages/ 아래 명세에 없는 새 폴더

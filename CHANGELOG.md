@@ -2,6 +2,25 @@
 
 All notable changes to u-maker-plugin.
 
+## [4.0.0-alpha.30] — 2026-06-28
+
+**`/u-createproject` now scaffolds an Atomic Design UI package hierarchy — `ui-atomics` → `ui-molecules` → `ui-organisms` — where raw HTML, CSS, and inline style live ONLY in `ui-atomics` (atoms), and every higher layer composes lower-layer components only.**
+
+Per the user request — *"atomic component들은 raw html + css + inline style + style로 구성하는데, 이외의 component를 구현할때는 이 atomic component들만 조합해서 사용하도록 … plugin을 수정해줘"* and the follow-up *"packages/ui-atomics / packages/ui-molecules / packages/ui-organisms 로 나눠서 구성해줘"* — the surface-based UI packages (`ui-common` / `ui-backoffice` / `ui-app`) are **replaced** by an Atomic Design package chain. The atom layer is the single boundary where native elements, `.css`/CSS Modules, and inline `style={{…}}` are allowed; molecules, organisms, and `apps/*` are pure composition. admin/web differences move to organism variant props or per-app token themes (no separate surface package).
+
+### Changed
+
+- **`skills/u-createproject/references/scaffolding-spec.md` — UI layer fully re-specified.** §2 folder tree, §3 dependency flow (`apps/* → ui-organisms → ui-molecules → ui-atomics → tokens` + per-package dependency table), §4 styling/tech rows, §5 core rules. §6.7 (was the single parametrized `ui-common`) is split into **§6.7 `ui-atomics`** (atoms `Button`/`Input`/`Label`/`Text`/`Form` + layout atoms `Box`/`Stack`, showing raw HTML + token-based CSS + inline style), **§6.8 `ui-molecules`** (`Field` composing atoms only), **§6.9 `ui-organisms`** (`LoginForm` composing molecules + atoms only); apps renumbered to §6.10/§6.11 with updated `dependencies`, `transpilePackages`, and an atom-composed `page.tsx`.
+- **Generated `DESIGN.md` template — §0 rewritten to a 4-layer pipeline** with a per-layer capability table (only `ui-atomics` may use raw HTML/inline style; molecules/organisms/apps compose only) and per-layer Do/Don't, plus updated rules (layout via `Box`/`Stack` atoms, inline-style is atom-only and token-first, props-based variation) and a rewritten self-check checklist.
+- **Generated `CLAUDE.md` template — 디자인시스템·아키텍처·코딩 컨벤션·금지사항 sections** updated to the atomic pipeline and the "raw HTML/inline style only in `ui-atomics`" boundary.
+- **`skills/u-createproject/SKILL.md`** — folder tree, Step 2 (CLAUDE/DESIGN descriptions), Step 3 package generation order (atomics → molecules → organisms), Step 4/§6 cross-refs, Dependency Flow, Constraints table, Step 6 commit message, Step 10 summary; `version` 1.3.0 → 1.4.0.
+- **`skills/u-dev/SKILL.md` rule #7** re-aligned to the Atomic Design pipeline — raw HTML/CSS/inline style only in `ui-atomics`, higher layers compose only, gap-surfacing extends the appropriate tier; Storybook hint `--filter=ui-common` → `--filter=ui-atomics`.
+- **`skills/u-tools-browser/SKILL.md`** — Storybook start hint `--filter=ui-common` → `--filter=ui-atomics`.
+
+### Migration
+
+- Existing scaffolded projects keep working — the change only affects **newly created** projects. To adopt the new structure in an existing project, rename/split `ui-common`/`ui-backoffice`/`ui-app` into `ui-atomics`/`ui-molecules`/`ui-organisms` and move raw-HTML/inline-style code down into atoms.
+
 ## [4.0.0-alpha.28] — 2026-06-27
 
 **The side-effect gate is now OFF by default, and its mode is settable three ways — env `U_MAKER_EDIT_GATE`, the new `/u-dev`·`/u-build --sideeffect {off|on|strict}` skill param, or the project state file — with `on` as a friendly alias of `auto`.**

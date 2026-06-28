@@ -1,7 +1,7 @@
 ---
 name: u-createproject
-description: "This skill should be used when the user asks to '/u-createproject', 'u-createproject', 'createproject', 'u-maker 프로젝트 생성', 'u-maker 새 프로젝트', 'Turborepo 모노레포 스캐폴드', 'u-maker monorepo scaffold', or 'u-maker scaffold project'. Generates a new Turborepo + Bun monorepo project with the standard Clean Architecture layer structure, including project-specific CLAUDE.md and DESIGN.md agent guides."
-version: 1.3.0
+description: "This skill should be used when the user asks to '/u-createproject', 'u-createproject', 'createproject', 'u-maker 프로젝트 생성', 'u-maker 새 프로젝트', 'Turborepo 모노레포 스캐폴드', 'u-maker monorepo scaffold', or 'u-maker scaffold project'. Generates a new Turborepo + Bun monorepo project with the standard Clean Architecture layer structure plus an Atomic Design UI pipeline (ui-atomics → ui-molecules → ui-organisms; raw HTML/CSS/inline style only in ui-atomics), including project-specific CLAUDE.md and DESIGN.md agent guides."
+version: 1.4.0
 ---
 
 # u-createproject — Turborepo + Bun Monorepo Project Scaffolding
@@ -67,12 +67,12 @@ Turborepo + Bun 기반 모노레포 프로젝트를 처음부터 스캐폴딩한
 │   ├── data/src/{repositories,mappers,query-keys,routes,utils}/
 │   ├── infrastructure/src/{api,auth,storage}/
 │   ├── hooks/src/{queries,mutations}/
-│   ├── ui-common/src/components/Button/
-│   ├── ui-common/.storybook/
-│   ├── ui-backoffice/src/components/Button/
-│   ├── ui-backoffice/.storybook/
-│   ├── ui-app/src/components/Button/
-│   └── ui-app/.storybook/
+│   ├── ui-atomics/src/components/{Button,Input,Label,Text,Form,Box,Stack}/   (raw HTML+css+inline style)
+│   ├── ui-atomics/.storybook/
+│   ├── ui-molecules/src/components/Field/                                    (atomics 조합만)
+│   ├── ui-molecules/.storybook/
+│   ├── ui-organisms/src/components/LoginForm/                                (molecules+atomics 조합만)
+│   └── ui-organisms/.storybook/
 ├── .u-maker/docs/
 ├── CLAUDE.md
 ├── DESIGN.md
@@ -88,7 +88,7 @@ Turborepo + Bun 기반 모노레포 프로젝트를 처음부터 스캐폴딩한
 3. `tsconfig.json` — root references
 4. `.gitignore` — node_modules, .next, dist, .turbo, bun.lockb, .env*.local, .u-maker/.state/, .u-maker/output/, .u-maker/reports/
 5. `CLAUDE.md` — 프로젝트 AI 에이전트 가이드(정본) (개요·디자인시스템·명령어·앱·아키텍처·SSoT·코딩 컨벤션·금지사항·Git). `references/scaffolding-spec.md` §7 의 CLAUDE.md 템플릿을 `{{PROJECT_NAME}}` 치환하여 생성한다. **실제 스캐폴드된 구조만** 기술하고(스캐폴드에 없는 컴포넌트를 강제하지 않음), 디자인시스템 섹션은 `DESIGN.md` 를 단일 출처로 가리키며 끝에 `@DESIGN.md` import 한 줄을 둬 Claude Code 가 DESIGN.md 전체를 컨텍스트로 로드하게 한다. Step 6 git commit 에 포함된다.
-6. `DESIGN.md` — 디자인/UI 공통 룰 (§0 디자인 의존 파이프라인 `apps/* → ui-* → tokens` 의 apps↔ui-* 2-tier Do/Don't 가 머리말 · 디자인시스템 우선·layout·design token·시각효과·props 변형·폼 정렬·상태 표현·접근성·SSoT + 자가 점검 체크리스트). `references/scaffolding-spec.md` §7 의 DESIGN.md 템플릿을 `{{PROJECT_NAME}}` 치환하여 생성한다. 실제 스캐폴드된 UI 패키지(`ui-common`/`ui-backoffice`/`ui-app`)와 token 구조에 맞춰 기술하며, Step 6 git commit 에 포함된다.
+6. `DESIGN.md` — 디자인/UI 공통 룰 (§0 Atomic Design 의존 파이프라인 `apps/* → ui-organisms → ui-molecules → ui-atomics → tokens` 의 계층별 Do/Don't 가 머리말 — **raw HTML·CSS·inline style 은 `ui-atomics` 에서만**, 그 위는 조립만 · 디자인시스템 우선·layout(Box/Stack atom)·design token·시각효과·props 변형·폼 정렬·상태 표현·접근성·SSoT + 자가 점검 체크리스트). `references/scaffolding-spec.md` §7 의 DESIGN.md 템플릿을 `{{PROJECT_NAME}}` 치환하여 생성한다. 실제 스캐폴드된 UI 패키지(`ui-atomics`/`ui-molecules`/`ui-organisms`)와 token 구조에 맞춰 기술하며, Step 6 git commit 에 포함된다.
 7. `AGENTS.md` — `CLAUDE.md` 로의 심볼릭 링크. CLAUDE.md · DESIGN.md 생성 후 PROJECT_DIR 에서 `ln -s CLAUDE.md AGENTS.md` 실행. Codex CLI 등 AGENTS.md 기반 에이전트가 동일 가이드를 자동 로드하도록 한다 (Codex 는 CLAUDE.md 를 읽지 않고 AGENTS.md 만 읽으며, import 문법이 없어 DESIGN.md 는 가이드 지시에 따라 on-demand 로 읽는다). `references/scaffolding-spec.md` §7 AGENTS.md 참조. Step 6 git commit 에 포함된다.
 
 ### Step 3: Generate packages/* (의존 순서 준수)
@@ -101,11 +101,11 @@ Turborepo + Bun 기반 모노레포 프로젝트를 처음부터 스캐폴딩한
 4. **packages/infrastructure** — apiClient, storage (→ domain)
 5. **packages/data** — Repository 구현, Mapper, queryKeys, routes (→ domain)
 6. **packages/hooks** — TanStack Query 훅 (→ data, domain)
-7. **packages/ui-common** — Button 컴포넌트 + Storybook (→ tokens)
-8. **packages/ui-backoffice** — Button 컴포넌트 + Storybook (→ tokens)
-9. **packages/ui-app** — Button 컴포넌트 + Storybook (→ tokens)
+7. **packages/ui-atomics** — 원자(Button/Input/Label/Text/Form/Box/Stack) + Storybook. **raw HTML+CSS+inline style 허용** (→ tokens)
+8. **packages/ui-molecules** — 분자(Field) — atomics 조합만 + Storybook (→ ui-atomics, tokens)
+9. **packages/ui-organisms** — 유기체(LoginForm) — molecules+atomics 조합만 + Storybook (→ ui-molecules, ui-atomics, tokens)
 
-각 패키지 상세: `references/scaffolding-spec.md` §6 참조.
+각 패키지 상세: `references/scaffolding-spec.md` §6 참조. (UI 계층: §6.7 ui-atomics, §6.8 ui-molecules, §6.9 ui-organisms)
 
 ### Step 4: Generate apps/*
 
@@ -113,7 +113,7 @@ Turborepo + Bun 기반 모노레포 프로젝트를 처음부터 스캐폴딩한
 2. **apps/admin** — Next.js 15 App Router (port 3001, 관리자 대시보드)
 3. **apps/backend** — Nest.js API (port 2920, prefix /v1, Swagger)
 
-각 앱 상세: `references/scaffolding-spec.md` §6.8, §6.9 참조.
+각 앱 상세: `references/scaffolding-spec.md` §6.10, §6.11 참조.
 
 ### Step 5: Generate SSoT Document Templates
 
@@ -133,7 +133,7 @@ git commit -m "chore: scaffold {project-name}-monorepo
 
 Turborepo + Bun monorepo with Clean Architecture layers.
 Apps: web, admin, backend
-Packages: domain, data, hooks, infrastructure, ui-common, ui-backoffice, ui-app, tokens, config"
+Packages: domain, data, hooks, infrastructure, ui-atomics, ui-molecules, ui-organisms, tokens, config"
 ```
 
 ### Step 7: Install Dependencies
@@ -167,9 +167,9 @@ bun run lint
 
 📁 Structure:
   apps/     — web, admin, backend
-  packages/ — domain, data, hooks, infrastructure, ui-common, ui-backoffice, ui-app, tokens, config
+  packages/ — domain, data, hooks, infrastructure, ui-atomics, ui-molecules, ui-organisms, tokens, config
   CLAUDE.md — AI 에이전트 가이드 정본 (프로젝트 규칙·아키텍처·금지사항, @DESIGN.md import)
-  DESIGN.md — 디자인/UI 공통 룰 (디자인시스템·token·layout·접근성·체크리스트)
+  DESIGN.md — 디자인/UI 공통 룰 (Atomic Design 파이프라인·원자만 raw HTML/inline style·token·접근성·체크리스트)
   AGENTS.md — CLAUDE.md 심볼릭 링크 (Codex 등 AGENTS.md 기반 에이전트 호환)
 
 🚀 Next Steps:
@@ -193,7 +193,7 @@ bun run lint
 
 ```
 apps/* → hooks → data → domain ← infrastructure
-apps/* → ui-*  → tokens
+apps/* → ui-organisms → ui-molecules → ui-atomics → tokens
 ```
 
 - `domain`: 의존 없음 (순수 타입/상수)
@@ -202,19 +202,21 @@ apps/* → ui-*  → tokens
 - `data`: → domain
 - `infrastructure`: → domain
 - `hooks`: → data, domain
-- `ui-*`: → tokens
-- `apps/*`: → hooks, ui-*, infrastructure, domain
+- `ui-atomics`: → tokens
+- `ui-molecules`: → ui-atomics, tokens
+- `ui-organisms`: → ui-molecules, ui-atomics, tokens
+- `apps/*`: → hooks, ui-organisms(+molecules/atomics), infrastructure, domain
 
-**역방향 의존 절대 금지.**
+**역방향·동위 의존 절대 금지** (UI 계층은 `atomics ← molecules ← organisms ← apps` 단방향).
 
 ## Constraints (코드 생성 시 필수 적용)
 
 | 규칙 | 설명 |
 |------|------|
 | 함수형 Only | class 사용 금지 (Nest.js 제외) |
-| 순수 CSS | CSS-in-JS, Sass, SCSS, inline style 금지 (`ui-*` 한정 CSS Modules `*.module.css` 허용) |
-| Design Tokens | `var(--*)` 참조만 허용 |
-| 디자인 파이프라인 | `apps/*` 는 `ui-*` 조립만, `ui-*` 가 스타일 소유(token·design-system 준수). `ui-*` 로 불가 시 사용자 통지 후 `ui-*` 확장 (DESIGN.md §0) |
+| Atomic 스타일 경계 | raw HTML·CSS(.css/CSS Modules)·inline style 은 **`ui-atomics` 에서만**. `ui-molecules`·`ui-organisms`·`apps/*` 는 조립만(자체 raw HTML·inline·CSS 금지). CSS-in-JS/Sass/SCSS 전 계층 금지 |
+| Design Tokens | `var(--*)` 참조. atomics 의 inline style 도 themeable 값은 token 우선(동적 계산값만 raw) |
+| 디자인 파이프라인 | `apps/* → ui-organisms → ui-molecules → ui-atomics → tokens`. 상위는 하위 조립만. 필요한 atom/molecule/organism 없으면 사용자 통지 후 해당 계층 확장 (DESIGN.md §0) |
 | Named export | default export 금지 (Next.js page/layout 제외) |
 | TypeScript strict | 모든 패키지 strict 모드 |
 | ESLint 9 Flat Config | eslint-plugin-header 사용 금지 |
@@ -237,7 +239,7 @@ apps/* → ui-*  → tokens
 
 커밋 포맷: `type(scope): message`
 - type: feat, fix, refactor, chore, docs, style, test
-- scope: 패키지명 (web, admin, domain, data, hooks, ui-common, infra 등)
+- scope: 패키지명 (web, admin, domain, data, hooks, ui-atomics, ui-molecules, ui-organisms, infra 등)
 
 ## Error Handling
 

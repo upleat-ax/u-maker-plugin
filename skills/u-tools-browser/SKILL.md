@@ -105,7 +105,7 @@ Server not running on port ${PORT}.
 Please start your development server:
 - Web / Admin: `bun run dev --filter={app}`
 - Backend:     `bun run dev --filter=backend`
-- Storybook:   `bun run storybook --filter=ui-common`
+- Storybook:   `bun run storybook --filter=ui-atomics`
 
 Then re-run this command, or pass `--port <port>` to override.
 ```
