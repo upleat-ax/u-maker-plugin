@@ -1,0 +1,37 @@
+{
+  "name": "u-maker",
+  "version": "4.0.0-alpha.31",
+  "description": "PBGD-based SSoT workflow plugin with planning, design, development, quality-gate, and deployment skills.",
+  "author": {
+    "name": "u-plugin"
+  },
+  "homepage": "https://github.com/upleat-ax/u-maker-plugin",
+  "repository": "https://github.com/upleat-ax/u-maker-plugin",
+  "keywords": [
+    "pbgd",
+    "ssot",
+    "planning",
+    "design",
+    "development",
+    "quality-gate",
+    "deployment"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "u-maker",
+    "shortDescription": "Plan, build, verify, and deploy from one SSoT workflow.",
+    "longDescription": "A PBGD-based workflow plugin that turns source material into plans, designs, implementation, quality checks, reports, and deployment artifacts.",
+    "developerName": "u-plugin",
+    "category": "Developer Tools",
+    "capabilities": [
+      "Read",
+      "Write"
+    ],
+    "websiteURL": "https://github.com/upleat-ax/u-maker-plugin",
+    "defaultPrompt": [
+      "Prepare this project with u-maker.",
+      "Plan and build this app with u-maker.",
+      "Run the u-maker quality gate."
+    ]
+  }
+}

@@ -20,10 +20,12 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PLUGIN_JSON="$SCRIPT_DIR/.claude-plugin/plugin.json"
 MARKETPLACE_JSON="$SCRIPT_DIR/.claude-plugin/marketplace.json"
+CODEX_PLUGIN_JSON="$SCRIPT_DIR/.codex-plugin/plugin.json"
 
 PLUGIN_NAME="$(python3 -c "import json; print(json.load(open('$PLUGIN_JSON'))['name'])")"
 PLUGIN_VERSION="$(python3 -c "import json; print(json.load(open('$PLUGIN_JSON'))['version'])")"
 MARKETPLACE_NAME="${PLUGIN_NAME}-marketplace"
+CODEX_MARKETPLACE_NAME="$(python3 -c "import json; print(json.load(open('$MARKETPLACE_JSON'))['name'])")"
 
 # Colors
 RED='\033[0;31m'
@@ -47,7 +49,7 @@ detect_os() {
     Darwin)
       OS="macos"
       CLAUDE_HOME="$HOME/.claude"
-      CODEX_HOME="$HOME/.codex"
+      CODEX_HOME="${CODEX_HOME:-$HOME/.codex}"
       GEMINI_HOME="$HOME/.gemini"
       ;;
     Linux)
@@ -58,30 +60,30 @@ detect_os() {
         WIN_HOME="$(wslpath "$(cmd.exe /C 'echo %USERPROFILE%' 2>/dev/null | tr -d '\r')" 2>/dev/null || echo "")"
         if [[ -n "$WIN_HOME" && -d "$WIN_HOME/.claude" ]]; then
           CLAUDE_HOME="$WIN_HOME/.claude"
-          CODEX_HOME="$WIN_HOME/.codex"
+          CODEX_HOME="${CODEX_HOME:-$WIN_HOME/.codex}"
           GEMINI_HOME="$WIN_HOME/.gemini"
         else
           CLAUDE_HOME="$HOME/.claude"
-          CODEX_HOME="$HOME/.codex"
+          CODEX_HOME="${CODEX_HOME:-$HOME/.codex}"
           GEMINI_HOME="$HOME/.gemini"
         fi
       else
         OS="linux"
         CLAUDE_HOME="$HOME/.claude"
-        CODEX_HOME="$HOME/.codex"
+        CODEX_HOME="${CODEX_HOME:-$HOME/.codex}"
         GEMINI_HOME="$HOME/.gemini"
       fi
       ;;
     MINGW*|MSYS*|CYGWIN*)
       OS="windows"
       CLAUDE_HOME="$USERPROFILE/.claude"
-      CODEX_HOME="$USERPROFILE/.codex"
+      CODEX_HOME="${CODEX_HOME:-$USERPROFILE/.codex}"
       GEMINI_HOME="$USERPROFILE/.gemini"
       ;;
     *)
       OS="unknown"
       CLAUDE_HOME="$HOME/.claude"
-      CODEX_HOME="$HOME/.codex"
+      CODEX_HOME="${CODEX_HOME:-$HOME/.codex}"
       GEMINI_HOME="$HOME/.gemini"
       ;;
   esac
@@ -148,7 +150,7 @@ sync_to_cache() {
     for ex in "${CACHE_EXCLUDES[@]}"; do
       excludes+=(--exclude "$ex")
     done
-    rsync -a --delete "${excludes[@]}" "$SCRIPT_DIR/" "$dest/"
+    rsync -a --delete --delete-excluded "${excludes[@]}" "$SCRIPT_DIR/" "$dest/"
   else
     # Fallback: rm + cp
     rm -rf "$dest"
@@ -276,31 +278,71 @@ else:
 }
 
 # ============================================================
-# 6. Setup Codex symlinks
+# 6. Install the plugin with the Codex CLI
 # ============================================================
 
 setup_codex() {
-  if [[ ! -d "$CODEX_HOME" ]]; then
-    warn "Codex home not found ($CODEX_HOME), skipping Codex setup"
+  if ! command -v codex &>/dev/null; then
+    warn "Codex CLI not found, skipping Codex setup"
     return 0
   fi
 
-  log "Setting up Codex symlinks..."
-
-  # plugins -> Claude plugins
-  make_link "$PLUGINS_DIR" "$CODEX_HOME/plugins"
-
-  # agents -> Claude agents (if Claude agents dir exists)
-  if [[ -d "$CLAUDE_HOME/agents" ]]; then
-    make_link "$CLAUDE_HOME/agents" "$CODEX_HOME/agents"
+  if ! codex plugin --help &>/dev/null; then
+    warn "This Codex CLI does not support plugins; update Codex and retry"
+    return 0
   fi
 
-  # skills -> Claude skills (if Claude skills dir exists)
-  if [[ -d "$CLAUDE_HOME/skills" ]]; then
-    make_link "$CLAUDE_HOME/skills" "$CODEX_HOME/skills"
+  if [[ ! -f "$CODEX_PLUGIN_JSON" ]]; then
+    err "Missing Codex manifest: $CODEX_PLUGIN_JSON"
+    return 1
   fi
 
-  ok "Codex shares Claude plugin directories"
+  # Older versions of this script shared Claude's entire plugin directory.
+  # Codex now manages its own plugin cache and installation state.
+  if [[ -L "$CODEX_HOME/plugins" && "$(readlink "$CODEX_HOME/plugins")" == "$PLUGINS_DIR" ]]; then
+    rm "$CODEX_HOME/plugins"
+    mkdir -p "$CODEX_HOME/plugins"
+    ok "Replaced legacy Codex → Claude plugins symlink with a Codex directory"
+  else
+    mkdir -p "$CODEX_HOME/plugins"
+  fi
+
+  # Remove links created by the short-lived direct-skill workaround. The
+  # installed plugin exposes these skills under the `u-maker:*` namespace.
+  if [[ -d "$CODEX_HOME/skills" && ! -L "$CODEX_HOME/skills" ]]; then
+    local legacy_skill_count=0
+    local legacy_skill_link
+    for legacy_skill_link in "$CODEX_HOME/skills"/${PLUGIN_NAME}-*; do
+      [[ -L "$legacy_skill_link" ]] || continue
+      rm "$legacy_skill_link"
+      legacy_skill_count=$((legacy_skill_count + 1))
+    done
+    if [[ $legacy_skill_count -gt 0 ]]; then
+      ok "Removed $legacy_skill_count legacy direct Codex skill links"
+    fi
+  fi
+
+  log "Registering the local Codex marketplace..."
+  local marketplace_root=""
+  marketplace_root="$(codex plugin marketplace list 2>/dev/null \
+    | awk -v name="$CODEX_MARKETPLACE_NAME" '$1 == name {$1=""; sub(/^[[:space:]]+/, ""); print; exit}')"
+
+  if [[ -z "$marketplace_root" ]]; then
+    codex plugin marketplace add "$SCRIPT_DIR" >/dev/null
+    ok "Codex marketplace registered: $CODEX_MARKETPLACE_NAME"
+  elif [[ "$marketplace_root" != "$SCRIPT_DIR" ]]; then
+    err "Codex marketplace '$CODEX_MARKETPLACE_NAME' already points to $marketplace_root"
+    err "Remove that marketplace or rename this local marketplace before deploying"
+    return 1
+  else
+    ok "Codex marketplace already registered: $CODEX_MARKETPLACE_NAME"
+  fi
+
+  # Reinstall so repeated local deploys always refresh Codex's cached copy.
+  codex plugin remove "$PLUGIN_NAME@$CODEX_MARKETPLACE_NAME" >/dev/null 2>&1 || true
+  codex plugin add "$PLUGIN_NAME@$CODEX_MARKETPLACE_NAME" >/dev/null
+
+  ok "Codex plugin installed and enabled: $PLUGIN_NAME@$CODEX_MARKETPLACE_NAME"
 }
 
 # ============================================================
@@ -478,6 +520,7 @@ deploy() {
   echo -e "${BOLD}========================================${NC}"
   echo ""
   echo -e "  Restart Claude Code / Codex / Gemini CLI to pick up changes."
+  echo -e "  Codex CLI: run /skills or type \$${PLUGIN_NAME}:u-plan (skills are not /u-plan slash commands)."
   echo ""
 }
 
@@ -488,6 +531,13 @@ deploy() {
 clean() {
   echo ""
   log "Cleaning u-maker deployment..."
+
+  # Remove the Codex-managed plugin and its local marketplace registration.
+  if command -v codex &>/dev/null && codex plugin --help &>/dev/null; then
+    codex plugin remove "$PLUGIN_NAME@$CODEX_MARKETPLACE_NAME" >/dev/null 2>&1 || true
+    codex plugin marketplace remove "$CODEX_MARKETPLACE_NAME" >/dev/null 2>&1 || true
+    ok "Codex plugin and marketplace registration removed"
+  fi
 
   # Remove marketplace symlink
   if [[ -L "$MARKETPLACES_DIR/$MARKETPLACE_NAME" ]]; then
@@ -701,20 +751,18 @@ check() {
   fi
 
   # Codex
-  if [[ -d "$CODEX_HOME" ]]; then
-    if [[ -L "$CODEX_HOME/plugins" ]]; then
-      local codex_target
-      codex_target="$(readlink "$CODEX_HOME/plugins")"
-      if [[ "$codex_target" == "$PLUGINS_DIR" ]]; then
-        ok "Codex plugins → Claude plugins"
-      else
-        warn "Codex plugins → $codex_target (expected $PLUGINS_DIR)"
-      fi
+  if command -v codex &>/dev/null && codex plugin --help &>/dev/null; then
+    local codex_plugin_status
+    codex_plugin_status="$(codex plugin list 2>/dev/null \
+      | awk -v selector="$PLUGIN_NAME@$CODEX_MARKETPLACE_NAME" '$1 == selector {print $0; exit}')"
+    if [[ "$codex_plugin_status" == *"installed, enabled"* ]]; then
+      ok "Codex plugin → $PLUGIN_NAME@$CODEX_MARKETPLACE_NAME installed, enabled"
     else
-      warn "Codex plugins symlink missing"
+      err "Codex plugin → $PLUGIN_NAME@$CODEX_MARKETPLACE_NAME is not installed and enabled"
+      all_ok=false
     fi
   else
-    warn "Codex not installed (skipped)"
+    warn "Codex CLI plugin support not available (skipped)"
   fi
 
   # Gemini
