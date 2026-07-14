@@ -166,6 +166,7 @@ base64 인코딩 → HTML 인라인 삽입은 이 스킬이 담당
 #### HTML 필수 요소
 
 - Tailwind CDN (`https://cdn.tailwindcss.com`)
+- Font Awesome CDN (`https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6/css/all.min.css`) — UI 아이콘용 `fa-*` 클래스 (currentColor 상속 → 다크/라이트 자동 적응)
 - Dark/Light 모드 토글 (우상단 고정)
 - 다크 사이드바 (`#1e2432`) + 라이트 본문 (`#f8fafc`)
 - 사이드바 스크롤 추적 네비게이션

@@ -1,6 +1,6 @@
 # html-engine Reference
 
-The html-engine converts SSoT markdown documents into polished, self-contained HTML pages. It handles markdown parsing, inline SVG diagram generation (primary), Mermaid fallback for UML diagrams, base64 image embedding, Tailwind CSS styling, dark/light mode toggling, sidebar navigation, and Table of Contents generation. **SVG is the preferred diagram format** — self-contained, offline-capable, instantly rendered without CDN dependencies.
+The html-engine converts SSoT markdown documents into polished, self-contained HTML pages. It handles markdown parsing, inline SVG diagram generation (primary), Mermaid fallback for UML diagrams, base64 image embedding, Tailwind CSS styling, Font Awesome icon fonts, dark/light mode toggling, sidebar navigation, and Table of Contents generation. **SVG is the preferred diagram format** — self-contained, offline-capable, instantly rendered without CDN dependencies.
 
 ## 1. MD to HTML Conversion Pipeline
 
@@ -442,6 +442,33 @@ All generated HTML uses Tailwind CSS utility classes for styling. Tailwind is lo
   };
 </script>
 ```
+
+### Font Awesome Icon Integration
+
+Font Awesome (Free) provides the icon font for all UI chrome. Load it via CDN **immediately after the Tailwind script** so `fa-*` classes are available on every page:
+
+```html
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6/css/all.min.css">
+```
+
+**Scope — UI chrome only:** Use Font Awesome for interface icons — sidebar/nav items, buttons, metadata badges, section/heading markers, callout and status indicators, empty-state glyphs, and inline text icons. Font Awesome does **NOT** replace the mandatory inline-SVG diagrams in § 2 — ERD/class/sequence/flow/wireframe diagrams remain hand-authored inline `<svg>`. Icons decorate; SVG diagrams communicate structure.
+
+**Usage:**
+
+```html
+<i class="fa-solid fa-circle-check"></i>          <!-- solid (default UI style) -->
+<i class="fa-regular fa-file-lines"></i>          <!-- regular (outline) -->
+<i class="fa-brands fa-github"></i>               <!-- brands (logos) -->
+<span class="text-green-500"><i class="fa-solid fa-check"></i> Passed</span>
+```
+
+**Rules:**
+1. **Dark/light adaptive:** glyphs inherit `currentColor`, so they follow the page theme automatically. Set color with Tailwind text classes (`text-blue-500 dark:text-blue-400`) or CSS `color` — never hardcode a fill that breaks in dark mode.
+2. **Sizing:** use Font Awesome size classes (`fa-sm`, `fa-lg`, `fa-xl`, `fa-2x`) or Tailwind `text-*` sizes. Keep icon size in step with adjacent text.
+3. **Style consistency:** prefer `fa-solid` for functional UI; reserve `fa-brands` for real brand logos and `fa-regular` for lighter accents. Don't mix styles arbitrarily within one component.
+4. **Accessibility:** decorative icons get `aria-hidden="true"`; an icon that carries meaning on its own needs an `aria-label` (or visible adjacent text).
+5. **No border decoration:** icons are inline glyphs — they must not be used to fake single-side accent borders/bars (see § 6 Border / Accent Style Rules · GK-07). Place them inside the badge/callout, never as an edge stripe.
+6. **CDN dependency:** like the Tailwind and Mermaid CDNs, Font Awesome loads from `cdn.jsdelivr.net` (online). If a glyph fails to load, the layout must still read correctly — always keep a text label next to meaningful icons.
 
 ### Base Layout Classes
 
@@ -982,6 +1009,7 @@ The final assembled HTML page follows this structure:
   <title>{Document Title} — {App Name}</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>/* Tailwind config */</script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6/css/all.min.css">
   <script type="module">/* Mermaid init */</script>
 </head>
 <body class="bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100 font-sans">

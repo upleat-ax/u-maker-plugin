@@ -1,6 +1,6 @@
 # HTML Template — data schema + fill procedure
 
-The asset `assets/roadmap-template.html` is the **reference roadmap engine**, generalized. It is the interactive Gantt style the user anchored on: vanilla CSS, **light mode only**, width switcher (1440/1680/1920), draggable/contenteditable, localStorage autosave. This skill **overrides** the general u-maker HTML rules (no Tailwind, no dark-mode toggle, no Mermaid) — match this template's style exactly.
+The asset `assets/roadmap-template.html` is the **reference roadmap engine**, generalized. It is the interactive Gantt style the user anchored on: vanilla CSS, **light mode only**, width switcher (1440/1680/1920), draggable/contenteditable, localStorage autosave. This skill **overrides** the general u-maker HTML rules (no Tailwind, no dark-mode toggle, no Mermaid) — match this template's style exactly. (Font Awesome **is** loaded in the template `<head>` via CDN, so `fa-*` icon classes are available for UI chrome; glyphs inherit `currentColor` and fit the light-mode palette.)
 
 ## Fill procedure (critical)
 
