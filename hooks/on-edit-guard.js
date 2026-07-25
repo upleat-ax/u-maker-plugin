@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// on-edit-guard.js — u-maker Side-Effect Gatekeeping (PreToolUse)
+// on-edit-guard.js — umaker Side-Effect Gatekeeping (PreToolUse)
 //
 // GOAL: protect against silent side-effects (regressions) when the pipeline MODIFIES code that is
 // already built — i.e. a **bug fix or a change to an already-implemented feature / UI-UX** — but ONLY
@@ -27,16 +27,16 @@
 //
 // Boundary 3 (additive-edit heuristic): an INSERTION that still alters runtime behavior for existing
 // callers (e.g. an early `return` spliced into a function) reads as additive here and passes silently.
-// That residual semantic risk is the AGENT's to catch in the /u-dev Step 0.5 behavior-delta review;
+// That residual semantic risk is the AGENT's to catch in the /um-dev Step 0.5 behavior-delta review;
 // use `strict` to gate every modify+add to existing files regardless.
 //
 // NOTE on coverage: (B) is an import-graph heuristic. Cross-feature contracts that are NOT expressed as
 // imports — e.g. an HTTP API route, a DB schema/migration, an env contract — are NOT caught here by
-// design (to keep the gate low-noise). Those remain the AGENT's responsibility under the /u-dev Step
+// design (to keep the gate low-noise). Those remain the AGENT's responsibility under the /um-dev Step
 // 0.5 change-safety protocol (reverse-dependency + public-surface delta + AskUserQuestion).
 //
 // Gate mode (default `off`) — resolved PER PROJECT, highest precedence first: env `U_MAKER_EDIT_GATE`
-// > state file `.u-maker/.state/edit-gate-mode` (set by the skill param `/u-dev`·`/u-build
+// > state file `.u-maker/.state/edit-gate-mode` (set by the skill param `/um-dev`·`/um-build
 // --sideeffect {off|on|strict}`) > default `off`. Mode values:
 //   • off          — never gate (disable the side-effect gate entirely). DEFAULT — the gate does
 //                    nothing unless a user explicitly opts in via `on`/`auto`/`strict`.
@@ -55,11 +55,11 @@
 // gate is strict but never bricks a run, and the user is always the final authority.
 //
 // Scope (when enabled — `on`/`auto` — only fires when ALL hold):
-//   1. The target is inside a u-maker-managed project (a `.u-maker/` dir exists at/above it).
+//   1. The target is inside a umaker-managed project (a `.u-maker/` dir exists at/above it).
 //   2. The target is an EXISTING file (already on disk) — NEW file creation is allowed freely.
 //   3. The target is NOT under `.u-maker/` (SSoT docs/state are managed by other flows).
 //   4. There is no fresh per-file approval marker (written after the user approved an impact
-//      analysis via /u-dev Step 0.5 — see change-safety.md).
+//      analysis via /um-dev Step 0.5 — see change-safety.md).
 //   5. The file is already-implemented: git-tracked AND clean vs HEAD.
 //   6. The file HAS DEPENDENTS: at least one other source file imports/references it.
 //   7. The edit MODIFIES existing code (not a purely additive insertion). [file tools only; Bash
@@ -79,7 +79,7 @@ const { spawnSync } = require('child_process');
 // when explicitly enabled. The effective mode for a target is resolved PER PROJECT, highest first:
 //   1. env `U_MAKER_EDIT_GATE`                       — lets a shell / CI force a mode everywhere.
 //   2. state file `<root>/.u-maker/.state/edit-gate-mode` — written by the skill param
-//      `/u-dev`·`/u-build --sideeffect {off|on|strict}`; persists the choice for the project.
+//      `/um-dev`·`/um-build --sideeffect {off|on|strict}`; persists the choice for the project.
 //   3. default `off`.
 // `on` is the friendly alias of `auto` (both → the 3-signal low-noise policy); `strict` gates every
 // add+modify to every existing file. A source that is unset/unrecognized ABSTAINS (falls through).
@@ -110,7 +110,7 @@ function stateMode(umakerRoot) {
   }
 }
 
-// Effective mode for a target whose u-maker root is `umakerRoot`: env > state > default off.
+// Effective mode for a target whose umaker root is `umakerRoot`: env > state > default off.
 function effectiveMode(umakerRoot) {
   return ENV_MODE || stateMode(umakerRoot) || 'off';
 }
@@ -155,16 +155,16 @@ function ask(reason, mode) {
       permissionDecisionReason: reason,
     },
     systemMessage:
-      '[u-maker side-effect gate] ' + reason +
+      '[umaker side-effect gate] ' + reason +
       ' (Gate mode: ' + mode + '.) In `on`/`auto`, only already-implemented (committed) files that ' +
       'OTHER code imports/depends on are gated — new, in-progress, and leaf (no-dependent) files pass ' +
-      'freely. Run the /u-dev Step 0.5 impact analysis (reverse-dependency / blast-radius + adversarial ' +
+      'freely. Run the /um-dev Step 0.5 impact analysis (reverse-dependency / blast-radius + adversarial ' +
       'regression review), get explicit user approval (AskUserQuestion), then record a marker under ' +
       '.u-maker/.state/edit-approvals/ to authorize subsequent edits to this file ' +
-      '(see skills/u-dev/references/change-safety.md). ' +
+      '(see skills/um-dev/references/change-safety.md). ' +
       'Note: HTTP API routes, DB schema/migrations, and env contracts are cross-feature surfaces NOT ' +
       'detected by the import-graph heuristic — assess those in Step 0.5 even if this gate stays silent. ' +
-      'To change mode: `/u-dev` or `/u-build --sideeffect on|off|strict` (persists to ' +
+      'To change mode: `/um-dev` or `/um-build --sideeffect on|off|strict` (persists to ' +
       '.u-maker/.state/edit-gate-mode), or env U_MAKER_EDIT_GATE=on|auto|strict|off (env overrides ' +
       'the state file; default off).',
   };
@@ -360,9 +360,9 @@ function isModifyingEdit(toolName, toolInput, abs) {
 // could regress. This covers signals (A) ALREADY-IMPLEMENTED and (B) HAS DEPENDENTS. Signal (C)
 // MODIFIES-vs-ADDITIVE is content-dependent and applied by the CALLER (isModifyingEdit) for file
 // tools; Bash mutations are inherently modifying so they gate on (A)+(B) alone. The effective mode is
-// resolved PER PROJECT (env > state file > off) from the target's own u-maker root, and returned on
+// resolved PER PROJECT (env > state file > off) from the target's own umaker root, and returned on
 // the result so the caller can apply the additive bypass and label the prompt.
-// on/auto → path-gated iff: existing real file inside a u-maker project, outside `.u-maker/`, no fresh
+// on/auto → path-gated iff: existing real file inside a umaker project, outside `.u-maker/`, no fresh
 // marker, ALREADY-IMPLEMENTED (tracked+clean), AND HAS DEPENDENTS (other files import it).
 // strict → gated for every existing file (no implemented/dependent/additive checks). off → never.
 function gateInfo(abs, cwd) {
@@ -370,7 +370,7 @@ function gateInfo(abs, cwd) {
     if (!abs) return NOT_GATED;
     if (!fs.existsSync(abs) || !fs.statSync(abs).isFile()) return NOT_GATED; // new / not a regular file
     const root = findUmakerRoot(path.dirname(abs)) || findUmakerRoot(cwd);
-    if (!root) return NOT_GATED;                        // not inside a u-maker project
+    if (!root) return NOT_GATED;                        // not inside a umaker project
     const mode = effectiveMode(root);                   // env > state file > default off (per project)
     if (mode === 'off') return NOT_GATED;               // gate disabled for this project
     if (isUnderUmakerState(abs, root)) return NOT_GATED; // SSoT/state → managed elsewhere

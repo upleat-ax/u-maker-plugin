@@ -4,15 +4,17 @@ name: Release
 # Replaces the role previously played by deploy_github.sh's Steps 4–7.
 #
 # What it does:
-#   1. Build u-maker-plugin-${TAG}.zip with all plugin assets (skills/, agents/, hooks/,
-#      _meta/, install scripts, README*.html, GET_STARTED.html).
-#   2. Create GitHub Release on this repo (thinoo-v2/u-maker-plugin) with the zip attached.
-#   3. Sync README + HTML + install scripts to the public repo (upleat-ax/u-maker-plugin)
+#   1. Build umaker-plugin-${TAG}.zip with all plugin assets (skills/, agents/, hooks/,
+#      .claude-plugin/, .codex-plugin/, install scripts, README*.html, GET_STARTED.html).
+#      (_meta/ no longer ships here — it is vendored into the u-maker terminal app and
+#      served over HTTP by its embedded skills server.)
+#   2. Create GitHub Release on this repo (thinoo-v2/umaker-plugin) with the zip attached.
+#   3. Sync README + HTML + install scripts to the public repo (upleat-ax/umaker-plugin)
 #      so external users can install via `curl ... install.sh | bash`.
 #   4. Create GitHub Release on the public repo with the same zip.
 #
 # Required secrets:
-#   - UPLEAT_PUBLISH_TOKEN — PAT with `repo` scope for upleat-ax/u-maker-plugin
+#   - UPLEAT_PUBLISH_TOKEN — PAT with `repo` scope for upleat-ax/umaker-plugin
 #     (used to force-push README/install + create release).
 
 on:
@@ -44,13 +46,13 @@ jobs:
       - name: Build plugin zip
         id: zip
         run: |
-          ZIP_PATH="/tmp/u-maker-plugin-${{ steps.ver.outputs.tag }}.zip"
+          ZIP_PATH="/tmp/umaker-plugin-${{ steps.ver.outputs.tag }}.zip"
           zip -r "$ZIP_PATH" \
             .claude-plugin/ \
+            .codex-plugin/ \
             skills/ \
             agents/ \
             hooks/ \
-            _meta/ \
             deploy_local.sh \
             deploy_local.bat \
             install.sh \
@@ -68,11 +70,11 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ steps.ver.outputs.tag }}
-          name: u-maker ${{ steps.ver.outputs.tag }}
+          name: umaker ${{ steps.ver.outputs.tag }}
           generate_release_notes: true
           files: ${{ steps.zip.outputs.zip_path }}
 
-      - name: Sync to public repo (upleat-ax/u-maker-plugin)
+      - name: Sync to public repo (upleat-ax/umaker-plugin)
         env:
           UPLEAT_PUBLISH_TOKEN: ${{ secrets.UPLEAT_PUBLISH_TOKEN }}
         run: |
@@ -111,7 +113,7 @@ jobs:
           git commit -q -m "Release ${TAG}"
           git tag -a "${TAG}" -m "Release ${TAG}"
 
-          git remote add upleat "https://x-access-token:${UPLEAT_PUBLISH_TOKEN}@github.com/upleat-ax/u-maker-plugin.git"
+          git remote add upleat "https://x-access-token:${UPLEAT_PUBLISH_TOKEN}@github.com/upleat-ax/umaker-plugin.git"
           git push upleat main --force
           git push upleat "${TAG}" --force
 
@@ -128,29 +130,29 @@ jobs:
           TAG="${{ steps.ver.outputs.tag }}"
           ZIP="${{ steps.zip.outputs.zip_path }}"
           NOTES=$(cat <<EOF
-          ## u-maker ${TAG}
+          ## umaker ${TAG}
 
           ### Install
 
           **macOS / Linux:**
           \`\`\`bash
-          curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/install.sh | bash
+          curl -fsSL https://raw.githubusercontent.com/upleat-ax/umaker-plugin/main/install.sh | bash
           \`\`\`
 
           **Windows (CMD):**
           \`\`\`cmd
-          curl -fsSL --ssl-no-revoke https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/install.bat -o install.bat && install.bat && del install.bat
+          curl -fsSL --ssl-no-revoke https://raw.githubusercontent.com/upleat-ax/umaker-plugin/main/install.bat -o install.bat && install.bat && del install.bat
           \`\`\`
 
           **Windows (PowerShell):**
           \`\`\`powershell
-          curl.exe -fsSL --ssl-no-revoke https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/install.bat -o install.bat; .\\install.bat; del install.bat
+          curl.exe -fsSL --ssl-no-revoke https://raw.githubusercontent.com/upleat-ax/umaker-plugin/main/install.bat -o install.bat; .\\install.bat; del install.bat
           \`\`\`
           EOF
           )
 
           gh release create "${TAG}" "${ZIP}" \
-            --title "u-maker ${TAG}" \
+            --title "umaker ${TAG}" \
             --notes "${NOTES}" \
-            --repo upleat-ax/u-maker-plugin \
-          || gh release upload "${TAG}" "${ZIP}" --clobber --repo upleat-ax/u-maker-plugin
+            --repo upleat-ax/umaker-plugin \
+          || gh release upload "${TAG}" "${ZIP}" --clobber --repo upleat-ax/umaker-plugin

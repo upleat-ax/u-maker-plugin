@@ -1,6 +1,23 @@
 # Changelog
 
-All notable changes to u-maker-plugin.
+All notable changes to umaker-plugin (formerly u-maker-plugin).
+
+## [4.1.0-alpha.1] — 2026-07-25
+
+**The plugin is renamed `u-maker` → `umaker`, and skill bodies move out of the plugin into the u-maker terminal app's embedded skills server — this repo now ships frontmatter-only skill stubs.**
+
+### Changed
+
+- **Plugin renamed `u-maker` → `umaker`.** `.claude-plugin/plugin.json`, `.claude-plugin/marketplace.json`, and `.codex-plugin/plugin.json` all carry the new identity; the repo moves to `upleat-ax/umaker-plugin`. Install/deploy scripts (`install.sh`/`install.bat`/`install.ps1`/`uninstall_local.sh`/`deploy_local.*`/`deploy_github.sh`) and the release workflow build/publish `umaker-plugin-v*.zip` under the new name. The `UMAKER_REPO` env override keeps working.
+- **All 29 skills renamed `/u-*` → `/um-*`** (e.g. `/u-plan` → `/um-plan`, `/u-build` → `/um-build`, aliases `/um-init`, `/um-check`, `/um-qa`, `/um-ssot`). Skill directories are now `skills/um-*/`.
+- **All 10 agents renamed `u-agent-*` → `um-agent-*`.**
+- **Skill bodies migrated to the u-maker terminal's embedded skills server.** Each `skills/um-*/SKILL.md` in this plugin is a frontmatter-only stub that fetches its body from the server at execution time — discovery via `~/.config/u-maker/skills-server.json`, default `http://127.0.0.1:8765`. The u-maker terminal app must be running to execute `um-*` skills.
+- **`_meta/` (templates, schemas, tech-rules) removed from this repo** — vendored into the terminal app and served over HTTP by the same skills server. `deploy_local.sh`/`deploy_local.bat` no longer create `_meta` symlinks/junctions, and release zips no longer include `_meta/` (they now include `.codex-plugin/`, which deploy_local's Codex setup requires).
+- **Installers clean up legacy old-name artifacts on upgrade** — `u-maker__*` skill/agent symlinks, `cache/u-maker`, `u-maker-marketplace` symlink, and `u-maker@u-maker` registry entries are still removed, alongside the equivalent new-name (`umaker`) artifacts.
+
+### Unchanged (compatibility)
+
+- `.u-maker/` per-project data directories, `U_MAKER_*`/`UMAKER_*` environment variables, `u-maker.config.json`, and the u-maker terminal app identity (config dir `~/.config/u-maker`) are all intentionally NOT renamed.
 
 ## [4.0.0-alpha.30] — 2026-06-28
 

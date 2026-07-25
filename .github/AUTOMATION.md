@@ -6,16 +6,16 @@ This repo now ships two GitHub Actions workflows that automate the release flow 
 
 | File | Trigger | What it does |
 |---|---|---|
-| `.github/workflows/release.yml` | `git push origin v*` (tag push) | Builds `u-maker-plugin-${TAG}.zip` → creates GitHub Release on this repo → force-syncs README/HTML/install scripts to `upleat-ax/u-maker-plugin` → creates Release on the public repo |
+| `.github/workflows/release.yml` | `git push origin v*` (tag push) | Builds `umaker-plugin-${TAG}.zip` → creates GitHub Release on this repo → force-syncs README/HTML/install scripts to `upleat-ax/umaker-plugin` → creates Release on the public repo |
 | `.github/workflows/vercel-deploy.yml` | push to `main` touching `README*.html`, `GET_STARTED.html`, `.claude-plugin/plugin.json`, or this workflow itself · `workflow_dispatch` manual run | Deploys the 3 HTML docs to `umaker.upleat.ai` via Vercel CLI (production), then curls each page to verify 200 |
 
 ## Required GitHub Secrets
 
-Set under **Settings → Secrets and variables → Actions** for this repo (`thinoo-v2/u-maker-plugin`).
+Set under **Settings → Secrets and variables → Actions** for this repo (`thinoo-v2/umaker-plugin`).
 
 | Secret | Used by | How to obtain |
 |---|---|---|
-| `UPLEAT_PUBLISH_TOKEN` | `release.yml` | Personal Access Token (classic) with `repo` scope, on an account that can push to `upleat-ax/u-maker-plugin`. Already configured. |
+| `UPLEAT_PUBLISH_TOKEN` | `release.yml` | Personal Access Token (classic) with `repo` scope, on an account that can push to `upleat-ax/umaker-plugin`. Already configured. |
 | `VERCEL_TOKEN` | `vercel-deploy.yml` | https://vercel.com/account/tokens → "Create Token" → scope it to the project's team. **Needs to be added manually.** |
 
 Vercel `orgId` / `projectId` do not need to be secrets — they are committed in `.vercel/project.json` and read by `vercel pull` at job runtime.
@@ -41,7 +41,7 @@ git push origin "v${VERSION}"
 #    → release.yml automatically:
 #      - builds zip
 #      - creates Release on this repo
-#      - syncs to upleat-ax/u-maker-plugin
+#      - syncs to upleat-ax/umaker-plugin
 #      - creates Release on the public repo
 ```
 
@@ -52,9 +52,9 @@ The two original scripts (`deploy_github.sh`, `deploy_vercel.sh`) still work and
 ## Verification
 
 - After a tag push, check **Actions → Release** for green status, and verify:
-  - https://github.com/thinoo-v2/u-maker-plugin/releases (new tag with zip asset)
-  - https://github.com/upleat-ax/u-maker-plugin/releases (mirrored)
-  - https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/install.sh (up-to-date)
+  - https://github.com/thinoo-v2/umaker-plugin/releases (new tag with zip asset)
+  - https://github.com/upleat-ax/umaker-plugin/releases (mirrored)
+  - https://raw.githubusercontent.com/upleat-ax/umaker-plugin/main/install.sh (up-to-date)
 - After a main push to docs, check **Actions → Vercel Deploy** for green status, and verify https://umaker.upleat.ai/ shows the new version.
 
 ## What's still manual

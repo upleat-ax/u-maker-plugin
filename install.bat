@@ -3,7 +3,7 @@ setlocal EnableDelayedExpansion
 chcp 65001 >nul 2>&1
 
 :: ============================================================
-:: install.bat — u-maker plugin installer (Windows)
+:: install.bat — umaker plugin installer (Windows)
 ::
 :: Downloads the latest release from GitHub, extracts, installs,
 :: and cleans up temporary files.
@@ -14,9 +14,11 @@ chcp 65001 >nul 2>&1
 ::   install.bat --uninstall      & remove plugin
 :: ============================================================
 
-set "REPO=upleat-ax/u-maker-plugin"
+set "REPO=upleat-ax/umaker-plugin"
 set "API_URL=https://api.github.com/repos/%REPO%/releases"
-set "PLUGIN_NAME=u-maker"
+set "PLUGIN_NAME=umaker"
+:: Pre-rename plugin name (u-maker) — used to locate/clean legacy installs
+set "OLD_PLUGIN_NAME=u-maker"
 
 if "%~1"=="--uninstall" goto :uninstall
 if "%~1"=="--clean" goto :uninstall
@@ -41,7 +43,7 @@ goto :install
 :install
 echo.
 echo ========================================
-echo   u-maker Plugin Installer (Windows)
+echo   umaker Plugin Installer (Windows)
 echo ========================================
 echo.
 
@@ -90,7 +92,7 @@ if defined TARGET_VERSION (
         echo          - Repository %REPO% does not exist or is private
         echo          - Network/firewall is blocking api.github.com
         echo          - GitHub API rate limit exceeded
-        echo        Try: install.bat --repo your-org/u-maker-plugin
+        echo        Try: install.bat --repo your-org/umaker-plugin
         exit /b 1
     )
 )
@@ -108,9 +110,9 @@ if not defined DOWNLOAD_URL (
 echo   [OK] URL: %DOWNLOAD_URL%
 
 :: Create temp directory
-set "TMP_DIR=%TEMP%\u-maker-install-%RANDOM%"
+set "TMP_DIR=%TEMP%\umaker-install-%RANDOM%"
 mkdir "%TMP_DIR%" 2>nul
-set "ZIP_FILE=%TMP_DIR%\u-maker-plugin.zip"
+set "ZIP_FILE=%TMP_DIR%\umaker-plugin.zip"
 
 :: Download
 echo   [..] Downloading...
@@ -171,17 +173,18 @@ echo   [OK] Temporary files removed
 echo   [..] Checking for existing projects...
 if exist "%CD%\.u-maker" (
     echo.
-    echo   [WARN] WARNING: v4.0 is not compatible with v3.x .u-maker/ folders. Please re-initialize with /u-plan.
+    echo   [WARN] WARNING: v4.0+ is not compatible with v3.x .u-maker/ folders. Please re-initialize with /um-plan.
     echo.
 )
 
 echo.
 echo ========================================
-echo   u-maker %VERSION% installed!
+echo   umaker %VERSION% installed!
 echo ========================================
 echo.
-echo   Restart Claude Code to start using u-maker.
-echo   Then run: /u-plan
+echo   Restart Claude Code to start using umaker.
+echo   Then run: /um-plan
+echo   Note: um-* skill bodies are served by the u-maker terminal app - keep it running.
 echo.
 goto :eof
 
@@ -190,15 +193,21 @@ goto :eof
 :: ============================================================
 :uninstall
 echo.
-echo   [..] Uninstalling u-maker...
+echo   [..] Uninstalling umaker...
 
 set "CLAUDE_HOME=%USERPROFILE%\.claude"
 set "CACHE_DIR=%CLAUDE_HOME%\plugins\cache\%PLUGIN_NAME%"
+set "OLD_CACHE_DIR=%CLAUDE_HOME%\plugins\cache\%OLD_PLUGIN_NAME%"
 
-:: Find deploy_local.bat in cache
+:: Find deploy_local.bat in cache (new name first, then legacy u-maker cache)
 set "DEPLOY_SCRIPT="
 if exist "%CACHE_DIR%" (
     for /r "%CACHE_DIR%" %%f in (deploy_local.bat) do (
+        if exist "%%f" set "DEPLOY_SCRIPT=%%f"
+    )
+)
+if not defined DEPLOY_SCRIPT if exist "%OLD_CACHE_DIR%" (
+    for /r "%OLD_CACHE_DIR%" %%f in (deploy_local.bat) do (
         if exist "%%f" set "DEPLOY_SCRIPT=%%f"
     )
 )
@@ -226,5 +235,5 @@ echo   install.bat --uninstall              Remove plugin
 echo   install.bat --help                   Show this help
 echo.
 echo Quick install (CMD):
-echo   curl.exe -fsSL --ssl-no-revoke -o "%%TEMP%%\install.ps1" https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/install.ps1 ^&^& powershell -NoProfile -ExecutionPolicy Bypass -File "%%TEMP%%\install.ps1"
+echo   curl.exe -fsSL --ssl-no-revoke -o "%%TEMP%%\install.ps1" https://raw.githubusercontent.com/upleat-ax/umaker-plugin/main/install.ps1 ^&^& powershell -NoProfile -ExecutionPolicy Bypass -File "%%TEMP%%\install.ps1"
 goto :eof

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>U-MAKER Plugin v4.0.0-alpha.25 (PBGD) Documentation</title>
+<title>UMAKER Plugin v4.0.0-alpha.25 (PBGD) Documentation</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{--sidebar-w:280px;--bg:#ffffff;--sidebar-bg:#ffffff;--main-bg:#ffffff;--text:#334155;--text-main:#334155;--heading:#0f172a;--accent:#3b82f6;--accent-hover:#2563eb;--code-bg:#f1f5f9;--code-text:#1e293b;--border:#e2e8f0;--active-bg:#f8fafc;--badge-bg:#e2e8f0;--badge-text:#64748b;--table-stripe:#f8fafc;--table-border:#e2e8f0;--table-header:#f1f5f9}
@@ -108,7 +108,7 @@ a:hover{text-decoration:underline}
 
 <nav class="sidebar" id="sidebar">
   <div class="sidebar-header">
-    <h1>U-MAKER</h1>
+    <h1>UMAKER</h1>
     <p>v4.0.0-alpha.25 (PBGD) &mdash; Plugin Documentation</p>
   </div>
   <div class="sidebar-nav">
@@ -157,7 +157,7 @@ a:hover{text-decoration:underline}
 <!-- SECTION 0: Hero -->
 <!-- ============================================================ -->
 <div class="hero" id="hero">
-  <h2>U-MAKER Plugin</h2>
+  <h2>UMAKER Plugin</h2>
   <p>PBGD-based SSoT (Single Source of Truth) collaboration orchestrator for Claude Code.<br>
   Automates the entire software development lifecycle with 10 specialized agents, 29 skills (incl. 3 aliases), and a structured data pipeline.</p>
   <div class="stats">
@@ -174,35 +174,35 @@ a:hover{text-decoration:underline}
 <h2 id="tldr">1. TL;DR</h2>
 
 <h3>Forward Engineering (New Project)</h3>
-<pre><code><span class="comment"># A. Starting a brand new project → /u-createproject</span>
-<span class="cmd">/u-createproject my-app</span>          <span class="comment"># Scaffold Turborepo+Bun monorepo + auto-runs /u-prepare</span>
+<pre><code><span class="comment"># A. Starting a brand new project → /um-createproject</span>
+<span class="cmd">/um-createproject my-app</span>          <span class="comment"># Scaffold Turborepo+Bun monorepo + auto-runs /um-prepare</span>
 <span class="comment"># ⚠️ After creation: cd my-app && claude  (restart CLI in new folder)</span>
 
-<span class="comment"># B. Adding U-MAKER to an existing project → /u-prepare (alias: /u-init)</span>
-<span class="cmd">/u-prepare my-app</span>                 <span class="comment"># foldertree + dropzone + analyze/reverse + requirements</span>
+<span class="comment"># B. Adding UMAKER to an existing project → /um-prepare (alias: /um-init)</span>
+<span class="cmd">/um-prepare my-app</span>                 <span class="comment"># foldertree + dropzone + analyze/reverse + requirements</span>
 
 <span class="comment"># PBGD core pipeline</span>
-<span class="cmd">/u-plan my-app</span>                   <span class="comment"># Plan: SRS + IA</span>
-<span class="cmd">/u-wireframe --app my-app --all</span>  <span class="comment"># (optional) per-screen HTML wireframes</span>
-<span class="cmd">/u-build my-app</span>                  <span class="comment"># Build: Design (ERD/API/Screens/DS) ↔ Dev (FE/BE/DB) orchestrator</span>
-<span class="cmd">/u-gatekeeping my-app</span>            <span class="comment"># Gatekeeping: doc scoring + runtime QA (alias: /u-check)</span>
-<span class="cmd">/u-deploy my-app</span>                 <span class="comment"># Deploy: interactive target + artifact selection (≥ 98 gate)</span>
+<span class="cmd">/um-plan my-app</span>                   <span class="comment"># Plan: SRS + IA</span>
+<span class="cmd">/um-wireframe --app my-app --all</span>  <span class="comment"># (optional) per-screen HTML wireframes</span>
+<span class="cmd">/um-build my-app</span>                  <span class="comment"># Build: Design (ERD/API/Screens/DS) ↔ Dev (FE/BE/DB) orchestrator</span>
+<span class="cmd">/um-gatekeeping my-app</span>            <span class="comment"># Gatekeeping: doc scoring + runtime QA (alias: /um-check)</span>
+<span class="cmd">/um-deploy my-app</span>                 <span class="comment"># Deploy: interactive target + artifact selection (≥ 98 gate)</span>
 
 <span class="comment"># Or run all phases unattended</span>
-<span class="cmd">/u-loop my-app</span></code></pre>
+<span class="cmd">/um-loop my-app</span></code></pre>
 
 <h3>Reverse Engineering (Existing Codebase)</h3>
-<pre><code><span class="cmd">/u-prepare my-app</span>                 <span class="comment"># Initialize .u-maker/ structure first (alias: /u-init)</span>
-<span class="cmd">/u-reverse --app my-app</span>          <span class="comment"># Existing code → SSoT reverse engineering</span></code></pre>
+<pre><code><span class="cmd">/um-prepare my-app</span>                 <span class="comment"># Initialize .u-maker/ structure first (alias: /um-init)</span>
+<span class="cmd">/um-reverse --app my-app</span>          <span class="comment"># Existing code → SSoT reverse engineering</span></code></pre>
 
 <h3>Figma Source Analysis</h3>
-<pre><code><span class="cmd">/u-tools-figma &lt;figma-url&gt;</span>             <span class="comment"># Comprehensive Figma analyzer (pages + variants + assets + components + comments + semantics)</span>
-<span class="comment"># Auto-delegated from /u-prepare, /u-analyze, /u-reverse, /u-build on Figma sources</span></code></pre>
+<pre><code><span class="cmd">/um-tools-figma &lt;figma-url&gt;</span>             <span class="comment"># Comprehensive Figma analyzer (pages + variants + assets + components + comments + semantics)</span>
+<span class="comment"># Auto-delegated from /um-prepare, /um-analyze, /um-reverse, /um-build on Figma sources</span></code></pre>
 
 <h3>Natural Language Also Works</h3>
-<pre><code><span class="comment">"Create SRS for my-app"</span>           <span class="comment"># U-MAKER router auto-dispatches to /u-plan</span>
-<span class="comment">"Generate the ERD for my-app"</span>     <span class="comment"># Routed to /u-build --only erd</span>
-<span class="comment">"Run all tests for my-app"</span>        <span class="comment"># Routed to /u-gatekeeping</span></code></pre>
+<pre><code><span class="comment">"Create SRS for my-app"</span>           <span class="comment"># UMAKER router auto-dispatches to /um-plan</span>
+<span class="comment">"Generate the ERD for my-app"</span>     <span class="comment"># Routed to /um-build --only erd</span>
+<span class="comment">"Run all tests for my-app"</span>        <span class="comment"># Routed to /um-gatekeeping</span></code></pre>
 
 <hr>
 
@@ -211,7 +211,7 @@ a:hover{text-decoration:underline}
 <!-- ============================================================ -->
 <h2 id="sec-arch">2. Architecture Overview</h2>
 
-<p>U-MAKER accepts both slash commands and natural language, routing them through a skill router and agent dispatch system to produce SSoT documents.</p>
+<p>UMAKER accepts both slash commands and natural language, routing them through a skill router and agent dispatch system to produce SSoT documents.</p>
 
 <div class="diagram-wrap">
 <svg viewBox="0 0 720 320" xmlns="http://www.w3.org/2000/svg" style="font-family:-apple-system,sans-serif">
@@ -234,9 +234,9 @@ a:hover{text-decoration:underline}
   <!-- SKILL.md -->
   <rect x="80" y="162" width="200" height="36" rx="6" fill="#e0f2fe" stroke="#38bdf8"/>
   <text x="180" y="185" text-anchor="middle" fill="#0c4a6e" font-size="11" font-weight="600">u-{cmd}/SKILL.md</text>
-  <!-- u-maker NL Router -->
+  <!-- umaker NL Router -->
   <rect x="440" y="162" width="200" height="36" rx="6" fill="#fef9c3" stroke="#ca8a04"/>
-  <text x="540" y="185" text-anchor="middle" fill="#78350f" font-size="11" font-weight="600">u-maker (NL Router)</text>
+  <text x="540" y="185" text-anchor="middle" fill="#78350f" font-size="11" font-weight="600">umaker (NL Router)</text>
   <!-- NL to slash -->
   <line x1="440" y1="180" x2="285" y2="180" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="5" marker-end="url(#ar)"/>
   <text x="362" y="173" text-anchor="middle" fill="#92400e" font-size="9">&rarr; /u-* conversion</text>
@@ -248,7 +248,7 @@ a:hover{text-decoration:underline}
   <rect x="170" y="230" width="140" height="32" rx="6" fill="#f0fdf4" stroke="#22c55e"/>
   <text x="240" y="251" text-anchor="middle" fill="#166534" font-size="10" font-weight="600">u-skill-* (engines)</text>
   <rect x="320" y="230" width="160" height="32" rx="6" fill="#ede9fe" stroke="#8b5cf6"/>
-  <text x="400" y="251" text-anchor="middle" fill="#5b21b6" font-size="10" font-weight="600">u-agent-* (dispatch)</text>
+  <text x="400" y="251" text-anchor="middle" fill="#5b21b6" font-size="10" font-weight="600">um-agent-* (dispatch)</text>
   <!-- Agents -->
   <rect x="520" y="230" width="180" height="32" rx="6" fill="#ede9fe" stroke="#8b5cf6"/>
   <text x="610" y="242" text-anchor="middle" fill="#5b21b6" font-size="8">pm|plan|build|design|dev|gatekeeper</text>
@@ -270,7 +270,7 @@ a:hover{text-decoration:underline}
 <!-- ============================================================ -->
 <h2 id="sec-pbgd">3. PBGD 4-Phase Process</h2>
 
-<p>PBGD replaces the v3.x PDCA 5-phase model with a tighter 4-phase pipeline: <strong>Plan</strong> &rarr; <strong>Build</strong> (Design &harr; Dev orchestrated) &rarr; <strong>Gatekeeping</strong> (doc scoring + runtime QA) &rarr; <strong>Deploy</strong>. See <a href="https://github.com/upleat-ax/u-maker-plugin/blob/main/CHANGELOG.md">CHANGELOG.md</a> for migration details from PDCA.</p>
+<p>PBGD replaces the v3.x PDCA 5-phase model with a tighter 4-phase pipeline: <strong>Plan</strong> &rarr; <strong>Build</strong> (Design &harr; Dev orchestrated) &rarr; <strong>Gatekeeping</strong> (doc scoring + runtime QA) &rarr; <strong>Deploy</strong>. See <a href="https://github.com/upleat-ax/umaker-plugin/blob/main/CHANGELOG.md">CHANGELOG.md</a> for migration details from PDCA.</p>
 
 <div class="diagram-wrap">
 <svg viewBox="0 0 700 180" xmlns="http://www.w3.org/2000/svg" style="font-family:-apple-system,sans-serif">
@@ -307,14 +307,14 @@ a:hover{text-decoration:underline}
 <table>
 <thead><tr><th>Phase</th><th>Sub-phases</th><th>Skills</th><th>Gate Condition</th></tr></thead>
 <tbody>
-<tr><td><strong>01 Plan</strong></td><td>Prepare (foldertree + dropzone + analyze/reverse + requirements) &harr; Plan (SRS + IA + optional wireframes)</td><td><code>u-prepare</code>, <code>u-prepare-foldertree</code>, <code>u-analyze</code>, <code>u-reverse</code>, <code>u-plan</code>, <code>u-wireframe</code></td><td>SRS + IA Final</td></tr>
-<tr><td><strong>02 Build</strong></td><td>UI Design &harr; Development orchestration</td><td><code>u-build</code>, <code>u-design</code>, <code>u-dev</code></td><td>Design docs Final + code-complete</td></tr>
-<tr><td><strong>03 Gatekeeping</strong></td><td>Doc Scoring + Runtime QA</td><td><code>u-gatekeeping</code> (aliases <code>u-check</code>, <code>u-qa</code>)</td><td>Pass &ge; 95</td></tr>
-<tr><td><strong>04 Deploy</strong></td><td>CI/CD (interactive target + artifact selection, continuous regeneration)</td><td><code>u-deploy</code></td><td>Deploy-gate &ge; 98</td></tr>
+<tr><td><strong>01 Plan</strong></td><td>Prepare (foldertree + dropzone + analyze/reverse + requirements) &harr; Plan (SRS + IA + optional wireframes)</td><td><code>um-prepare</code>, <code>um-prepare-foldertree</code>, <code>um-analyze</code>, <code>um-reverse</code>, <code>um-plan</code>, <code>um-wireframe</code></td><td>SRS + IA Final</td></tr>
+<tr><td><strong>02 Build</strong></td><td>UI Design &harr; Development orchestration</td><td><code>um-build</code>, <code>um-design</code>, <code>um-dev</code></td><td>Design docs Final + code-complete</td></tr>
+<tr><td><strong>03 Gatekeeping</strong></td><td>Doc Scoring + Runtime QA</td><td><code>um-gatekeeping</code> (aliases <code>um-check</code>, <code>um-qa</code>)</td><td>Pass &ge; 95</td></tr>
+<tr><td><strong>04 Deploy</strong></td><td>CI/CD (interactive target + artifact selection, continuous regeneration)</td><td><code>um-deploy</code></td><td>Deploy-gate &ge; 98</td></tr>
 </tbody>
 </table>
 
-<blockquote><strong>Figma analyzer</strong>: <code>/u-tools-figma</code> (owned by <code>u-agent-figma</code>) runs as a cross-phase source analyzer — auto-delegated from <code>/u-prepare</code>, <code>/u-analyze</code>, <code>/u-reverse</code>, and <code>/u-build</code> when Figma URLs or files are present. v4.0.0-alpha.25 ships a reduced extraction path (<code>source.pipeline == "reduced"</code>); downstream consumers treat schema-optional fields as warnings via <code>coverageWarnings[]</code>.</blockquote>
+<blockquote><strong>Figma analyzer</strong>: <code>/um-tools-figma</code> (owned by <code>um-agent-figma</code>) runs as a cross-phase source analyzer — auto-delegated from <code>/um-prepare</code>, <code>/um-analyze</code>, <code>/um-reverse</code>, and <code>/um-build</code> when Figma URLs or files are present. v4.0.0-alpha.25 ships a reduced extraction path (<code>source.pipeline == "reduced"</code>); downstream consumers treat schema-optional fields as warnings via <code>coverageWarnings[]</code>.</blockquote>
 
 <h3>Gatekeeper Scorecard</h3>
 <p>Every gate validation <strong>must display the full 11-criteria scorecard</strong> (threshold 95, configurable). No abbreviation or omission allowed.</p>
@@ -342,7 +342,7 @@ a:hover{text-decoration:underline}
 <!-- ============================================================ -->
 <h2 id="sec-pipeline">4. Data Pipeline</h2>
 
-<p>Processing raw data all at once causes early content loss due to context window limits. U-MAKER solves this with a layered pipeline:</p>
+<p>Processing raw data all at once causes early content loss due to context window limits. UMAKER solves this with a layered pipeline:</p>
 
 <div class="diagram-wrap">
 <svg viewBox="0 0 720 200" xmlns="http://www.w3.org/2000/svg" style="font-family:-apple-system,sans-serif">
@@ -367,7 +367,7 @@ a:hover{text-decoration:underline}
   <text x="287" y="118" text-anchor="middle" fill="#1e3a8a" font-size="9">decisions/ &middot; questions/</text>
   <text x="287" y="133" text-anchor="middle" fill="#2563eb" font-size="9" font-weight="700">standards/ &middot; ux-standards/</text>
   <text x="287" y="150" text-anchor="middle" fill="#1e40af" font-size="9">(12 categories)</text>
-  <text x="287" y="172" text-anchor="middle" fill="#3b82f6" font-size="9" font-weight="600">/u-plan &rarr;</text>
+  <text x="287" y="172" text-anchor="middle" fill="#3b82f6" font-size="9" font-weight="600">/um-plan &rarr;</text>
   <!-- Arrow -->
   <line x1="375" y1="100" x2="405" y2="100" stroke="#6b7280" stroke-width="2" marker-end="url(#ar3)"/>
   <!-- Layer 3: docs -->
@@ -378,7 +378,7 @@ a:hover{text-decoration:underline}
   <text x="482" y="100" text-anchor="middle" fill="#14532d" font-size="10">ScreenFlow &middot; RTM</text>
   <text x="482" y="116" text-anchor="middle" fill="#14532d" font-size="10">Code &middot; TestCase</text>
   <text x="482" y="132" text-anchor="middle" fill="#14532d" font-size="10">wireframes/</text>
-  <text x="482" y="160" text-anchor="middle" fill="#22c55e" font-size="9" font-weight="600">/u-output &rarr;</text>
+  <text x="482" y="160" text-anchor="middle" fill="#22c55e" font-size="9" font-weight="600">/um-output &rarr;</text>
   <!-- Arrow -->
   <line x1="555" y1="100" x2="585" y2="100" stroke="#6b7280" stroke-width="2" marker-end="url(#ar3)"/>
   <!-- Layer 4: output -->
@@ -403,7 +403,7 @@ a:hover{text-decoration:underline}
 <tr><td>screens/</td><td>SC-nnn</td><td>AS-IS screens</td></tr>
 <tr><td>data-models/</td><td>DM-nnn</td><td>AS-IS DB</td></tr>
 <tr><td>constraints/</td><td>CN-nnn</td><td>RFP, regulations</td></tr>
-<tr><td>decisions/</td><td>DC-nnn</td><td>Meeting notes, /u-discuss</td></tr>
+<tr><td>decisions/</td><td>DC-nnn</td><td>Meeting notes, /um-discuss</td></tr>
 <tr><td>questions/</td><td>QS-nnn</td><td>Generated during analysis</td></tr>
 <tr><td>standards/</td><td>STD-nnn</td><td>Standard policies, guidelines</td></tr>
 <tr><td>ux-standards/</td><td>UXS-nnn</td><td>Design system, UI guides</td></tr>
@@ -422,16 +422,16 @@ a:hover{text-decoration:underline}
 <table>
 <thead><tr><th>Agent</th><th>Model</th><th>Role</th><th>Phase</th></tr></thead>
 <tbody>
-<tr><td><code>u-agent-pm</code></td><td>opus</td><td>Command router, orchestration, state machine, dependency graph management</td><td>ALL</td></tr>
-<tr><td><code>u-agent-plan</code></td><td>opus</td><td>Plan phase executor &mdash; Prepare + SRS + IA + wireframe orchestration</td><td>Plan</td></tr>
-<tr><td><code>u-agent-build</code></td><td>opus</td><td>Build phase orchestrator &mdash; Design &harr; Dev ping-pong</td><td>Build</td></tr>
-<tr><td><code>u-agent-design</code></td><td>opus</td><td>UI design executor &mdash; ERD, API, Screen, Design System</td><td>Build</td></tr>
-<tr><td><code>u-agent-dev</code></td><td>opus</td><td>Development executor &mdash; FE + BE + DB code generation</td><td>Build</td></tr>
-<tr><td><code>u-agent-gatekeeper</code></td><td>opus</td><td>Quality validation &mdash; 11 criteria scoring, consistency checks, RTM</td><td>Gatekeeping</td></tr>
-<tr><td><code>u-agent-qa</code></td><td>opus</td><td>Runtime QA executor &mdash; test case design, test execution, results</td><td>Gatekeeping</td></tr>
-<tr><td><code>u-agent-deploy</code></td><td>opus</td><td>Deploy executor &mdash; interactive target + artifact selection, continuous regeneration</td><td>Deploy</td></tr>
-<tr><td><code>u-agent-figma</code></td><td>opus</td><td>Figma analyzer &mdash; pages + variants + assets + components + comments + semantics (reduced path in alpha)</td><td>Cross-phase</td></tr>
-<tr><td><code>u-agent-report</code></td><td>sonnet</td><td>Report generation &mdash; HTML reports, deliverable formatting</td><td>ALL</td></tr>
+<tr><td><code>um-agent-pm</code></td><td>opus</td><td>Command router, orchestration, state machine, dependency graph management</td><td>ALL</td></tr>
+<tr><td><code>um-agent-plan</code></td><td>opus</td><td>Plan phase executor &mdash; Prepare + SRS + IA + wireframe orchestration</td><td>Plan</td></tr>
+<tr><td><code>um-agent-build</code></td><td>opus</td><td>Build phase orchestrator &mdash; Design &harr; Dev ping-pong</td><td>Build</td></tr>
+<tr><td><code>um-agent-design</code></td><td>opus</td><td>UI design executor &mdash; ERD, API, Screen, Design System</td><td>Build</td></tr>
+<tr><td><code>um-agent-dev</code></td><td>opus</td><td>Development executor &mdash; FE + BE + DB code generation</td><td>Build</td></tr>
+<tr><td><code>um-agent-gatekeeper</code></td><td>opus</td><td>Quality validation &mdash; 11 criteria scoring, consistency checks, RTM</td><td>Gatekeeping</td></tr>
+<tr><td><code>um-agent-qa</code></td><td>opus</td><td>Runtime QA executor &mdash; test case design, test execution, results</td><td>Gatekeeping</td></tr>
+<tr><td><code>um-agent-deploy</code></td><td>opus</td><td>Deploy executor &mdash; interactive target + artifact selection, continuous regeneration</td><td>Deploy</td></tr>
+<tr><td><code>um-agent-figma</code></td><td>opus</td><td>Figma analyzer &mdash; pages + variants + assets + components + comments + semantics (reduced path in alpha)</td><td>Cross-phase</td></tr>
+<tr><td><code>um-agent-report</code></td><td>sonnet</td><td>Report generation &mdash; HTML reports, deliverable formatting</td><td>ALL</td></tr>
 </tbody>
 </table>
 
@@ -455,13 +455,13 @@ a:hover{text-decoration:underline}
 <table>
 <thead><tr><th>Command</th><th>Description</th><th>Example</th></tr></thead>
 <tbody>
-<tr><td><code>/u-prepare</code></td><td>Preparation umbrella &mdash; foldertree + dropzone + analyze/reverse + requirements conversation. Auto-delegates to <code>/u-tools-figma</code> when Figma sources are present</td><td><code>/u-prepare my-app</code></td></tr>
-<tr><td><code>/u-prepare-foldertree</code></td><td><code>.u-maker/</code> folder/state scaffolding only. Supports <code>--migrate</code> for v3&rarr;v4 rename of <code>check/</code> &rarr; <code>gatekeeping/</code></td><td><code>/u-prepare-foldertree my-app --migrate</code></td></tr>
-<tr><td><code>/u-analyze</code></td><td>Dropzone &rarr; digest (12 categories). Extracted from legacy <code>/u-plan</code> Steps 1&ndash;2</td><td><code>/u-analyze my-app</code></td></tr>
-<tr><td><code>/u-reverse</code></td><td>Existing code &rarr; digest (reverse engineering). Supports <code>--db</code>, <code>--api</code>, <code>--pages</code></td><td><code>/u-reverse --app my-app</code></td></tr>
-<tr><td><code>/u-plan</code></td><td>Digest &rarr; SRS + IA generation (+ optional wireframe)</td><td><code>/u-plan my-app -i</code></td></tr>
-<tr><td><code>/u-wireframe</code></td><td>Screen spec &rarr; per-screen HTML wireframes with annotation panels</td><td><code>/u-wireframe --app my-app --all</code></td></tr>
-<tr><td><code>/u-createproject</code></td><td>Scaffold a Turborepo + Bun monorepo. Runs <code>/u-prepare</code> automatically after scaffold</td><td><code>/u-createproject my-app</code></td></tr>
+<tr><td><code>/um-prepare</code></td><td>Preparation umbrella &mdash; foldertree + dropzone + analyze/reverse + requirements conversation. Auto-delegates to <code>/um-tools-figma</code> when Figma sources are present</td><td><code>/um-prepare my-app</code></td></tr>
+<tr><td><code>/um-prepare-foldertree</code></td><td><code>.u-maker/</code> folder/state scaffolding only. Supports <code>--migrate</code> for v3&rarr;v4 rename of <code>check/</code> &rarr; <code>gatekeeping/</code></td><td><code>/um-prepare-foldertree my-app --migrate</code></td></tr>
+<tr><td><code>/um-analyze</code></td><td>Dropzone &rarr; digest (12 categories). Extracted from legacy <code>/um-plan</code> Steps 1&ndash;2</td><td><code>/um-analyze my-app</code></td></tr>
+<tr><td><code>/um-reverse</code></td><td>Existing code &rarr; digest (reverse engineering). Supports <code>--db</code>, <code>--api</code>, <code>--pages</code></td><td><code>/um-reverse --app my-app</code></td></tr>
+<tr><td><code>/um-plan</code></td><td>Digest &rarr; SRS + IA generation (+ optional wireframe)</td><td><code>/um-plan my-app -i</code></td></tr>
+<tr><td><code>/um-wireframe</code></td><td>Screen spec &rarr; per-screen HTML wireframes with annotation panels</td><td><code>/um-wireframe --app my-app --all</code></td></tr>
+<tr><td><code>/um-createproject</code></td><td>Scaffold a Turborepo + Bun monorepo. Runs <code>/um-prepare</code> automatically after scaffold</td><td><code>/um-createproject my-app</code></td></tr>
 </tbody>
 </table>
 
@@ -469,9 +469,9 @@ a:hover{text-decoration:underline}
 <table>
 <thead><tr><th>Command</th><th>Description</th><th>Example</th></tr></thead>
 <tbody>
-<tr><td><code>/u-build</code></td><td>Build-phase orchestrator &mdash; Design &harr; Dev ping-pong until both converge</td><td><code>/u-build my-app</code></td></tr>
-<tr><td><code>/u-design</code></td><td>SRS/IA &rarr; ERD, API Contract, Screen Spec, Design System</td><td><code>/u-design my-app --only erd</code></td></tr>
-<tr><td><code>/u-dev</code></td><td>ERD/API/Screens &rarr; FE + BE + DB code. <code>--only fe|be|db</code></td><td><code>/u-dev my-app --only fe</code></td></tr>
+<tr><td><code>/um-build</code></td><td>Build-phase orchestrator &mdash; Design &harr; Dev ping-pong until both converge</td><td><code>/um-build my-app</code></td></tr>
+<tr><td><code>/um-design</code></td><td>SRS/IA &rarr; ERD, API Contract, Screen Spec, Design System</td><td><code>/um-design my-app --only erd</code></td></tr>
+<tr><td><code>/um-dev</code></td><td>ERD/API/Screens &rarr; FE + BE + DB code. <code>--only fe|be|db</code></td><td><code>/um-dev my-app --only fe</code></td></tr>
 </tbody>
 </table>
 
@@ -479,9 +479,9 @@ a:hover{text-decoration:underline}
 <table>
 <thead><tr><th>Command</th><th>Description</th><th>Example</th></tr></thead>
 <tbody>
-<tr><td><code>/u-gatekeeping</code></td><td>Doc scoring (11 criteria, pass &ge; 95) + runtime QA (test cases + test results)</td><td><code>/u-gatekeeping my-app --loop</code></td></tr>
-<tr><td><code>/u-check</code></td><td><small>alias &rarr; <code>/u-gatekeeping</code></small></td><td><code>/u-check my-app</code></td></tr>
-<tr><td><code>/u-qa</code></td><td><small>alias &rarr; <code>/u-gatekeeping --only qa</code></small></td><td><code>/u-qa my-app</code></td></tr>
+<tr><td><code>/um-gatekeeping</code></td><td>Doc scoring (11 criteria, pass &ge; 95) + runtime QA (test cases + test results)</td><td><code>/um-gatekeeping my-app --loop</code></td></tr>
+<tr><td><code>/um-check</code></td><td><small>alias &rarr; <code>/um-gatekeeping</code></small></td><td><code>/um-check my-app</code></td></tr>
+<tr><td><code>/um-qa</code></td><td><small>alias &rarr; <code>/um-gatekeeping --only qa</code></small></td><td><code>/um-qa my-app</code></td></tr>
 </tbody>
 </table>
 
@@ -489,20 +489,20 @@ a:hover{text-decoration:underline}
 <table>
 <thead><tr><th>Command</th><th>Description</th><th>Example</th></tr></thead>
 <tbody>
-<tr><td><code>/u-deploy</code></td><td>Interactive target (GitHub Actions / Vercel / Docker) + artifact selection. Deploy-gate &ge; 98. Continuous regeneration on SSoT drift</td><td><code>/u-deploy my-app</code></td></tr>
+<tr><td><code>/um-deploy</code></td><td>Interactive target (GitHub Actions / Vercel / Docker) + artifact selection. Deploy-gate &ge; 98. Continuous regeneration on SSoT drift</td><td><code>/um-deploy my-app</code></td></tr>
 </tbody>
 </table>
 
-<h3>6.5 External-tool Skills (5) &mdash; <code>u-tools-*</code> namespace</h3>
+<h3>6.5 External-tool Skills (5) &mdash; <code>um-tools-*</code> namespace</h3>
 <p>Wrappers around external programs/services. Phase skills must route through these rather than calling the underlying MCP / CLI directly.</p>
 <table>
 <thead><tr><th>Command</th><th>External tool</th><th>Example</th></tr></thead>
 <tbody>
-<tr><td><code>/u-tools-figma</code></td><td>Figma API / Plugin. Comprehensive <strong>analyzer</strong> (read-only) &mdash; pages + variants + assets + components + comments + semantics. Auto-delegated from <code>/u-prepare</code>, <code>/u-analyze</code>, <code>/u-reverse</code>, <code>/u-build</code>. <em>v4.0.0-alpha.25: reduced extraction path</em></td><td><code>/u-tools-figma &lt;figma-url&gt;</code></td></tr>
-<tr><td><code>/u-tools-figma-screen</code></td><td>Screen-spec <strong>writer</strong>. Inputs: (Figma URL │ screens.md+json) + (Figma DS URL │ design-system.md+json+tsx+css). Outputs: Figma frames, screens.md+json, or both. Delegates to <code>figma:figma-generate-design</code>. Auto-invoked from <code>/u-plan</code> Step 2.5; opt-in from <code>/u-design</code> Step 4.5</td><td><code>/u-tools-figma-screen --app my-app --output md</code></td></tr>
-<tr><td><code>/u-tools-figma-ds</code></td><td>Figma design-system <strong>writer</strong>. Input: DS-applied source code (.tsx + .json + .css). Output: Figma DS (Variables + modes + styles + master components). Delegates to <code>figma:figma-generate-library</code>. Auto-invoked from <code>/u-analyze</code> Step 2.4; opt-in from <code>/u-design</code> Step 4.5</td><td><code>/u-tools-figma-ds --app my-app --source ./packages/ui-*</code></td></tr>
-<tr><td><code>/u-tools-browser</code></td><td>Unified browser engine. agent-browser CLI &rarr; Playwright MCP &rarr; chrome-devtools MCP fallback. Used for E2E, screen capture, visual verify, wireframe preview. Consumed by <code>/u-gatekeeping</code>, <code>/u-report-weekly</code>, <code>/u-dev --verify</code>, <code>/u-wireframe --preview</code>. 9-step protocol</td><td><code>/u-tools-browser --app my-app</code></td></tr>
-<tr><td><code>/u-tools-git-pr</code></td><td>git + <code>gh</code> CLI + GitHub API. Intelligent PR generation with commit grouping, split/merge, review guide, table-based numeric confirmation prompt. <strong>v5.1 Completeness Policy</strong> (since alpha.16): Step 5.5 safety-net sweep guarantees <code>git status --porcelain</code> ends empty &mdash; <code>.gitignore</code>'d files excluded, leftover files auto-routed to a <code>chore/misc-leftover-{ts}</code> PR after user confirmation</td><td><code>/u-tools-git-pr</code><br><code>/u-tools-git-pr --base main --dry-run</code></td></tr>
+<tr><td><code>/um-tools-figma</code></td><td>Figma API / Plugin. Comprehensive <strong>analyzer</strong> (read-only) &mdash; pages + variants + assets + components + comments + semantics. Auto-delegated from <code>/um-prepare</code>, <code>/um-analyze</code>, <code>/um-reverse</code>, <code>/um-build</code>. <em>v4.0.0-alpha.25: reduced extraction path</em></td><td><code>/um-tools-figma &lt;figma-url&gt;</code></td></tr>
+<tr><td><code>/um-tools-figma-screen</code></td><td>Screen-spec <strong>writer</strong>. Inputs: (Figma URL │ screens.md+json) + (Figma DS URL │ design-system.md+json+tsx+css). Outputs: Figma frames, screens.md+json, or both. Delegates to <code>figma:figma-generate-design</code>. Auto-invoked from <code>/um-plan</code> Step 2.5; opt-in from <code>/um-design</code> Step 4.5</td><td><code>/um-tools-figma-screen --app my-app --output md</code></td></tr>
+<tr><td><code>/um-tools-figma-ds</code></td><td>Figma design-system <strong>writer</strong>. Input: DS-applied source code (.tsx + .json + .css). Output: Figma DS (Variables + modes + styles + master components). Delegates to <code>figma:figma-generate-library</code>. Auto-invoked from <code>/um-analyze</code> Step 2.4; opt-in from <code>/um-design</code> Step 4.5</td><td><code>/um-tools-figma-ds --app my-app --source ./packages/ui-*</code></td></tr>
+<tr><td><code>/um-tools-browser</code></td><td>Unified browser engine. agent-browser CLI &rarr; Playwright MCP &rarr; chrome-devtools MCP fallback. Used for E2E, screen capture, visual verify, wireframe preview. Consumed by <code>/um-gatekeeping</code>, <code>/um-report-weekly</code>, <code>/um-dev --verify</code>, <code>/um-wireframe --preview</code>. 9-step protocol</td><td><code>/um-tools-browser --app my-app</code></td></tr>
+<tr><td><code>/um-tools-git-pr</code></td><td>git + <code>gh</code> CLI + GitHub API. Intelligent PR generation with commit grouping, split/merge, review guide, table-based numeric confirmation prompt. <strong>v5.1 Completeness Policy</strong> (since alpha.16): Step 5.5 safety-net sweep guarantees <code>git status --porcelain</code> ends empty &mdash; <code>.gitignore</code>'d files excluded, leftover files auto-routed to a <code>chore/misc-leftover-{ts}</code> PR after user confirmation</td><td><code>/um-tools-git-pr</code><br><code>/um-tools-git-pr --base main --dry-run</code></td></tr>
 </tbody>
 </table>
 
@@ -511,9 +511,9 @@ a:hover{text-decoration:underline}
 <table>
 <thead><tr><th>Rule pack</th><th>Source</th><th>Applied in</th></tr></thead>
 <tbody>
-<tr><td><code>fe-rules.md</code></td><td><a href="https://github.com/vercel-labs/agent-skills" target="_blank">vercel-labs/agent-skills</a> &mdash; react-best-practices (70) + composition-patterns (9) = 79 rules</td><td><code>/u-dev</code> Step 1 FE generation. §0 MUST-APPLY 15 rules enforced</td></tr>
-<tr><td><code>design-system-rules.md</code></td><td><a href="https://github.com/dylantarre/design-system-skills" target="_blank">dylantarre/design-system-skills</a> &mdash; 28 skills (tokens 10 / patterns 5 / a11y 3 / frameworks 4 / tools 4 / docs 2)</td><td><code>/u-design</code> Step 4 DS HTML-first pipeline. <code>/u-build</code> Step 3 ping-pong gap routing</td></tr>
-<tr><td>Browser 9-step protocol</td><td><a href="https://github.com/EveryInc/compound-engineering-plugin" target="_blank">EveryInc/compound-engineering-plugin</a> &mdash; <code>test-browser</code> pattern</td><td><code>/u-tools-browser</code> internal protocol</td></tr>
+<tr><td><code>fe-rules.md</code></td><td><a href="https://github.com/vercel-labs/agent-skills" target="_blank">vercel-labs/agent-skills</a> &mdash; react-best-practices (70) + composition-patterns (9) = 79 rules</td><td><code>/um-dev</code> Step 1 FE generation. §0 MUST-APPLY 15 rules enforced</td></tr>
+<tr><td><code>design-system-rules.md</code></td><td><a href="https://github.com/dylantarre/design-system-skills" target="_blank">dylantarre/design-system-skills</a> &mdash; 28 skills (tokens 10 / patterns 5 / a11y 3 / frameworks 4 / tools 4 / docs 2)</td><td><code>/um-design</code> Step 4 DS HTML-first pipeline. <code>/um-build</code> Step 3 ping-pong gap routing</td></tr>
+<tr><td>Browser 9-step protocol</td><td><a href="https://github.com/EveryInc/compound-engineering-plugin" target="_blank">EveryInc/compound-engineering-plugin</a> &mdash; <code>test-browser</code> pattern</td><td><code>/um-tools-browser</code> internal protocol</td></tr>
 </tbody>
 </table>
 
@@ -521,11 +521,11 @@ a:hover{text-decoration:underline}
 <table>
 <thead><tr><th>Command</th><th>Description</th><th>Example</th></tr></thead>
 <tbody>
-<tr><td><code>/u-output</code></td><td>.md + .json &rarr; HTML rendering. <code>--diagram svg|mermaid|all</code></td><td><code>/u-output --app my-app --diagram svg</code></td></tr>
-<tr><td><code>/u-report-daily</code></td><td>Daily report (git + meetings + stats)</td><td><code>/u-report-daily</code></td></tr>
-<tr><td><code>/u-report-weekly</code></td><td>Weekly trend report with SVG charts</td><td><code>/u-report-weekly</code></td></tr>
-<tr><td><code>/u-reports-roadmap</code></td><td>Code + git &rarr; interactive editable Gantt roadmap (scope analysis + team-capacity estimate + risk analysis)</td><td><code>/u-reports-roadmap --deadline 2026-08-11</code></td></tr>
-<tr><td><code>/u-init</code></td><td><small>alias &rarr; <code>/u-prepare</code></small> (backward-compat with v3.x)</td><td><code>/u-init my-app</code></td></tr>
+<tr><td><code>/um-output</code></td><td>.md + .json &rarr; HTML rendering. <code>--diagram svg|mermaid|all</code></td><td><code>/um-output --app my-app --diagram svg</code></td></tr>
+<tr><td><code>/um-report-daily</code></td><td>Daily report (git + meetings + stats)</td><td><code>/um-report-daily</code></td></tr>
+<tr><td><code>/um-report-weekly</code></td><td>Weekly trend report with SVG charts</td><td><code>/um-report-weekly</code></td></tr>
+<tr><td><code>/um-reports-roadmap</code></td><td>Code + git &rarr; interactive editable Gantt roadmap (scope analysis + team-capacity estimate + risk analysis)</td><td><code>/um-reports-roadmap --deadline 2026-08-11</code></td></tr>
+<tr><td><code>/um-init</code></td><td><small>alias &rarr; <code>/um-prepare</code></small> (backward-compat with v3.x)</td><td><code>/um-init my-app</code></td></tr>
 </tbody>
 </table>
 
@@ -533,9 +533,9 @@ a:hover{text-decoration:underline}
 <table>
 <thead><tr><th>Command</th><th>Description</th><th>Example</th></tr></thead>
 <tbody>
-<tr><td><code>/u-loop</code></td><td>Unattended PBGD auto-execution Plan &rarr; Build &rarr; Gatekeeping &rarr; Deploy. Checkpoint-based resume</td><td><code>/u-loop --app my-app --from plan</code></td></tr>
-<tr><td><code>/u-discuss</code></td><td>Structured collaboration sessions (brainstorm, review, decision, workshop, retro)</td><td><code>/u-discuss brainstorm "Payment UX"</code></td></tr>
-<tr><td><code>/u-engine</code></td><td>Internal infrastructure engine (not user-invocable)</td><td>&mdash;</td></tr>
+<tr><td><code>/um-loop</code></td><td>Unattended PBGD auto-execution Plan &rarr; Build &rarr; Gatekeeping &rarr; Deploy. Checkpoint-based resume</td><td><code>/um-loop --app my-app --from plan</code></td></tr>
+<tr><td><code>/um-discuss</code></td><td>Structured collaboration sessions (brainstorm, review, decision, workshop, retro)</td><td><code>/um-discuss brainstorm "Payment UX"</code></td></tr>
+<tr><td><code>/um-engine</code></td><td>Internal infrastructure engine (not user-invocable)</td><td>&mdash;</td></tr>
 </tbody>
 </table>
 
@@ -544,8 +544,8 @@ a:hover{text-decoration:underline}
 <table>
 <thead><tr><th>Command</th><th>Description</th><th>Example</th></tr></thead>
 <tbody>
-<tr><td><code>/u-doc</code> <small>(= <code>/u-ssot</code>)</small></td><td><strong>Ingest</strong> &mdash; normalize a file/image/link/text into <code>data/dropzone/</code>, generate a digest, and suggest placement (does <em>not</em> edit SSoT docs directly). <strong>Reorg</strong> (<code>--reorg</code>) &mdash; move/rename misplaced <code>docs/</code> files (git mv + <code>links.json</code>) and regenerate <code>output/</code> + <code>reports/</code></td><td><code>/u-doc ./spec.pdf --app my-app</code><br><code>/u-doc --reorg --dry-run</code></td></tr>
-<tr><td><code>/u-ssot</code></td><td><small>alias &rarr; <code>/u-doc</code></small> (same skill, all args forwarded)</td><td><code>/u-ssot --reorg</code></td></tr>
+<tr><td><code>/um-doc</code> <small>(= <code>/um-ssot</code>)</small></td><td><strong>Ingest</strong> &mdash; normalize a file/image/link/text into <code>data/dropzone/</code>, generate a digest, and suggest placement (does <em>not</em> edit SSoT docs directly). <strong>Reorg</strong> (<code>--reorg</code>) &mdash; move/rename misplaced <code>docs/</code> files (git mv + <code>links.json</code>) and regenerate <code>output/</code> + <code>reports/</code></td><td><code>/um-doc ./spec.pdf --app my-app</code><br><code>/um-doc --reorg --dry-run</code></td></tr>
+<tr><td><code>/um-ssot</code></td><td><small>alias &rarr; <code>/um-doc</code></small> (same skill, all args forwarded)</td><td><code>/um-ssot --reorg</code></td></tr>
 </tbody>
 </table>
 
@@ -561,8 +561,8 @@ a:hover{text-decoration:underline}
 <tr><td><code>--cascade</code></td><td>Auto-update dependent documents on change</td></tr>
 <tr><td><code>--dry-run</code></td><td>Show plan without executing</td></tr>
 <tr><td><code>--json</code></td><td>JSON format output</td></tr>
-<tr><td><code>--migrate</code></td><td>(<code>/u-prepare-foldertree</code>) Migrate <code>.u-maker/</code> from v3.x PDCA to v4.x PBGD</td></tr>
-<tr><td><code>--diagram svg|mermaid|all</code></td><td>(<code>/u-output</code>) Diagram rendering mode</td></tr>
+<tr><td><code>--migrate</code></td><td>(<code>/um-prepare-foldertree</code>) Migrate <code>.u-maker/</code> from v3.x PDCA to v4.x PBGD</td></tr>
+<tr><td><code>--diagram svg|mermaid|all</code></td><td>(<code>/um-output</code>) Diagram rendering mode</td></tr>
 </tbody>
 </table>
 
@@ -605,7 +605,7 @@ a:hover{text-decoration:underline}
 <pre><code>.u-maker/
 &#x251C;&#x2500;&#x2500; u-maker.config.json              # Global settings (language, designTool, iteration)
 &#x251C;&#x2500;&#x2500; _links.json                       # Dependency graph
-&#x251C;&#x2500;&#x2500; _dropzone/                        # File drop zone (auto-classified on /u-plan)
+&#x251C;&#x2500;&#x2500; _dropzone/                        # File drop zone (auto-classified on /um-plan)
 &#x2502;
 &#x251C;&#x2500;&#x2500; common/                           # Project-wide shared config
 &#x2502;   &#x251C;&#x2500;&#x2500; _index.json
@@ -713,10 +713,10 @@ a:hover{text-decoration:underline}
 <table>
 <thead><tr><th>Scenario</th><th>Command</th></tr></thead>
 <tbody>
-<tr><td>Brand new monorepo scaffold</td><td><code>/u-createproject my-project</code></td></tr>
-<tr><td>Existing project &mdash; initialize u-maker</td><td><code>/u-prepare my-project</code> (alias: <code>/u-init</code>)</td></tr>
-<tr><td>Have existing RFP / meeting notes</td><td><code>/u-prepare</code> &rarr; drop files into <code>.u-maker/data/dropzone/</code> &rarr; <code>/u-plan my-app</code></td></tr>
-<tr><td>Migrate from v3.x PDCA &rarr; v4 PBGD</td><td><code>/u-prepare-foldertree my-app --migrate</code></td></tr>
+<tr><td>Brand new monorepo scaffold</td><td><code>/um-createproject my-project</code></td></tr>
+<tr><td>Existing project &mdash; initialize umaker</td><td><code>/um-prepare my-project</code> (alias: <code>/um-init</code>)</td></tr>
+<tr><td>Have existing RFP / meeting notes</td><td><code>/um-prepare</code> &rarr; drop files into <code>.u-maker/data/dropzone/</code> &rarr; <code>/um-plan my-app</code></td></tr>
+<tr><td>Migrate from v3.x PDCA &rarr; v4 PBGD</td><td><code>/um-prepare-foldertree my-app --migrate</code></td></tr>
 </tbody>
 </table>
 
@@ -724,10 +724,10 @@ a:hover{text-decoration:underline}
 <table>
 <thead><tr><th>Scenario</th><th>Command</th></tr></thead>
 <tbody>
-<tr><td>Full reverse engineering of existing code &rarr; SSoT</td><td><code>/u-reverse --app my-app</code></td></tr>
-<tr><td>Specify DB schema path</td><td><code>/u-reverse --app my-app --db prisma/</code></td></tr>
-<tr><td>Specify API route path</td><td><code>/u-reverse --app my-app --api src/app/api/</code></td></tr>
-<tr><td>Specify page component path</td><td><code>/u-reverse --app my-app --pages src/app/</code></td></tr>
+<tr><td>Full reverse engineering of existing code &rarr; SSoT</td><td><code>/um-reverse --app my-app</code></td></tr>
+<tr><td>Specify DB schema path</td><td><code>/um-reverse --app my-app --db prisma/</code></td></tr>
+<tr><td>Specify API route path</td><td><code>/um-reverse --app my-app --api src/app/api/</code></td></tr>
+<tr><td>Specify page component path</td><td><code>/um-reverse --app my-app --pages src/app/</code></td></tr>
 </tbody>
 </table>
 
@@ -735,9 +735,9 @@ a:hover{text-decoration:underline}
 <table>
 <thead><tr><th>Scenario</th><th>Command</th></tr></thead>
 <tbody>
-<tr><td>Analyze a Figma file directly</td><td><code>/u-tools-figma &lt;figma-url&gt;</code></td></tr>
-<tr><td>Auto-delegated during preparation</td><td><code>/u-prepare my-app</code> (detects Figma URLs in dropzone)</td></tr>
-<tr><td>Auto-delegated during build</td><td><code>/u-build my-app</code> (cross-checks design against Figma)</td></tr>
+<tr><td>Analyze a Figma file directly</td><td><code>/um-tools-figma &lt;figma-url&gt;</code></td></tr>
+<tr><td>Auto-delegated during preparation</td><td><code>/um-prepare my-app</code> (detects Figma URLs in dropzone)</td></tr>
+<tr><td>Auto-delegated during build</td><td><code>/um-build my-app</code> (cross-checks design against Figma)</td></tr>
 </tbody>
 </table>
 
@@ -745,13 +745,13 @@ a:hover{text-decoration:underline}
 <table>
 <thead><tr><th>Scenario</th><th>Command</th></tr></thead>
 <tbody>
-<tr><td>Run preparation umbrella end-to-end</td><td><code>/u-prepare my-app</code></td></tr>
-<tr><td>Run entire Plan Phase</td><td><code>/u-plan my-app</code></td></tr>
-<tr><td>Generate SRS only</td><td><code>/u-plan my-app --only srs</code></td></tr>
-<tr><td>Interactive co-creation</td><td><code>/u-plan my-app -i</code></td></tr>
-<tr><td>Step-by-step with approval at every step</td><td><code>/u-plan my-app --step</code></td></tr>
-<tr><td>Brainstorming session</td><td><code>/u-discuss brainstorm "Payment UX"</code></td></tr>
-<tr><td>Generate wireframes</td><td><code>/u-wireframe --app my-app --all</code></td></tr>
+<tr><td>Run preparation umbrella end-to-end</td><td><code>/um-prepare my-app</code></td></tr>
+<tr><td>Run entire Plan Phase</td><td><code>/um-plan my-app</code></td></tr>
+<tr><td>Generate SRS only</td><td><code>/um-plan my-app --only srs</code></td></tr>
+<tr><td>Interactive co-creation</td><td><code>/um-plan my-app -i</code></td></tr>
+<tr><td>Step-by-step with approval at every step</td><td><code>/um-plan my-app --step</code></td></tr>
+<tr><td>Brainstorming session</td><td><code>/um-discuss brainstorm "Payment UX"</code></td></tr>
+<tr><td>Generate wireframes</td><td><code>/um-wireframe --app my-app --all</code></td></tr>
 </tbody>
 </table>
 
@@ -759,27 +759,27 @@ a:hover{text-decoration:underline}
 <table>
 <thead><tr><th>Scenario</th><th>Command</th></tr></thead>
 <tbody>
-<tr><td>Run orchestrated Build (Design &harr; Dev ping-pong)</td><td><code>/u-build my-app</code></td></tr>
-<tr><td>Design only (ERD + API + Screens + DS)</td><td><code>/u-design my-app</code></td></tr>
-<tr><td>Generate Screen spec only</td><td><code>/u-design my-app --only screens</code></td></tr>
-<tr><td>Generate ERD only</td><td><code>/u-design my-app --only erd</code></td></tr>
-<tr><td>Dev only &mdash; FE + BE + DB</td><td><code>/u-dev my-app</code></td></tr>
-<tr><td>Dev &mdash; FE only</td><td><code>/u-dev my-app --only fe</code></td></tr>
-<tr><td>Dev &mdash; BE only</td><td><code>/u-dev my-app --only be</code></td></tr>
-<tr><td>Dev &mdash; DB only</td><td><code>/u-dev my-app --only db</code></td></tr>
+<tr><td>Run orchestrated Build (Design &harr; Dev ping-pong)</td><td><code>/um-build my-app</code></td></tr>
+<tr><td>Design only (ERD + API + Screens + DS)</td><td><code>/um-design my-app</code></td></tr>
+<tr><td>Generate Screen spec only</td><td><code>/um-design my-app --only screens</code></td></tr>
+<tr><td>Generate ERD only</td><td><code>/um-design my-app --only erd</code></td></tr>
+<tr><td>Dev only &mdash; FE + BE + DB</td><td><code>/um-dev my-app</code></td></tr>
+<tr><td>Dev &mdash; FE only</td><td><code>/um-dev my-app --only fe</code></td></tr>
+<tr><td>Dev &mdash; BE only</td><td><code>/um-dev my-app --only be</code></td></tr>
+<tr><td>Dev &mdash; DB only</td><td><code>/um-dev my-app --only db</code></td></tr>
 </tbody>
 </table>
 
-<blockquote><strong>Prerequisite Cascade:</strong> <code>/u-build</code> auto-invokes <code>/u-plan</code> if Plan docs are missing; <code>/u-dev</code> auto-invokes <code>/u-design</code>. Running <code>/u-build</code> alone can trigger the entire Plan &rarr; Build pipeline.</blockquote>
+<blockquote><strong>Prerequisite Cascade:</strong> <code>/um-build</code> auto-invokes <code>/um-plan</code> if Plan docs are missing; <code>/um-dev</code> auto-invokes <code>/um-design</code>. Running <code>/um-build</code> alone can trigger the entire Plan &rarr; Build pipeline.</blockquote>
 
 <h3>Gatekeeping Phase</h3>
 <table>
 <thead><tr><th>Scenario</th><th>Command</th></tr></thead>
 <tbody>
-<tr><td>Run doc scoring + runtime QA</td><td><code>/u-gatekeeping my-app</code> (aliases <code>/u-check</code>, <code>/u-qa</code>)</td></tr>
-<tr><td>QA only (runtime tests)</td><td><code>/u-qa my-app</code></td></tr>
-<tr><td>Loop-driven score iteration (default N=5 criteria)</td><td><code>/u-gatekeeping my-app --loop</code></td></tr>
-<tr><td>Full 11-criteria gate</td><td><code>/u-gatekeeping my-app --loop 11</code></td></tr>
+<tr><td>Run doc scoring + runtime QA</td><td><code>/um-gatekeeping my-app</code> (aliases <code>/um-check</code>, <code>/um-qa</code>)</td></tr>
+<tr><td>QA only (runtime tests)</td><td><code>/um-qa my-app</code></td></tr>
+<tr><td>Loop-driven score iteration (default N=5 criteria)</td><td><code>/um-gatekeeping my-app --loop</code></td></tr>
+<tr><td>Full 11-criteria gate</td><td><code>/um-gatekeeping my-app --loop 11</code></td></tr>
 </tbody>
 </table>
 
@@ -787,9 +787,9 @@ a:hover{text-decoration:underline}
 <table>
 <thead><tr><th>Scenario</th><th>Command</th></tr></thead>
 <tbody>
-<tr><td>Interactive deploy (target + artifacts prompted)</td><td><code>/u-deploy my-app</code></td></tr>
-<tr><td>Deploy-gate enforcement (threshold 98)</td><td><code>/u-deploy my-app --loop</code></td></tr>
-<tr><td>Retrospective session</td><td><code>/u-discuss retro</code></td></tr>
+<tr><td>Interactive deploy (target + artifacts prompted)</td><td><code>/um-deploy my-app</code></td></tr>
+<tr><td>Deploy-gate enforcement (threshold 98)</td><td><code>/um-deploy my-app --loop</code></td></tr>
+<tr><td>Retrospective session</td><td><code>/um-discuss retro</code></td></tr>
 </tbody>
 </table>
 
@@ -797,9 +797,9 @@ a:hover{text-decoration:underline}
 <table>
 <thead><tr><th>Scenario</th><th>Command</th></tr></thead>
 <tbody>
-<tr><td>Run entire PBGD pipeline unattended</td><td><code>/u-loop --app my-app</code></td></tr>
-<tr><td>Run from Plan to Gatekeeping only</td><td><code>/u-loop --app my-app --from plan --to gatekeeping</code></td></tr>
-<tr><td>Dry run (preview only)</td><td><code>/u-loop --app my-app --dry-run</code></td></tr>
+<tr><td>Run entire PBGD pipeline unattended</td><td><code>/um-loop --app my-app</code></td></tr>
+<tr><td>Run from Plan to Gatekeeping only</td><td><code>/um-loop --app my-app --from plan --to gatekeeping</code></td></tr>
+<tr><td>Dry run (preview only)</td><td><code>/um-loop --app my-app --dry-run</code></td></tr>
 </tbody>
 </table>
 
@@ -807,11 +807,11 @@ a:hover{text-decoration:underline}
 <table>
 <thead><tr><th>Scenario</th><th>Command</th></tr></thead>
 <tbody>
-<tr><td>Generate HTML output from docs</td><td><code>/u-output --app my-app</code></td></tr>
-<tr><td>Generate with SVG diagrams</td><td><code>/u-output --app my-app --diagram svg</code></td></tr>
-<tr><td>Daily team report</td><td><code>/u-report-daily</code></td></tr>
-<tr><td>Weekly trend report</td><td><code>/u-report-weekly</code></td></tr>
-<tr><td>Interactive Gantt roadmap from code+git</td><td><code>/u-reports-roadmap --deadline 2026-08-11</code></td></tr>
+<tr><td>Generate HTML output from docs</td><td><code>/um-output --app my-app</code></td></tr>
+<tr><td>Generate with SVG diagrams</td><td><code>/um-output --app my-app --diagram svg</code></td></tr>
+<tr><td>Daily team report</td><td><code>/um-report-daily</code></td></tr>
+<tr><td>Weekly trend report</td><td><code>/um-report-weekly</code></td></tr>
+<tr><td>Interactive Gantt roadmap from code+git</td><td><code>/um-reports-roadmap --deadline 2026-08-11</code></td></tr>
 </tbody>
 </table>
 
@@ -819,11 +819,11 @@ a:hover{text-decoration:underline}
 <table>
 <thead><tr><th>Scenario</th><th>Command</th></tr></thead>
 <tbody>
-<tr><td>Structured brainstorming</td><td><code>/u-discuss brainstorm "Payment UX"</code></td></tr>
-<tr><td>Design review</td><td><code>/u-discuss review "API v2"</code></td></tr>
-<tr><td>Decision meeting</td><td><code>/u-discuss decision "Auth Method"</code></td></tr>
-<tr><td>Generate a PR from current branch</td><td><code>/u-tools-git-pr main</code></td></tr>
-<tr><td>Generate a draft PR</td><td><code>/u-tools-git-pr main --draft</code></td></tr>
+<tr><td>Structured brainstorming</td><td><code>/um-discuss brainstorm "Payment UX"</code></td></tr>
+<tr><td>Design review</td><td><code>/um-discuss review "API v2"</code></td></tr>
+<tr><td>Decision meeting</td><td><code>/um-discuss decision "Auth Method"</code></td></tr>
+<tr><td>Generate a PR from current branch</td><td><code>/um-tools-git-pr main</code></td></tr>
+<tr><td>Generate a draft PR</td><td><code>/um-tools-git-pr main --draft</code></td></tr>
 </tbody>
 </table>
 
@@ -838,53 +838,53 @@ a:hover{text-decoration:underline}
 <ul>
 <li><strong>Claude Code CLI</strong> installed and authenticated</li>
 <li><strong>Node.js 18+</strong> (for hooks)</li>
-<li><strong>Git</strong> (for /u-tools-git-pr)</li>
+<li><strong>Git</strong> (for /um-tools-git-pr)</li>
 </ul>
 
 <h3>Installation</h3>
 <pre><code><span class="comment"># Install the plugin</span>
-<span class="cmd">claude plugin add upleat-ax/u-maker-plugin</span>
+<span class="cmd">claude plugin add upleat-ax/umaker-plugin</span>
 
 <span class="comment"># Restart Claude Code to load the plugin</span>
 <span class="comment"># Then initialize your project</span>
-<span class="cmd">/u-prepare my-project</span>          <span class="comment"># or alias: /u-init my-project</span></code></pre>
+<span class="cmd">/um-prepare my-project</span>          <span class="comment"># or alias: /um-init my-project</span></code></pre>
 
 <h4>Standalone install scripts</h4>
 <pre><code><span class="comment"># macOS / Linux</span>
-<span class="cmd">curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/install.sh | bash</span>
+<span class="cmd">curl -fsSL https://raw.githubusercontent.com/upleat-ax/umaker-plugin/main/install.sh | bash</span>
 
 <span class="comment"># Windows (CMD / cmd.exe)</span>
-<span class="cmd">curl -fsSL --ssl-no-revoke https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/install.bat -o install.bat &amp;&amp; install.bat &amp;&amp; del install.bat</span>
+<span class="cmd">curl -fsSL --ssl-no-revoke https://raw.githubusercontent.com/upleat-ax/umaker-plugin/main/install.bat -o install.bat &amp;&amp; install.bat &amp;&amp; del install.bat</span>
 
 <span class="comment"># Windows (PowerShell 5.1+ — `&amp;&amp;` not supported, use `;` and curl.exe)</span>
-<span class="cmd">curl.exe -fsSL --ssl-no-revoke https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/install.bat -o install.bat; .\install.bat; del install.bat</span></code></pre>
+<span class="cmd">curl.exe -fsSL --ssl-no-revoke https://raw.githubusercontent.com/upleat-ax/umaker-plugin/main/install.bat -o install.bat; .\install.bat; del install.bat</span></code></pre>
 
 <h3>Migration from v3.x (PDCA) to v4.x (PBGD)</h3>
-<pre><code><span class="cmd">/u-prepare-foldertree my-project --migrate</span>    <span class="comment"># Rename .u-maker/docs/{app}/check/ → gatekeeping/ + re-link graph</span></code></pre>
+<pre><code><span class="cmd">/um-prepare-foldertree my-project --migrate</span>    <span class="comment"># Rename .u-maker/docs/{app}/check/ → gatekeeping/ + re-link graph</span></code></pre>
 
 <p>Key migration points:</p>
 <ul>
 <li><strong>Pipeline</strong>: <code>Plan → Design → Dev → Check → Ship</code> (5) &rarr; <code>Plan → Build → Gatekeeping → Deploy</code> (4).</li>
-<li><strong>Rename</strong>: <code>u-init</code> is now an alias for <code>/u-prepare</code>; actual folder scaffolding is <code>/u-prepare-foldertree</code>.</li>
-<li><strong>Rename</strong>: <code>/u-check</code> is now an alias for <code>/u-gatekeeping</code>.</li>
-<li><strong>New</strong>: <code>/u-deploy</code> (was implicit in "Ship"), <code>/u-tools-figma</code> (reduced path in alpha).</li>
+<li><strong>Rename</strong>: <code>um-init</code> is now an alias for <code>/um-prepare</code>; actual folder scaffolding is <code>/um-prepare-foldertree</code>.</li>
+<li><strong>Rename</strong>: <code>/um-check</code> is now an alias for <code>/um-gatekeeping</code>.</li>
+<li><strong>New</strong>: <code>/um-deploy</code> (was implicit in "Ship"), <code>/um-tools-figma</code> (reduced path in alpha).</li>
 <li><strong>Folder</strong>: <code>docs/{app}/check/</code> moves to <code>docs/{app}/gatekeeping/</code>. Use <code>--migrate</code> to rename automatically.</li>
 </ul>
 
 <h3>Plugin Repository Layout</h3>
-<pre><code>u-maker-plugin/
+<pre><code>umaker-plugin/
 &#x251C;&#x2500;&#x2500; .claude-plugin/plugin.json        # v4.0.0-alpha.25 (PBGD)
 &#x251C;&#x2500;&#x2500; agents/                           # 10 agent definitions
-&#x2502;   &#x251C;&#x2500;&#x2500; u-agent-pm.md
-&#x2502;   &#x251C;&#x2500;&#x2500; u-agent-plan.md
-&#x2502;   &#x251C;&#x2500;&#x2500; u-agent-build.md              # NEW
-&#x2502;   &#x251C;&#x2500;&#x2500; u-agent-design.md
-&#x2502;   &#x251C;&#x2500;&#x2500; u-agent-dev.md
-&#x2502;   &#x251C;&#x2500;&#x2500; u-agent-gatekeeper.md
-&#x2502;   &#x251C;&#x2500;&#x2500; u-agent-qa.md
-&#x2502;   &#x251C;&#x2500;&#x2500; u-agent-deploy.md             # NEW
-&#x2502;   &#x251C;&#x2500;&#x2500; u-agent-figma.md              # NEW (reduced path in alpha)
-&#x2502;   &#x2514;&#x2500;&#x2500; u-agent-report.md
+&#x2502;   &#x251C;&#x2500;&#x2500; um-agent-pm.md
+&#x2502;   &#x251C;&#x2500;&#x2500; um-agent-plan.md
+&#x2502;   &#x251C;&#x2500;&#x2500; um-agent-build.md              # NEW
+&#x2502;   &#x251C;&#x2500;&#x2500; um-agent-design.md
+&#x2502;   &#x251C;&#x2500;&#x2500; um-agent-dev.md
+&#x2502;   &#x251C;&#x2500;&#x2500; um-agent-gatekeeper.md
+&#x2502;   &#x251C;&#x2500;&#x2500; um-agent-qa.md
+&#x2502;   &#x251C;&#x2500;&#x2500; um-agent-deploy.md             # NEW
+&#x2502;   &#x251C;&#x2500;&#x2500; um-agent-figma.md              # NEW (reduced path in alpha)
+&#x2502;   &#x2514;&#x2500;&#x2500; um-agent-report.md
 &#x251C;&#x2500;&#x2500; skills/                           # 29 skills (incl. 3 backward-compat aliases)
 &#x2502;   &#x2514;&#x2500;&#x2500; u-*/SKILL.md
 &#x251C;&#x2500;&#x2500; hooks/                            # Event hooks (Write/Edit/MultiEdit matcher)
@@ -906,18 +906,18 @@ a:hover{text-decoration:underline}
 <table>
 <thead><tr><th>Symptom</th><th>Cause</th><th>Solution</th></tr></thead>
 <tbody>
-<tr><td>Plugin commands not recognized</td><td>Plugin not loaded or Claude Code not restarted</td><td>Run <code>claude plugin add upleat-ax/u-maker-plugin</code> and restart Claude Code</td></tr>
-<tr><td><code>/u-plan</code> produces empty SRS</td><td>No data in dropzone or digest</td><td>Drop RFP/meeting notes into <code>.u-maker/data/dropzone/</code> before running <code>/u-plan</code> (or run <code>/u-prepare</code>)</td></tr>
+<tr><td>Plugin commands not recognized</td><td>Plugin not loaded or Claude Code not restarted</td><td>Run <code>claude plugin add upleat-ax/umaker-plugin</code> and restart Claude Code</td></tr>
+<tr><td><code>/um-plan</code> produces empty SRS</td><td>No data in dropzone or digest</td><td>Drop RFP/meeting notes into <code>.u-maker/data/dropzone/</code> before running <code>/um-plan</code> (or run <code>/um-prepare</code>)</td></tr>
 <tr><td>Gate always fails</td><td>Threshold set too high or documents incomplete</td><td>Check gatekeeper scorecard findings. Fix flagged criteria. Try <code>--loop 5</code> (default) before escalating to full 11</td></tr>
-<tr><td><code>/u-dev</code> generates no code</td><td>Design phase documents missing</td><td><code>/u-build</code> orchestrates Design &harr; Dev automatically; prefer <code>/u-build</code> over stand-alone <code>/u-dev</code></td></tr>
-<tr><td>Dependency cascade not triggering</td><td><code>_links.json</code> not initialized</td><td>Run <code>/u-prepare-foldertree</code> to regenerate the dependency graph</td></tr>
-<tr><td><code>/u-loop</code> halts after 3 retries</td><td>Gate criteria cannot be satisfied automatically</td><td>Review the scorecard, fix the lowest-scoring criteria manually, then resume</td></tr>
-<tr><td>Wireframes not rendering</td><td>Screen spec JSON missing <code>layout</code> field</td><td>Run <code>/u-design --only screens</code> to regenerate screen specs</td></tr>
+<tr><td><code>/um-dev</code> generates no code</td><td>Design phase documents missing</td><td><code>/um-build</code> orchestrates Design &harr; Dev automatically; prefer <code>/um-build</code> over stand-alone <code>/um-dev</code></td></tr>
+<tr><td>Dependency cascade not triggering</td><td><code>_links.json</code> not initialized</td><td>Run <code>/um-prepare-foldertree</code> to regenerate the dependency graph</td></tr>
+<tr><td><code>/um-loop</code> halts after 3 retries</td><td>Gate criteria cannot be satisfied automatically</td><td>Review the scorecard, fix the lowest-scoring criteria manually, then resume</td></tr>
+<tr><td>Wireframes not rendering</td><td>Screen spec JSON missing <code>layout</code> field</td><td>Run <code>/um-design --only screens</code> to regenerate screen specs</td></tr>
 <tr><td>Wrong document language</td><td><code>language.documents</code> setting mismatch</td><td>Edit <code>u-maker.config.json</code> and set <code>language.documents</code> to desired locale (ko/en/ja/zh)</td></tr>
-<tr><td><code>/u-reverse</code> misses some files</td><td>Source paths not specified</td><td>Use <code>--db</code>, <code>--api</code>, <code>--pages</code> flags to specify exact paths</td></tr>
-<tr><td>HTML output missing diagrams</td><td>Diagram mode not specified</td><td>Use <code>/u-output --diagram svg</code> or <code>--diagram all</code></td></tr>
-<tr><td>Upgrading from v3.x PDCA</td><td><code>docs/{app}/check/</code> still present</td><td>Run <code>/u-prepare-foldertree my-app --migrate</code> to rename to <code>gatekeeping/</code></td></tr>
-<tr><td><code>/u-deploy</code> refuses to regenerate</td><td>Source docs not updated since last manifest</td><td>Edit any SSoT doc; the <code>on-deploy-state.js</code> hook marks artifacts stale automatically</td></tr>
+<tr><td><code>/um-reverse</code> misses some files</td><td>Source paths not specified</td><td>Use <code>--db</code>, <code>--api</code>, <code>--pages</code> flags to specify exact paths</td></tr>
+<tr><td>HTML output missing diagrams</td><td>Diagram mode not specified</td><td>Use <code>/um-output --diagram svg</code> or <code>--diagram all</code></td></tr>
+<tr><td>Upgrading from v3.x PDCA</td><td><code>docs/{app}/check/</code> still present</td><td>Run <code>/um-prepare-foldertree my-app --migrate</code> to rename to <code>gatekeeping/</code></td></tr>
+<tr><td><code>/um-deploy</code> refuses to regenerate</td><td>Source docs not updated since last manifest</td><td>Edit any SSoT doc; the <code>on-deploy-state.js</code> hook marks artifacts stale automatically</td></tr>
 <tr><td>Figma digest has <code>coverageWarnings[]</code></td><td>Reduced extraction path in v4.0.0-alpha.25</td><td>Expected in alpha; schema-optional fields become warnings, not errors. Full pipeline ships post-GA</td></tr>
 </tbody>
 </table>
@@ -937,7 +937,7 @@ a:hover{text-decoration:underline}
 
 <!-- Footer -->
 <div class="footer">
-  <strong>U-MAKER Plugin</strong> v4.0.0-alpha.25 (PBGD) &mdash; PBGD-based SSoT Collaboration Orchestrator<br>
+  <strong>UMAKER Plugin</strong> v4.0.0-alpha.25 (PBGD) &mdash; PBGD-based SSoT Collaboration Orchestrator<br>
   Proprietary &copy; 2026 U PLEAT &middot; All rights reserved
 </div>
 

@@ -3,9 +3,9 @@ setlocal EnableDelayedExpansion
 chcp 65001 >nul 2>&1
 
 :: ============================================================
-:: deploy_local.bat — u-maker local plugin deployment (Windows)
+:: deploy_local.bat — umaker local plugin deployment (Windows)
 ::
-:: Deploys the u-maker plugin to Claude Code, Codex CLI, and Gemini CLI.
+:: Deploys the umaker plugin to Claude Code, Codex CLI, and Gemini CLI.
 ::   Target: %USERPROFILE%\.claude\plugins\...
 ::
 :: Usage:
@@ -86,7 +86,7 @@ goto :deploy
 :deploy
 echo.
 echo ========================================
-echo   u-maker Local Deploy (Windows)
+echo   umaker Local Deploy (Windows)
 echo ========================================
 echo   Plugin:  %PLUGIN_NAME% v%PLUGIN_VERSION%
 echo   Source:  %SCRIPT_DIR%
@@ -101,47 +101,47 @@ if not exist "%MARKETPLACES_DIR%" mkdir "%MARKETPLACES_DIR%"
 if not exist "%CACHE_DIR%" mkdir "%CACHE_DIR%"
 
 :: Step 1: Cache sync (must run BEFORE junction so the target exists)
-echo [u-maker] 1/11 Cache sync
+echo [umaker] 1/11 Cache sync
 call :sync_cache
 
 :: Step 2: Marketplace junction (points to cache, not SCRIPT_DIR — survives temp dir cleanup)
-echo [u-maker] 2/11 Marketplace junction
+echo [umaker] 2/11 Marketplace junction
 call :make_junction "%MARKETPLACES_DIR%\%MARKETPLACE_NAME%" "%CACHE_DIR%\%PLUGIN_NAME%\%PLUGIN_NAME%\%PLUGIN_VERSION%"
 
 :: Step 3: known_marketplaces.json
-echo [u-maker] 3/11 known_marketplaces.json
+echo [umaker] 3/11 known_marketplaces.json
 call :update_known_marketplaces
 
 :: Step 4: installed_plugins.json
-echo [u-maker] 4/11 installed_plugins.json
+echo [umaker] 4/11 installed_plugins.json
 call :update_installed_plugins
 
-:: Step 5: Clean stale skill symlinks
-echo [u-maker] 5/11 Clean stale skill junctions
+:: Step 5: Clean legacy u-maker registration (marketplace junction + cache)
+echo [umaker] 5/11 Clean legacy u-maker artifacts
+call :clean_legacy_plugin
+
+:: Step 6: Clean stale skill symlinks
+echo [umaker] 6/11 Clean stale skill junctions
 call :clean_stale_skills
 
-:: Step 6: Clean stale agent symlinks
-echo [u-maker] 6/11 Clean stale agent junctions
+:: Step 7: Clean stale agent symlinks
+echo [umaker] 7/11 Clean stale agent junctions
 call :clean_stale_agents
 
-:: Step 7: Skill junctions
-echo [u-maker] 7/11 Skill junctions
+:: Step 8: Skill junctions
+echo [umaker] 8/11 Skill junctions
 call :register_skills
 
-:: Step 8: Agent junctions
-echo [u-maker] 8/11 Agent junctions
+:: Step 9: Agent junctions
+echo [umaker] 9/11 Agent junctions
 call :register_agents
 
-:: Step 9: _meta junctions (templates, schemas, session-protocols, tech-rules)
-echo [u-maker] 9/11 _meta junctions (templates, schemas)
-call :register_meta
-
 :: Step 10: Codex integration
-echo [u-maker] 10/11 Codex integration
+echo [umaker] 10/11 Codex integration
 call :setup_codex
 
 :: Step 11: Gemini integration
-echo [u-maker] 11/11 Gemini integration
+echo [umaker] 11/11 Gemini integration
 call :setup_gemini
 
 echo.
@@ -158,7 +158,7 @@ goto :eof
 :: ============================================================
 :clean
 echo.
-echo [u-maker] Cleaning u-maker deployment...
+echo [umaker] Cleaning umaker deployment...
 
 :: Remove marketplace junction
 if exist "%MARKETPLACES_DIR%\%MARKETPLACE_NAME%" (
@@ -177,15 +177,26 @@ if exist "%CACHE_DIR%\%PLUGIN_NAME%" (
     echo   [OK] Cache removed
 )
 
+:: Remove legacy pre-rename (u-maker) marketplace junction + cache
+if exist "%MARKETPLACES_DIR%\u-maker-marketplace" (
+    rmdir "%MARKETPLACES_DIR%\u-maker-marketplace" 2>nul
+    if exist "%MARKETPLACES_DIR%\u-maker-marketplace" rd /s /q "%MARKETPLACES_DIR%\u-maker-marketplace" 2>nul
+    echo   [OK] Legacy u-maker marketplace junction removed
+)
+if exist "%CACHE_DIR%\u-maker" (
+    rd /s /q "%CACHE_DIR%\u-maker" 2>nul
+    echo   [OK] Legacy u-maker cache removed
+)
+
 :: Remove from known_marketplaces.json
 if exist "%KNOWN_MP%" (
-    python -c "import json; f='%KNOWN_MP:\=\\%'; d=json.load(open(f)); d.pop('%PLUGIN_NAME%',None); json.dump(d,open(f,'w'),indent=2)" 2>nul || python3 -c "import json; f='%KNOWN_MP:\=\\%'; d=json.load(open(f)); d.pop('%PLUGIN_NAME%',None); json.dump(d,open(f,'w'),indent=2)" 2>nul || py -c "import json; f='%KNOWN_MP:\=\\%'; d=json.load(open(f)); d.pop('%PLUGIN_NAME%',None); json.dump(d,open(f,'w'),indent=2)" 2>nul || powershell -NoProfile -Command "$f='%KNOWN_MP%';$d=Get-Content $f|ConvertFrom-Json;$d.PSObject.Properties.Remove('%PLUGIN_NAME%');$d|ConvertTo-Json -Depth 10|Set-Content $f" 2>nul
+    python -c "import json; f='%KNOWN_MP:\=\\%'; d=json.load(open(f)); d.pop('%PLUGIN_NAME%',None); d.pop('u-maker',None); json.dump(d,open(f,'w'),indent=2)" 2>nul || python3 -c "import json; f='%KNOWN_MP:\=\\%'; d=json.load(open(f)); d.pop('%PLUGIN_NAME%',None); d.pop('u-maker',None); json.dump(d,open(f,'w'),indent=2)" 2>nul || py -c "import json; f='%KNOWN_MP:\=\\%'; d=json.load(open(f)); d.pop('%PLUGIN_NAME%',None); d.pop('u-maker',None); json.dump(d,open(f,'w'),indent=2)" 2>nul || powershell -NoProfile -Command "$f='%KNOWN_MP%';$d=Get-Content $f|ConvertFrom-Json;$d.PSObject.Properties.Remove('%PLUGIN_NAME%');if($d.PSObject.Properties['u-maker']){$d.PSObject.Properties.Remove('u-maker')};$d|ConvertTo-Json -Depth 10|Set-Content $f" 2>nul
     echo   [OK] known_marketplaces.json cleaned
 )
 
 :: Remove from installed_plugins.json
 if exist "%INSTALLED_PL%" (
-    python -c "import json; f='%INSTALLED_PL:\=\\%'; d=json.load(open(f)); d.get('plugins',{}).pop('%PLUGIN_NAME%@%PLUGIN_NAME%',None); json.dump(d,open(f,'w'),indent=2)" 2>nul || python3 -c "import json; f='%INSTALLED_PL:\=\\%'; d=json.load(open(f)); d.get('plugins',{}).pop('%PLUGIN_NAME%@%PLUGIN_NAME%',None); json.dump(d,open(f,'w'),indent=2)" 2>nul || py -c "import json; f='%INSTALLED_PL:\=\\%'; d=json.load(open(f)); d.get('plugins',{}).pop('%PLUGIN_NAME%@%PLUGIN_NAME%',None); json.dump(d,open(f,'w'),indent=2)" 2>nul || powershell -NoProfile -Command "$f='%INSTALLED_PL%';$d=Get-Content $f|ConvertFrom-Json;if($d.plugins.PSObject.Properties['%PLUGIN_NAME%@%PLUGIN_NAME%']){$d.plugins.PSObject.Properties.Remove('%PLUGIN_NAME%@%PLUGIN_NAME%')};$d|ConvertTo-Json -Depth 10|Set-Content $f" 2>nul
+    python -c "import json; f='%INSTALLED_PL:\=\\%'; d=json.load(open(f)); d.get('plugins',{}).pop('%PLUGIN_NAME%@%PLUGIN_NAME%',None); d.get('plugins',{}).pop('u-maker@u-maker',None); json.dump(d,open(f,'w'),indent=2)" 2>nul || python3 -c "import json; f='%INSTALLED_PL:\=\\%'; d=json.load(open(f)); d.get('plugins',{}).pop('%PLUGIN_NAME%@%PLUGIN_NAME%',None); d.get('plugins',{}).pop('u-maker@u-maker',None); json.dump(d,open(f,'w'),indent=2)" 2>nul || py -c "import json; f='%INSTALLED_PL:\=\\%'; d=json.load(open(f)); d.get('plugins',{}).pop('%PLUGIN_NAME%@%PLUGIN_NAME%',None); d.get('plugins',{}).pop('u-maker@u-maker',None); json.dump(d,open(f,'w'),indent=2)" 2>nul || powershell -NoProfile -Command "$f='%INSTALLED_PL%';$d=Get-Content $f|ConvertFrom-Json;if($d.plugins.PSObject.Properties['%PLUGIN_NAME%@%PLUGIN_NAME%']){$d.plugins.PSObject.Properties.Remove('%PLUGIN_NAME%@%PLUGIN_NAME%')};if($d.plugins.PSObject.Properties['u-maker@u-maker']){$d.plugins.PSObject.Properties.Remove('u-maker@u-maker')};$d|ConvertTo-Json -Depth 10|Set-Content $f" 2>nul
     echo   [OK] installed_plugins.json cleaned
 )
 
@@ -211,14 +222,6 @@ if exist "%AGENTS_ROOT%" (
     if !ACOUNT! GTR 0 echo   [OK] Removed !ACOUNT! agent links
 )
 
-:: Remove _meta junctions from all platform homes
-for %%H in ("%CLAUDE_HOME%" "%CODEX_HOME%" "%GEMINI_HOME%") do (
-    if exist "%%~H\_meta\%PLUGIN_NAME%" (
-        rmdir "%%~H\_meta\%PLUGIN_NAME%" 2>nul
-        if not exist "%%~H\_meta\%PLUGIN_NAME%" echo   [OK] _meta junction removed from %%~nxH
-    )
-)
-
 :: Remove Gemini junctions
 if exist "%GEMINI_HOME%" (
     for %%l in (plugins agents skills) do (
@@ -240,7 +243,7 @@ goto :eof
 :check
 echo.
 echo ========================================
-echo   u-maker Deployment Status
+echo   umaker Deployment Status
 echo ========================================
 echo.
 
@@ -304,14 +307,6 @@ if exist "%CLAUDE_HOME%\agents" (
     for %%f in ("%CLAUDE_HOME%\agents\%PLUGIN_NAME%__*.md") do set /a AG_COUNT+=1
 )
 echo   [OK] %AG_COUNT% agent links registered
-
-:: _meta junction
-if exist "%CLAUDE_HOME%\_meta\%PLUGIN_NAME%" (
-    echo   [OK] _meta junction exists [templates, schemas]
-) else (
-    echo   [ERR] _meta junction missing at %CLAUDE_HOME%\_meta\%PLUGIN_NAME%
-    set "ALL_OK=0"
-)
 
 :: Codex
 if exist "%CODEX_HOME%" (
@@ -406,10 +401,10 @@ if not exist "%KNOWN_MP%" echo {} > "%KNOWN_MP%"
 set "KM_CP=%CACHE_DIR%\%PLUGIN_NAME%\%PLUGIN_NAME%\%PLUGIN_VERSION%"
 
 :: Try Python first, then PowerShell
-python -c "import json; from datetime import datetime, timezone; f=r'%KNOWN_MP%'; cp=r'%KM_CP%'; d=json.load(open(f)); d['%PLUGIN_NAME%']={'source':{'source':'directory','path':cp},'installLocation':cp,'lastUpdated':datetime.now(timezone.utc).strftime('%%Y-%%m-%%dT%%H:%%M:%%S.000Z')}; json.dump(d,open(f,'w'),indent=2)" 2>nul && goto :km_done
-python3 -c "import json; from datetime import datetime, timezone; f=r'%KNOWN_MP%'; cp=r'%KM_CP%'; d=json.load(open(f)); d['%PLUGIN_NAME%']={'source':{'source':'directory','path':cp},'installLocation':cp,'lastUpdated':datetime.now(timezone.utc).strftime('%%Y-%%m-%%dT%%H:%%M:%%S.000Z')}; json.dump(d,open(f,'w'),indent=2)" 2>nul && goto :km_done
-py -c "import json; from datetime import datetime, timezone; f=r'%KNOWN_MP%'; cp=r'%KM_CP%'; d=json.load(open(f)); d['%PLUGIN_NAME%']={'source':{'source':'directory','path':cp},'installLocation':cp,'lastUpdated':datetime.now(timezone.utc).strftime('%%Y-%%m-%%dT%%H:%%M:%%S.000Z')}; json.dump(d,open(f,'w'),indent=2)" 2>nul && goto :km_done
-powershell -NoProfile -Command "$f='%KNOWN_MP%';$cp='%KM_CP%';$d=Get-Content $f|ConvertFrom-Json;$d|Add-Member -Force '%PLUGIN_NAME%' @{source=@{source='directory';path=$cp};installLocation=$cp;lastUpdated=(Get-Date -Format 'yyyy-MM-ddTHH:mm:ss.000Z')};$d|ConvertTo-Json -Depth 10|Set-Content $f" 2>nul
+python -c "import json; from datetime import datetime, timezone; f=r'%KNOWN_MP%'; cp=r'%KM_CP%'; d=json.load(open(f)); d.pop('u-maker',None); d['%PLUGIN_NAME%']={'source':{'source':'directory','path':cp},'installLocation':cp,'lastUpdated':datetime.now(timezone.utc).strftime('%%Y-%%m-%%dT%%H:%%M:%%S.000Z')}; json.dump(d,open(f,'w'),indent=2)" 2>nul && goto :km_done
+python3 -c "import json; from datetime import datetime, timezone; f=r'%KNOWN_MP%'; cp=r'%KM_CP%'; d=json.load(open(f)); d.pop('u-maker',None); d['%PLUGIN_NAME%']={'source':{'source':'directory','path':cp},'installLocation':cp,'lastUpdated':datetime.now(timezone.utc).strftime('%%Y-%%m-%%dT%%H:%%M:%%S.000Z')}; json.dump(d,open(f,'w'),indent=2)" 2>nul && goto :km_done
+py -c "import json; from datetime import datetime, timezone; f=r'%KNOWN_MP%'; cp=r'%KM_CP%'; d=json.load(open(f)); d.pop('u-maker',None); d['%PLUGIN_NAME%']={'source':{'source':'directory','path':cp},'installLocation':cp,'lastUpdated':datetime.now(timezone.utc).strftime('%%Y-%%m-%%dT%%H:%%M:%%S.000Z')}; json.dump(d,open(f,'w'),indent=2)" 2>nul && goto :km_done
+powershell -NoProfile -Command "$f='%KNOWN_MP%';$cp='%KM_CP%';$d=Get-Content $f|ConvertFrom-Json;if($d.PSObject.Properties['u-maker']){$d.PSObject.Properties.Remove('u-maker')};$d|Add-Member -Force '%PLUGIN_NAME%' @{source=@{source='directory';path=$cp};installLocation=$cp;lastUpdated=(Get-Date -Format 'yyyy-MM-ddTHH:mm:ss.000Z')};$d|ConvertTo-Json -Depth 10|Set-Content $f" 2>nul
 :km_done
 echo   [OK] known_marketplaces.json updated
 goto :eof
@@ -420,10 +415,10 @@ if not exist "%INSTALLED_PL%" echo {"plugins":{}} > "%INSTALLED_PL%"
 set "IP_CP=%CACHE_DIR%\%PLUGIN_NAME%\%PLUGIN_NAME%\%PLUGIN_VERSION%"
 
 :: Try Python first, then PowerShell
-python -c "import json; from datetime import datetime, timezone; f=r'%INSTALLED_PL%'; cp=r'%IP_CP%'; d=json.load(open(f)); d.setdefault('plugins',{}); now=datetime.now(timezone.utc).strftime('%%Y-%%m-%%dT%%H:%%M:%%S.000Z'); d['plugins']['%PLUGIN_NAME%@%PLUGIN_NAME%']=[{'scope':'user','installPath':cp,'version':'%PLUGIN_VERSION%','installedAt':now,'lastUpdated':now}]; json.dump(d,open(f,'w'),indent=2)" 2>nul && goto :ip_done
-python3 -c "import json; from datetime import datetime, timezone; f=r'%INSTALLED_PL%'; cp=r'%IP_CP%'; d=json.load(open(f)); d.setdefault('plugins',{}); now=datetime.now(timezone.utc).strftime('%%Y-%%m-%%dT%%H:%%M:%%S.000Z'); d['plugins']['%PLUGIN_NAME%@%PLUGIN_NAME%']=[{'scope':'user','installPath':cp,'version':'%PLUGIN_VERSION%','installedAt':now,'lastUpdated':now}]; json.dump(d,open(f,'w'),indent=2)" 2>nul && goto :ip_done
-py -c "import json; from datetime import datetime, timezone; f=r'%INSTALLED_PL%'; cp=r'%IP_CP%'; d=json.load(open(f)); d.setdefault('plugins',{}); now=datetime.now(timezone.utc).strftime('%%Y-%%m-%%dT%%H:%%M:%%S.000Z'); d['plugins']['%PLUGIN_NAME%@%PLUGIN_NAME%']=[{'scope':'user','installPath':cp,'version':'%PLUGIN_VERSION%','installedAt':now,'lastUpdated':now}]; json.dump(d,open(f,'w'),indent=2)" 2>nul && goto :ip_done
-powershell -NoProfile -Command "$f='%INSTALLED_PL%';$cp='%IP_CP%';$now=Get-Date -Format 'yyyy-MM-ddTHH:mm:ss.000Z';$d=Get-Content $f|ConvertFrom-Json;if(-not $d.plugins){$d|Add-Member -Force 'plugins' @{}};$d.plugins|Add-Member -Force '%PLUGIN_NAME%@%PLUGIN_NAME%' @(@{scope='user';installPath=$cp;version='%PLUGIN_VERSION%';installedAt=$now;lastUpdated=$now});$d|ConvertTo-Json -Depth 10|Set-Content $f" 2>nul
+python -c "import json; from datetime import datetime, timezone; f=r'%INSTALLED_PL%'; cp=r'%IP_CP%'; d=json.load(open(f)); d.setdefault('plugins',{}); d['plugins'].pop('u-maker@u-maker',None); now=datetime.now(timezone.utc).strftime('%%Y-%%m-%%dT%%H:%%M:%%S.000Z'); d['plugins']['%PLUGIN_NAME%@%PLUGIN_NAME%']=[{'scope':'user','installPath':cp,'version':'%PLUGIN_VERSION%','installedAt':now,'lastUpdated':now}]; json.dump(d,open(f,'w'),indent=2)" 2>nul && goto :ip_done
+python3 -c "import json; from datetime import datetime, timezone; f=r'%INSTALLED_PL%'; cp=r'%IP_CP%'; d=json.load(open(f)); d.setdefault('plugins',{}); d['plugins'].pop('u-maker@u-maker',None); now=datetime.now(timezone.utc).strftime('%%Y-%%m-%%dT%%H:%%M:%%S.000Z'); d['plugins']['%PLUGIN_NAME%@%PLUGIN_NAME%']=[{'scope':'user','installPath':cp,'version':'%PLUGIN_VERSION%','installedAt':now,'lastUpdated':now}]; json.dump(d,open(f,'w'),indent=2)" 2>nul && goto :ip_done
+py -c "import json; from datetime import datetime, timezone; f=r'%INSTALLED_PL%'; cp=r'%IP_CP%'; d=json.load(open(f)); d.setdefault('plugins',{}); d['plugins'].pop('u-maker@u-maker',None); now=datetime.now(timezone.utc).strftime('%%Y-%%m-%%dT%%H:%%M:%%S.000Z'); d['plugins']['%PLUGIN_NAME%@%PLUGIN_NAME%']=[{'scope':'user','installPath':cp,'version':'%PLUGIN_VERSION%','installedAt':now,'lastUpdated':now}]; json.dump(d,open(f,'w'),indent=2)" 2>nul && goto :ip_done
+powershell -NoProfile -Command "$f='%INSTALLED_PL%';$cp='%IP_CP%';$now=Get-Date -Format 'yyyy-MM-ddTHH:mm:ss.000Z';$d=Get-Content $f|ConvertFrom-Json;if(-not $d.plugins){$d|Add-Member -Force 'plugins' @{}};if($d.plugins.PSObject.Properties['u-maker@u-maker']){$d.plugins.PSObject.Properties.Remove('u-maker@u-maker')};$d.plugins|Add-Member -Force '%PLUGIN_NAME%@%PLUGIN_NAME%' @(@{scope='user';installPath=$cp;version='%PLUGIN_VERSION%';installedAt=$now;lastUpdated=$now});$d|ConvertTo-Json -Depth 10|Set-Content $f" 2>nul
 :ip_done
 echo   [OK] installed_plugins.json updated
 goto :eof
@@ -493,6 +488,24 @@ if !COUNT! GTR 0 (
 )
 goto :eof
 
+:: --- clean_legacy_plugin ---
+:: Pre-rename (u-maker) marketplace junction + cache are always stale after
+:: the umaker rename. The JSON registry keys are popped in
+:: :update_known_marketplaces / :update_installed_plugins. Only the OLD name
+:: (u-maker) is targeted here — new-name (%PLUGIN_NAME%) artifacts survive.
+:clean_legacy_plugin
+set "LEGACY_MP=%MARKETPLACES_DIR%\u-maker-marketplace"
+if exist "%LEGACY_MP%" (
+    rmdir "%LEGACY_MP%" 2>nul
+    if exist "%LEGACY_MP%" rd /s /q "%LEGACY_MP%" 2>nul
+    echo   [OK] Legacy u-maker marketplace junction removed
+)
+if exist "%CACHE_DIR%\u-maker" (
+    rd /s /q "%CACHE_DIR%\u-maker" 2>nul
+    echo   [OK] Legacy u-maker cache removed
+)
+goto :eof
+
 :: --- clean_stale_skills ---
 :clean_stale_skills
 set "SKILLS_ROOT=%CLAUDE_HOME%\skills"
@@ -500,6 +513,12 @@ set "CACHE_SKILLS=%CACHE_DIR%\%PLUGIN_NAME%\%PLUGIN_NAME%\%PLUGIN_VERSION%\skill
 set "COUNT=0"
 
 if not exist "%SKILLS_ROOT%" goto :eof
+
+:: Old-name (u-maker__*) junctions are always stale after the umaker rename
+for /d %%d in ("%SKILLS_ROOT%\u-maker__*") do (
+    rmdir "%%d" 2>nul
+    if not exist "%%d" set /a COUNT+=1
+)
 
 for /d %%d in ("%SKILLS_ROOT%\%PLUGIN_NAME%__*") do (
     set "LINK_NAME=%%~nxd"
@@ -525,6 +544,12 @@ set "COUNT=0"
 
 if not exist "%AGENTS_ROOT%" goto :eof
 
+:: Old-name (u-maker__*) links are always stale after the umaker rename
+for %%f in ("%AGENTS_ROOT%\u-maker__*.md") do (
+    del "%%f" 2>nul
+    set /a COUNT+=1
+)
+
 for %%f in ("%AGENTS_ROOT%\%PLUGIN_NAME%__*.md") do (
     set "LINK_NAME=%%~nxf"
     set "AGENT_NAME=!LINK_NAME:%PLUGIN_NAME%__=!"
@@ -538,42 +563,6 @@ if !COUNT! GTR 0 (
     echo   [OK] Removed !COUNT! stale agent links
 ) else (
     echo   [OK] No stale agent links
-)
-goto :eof
-
-:: --- register_meta ---
-:: Registers _meta junction in each platform home so skills can reference
-:: templates, schemas, session-protocols, tech-rules via ~/.claude/_meta/u-maker/
-:register_meta
-set "CACHE_META=%CACHE_DIR%\%PLUGIN_NAME%\%PLUGIN_NAME%\%PLUGIN_VERSION%\_meta"
-
-if not exist "%CACHE_META%" (
-    echo   [WARN] No _meta directory in cache, skipping _meta junctions
-    goto :eof
-)
-
-set "META_COUNT=0"
-for %%H in ("%CLAUDE_HOME%" "%CODEX_HOME%" "%GEMINI_HOME%") do (
-    if exist "%%~H" (
-        if not exist "%%~H\_meta" mkdir "%%~H\_meta"
-        set "META_LINK=%%~H\_meta\%PLUGIN_NAME%"
-        if exist "!META_LINK!" (
-            fsutil reparsepoint query "!META_LINK!" >nul 2>&1
-            if !errorlevel! equ 0 (
-                rmdir "!META_LINK!" 2>nul
-            ) else (
-                rd /s /q "!META_LINK!" 2>nul
-            )
-        )
-        mklink /J "!META_LINK!" "%CACHE_META%" >nul 2>&1
-        if !errorlevel! equ 0 set /a META_COUNT+=1
-    )
-)
-
-if !META_COUNT! GTR 0 (
-    echo   [OK] Registered !META_COUNT! _meta junctions [templates, schemas, session-protocols, tech-rules]
-) else (
-    echo   [ERR] Failed to create _meta junction. Try running as Administrator.
 )
 goto :eof
 
