@@ -1,12 +1,12 @@
 {
-  "name": "u-maker",
-  "version": "4.0.0-alpha.31",
-  "description": "PBGD-based SSoT plugin for Claude Code. 4-phase pipeline (Plan/Build/Gatekeeping/Deploy), 10 agents, 29 skills (/u-prepare umbrella, /u-analyze, /u-tools-figma analyzer + /u-tools-figma-screen + /u-tools-figma-ds writers, /u-build orchestrator, /u-gatekeeping, /u-deploy with interactive target + artifact selection, plus /u-createproject, /u-output, /u-doc (SSoT ingest + document reorganization), /u-reverse, /u-reports-roadmap (code-grounded interactive Gantt roadmap), u-tools-browser unified browser automation, and backward-compat aliases /u-init, /u-check, /u-qa, /u-ssot). 11-criteria quality gate (pass \u226595, deploy-gate \u226598), continuous deploy regeneration, domain-split HTML output.",
+  "name": "umaker",
+  "version": "4.1.0-alpha.1",
+  "description": "PBGD-based SSoT plugin for Claude Code. 4-phase pipeline (Plan/Build/Gatekeeping/Deploy), 10 agents, 29 um-* skills (/um-prepare umbrella, /um-analyze, /um-tools-figma analyzer + /um-tools-figma-screen + /um-tools-figma-ds writers, /um-build orchestrator, /um-gatekeeping, /um-deploy with interactive target + artifact selection, plus /um-createproject, /um-output, /um-doc (SSoT ingest + document reorganization), /um-reverse, /um-reports-roadmap (code-grounded interactive Gantt roadmap), um-tools-browser unified browser automation, and backward-compat aliases /um-init, /um-check, /um-qa, /um-ssot). Skills ship as frontmatter-only stubs — skill bodies are served by the u-maker terminal's embedded skills server. 11-criteria quality gate (pass ≥95, deploy-gate ≥98), continuous deploy regeneration, domain-split HTML output.",
   "author": {
     "name": "u-plugin"
   },
-  "repository": "https://github.com/upleat-ax/u-maker-plugin",
-  "homepage": "https://github.com/upleat-ax/u-maker-plugin",
+  "repository": "https://github.com/upleat-ax/umaker-plugin",
+  "homepage": "https://github.com/upleat-ax/umaker-plugin",
   "keywords": [
     "pbgd",
     "ssot",

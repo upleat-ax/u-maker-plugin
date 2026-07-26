@@ -1,12 +1,12 @@
 {
-  "name": "u-maker",
-  "version": "4.0.0-alpha.31",
+  "name": "umaker",
+  "version": "4.1.0-alpha.1",
   "description": "PBGD-based SSoT workflow plugin with planning, design, development, quality-gate, and deployment skills.",
   "author": {
     "name": "u-plugin"
   },
-  "homepage": "https://github.com/upleat-ax/u-maker-plugin",
-  "repository": "https://github.com/upleat-ax/u-maker-plugin",
+  "homepage": "https://github.com/upleat-ax/umaker-plugin",
+  "repository": "https://github.com/upleat-ax/umaker-plugin",
   "keywords": [
     "pbgd",
     "ssot",
@@ -18,20 +18,20 @@
   ],
   "skills": "./skills/",
   "interface": {
-    "displayName": "u-maker",
+    "displayName": "umaker",
     "shortDescription": "Plan, build, verify, and deploy from one SSoT workflow.",
-    "longDescription": "A PBGD-based workflow plugin that turns source material into plans, designs, implementation, quality checks, reports, and deployment artifacts.",
+    "longDescription": "A PBGD-based workflow plugin that turns source material into plans, designs, implementation, quality checks, reports, and deployment artifacts. Skill bodies are served by the u-maker terminal's embedded skills server.",
     "developerName": "u-plugin",
     "category": "Developer Tools",
     "capabilities": [
       "Read",
       "Write"
     ],
-    "websiteURL": "https://github.com/upleat-ax/u-maker-plugin",
+    "websiteURL": "https://github.com/upleat-ax/umaker-plugin",
     "defaultPrompt": [
-      "Prepare this project with u-maker.",
-      "Plan and build this app with u-maker.",
-      "Run the u-maker quality gate."
+      "Prepare this project with umaker (/um-prepare).",
+      "Plan and build this app with umaker (/um-plan, /um-build).",
+      "Run the umaker quality gate (/um-gatekeeping)."
     ]
   }
 }

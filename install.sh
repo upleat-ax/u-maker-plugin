@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 # ============================================================
-# install.sh — u-maker plugin installer (macOS / Linux / WSL)
+# install.sh — umaker plugin installer (macOS / Linux / WSL)
 #
 # Downloads the latest release from GitHub, extracts, installs,
 # and cleans up temporary files.
 #
 # Usage:
-#   curl -fsSL https://raw.githubusercontent.com/upleat-ax/u-maker-plugin/main/install.sh | bash
+#   curl -fsSL https://raw.githubusercontent.com/upleat-ax/umaker-plugin/main/install.sh | bash
 #   # or
 #   ./install.sh
 #   ./install.sh --version 1.0.7    # install specific version
@@ -18,9 +18,12 @@ set -euo pipefail
 # Config
 # ============================================================
 
-REPO="${UMAKER_REPO:-upleat-ax/u-maker-plugin}"
+REPO="${UMAKER_REPO:-upleat-ax/umaker-plugin}"
 API_URL="https://api.github.com/repos/${REPO}/releases"
-PLUGIN_NAME="u-maker"
+PLUGIN_NAME="umaker"
+# Pre-rename plugin name (u-maker). Cleanup still targets these OLD-name
+# artifacts so upgrades from a u-maker install leave nothing behind.
+OLD_PLUGIN_NAME="u-maker"
 
 # Colors
 RED='\033[0;31m'
@@ -30,7 +33,7 @@ CYAN='\033[0;36m'
 BOLD='\033[1m'
 NC='\033[0m'
 
-log()  { echo -e "${CYAN}[u-maker]${NC} $*"; }
+log()  { echo -e "${CYAN}[umaker]${NC} $*"; }
 ok()   { echo -e "${GREEN}  [OK]${NC} $*"; }
 warn() { echo -e "${YELLOW}  [WARN]${NC} $*"; }
 err()  { echo -e "${RED}  [ERR]${NC} $*"; }
@@ -86,70 +89,94 @@ clean_existing() {
   local agents_root="$claude_home/agents"
   local known_mp="$plugins_dir/known_marketplaces.json"
   local installed_pl="$plugins_dir/installed_plugins.json"
+  local settings_file="$claude_home/settings.json"
 
-  log "Removing existing u-maker installation..."
+  log "Removing existing umaker installation (incl. legacy u-maker artifacts)..."
 
-  # 1. Remove skill symlinks (u-maker__*)
-  if [[ -d "$skills_root" ]]; then
-    local scount=0
-    for link in "$skills_root"/${PLUGIN_NAME}__*; do
-      if [[ -L "$link" ]]; then
-        rm "$link"
-        scount=$((scount + 1))
-      fi
-    done
-    [[ $scount -gt 0 ]] && ok "Removed $scount skill symlinks"
-  fi
+  # Clean both the OLD (u-maker) and NEW (umaker) name variants.
+  local name
+  for name in "$OLD_PLUGIN_NAME" "$PLUGIN_NAME"; do
 
-  # 2. Remove agent symlinks (u-maker__*)
-  if [[ -d "$agents_root" ]]; then
-    local acount=0
-    for link in "$agents_root"/${PLUGIN_NAME}__*; do
-      if [[ -L "$link" ]]; then
-        rm "$link"
-        acount=$((acount + 1))
-      fi
-    done
-    [[ $acount -gt 0 ]] && ok "Removed $acount agent symlinks"
-  fi
+    # 1. Remove skill symlinks (<name>__*)
+    if [[ -d "$skills_root" ]]; then
+      local scount=0
+      for link in "$skills_root"/${name}__*; do
+        if [[ -L "$link" ]]; then
+          rm "$link"
+          scount=$((scount + 1))
+        fi
+      done
+      [[ $scount -gt 0 ]] && ok "Removed $scount skill symlinks (${name}__*)"
+    fi
 
-  # 3. Remove marketplace symlink
-  if [[ -L "$marketplaces_dir/${PLUGIN_NAME}-marketplace" ]]; then
-    rm "$marketplaces_dir/${PLUGIN_NAME}-marketplace"
-    ok "Marketplace symlink removed"
-  fi
+    # 2. Remove agent symlinks (<name>__*)
+    if [[ -d "$agents_root" ]]; then
+      local acount=0
+      for link in "$agents_root"/${name}__*; do
+        if [[ -L "$link" ]]; then
+          rm "$link"
+          acount=$((acount + 1))
+        fi
+      done
+      [[ $acount -gt 0 ]] && ok "Removed $acount agent symlinks (${name}__*)"
+    fi
 
-  # 4. Remove u-maker cache (all versions)
-  if [[ -d "$cache_dir/$PLUGIN_NAME" ]]; then
-    rm -rf "$cache_dir/$PLUGIN_NAME"
-    ok "Cache directory removed (all u-maker versions)"
-  fi
+    # 3. Remove marketplace symlink
+    if [[ -L "$marketplaces_dir/${name}-marketplace" ]]; then
+      rm "$marketplaces_dir/${name}-marketplace"
+      ok "Marketplace symlink removed (${name}-marketplace)"
+    fi
 
-  # 5. Clean known_marketplaces.json
-  if [[ -f "$known_mp" ]]; then
-    python3 -c "
+    # 4. Remove plugin cache (all versions)
+    if [[ -d "$cache_dir/$name" ]]; then
+      rm -rf "$cache_dir/$name"
+      ok "Cache directory removed (all $name versions)"
+    fi
+
+    # 5. Clean known_marketplaces.json
+    if [[ -f "$known_mp" ]]; then
+      python3 -c "
 import json
 with open('$known_mp', 'r') as f:
     data = json.load(f)
-data.pop('$PLUGIN_NAME', None)
+data.pop('$name', None)
 with open('$known_mp', 'w') as f:
     json.dump(data, f, indent=2)
     f.write('\n')
-" 2>/dev/null && ok "known_marketplaces.json cleaned"
-  fi
+" 2>/dev/null && ok "known_marketplaces.json cleaned ($name)"
+    fi
 
-  # 6. Clean installed_plugins.json
-  if [[ -f "$installed_pl" ]]; then
-    python3 -c "
+    # 6. Clean installed_plugins.json
+    if [[ -f "$installed_pl" ]]; then
+      python3 -c "
 import json
 with open('$installed_pl', 'r') as f:
     data = json.load(f)
-data.get('plugins', {}).pop('${PLUGIN_NAME}@${PLUGIN_NAME}', None)
+data.get('plugins', {}).pop('${name}@${name}', None)
 with open('$installed_pl', 'w') as f:
     json.dump(data, f, indent=2)
     f.write('\n')
-" 2>/dev/null && ok "installed_plugins.json cleaned"
-  fi
+" 2>/dev/null && ok "installed_plugins.json cleaned (${name}@${name})"
+    fi
+
+    # 7. Clean settings.json enabledPlugins (write back only if changed)
+    if [[ -f "$settings_file" ]]; then
+      python3 -c "
+import json
+sf = '$settings_file'
+key = '${name}@${name}'
+with open(sf, 'r') as f:
+    data = json.load(f)
+ep = data.get('enabledPlugins', {})
+if key in ep:
+    del ep[key]
+    with open(sf, 'w') as f:
+        json.dump(data, f, indent=2)
+        f.write('\n')
+" 2>/dev/null && ok "settings.json enabledPlugins cleaned (${name}@${name})"
+    fi
+
+  done
 
   # 7. Remove Codex symlinks
   local codex_home="$HOME/.codex"
@@ -181,7 +208,7 @@ do_install() {
 
   echo ""
   echo -e "${BOLD}========================================${NC}"
-  echo -e "${BOLD}  u-maker Plugin Installer${NC}"
+  echo -e "${BOLD}  umaker Plugin Installer${NC}"
   echo -e "${BOLD}========================================${NC}"
   echo ""
 
@@ -211,7 +238,7 @@ do_install() {
 
   local tmp_dir
   tmp_dir="$(mktemp -d)"
-  local zip_file="${tmp_dir}/u-maker-plugin.zip"
+  local zip_file="${tmp_dir}/umaker-plugin.zip"
 
   curl -fsSL "$url" -o "$zip_file" || {
     err "Download failed"
@@ -262,7 +289,7 @@ do_install() {
   done
   if [[ $found_count -gt 0 ]]; then
     echo ""
-    warn "WARNING: v4.0 is not compatible with v3.x .u-maker/ folders. Please re-initialize with /u-plan."
+    warn "WARNING: v4.0+ is not compatible with v3.x .u-maker/ folders. Please re-initialize with /um-plan."
     echo ""
   else
     ok "No existing .u-maker/ projects found"
@@ -270,12 +297,13 @@ do_install() {
 
   echo ""
   echo -e "${BOLD}========================================${NC}"
-  echo -e "${GREEN}${BOLD}  u-maker ${version} installed! (clean)${NC}"
+  echo -e "${GREEN}${BOLD}  umaker ${version} installed! (clean)${NC}"
   echo -e "${BOLD}========================================${NC}"
   echo ""
   echo -e "  ${YELLOW}All previous data was removed and reinstalled fresh.${NC}"
-  echo -e "  Restart Claude Code to start using u-maker."
-  echo -e "  Then run: ${BOLD}/u-plan${NC}"
+  echo -e "  Restart Claude Code to start using umaker."
+  echo -e "  Then run: ${BOLD}/um-plan${NC}"
+  echo -e "  Note: um-* skill bodies are served by the u-maker terminal app — keep it running."
   echo ""
 }
 
@@ -285,14 +313,18 @@ do_install() {
 
 do_uninstall() {
   echo ""
-  log "Uninstalling u-maker..."
+  log "Uninstalling umaker..."
 
   local claude_home="$HOME/.claude"
   local cache_dir="$claude_home/plugins/cache/${PLUGIN_NAME}"
+  local old_cache_dir="$claude_home/plugins/cache/${OLD_PLUGIN_NAME}"
 
-  # Find deploy_local.sh in cache
+  # Find deploy_local.sh in cache (new name first, then legacy u-maker cache)
   local deploy_script
   deploy_script="$(find "$cache_dir" -name "deploy_local.sh" -type f 2>/dev/null | head -1)"
+  if [[ -z "$deploy_script" ]]; then
+    deploy_script="$(find "$old_cache_dir" -name "deploy_local.sh" -type f 2>/dev/null | head -1)"
+  fi
 
   if [[ -n "$deploy_script" ]]; then
     bash "$deploy_script" --clean
@@ -328,7 +360,7 @@ case "${1:-}" in
     echo "  ./install.sh --help           # show this help"
     echo ""
     echo "Environment:"
-    echo "  UMAKER_REPO=owner/repo  # override GitHub repo (default: upleat-ax/u-maker-plugin)"
+    echo "  UMAKER_REPO=owner/repo  # override GitHub repo (default: upleat-ax/umaker-plugin)"
     ;;
   *)
     do_install "${1:-}"

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # ============================================================
-# deploy_github.sh — u-maker GitHub deployment (local build)
+# deploy_github.sh — umaker GitHub deployment (local build)
 #
 # Builds zip, pushes public repos, creates GitHub Releases.
 # All done locally — no GitHub Actions dependency.
@@ -20,8 +20,8 @@ DOC_SYNC_FILES=(
   "$SCRIPT_DIR/GET_STARTED.html"
 )
 
-PRIVATE_REPO="upleat-ax/u-maker-plugin"
-UPLEAT_REPO="upleat-ax/u-maker-plugin"
+PRIVATE_REPO="upleat-ax/umaker-plugin"
+UPLEAT_REPO="upleat-ax/umaker-plugin"
 
 # Colors
 RED='\033[0;31m'
@@ -31,7 +31,7 @@ CYAN='\033[0;36m'
 BOLD='\033[1m'
 NC='\033[0m'
 
-log()  { echo -e "${CYAN}[u-maker]${NC} $*"; }
+log()  { echo -e "${CYAN}[umaker]${NC} $*"; }
 ok()   { echo -e "${GREEN}  [OK]${NC} $*"; }
 warn() { echo -e "${YELLOW}  [WARN]${NC} $*"; }
 err()  { echo -e "${RED}  [ERR]${NC} $*"; }
@@ -226,15 +226,15 @@ with open('$PLUGIN_JSON', 'w') as f:
 
   # ── Step 4: Build zip ──
   log "Building plugin zip..."
-  local zip_file="/tmp/u-maker-plugin-${tag}.zip"
+  local zip_file="/tmp/umaker-plugin-${tag}.zip"
   rm -f "$zip_file"
 
   (cd "$SCRIPT_DIR" && zip -r "$zip_file" \
     .claude-plugin/ \
+    .codex-plugin/ \
     skills/ \
     agents/ \
     hooks/ \
-    _meta/ \
     deploy_local.sh \
     deploy_local.bat \
     install.sh \
@@ -253,7 +253,7 @@ with open('$PLUGIN_JSON', 'w') as f:
   # ── Step 5: Create Release on private repo ──
   log "Creating release on ${BOLD}${PRIVATE_REPO}${NC}..."
   gh release create "$tag" "$zip_file" \
-    --title "u-maker ${tag}" \
+    --title "umaker ${tag}" \
     --notes "Release ${tag}" \
     --repo "$PRIVATE_REPO" 2>/dev/null || {
     warn "Release ${tag} may already exist on ${PRIVATE_REPO}, uploading asset..."
@@ -297,7 +297,7 @@ EOF
     local upleat_token
     upleat_token="${UPLEAT_TOKEN:-$(gh auth token)}"
 
-    # Push to upleat-ax/u-maker-plugin
+    # Push to upleat-ax/umaker-plugin
     git remote add upleat "https://x-access-token:${upleat_token}@github.com/${UPLEAT_REPO}.git"
     git push upleat main --force 2>/dev/null
     git push upleat "$tag" --force 2>/dev/null
@@ -308,7 +308,7 @@ EOF
 
   # ── Step 7: Create Releases on public repos ──
   local release_notes
-  release_notes="## u-maker ${tag}
+  release_notes="## umaker ${tag}
 
 ### Install
 
@@ -330,7 +330,7 @@ curl.exe -fsSL --ssl-no-revoke https://raw.githubusercontent.com/${UPLEAT_REPO}/
   for repo in "$UPLEAT_REPO"; do
     log "Creating release on ${BOLD}${repo}${NC}..."
     gh release create "$tag" "$zip_file" \
-      --title "u-maker ${tag}" \
+      --title "umaker ${tag}" \
       --notes "$release_notes" \
       --repo "$repo" 2>/dev/null || {
       warn "Release may exist, uploading asset..."
