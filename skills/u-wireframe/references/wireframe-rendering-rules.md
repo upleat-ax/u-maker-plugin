@@ -100,9 +100,9 @@ Business rules section at bottom: `BR-{SCR-ID}-NN` items.
 
 ### SVG style tokens (use CSS variables from template)
 
-- Node: `var(--svg-node)` (#3b82f6) + `var(--svg-node-text)` (#fff)
-- Condition diamond: `var(--svg-condition)` (#f59e0b)
-- Action/success: `var(--svg-action)` (#10b981)
+- Node: `var(--svg-node)` (#2563eb) + `var(--svg-node-text)` (#fff)
+- Condition diamond: `var(--svg-condition)` (#c2410c orange — amber 금지)
+- Action/success: `var(--svg-action)` (#0d9488 teal — green/lime 금지)
 - Arrows: `var(--svg-arrow)` (#6b7280)
-- Actor: `var(--svg-actor)` (#8b5cf6)
-- Background: `var(--svg-bg)` (#f8fafc)
+- Actor: `var(--svg-actor)` (#7c3aed)
+- Background: `var(--svg-bg)` (#f5f6f7)

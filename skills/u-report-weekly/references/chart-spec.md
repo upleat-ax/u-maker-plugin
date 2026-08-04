@@ -22,13 +22,13 @@ Weekly 리포트의 인라인 SVG 차트 생성 규칙. Daily 리포트에도 �
 
 | 용도 | Light Mode | Dark Mode | CSS 변수 |
 |------|-----------|-----------|----------|
-| Primary (FR, commits) | `#3b82f6` | `#60a5fa` | `--chart-blue` |
-| Success (implemented, passed) | `#10b981` | `#34d399` | `--chart-green` |
-| Warning (unresolved) | `#f59e0b` | `#fbbf24` | `--chart-amber` |
-| Danger (failed) | `#ef4444` | `#f87171` | `--chart-red` |
-| Info (meetings, US) | `#8b5cf6` | `#a78bfa` | `--chart-purple` |
+| Primary (FR, commits) | `#2563eb` | `#6ea8ff` | `--chart-blue` |
+| Success (implemented, passed) | `#0d9488` | `#2dd4bf` | `--chart-teal` |
+| Warning (unresolved) | `#c2410c` | `#fdba74` | `--chart-orange` |
+| Danger (failed) | `#dc2626` | `#f87171` | `--chart-red` |
+| Info (meetings, US) | `#7c3aed` | `#a78bfa` | `--chart-violet` |
 | FT line | `#06b6d4` | `#22d3ee` | `--chart-cyan` |
-| TC line | `#f97316` | `#fb923c` | `--chart-orange` |
+| TC line | `#db2777` | `#f472b6` | `--chart-pink` |
 | Grid / axis | `#e2e8f0` | `#334155` | `--chart-grid` |
 | Axis text | `#64748b` | `#94a3b8` | `--chart-label` |
 | Background | `#ffffff` | `#1e293b` | `--chart-bg` |
@@ -36,18 +36,18 @@ Weekly 리포트의 인라인 SVG 차트 생성 규칙. Daily 리포트에도 �
 ### CSS 변수 선언 (HTML `<style>`)
 ```css
 :root {
-  --chart-blue: #3b82f6; --chart-green: #10b981;
-  --chart-amber: #f59e0b; --chart-red: #ef4444;
-  --chart-purple: #8b5cf6; --chart-cyan: #06b6d4;
-  --chart-orange: #f97316; --chart-grid: #e2e8f0;
+  --chart-blue: #2563eb; --chart-teal: #0d9488;
+  --chart-orange: #c2410c; --chart-red: #dc2626;
+  --chart-violet: #7c3aed; --chart-cyan: #0ea5e9;
+  --chart-pink: #db2777; --chart-grid: #e2e8f0;
   --chart-label: #64748b; --chart-bg: #ffffff;
 }
 .dark {
-  --chart-blue: #60a5fa; --chart-green: #34d399;
-  --chart-amber: #fbbf24; --chart-red: #f87171;
-  --chart-purple: #a78bfa; --chart-cyan: #22d3ee;
-  --chart-orange: #fb923c; --chart-grid: #334155;
-  --chart-label: #94a3b8; --chart-bg: #1e293b;
+  --chart-blue: #6ea8ff; --chart-teal: #2dd4bf;
+  --chart-orange: #fdba74; --chart-red: #f87171;
+  --chart-violet: #a78bfa; --chart-cyan: #38bdf8;
+  --chart-pink: #f472b6; --chart-grid: #334155;
+  --chart-label: #9aa7b6; --chart-bg: #161b22;
 }
 ```
 
@@ -70,7 +70,7 @@ Weekly 리포트의 인라인 SVG 차트 생성 규칙. Daily 리포트에도 �
 <g class="legend" transform="translate({x}, 12)">
   <circle r="4" fill="var(--chart-blue)"/>
   <text x="10" font-size="11" fill="var(--chart-label)">Designed</text>
-  <circle cx="80" r="4" fill="var(--chart-green)"/>
+  <circle cx="80" r="4" fill="var(--chart-teal)"/>
   <text x="90" font-size="11" fill="var(--chart-label)">Implemented</text>
 </g>
 ```
@@ -194,7 +194,7 @@ cell gap: 4px
 ```html
 <svg viewBox="0 0 200 16" width="100%">
   <rect width="200" height="16" rx="8" fill="var(--chart-grid)"/>
-  <rect width="{pct * 2}" height="16" rx="8" fill="var(--chart-green)"/>
+  <rect width="{pct * 2}" height="16" rx="8" fill="var(--chart-teal)"/>
   <text x="100" y="12" text-anchor="middle" font-size="10" fill="#fff">{pct}%</text>
 </svg>
 ```

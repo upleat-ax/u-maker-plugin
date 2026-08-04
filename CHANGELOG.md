@@ -2,6 +2,23 @@
 
 All notable changes to u-maker-plugin.
 
+## [4.0.0-alpha.32] — 2026-08-04
+
+**HTML 산출물 공통 테마 통일 — 시스템 서체 · blue accent(연두/노랑 제거) · 레퍼런스 문단 구조.** 아울러 `um-*` 스텁(fetch) 전환을 되돌려 **스킬 본문을 플러그인 안에 로컬로 유지**한다.
+
+### Changed
+
+- **컬러 테마에서 연두(lime)·노랑(yellow/amber) 계열 전면 제거.** 하이라이트 `#D7FF5A` → `#dbe7ff`, accent/Plan `#3b82f6` → `#2563eb`, Design·성공 `#10b981` → `#0d9488`(teal), Check·Gate `#f59e0b` → `#7c3aed`(violet), Deploy·Loop `#8b5cf6` → `#db2777`(pink), 경고 티어 amber → `#c2410c`(orange). 로드맵 track 팔레트 `green*`/`amber*` → `teal*`/`orange*`(기존 키는 별칭 유지).
+- **서체** — Inter/Pretendard CDN 제거, 시스템 서체 스택만 사용. 본문 `14.5px / line-height 1.8 / letter-spacing -0.005em`, h1 27px·h2 17px·h3 14.5px.
+- **문단 구조** — `hero`(h1+sub+1px 밑줄) → `meta-bar` → `thesis`(짙은 면) → `section.blk`(54px) = `h2 > .qword` + `.section-hint` + `.panel`/`.card` → `.note` → `footer`. 컨테이너는 채움 면(테두리 없음), 카드는 흰 면 + 미세 그림자, 표는 1px 중립 행 구분선만(GK-07 준수).
+- **플로팅 컨트롤** — 우하단 알약 스택(다크모드 · 본문 폭 1080/1440/1920 · 맨 위로).
+- **`skills/u-engine/references/html-engine.md`에 § 0 Document Theme (SSoT) 신설** — 토큰·타이포·문단구조·플로팅 컨트롤 규격 + 생성 후 자기검증 체크리스트. § 7을 플로팅 컨트롤로 교체, § 9 사이드바·§ 10 TOC·§ 11 footer 갱신. 리포트 배지를 Tailwind 클래스 문자열 → 시맨틱 클래스(`type-*`/`score-*`)로 전환.
+- 템플릿 12종(`_meta/templates/*.html` 9 + wireframe 2 + roadmap 1)과 ERD/차트/와이어프레임/디자인시스템 스펙 팔레트 정정.
+
+### Reverted
+
+- **`u-*` → `um-*` 스텁(fetch) 마이그레이션 되돌림.** 스킬 본문은 플러그인 안에 그대로 두고(`skills/u-*/SKILL.md` + `references/`/`assets/`), `_meta/` 템플릿·스키마도 복원한다. 커맨드는 `/u-*`, 에이전트는 `u-agent-*`, 플러그인 이름은 `u-maker`. 스킬 서버에서 본문을 받아오는 방식은 `feat/stub-skills-fetch` 브랜치에 보존.
+
 ## [4.0.0-alpha.30] — 2026-06-28
 
 **`/u-createproject` now scaffolds an Atomic Design UI package hierarchy — `ui-atomics` → `ui-molecules` → `ui-organisms` — where raw HTML, CSS, and inline style live ONLY in `ui-atomics` (atoms), and every higher layer composes lower-layer components only.**

@@ -9,26 +9,29 @@
 <style>
   :root {
     --bg:#ffffff; --fg:#111111; --muted:#6b7280; --border:#e5e7eb; --soft:#fafafa;
-    --hi:#D7FF5A; --accent:#2563eb; --warn:#ef4444;
+    --hi:#DBE7FF; --accent:#2563eb; --warn:#ef4444;
     --maxw:1680px;
     /* Track palette — grouped by hue. Assign one hue family per app/product group.
        A track's `color` field references the suffix, e.g. color:'blue1' → var(--track-blue1). */
     --track-blue1:#C7D2FE; --track-blue2:#BFDBFE; --track-blue3:#DDD6FE; --track-blue4:#BAE6FD;
-    --track-green1:#BBF7D0; --track-green2:#99F6E4; --track-green3:#A5F3FC; --track-green4:#A7F3D0;
-    --track-amber1:#FED7AA; --track-amber2:#FDE68A; --track-amber3:#FECDD3; --track-amber4:#FDBA74;
+    --track-teal1:#99F6E4; --track-teal2:#5EEAD4; --track-teal3:#A5F3FC; --track-teal4:#67E8F9;
+    /* legacy aliases (green*/amber* 키를 쓰는 기존 데이터 호환) */
+    --track-green1:var(--track-teal1); --track-green2:var(--track-teal2); --track-green3:var(--track-teal3); --track-green4:var(--track-teal4);
+    --track-orange1:#FED7AA; --track-orange2:#FDBA74; --track-orange3:#FECDD3; --track-orange4:#FB923C;
+    --track-amber1:var(--track-orange1); --track-amber2:var(--track-orange2); --track-amber3:var(--track-orange3); --track-amber4:var(--track-orange4);
     --track-rose1:#FBCFE8; --track-rose2:#DDD6FE; --track-violet1:#DDD6FE; --track-violet2:#C4B5FD;
     /* 공통/상시 */
     --track-common:#E5E7EB;
   }
   *{box-sizing:border-box;}
   html,body{margin:0;padding:0;background:var(--bg);}
-  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;color:var(--fg);font-size:13px;line-height:1.55;letter-spacing:-0.005em;-webkit-font-smoothing:antialiased;}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;color:var(--fg);font-size:14.5px;line-height:1.8;letter-spacing:-0.005em;-webkit-font-smoothing:antialiased;}
   .wrap{max-width:var(--maxw);margin:0 auto;padding:28px 24px 120px;transition:max-width .2s;}
   header.hero{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:1px solid var(--fg);padding-bottom:22px;margin-bottom:24px;gap:24px;}
   header.hero h1{font-weight:700;letter-spacing:-0.02em;}
-  header.hero h1{margin:0;font-size:26px;letter-spacing:-0.5px;line-height:1.2;}
+  header.hero h1{margin:0;font-size:27px;letter-spacing:-0.5px;line-height:1.35;}
   header.hero .highlight{background:var(--hi);padding:0 6px;}
-  header.hero .sub{color:var(--muted);margin-top:6px;font-size:12px;}
+  header.hero .sub{color:var(--muted);margin-top:10px;font-size:13px;line-height:1.9;}
   header.hero .meta{color:var(--muted);text-align:right;font-size:11px;line-height:1.7;white-space:nowrap;}
 
   .width-toggle{position:fixed;top:12px;right:12px;z-index:9998;display:flex;gap:3px;align-items:center;background:#fff;border:1px solid var(--border);border-radius:8px;padding:4px;font-size:11px;box-shadow:0 2px 8px rgba(0,0,0,0.07);}
@@ -56,11 +59,12 @@
   .framing{padding:14px 20px;background:var(--soft);border:1px solid var(--border);margin-bottom:28px;font-size:12px;line-height:1.7;border-radius:8px;color:#374151;}
   .framing b{color:var(--fg);}
   [contenteditable="true"]{outline:none;}
-  [contenteditable="true"]:hover{background:rgba(215,255,90,0.25);}
+  [contenteditable="true"]:hover{background:rgba(37,99,235,0.10);}
   [contenteditable="true"]:focus{background:var(--hi) !important;box-shadow:inset 0 -2px 0 var(--fg);}
-  h2.section{font-size:15px;margin:0 0 8px;display:flex;align-items:center;gap:10px;}
-  h2.section::before{content:"";width:4px;height:15px;background:var(--fg);}
-  .section-hint{color:var(--muted);font-size:12px;margin:0 0 16px;}
+  h2.section{font-size:17px;font-weight:700;line-height:1.5;margin:0 0 6px;}
+  h2.section .qword{background:var(--hi);color:var(--fg);padding:0 8px;border-radius:2px;margin-right:6px;}
+  .section-hint{color:var(--muted);font-size:13.5px;line-height:1.85;margin:0 0 18px;}
+  .section-hint b{color:var(--fg);}
 
   section.milestones{margin-bottom:36px;padding-bottom:18px;border-bottom:1px solid var(--border);}
   .ms-wrap{position:relative;padding:8px 8px 0;}
@@ -258,7 +262,7 @@
 </div>
 
 <section class="milestones">
-  <h2 class="section">마일스톤 타임라인</h2>
+  <h2 class="section"><span class="qword">언제</span>마일스톤 타임라인</h2>
   <p class="section-hint">핵심 이벤트·체크포인트(추정). 라벨 클릭 편집, <b>+ 마일스톤 추가</b> · <b>×</b> 삭제.</p>
   <div class="ms-wrap"><div class="ms-line"></div><div class="ms-items" id="ms-items"></div></div>
   <div style="margin-top:10px;text-align:right;">
@@ -267,7 +271,7 @@
 </section>
 
 <section>
-  <h2 class="section">트랙별 기간 · 릴리즈 (간트)</h2>
+  <h2 class="section"><span class="qword">얼마나</span>트랙별 기간 · 릴리즈 (간트)</h2>
   <div class="hint-box">
     <b>가장자리 드래그</b>로 시작/끝 조정, <b>본체 드래그</b>로 이동, <b>클릭</b>해 텍스트 편집. 주 단위 스냅. 편집은 이 브라우저(localStorage)에 자동 저장됩니다.
   </div>
@@ -285,7 +289,7 @@
 
 <section class="track-details">
   <div>
-    <h2 class="section">트랙별 상세</h2>
+    <h2 class="section"><span class="qword">무엇을</span>트랙별 상세</h2>
     <p class="section-hint">포지셔닝 · 이번 구간 핵심 · 진척/공수/리스크 (편집 가능) + 간트 자동 반영.</p>
     <nav class="jump-nav" id="jump-nav"></nav>
   </div>

@@ -4,110 +4,166 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{{projectName}} — u-maker</title>
-<script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6/css/all.min.css">
-<script>
-tailwind.config={darkMode:'class',theme:{extend:{fontFamily:{sans:['Inter','system-ui','Noto Sans KR','sans-serif']}}}};
-</script>
 <style>
-body{font-family:Inter,system-ui,'Noto Sans KR',sans-serif}
-.card{transition:all .2s ease}
-.card:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(0,0,0,.1)}
-.dark .card:hover{box-shadow:0 8px 25px rgba(0,0,0,.4)}
+/* ============================================================
+   u-maker document theme — typography / color / prose rhythm
+   accent: blue family. 연두(lime)·노랑(yellow) 계열 사용 금지.
+   ============================================================ */
+:root{
+  --bg:#fff;--panel:#f5f6f7;--soft:#fafafa;--surface:#fff;
+  --fg:#111;--muted:#4b5563;--dim:#6b7280;--border:#e5e7eb;
+  --accent:#2563eb;--accent-strong:#1d4ed8;--accent-soft:#93b4ff;
+  --accent-bg:#eef3ff;--hi:#dbe7ff;
+  --plan:#2563eb;--build:#0d9488;--gate:#7c3aed;--deploy:#db2777;
+  --shadow:0 1px 2px rgba(17,17,17,.05);
+  --content-w:1080px;
+}
+.dark{
+  --bg:#0d1117;--panel:#161b22;--soft:#12171e;--surface:#12171e;
+  --fg:#e6edf3;--muted:#9aa7b6;--dim:#7d8998;--border:#232b36;
+  --accent:#6ea8ff;--accent-strong:#93b4ff;--accent-bg:#152238;--hi:#1d3a6b;
+  --plan:#6ea8ff;--build:#2dd4bf;--gate:#a78bfa;--deploy:#f472b6;
+  --shadow:0 1px 2px rgba(0,0,0,.45);
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:var(--bg)}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;
+     color:var(--fg);font-size:14.5px;line-height:1.8;letter-spacing:-0.005em;-webkit-font-smoothing:antialiased;min-height:100vh}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+
+.wrap{max-width:var(--content-w);margin:0 auto;padding:44px 24px 110px}
+.hero{border-bottom:1px solid var(--fg);padding-bottom:20px;margin-bottom:28px}
+.hero .kicker{display:inline-block;font-size:11.5px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--accent-strong);background:var(--accent-bg);padding:2px 11px;border-radius:999px;margin-bottom:12px}
+.hero h1{margin:0;font-size:27px;font-weight:700;letter-spacing:-0.5px;line-height:1.35}
+.hero .sub{color:var(--muted);margin-top:10px;font-size:13px;line-height:1.9}
+.hero .highlight{background:var(--hi);color:var(--fg);padding:0 6px;border-radius:2px}
+
+.thesis{background:var(--fg);color:#fff;border-radius:14px;padding:22px 26px;font-size:16px;line-height:2.0;margin-bottom:40px}
+.thesis b{color:var(--accent-soft)}
+.thesis .k{font-size:11.5px;text-transform:uppercase;letter-spacing:1.2px;color:#9ca3af;display:block;margin-bottom:6px}
+.dark .thesis{background:#0b0f15}
+
+h2{font-size:17px;font-weight:700;line-height:1.5;margin:0 0 6px}
+.qword{background:var(--hi);color:var(--fg);padding:0 8px;border-radius:2px;margin-right:6px}
+.section-hint{color:var(--muted);font-size:13.5px;margin:0 0 18px;line-height:1.85}
+.section-hint b{color:var(--fg)}
+section{margin-bottom:54px}
+
+/* ---- 진입 카드 ---- */
+.entry{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px}
+.entry a{display:block;background:var(--surface);border-radius:14px;box-shadow:var(--shadow);padding:22px 24px;color:inherit;text-decoration:none;transition:transform .15s,box-shadow .15s}
+.entry a:hover{transform:translateY(-2px);box-shadow:0 8px 22px rgba(17,17,17,.1);text-decoration:none}
+.dark .entry a:hover{box-shadow:0 8px 22px rgba(0,0,0,.55)}
+.entry .eh{display:flex;align-items:center;gap:11px;margin-bottom:10px}
+.entry .ei{width:38px;height:38px;border-radius:11px;background:var(--accent-bg);color:var(--accent-strong);display:flex;align-items:center;justify-content:center;font-size:15px;flex:0 0 auto}
+.entry .ei.rep{background:rgba(124,58,237,.1);color:var(--gate)}
+.entry h3{font-size:15px;font-weight:700;margin:0;line-height:1.5}
+.entry .path{font-size:11.5px;color:var(--dim);font-family:ui-monospace,'JetBrains Mono','Fira Code',monospace}
+.entry p{font-size:12.5px;color:var(--muted);line-height:1.8;margin:0 0 12px}
+.entry .chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font-size:11.5px;font-weight:700;background:var(--panel);color:var(--muted);border-radius:999px;padding:2px 11px;line-height:1.6}
+.chip b{color:var(--accent-strong);margin-left:4px}
+
+/* ---- 프로젝트 요약 ---- */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}
+.stat{background:var(--panel);border-radius:12px;padding:16px 18px}
+.stat .v{font-size:26px;font-weight:800;line-height:1.2;letter-spacing:-0.5px}
+.stat .l{font-size:11.5px;color:var(--muted);margin-top:3px;line-height:1.6}
+.stat.plan .v{color:var(--plan)}
+.stat.design .v{color:var(--build)}
+.stat.check .v{color:var(--gate)}
+.stat.report .v{color:var(--deploy)}
+.footer{padding-top:16px;margin-top:40px;border-top:1px solid var(--border);font-size:12px;color:var(--muted);line-height:1.95;text-align:center}
+
+.fab-stack{position:fixed;right:22px;bottom:26px;z-index:60;display:flex;flex-direction:column;align-items:flex-end;gap:10px}
+.fab{background:#fff;color:var(--fg);border:0;border-radius:999px;padding:10px 18px;font:700 12.5px/1.4 inherit;letter-spacing:-0.005em;
+     box-shadow:0 4px 14px rgba(17,17,17,.13);cursor:pointer;white-space:nowrap}
+.fab:hover{background:var(--panel)}
+.dark .fab{background:#161b22;color:var(--fg);box-shadow:0 4px 14px rgba(0,0,0,.55)}
+
+@media (max-width:760px){.wrap{padding:28px 16px 96px}.hero h1{font-size:22px}.fab-stack{right:14px;bottom:16px}}
+@media print{@page{size:A4;margin:12mm}body{font-size:12px}.fab-stack{display:none}.thesis,.stat,.chip{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
 </style>
 </head>
-<body class="bg-slate-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 min-h-screen">
+<body>
 
-<!-- Theme Toggle -->
-<button id="theme-toggle" class="fixed top-4 right-4 z-50 p-2 rounded-lg bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors" aria-label="Toggle dark mode">
-  <svg class="w-5 h-5 hidden dark:block" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"/></svg>
-  <svg class="w-5 h-5 block dark:hidden" fill="currentColor" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"/></svg>
-</button>
+<div class="fab-stack">
+  <button class="fab" id="theme-toggle" aria-label="Toggle dark mode"><i class="fa-solid fa-circle-half-stroke" aria-hidden="true"></i> <span id="theme-label">다크 모드</span></button>
+</div>
 
-<div class="max-w-4xl mx-auto px-6 py-16">
-  <!-- Header -->
-  <div class="text-center mb-16">
-    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 text-xs font-semibold mb-4">
-      u-maker v4.0
+<div class="wrap">
+
+  <header class="hero">
+    <span class="kicker">u-maker v4.0</span>
+    <h1>{{projectName}}</h1>
+    <div class="sub">{{projectDescription}}</div>
+  </header>
+
+  <div class="thesis">
+    <span class="k">SSoT</span>
+    이 프로젝트의 모든 문서는 <b>하나의 원본(SSoT)</b>에서 생성된다.
+    기획(Plan) · 설계(Design) · 검증(Check) 산출물과 리포트가 같은 데이터를 바라보므로,
+    <b>문서끼리 어긋나지 않는다.</b>
+  </div>
+
+  <section>
+    <h2><span class="qword">어디로</span>들어갈까</h2>
+    <p class="section-hint">문서를 보려면 <b>SSoT Documents</b>, 진행 상황과 게이트 점수를 보려면 <b>Reports</b>로 간다.</p>
+    <div class="entry">
+
+      <a href="output/index.html">
+        <div class="eh">
+          <span class="ei"><i class="fa-regular fa-file-lines" aria-hidden="true"></i></span>
+          <div>
+            <h3>SSoT Documents</h3>
+            <div class="path">output/</div>
+          </div>
+        </div>
+        <p>Plan · Design · Check 단계의 HTML 문서. 다이어그램과 추적성(traceability)이 함께 들어 있다.</p>
+        <div class="chips">
+          {{#apps}}<span class="chip">{{name}}<b>{{docCount}}</b></span>{{/apps}}
+        </div>
+      </a>
+
+      <a href="reports/index.html">
+        <div class="eh">
+          <span class="ei rep"><i class="fa-solid fa-chart-simple" aria-hidden="true"></i></span>
+          <div>
+            <h3>Reports</h3>
+            <div class="path">reports/</div>
+          </div>
+        </div>
+        <p>일일 리포트, 게이트키퍼 점수, 파이프라인 실행 요약을 시간순으로 모아 둔 곳이다.</p>
+        <div class="chips">
+          <span class="chip">Reports<b>{{reportCount}}</b></span>
+        </div>
+      </a>
+
     </div>
-    <h1 class="text-3xl font-extrabold tracking-tight mb-2">{{projectName}}</h1>
-    <p class="text-gray-500 dark:text-gray-400 text-sm">{{projectDescription}}</p>
-  </div>
+  </section>
 
-  <!-- Navigation Cards -->
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-16">
-
-    <!-- Output Documents -->
-    <a href="output/index.html" class="card block bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-8">
-      <div class="flex items-center gap-3 mb-4">
-        <div class="w-10 h-10 rounded-lg bg-blue-100 dark:bg-blue-900/40 flex items-center justify-center">
-          <svg class="w-5 h-5 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-        </div>
-        <div>
-          <h2 class="text-lg font-bold">SSoT Documents</h2>
-          <p class="text-xs text-gray-500 dark:text-gray-400">output/</p>
-        </div>
-      </div>
-      <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">Plan, Design, Check phase HTML documents with diagrams and traceability.</p>
-      <div class="flex items-center gap-4 text-xs text-gray-500 dark:text-gray-400">
-        {{#apps}}
-        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-gray-100 dark:bg-gray-800">{{name}} <span class="text-blue-500 font-semibold">{{docCount}}</span></span>
-        {{/apps}}
-      </div>
-    </a>
-
-    <!-- Reports -->
-    <a href="reports/index.html" class="card block bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-8">
-      <div class="flex items-center gap-3 mb-4">
-        <div class="w-10 h-10 rounded-lg bg-amber-100 dark:bg-amber-900/40 flex items-center justify-center">
-          <svg class="w-5 h-5 text-amber-600 dark:text-amber-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-        </div>
-        <div>
-          <h2 class="text-lg font-bold">Reports</h2>
-          <p class="text-xs text-gray-500 dark:text-gray-400">reports/</p>
-        </div>
-      </div>
-      <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">Daily reports, gatekeeper scores, and pipeline execution summaries.</p>
-      <div class="flex items-center gap-4 text-xs text-gray-500 dark:text-gray-400">
-        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-gray-100 dark:bg-gray-800">Reports <span class="text-amber-500 font-semibold">{{reportCount}}</span></span>
-      </div>
-    </a>
-
-  </div>
-
-  <!-- Quick Status -->
-  <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-6">
-    <h3 class="text-sm font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-4">Project Overview</h3>
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
-      <div>
-        <div class="text-2xl font-extrabold text-blue-600 dark:text-blue-400">{{planCount}}</div>
-        <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">Plan Docs</div>
-      </div>
-      <div>
-        <div class="text-2xl font-extrabold text-green-600 dark:text-green-400">{{designCount}}</div>
-        <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">Design Docs</div>
-      </div>
-      <div>
-        <div class="text-2xl font-extrabold text-amber-600 dark:text-amber-400">{{checkCount}}</div>
-        <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">Check Docs</div>
-      </div>
-      <div>
-        <div class="text-2xl font-extrabold text-purple-600 dark:text-purple-400">{{reportCount}}</div>
-        <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">Reports</div>
-      </div>
+  <section>
+    <h2><span class="qword">얼마나</span>쌓였나</h2>
+    <p class="section-hint">단계별 문서 수와 리포트 수. <b>Check가 비어 있으면 아직 검증 전</b>이라는 뜻이다.</p>
+    <div class="stats">
+      <div class="stat plan"><div class="v">{{planCount}}</div><div class="l">Plan Docs</div></div>
+      <div class="stat design"><div class="v">{{designCount}}</div><div class="l">Design Docs</div></div>
+      <div class="stat check"><div class="v">{{checkCount}}</div><div class="l">Check Docs</div></div>
+      <div class="stat report"><div class="v">{{reportCount}}</div><div class="l">Reports</div></div>
     </div>
-  </div>
+  </section>
 
-  <!-- Footer -->
-  <div class="text-center mt-12 text-xs text-gray-400 dark:text-gray-500">
-    Copyright(c) 2026 U PLEAT
-  </div>
+  <div class="footer">Copyright(c) 2026 U PLEAT</div>
 </div>
 
 <script>
-const toggle=document.getElementById('theme-toggle'),html=document.documentElement;
+const html=document.documentElement,tBtn=document.getElementById('theme-toggle'),tLab=document.getElementById('theme-label');
+function syncTheme(){tLab.textContent=html.classList.contains('dark')?'라이트 모드':'다크 모드';}
 if(localStorage.getItem('theme')==='dark'||(!localStorage.getItem('theme')&&window.matchMedia('(prefers-color-scheme:dark)').matches))html.classList.add('dark');
-toggle.addEventListener('click',()=>{html.classList.toggle('dark');localStorage.setItem('theme',html.classList.contains('dark')?'dark':'light')});
+syncTheme();
+tBtn.addEventListener('click',()=>{html.classList.toggle('dark');localStorage.setItem('theme',html.classList.contains('dark')?'dark':'light');syncTheme();});
 </script>
 </body>
 </html>

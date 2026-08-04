@@ -400,8 +400,8 @@ Each component is defined by CSS classes in the HTML `<style>` block and showcas
 | Variant | Background | Text |
 |---------|-----------|------|
 | Primary | --color-primary-100 | --color-primary-700 |
-| Success | #dcfce7 | #166534 |
-| Warning | #fef3c7 | #92400e |
+| Success | #ccfbf1 | #115e59 |
+| Warning | #ffedd5 | #9a3412 |
 | Error | #fee2e2 | #991b1b |
 | Neutral | --color-gray-100 | --color-gray-700 |
 

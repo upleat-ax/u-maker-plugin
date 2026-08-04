@@ -128,6 +128,16 @@
   --z-popover: 1060;
   --z-tooltip: 1070;
   --z-toast: 1080;
+
+  /* --- DS-120: Document chrome (showcase page 자체의 서체/면/강조) ---
+     프로젝트 DS 토큰과 분리된 값이다. 문서 산출물 공통 테마를 따르며,
+     accent는 blue 계열 고정 — 연두(lime)·노랑(yellow)은 사용하지 않는다. */
+  --font-doc: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", sans-serif;
+  --doc-panel: #f5f6f7;
+  --doc-hi: #dbe7ff;
+  --doc-accent: #2563eb;
+  --doc-shadow: 0 1px 2px rgba(17,17,17,.05);
+  --doc-w: 1280px;
 }
 
 /* --- DS-040: Surface Colors (Dark Mode Override) --- */
@@ -140,6 +150,10 @@
   --color-text-tertiary: var(--color-gray-500);
   --color-border-default: var(--color-gray-700);
   --color-border-strong: var(--color-gray-600);
+  --doc-panel: #161b22;
+  --doc-hi: #1d3a6b;
+  --doc-accent: #6ea8ff;
+  --doc-shadow: 0 1px 2px rgba(0,0,0,.45);
 }
 
 /* ============================================
@@ -268,9 +282,11 @@ body {
   box-shadow: var(--shadow-lg); font-size: var(--font-size-sm);
   min-width: 300px; max-width: 480px;
 }
-.ds-toast--success { background: #f0fdf4; border: 1px solid #bbf7d0; color: #166534; }
+/* semantic tints — teal(success) / orange(warning) / red(error) / blue(info).
+   연두(lime)·노랑(yellow) 계열 금지: warning은 amber가 아닌 orange를 쓴다. */
+.ds-toast--success { background: #f0fdfa; border: 1px solid #99f6e4; color: #115e59; }
 .ds-toast--error { background: #fef2f2; border: 1px solid #fecaca; color: #991b1b; }
-.ds-toast--warning { background: #fffbeb; border: 1px solid #fed7aa; color: #92400e; }
+.ds-toast--warning { background: #fff7ed; border: 1px solid #fed7aa; color: #9a3412; }
 .ds-toast--info { background: #eff6ff; border: 1px solid #bfdbfe; color: #1e40af; }
 
 /* --- CMP-070: Badge --- */
@@ -280,8 +296,8 @@ body {
   padding: 2px var(--space-2); border-radius: var(--radius-full);
 }
 .ds-badge--primary { background: var(--color-primary-100, rgba(59,130,246,0.1)); color: var(--color-primary-700, #1d4ed8); }
-.ds-badge--success { background: #dcfce7; color: #166534; }
-.ds-badge--warning { background: #fef3c7; color: #92400e; }
+.ds-badge--success { background: #ccfbf1; color: #115e59; }
+.ds-badge--warning { background: #ffedd5; color: #9a3412; }
 .ds-badge--error { background: #fee2e2; color: #991b1b; }
 .ds-badge--neutral { background: var(--color-gray-100); color: var(--color-gray-700); }
 
@@ -289,21 +305,34 @@ body {
    4. LAYOUT STYLES
    ============================================ */
 
-/* Page container */
-.ds-page { max-width: 1280px; margin: 0 auto; padding: var(--space-8); }
+/* ---- 문서 크롬(chrome) 타이포그래피 ----
+   컴포넌트 데모는 프로젝트 DS 폰트(--font-family-sans)를 그대로 쓰고,
+   페이지 골격(제목·설명·메타·푸터)만 문서 표준 서체/리듬을 따른다. */
+.ds-page {
+  max-width: var(--doc-w, 1280px); margin: 0 auto; padding: 36px 24px 110px;
+  font-family: var(--font-doc);
+  font-size: 14.5px; line-height: 1.8; letter-spacing: -0.005em; -webkit-font-smoothing: antialiased;
+}
+.ds-hero { border-bottom: 1px solid var(--color-text-primary); padding-bottom: 20px; margin-bottom: 28px; }
+.ds-hero h1 { margin: 0; font-size: 27px; font-weight: 700; letter-spacing: -0.5px; line-height: 1.35; font-family: var(--font-doc); }
+.ds-hero .sub { color: var(--color-text-secondary); margin-top: 10px; font-size: 13px; line-height: 1.9; }
 
 /* Showcase layout */
-.ds-section { margin-bottom: var(--space-12); }
+.ds-section { margin-bottom: 54px; }
 .ds-section__title {
-  font-size: var(--font-size-2xl); font-weight: var(--font-weight-bold);
-  margin-bottom: var(--space-2); color: var(--color-text-primary);
+  font-family: var(--font-doc);
+  font-size: 17px; font-weight: 700; line-height: 1.5;
+  margin: 0 0 6px; color: var(--color-text-primary);
 }
+.ds-section__title .qword { background: var(--doc-hi); color: var(--color-text-primary); padding: 0 8px; border-radius: 2px; margin-right: 6px; }
 .ds-section__desc {
-  font-size: var(--font-size-sm); color: var(--color-text-secondary); margin-bottom: var(--space-6);
+  font-size: 13.5px; color: var(--color-text-secondary); line-height: 1.85; margin: 0 0 18px;
 }
+.ds-section__desc b { color: var(--color-text-primary); }
+/* 면 처리: 컨테이너는 채움, 카드는 흰 면 + 미세 그림자 (단면 accent border 금지) */
 .ds-showcase {
-  background: var(--color-bg-primary); border: 1px solid var(--color-border-default);
-  border-radius: var(--radius-lg); padding: var(--space-6);
+  background: var(--doc-panel); border: none;
+  border-radius: 14px; padding: 22px 24px;
 }
 .ds-showcase__row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3); margin-bottom: var(--space-4); }
 .ds-showcase__row:last-child { margin-bottom: 0; }
@@ -335,31 +364,37 @@ body {
 .ds-spacing-bar__label { font-size: var(--font-size-xs); color: var(--color-text-tertiary); min-width: 80px; font-family: var(--font-family-mono); }
 .ds-spacing-bar__visual { height: 16px; background: var(--color-primary-200); border-radius: var(--radius-sm); }
 
-/* Theme toggle */
+/* Floating controls (theme / top) */
+.ds-fab-stack { position: fixed; right: 22px; bottom: 26px; z-index: var(--z-fixed); display: flex; flex-direction: column; align-items: flex-end; gap: 10px; }
 .ds-theme-toggle {
-  position: fixed; top: var(--space-4); right: var(--space-4); z-index: var(--z-fixed);
-  background: var(--color-bg-primary); border: 1px solid var(--color-border-default);
-  border-radius: var(--radius-full); padding: var(--space-2) var(--space-3);
-  cursor: pointer; font-size: var(--font-size-sm); display: flex; align-items: center; gap: var(--space-2);
-  box-shadow: var(--shadow-md);
+  background: var(--color-bg-primary); border: none;
+  border-radius: 999px; padding: 10px 18px;
+  cursor: pointer; font: 700 12.5px/1.4 var(--font-doc); letter-spacing: -0.005em;
+  color: var(--color-text-primary); display: flex; align-items: center; gap: 8px;
+  box-shadow: 0 4px 14px rgba(17,17,17,.13);
   transition: background var(--transition-fast);
 }
 .ds-theme-toggle:hover { background: var(--color-bg-tertiary); }
+.ds-to-top {
+  width: 46px; height: 46px; padding: 0; justify-content: center;
+  background: var(--doc-accent); color: #fff; font-size: 15px;
+  box-shadow: 0 4px 14px rgba(37,99,235,.38);
+}
 
 /* Meta bar */
 .ds-meta {
-  display: flex; gap: var(--space-3); flex-wrap: wrap;
-  margin-bottom: var(--space-8); font-size: var(--font-size-xs); color: var(--color-text-secondary);
+  display: flex; gap: 6px; flex-wrap: wrap;
+  margin-bottom: 26px; font-size: 11.5px; color: var(--color-text-secondary);
 }
 .ds-meta span {
-  background: var(--color-bg-primary); border: 1px solid var(--color-border-default);
-  padding: var(--space-1) var(--space-3); border-radius: var(--radius-md);
+  background: var(--doc-panel); border: none; font-weight: 700;
+  padding: 3px 11px; border-radius: 999px;
 }
 
 /* Footer */
 .ds-footer {
-  text-align: center; padding: var(--space-6); font-size: var(--font-size-xs);
-  color: var(--color-text-tertiary); border-top: 1px solid var(--color-border-default); margin-top: var(--space-12);
+  text-align: center; padding-top: 16px; margin-top: 40px; font-size: 12px; line-height: 1.95;
+  color: var(--color-text-secondary); border-top: 1px solid var(--color-border-default);
 }
 
 /* Accessibility: reduced motion */
@@ -373,18 +408,24 @@ body {
 </head>
 <body>
 
-<!-- Theme Toggle -->
-<button class="ds-theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark/light mode">
-  <span id="theme-icon">&#9790;</span>
-  <span id="theme-label">Dark</span>
-</button>
+<!-- Floating controls -->
+<div class="ds-fab-stack">
+  <button class="ds-theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark/light mode">
+    <i class="fa-solid fa-circle-half-stroke" id="theme-icon" aria-hidden="true"></i>
+    <span id="theme-label">다크 모드</span>
+  </button>
+  <button class="ds-theme-toggle ds-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Scroll to top">
+    <i class="fa-solid fa-arrow-up" aria-hidden="true"></i>
+  </button>
+</div>
 
 <div class="ds-page">
 
   <!-- Header -->
-  <h1 style="font-size:var(--font-size-3xl);font-weight:var(--font-weight-bold);margin-bottom:var(--space-2)">
-    Design System
-  </h1>
+  <header class="ds-hero">
+    <h1>Design System</h1>
+    <div class="sub">{{appName}} 의 색·서체·간격·컴포넌트를 한곳에 모은 단일 원본(SSoT)이다. 이 페이지의 토큰 값이 곧 구현 값이다.</div>
+  </header>
   <div class="ds-meta">
     <span>App: {{appName}}</span>
     <span>Status: {{status}}</span>
@@ -396,7 +437,7 @@ body {
        SECTION 1: COLOR TOKENS (DS-010 ~ DS-040)
        ============================================= -->
   <section class="ds-section" id="colors">
-    <h2 class="ds-section__title">1. Color Tokens</h2>
+    <h2 class="ds-section__title"><span class="qword">1</span>Color Tokens</h2>
     <p class="ds-section__desc">Brand, semantic, neutral, and surface color definitions. All components reference these tokens.</p>
 
     <!-- DS-010: Brand Colors -->
@@ -477,7 +518,7 @@ body {
        SECTION 2: TYPOGRAPHY (DS-050)
        ============================================= -->
   <section class="ds-section" id="typography">
-    <h2 class="ds-section__title">2. Typography</h2>
+    <h2 class="ds-section__title"><span class="qword">2</span>Typography</h2>
     <p class="ds-section__desc">Font families, sizes, weights, and line heights.</p>
     <div class="ds-showcase">
       <div class="ds-type-scale">
@@ -521,7 +562,7 @@ body {
        SECTION 3: SPACING (DS-060)
        ============================================= -->
   <section class="ds-section" id="spacing">
-    <h2 class="ds-section__title">3. Spacing Scale</h2>
+    <h2 class="ds-section__title"><span class="qword">3</span>Spacing Scale</h2>
     <p class="ds-section__desc">Consistent spacing tokens for margin, padding, and gap.</p>
     <div class="ds-showcase">
       <div class="ds-spacing-scale">
@@ -542,7 +583,7 @@ body {
        SECTION 4: COMPONENTS
        ============================================= -->
   <section class="ds-section" id="components">
-    <h2 class="ds-section__title">4. UI Components</h2>
+    <h2 class="ds-section__title"><span class="qword">4</span>UI Components</h2>
     <p class="ds-section__desc">Interactive components with variants, sizes, and states. Each component uses design tokens exclusively.</p>
 
     <!-- CMP-010: Button -->
@@ -695,7 +736,7 @@ body {
        SECTION 5: LAYOUT PATTERNS
        ============================================= -->
   <section class="ds-section" id="layout">
-    <h2 class="ds-section__title">5. Layout Patterns</h2>
+    <h2 class="ds-section__title"><span class="qword">5</span>Layout Patterns</h2>
     <p class="ds-section__desc">Responsive layout patterns for common page structures.</p>
 
     <div class="ds-showcase">
@@ -707,7 +748,7 @@ body {
        SECTION 6: ACCESSIBILITY
        ============================================= -->
   <section class="ds-section" id="accessibility">
-    <h2 class="ds-section__title">6. Accessibility</h2>
+    <h2 class="ds-section__title"><span class="qword">6</span>Accessibility</h2>
     <p class="ds-section__desc">WCAG AA compliance, focus management, keyboard navigation, and ARIA attributes.</p>
 
     <div class="ds-showcase">
@@ -734,10 +775,8 @@ body {
   if (saved === 'dark') applyTheme('dark');
   function applyTheme(t) {
     document.documentElement.setAttribute('data-theme', t);
-    const icon = document.getElementById('theme-icon');
     const label = document.getElementById('theme-label');
-    if (icon) icon.textContent = t === 'dark' ? '\u2600' : '\u263E';
-    if (label) label.textContent = t === 'dark' ? 'Light' : 'Dark';
+    if (label) label.textContent = t === 'dark' ? '\uB77C\uC774\uD2B8 \uBAA8\uB4DC' : '\uB2E4\uD06C \uBAA8\uB4DC';
   }
   window.toggleTheme = function() {
     const current = document.documentElement.getAttribute('data-theme') || 'light';

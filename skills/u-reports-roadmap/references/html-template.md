@@ -59,10 +59,13 @@ Assign one **hue family per app/product group**; use `common` (grey) for cross-c
 | Family | slots | suggested use |
 |---|---|---|
 | blue | `blue1..blue4` | product/app group 1 |
-| green | `green1..green4` | product/app group 2 |
-| amber | `amber1..amber4` | product/app group 3 |
+| teal | `teal1..teal4` | product/app group 2 |
+| orange | `orange1..orange4` | product/app group 3 |
 | rose / violet | `rose1 rose2 violet1 violet2` | extra groups |
 | common | `common` | BE-dependency / SSoT / QA |
+
+**연두(lime)·노랑(yellow) 계열은 팔레트에서 제외한다.** 예전 `green*` / `amber*` 키는 각각 `teal*` / `orange*`
+로 매핑된 별칭으로 남아 있으므로 기존 데이터는 그대로 동작하지만, 새로 만들 때는 `teal*` / `orange*` 를 쓴다.
 
 To add more slots, extend the `:root` `--track-*` vars in the asset CSS (the one place CSS edits are allowed).
 

@@ -7,8 +7,8 @@
 ### 1. Inline SVG ERD (필수) (`erd.json` → `entities` + `relationships`)
 
 - **Entity boxes:** rounded rectangle per entity
-  - Header row: colored (`#3b82f6` blue-500), entity name bold
-  - Column rows: column name + type + 배지 (PK: `#8b5cf6` violet / FK: `#f59e0b` amber / UK: `#10b981` green)
+  - Header row: colored (`#2563eb` blue-600), entity name bold
+  - Column rows: column name + type + 배지 (PK: `#7c3aed` violet / FK: `#0d9488` teal / UK: `#0ea5e9` sky) — amber/green 금지
   - PK/FK/UK 배지는 절대 동일 컬럼에 중복 표시 금지 (각 제약조건은 독립 행)
 - **Relationship connectors:** 엔티티 간 **curved `<path>` (C Bezier)** 로 연결. `<line>` / `<polyline>` 사용 금지
   - 커넥터 양 끝: 카디널리티 텍스트 (`1`, `N`, `0..1`, `0..N`)

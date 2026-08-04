@@ -8,7 +8,7 @@
       "name": "u-maker",
       "source": "./",
       "description": "PBGD-based SSoT plugin for Claude Code. 4-phase pipeline (Plan/Build/Gatekeeping/Deploy), 10 agents, 29 skills.",
-      "version": "4.0.0-alpha.31",
+      "version": "4.0.0-alpha.32",
       "category": "development",
       "tags": ["pbgd", "ssot", "agents", "gatekeeper", "quality-gate", "deploy-phase", "reverse-engineering", "html-engine", "scoring"]
     }

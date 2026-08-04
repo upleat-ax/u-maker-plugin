@@ -216,7 +216,7 @@ URL: https://hj-wiki.upleat.ai/69cd33f60b6f1e9c6e7398f1?tab=meeting
 SVG 차트 규칙:
 - `viewBox` 기반 반응형 (`width="100%"`)
 - 곡선 커넥터 (Bezier `C` path)
-- 색상: blue(`#3b82f6`), green(`#10b981`), amber(`#f59e0b`), red(`#ef4444`), purple(`#8b5cf6`)
+- 색상: blue(`#2563eb`), teal(`#0d9488`), orange(`#c2410c`), red(`#dc2626`), violet(`#7c3aed`) — 연두·노랑 금지
 - 호버 시 tooltip (CSS only)
 - dark mode 지원 (CSS 변수)
 
