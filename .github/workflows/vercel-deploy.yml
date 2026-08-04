@@ -72,8 +72,6 @@ jobs:
       - name: Link Vercel project
         run: |
           cd site
-          # TODO(rename): Vercel project still u-maker-plugin — renaming the Vercel
-          # project is an external action; update --project when it happens.
           vercel link --yes --project u-maker-plugin --token="$VERCEL_TOKEN"
 
       - name: Pull Vercel env (production)

@@ -1,0 +1,13 @@
+# .u-maker/.env  —  Local credentials for u-maker skills.
+#
+# This file is NEVER committed (added to .gitignore by /u-prepare-foldertree).
+# Copy `.env.example` → `.env` and fill in only the keys you actually use.
+# Skills load it via `set -a; . .u-maker/.env; set +a` and then prefer
+# env values over interactive prompts.
+#
+# Keys are grouped by integration. Empty / unset = "ask interactively when needed".
+
+# ── Other integrations ─────────────────────────────────────────────
+# No skill currently requires a fixed credential key here.
+# Skills add their own keys to this template as they start consuming
+# `.u-maker/.env` (e.g. Figma PAT, registry tokens, deploy credentials).

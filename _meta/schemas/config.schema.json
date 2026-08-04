@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "u-maker Config",
+  "description": "Project-level configuration for .u-maker/",
+  "type": "object",
+  "required": ["version", "project"],
+  "properties": {
+    "version": { "type": "string", "const": "4.0" },
+    "project": {
+      "type": "object",
+      "required": ["name"],
+      "properties": {
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "apps": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "List of app names for multi-app projects"
+        }
+      }
+    },
+    "workflow": {
+      "type": "object",
+      "description": "PBGD workflow phase metadata (v4.0)",
+      "properties": {
+        "phases": {
+          "type": "array",
+          "default": ["plan", "build", "gatekeeping", "deploy"],
+          "items": {
+            "enum": [
+              "plan",
+              "build",
+              "gatekeeping",
+              "deploy",
+              "plan-prepare",
+              "plan-plan",
+              "build-ui-design",
+              "build-development",
+              "gatekeeping-doc-scoring",
+              "gatekeeping-runtime-qa",
+              "deploy-cicd"
+            ]
+          },
+          "description": "PBGD phases (or sub-phases) active in this project"
+        }
+      }
+    },
+    "defaults": {
+      "type": "object",
+      "properties": {
+        "auto": { "type": "boolean", "default": true },
+        "loop": { "type": "boolean", "default": false },
+        "loopMaxRetries": { "type": "integer", "default": 3 },
+        "gatekeeperThreshold": { "type": "integer", "default": 95 },
+        "deployThreshold": { "type": "integer", "default": 98 }
+      }
+    }
+  }
+}

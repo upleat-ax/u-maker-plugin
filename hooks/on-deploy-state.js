@@ -2,7 +2,7 @@
 // Trigger: any SSoT doc under .u-maker/docs/ changes OR generated code tree changes
 // Action: detect source-hash drift against data/deploy/manifest.json; mark affected
 //         artifacts as status:"stale" and write .state/deploy-stale.json so the next
-//         /um-deploy run knows what to regenerate (continuous regeneration).
+//         /u-deploy run knows what to regenerate (continuous regeneration).
 // PBGD v4.0.
 const fs = require('fs');
 const path = require('path');
@@ -57,7 +57,7 @@ module.exports = async function onDeployState({ filePath, projectRoot }) {
   try {
     manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
   } catch (e) {
-    console.warn('[umaker] on-deploy-state: manifest parse failed at ' + manifestPath + ': ' + e.message);
+    console.warn('[u-maker] on-deploy-state: manifest parse failed at ' + manifestPath + ': ' + e.message);
     return;
   }
 
@@ -70,7 +70,7 @@ module.exports = async function onDeployState({ filePath, projectRoot }) {
     try {
       existingStale = JSON.parse(fs.readFileSync(stalePath, 'utf8'));
     } catch (e) {
-      console.warn('[umaker] on-deploy-state: deploy-stale.json parse failed: ' + e.message);
+      console.warn('[u-maker] on-deploy-state: deploy-stale.json parse failed: ' + e.message);
     }
   }
   if (
@@ -107,7 +107,7 @@ module.exports = async function onDeployState({ filePath, projectRoot }) {
         detectedAt: new Date().toISOString(),
         drift: driftList,
         note:
-          'Run /um-deploy to regenerate stale artifacts. Only drifted sources ' +
+          'Run /u-deploy to regenerate stale artifacts. Only drifted sources ' +
           'require regeneration; manifest marks affected artifacts with status:"stale".'
       },
       null,

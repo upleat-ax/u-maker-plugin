@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Dependency Graph",
+  "description": "Global dependency graph linking digest items to doc items",
+  "type": "object",
+  "required": ["version", "nodes", "edges"],
+  "properties": {
+    "version": { "type": "string" },
+    "lastUpdated": { "type": "string", "format": "date-time" },
+    "nodes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "type", "path"],
+        "properties": {
+          "id": { "type": "string" },
+          "type": { "enum": ["digest", "doc", "item", "deploy-artifact"] },
+          "path": { "type": "string" },
+          "itemId": { "type": "string" },
+          "phase": {
+            "description": "PBGD phase ownership (v4.0)",
+            "enum": ["plan", "build", "gatekeeping", "deploy"]
+          }
+        }
+      }
+    },
+    "edges": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["from", "to", "relation"],
+        "properties": {
+          "from": { "type": "string" },
+          "to": { "type": "string" },
+          "relation": { "enum": ["derives", "implements", "tests", "references", "deploys"] }
+        }
+      }
+    }
+  }
+}

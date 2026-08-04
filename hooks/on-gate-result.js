@@ -2,7 +2,7 @@
 // Trigger: loop-state.json updated
 // Action: check if loop should continue or stop, and emit deploy-readiness
 // PBGD v4.0: two thresholds — passThreshold (95) and deployThreshold (98).
-//            Every run also emits .state/deploy-readiness.json for /um-deploy to consume.
+//            Every run also emits .state/deploy-readiness.json for /u-deploy to consume.
 const fs = require('fs');
 const path = require('path');
 

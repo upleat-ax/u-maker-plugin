@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # ============================================================
-# deploy_local.sh — umaker local plugin deployment
+# deploy_local.sh — u-maker local plugin deployment
 #
-# Deploys the umaker plugin to Claude Code, Codex CLI, and Gemini CLI.
+# Deploys the u-maker plugin to Claude Code, Codex CLI, and Gemini CLI.
 #   - macOS:   ~/.claude/plugins/...
 #   - Windows: %USERPROFILE%\.claude\plugins\... (Git Bash / WSL)
 #
@@ -27,12 +27,6 @@ PLUGIN_VERSION="$(python3 -c "import json; print(json.load(open('$PLUGIN_JSON'))
 MARKETPLACE_NAME="${PLUGIN_NAME}-marketplace"
 CODEX_MARKETPLACE_NAME="$(python3 -c "import json; print(json.load(open('$MARKETPLACE_JSON'))['name'])")"
 
-# Pre-rename plugin name (u-maker). Legacy artifacts registered under this
-# name are purged on deploy/clean so upgrades from a u-maker install leave
-# nothing behind. Only the OLD name is targeted — new-name (umaker)
-# artifacts must survive legacy cleanup.
-OLD_PLUGIN_NAME="u-maker"
-
 # Colors
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -41,7 +35,7 @@ CYAN='\033[0;36m'
 BOLD='\033[1m'
 NC='\033[0m'
 
-log()  { echo -e "${CYAN}[umaker]${NC} $*"; }
+log()  { echo -e "${CYAN}[u-maker]${NC} $*"; }
 ok()   { echo -e "${GREEN}  [OK]${NC} $*"; }
 warn() { echo -e "${YELLOW}  [WARN]${NC} $*"; }
 err()  { echo -e "${RED}  [ERR]${NC} $*"; }
@@ -186,15 +180,11 @@ from datetime import datetime, timezone
 
 mp_file = '$KNOWN_MP'
 name = '$PLUGIN_NAME'
-old_name = '$OLD_PLUGIN_NAME'
 cache_path = '$CACHE_DIR/$PLUGIN_NAME/$PLUGIN_NAME/$PLUGIN_VERSION'
 install_loc = '$MARKETPLACES_DIR/$MARKETPLACE_NAME'
 
 with open(mp_file, 'r') as f:
     data = json.load(f)
-
-# Drop the pre-rename (u-maker) entry left behind by old installs
-data.pop(old_name, None)
 
 data[name] = {
     'source': {
@@ -237,11 +227,7 @@ if 'plugins' not in data:
     data['plugins'] = {}
 
 key = f'{plugin_name}@{plugin_name}'
-old_key = '${OLD_PLUGIN_NAME}@${OLD_PLUGIN_NAME}'
 now = datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%S.000Z')
-
-# Drop the pre-rename (u-maker@u-maker) entry left behind by old installs
-data['plugins'].pop(old_key, None)
 
 data['plugins'][key] = [{
     'scope': 'user',
@@ -274,29 +260,21 @@ update_enabled_plugins() {
 import json
 sf = '$settings_file'
 key = '${PLUGIN_NAME}@${PLUGIN_NAME}'
-old_key = '${OLD_PLUGIN_NAME}@${OLD_PLUGIN_NAME}'
 
 with open(sf, 'r') as f:
     data = json.load(f)
 
 ep = data.setdefault('enabledPlugins', {})
-changed = False
-# Drop the pre-rename (u-maker@u-maker) toggle left behind by old installs
-if old_key != key and old_key in ep:
-    del ep[old_key]
-    changed = True
-if ep.get(key) is not True:
+if ep.get(key) is True:
+    print('already-on')
+else:
     ep[key] = True
-    changed = True
-if changed:
     with open(sf, 'w') as f:
         json.dump(data, f, indent=2)
         f.write('\n')
     print('toggled-on')
-else:
-    print('already-on')
 " >/dev/null
-  ok "settings.json enabledPlugins → on ($PLUGIN_NAME@$PLUGIN_NAME, legacy $OLD_PLUGIN_NAME@$OLD_PLUGIN_NAME dropped)"
+  ok "settings.json enabledPlugins → on ($PLUGIN_NAME@$PLUGIN_NAME)"
 }
 
 # ============================================================
@@ -330,13 +308,11 @@ setup_codex() {
   fi
 
   # Remove links created by the short-lived direct-skill workaround. The
-  # installed plugin exposes these skills under the `${PLUGIN_NAME}:*` namespace.
-  # Old-name (u-maker-*) links are targeted too — legacy cleanup must keep
-  # matching pre-rename artifacts.
+  # installed plugin exposes these skills under the `u-maker:*` namespace.
   if [[ -d "$CODEX_HOME/skills" && ! -L "$CODEX_HOME/skills" ]]; then
     local legacy_skill_count=0
     local legacy_skill_link
-    for legacy_skill_link in "$CODEX_HOME/skills"/u-maker-* "$CODEX_HOME/skills"/${PLUGIN_NAME}-*; do
+    for legacy_skill_link in "$CODEX_HOME/skills"/${PLUGIN_NAME}-*; do
       [[ -L "$legacy_skill_link" ]] || continue
       rm "$legacy_skill_link"
       legacy_skill_count=$((legacy_skill_count + 1))
@@ -361,12 +337,6 @@ setup_codex() {
   else
     ok "Codex marketplace already registered: $CODEX_MARKETPLACE_NAME"
   fi
-
-  # Best-effort removal of the pre-rename (u-maker) Codex plugin and
-  # marketplace so upgrades don't leave the old selector installed alongside
-  # the new one. Failures are ignored — most installs never had them.
-  codex plugin remove "${OLD_PLUGIN_NAME}@${OLD_PLUGIN_NAME}" >/dev/null 2>&1 || true
-  codex plugin marketplace remove "$OLD_PLUGIN_NAME" >/dev/null 2>&1 || true
 
   # Reinstall so repeated local deploys always refresh Codex's cached copy.
   codex plugin remove "$PLUGIN_NAME@$CODEX_MARKETPLACE_NAME" >/dev/null 2>&1 || true
@@ -404,6 +374,32 @@ setup_gemini() {
 }
 
 # ============================================================
+# 6c. Register _meta symlinks (templates, schemas, etc.)
+# ============================================================
+
+register_meta_symlinks() {
+  local cache_meta="$CACHE_DIR/$PLUGIN_NAME/$PLUGIN_NAME/$PLUGIN_VERSION/_meta"
+
+  if [[ ! -d "$cache_meta" ]]; then
+    warn "No _meta directory in cache, skipping _meta symlinks"
+    return 0
+  fi
+
+  # Register in each platform's home that exists
+  for platform_home in "$CLAUDE_HOME" "$CODEX_HOME" "$GEMINI_HOME"; do
+    [[ -d "$platform_home" ]] || continue
+
+    local meta_dir="$platform_home/_meta"
+    local link_path="$meta_dir/$PLUGIN_NAME"
+
+    mkdir -p "$meta_dir"
+    make_link "$cache_meta" "$link_path"
+  done
+
+  ok "Registered _meta symlinks (templates, schemas, session-protocols, tech-rules)"
+}
+
+# ============================================================
 # 6e. Remove legacy ~/.claude/skills/${PLUGIN_NAME}__* symlinks
 #
 # These were registered by older versions of this script for cross-CLI
@@ -418,10 +414,8 @@ remove_legacy_skill_symlinks() {
   local skills_root="$CLAUDE_HOME/skills"
   [[ -d "$skills_root" ]] || { ok "No legacy skill symlinks to clean"; return 0; }
 
-  # Old-name (u-maker__*) globs are kept alongside the new name — legacy
-  # cleanup must keep targeting pre-rename artifacts.
   local count=0
-  for link in "$skills_root"/u-maker__* "$skills_root"/${PLUGIN_NAME}__*; do
+  for link in "$skills_root"/${PLUGIN_NAME}__*; do
     [[ -e "$link" || -L "$link" ]] || continue
     rm -rf "$link"
     count=$((count + 1))
@@ -442,9 +436,8 @@ remove_legacy_agent_symlinks() {
   local agents_root="$CLAUDE_HOME/agents"
   [[ -d "$agents_root" ]] || { ok "No legacy agent symlinks to clean"; return 0; }
 
-  # Old-name (u-maker__*) globs are kept alongside the new name.
   local count=0
-  for link in "$agents_root"/u-maker__* "$agents_root"/${PLUGIN_NAME}__*; do
+  for link in "$agents_root"/${PLUGIN_NAME}__*; do
     [[ -e "$link" || -L "$link" ]] || continue
     rm -rf "$link"
     count=$((count + 1))
@@ -458,48 +451,13 @@ remove_legacy_agent_symlinks() {
 }
 
 # ============================================================
-# 6g. Remove legacy u-maker plugin registration artifacts
-#
-# Pre-rename installs registered the plugin as "u-maker". The JSON registry
-# keys are dropped in update_known_marketplaces / update_installed_plugins /
-# update_enabled_plugins; this removes the leftover filesystem artifacts.
-# Only the OLD name is targeted — new-name (umaker) artifacts survive.
-# ============================================================
-
-remove_legacy_plugin_registration() {
-  # Safety: never purge when the names coincide (would delete the fresh deploy)
-  if [[ "$OLD_PLUGIN_NAME" == "$PLUGIN_NAME" ]]; then
-    return 0
-  fi
-
-  local removed=0
-
-  local old_mp_link="$MARKETPLACES_DIR/${OLD_PLUGIN_NAME}-marketplace"
-  if [[ -L "$old_mp_link" || -e "$old_mp_link" ]]; then
-    rm -rf "$old_mp_link"
-    ok "Removed legacy marketplace symlink (${OLD_PLUGIN_NAME}-marketplace)"
-    removed=$((removed + 1))
-  fi
-
-  if [[ -d "$CACHE_DIR/$OLD_PLUGIN_NAME" ]]; then
-    rm -rf "$CACHE_DIR/$OLD_PLUGIN_NAME"
-    ok "Removed legacy cache dir (cache/$OLD_PLUGIN_NAME)"
-    removed=$((removed + 1))
-  fi
-
-  if [[ $removed -eq 0 ]]; then
-    ok "No legacy $OLD_PLUGIN_NAME registration artifacts to clean"
-  fi
-}
-
-# ============================================================
 # 7. Deploy
 # ============================================================
 
 deploy() {
   echo ""
   echo -e "${BOLD}========================================${NC}"
-  echo -e "${BOLD}  umaker Local Deploy${NC}"
+  echo -e "${BOLD}  u-maker Local Deploy${NC}"
   echo -e "${BOLD}========================================${NC}"
   echo -e "  Plugin:  ${CYAN}$PLUGIN_NAME${NC} v$PLUGIN_VERSION"
   echo -e "  Source:  $SCRIPT_DIR"
@@ -544,10 +502,9 @@ deploy() {
   log "7/10  Remove legacy agent symlinks (${PLUGIN_NAME}__*)"
   remove_legacy_agent_symlinks
 
-  # Step 8: Remove pre-rename (u-maker) marketplace symlink + cache so the
-  # old plugin does not stay registered alongside the new one.
-  log "8/10  Remove legacy plugin registration (${OLD_PLUGIN_NAME})"
-  remove_legacy_plugin_registration
+  # Step 8: _meta symlinks (templates, schemas, etc.)
+  log "8/10  _meta symlinks (templates, schemas)"
+  register_meta_symlinks
 
   # Step 9: Codex
   log "9/10  Codex integration"
@@ -563,7 +520,7 @@ deploy() {
   echo -e "${BOLD}========================================${NC}"
   echo ""
   echo -e "  Restart Claude Code / Codex / Gemini CLI to pick up changes."
-  echo -e "  Codex CLI: run /skills or type \$${PLUGIN_NAME}:um-plan (skills are not /um-plan slash commands)."
+  echo -e "  Codex CLI: run /skills or type \$${PLUGIN_NAME}:u-plan (skills are not /u-plan slash commands)."
   echo ""
 }
 
@@ -573,76 +530,62 @@ deploy() {
 
 clean() {
   echo ""
-  log "Cleaning umaker deployment (incl. legacy u-maker artifacts)..."
+  log "Cleaning u-maker deployment..."
 
-  local name
-
-  # Remove the Codex-managed plugin and its local marketplace registration
-  # (current selector + pre-rename u-maker selector).
+  # Remove the Codex-managed plugin and its local marketplace registration.
   if command -v codex &>/dev/null && codex plugin --help &>/dev/null; then
-    codex plugin remove "${OLD_PLUGIN_NAME}@${OLD_PLUGIN_NAME}" >/dev/null 2>&1 || true
-    codex plugin marketplace remove "$OLD_PLUGIN_NAME" >/dev/null 2>&1 || true
     codex plugin remove "$PLUGIN_NAME@$CODEX_MARKETPLACE_NAME" >/dev/null 2>&1 || true
     codex plugin marketplace remove "$CODEX_MARKETPLACE_NAME" >/dev/null 2>&1 || true
     ok "Codex plugin and marketplace registration removed"
   fi
 
-  # Remove marketplace symlinks (new + legacy names)
-  for name in "$OLD_PLUGIN_NAME" "$PLUGIN_NAME"; do
-    if [[ -L "$MARKETPLACES_DIR/${name}-marketplace" ]]; then
-      rm "$MARKETPLACES_DIR/${name}-marketplace"
-      ok "Marketplace symlink removed (${name}-marketplace)"
-    fi
-  done
+  # Remove marketplace symlink
+  if [[ -L "$MARKETPLACES_DIR/$MARKETPLACE_NAME" ]]; then
+    rm "$MARKETPLACES_DIR/$MARKETPLACE_NAME"
+    ok "Marketplace symlink removed"
+  fi
 
-  # Remove caches (new + legacy names)
-  for name in "$OLD_PLUGIN_NAME" "$PLUGIN_NAME"; do
-    if [[ -d "$CACHE_DIR/$name" ]]; then
-      rm -rf "$CACHE_DIR/$name"
-      ok "Cache removed ($name)"
-    fi
-  done
+  # Remove cache
+  if [[ -d "$CACHE_DIR/$PLUGIN_NAME" ]]; then
+    rm -rf "$CACHE_DIR/$PLUGIN_NAME"
+    ok "Cache removed"
+  fi
 
-  # Remove from known_marketplaces.json (new + legacy keys)
+  # Remove from known_marketplaces.json
   if [[ -f "$KNOWN_MP" ]]; then
-    for name in "$OLD_PLUGIN_NAME" "$PLUGIN_NAME"; do
-      python3 -c "
+    python3 -c "
 import json
 with open('$KNOWN_MP', 'r') as f:
     data = json.load(f)
-data.pop('$name', None)
+data.pop('$PLUGIN_NAME', None)
 with open('$KNOWN_MP', 'w') as f:
     json.dump(data, f, indent=2)
     f.write('\n')
 "
-    done
     ok "known_marketplaces.json cleaned"
   fi
 
-  # Remove from installed_plugins.json (new + legacy keys)
+  # Remove from installed_plugins.json
   if [[ -f "$INSTALLED_PL" ]]; then
-    for name in "$OLD_PLUGIN_NAME" "$PLUGIN_NAME"; do
-      python3 -c "
+    python3 -c "
 import json
 with open('$INSTALLED_PL', 'r') as f:
     data = json.load(f)
-data.get('plugins', {}).pop('${name}@${name}', None)
+data.get('plugins', {}).pop('${PLUGIN_NAME}@${PLUGIN_NAME}', None)
 with open('$INSTALLED_PL', 'w') as f:
     json.dump(data, f, indent=2)
     f.write('\n')
 "
-    done
     ok "installed_plugins.json cleaned"
   fi
 
-  # Remove from settings.json enabledPlugins (new + legacy keys)
+  # Remove from settings.json enabledPlugins
   local settings_file="$CLAUDE_HOME/settings.json"
   if [[ -f "$settings_file" ]]; then
-    for name in "$OLD_PLUGIN_NAME" "$PLUGIN_NAME"; do
-      python3 -c "
+    python3 -c "
 import json
 sf = '$settings_file'
-key = '${name}@${name}'
+key = '${PLUGIN_NAME}@${PLUGIN_NAME}'
 with open(sf, 'r') as f:
     data = json.load(f)
 ep = data.get('enabledPlugins', {})
@@ -652,14 +595,13 @@ if key in ep:
         json.dump(data, f, indent=2)
         f.write('\n')
 "
-    done
-    ok "settings.json enabledPlugins → off (${OLD_PLUGIN_NAME}@${OLD_PLUGIN_NAME}, ${PLUGIN_NAME}@${PLUGIN_NAME})"
+    ok "settings.json enabledPlugins → off"
   fi
 
-  # Remove skill symlinks (new + legacy names)
+  # Remove skill symlinks
   local skills_root="$CLAUDE_HOME/skills"
   local count=0
-  for link in "$skills_root"/${OLD_PLUGIN_NAME}__* "$skills_root"/${PLUGIN_NAME}__*; do
+  for link in "$skills_root"/${PLUGIN_NAME}__*; do
     if [[ -L "$link" ]]; then
       rm "$link"
       count=$((count + 1))
@@ -669,10 +611,10 @@ if key in ep:
     ok "Removed $count skill symlinks"
   fi
 
-  # Remove agent symlinks (new + legacy names)
+  # Remove agent symlinks
   local agents_root="$CLAUDE_HOME/agents"
   local acount=0
-  for link in "$agents_root"/${OLD_PLUGIN_NAME}__* "$agents_root"/${PLUGIN_NAME}__*; do
+  for link in "$agents_root"/${PLUGIN_NAME}__*; do
     if [[ -L "$link" ]]; then
       rm "$link"
       acount=$((acount + 1))
@@ -681,6 +623,14 @@ if key in ep:
   if [[ $acount -gt 0 ]]; then
     ok "Removed $acount agent symlinks"
   fi
+
+  # Remove _meta symlinks
+  for platform_home in "$CLAUDE_HOME" "$CODEX_HOME" "$GEMINI_HOME"; do
+    if [[ -L "$platform_home/_meta/$PLUGIN_NAME" ]]; then
+      rm "$platform_home/_meta/$PLUGIN_NAME"
+      ok "Removed _meta symlink from $(basename "$platform_home")"
+    fi
+  done
 
   # Remove Gemini symlinks
   if [[ -d "$GEMINI_HOME" ]]; then
@@ -704,7 +654,7 @@ if key in ep:
 check() {
   echo ""
   echo -e "${BOLD}========================================${NC}"
-  echo -e "${BOLD}  umaker Deployment Status${NC}"
+  echo -e "${BOLD}  u-maker Deployment Status${NC}"
   echo -e "${BOLD}========================================${NC}"
   echo ""
 
@@ -781,6 +731,23 @@ check() {
     fi
   else
     warn "settings.json not found at $settings_file"
+  fi
+
+  # _meta symlinks
+  local meta_ok=true
+  for platform_home in "$CLAUDE_HOME" "$CODEX_HOME" "$GEMINI_HOME"; do
+    [[ -d "$platform_home" ]] || continue
+    local pname
+    pname="$(basename "$platform_home")"
+    if [[ -L "$platform_home/_meta/$PLUGIN_NAME" ]]; then
+      ok "$pname _meta → cache _meta"
+    else
+      warn "$pname _meta symlink missing"
+      meta_ok=false
+    fi
+  done
+  if ! $meta_ok; then
+    all_ok=false
   fi
 
   # Codex

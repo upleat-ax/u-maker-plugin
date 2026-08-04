@@ -1,23 +1,23 @@
 # Changelog
 
-All notable changes to umaker-plugin (formerly u-maker-plugin).
+All notable changes to u-maker-plugin.
 
-## [4.1.0-alpha.1] — 2026-07-25
+## [4.0.0-alpha.32] — 2026-08-04
 
-**The plugin is renamed `u-maker` → `umaker`, and skill bodies move out of the plugin into the u-maker terminal app's embedded skills server — this repo now ships frontmatter-only skill stubs.**
+**HTML 산출물 공통 테마 통일 — 시스템 서체 · blue accent(연두/노랑 제거) · 레퍼런스 문단 구조.** 아울러 `um-*` 스텁(fetch) 전환을 되돌려 **스킬 본문을 플러그인 안에 로컬로 유지**한다.
 
 ### Changed
 
-- **Plugin renamed `u-maker` → `umaker`.** `.claude-plugin/plugin.json`, `.claude-plugin/marketplace.json`, and `.codex-plugin/plugin.json` all carry the new identity; the repo moves to `upleat-ax/umaker-plugin`. Install/deploy scripts (`install.sh`/`install.bat`/`install.ps1`/`uninstall_local.sh`/`deploy_local.*`/`deploy_github.sh`) and the release workflow build/publish `umaker-plugin-v*.zip` under the new name. The `UMAKER_REPO` env override keeps working.
-- **All 29 skills renamed `/u-*` → `/um-*`** (e.g. `/u-plan` → `/um-plan`, `/u-build` → `/um-build`, aliases `/um-init`, `/um-check`, `/um-qa`, `/um-ssot`). Skill directories are now `skills/um-*/`.
-- **All 10 agents renamed `u-agent-*` → `um-agent-*`.**
-- **Skill bodies migrated to the u-maker terminal's embedded skills server.** Each `skills/um-*/SKILL.md` in this plugin is a frontmatter-only stub that fetches its body from the server at execution time — discovery via `~/.config/u-maker/skills-server.json`, default `http://127.0.0.1:8765`. The u-maker terminal app must be running to execute `um-*` skills.
-- **`_meta/` (templates, schemas, tech-rules) removed from this repo** — vendored into the terminal app and served over HTTP by the same skills server. `deploy_local.sh`/`deploy_local.bat` no longer create `_meta` symlinks/junctions, and release zips no longer include `_meta/` (they now include `.codex-plugin/`, which deploy_local's Codex setup requires).
-- **Installers clean up legacy old-name artifacts on upgrade** — `u-maker__*` skill/agent symlinks, `cache/u-maker`, `u-maker-marketplace` symlink, and `u-maker@u-maker` registry entries are still removed, alongside the equivalent new-name (`umaker`) artifacts.
+- **컬러 테마에서 연두(lime)·노랑(yellow/amber) 계열 전면 제거.** 하이라이트 `#D7FF5A` → `#dbe7ff`, accent/Plan `#3b82f6` → `#2563eb`, Design·성공 `#10b981` → `#0d9488`(teal), Check·Gate `#f59e0b` → `#7c3aed`(violet), Deploy·Loop `#8b5cf6` → `#db2777`(pink), 경고 티어 amber → `#c2410c`(orange). 로드맵 track 팔레트 `green*`/`amber*` → `teal*`/`orange*`(기존 키는 별칭 유지).
+- **서체** — Inter/Pretendard CDN 제거, 시스템 서체 스택만 사용. 본문 `14.5px / line-height 1.8 / letter-spacing -0.005em`, h1 27px·h2 17px·h3 14.5px.
+- **문단 구조** — `hero`(h1+sub+1px 밑줄) → `meta-bar` → `thesis`(짙은 면) → `section.blk`(54px) = `h2 > .qword` + `.section-hint` + `.panel`/`.card` → `.note` → `footer`. 컨테이너는 채움 면(테두리 없음), 카드는 흰 면 + 미세 그림자, 표는 1px 중립 행 구분선만(GK-07 준수).
+- **플로팅 컨트롤** — 우하단 알약 스택(다크모드 · 본문 폭 1080/1440/1920 · 맨 위로).
+- **`skills/u-engine/references/html-engine.md`에 § 0 Document Theme (SSoT) 신설** — 토큰·타이포·문단구조·플로팅 컨트롤 규격 + 생성 후 자기검증 체크리스트. § 7을 플로팅 컨트롤로 교체, § 9 사이드바·§ 10 TOC·§ 11 footer 갱신. 리포트 배지를 Tailwind 클래스 문자열 → 시맨틱 클래스(`type-*`/`score-*`)로 전환.
+- 템플릿 12종(`_meta/templates/*.html` 9 + wireframe 2 + roadmap 1)과 ERD/차트/와이어프레임/디자인시스템 스펙 팔레트 정정.
 
-### Unchanged (compatibility)
+### Reverted
 
-- `.u-maker/` per-project data directories, `U_MAKER_*`/`UMAKER_*` environment variables, `u-maker.config.json`, and the u-maker terminal app identity (config dir `~/.config/u-maker`) are all intentionally NOT renamed.
+- **`u-*` → `um-*` 스텁(fetch) 마이그레이션 되돌림.** 스킬 본문은 플러그인 안에 그대로 두고(`skills/u-*/SKILL.md` + `references/`/`assets/`), `_meta/` 템플릿·스키마도 복원한다. 커맨드는 `/u-*`, 에이전트는 `u-agent-*`, 플러그인 이름은 `u-maker`. 스킬 서버에서 본문을 받아오는 방식은 `feat/stub-skills-fetch` 브랜치에 보존.
 
 ## [4.0.0-alpha.30] — 2026-06-28
 

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>UMAKER v4.0.0-alpha.25 (PBGD) — Get Started Guide</title>
+<title>U-MAKER v4.0.0-alpha.25 (PBGD) — Get Started Guide</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;800&display=swap');
 
@@ -234,10 +234,10 @@
   <aside class="sidebar">
     <div class="sidebar-header">
       <h2>Get Started</h2>
-      <p>UMAKER v4.0.0-alpha.25 (PBGD) Guide</p>
+      <p>U-MAKER v4.0.0-alpha.25 (PBGD) Guide</p>
     </div>
     <ul class="sidebar-nav">
-      <li><a href="#what"><span class="nav-icon">01</span>UMAKER란?</a></li>
+      <li><a href="#what"><span class="nav-icon">01</span>U-MAKER란?</a></li>
       <li><a href="#install"><span class="nav-icon">02</span>설치</a></li>
       <li><a href="#start"><span class="nav-icon">03</span>프로젝트 시작하기<span class="sidebar-count">3</span></a></li>
       <li><a href="#modes"><span class="nav-icon">04</span>Interaction Mode<span class="sidebar-count">3</span></a></li>
@@ -250,7 +250,7 @@
       <li><a href="#faq"><span class="nav-icon">11</span>FAQ</a></li>
       <li><a href="#next"><span class="nav-icon">12</span>다음 단계</a></li>
     </ul>
-    <div class="sidebar-footer">UMAKER Plugin v4.0.0-alpha.25 (PBGD) &middot; Get Started</div>
+    <div class="sidebar-footer">U-MAKER Plugin v4.0.0-alpha.25 (PBGD) &middot; Get Started</div>
   </aside>
 
   <!-- ═══════════════ MAIN CONTENT ═══════════════ -->
@@ -259,7 +259,7 @@
 
       <!-- ────────── HERO HEADER ────────── -->
       <div class="doc-header">
-        <h1>UMAKER 시작하기</h1>
+        <h1>U-MAKER 시작하기</h1>
         <p>핵심 개념부터 전체 명령어, 실전 시나리오까지 단계별로 안내합니다.<br>전체 레퍼런스는 <a href="README.ko.html">README</a>를 참고하세요.</p>
         <div class="doc-meta">
           <div class="doc-meta-item"><strong>Version</strong> &nbsp;4.0.0-alpha.25</div>
@@ -271,22 +271,22 @@
       </div>
 
       <!-- ═══════════════════════════════════════════════════════════ -->
-      <!--  PART 1. UMAKER란?                                       -->
+      <!--  PART 1. U-MAKER란?                                       -->
       <!-- ═══════════════════════════════════════════════════════════ -->
-      <div class="section-divider" id="what"><h2>01. UMAKER란?</h2></div>
+      <div class="section-divider" id="what"><h2>01. U-MAKER란?</h2></div>
 
       <div class="highlight-box">
         <strong>한줄 요약:</strong> 10개의 AI 에이전트가 PBGD 4-Phase(Plan &rarr; Build &rarr; Gatekeeping &rarr; Deploy)를 따라, 기획 자료에서 설계 &rarr; 코드 &rarr; 테스트 &rarr; 배포까지 자동으로 수행하는 <strong>Claude Code 플러그인</strong>입니다.
       </div>
 
-      <!-- 기존 vs UMAKER 비교 -->
-      <h3 style="font-size:15px;font-weight:700;margin:24px 0 12px;color:var(--text)">기존 방식 vs UMAKER</h3>
+      <!-- 기존 vs U-MAKER 비교 -->
+      <h3 style="font-size:15px;font-weight:700;margin:24px 0 12px;color:var(--text)">기존 방식 vs U-MAKER</h3>
       <div class="data-table-wrap">
         <table class="data-table">
-          <thead><tr><th style="width:140px"></th><th>기존 방식</th><th>UMAKER 방식</th></tr></thead>
+          <thead><tr><th style="width:140px"></th><th>기존 방식</th><th>U-MAKER 방식</th></tr></thead>
           <tbody>
             <tr><td class="col-term">문서</td><td>코드 먼저, 문서는 나중에</td><td class="col-desc">문서 먼저, 코드는 문서 기반 생성 <span class="badge badge-blue">Docs-First</span></td></tr>
-            <tr><td class="col-term">기존 프로젝트</td><td>문서 없이 코드만 존재</td><td class="col-desc"><code>/um-reverse</code>로 코드에서 SSoT 역공학</td></tr>
+            <tr><td class="col-term">기존 프로젝트</td><td>문서 없이 코드만 존재</td><td class="col-desc"><code>/u-reverse</code>로 코드에서 SSoT 역공학</td></tr>
             <tr><td class="col-term">데이터 분석</td><td>200페이지 RFP를 한 번에 &rarr; loss</td><td class="col-desc">3-Layer chunk 분석 &rarr; 손실 없음</td></tr>
             <tr><td class="col-term">요구사항 추적</td><td>스프레드시트 수동 관리</td><td class="col-desc">4-Tier ID(USR&rarr;FR&rarr;US&rarr;FT) 자동 추적</td></tr>
             <tr><td class="col-term">설계 변경</td><td>SRS 수정 시 수동 갱신</td><td class="col-desc">Auto-Cascade 자동 전파</td></tr>
@@ -334,22 +334,22 @@
           <rect x="30" y="55" width="170" height="80" rx="12" fill="#3b82f6"/>
           <text x="115" y="85" text-anchor="middle" fill="#fff" font-size="13" font-weight="800" font-family="Noto Sans KR,sans-serif">01 PLAN</text>
           <text x="115" y="103" text-anchor="middle" fill="rgba(255,255,255,.75)" font-size="10" font-family="Noto Sans KR,sans-serif">SRS + IA + Wireframes</text>
-          <text x="115" y="120" text-anchor="middle" fill="rgba(255,255,255,.55)" font-size="9" font-family="Noto Sans KR,sans-serif">/um-prepare, /um-plan</text>
+          <text x="115" y="120" text-anchor="middle" fill="rgba(255,255,255,.55)" font-size="9" font-family="Noto Sans KR,sans-serif">/u-prepare, /u-plan</text>
 
           <rect x="220" y="55" width="170" height="80" rx="12" fill="#22c55e"/>
           <text x="305" y="85" text-anchor="middle" fill="#fff" font-size="13" font-weight="800" font-family="Noto Sans KR,sans-serif">02 BUILD</text>
           <text x="305" y="103" text-anchor="middle" fill="rgba(255,255,255,.75)" font-size="10" font-family="Noto Sans KR,sans-serif">Design ↔ Dev (FE+BE+DB)</text>
-          <text x="305" y="120" text-anchor="middle" fill="rgba(255,255,255,.55)" font-size="9" font-family="Noto Sans KR,sans-serif">/um-build</text>
+          <text x="305" y="120" text-anchor="middle" fill="rgba(255,255,255,.55)" font-size="9" font-family="Noto Sans KR,sans-serif">/u-build</text>
 
           <rect x="410" y="55" width="170" height="80" rx="12" fill="#f59e0b"/>
           <text x="495" y="85" text-anchor="middle" fill="#fff" font-size="13" font-weight="800" font-family="Noto Sans KR,sans-serif">03 GATEKEEPING</text>
           <text x="495" y="103" text-anchor="middle" fill="rgba(255,255,255,.75)" font-size="10" font-family="Noto Sans KR,sans-serif">Doc Scoring + Runtime QA</text>
-          <text x="495" y="120" text-anchor="middle" fill="rgba(255,255,255,.55)" font-size="9" font-family="Noto Sans KR,sans-serif">/um-gatekeeping</text>
+          <text x="495" y="120" text-anchor="middle" fill="rgba(255,255,255,.55)" font-size="9" font-family="Noto Sans KR,sans-serif">/u-gatekeeping</text>
 
           <rect x="600" y="55" width="160" height="80" rx="12" fill="#8b5cf6"/>
           <text x="680" y="85" text-anchor="middle" fill="#fff" font-size="13" font-weight="800" font-family="Noto Sans KR,sans-serif">04 DEPLOY</text>
           <text x="680" y="103" text-anchor="middle" fill="rgba(255,255,255,.75)" font-size="10" font-family="Noto Sans KR,sans-serif">CI/CD (continuous regen)</text>
-          <text x="680" y="120" text-anchor="middle" fill="rgba(255,255,255,.55)" font-size="9" font-family="Noto Sans KR,sans-serif">/um-deploy</text>
+          <text x="680" y="120" text-anchor="middle" fill="rgba(255,255,255,.55)" font-size="9" font-family="Noto Sans KR,sans-serif">/u-deploy</text>
 
           <!-- Phase arrows -->
           <path d="M 200 95 C 210 95, 210 95, 220 95" stroke="#fff" stroke-width="2" fill="none" marker-end="url(#mw)"/>
@@ -386,7 +386,7 @@
           </defs>
           <!-- PM Agent (top) -->
           <rect x="270" y="10" width="240" height="55" rx="14" fill="#3b82f6"/>
-          <text x="390" y="34" text-anchor="middle" fill="#fff" font-size="14" font-weight="800" font-family="Noto Sans KR,sans-serif">um-agent-pm</text>
+          <text x="390" y="34" text-anchor="middle" fill="#fff" font-size="14" font-weight="800" font-family="Noto Sans KR,sans-serif">u-agent-pm</text>
           <text x="390" y="50" text-anchor="middle" fill="rgba(255,255,255,.7)" font-size="10.5" font-family="Noto Sans KR,sans-serif">라우팅, 워크플로우 조율, 상태 관리</text>
 
           <!-- Row 1: Plan, Build, Design -->
@@ -450,7 +450,7 @@
           <text x="665" y="246" text-anchor="middle" fill="#64748b" font-size="9.5" font-family="Noto Sans KR,sans-serif">Cross-Reference</text>
           <text x="665" y="272" text-anchor="middle" fill="#dc2626" font-size="9" font-weight="700" font-family="Noto Sans KR,sans-serif">매 검증 스코어카드 출력</text>
         </svg>
-        <div class="diagram-caption">10-Agent Architecture: PM Agent(um-agent-pm)가 전체를 조율하며, 9개 전문 에이전트(plan, build, design, dev, qa, gatekeeper, deploy, figma, report)에 작업을 분배</div>
+        <div class="diagram-caption">10-Agent Architecture: PM Agent(u-agent-pm)가 전체를 조율하며, 9개 전문 에이전트(plan, build, design, dev, qa, gatekeeper, deploy, figma, report)에 작업을 분배</div>
       </div>
 
       <!-- ═══════════════════════════════════════════════════════════ -->
@@ -461,12 +461,12 @@
       <div class="feature-cards">
         <div class="feature-card">
           <h3>설치 (모든 OS 공통)</h3>
-          <div class="code-block" style="margin-top:10px"><span class="cmd">claude</span> <span class="flag">plugin add</span> upleat-ax/umaker-plugin</div>
+          <div class="code-block" style="margin-top:10px"><span class="cmd">claude</span> <span class="flag">plugin add</span> upleat-ax/u-maker-plugin</div>
         </div>
       </div>
 
       <div class="highlight-box">
-        <strong>Update:</strong> 동일한 명령 <code>claude plugin add upleat-ax/umaker-plugin</code>으로 최신 버전을 재설치합니다.<br>
+        <strong>Update:</strong> 동일한 명령 <code>claude plugin add upleat-ax/u-maker-plugin</code>으로 최신 버전을 재설치합니다.<br>
         설치/업데이트 후 반드시 <strong>Claude Code를 재시작</strong>해주세요.
       </div>
 
@@ -475,7 +475,7 @@
         <ul>
           <li>Claude Code CLI가 설치되어 있어야 합니다</li>
           <li>인터넷 연결 필요 (플러그인 다운로드 시)</li>
-          <li>새 프로젝트는 <code>/um-createproject</code>, 기존 프로젝트는 <code>/um-prepare</code>(별칭 <code>/um-init</code>)으로 시작합니다</li>
+          <li>새 프로젝트는 <code>/u-createproject</code>, 기존 프로젝트는 <code>/u-prepare</code>(별칭 <code>/u-init</code>)으로 시작합니다</li>
         </ul>
       </div>
 
@@ -483,7 +483,7 @@
       <!--  PART 3. 프로젝트 시작하기                                  -->
       <!-- ═══════════════════════════════════════════════════════════ -->
       <div class="section-divider" id="start"><h2>03. 프로젝트 시작하기</h2></div>
-      <p class="section-desc">UMAKER는 세 가지 방식으로 프로젝트를 시작할 수 있습니다.</p>
+      <p class="section-desc">U-MAKER는 세 가지 방식으로 프로젝트를 시작할 수 있습니다.</p>
 
       <!-- 3.1 Forward Engineering -->
       <h3 style="font-size:15px;font-weight:700;margin:24px 0 12px;color:var(--text)">3.1 Forward Engineering (새 프로젝트)</h3>
@@ -492,83 +492,83 @@
       <div class="timeline">
         <div class="timeline-item">
           <div class="timestamp">Step 1A &mdash; 새 프로젝트 시작</div>
-          <p><code>/um-createproject my-saas</code> &mdash; Turborepo+Bun 모노레포 스캐폴딩 + <code>/um-prepare</code> 자동 실행</p>
+          <p><code>/u-createproject my-saas</code> &mdash; Turborepo+Bun 모노레포 스캐폴딩 + <code>/u-prepare</code> 자동 실행</p>
           <div class="annotation">⚠️ 생성된 프로젝트 폴더(<code>my-saas/</code>)로 이동 후 Claude CLI를 다시 시작해야 합니다: <code>cd my-saas &amp;&amp; claude</code></div>
         </div>
         <div class="timeline-item">
           <div class="timestamp">Step 1B &mdash; 기존 프로젝트에 적용</div>
-          <p><code>/um-prepare my-saas</code> (별칭: <code>/um-init</code>) &mdash; foldertree + dropzone + analyze/reverse + 요구사항 협의까지 포함하는 umbrella</p>
+          <p><code>/u-prepare my-saas</code> (별칭: <code>/u-init</code>) &mdash; foldertree + dropzone + analyze/reverse + 요구사항 협의까지 포함하는 umbrella</p>
         </div>
         <div class="timeline-item">
           <div class="timestamp">Step 2 &mdash; 자료 수집 (Plan Phase)</div>
-          <p><code>.u-maker/data/dropzone/</code>에 RFP, 회의록, AS-IS 자료, Figma URL을 드롭. <code>/um-prepare</code>가 자동으로 <code>/um-analyze</code> (또는 Figma 소스 감지 시 <code>/um-tools-figma</code>) 를 위임합니다.</p>
+          <p><code>.u-maker/data/dropzone/</code>에 RFP, 회의록, AS-IS 자료, Figma URL을 드롭. <code>/u-prepare</code>가 자동으로 <code>/u-analyze</code> (또는 Figma 소스 감지 시 <code>/u-tools-figma</code>) 를 위임합니다.</p>
         </div>
         <div class="timeline-item">
           <div class="timestamp">Step 3 &mdash; 기획 (Plan Phase)</div>
-          <p><code>/um-plan --app myapp</code> &mdash; digest &rarr; SRS + IA 생성 (+ 선택적 wireframe)</p>
+          <p><code>/u-plan --app myapp</code> &mdash; digest &rarr; SRS + IA 생성 (+ 선택적 wireframe)</p>
         </div>
         <div class="timeline-item">
           <div class="timestamp">Step 4 &mdash; 와이어프레임 (선택)</div>
-          <p><code>/um-wireframe --app myapp --all</code> &mdash; screens.json 기반 HTML 와이어프레임 (6-Section 템플릿)</p>
+          <p><code>/u-wireframe --app myapp --all</code> &mdash; screens.json 기반 HTML 와이어프레임 (6-Section 템플릿)</p>
         </div>
         <div class="timeline-item">
           <div class="timestamp">Step 5 &mdash; 빌드 (Build Phase)</div>
-          <p><code>/um-build --app myapp</code> &mdash; Design(ERD/API/Screens/DS) ↔ Dev(FE/BE/DB) ping-pong 오케스트레이션. <code>--only fe|be|db</code> 또는 <code>/um-design --only erd</code>로 세분화 가능</p>
+          <p><code>/u-build --app myapp</code> &mdash; Design(ERD/API/Screens/DS) ↔ Dev(FE/BE/DB) ping-pong 오케스트레이션. <code>--only fe|be|db</code> 또는 <code>/u-design --only erd</code>로 세분화 가능</p>
         </div>
         <div class="timeline-item">
           <div class="timestamp">Step 6 &mdash; 검증 (Gatekeeping Phase)</div>
-          <p><code>/um-gatekeeping --app myapp</code> (별칭 <code>/um-check</code>, <code>/um-qa</code>) &mdash; 문서 scoring(11 criteria, pass ≥95) + 런타임 QA(TC + Test Results)</p>
+          <p><code>/u-gatekeeping --app myapp</code> (별칭 <code>/u-check</code>, <code>/u-qa</code>) &mdash; 문서 scoring(11 criteria, pass ≥95) + 런타임 QA(TC + Test Results)</p>
         </div>
         <div class="timeline-item">
           <div class="timestamp">Step 7 &mdash; HTML 산출물</div>
-          <p><code>/um-output --app myapp</code> &mdash; SSoT 문서를 독립 실행형 HTML로 변환</p>
+          <p><code>/u-output --app myapp</code> &mdash; SSoT 문서를 독립 실행형 HTML로 변환</p>
         </div>
         <div class="timeline-item">
           <div class="timestamp">Step 8 &mdash; 배포 (Deploy Phase)</div>
-          <p><code>/um-deploy --app myapp</code> &mdash; 대화형 타겟(GitHub Actions / Vercel / Docker) + 아티팩트 선택, deploy-gate ≥98, continuous regeneration</p>
+          <p><code>/u-deploy --app myapp</code> &mdash; 대화형 타겟(GitHub Actions / Vercel / Docker) + 아티팩트 선택, deploy-gate ≥98, continuous regeneration</p>
         </div>
       </div>
 
       <div class="highlight-box">
-        <strong>자동 실행:</strong> <code>/um-loop --app myapp</code>를 사용하면 Plan &rarr; Build &rarr; Gatekeeping &rarr; Deploy 전체를 gatekeeper 검증과 함께 무인으로 자동 실행합니다.
+        <strong>자동 실행:</strong> <code>/u-loop --app myapp</code>를 사용하면 Plan &rarr; Build &rarr; Gatekeeping &rarr; Deploy 전체를 gatekeeper 검증과 함께 무인으로 자동 실행합니다.
       </div>
 
       <div class="highlight-box green">
         <strong>선행조건 자동 캐스케이드:</strong> 선행 Phase 문서가 없으면 자동으로 호출됩니다.<br>
-        <code>/um-build</code> 실행 시 Plan 문서 없으면 &rarr; <code>/um-plan</code> 자동 호출. <code>/um-dev</code>는 Design 문서 없으면 &rarr; <code>/um-design</code> 자동 호출.<br>
-        즉, <code>/um-build</code> 하나로 Plan &rarr; Build 전체가 자동 실행될 수 있습니다.
+        <code>/u-build</code> 실행 시 Plan 문서 없으면 &rarr; <code>/u-plan</code> 자동 호출. <code>/u-dev</code>는 Design 문서 없으면 &rarr; <code>/u-design</code> 자동 호출.<br>
+        즉, <code>/u-build</code> 하나로 Plan &rarr; Build 전체가 자동 실행될 수 있습니다.
       </div>
 
       <!-- 3.2 Reverse Engineering -->
       <h3 style="font-size:15px;font-weight:700;margin:28px 0 12px;color:var(--text)">3.2 Reverse Engineering (기존 프로젝트)</h3>
       <p class="section-desc">이미 코드가 있지만 SSoT 문서가 없는 프로젝트를 위한 워크플로우입니다.</p>
 
-      <div class="code-block"><pre style="margin:0;white-space:pre;overflow-x:auto"><span class="comment"># 1. 프로젝트 초기화 (/um-init 은 /um-prepare 별칭)</span>
-<span class="cmd">/um-prepare</span> my-existing-app
+      <div class="code-block"><pre style="margin:0;white-space:pre;overflow-x:auto"><span class="comment"># 1. 프로젝트 초기화 (/u-init 은 /u-prepare 별칭)</span>
+<span class="cmd">/u-prepare</span> my-existing-app
 
 <span class="comment"># 2. 소스 코드 → digest 역공학</span>
-<span class="cmd">/um-reverse</span> <span class="flag">--app</span> my-app              <span class="comment"># Code → digest → Plan → Build 전체 역생성</span>
-<span class="cmd">/um-reverse</span> <span class="flag">--app</span> my-app <span class="flag">--db</span> prisma/  <span class="comment"># DB 스키마 경로 수동 지정</span>
-<span class="cmd">/um-reverse</span> <span class="flag">--app</span> my-app <span class="flag">--loop</span>       <span class="comment"># Gatekeeper 검증 포함 (기본 N=5)</span>
+<span class="cmd">/u-reverse</span> <span class="flag">--app</span> my-app              <span class="comment"># Code → digest → Plan → Build 전체 역생성</span>
+<span class="cmd">/u-reverse</span> <span class="flag">--app</span> my-app <span class="flag">--db</span> prisma/  <span class="comment"># DB 스키마 경로 수동 지정</span>
+<span class="cmd">/u-reverse</span> <span class="flag">--app</span> my-app <span class="flag">--loop</span>       <span class="comment"># Gatekeeper 검증 포함 (기본 N=5)</span>
 
 <span class="comment"># 3. Plan → Build 파이프라인 진행</span>
-<span class="cmd">/um-plan</span> <span class="flag">--app</span> my-app
-<span class="cmd">/um-build</span> <span class="flag">--app</span> my-app
+<span class="cmd">/u-plan</span> <span class="flag">--app</span> my-app
+<span class="cmd">/u-build</span> <span class="flag">--app</span> my-app
 
 <span class="comment"># 4. v3.x PDCA 프로젝트 마이그레이션 (docs/{app}/check/ → gatekeeping/)</span>
-<span class="cmd">/um-prepare-foldertree</span> <span class="flag">--app</span> my-app <span class="flag">--migrate</span></pre></div>
+<span class="cmd">/u-prepare-foldertree</span> <span class="flag">--app</span> my-app <span class="flag">--migrate</span></pre></div>
 
       <!-- 3.3 자연어 -->
       <h3 style="font-size:15px;font-weight:700;margin:28px 0 12px;color:var(--text)">3.3 자연어로 시작하기</h3>
       <p class="section-desc">명령어를 몰라도 자연어로 말하면 PM Agent가 자동으로 적절한 커맨드로 라우팅합니다.</p>
 
       <div class="code-block"><pre style="margin:0;white-space:pre;overflow-x:auto"><span class="comment"># 자연어 예시</span>
-"쇼핑몰 프로젝트 시작해줘"          <span class="comment"># → /um-prepare + /um-plan 자동 라우팅</span>
-"ERD 만들어줘"                     <span class="comment"># → /um-build --only erd (또는 /um-design --only erd)</span>
-"테스트 돌려줘"                    <span class="comment"># → /um-gatekeeping (또는 /um-qa)</span>
-"이 코드 분석해서 문서 만들어줘"     <span class="comment"># → /um-reverse</span>
-"Figma 파일 분석해줘"              <span class="comment"># → /um-tools-figma</span>
-"배포 준비해줘"                    <span class="comment"># → /um-deploy</span></pre></div>
+"쇼핑몰 프로젝트 시작해줘"          <span class="comment"># → /u-prepare + /u-plan 자동 라우팅</span>
+"ERD 만들어줘"                     <span class="comment"># → /u-build --only erd (또는 /u-design --only erd)</span>
+"테스트 돌려줘"                    <span class="comment"># → /u-gatekeeping (또는 /u-qa)</span>
+"이 코드 분석해서 문서 만들어줘"     <span class="comment"># → /u-reverse</span>
+"Figma 파일 분석해줘"              <span class="comment"># → /u-tools-figma</span>
+"배포 준비해줘"                    <span class="comment"># → /u-deploy</span></pre></div>
 
       <div class="highlight-box purple">
         <strong>Tip:</strong> 자연어 라우팅이 작동하지 않으면 슬래시 커맨드를 직접 사용하세요. PM Agent는 26개 스킬(별칭 3개 포함)을 모두 인지합니다.
@@ -583,17 +583,17 @@
       <div class="feature-cards">
         <div class="feature-card">
           <h3>Auto <span class="badge badge-blue">default</span></h3>
-          <p><code>/um-plan [app]</code> &mdash; 플래그 없으면 auto. 빠르게 진행하며, 판단이 필요한 사항은 Assumptions Log에 기록합니다.<br>
+          <p><code>/u-plan [app]</code> &mdash; 플래그 없으면 auto. 빠르게 진행하며, 판단이 필요한 사항은 Assumptions Log에 기록합니다.<br>
           <strong>적합:</strong> 빠른 프로토타이핑, 야간 무인 실행, 반복 작업</p>
         </div>
         <div class="feature-card green">
           <h3>Interactive <span class="badge badge-green">-i</span></h3>
-          <p><code>/um-plan [app] -i</code> &mdash; 분기점에서 사용자에게 질문합니다.<br>
+          <p><code>/u-plan [app] -i</code> &mdash; 분기점에서 사용자에게 질문합니다.<br>
           <strong>적합:</strong> 중요 설계 결정이 필요할 때, 첫 번째 프로젝트 setup</p>
         </div>
         <div class="feature-card purple">
           <h3>Step <span class="badge badge-purple">--step</span></h3>
-          <p><code>/um-plan [app] --step</code> &mdash; 매 단계마다 확인을 요청합니다.<br>
+          <p><code>/u-plan [app] --step</code> &mdash; 매 단계마다 확인을 요청합니다.<br>
           <strong>적합:</strong> 학습 목적, 산출물 품질 세부 검토, 디버깅</p>
         </div>
       </div>
@@ -611,42 +611,42 @@
         <div class="feature-card">
           <h3>기획자 (PM)</h3>
           <ul>
-            <li><code>/um-prepare [app] -i</code> &mdash; 준비 umbrella</li>
-            <li><code>/um-plan [app] -i</code> &mdash; SRS + IA</li>
-            <li><code>/um-analyze [app]</code> &mdash; dropzone → digest</li>
-            <li><code>/um-discuss brainstorm "UX"</code> &mdash; 아이디어 토론</li>
-            <li><code>/um-tools-figma &lt;url&gt;</code> &mdash; Figma 소스 분석</li>
-            <li><code>/um-report-daily</code> &mdash; 일일 리포트</li>
+            <li><code>/u-prepare [app] -i</code> &mdash; 준비 umbrella</li>
+            <li><code>/u-plan [app] -i</code> &mdash; SRS + IA</li>
+            <li><code>/u-analyze [app]</code> &mdash; dropzone → digest</li>
+            <li><code>/u-discuss brainstorm "UX"</code> &mdash; 아이디어 토론</li>
+            <li><code>/u-tools-figma &lt;url&gt;</code> &mdash; Figma 소스 분석</li>
+            <li><code>/u-report-daily</code> &mdash; 일일 리포트</li>
           </ul>
         </div>
         <div class="feature-card green">
           <h3>디자이너 (UX)</h3>
           <ul>
-            <li><code>/um-design [app]</code> &mdash; ERD + API + Screens + DS</li>
-            <li><code>/um-design [app] --only screens</code> &mdash; Screen만</li>
-            <li><code>/um-wireframe [app] --all</code> &mdash; 와이어프레임</li>
-            <li><code>/um-tools-figma &lt;url&gt;</code> &mdash; Figma 분석 / variants / tokens</li>
-            <li><code>/um-discuss workshop "메인 IA"</code> &mdash; 워크숍</li>
+            <li><code>/u-design [app]</code> &mdash; ERD + API + Screens + DS</li>
+            <li><code>/u-design [app] --only screens</code> &mdash; Screen만</li>
+            <li><code>/u-wireframe [app] --all</code> &mdash; 와이어프레임</li>
+            <li><code>/u-tools-figma &lt;url&gt;</code> &mdash; Figma 분석 / variants / tokens</li>
+            <li><code>/u-discuss workshop "메인 IA"</code> &mdash; 워크숍</li>
           </ul>
         </div>
         <div class="feature-card yellow">
           <h3>개발자 (Dev)</h3>
           <ul>
-            <li><code>/um-build [app]</code> &mdash; Design ↔ Dev 오케스트레이션</li>
-            <li><code>/um-dev [app] --only fe|be|db</code> &mdash; 선택 레이어</li>
-            <li><code>/um-reverse [app]</code> &mdash; 코드 역공학</li>
-            <li><code>/um-deploy [app]</code> &mdash; CI/CD 배포</li>
-            <li><code>/um-tools-git-pr</code> &mdash; PR 자동 생성</li>
+            <li><code>/u-build [app]</code> &mdash; Design ↔ Dev 오케스트레이션</li>
+            <li><code>/u-dev [app] --only fe|be|db</code> &mdash; 선택 레이어</li>
+            <li><code>/u-reverse [app]</code> &mdash; 코드 역공학</li>
+            <li><code>/u-deploy [app]</code> &mdash; CI/CD 배포</li>
+            <li><code>/u-tools-git-pr</code> &mdash; PR 자동 생성</li>
           </ul>
         </div>
         <div class="feature-card purple">
           <h3>QA (테스터)</h3>
           <ul>
-            <li><code>/um-gatekeeping [app]</code> &mdash; 문서+QA 통합 (별칭 <code>/um-check</code>)</li>
-            <li><code>/um-qa [app]</code> &mdash; 런타임 테스트만</li>
-            <li><code>/um-gatekeeping --loop 11</code> &mdash; 전체 11 criteria</li>
-            <li><code>/um-deploy --loop</code> &mdash; deploy-gate ≥98</li>
-            <li><code>/um-report-weekly</code> &mdash; 주간 리포트</li>
+            <li><code>/u-gatekeeping [app]</code> &mdash; 문서+QA 통합 (별칭 <code>/u-check</code>)</li>
+            <li><code>/u-qa [app]</code> &mdash; 런타임 테스트만</li>
+            <li><code>/u-gatekeeping --loop 11</code> &mdash; 전체 11 criteria</li>
+            <li><code>/u-deploy --loop</code> &mdash; deploy-gate ≥98</li>
+            <li><code>/u-report-weekly</code> &mdash; 주간 리포트</li>
           </ul>
         </div>
       </div>
@@ -664,39 +664,39 @@
           <thead><tr><th style="width:170px">Command</th><th>설명</th><th>예제</th></tr></thead>
           <tbody>
             <tr>
-              <td class="col-abbr">/um-prepare<br><span class="badge badge-gray">alias: /um-init</span></td>
-              <td class="col-desc">준비 umbrella &mdash; foldertree + dropzone + analyze/reverse + 요구사항 협의. Figma 소스 감지 시 <code>/um-tools-figma</code> 자동 위임</td>
-              <td><code>/um-prepare my-saas</code><br><code>/um-init my-saas</code></td>
+              <td class="col-abbr">/u-prepare<br><span class="badge badge-gray">alias: /u-init</span></td>
+              <td class="col-desc">준비 umbrella &mdash; foldertree + dropzone + analyze/reverse + 요구사항 협의. Figma 소스 감지 시 <code>/u-tools-figma</code> 자동 위임</td>
+              <td><code>/u-prepare my-saas</code><br><code>/u-init my-saas</code></td>
             </tr>
             <tr>
-              <td class="col-abbr">/um-prepare-foldertree</td>
+              <td class="col-abbr">/u-prepare-foldertree</td>
               <td class="col-desc">.u-maker/ 폴더/state 스캐폴딩만. <code>--migrate</code>로 v3.x PDCA → v4.x PBGD 리네임 (<code>check/</code> → <code>gatekeeping/</code>)</td>
-              <td><code>/um-prepare-foldertree my-app</code><br><code>/um-prepare-foldertree my-app --migrate</code></td>
+              <td><code>/u-prepare-foldertree my-app</code><br><code>/u-prepare-foldertree my-app --migrate</code></td>
             </tr>
             <tr>
-              <td class="col-abbr">/um-createproject</td>
-              <td class="col-desc">Turborepo + Bun 모노레포 프로젝트 스캐폴딩. workspace 공유 설정, <code>/um-prepare</code> 자동 실행 포함</td>
-              <td><code>/um-createproject my-app</code></td>
+              <td class="col-abbr">/u-createproject</td>
+              <td class="col-desc">Turborepo + Bun 모노레포 프로젝트 스캐폴딩. workspace 공유 설정, <code>/u-prepare</code> 자동 실행 포함</td>
+              <td><code>/u-createproject my-app</code></td>
             </tr>
             <tr>
-              <td class="col-abbr">/um-analyze</td>
-              <td class="col-desc">Dropzone → digest (12 카테고리). 기존 <code>/um-plan</code>의 Step 1–2에서 분리</td>
-              <td><code>/um-analyze --app myapp</code></td>
+              <td class="col-abbr">/u-analyze</td>
+              <td class="col-desc">Dropzone → digest (12 카테고리). 기존 <code>/u-plan</code>의 Step 1–2에서 분리</td>
+              <td><code>/u-analyze --app myapp</code></td>
             </tr>
             <tr>
-              <td class="col-abbr">/um-reverse</td>
+              <td class="col-abbr">/u-reverse</td>
               <td class="col-desc">기존 코드 → digest 역공학. <code>--src</code>, <code>--db</code>, <code>--api</code>, <code>--pages</code> 경로 지정 가능</td>
-              <td><code>/um-reverse --app myapp</code><br><code>/um-reverse --app myapp --db prisma/</code><br><code>/um-reverse --app myapp --loop</code></td>
+              <td><code>/u-reverse --app myapp</code><br><code>/u-reverse --app myapp --db prisma/</code><br><code>/u-reverse --app myapp --loop</code></td>
             </tr>
             <tr>
-              <td class="col-abbr">/um-plan</td>
+              <td class="col-abbr">/u-plan</td>
               <td class="col-desc">Digest → SRS + IA 생성 (+ 선택적 wireframe). 4-Tier ID 체계 수립</td>
-              <td><code>/um-plan --app myapp</code><br><code>/um-plan --app myapp -i</code></td>
+              <td><code>/u-plan --app myapp</code><br><code>/u-plan --app myapp -i</code></td>
             </tr>
             <tr>
-              <td class="col-abbr">/um-wireframe</td>
+              <td class="col-abbr">/u-wireframe</td>
               <td class="col-desc">Screen spec 기반 화면별 HTML 와이어프레임 생성 (6-Section 템플릿 + ERD, Sequence, ScreenFlow)</td>
-              <td><code>/um-wireframe --app myapp --all</code><br><code>/um-wireframe --app myapp --screen SCR-001</code></td>
+              <td><code>/u-wireframe --app myapp --all</code><br><code>/u-wireframe --app myapp --screen SCR-001</code></td>
             </tr>
           </tbody>
         </table>
@@ -709,19 +709,19 @@
           <thead><tr><th style="width:170px">Command</th><th>설명</th><th>예제</th></tr></thead>
           <tbody>
             <tr>
-              <td class="col-abbr">/um-build</td>
+              <td class="col-abbr">/u-build</td>
               <td class="col-desc">Build 오케스트레이터. Design ↔ Dev ping-pong으로 Design Final + code-complete까지 반복</td>
-              <td><code>/um-build --app myapp</code><br><code>/um-build --app myapp --loop</code></td>
+              <td><code>/u-build --app myapp</code><br><code>/u-build --app myapp --loop</code></td>
             </tr>
             <tr>
-              <td class="col-abbr">/um-design</td>
+              <td class="col-abbr">/u-design</td>
               <td class="col-desc">SRS/IA → ERD + API Contract + Screens + Design System 생성. Figma digest의 reduced path는 warning 처리</td>
-              <td><code>/um-design --app myapp</code><br><code>/um-design --app myapp --only erd</code></td>
+              <td><code>/u-design --app myapp</code><br><code>/u-design --app myapp --only erd</code></td>
             </tr>
             <tr>
-              <td class="col-abbr">/um-dev</td>
+              <td class="col-abbr">/u-dev</td>
               <td class="col-desc">설계 명세 기반 FE+BE+DB 코드 생성. Screen→컴포넌트, API→Route Handler, ERD→DB Schema. Spec-Sync 100% 커버리지</td>
-              <td><code>/um-dev --app myapp</code><br><code>/um-dev --app myapp --only fe|be|db</code></td>
+              <td><code>/u-dev --app myapp</code><br><code>/u-dev --app myapp --only fe|be|db</code></td>
             </tr>
           </tbody>
         </table>
@@ -734,19 +734,19 @@
           <thead><tr><th style="width:170px">Command</th><th>설명</th><th>예제</th></tr></thead>
           <tbody>
             <tr>
-              <td class="col-abbr">/um-gatekeeping</td>
+              <td class="col-abbr">/u-gatekeeping</td>
               <td class="col-desc">문서 scoring(11 criteria, pass ≥95) + 런타임 QA(TC + Test Results 통합)</td>
-              <td><code>/um-gatekeeping --app myapp</code><br><code>/um-gatekeeping --app myapp --loop 11</code></td>
+              <td><code>/u-gatekeeping --app myapp</code><br><code>/u-gatekeeping --app myapp --loop 11</code></td>
             </tr>
             <tr>
-              <td class="col-abbr">/um-check<br><span class="badge badge-gray">alias</span></td>
-              <td class="col-desc">alias → <code>/um-gatekeeping</code> (backward-compat with v3.x PDCA)</td>
-              <td><code>/um-check --app myapp</code></td>
+              <td class="col-abbr">/u-check<br><span class="badge badge-gray">alias</span></td>
+              <td class="col-desc">alias → <code>/u-gatekeeping</code> (backward-compat with v3.x PDCA)</td>
+              <td><code>/u-check --app myapp</code></td>
             </tr>
             <tr>
-              <td class="col-abbr">/um-qa<br><span class="badge badge-gray">alias</span></td>
-              <td class="col-desc">alias → <code>/um-gatekeeping --only qa</code> (런타임 테스트만)</td>
-              <td><code>/um-qa --app myapp</code></td>
+              <td class="col-abbr">/u-qa<br><span class="badge badge-gray">alias</span></td>
+              <td class="col-desc">alias → <code>/u-gatekeeping --only qa</code> (런타임 테스트만)</td>
+              <td><code>/u-qa --app myapp</code></td>
             </tr>
           </tbody>
         </table>
@@ -759,45 +759,45 @@
           <thead><tr><th style="width:170px">Command</th><th>설명</th><th>예제</th></tr></thead>
           <tbody>
             <tr>
-              <td class="col-abbr">/um-deploy</td>
+              <td class="col-abbr">/u-deploy</td>
               <td class="col-desc">대화형 타겟(GitHub Actions / Vercel / Docker) + 아티팩트 선택. Deploy-gate ≥98. SSoT drift 시 continuous regeneration</td>
-              <td><code>/um-deploy --app myapp</code><br><code>/um-deploy --app myapp --loop</code></td>
+              <td><code>/u-deploy --app myapp</code><br><code>/u-deploy --app myapp --loop</code></td>
             </tr>
           </tbody>
         </table>
       </div>
 
-      <!-- External-tool Skills (um-tools-*) -->
-      <h3 style="font-size:14px;font-weight:700;margin:20px 0 8px;color:var(--text)">External-tool Skills (5) &mdash; <code>um-tools-*</code> namespace</h3>
+      <!-- External-tool Skills (u-tools-*) -->
+      <h3 style="font-size:14px;font-weight:700;margin:20px 0 8px;color:var(--text)">External-tool Skills (5) &mdash; <code>u-tools-*</code> namespace</h3>
       <p style="font-size:12px;color:var(--text-secondary);margin-bottom:8px">외부 프로그램/서비스 래퍼. phase skill은 이 스킬들을 경유해야 하며, MCP/CLI 직접 호출은 금지.</p>
       <div class="data-table-wrap">
         <table class="data-table">
           <thead><tr><th style="width:170px">Command</th><th>설명</th><th>예제</th></tr></thead>
           <tbody>
             <tr>
-              <td class="col-abbr">/um-tools-figma</td>
-              <td class="col-desc">Figma <strong>분석(read-only)</strong> &mdash; pages + variants + assets + components + comments + semantics. <code>/um-prepare</code>, <code>/um-analyze</code>, <code>/um-reverse</code>, <code>/um-build</code>에서 자동 위임. <strong>v4.0.0-alpha.25: reduced extraction path</strong></td>
-              <td><code>/um-tools-figma &lt;figma-url&gt;</code><br><code>/um-tools-figma &lt;url&gt; --app myapp</code></td>
+              <td class="col-abbr">/u-tools-figma</td>
+              <td class="col-desc">Figma <strong>분석(read-only)</strong> &mdash; pages + variants + assets + components + comments + semantics. <code>/u-prepare</code>, <code>/u-analyze</code>, <code>/u-reverse</code>, <code>/u-build</code>에서 자동 위임. <strong>v4.0.0-alpha.25: reduced extraction path</strong></td>
+              <td><code>/u-tools-figma &lt;figma-url&gt;</code><br><code>/u-tools-figma &lt;url&gt; --app myapp</code></td>
             </tr>
             <tr>
-              <td class="col-abbr">/um-tools-figma-screen</td>
-              <td class="col-desc">화면기획 <strong>생성(writer)</strong> &mdash; (Figma URL │ screens.md+json) + (Figma DS URL │ design-system.md+json+tsx+css) → Figma frames + screens.md+json. <code>figma:figma-generate-design</code>에 위임. <code>/um-plan</code> Step 2.5 자동, <code>/um-design</code> Step 4.5 opt-in</td>
-              <td><code>/um-tools-figma-screen --app myapp --output md</code><br><code>/um-tools-figma-screen --app myapp --output both --prefer figma</code></td>
+              <td class="col-abbr">/u-tools-figma-screen</td>
+              <td class="col-desc">화면기획 <strong>생성(writer)</strong> &mdash; (Figma URL │ screens.md+json) + (Figma DS URL │ design-system.md+json+tsx+css) → Figma frames + screens.md+json. <code>figma:figma-generate-design</code>에 위임. <code>/u-plan</code> Step 2.5 자동, <code>/u-design</code> Step 4.5 opt-in</td>
+              <td><code>/u-tools-figma-screen --app myapp --output md</code><br><code>/u-tools-figma-screen --app myapp --output both --prefer figma</code></td>
             </tr>
             <tr>
-              <td class="col-abbr">/um-tools-figma-ds</td>
-              <td class="col-desc">Figma 디자인시스템 <strong>생성(writer)</strong> &mdash; DS-applied 소스코드(.tsx + .json + .css) → Figma DS (Variables + 모드 + 스타일 + 마스터 컴포넌트). <code>figma:figma-generate-library</code>에 위임. <code>/um-analyze</code> Step 2.4 자동(DS code 감지), <code>/um-design</code> Step 4.5 opt-in</td>
-              <td><code>/um-tools-figma-ds --app myapp --source ./packages/ui-*</code><br><code>/um-tools-figma-ds --app myapp --theme both --auto</code></td>
+              <td class="col-abbr">/u-tools-figma-ds</td>
+              <td class="col-desc">Figma 디자인시스템 <strong>생성(writer)</strong> &mdash; DS-applied 소스코드(.tsx + .json + .css) → Figma DS (Variables + 모드 + 스타일 + 마스터 컴포넌트). <code>figma:figma-generate-library</code>에 위임. <code>/u-analyze</code> Step 2.4 자동(DS code 감지), <code>/u-design</code> Step 4.5 opt-in</td>
+              <td><code>/u-tools-figma-ds --app myapp --source ./packages/ui-*</code><br><code>/u-tools-figma-ds --app myapp --theme both --auto</code></td>
             </tr>
             <tr>
-              <td class="col-abbr">/um-tools-browser</td>
-              <td class="col-desc">통합 브라우저 엔진 &mdash; agent-browser CLI → Playwright MCP → chrome-devtools MCP 순서. E2E 테스트, 화면 캡처, 비주얼 검증, 와이어프레임 프리뷰. <code>/um-gatekeeping</code> / <code>/um-report-weekly</code> / <code>/um-dev --verify</code> / <code>/um-wireframe --preview</code>에서 위임. <strong>9-step 프로토콜</strong> 제공</td>
-              <td><code>/um-tools-browser --app myapp</code><br><code>/um-tools-browser --auto --headless</code></td>
+              <td class="col-abbr">/u-tools-browser</td>
+              <td class="col-desc">통합 브라우저 엔진 &mdash; agent-browser CLI → Playwright MCP → chrome-devtools MCP 순서. E2E 테스트, 화면 캡처, 비주얼 검증, 와이어프레임 프리뷰. <code>/u-gatekeeping</code> / <code>/u-report-weekly</code> / <code>/u-dev --verify</code> / <code>/u-wireframe --preview</code>에서 위임. <strong>9-step 프로토콜</strong> 제공</td>
+              <td><code>/u-tools-browser --app myapp</code><br><code>/u-tools-browser --auto --headless</code></td>
             </tr>
             <tr>
-              <td class="col-abbr">/um-tools-git-pr</td>
+              <td class="col-abbr">/u-tools-git-pr</td>
               <td class="col-desc">PR/MR 자동 생성 &mdash; 변경사항 분석 + 커밋 그루핑 + 구조화된 PR body + 리뷰 가이드. <strong>v5.1 Completeness Policy</strong> (alpha.16~): Step 5.5 안전망이 working tree를 비울 때까지 책임 &mdash; <code>.gitignore</code> 파일 자동 제외, 남은 파일은 misc PR로 자동 commit. 테이블 기반 확인 프롬프트</td>
-              <td><code>/um-tools-git-pr</code><br><code>/um-tools-git-pr --base main</code><br><code>/um-tools-git-pr --dry-run</code></td>
+              <td><code>/u-tools-git-pr</code><br><code>/u-tools-git-pr --base main</code><br><code>/u-tools-git-pr --dry-run</code></td>
             </tr>
           </tbody>
         </table>
@@ -813,17 +813,17 @@
             <tr>
               <td class="col-abbr"><code>fe-rules.md</code></td>
               <td class="col-desc">Vercel Labs <a href="https://github.com/vercel-labs/agent-skills" target="_blank">agent-skills</a> &mdash; react-best-practices (70) + composition-patterns (9)</td>
-              <td><code>/um-dev</code> Step 1 (FE 생성). §0 MUST-APPLY 15개 강제</td>
+              <td><code>/u-dev</code> Step 1 (FE 생성). §0 MUST-APPLY 15개 강제</td>
             </tr>
             <tr>
               <td class="col-abbr"><code>design-system-rules.md</code></td>
               <td class="col-desc"><a href="https://github.com/dylantarre/design-system-skills" target="_blank">dylantarre/design-system-skills</a> &mdash; 28 skills (tokens 10 / patterns 5 / a11y 3 / frameworks 4 / tools 4 / docs 2)</td>
-              <td><code>/um-design</code> Step 4 (DS HTML-first), <code>/um-build</code> Step 3 (ping-pong gap routing)</td>
+              <td><code>/u-design</code> Step 4 (DS HTML-first), <code>/u-build</code> Step 3 (ping-pong gap routing)</td>
             </tr>
             <tr>
               <td class="col-abbr">Browser 9-step</td>
               <td class="col-desc"><a href="https://github.com/EveryInc/compound-engineering-plugin" target="_blank">EveryInc/compound-engineering-plugin</a> &mdash; <code>test-browser</code> 패턴</td>
-              <td><code>/um-tools-browser</code> 내부 프로토콜</td>
+              <td><code>/u-tools-browser</code> 내부 프로토콜</td>
             </tr>
           </tbody>
         </table>
@@ -836,27 +836,27 @@
           <thead><tr><th style="width:170px">Command</th><th>설명</th><th>예제</th></tr></thead>
           <tbody>
             <tr>
-              <td class="col-abbr">/um-output<br><span class="badge badge-gray">alias: /um-html</span></td>
+              <td class="col-abbr">/u-output<br><span class="badge badge-gray">alias: /u-html</span></td>
               <td class="col-desc">SSoT 문서(.md+.json)를 독립 실행형 HTML로 렌더링. 브라우저에서 바로 열람</td>
-              <td><code>/um-output --app myapp</code><br><code>/um-output --diagram svg</code></td>
+              <td><code>/u-output --app myapp</code><br><code>/u-output --diagram svg</code></td>
             </tr>
             <tr>
-              <td class="col-abbr">/um-report-daily</td>
+              <td class="col-abbr">/u-report-daily</td>
               <td class="col-desc">일일 리포트 &mdash; git + 회의 + 통계 기반</td>
-              <td><code>/um-report-daily</code></td>
+              <td><code>/u-report-daily</code></td>
             </tr>
             <tr>
-              <td class="col-abbr">/um-report-weekly</td>
+              <td class="col-abbr">/u-report-weekly</td>
               <td class="col-desc">주간 리포트 &mdash; 트렌드 + SVG 차트 포함</td>
-              <td><code>/um-report-weekly</code></td>
+              <td><code>/u-report-weekly</code></td>
             </tr>
             <tr>
-              <td class="col-abbr">/um-reports-roadmap</td>
+              <td class="col-abbr">/u-reports-roadmap</td>
               <td class="col-desc">코드+git 분석 &rarr; 편집형 인터랙티브 간트 로드맵 (스코프 분석 + 팀 capacity 추정 + 위험 분석)</td>
-              <td><code>/um-reports-roadmap --deadline 2026-08-11</code></td>
+              <td><code>/u-reports-roadmap --deadline 2026-08-11</code></td>
             </tr>
             <tr>
-              <td class="col-abbr">/um-engine</td>
+              <td class="col-abbr">/u-engine</td>
               <td class="col-desc">내부 인프라 스킬 &mdash; doc/html/dep/digest/router 통합 엔진. <span class="badge badge-red">사용자 직접 호출 불가</span></td>
               <td>&mdash;</td>
             </tr>
@@ -871,19 +871,19 @@
           <thead><tr><th style="width:170px">Command</th><th>설명</th><th>예제</th></tr></thead>
           <tbody>
             <tr>
-              <td class="col-abbr">/um-loop</td>
+              <td class="col-abbr">/u-loop</td>
               <td class="col-desc">무인 PBGD 자동 실행. Plan → Build → Gatekeeping → Deploy 연속 실행. 체크포인트 기반 재개, 에러 자동 복구</td>
-              <td><code>/um-loop --app myapp</code><br><code>/um-loop --app myapp --from plan --to gatekeeping</code><br><code>/um-loop --app myapp --dry-run</code></td>
+              <td><code>/u-loop --app myapp</code><br><code>/u-loop --app myapp --from plan --to gatekeeping</code><br><code>/u-loop --app myapp --dry-run</code></td>
             </tr>
             <tr>
-              <td class="col-abbr">/um-discuss</td>
+              <td class="col-abbr">/u-discuss</td>
               <td class="col-desc">구조화된 토론 세션. brainstorm/review/decision/workshop/retro 5가지 유형. 결과를 SSoT에 반영</td>
-              <td><code>/um-discuss brainstorm "결제 UX"</code><br><code>/um-discuss decision "DB 선택"</code></td>
+              <td><code>/u-discuss brainstorm "결제 UX"</code><br><code>/u-discuss decision "DB 선택"</code></td>
             </tr>
             <tr>
-              <td class="col-abbr">/um-init<br><span class="badge badge-gray">alias</span></td>
-              <td class="col-desc">alias → <code>/um-prepare</code> (backward-compat with v3.x). 신규 프로젝트는 <code>/um-createproject</code> 또는 <code>/um-prepare</code> 사용 권장</td>
-              <td><code>/um-init my-saas</code></td>
+              <td class="col-abbr">/u-init<br><span class="badge badge-gray">alias</span></td>
+              <td class="col-desc">alias → <code>/u-prepare</code> (backward-compat with v3.x). 신규 프로젝트는 <code>/u-createproject</code> 또는 <code>/u-prepare</code> 사용 권장</td>
+              <td><code>/u-init my-saas</code></td>
             </tr>
           </tbody>
         </table>
@@ -897,34 +897,34 @@
           <thead><tr><th style="width:170px">Command</th><th>설명</th><th>예제</th></tr></thead>
           <tbody>
             <tr>
-              <td class="col-abbr">/um-doc<br><span class="badge badge-gray">alias: /um-ssot</span></td>
+              <td class="col-abbr">/u-doc<br><span class="badge badge-gray">alias: /u-ssot</span></td>
               <td class="col-desc"><strong>Ingest</strong> &mdash; 파일/이미지/링크/텍스트를 <code>data/dropzone/</code>로 정규화 + digest 생성 + 배치 위치 제안 (SSoT 직접 수정 안 함). <strong>Reorg</strong>(<code>--reorg</code>) &mdash; 잘못 놓인 <code>docs/</code> 파일 이동·리네임 (git mv + <code>links.json</code>) + <code>output/</code>·<code>reports/</code> 재생성</td>
-              <td><code>/um-doc ./spec.pdf --app myapp</code><br><code>/um-doc --reorg --dry-run</code></td>
+              <td><code>/u-doc ./spec.pdf --app myapp</code><br><code>/u-doc --reorg --dry-run</code></td>
             </tr>
             <tr>
-              <td class="col-abbr">/um-ssot<br><span class="badge badge-gray">alias</span></td>
-              <td class="col-desc">alias → <code>/um-doc</code> (동일 스킬, 모든 인자 그대로 전달)</td>
-              <td><code>/um-ssot --reorg</code></td>
+              <td class="col-abbr">/u-ssot<br><span class="badge badge-gray">alias</span></td>
+              <td class="col-desc">alias → <code>/u-doc</code> (동일 스킬, 모든 인자 그대로 전달)</td>
+              <td><code>/u-ssot --reorg</code></td>
             </tr>
           </tbody>
         </table>
       </div>
 
       <!-- ═══════════════════════════════════════════════════════════ -->
-      <!--  PART 7. /um-discuss 협업 세션                              -->
+      <!--  PART 7. /u-discuss 협업 세션                              -->
       <!-- ═══════════════════════════════════════════════════════════ -->
-      <div class="section-divider" id="discuss"><h2>07. /um-discuss 협업 세션</h2></div>
+      <div class="section-divider" id="discuss"><h2>07. /u-discuss 협업 세션</h2></div>
       <p class="section-desc">다자간 토론 세션으로 구조화된 협업을 수행하고, 결과를 SSoT에 자동 반영합니다.</p>
 
       <div class="data-table-wrap">
         <table class="data-table">
           <thead><tr><th style="width:120px">타입</th><th>용도</th><th>예시</th></tr></thead>
           <tbody>
-            <tr><td class="col-term">brainstorm</td><td class="col-desc">아이디어 발산. 자유로운 제안 수집</td><td><code>/um-discuss brainstorm "결제 UX"</code></td></tr>
-            <tr><td class="col-term">review</td><td class="col-desc">산출물 검토. SSoT 문서 품질 리뷰</td><td><code>/um-discuss review</code></td></tr>
-            <tr><td class="col-term">decision</td><td class="col-desc">기술/비즈니스 의사결정. 선택지 비교 + 결정</td><td><code>/um-discuss decision "DB 선택"</code></td></tr>
-            <tr><td class="col-term">workshop</td><td class="col-desc">다단계 작업. 복잡한 주제를 단계별로 깊이 탐구</td><td><code>/um-discuss workshop "메인 화면"</code></td></tr>
-            <tr><td class="col-term">retro</td><td class="col-desc">Iteration 회고. 잘된 점/개선점/액션 아이템</td><td><code>/um-discuss retro</code></td></tr>
+            <tr><td class="col-term">brainstorm</td><td class="col-desc">아이디어 발산. 자유로운 제안 수집</td><td><code>/u-discuss brainstorm "결제 UX"</code></td></tr>
+            <tr><td class="col-term">review</td><td class="col-desc">산출물 검토. SSoT 문서 품질 리뷰</td><td><code>/u-discuss review</code></td></tr>
+            <tr><td class="col-term">decision</td><td class="col-desc">기술/비즈니스 의사결정. 선택지 비교 + 결정</td><td><code>/u-discuss decision "DB 선택"</code></td></tr>
+            <tr><td class="col-term">workshop</td><td class="col-desc">다단계 작업. 복잡한 주제를 단계별로 깊이 탐구</td><td><code>/u-discuss workshop "메인 화면"</code></td></tr>
+            <tr><td class="col-term">retro</td><td class="col-desc">Iteration 회고. 잘된 점/개선점/액션 아이템</td><td><code>/u-discuss retro</code></td></tr>
           </tbody>
         </table>
       </div>
@@ -953,36 +953,36 @@
       <div class="feature-cards">
         <div class="feature-card">
           <h3>Scenario 1: 새 프로젝트 처음부터 끝까지 (PBGD)</h3>
-          <p><code>/um-createproject my-saas</code> &rarr; <code>cd my-saas &amp;&amp; claude</code> &rarr; dropzone에 자료 드롭 &rarr; <code>/um-plan --app myapp</code> &rarr; <code>/um-build --app myapp</code> &rarr; <code>/um-gatekeeping --app myapp</code> &rarr; <code>/um-deploy --app myapp</code></p>
-          <div class="annotation"><code>/um-createproject</code>는 <code>/um-prepare</code>를 자동 포함합니다. 생성 후 새 폴더에서 Claude CLI를 재시작하세요.</div>
-          <div class="annotation"><strong>한 줄로:</strong> <code>/um-loop --app myapp</code> &mdash; 전체 PBGD 파이프라인 자동 실행</div>
+          <p><code>/u-createproject my-saas</code> &rarr; <code>cd my-saas &amp;&amp; claude</code> &rarr; dropzone에 자료 드롭 &rarr; <code>/u-plan --app myapp</code> &rarr; <code>/u-build --app myapp</code> &rarr; <code>/u-gatekeeping --app myapp</code> &rarr; <code>/u-deploy --app myapp</code></p>
+          <div class="annotation"><code>/u-createproject</code>는 <code>/u-prepare</code>를 자동 포함합니다. 생성 후 새 폴더에서 Claude CLI를 재시작하세요.</div>
+          <div class="annotation"><strong>한 줄로:</strong> <code>/u-loop --app myapp</code> &mdash; 전체 PBGD 파이프라인 자동 실행</div>
         </div>
         <div class="feature-card green">
           <h3>Scenario 2: 기존 프로젝트에 SSoT 도입</h3>
-          <p><code>/um-prepare my-app</code> (별칭 <code>/um-init</code>) &rarr; <code>/um-reverse --app myapp</code> &rarr; <code>/um-plan --app myapp</code> &rarr; <code>/um-build --app myapp</code> &rarr; <code>/um-gatekeeping --app myapp</code></p>
+          <p><code>/u-prepare my-app</code> (별칭 <code>/u-init</code>) &rarr; <code>/u-reverse --app myapp</code> &rarr; <code>/u-plan --app myapp</code> &rarr; <code>/u-build --app myapp</code> &rarr; <code>/u-gatekeeping --app myapp</code></p>
         </div>
         <div class="feature-card yellow">
           <h3>Scenario 3: Figma 소스 기반 설계</h3>
-          <p>Figma URL을 <code>.u-maker/data/dropzone/</code>에 드롭 &rarr; <code>/um-prepare --app myapp</code> (자동으로 <code>/um-tools-figma</code> 위임) &rarr; <code>/um-plan</code> &rarr; <code>/um-build</code></p>
+          <p>Figma URL을 <code>.u-maker/data/dropzone/</code>에 드롭 &rarr; <code>/u-prepare --app myapp</code> (자동으로 <code>/u-tools-figma</code> 위임) &rarr; <code>/u-plan</code> &rarr; <code>/u-build</code></p>
           <div class="annotation">v4.0.0-alpha.25은 reduced extraction path (<code>source.pipeline == "reduced"</code>). downstream은 <code>coverageWarnings[]</code>를 warning으로 처리합니다.</div>
         </div>
         <div class="feature-card purple">
           <h3>Scenario 4: PR 생성</h3>
-          <p><code>/um-tools-git-pr</code> &mdash; 현재 브랜치의 변경사항을 분석하여 커밋 그루핑 + 구조화된 PR body + 리뷰 가이드를 자동 생성합니다.</p>
+          <p><code>/u-tools-git-pr</code> &mdash; 현재 브랜치의 변경사항을 분석하여 커밋 그루핑 + 구조화된 PR body + 리뷰 가이드를 자동 생성합니다.</p>
         </div>
         <div class="feature-card red">
           <h3>Scenario 5: Phase Gate 미통과 대응</h3>
-          <p><code>/um-gatekeeping --loop 11</code> &rarr; FAIL (스코어카드 출력) &rarr; 미충족 항목 확인 &rarr; 해당 문서 수정 &rarr; 재실행</p>
-          <div class="annotation"><strong>예:</strong> IA 미완 &rarr; <code>/um-plan --app myapp --only ia</code> &rarr; <code>/um-gatekeeping --app myapp --loop</code></div>
+          <p><code>/u-gatekeeping --loop 11</code> &rarr; FAIL (스코어카드 출력) &rarr; 미충족 항목 확인 &rarr; 해당 문서 수정 &rarr; 재실행</p>
+          <div class="annotation"><strong>예:</strong> IA 미완 &rarr; <code>/u-plan --app myapp --only ia</code> &rarr; <code>/u-gatekeeping --app myapp --loop</code></div>
         </div>
         <div class="feature-card">
           <h3>Scenario 6: 야간 무인 실행</h3>
-          <p><code>/um-loop --app myapp</code> &mdash; 밤새 돌려놓으면 아침에 결과물을 확인할 수 있습니다.<br>
+          <p><code>/u-loop --app myapp</code> &mdash; 밤새 돌려놓으면 아침에 결과물을 확인할 수 있습니다.<br>
           <code>--from plan --to gatekeeping</code>으로 특정 구간만 지정 가능. 체크포인트 기반 재개 및 에러 자동 복구 지원.</p>
         </div>
         <div class="feature-card green">
           <h3>Scenario 7: v3.x PDCA → v4.x PBGD 마이그레이션</h3>
-          <p><code>/um-prepare-foldertree --app my-app --migrate</code> &mdash; <code>docs/{app}/check/</code>를 <code>gatekeeping/</code>으로 리네임. 기존 SSoT는 그대로 유지되며, 이후 <code>/um-build</code>, <code>/um-gatekeeping</code>, <code>/um-deploy</code>를 정상 사용 가능.</p>
+          <p><code>/u-prepare-foldertree --app my-app --migrate</code> &mdash; <code>docs/{app}/check/</code>를 <code>gatekeeping/</code>으로 리네임. 기존 SSoT는 그대로 유지되며, 이후 <code>/u-build</code>, <code>/u-gatekeeping</code>, <code>/u-deploy</code>를 정상 사용 가능.</p>
         </div>
       </div>
 
@@ -990,7 +990,7 @@
       <!--  PART 9. 폴더 구조 (.u-maker/)                            -->
       <!-- ═══════════════════════════════════════════════════════════ -->
       <div class="section-divider" id="folder"><h2>09. 폴더 구조 (PBGD)</h2></div>
-      <p class="section-desc"><code>/um-prepare</code> (별칭 <code>/um-init</code>) 또는 <code>/um-prepare-foldertree</code> 실행 시 생성되는 <code>.u-maker/</code> 디렉터리 구조입니다.</p>
+      <p class="section-desc"><code>/u-prepare</code> (별칭 <code>/u-init</code>) 또는 <code>/u-prepare-foldertree</code> 실행 시 생성되는 <code>.u-maker/</code> 디렉터리 구조입니다.</p>
 
       <div class="code-block"><pre style="margin:0;white-space:pre;overflow-x:auto"><span class="comment"># .u-maker/ 프로젝트 구조 (v4.0.0-alpha.25 PBGD)</span>
 .u-maker/
@@ -999,7 +999,7 @@
 │   ├── dropzone/                    <span class="comment"># Raw 파일 드롭존 (RFP, 회의록, Figma URL 등)</span>
 │   ├── digest/                      <span class="comment"># 분석 결과 (Structured JSON)</span>
 │   │   ├── _classified/             <span class="comment"># 12개 카테고리 분류 JSON</span>
-│   │   ├── figma/                   <span class="comment"># um-agent-figma 산출물 (source.pipeline 태깅)</span>
+│   │   ├── figma/                   <span class="comment"># u-agent-figma 산출물 (source.pipeline 태깅)</span>
 │   │   └── _index.json              <span class="comment"># 분석 인덱스</span>
 │   ├── deploy/
 │   │   └── manifest.json            <span class="comment"># Deploy manifest (sourceHashes, artifacts)</span>
@@ -1018,7 +1018,7 @@
 │   ├── gatekeeping/                 <span class="comment"># Gatekeeping 문서 HTML</span>
 │   └── deploy/                      <span class="comment"># Deploy runbook + release-notes + CI/CD 아티팩트</span>
 ├── <span class="cmd">reports/</span>                         <span class="comment"># Daily/Weekly 리포트</span>
-├── <span class="cmd">sessions/</span>                        <span class="comment"># /um-discuss 세션 기록</span>
+├── <span class="cmd">sessions/</span>                        <span class="comment"># /u-discuss 세션 기록</span>
 ├── <span class="cmd">backlog/</span>                         <span class="comment"># 백로그 항목</span>
 └── <span class="cmd">.state/</span>
     ├── loop-state.json              <span class="comment"># 루프 실행 상태 + 체크포인트</span>
@@ -1066,19 +1066,19 @@
       <ul class="decision-list">
         <li>
           <span class="decision-check">Q</span>
-          <div class="decision-body"><strong>명령어가 인식되지 않아요</strong><br><span>Claude Code를 재시작해보세요. 그래도 안 되면 <code>claude plugin add upleat-ax/umaker-plugin</code>으로 재설치하세요.</span></div>
+          <div class="decision-body"><strong>명령어가 인식되지 않아요</strong><br><span>Claude Code를 재시작해보세요. 그래도 안 되면 <code>claude plugin add upleat-ax/u-maker-plugin</code>으로 재설치하세요.</span></div>
         </li>
         <li>
           <span class="decision-check">Q</span>
-          <div class="decision-body"><strong>어떤 명령어를 써야 할지 모르겠어요</strong><br><span>자연어로 말하세요. PM Agent(<code>um-agent-pm</code>)가 26개 스킬(별칭 3개 포함) 중 가장 적합한 명령으로 자동 라우팅합니다.</span></div>
+          <div class="decision-body"><strong>어떤 명령어를 써야 할지 모르겠어요</strong><br><span>자연어로 말하세요. PM Agent(<code>u-agent-pm</code>)가 26개 스킬(별칭 3개 포함) 중 가장 적합한 명령으로 자동 라우팅합니다.</span></div>
         </li>
         <li>
           <span class="decision-check">Q</span>
-          <div class="decision-body"><strong>기존 프로젝트에 적용하려면?</strong><br><span><code>/um-prepare my-app</code> (별칭 <code>/um-init</code>) → <code>/um-reverse --app my-app</code>로 코드에서 digest를 역공학하세요. <code>--loop</code> 옵션으로 Gate 검증 포함 가능.</span></div>
+          <div class="decision-body"><strong>기존 프로젝트에 적용하려면?</strong><br><span><code>/u-prepare my-app</code> (별칭 <code>/u-init</code>) → <code>/u-reverse --app my-app</code>로 코드에서 digest를 역공학하세요. <code>--loop</code> 옵션으로 Gate 검증 포함 가능.</span></div>
         </li>
         <li>
           <span class="decision-check">Q</span>
-          <div class="decision-body"><strong>Figma 파일로 시작하고 싶어요</strong><br><span>Figma URL을 dropzone에 넣고 <code>/um-prepare</code>를 실행하세요. <code>/um-tools-figma</code>가 자동 위임됩니다. 또는 직접 <code>/um-tools-figma &lt;url&gt;</code>도 가능합니다. v4.0.0-alpha.25은 reduced extraction path를 사용합니다.</span></div>
+          <div class="decision-body"><strong>Figma 파일로 시작하고 싶어요</strong><br><span>Figma URL을 dropzone에 넣고 <code>/u-prepare</code>를 실행하세요. <code>/u-tools-figma</code>가 자동 위임됩니다. 또는 직접 <code>/u-tools-figma &lt;url&gt;</code>도 가능합니다. v4.0.0-alpha.25은 reduced extraction path를 사용합니다.</span></div>
         </li>
         <li>
           <span class="decision-check">Q</span>
@@ -1090,19 +1090,19 @@
         </li>
         <li>
           <span class="decision-check">Q</span>
-          <div class="decision-body"><strong>/um-loop 실행 중 에러가 나면?</strong><br><span>체크포인트 기반 재개를 지원합니다. 동일한 <code>/um-loop</code> 명령을 다시 실행하면 <code>.state/loop-state.json</code>의 마지막 체크포인트부터 이어서 진행합니다.</span></div>
+          <div class="decision-body"><strong>/u-loop 실행 중 에러가 나면?</strong><br><span>체크포인트 기반 재개를 지원합니다. 동일한 <code>/u-loop</code> 명령을 다시 실행하면 <code>.state/loop-state.json</code>의 마지막 체크포인트부터 이어서 진행합니다.</span></div>
         </li>
         <li>
           <span class="decision-check">Q</span>
-          <div class="decision-body"><strong>PR을 빠르게 만들고 싶어요</strong><br><span><code>/um-tools-git-pr</code> &mdash; 현재 브랜치의 변경사항을 분석하여 커밋 그루핑 + 구조화된 PR을 자동 생성합니다.</span></div>
+          <div class="decision-body"><strong>PR을 빠르게 만들고 싶어요</strong><br><span><code>/u-tools-git-pr</code> &mdash; 현재 브랜치의 변경사항을 분석하여 커밋 그루핑 + 구조화된 PR을 자동 생성합니다.</span></div>
         </li>
         <li>
           <span class="decision-check">Q</span>
-          <div class="decision-body"><strong>v3.x PDCA에서 v4.x PBGD로 마이그레이션하려면?</strong><br><span><code>/um-prepare-foldertree --app my-app --migrate</code>를 실행하세요. <code>docs/{app}/check/</code>를 <code>gatekeeping/</code>으로 리네임하고 config를 v4.0으로 업데이트합니다. 기존 SSoT는 그대로 유지됩니다.</span></div>
+          <div class="decision-body"><strong>v3.x PDCA에서 v4.x PBGD로 마이그레이션하려면?</strong><br><span><code>/u-prepare-foldertree --app my-app --migrate</code>를 실행하세요. <code>docs/{app}/check/</code>를 <code>gatekeeping/</code>으로 리네임하고 config를 v4.0으로 업데이트합니다. 기존 SSoT는 그대로 유지됩니다.</span></div>
         </li>
         <li>
           <span class="decision-check">Q</span>
-          <div class="decision-body"><strong><code>/um-deploy</code>가 아티팩트를 재생성하지 않아요</strong><br><span>Manifest에 기록된 sourceHashes와 현재 SSoT가 동일하면 재생성을 건너뜁니다. SSoT 문서를 수정하면 <code>on-deploy-state.js</code> hook이 <code>.state/deploy-stale.json</code>에 drift를 기록하여 다음 <code>/um-deploy</code>가 재생성합니다.</span></div>
+          <div class="decision-body"><strong><code>/u-deploy</code>가 아티팩트를 재생성하지 않아요</strong><br><span>Manifest에 기록된 sourceHashes와 현재 SSoT가 동일하면 재생성을 건너뜁니다. SSoT 문서를 수정하면 <code>on-deploy-state.js</code> hook이 <code>.state/deploy-stale.json</code>에 drift를 기록하여 다음 <code>/u-deploy</code>가 재생성합니다.</span></div>
         </li>
       </ul>
 
@@ -1118,25 +1118,25 @@
         </div>
         <div class="feature-card green">
           <h3>CHANGELOG / Migration</h3>
-          <p>v3.x PDCA에서 v4.x PBGD로의 전체 변경사항은 <a href="https://github.com/upleat-ax/umaker-plugin/blob/main/CHANGELOG.md" style="color:var(--accent);font-weight:600">CHANGELOG.md</a>를 참고하세요. 명령어 매핑표와 마이그레이션 단계가 포함되어 있습니다.</p>
+          <p>v3.x PDCA에서 v4.x PBGD로의 전체 변경사항은 <a href="https://github.com/upleat-ax/u-maker-plugin/blob/main/CHANGELOG.md" style="color:var(--accent);font-weight:600">CHANGELOG.md</a>를 참고하세요. 명령어 매핑표와 마이그레이션 단계가 포함되어 있습니다.</p>
         </div>
         <div class="feature-card purple">
           <h3>Figma 소스 분석</h3>
-          <p><code>/um-tools-figma &lt;url&gt;</code>로 Figma 파일을 직접 분석하거나, dropzone에 URL을 넣어 <code>/um-prepare</code>의 자동 위임을 활용하세요. v4.0.0-alpha.25은 reduced extraction path를 제공합니다.</p>
+          <p><code>/u-tools-figma &lt;url&gt;</code>로 Figma 파일을 직접 분석하거나, dropzone에 URL을 넣어 <code>/u-prepare</code>의 자동 위임을 활용하세요. v4.0.0-alpha.25은 reduced extraction path를 제공합니다.</p>
         </div>
         <div class="feature-card yellow">
           <h3>팀 협업</h3>
-          <p><code>/um-discuss</code>로 구조화된 토론 세션을 열고, 결과를 SSoT에 반영하세요. 5가지 세션 유형(brainstorm/review/decision/workshop/retro)을 활용해 효율적인 의사결정을 수행합니다.</p>
+          <p><code>/u-discuss</code>로 구조화된 토론 세션을 열고, 결과를 SSoT에 반영하세요. 5가지 세션 유형(brainstorm/review/decision/workshop/retro)을 활용해 효율적인 의사결정을 수행합니다.</p>
         </div>
       </div>
 
       <div class="annotation">
-        <strong>Tip:</strong> 처음이라면 <code>/um-createproject my-first-project</code>로 모노레포를 만들거나 <code>/um-prepare my-first-project</code>로 기존 프로젝트에 적용하고, dropzone에 기획 자료를 넣은 뒤 <code>/um-loop --app my-first-project</code>로 전체 PBGD 파이프라인을 한 번 돌려보세요. 아침에 Plan → Build → Gatekeeping → Deploy까지 완성된 결과물을 확인할 수 있습니다.
+        <strong>Tip:</strong> 처음이라면 <code>/u-createproject my-first-project</code>로 모노레포를 만들거나 <code>/u-prepare my-first-project</code>로 기존 프로젝트에 적용하고, dropzone에 기획 자료를 넣은 뒤 <code>/u-loop --app my-first-project</code>로 전체 PBGD 파이프라인을 한 번 돌려보세요. 아침에 Plan → Build → Gatekeeping → Deploy까지 완성된 결과물을 확인할 수 있습니다.
       </div>
 
       <!-- ────────── Footer ────────── -->
       <div class="report-footer">
-        UMAKER Plugin v4.0.0-alpha.25 (PBGD) &middot; Config v4.0 &middot; Proprietary &middot; Copyright &copy; 2026 U PLEAT
+        U-MAKER Plugin v4.0.0-alpha.25 (PBGD) &middot; Config v4.0 &middot; Proprietary &middot; Copyright &copy; 2026 U PLEAT
       </div>
 
     </div>
