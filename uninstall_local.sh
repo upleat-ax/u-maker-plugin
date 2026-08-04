@@ -1,9 +1,8 @@
 #!/usr/bin/env bash
 # ============================================================
-# uninstall_local.sh — umaker local plugin uninstaller
+# uninstall_local.sh — u-maker local plugin uninstaller
 #
-# Removes all umaker plugin artifacts (including legacy u-maker
-# artifacts from pre-rename installs) from Claude Code,
+# Removes all u-maker plugin artifacts from Claude Code,
 # Codex CLI, and Gemini CLI.
 #
 # Usage:
@@ -16,11 +15,8 @@ set -euo pipefail
 # 0. Constants
 # ============================================================
 
-PLUGIN_NAME="umaker"
-# Pre-rename plugin name (u-maker). Old-name artifacts are still
-# inventoried and removed so upgrades from u-maker installs get cleaned.
-OLD_PLUGIN_NAME="u-maker"
-PLUGIN_NAMES=("$OLD_PLUGIN_NAME" "$PLUGIN_NAME")
+PLUGIN_NAME="u-maker"
+MARKETPLACE_NAME="${PLUGIN_NAME}-marketplace"
 
 # Colors
 RED='\033[0;31m'
@@ -30,7 +26,7 @@ CYAN='\033[0;36m'
 BOLD='\033[1m'
 NC='\033[0m'
 
-log()  { echo -e "${CYAN}[umaker]${NC} $*"; }
+log()  { echo -e "${CYAN}[u-maker]${NC} $*"; }
 ok()   { echo -e "${GREEN}  [OK]${NC} $*"; }
 warn() { echo -e "${YELLOW}  [WARN]${NC} $*"; }
 err()  { echo -e "${RED}  [ERR]${NC} $*"; }
@@ -89,20 +85,17 @@ detect_os() {
 }
 
 # ============================================================
-# 2. Inventory — count what will be removed (old + new names)
+# 2. Inventory — count what will be removed
 # ============================================================
 
 inventory() {
   local items=0
-  local name
 
   # Skill symlinks
   SKILL_COUNT=0
   if [[ -d "$CLAUDE_HOME/skills" ]]; then
-    for name in "${PLUGIN_NAMES[@]}"; do
-      for link in "$CLAUDE_HOME/skills"/${name}__*; do
-        [[ -L "$link" ]] && SKILL_COUNT=$((SKILL_COUNT + 1))
-      done
+    for link in "$CLAUDE_HOME/skills"/${PLUGIN_NAME}__*; do
+      [[ -L "$link" ]] && SKILL_COUNT=$((SKILL_COUNT + 1))
     done
   fi
   items=$((items + SKILL_COUNT))
@@ -110,54 +103,30 @@ inventory() {
   # Agent symlinks
   AGENT_COUNT=0
   if [[ -d "$CLAUDE_HOME/agents" ]]; then
-    for name in "${PLUGIN_NAMES[@]}"; do
-      for link in "$CLAUDE_HOME/agents"/${name}__*; do
-        [[ -L "$link" ]] && AGENT_COUNT=$((AGENT_COUNT + 1))
-      done
+    for link in "$CLAUDE_HOME/agents"/${PLUGIN_NAME}__*; do
+      [[ -L "$link" ]] && AGENT_COUNT=$((AGENT_COUNT + 1))
     done
   fi
   items=$((items + AGENT_COUNT))
 
-  # Marketplace symlinks
-  MARKETPLACE_COUNT=0
-  for name in "${PLUGIN_NAMES[@]}"; do
-    [[ -L "$MARKETPLACES_DIR/${name}-marketplace" ]] && MARKETPLACE_COUNT=$((MARKETPLACE_COUNT + 1))
-  done
-  items=$((items + MARKETPLACE_COUNT))
+  # Marketplace symlink
+  HAS_MARKETPLACE=false
+  [[ -L "$MARKETPLACES_DIR/$MARKETPLACE_NAME" ]] && HAS_MARKETPLACE=true && items=$((items + 1))
 
-  # Caches
-  CACHE_COUNT=0
-  for name in "${PLUGIN_NAMES[@]}"; do
-    [[ -d "$CACHE_DIR/$name" ]] && CACHE_COUNT=$((CACHE_COUNT + 1))
-  done
-  items=$((items + CACHE_COUNT))
+  # Cache
+  HAS_CACHE=false
+  [[ -d "$CACHE_DIR/$PLUGIN_NAME" ]] && HAS_CACHE=true && items=$((items + 1))
 
   # JSON entries
-  KNOWN_MP_COUNT=0
+  HAS_KNOWN_MP=false
   if [[ -f "$KNOWN_MP" ]]; then
-    for name in "${PLUGIN_NAMES[@]}"; do
-      python3 -c "import json; d=json.load(open('$KNOWN_MP')); exit(0 if '$name' in d else 1)" 2>/dev/null && KNOWN_MP_COUNT=$((KNOWN_MP_COUNT + 1))
-    done
+    python3 -c "import json; d=json.load(open('$KNOWN_MP')); exit(0 if '$PLUGIN_NAME' in d else 1)" 2>/dev/null && HAS_KNOWN_MP=true && items=$((items + 1))
   fi
-  items=$((items + KNOWN_MP_COUNT))
 
-  INSTALLED_PL_COUNT=0
+  HAS_INSTALLED_PL=false
   if [[ -f "$INSTALLED_PL" ]]; then
-    for name in "${PLUGIN_NAMES[@]}"; do
-      python3 -c "import json; d=json.load(open('$INSTALLED_PL')); exit(0 if '${name}@${name}' in d.get('plugins',{}) else 1)" 2>/dev/null && INSTALLED_PL_COUNT=$((INSTALLED_PL_COUNT + 1))
-    done
+    python3 -c "import json; d=json.load(open('$INSTALLED_PL')); exit(0 if '${PLUGIN_NAME}@${PLUGIN_NAME}' in d.get('plugins',{}) else 1)" 2>/dev/null && HAS_INSTALLED_PL=true && items=$((items + 1))
   fi
-  items=$((items + INSTALLED_PL_COUNT))
-
-  # settings.json enabledPlugins entries
-  ENABLED_COUNT=0
-  local settings_file="$CLAUDE_HOME/settings.json"
-  if [[ -f "$settings_file" ]]; then
-    for name in "${PLUGIN_NAMES[@]}"; do
-      python3 -c "import json; d=json.load(open('$settings_file')); exit(0 if '${name}@${name}' in d.get('enabledPlugins',{}) else 1)" 2>/dev/null && ENABLED_COUNT=$((ENABLED_COUNT + 1))
-    done
-  fi
-  items=$((items + ENABLED_COUNT))
 
   # Codex symlinks
   CODEX_LINKS=0
@@ -187,7 +156,7 @@ inventory() {
 print_summary() {
   echo ""
   echo -e "${BOLD}========================================${NC}"
-  echo -e "${BOLD}  umaker Uninstaller${NC}"
+  echo -e "${BOLD}  u-maker Uninstaller${NC}"
   echo -e "${BOLD}========================================${NC}"
   echo -e "  OS:      $OS"
   echo -e "  Claude:  $CLAUDE_HOME"
@@ -195,22 +164,21 @@ print_summary() {
   echo ""
 
   if [[ $TOTAL_ITEMS -eq 0 ]]; then
-    ok "No umaker (or legacy u-maker) artifacts found. Nothing to remove."
+    ok "No u-maker artifacts found. Nothing to remove."
     echo ""
     exit 0
   fi
 
-  log "Found the following artifacts (umaker + legacy u-maker):"
+  log "Found the following artifacts:"
   echo ""
-  [[ $SKILL_COUNT -gt 0 ]]        && echo -e "  ${CYAN}$SKILL_COUNT${NC} skill symlinks   (~/.claude/skills/{umaker,u-maker}__*)"
-  [[ $AGENT_COUNT -gt 0 ]]        && echo -e "  ${CYAN}$AGENT_COUNT${NC} agent symlinks   (~/.claude/agents/{umaker,u-maker}__*)"
-  [[ $MARKETPLACE_COUNT -gt 0 ]]  && echo -e "  ${CYAN}$MARKETPLACE_COUNT${NC} marketplace symlinks"
-  [[ $CACHE_COUNT -gt 0 ]]        && echo -e "  ${CYAN}$CACHE_COUNT${NC} cache directories   (~/.claude/plugins/cache/{umaker,u-maker}/)"
-  [[ $KNOWN_MP_COUNT -gt 0 ]]     && echo -e "  ${CYAN}$KNOWN_MP_COUNT${NC} known_marketplaces.json entries"
-  [[ $INSTALLED_PL_COUNT -gt 0 ]] && echo -e "  ${CYAN}$INSTALLED_PL_COUNT${NC} installed_plugins.json entries"
-  [[ $ENABLED_COUNT -gt 0 ]]      && echo -e "  ${CYAN}$ENABLED_COUNT${NC} settings.json enabledPlugins entries"
-  [[ $CODEX_LINKS -gt 0 ]]        && echo -e "  ${CYAN}$CODEX_LINKS${NC} Codex symlinks"
-  [[ $GEMINI_LINKS -gt 0 ]]       && echo -e "  ${CYAN}$GEMINI_LINKS${NC} Gemini symlinks"
+  [[ $SKILL_COUNT -gt 0 ]]  && echo -e "  ${CYAN}$SKILL_COUNT${NC} skill symlinks   (~/.claude/skills/${PLUGIN_NAME}__*)"
+  [[ $AGENT_COUNT -gt 0 ]]  && echo -e "  ${CYAN}$AGENT_COUNT${NC} agent symlinks   (~/.claude/agents/${PLUGIN_NAME}__*)"
+  $HAS_MARKETPLACE           && echo -e "  ${CYAN}1${NC} marketplace symlink"
+  $HAS_CACHE                 && echo -e "  ${CYAN}1${NC} cache directory     (~/.claude/plugins/cache/$PLUGIN_NAME/)"
+  $HAS_KNOWN_MP              && echo -e "  ${CYAN}1${NC} known_marketplaces.json entry"
+  $HAS_INSTALLED_PL          && echo -e "  ${CYAN}1${NC} installed_plugins.json entry"
+  [[ $CODEX_LINKS -gt 0 ]]  && echo -e "  ${CYAN}$CODEX_LINKS${NC} Codex symlinks"
+  [[ $GEMINI_LINKS -gt 0 ]] && echo -e "  ${CYAN}$GEMINI_LINKS${NC} Gemini symlinks"
   echo ""
 }
 
@@ -222,18 +190,14 @@ uninstall() {
   echo -e "${BOLD}Removing...${NC}"
   echo ""
 
-  local name
-
   # 1. Skill symlinks
   if [[ $SKILL_COUNT -gt 0 ]]; then
     local count=0
-    for name in "${PLUGIN_NAMES[@]}"; do
-      for link in "$CLAUDE_HOME/skills"/${name}__*; do
-        if [[ -L "$link" ]]; then
-          rm "$link"
-          count=$((count + 1))
-        fi
-      done
+    for link in "$CLAUDE_HOME/skills"/${PLUGIN_NAME}__*; do
+      if [[ -L "$link" ]]; then
+        rm "$link"
+        count=$((count + 1))
+      fi
     done
     ok "Removed $count skill symlinks"
   fi
@@ -241,88 +205,53 @@ uninstall() {
   # 2. Agent symlinks
   if [[ $AGENT_COUNT -gt 0 ]]; then
     local count=0
-    for name in "${PLUGIN_NAMES[@]}"; do
-      for link in "$CLAUDE_HOME/agents"/${name}__*; do
-        if [[ -L "$link" ]]; then
-          rm "$link"
-          count=$((count + 1))
-        fi
-      done
+    for link in "$CLAUDE_HOME/agents"/${PLUGIN_NAME}__*; do
+      if [[ -L "$link" ]]; then
+        rm "$link"
+        count=$((count + 1))
+      fi
     done
     ok "Removed $count agent symlinks"
   fi
 
-  # 3. Marketplace symlinks
-  if [[ $MARKETPLACE_COUNT -gt 0 ]]; then
-    for name in "${PLUGIN_NAMES[@]}"; do
-      if [[ -L "$MARKETPLACES_DIR/${name}-marketplace" ]]; then
-        rm "$MARKETPLACES_DIR/${name}-marketplace"
-        ok "Marketplace symlink removed (${name}-marketplace)"
-      fi
-    done
+  # 3. Marketplace symlink
+  if $HAS_MARKETPLACE; then
+    rm "$MARKETPLACES_DIR/$MARKETPLACE_NAME"
+    ok "Marketplace symlink removed"
   fi
 
-  # 4. Caches
-  if [[ $CACHE_COUNT -gt 0 ]]; then
-    for name in "${PLUGIN_NAMES[@]}"; do
-      if [[ -d "$CACHE_DIR/$name" ]]; then
-        rm -rf "$CACHE_DIR/$name"
-        ok "Cache directory removed ($name)"
-      fi
-    done
+  # 4. Cache
+  if $HAS_CACHE; then
+    rm -rf "$CACHE_DIR/$PLUGIN_NAME"
+    ok "Cache directory removed"
   fi
 
   # 5. known_marketplaces.json
-  if [[ $KNOWN_MP_COUNT -gt 0 ]]; then
-    for name in "${PLUGIN_NAMES[@]}"; do
-      python3 -c "
+  if $HAS_KNOWN_MP; then
+    python3 -c "
 import json
 with open('$KNOWN_MP', 'r') as f:
     data = json.load(f)
-data.pop('$name', None)
+data.pop('$PLUGIN_NAME', None)
 with open('$KNOWN_MP', 'w') as f:
     json.dump(data, f, indent=2)
     f.write('\n')
 " 2>/dev/null
-    done
-    ok "known_marketplaces.json entries removed"
+    ok "known_marketplaces.json entry removed"
   fi
 
   # 6. installed_plugins.json
-  if [[ $INSTALLED_PL_COUNT -gt 0 ]]; then
-    for name in "${PLUGIN_NAMES[@]}"; do
-      python3 -c "
+  if $HAS_INSTALLED_PL; then
+    python3 -c "
 import json
 with open('$INSTALLED_PL', 'r') as f:
     data = json.load(f)
-data.get('plugins', {}).pop('${name}@${name}', None)
+data.get('plugins', {}).pop('${PLUGIN_NAME}@${PLUGIN_NAME}', None)
 with open('$INSTALLED_PL', 'w') as f:
     json.dump(data, f, indent=2)
     f.write('\n')
 " 2>/dev/null
-    done
-    ok "installed_plugins.json entries removed"
-  fi
-
-  # 6b. settings.json enabledPlugins (umaker@umaker + legacy u-maker@u-maker)
-  if [[ $ENABLED_COUNT -gt 0 ]]; then
-    local settings_file="$CLAUDE_HOME/settings.json"
-    for name in "${PLUGIN_NAMES[@]}"; do
-      python3 -c "
-import json
-sf = '$settings_file'
-key = '${name}@${name}'
-with open(sf, 'r') as f:
-    data = json.load(f)
-ep = data.get('enabledPlugins', {})
-if key in ep:
-    del ep[key]
-    with open(sf, 'w') as f:
-        json.dump(data, f, indent=2)
-        f.write('\n')
-" 2>/dev/null
-    done
-    ok "settings.json enabledPlugins entries removed"
+    ok "installed_plugins.json entry removed"
   fi
 
   # 7. Codex symlinks
@@ -343,7 +272,7 @@ if key in ep:
 
   echo ""
   echo -e "${BOLD}========================================${NC}"
-  echo -e "${GREEN}${BOLD}  umaker uninstalled.${NC}"
+  echo -e "${GREEN}${BOLD}  u-maker uninstalled.${NC}"
   echo -e "${BOLD}========================================${NC}"
   echo ""
   echo -e "  Restart Claude Code / Codex / Gemini CLI to apply."

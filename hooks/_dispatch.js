@@ -37,7 +37,7 @@ function readStdin() {
 (async () => {
   const hookName = process.argv[2];
   if (!hookName || !/^[a-zA-Z0-9_-]+$/.test(hookName)) {
-    process.stderr.write('[umaker hook] missing/invalid hook name\n');
+    process.stderr.write('[u-maker hook] missing/invalid hook name\n');
     return exit(0);
   }
 
@@ -47,7 +47,7 @@ function readStdin() {
     try {
       payload = JSON.parse(raw);
     } catch (e) {
-      process.stderr.write('[umaker hook ' + hookName + '] invalid stdin JSON\n');
+      process.stderr.write('[u-maker hook ' + hookName + '] invalid stdin JSON\n');
       return exit(0);
     }
   }
@@ -64,7 +64,7 @@ function readStdin() {
 
   const modPath = path.join(__dirname, hookName + '.js');
   if (!fs.existsSync(modPath)) {
-    process.stderr.write('[umaker hook] module not found: ' + modPath + '\n');
+    process.stderr.write('[u-maker hook] module not found: ' + modPath + '\n');
     return exit(0);
   }
 
@@ -72,20 +72,20 @@ function readStdin() {
   try {
     mod = require(modPath);
   } catch (e) {
-    process.stderr.write('[umaker hook ' + hookName + '] require failed: ' + e.message + '\n');
+    process.stderr.write('[u-maker hook ' + hookName + '] require failed: ' + e.message + '\n');
     return exit(0);
   }
 
   const fn = typeof mod === 'function' ? mod : (mod && mod.default);
   if (typeof fn !== 'function') {
-    process.stderr.write('[umaker hook ' + hookName + '] module does not export a function\n');
+    process.stderr.write('[u-maker hook ' + hookName + '] module does not export a function\n');
     return exit(0);
   }
 
   try {
     await fn({ filePath, projectRoot });
   } catch (e) {
-    process.stderr.write('[umaker hook ' + hookName + '] ' + (e && e.stack || e) + '\n');
+    process.stderr.write('[u-maker hook ' + hookName + '] ' + (e && e.stack || e) + '\n');
   }
   return exit(0);
 })();

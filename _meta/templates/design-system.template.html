@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System — {{appName}}</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6/css/all.min.css">
+<style>
+/* ============================================
+   1. DESIGN TOKENS — CSS Custom Properties
+   ============================================
+   This is the SSoT (Single Source of Truth).
+   All values here are extracted to design-system.md
+   and design-system.json during the derivation step.
+   ============================================ */
+
+:root {
+  /* --- DS-010: Brand Colors --- */
+  --color-primary-50: {{color-primary-50}};
+  --color-primary-100: {{color-primary-100}};
+  --color-primary-200: {{color-primary-200}};
+  --color-primary-300: {{color-primary-300}};
+  --color-primary-400: {{color-primary-400}};
+  --color-primary-500: {{color-primary-500}};
+  --color-primary-600: {{color-primary-600}};
+  --color-primary-700: {{color-primary-700}};
+  --color-primary-800: {{color-primary-800}};
+  --color-primary-900: {{color-primary-900}};
+
+  /* --- DS-020: Semantic Colors --- */
+  --color-success-500: {{color-success-500}};
+  --color-warning-500: {{color-warning-500}};
+  --color-error-500: {{color-error-500}};
+  --color-info-500: {{color-info-500}};
+
+  /* --- DS-030: Neutral Colors --- */
+  --color-gray-50: {{color-gray-50}};
+  --color-gray-100: {{color-gray-100}};
+  --color-gray-200: {{color-gray-200}};
+  --color-gray-300: {{color-gray-300}};
+  --color-gray-400: {{color-gray-400}};
+  --color-gray-500: {{color-gray-500}};
+  --color-gray-600: {{color-gray-600}};
+  --color-gray-700: {{color-gray-700}};
+  --color-gray-800: {{color-gray-800}};
+  --color-gray-900: {{color-gray-900}};
+
+  /* --- DS-040: Surface Colors (Light Mode) --- */
+  --color-bg-primary: #ffffff;
+  --color-bg-secondary: var(--color-gray-50);
+  --color-bg-tertiary: var(--color-gray-100);
+  --color-text-primary: var(--color-gray-900);
+  --color-text-secondary: var(--color-gray-600);
+  --color-text-tertiary: var(--color-gray-400);
+  --color-border-default: var(--color-gray-200);
+  --color-border-strong: var(--color-gray-300);
+
+  /* --- DS-050: Typography --- */
+  --font-family-sans: {{font-family-sans}};
+  --font-family-mono: {{font-family-mono}};
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.875rem;
+  --font-size-base: 1rem;
+  --font-size-lg: 1.125rem;
+  --font-size-xl: 1.25rem;
+  --font-size-2xl: 1.5rem;
+  --font-size-3xl: 1.875rem;
+  --font-size-4xl: 2.25rem;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-leading-tight: 1.25;
+  --font-leading-normal: 1.5;
+  --font-leading-relaxed: 1.75;
+
+  /* --- DS-060: Spacing --- */
+  --space-0: 0;
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-20: 5rem;
+  --space-24: 6rem;
+
+  /* --- DS-070: Border Radius --- */
+  --radius-none: 0;
+  --radius-sm: 0.125rem;
+  --radius-base: 0.25rem;
+  --radius-md: 0.375rem;
+  --radius-lg: 0.5rem;
+  --radius-xl: 0.75rem;
+  --radius-2xl: 1rem;
+  --radius-full: 9999px;
+
+  /* --- DS-080: Shadows --- */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-base: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+
+  /* --- DS-090: Transitions --- */
+  --transition-fast: 150ms ease;
+  --transition-base: 200ms ease;
+  --transition-slow: 300ms ease;
+
+  /* --- DS-100: Breakpoints (reference only, used in media queries) --- */
+  --bp-xs: 0px;
+  --bp-sm: 640px;
+  --bp-md: 768px;
+  --bp-lg: 1024px;
+  --bp-xl: 1280px;
+
+  /* --- DS-110: Z-Index Scale --- */
+  --z-dropdown: 1000;
+  --z-sticky: 1020;
+  --z-fixed: 1030;
+  --z-modal-backdrop: 1040;
+  --z-modal: 1050;
+  --z-popover: 1060;
+  --z-tooltip: 1070;
+  --z-toast: 1080;
+}
+
+/* --- DS-040: Surface Colors (Dark Mode Override) --- */
+[data-theme="dark"] {
+  --color-bg-primary: var(--color-gray-900);
+  --color-bg-secondary: var(--color-gray-800);
+  --color-bg-tertiary: var(--color-gray-700);
+  --color-text-primary: var(--color-gray-50);
+  --color-text-secondary: var(--color-gray-400);
+  --color-text-tertiary: var(--color-gray-500);
+  --color-border-default: var(--color-gray-700);
+  --color-border-strong: var(--color-gray-600);
+}
+
+/* ============================================
+   2. BASE STYLES
+   ============================================ */
+
+body {
+  font-family: var(--font-family-sans);
+  background: var(--color-bg-secondary);
+  color: var(--color-text-primary);
+  line-height: var(--font-leading-normal);
+  margin: 0;
+  transition: background var(--transition-base), color var(--transition-base);
+}
+
+/* ============================================
+   3. COMPONENT STYLES
+   ============================================
+   Each component class maps to a CMP-xxx ID.
+   ============================================ */
+
+/* --- CMP-010: Button --- */
+.ds-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2);
+  font-family: var(--font-family-sans); font-weight: var(--font-weight-medium);
+  border: none; cursor: pointer;
+  transition: background var(--transition-fast), box-shadow var(--transition-fast), opacity var(--transition-fast);
+}
+.ds-btn:focus-visible {
+  outline: 2px solid var(--color-primary-300); outline-offset: 2px;
+}
+.ds-btn:disabled, .ds-btn[aria-disabled="true"] {
+  opacity: 0.5; cursor: not-allowed; pointer-events: none;
+}
+/* Variants */
+.ds-btn--primary { background: var(--color-primary-500); color: #fff; }
+.ds-btn--primary:hover { background: var(--color-primary-600); }
+.ds-btn--primary:active { background: var(--color-primary-700); }
+.ds-btn--secondary { background: var(--color-gray-100); color: var(--color-gray-800); border: 1px solid var(--color-border-default); }
+.ds-btn--secondary:hover { background: var(--color-gray-200); }
+.ds-btn--secondary:active { background: var(--color-gray-300); }
+.ds-btn--danger { background: var(--color-error-500); color: #fff; }
+.ds-btn--danger:hover { background: #dc2626; }
+.ds-btn--danger:active { background: #b91c1c; }
+.ds-btn--ghost { background: transparent; color: var(--color-primary-500); }
+.ds-btn--ghost:hover { background: var(--color-primary-50, rgba(59,130,246,0.05)); }
+.ds-btn--ghost:active { background: var(--color-primary-100, rgba(59,130,246,0.1)); }
+/* Sizes */
+.ds-btn--sm { height: 32px; padding: 0 var(--space-3); font-size: var(--font-size-sm); border-radius: var(--radius-md); }
+.ds-btn--md { height: 40px; padding: 0 var(--space-4); font-size: var(--font-size-base); border-radius: var(--radius-md); }
+.ds-btn--lg { height: 48px; padding: 0 var(--space-6); font-size: var(--font-size-lg); border-radius: var(--radius-lg); }
+
+/* --- CMP-020: Input --- */
+.ds-input {
+  display: block; width: 100%; box-sizing: border-box;
+  font-family: var(--font-family-sans);
+  background: var(--color-bg-primary); color: var(--color-text-primary);
+  border: 1px solid var(--color-border-default); border-radius: var(--radius-md);
+  padding: 0 var(--space-3);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+.ds-input::placeholder { color: var(--color-text-tertiary); }
+.ds-input:focus { border-color: var(--color-primary-500); box-shadow: 0 0 0 2px rgba(59,130,246,0.15); outline: none; }
+.ds-input--error { border-color: var(--color-error-500); }
+.ds-input--error:focus { box-shadow: 0 0 0 2px rgba(239,68,68,0.15); }
+.ds-input:disabled { opacity: 0.5; cursor: not-allowed; background: var(--color-bg-tertiary); }
+.ds-input--sm { height: 32px; font-size: var(--font-size-sm); }
+.ds-input--md { height: 40px; font-size: var(--font-size-base); }
+.ds-input--lg { height: 48px; font-size: var(--font-size-lg); }
+.ds-label { display: block; font-size: var(--font-size-sm); font-weight: var(--font-weight-medium); color: var(--color-text-primary); margin-bottom: var(--space-1); }
+.ds-helper { font-size: var(--font-size-xs); color: var(--color-text-secondary); margin-top: var(--space-1); }
+.ds-error-text { font-size: var(--font-size-xs); color: var(--color-error-500); margin-top: var(--space-1); }
+
+/* --- CMP-030: Card --- */
+.ds-card {
+  background: var(--color-bg-primary); border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); padding: var(--space-6);
+  transition: box-shadow var(--transition-fast);
+}
+.ds-card--interactive:hover { box-shadow: var(--shadow-md); }
+.ds-card__header { font-size: var(--font-size-lg); font-weight: var(--font-weight-semibold); margin-bottom: var(--space-3); }
+.ds-card__body { font-size: var(--font-size-base); color: var(--color-text-secondary); }
+
+/* --- CMP-040: Table --- */
+.ds-table { width: 100%; border-collapse: collapse; font-size: var(--font-size-sm); }
+.ds-table th {
+  background: var(--color-bg-secondary); font-weight: var(--font-weight-semibold);
+  text-align: left; padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--color-border-default);
+  text-transform: uppercase; font-size: var(--font-size-xs); letter-spacing: 0.05em;
+}
+.ds-table td {
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--color-border-default); vertical-align: top;
+}
+.ds-table tr:hover td { background: var(--color-bg-secondary); }
+
+/* --- CMP-050: Modal --- */
+.ds-modal-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.5);
+  display: flex; align-items: center; justify-content: center;
+  z-index: var(--z-modal-backdrop);
+}
+.ds-modal {
+  background: var(--color-bg-primary); border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-xl); padding: var(--space-6);
+  max-height: 85vh; overflow-y: auto; position: relative;
+  z-index: var(--z-modal);
+}
+.ds-modal--sm { width: 480px; }
+.ds-modal--md { width: 640px; }
+.ds-modal--lg { width: 960px; }
+.ds-modal__header { font-size: var(--font-size-xl); font-weight: var(--font-weight-semibold); margin-bottom: var(--space-4); }
+.ds-modal__close {
+  position: absolute; top: var(--space-4); right: var(--space-4);
+  background: none; border: none; cursor: pointer; color: var(--color-text-secondary);
+  width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;
+  border-radius: var(--radius-md);
+}
+.ds-modal__close:hover { background: var(--color-bg-tertiary); }
+
+/* --- CMP-060: Toast --- */
+.ds-toast {
+  display: flex; align-items: center; gap: var(--space-3);
+  padding: var(--space-3) var(--space-4); border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg); font-size: var(--font-size-sm);
+  min-width: 300px; max-width: 480px;
+}
+.ds-toast--success { background: #f0fdf4; border: 1px solid #bbf7d0; color: #166534; }
+.ds-toast--error { background: #fef2f2; border: 1px solid #fecaca; color: #991b1b; }
+.ds-toast--warning { background: #fffbeb; border: 1px solid #fed7aa; color: #92400e; }
+.ds-toast--info { background: #eff6ff; border: 1px solid #bfdbfe; color: #1e40af; }
+
+/* --- CMP-070: Badge --- */
+.ds-badge {
+  display: inline-flex; align-items: center; gap: var(--space-1);
+  font-size: var(--font-size-xs); font-weight: var(--font-weight-medium);
+  padding: 2px var(--space-2); border-radius: var(--radius-full);
+}
+.ds-badge--primary { background: var(--color-primary-100, rgba(59,130,246,0.1)); color: var(--color-primary-700, #1d4ed8); }
+.ds-badge--success { background: #dcfce7; color: #166534; }
+.ds-badge--warning { background: #fef3c7; color: #92400e; }
+.ds-badge--error { background: #fee2e2; color: #991b1b; }
+.ds-badge--neutral { background: var(--color-gray-100); color: var(--color-gray-700); }
+
+/* ============================================
+   4. LAYOUT STYLES
+   ============================================ */
+
+/* Page container */
+.ds-page { max-width: 1280px; margin: 0 auto; padding: var(--space-8); }
+
+/* Showcase layout */
+.ds-section { margin-bottom: var(--space-12); }
+.ds-section__title {
+  font-size: var(--font-size-2xl); font-weight: var(--font-weight-bold);
+  margin-bottom: var(--space-2); color: var(--color-text-primary);
+}
+.ds-section__desc {
+  font-size: var(--font-size-sm); color: var(--color-text-secondary); margin-bottom: var(--space-6);
+}
+.ds-showcase {
+  background: var(--color-bg-primary); border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-lg); padding: var(--space-6);
+}
+.ds-showcase__row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3); margin-bottom: var(--space-4); }
+.ds-showcase__row:last-child { margin-bottom: 0; }
+.ds-showcase__label {
+  font-size: var(--font-size-xs); font-weight: var(--font-weight-semibold);
+  color: var(--color-text-tertiary); text-transform: uppercase; letter-spacing: 0.05em;
+  width: 100%; margin-bottom: var(--space-1);
+}
+
+/* Swatch grid */
+.ds-swatch-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: var(--space-3); }
+.ds-swatch {
+  border-radius: var(--radius-lg); overflow: hidden;
+  border: 1px solid var(--color-border-default);
+}
+.ds-swatch__color { height: 64px; }
+.ds-swatch__info { padding: var(--space-2); font-size: var(--font-size-xs); }
+.ds-swatch__name { font-weight: var(--font-weight-medium); }
+.ds-swatch__value { color: var(--color-text-secondary); }
+
+/* Typography scale */
+.ds-type-scale { display: flex; flex-direction: column; gap: var(--space-4); }
+.ds-type-sample { display: flex; align-items: baseline; gap: var(--space-4); }
+.ds-type-sample__label { font-size: var(--font-size-xs); color: var(--color-text-tertiary); min-width: 80px; flex-shrink: 0; }
+
+/* Spacing scale */
+.ds-spacing-scale { display: flex; flex-direction: column; gap: var(--space-2); }
+.ds-spacing-bar { display: flex; align-items: center; gap: var(--space-3); }
+.ds-spacing-bar__label { font-size: var(--font-size-xs); color: var(--color-text-tertiary); min-width: 80px; font-family: var(--font-family-mono); }
+.ds-spacing-bar__visual { height: 16px; background: var(--color-primary-200); border-radius: var(--radius-sm); }
+
+/* Theme toggle */
+.ds-theme-toggle {
+  position: fixed; top: var(--space-4); right: var(--space-4); z-index: var(--z-fixed);
+  background: var(--color-bg-primary); border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-full); padding: var(--space-2) var(--space-3);
+  cursor: pointer; font-size: var(--font-size-sm); display: flex; align-items: center; gap: var(--space-2);
+  box-shadow: var(--shadow-md);
+  transition: background var(--transition-fast);
+}
+.ds-theme-toggle:hover { background: var(--color-bg-tertiary); }
+
+/* Meta bar */
+.ds-meta {
+  display: flex; gap: var(--space-3); flex-wrap: wrap;
+  margin-bottom: var(--space-8); font-size: var(--font-size-xs); color: var(--color-text-secondary);
+}
+.ds-meta span {
+  background: var(--color-bg-primary); border: 1px solid var(--color-border-default);
+  padding: var(--space-1) var(--space-3); border-radius: var(--radius-md);
+}
+
+/* Footer */
+.ds-footer {
+  text-align: center; padding: var(--space-6); font-size: var(--font-size-xs);
+  color: var(--color-text-tertiary); border-top: 1px solid var(--color-border-default); margin-top: var(--space-12);
+}
+
+/* Accessibility: reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- Theme Toggle -->
+<button class="ds-theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark/light mode">
+  <span id="theme-icon">&#9790;</span>
+  <span id="theme-label">Dark</span>
+</button>
+
+<div class="ds-page">
+
+  <!-- Header -->
+  <h1 style="font-size:var(--font-size-3xl);font-weight:var(--font-weight-bold);margin-bottom:var(--space-2)">
+    Design System
+  </h1>
+  <div class="ds-meta">
+    <span>App: {{appName}}</span>
+    <span>Status: {{status}}</span>
+    <span>Version: {{version}}</span>
+    <span>Updated: {{lastUpdated}}</span>
+  </div>
+
+  <!-- =============================================
+       SECTION 1: COLOR TOKENS (DS-010 ~ DS-040)
+       ============================================= -->
+  <section class="ds-section" id="colors">
+    <h2 class="ds-section__title">1. Color Tokens</h2>
+    <p class="ds-section__desc">Brand, semantic, neutral, and surface color definitions. All components reference these tokens.</p>
+
+    <!-- DS-010: Brand Colors -->
+    <h3 style="font-size:var(--font-size-lg);font-weight:var(--font-weight-semibold);margin:var(--space-6) 0 var(--space-3)">
+      DS-010: Brand Colors
+    </h3>
+    <div class="ds-showcase">
+      <div class="ds-swatch-grid">
+        {{#brandColors}}
+        <div class="ds-swatch">
+          <div class="ds-swatch__color" style="background:var(--color-primary-{{shade}})"></div>
+          <div class="ds-swatch__info">
+            <div class="ds-swatch__name">primary-{{shade}}</div>
+            <div class="ds-swatch__value">{{value}}</div>
+          </div>
+        </div>
+        {{/brandColors}}
+      </div>
+    </div>
+
+    <!-- DS-020: Semantic Colors -->
+    <h3 style="font-size:var(--font-size-lg);font-weight:var(--font-weight-semibold);margin:var(--space-6) 0 var(--space-3)">
+      DS-020: Semantic Colors
+    </h3>
+    <div class="ds-showcase">
+      <div class="ds-swatch-grid">
+        {{#semanticColors}}
+        <div class="ds-swatch">
+          <div class="ds-swatch__color" style="background:var(--color-{{name}}-500)"></div>
+          <div class="ds-swatch__info">
+            <div class="ds-swatch__name">{{name}}-500</div>
+            <div class="ds-swatch__value">{{value}}</div>
+          </div>
+        </div>
+        {{/semanticColors}}
+      </div>
+    </div>
+
+    <!-- DS-030: Neutral Colors -->
+    <h3 style="font-size:var(--font-size-lg);font-weight:var(--font-weight-semibold);margin:var(--space-6) 0 var(--space-3)">
+      DS-030: Neutral Colors
+    </h3>
+    <div class="ds-showcase">
+      <div class="ds-swatch-grid">
+        {{#neutralColors}}
+        <div class="ds-swatch">
+          <div class="ds-swatch__color" style="background:var(--color-gray-{{shade}})"></div>
+          <div class="ds-swatch__info">
+            <div class="ds-swatch__name">gray-{{shade}}</div>
+            <div class="ds-swatch__value">{{value}}</div>
+          </div>
+        </div>
+        {{/neutralColors}}
+      </div>
+    </div>
+
+    <!-- DS-040: Surface Colors (Light / Dark) -->
+    <h3 style="font-size:var(--font-size-lg);font-weight:var(--font-weight-semibold);margin:var(--space-6) 0 var(--space-3)">
+      DS-040: Surface Colors
+    </h3>
+    <div class="ds-showcase">
+      <div class="ds-showcase__label">Light Mode</div>
+      <div class="ds-swatch-grid" style="margin-bottom:var(--space-4)">
+        <div class="ds-swatch"><div class="ds-swatch__color" style="background:#ffffff;border-bottom:1px solid var(--color-border-default)"></div><div class="ds-swatch__info"><div class="ds-swatch__name">bg-primary</div><div class="ds-swatch__value">#ffffff</div></div></div>
+        <div class="ds-swatch"><div class="ds-swatch__color" style="background:var(--color-gray-50)"></div><div class="ds-swatch__info"><div class="ds-swatch__name">bg-secondary</div><div class="ds-swatch__value">gray-50</div></div></div>
+        <div class="ds-swatch"><div class="ds-swatch__color" style="background:var(--color-gray-100)"></div><div class="ds-swatch__info"><div class="ds-swatch__name">bg-tertiary</div><div class="ds-swatch__value">gray-100</div></div></div>
+      </div>
+      <div class="ds-showcase__label">Dark Mode</div>
+      <div class="ds-swatch-grid">
+        <div class="ds-swatch"><div class="ds-swatch__color" style="background:var(--color-gray-900)"></div><div class="ds-swatch__info"><div class="ds-swatch__name">bg-primary</div><div class="ds-swatch__value">gray-900</div></div></div>
+        <div class="ds-swatch"><div class="ds-swatch__color" style="background:var(--color-gray-800)"></div><div class="ds-swatch__info"><div class="ds-swatch__name">bg-secondary</div><div class="ds-swatch__value">gray-800</div></div></div>
+        <div class="ds-swatch"><div class="ds-swatch__color" style="background:var(--color-gray-700)"></div><div class="ds-swatch__info"><div class="ds-swatch__name">bg-tertiary</div><div class="ds-swatch__value">gray-700</div></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =============================================
+       SECTION 2: TYPOGRAPHY (DS-050)
+       ============================================= -->
+  <section class="ds-section" id="typography">
+    <h2 class="ds-section__title">2. Typography</h2>
+    <p class="ds-section__desc">Font families, sizes, weights, and line heights.</p>
+    <div class="ds-showcase">
+      <div class="ds-type-scale">
+        <div class="ds-type-sample">
+          <span class="ds-type-sample__label">4xl / 36px</span>
+          <span style="font-size:var(--font-size-4xl);font-weight:var(--font-weight-bold)">Heading 1</span>
+        </div>
+        <div class="ds-type-sample">
+          <span class="ds-type-sample__label">3xl / 30px</span>
+          <span style="font-size:var(--font-size-3xl);font-weight:var(--font-weight-bold)">Heading 2</span>
+        </div>
+        <div class="ds-type-sample">
+          <span class="ds-type-sample__label">2xl / 24px</span>
+          <span style="font-size:var(--font-size-2xl);font-weight:var(--font-weight-semibold)">Heading 3</span>
+        </div>
+        <div class="ds-type-sample">
+          <span class="ds-type-sample__label">xl / 20px</span>
+          <span style="font-size:var(--font-size-xl);font-weight:var(--font-weight-semibold)">Heading 4</span>
+        </div>
+        <div class="ds-type-sample">
+          <span class="ds-type-sample__label">lg / 18px</span>
+          <span style="font-size:var(--font-size-lg);font-weight:var(--font-weight-medium)">Large body text</span>
+        </div>
+        <div class="ds-type-sample">
+          <span class="ds-type-sample__label">base / 16px</span>
+          <span style="font-size:var(--font-size-base)">Default body text for paragraphs and content.</span>
+        </div>
+        <div class="ds-type-sample">
+          <span class="ds-type-sample__label">sm / 14px</span>
+          <span style="font-size:var(--font-size-sm);color:var(--color-text-secondary)">Secondary text, labels, captions</span>
+        </div>
+        <div class="ds-type-sample">
+          <span class="ds-type-sample__label">xs / 12px</span>
+          <span style="font-size:var(--font-size-xs);color:var(--color-text-tertiary)">Helper text, timestamps, fine print</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =============================================
+       SECTION 3: SPACING (DS-060)
+       ============================================= -->
+  <section class="ds-section" id="spacing">
+    <h2 class="ds-section__title">3. Spacing Scale</h2>
+    <p class="ds-section__desc">Consistent spacing tokens for margin, padding, and gap.</p>
+    <div class="ds-showcase">
+      <div class="ds-spacing-scale">
+        <div class="ds-spacing-bar"><span class="ds-spacing-bar__label">--space-1 (4px)</span><div class="ds-spacing-bar__visual" style="width:4px"></div></div>
+        <div class="ds-spacing-bar"><span class="ds-spacing-bar__label">--space-2 (8px)</span><div class="ds-spacing-bar__visual" style="width:8px"></div></div>
+        <div class="ds-spacing-bar"><span class="ds-spacing-bar__label">--space-3 (12px)</span><div class="ds-spacing-bar__visual" style="width:12px"></div></div>
+        <div class="ds-spacing-bar"><span class="ds-spacing-bar__label">--space-4 (16px)</span><div class="ds-spacing-bar__visual" style="width:16px"></div></div>
+        <div class="ds-spacing-bar"><span class="ds-spacing-bar__label">--space-6 (24px)</span><div class="ds-spacing-bar__visual" style="width:24px"></div></div>
+        <div class="ds-spacing-bar"><span class="ds-spacing-bar__label">--space-8 (32px)</span><div class="ds-spacing-bar__visual" style="width:32px"></div></div>
+        <div class="ds-spacing-bar"><span class="ds-spacing-bar__label">--space-12 (48px)</span><div class="ds-spacing-bar__visual" style="width:48px"></div></div>
+        <div class="ds-spacing-bar"><span class="ds-spacing-bar__label">--space-16 (64px)</span><div class="ds-spacing-bar__visual" style="width:64px"></div></div>
+        <div class="ds-spacing-bar"><span class="ds-spacing-bar__label">--space-24 (96px)</span><div class="ds-spacing-bar__visual" style="width:96px"></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =============================================
+       SECTION 4: COMPONENTS
+       ============================================= -->
+  <section class="ds-section" id="components">
+    <h2 class="ds-section__title">4. UI Components</h2>
+    <p class="ds-section__desc">Interactive components with variants, sizes, and states. Each component uses design tokens exclusively.</p>
+
+    <!-- CMP-010: Button -->
+    <h3 style="font-size:var(--font-size-lg);font-weight:var(--font-weight-semibold);margin:var(--space-6) 0 var(--space-3)" id="cmp-button">
+      CMP-010: Button
+    </h3>
+    <div class="ds-showcase">
+      <div class="ds-showcase__label">Variants</div>
+      <div class="ds-showcase__row">
+        <button class="ds-btn ds-btn--primary ds-btn--md">Primary</button>
+        <button class="ds-btn ds-btn--secondary ds-btn--md">Secondary</button>
+        <button class="ds-btn ds-btn--danger ds-btn--md">Danger</button>
+        <button class="ds-btn ds-btn--ghost ds-btn--md">Ghost</button>
+      </div>
+      <div class="ds-showcase__label">Sizes</div>
+      <div class="ds-showcase__row">
+        <button class="ds-btn ds-btn--primary ds-btn--sm">Small</button>
+        <button class="ds-btn ds-btn--primary ds-btn--md">Medium</button>
+        <button class="ds-btn ds-btn--primary ds-btn--lg">Large</button>
+      </div>
+      <div class="ds-showcase__label">States</div>
+      <div class="ds-showcase__row">
+        <button class="ds-btn ds-btn--primary ds-btn--md">Default</button>
+        <button class="ds-btn ds-btn--primary ds-btn--md" disabled>Disabled</button>
+      </div>
+    </div>
+
+    <!-- CMP-020: Input -->
+    <h3 style="font-size:var(--font-size-lg);font-weight:var(--font-weight-semibold);margin:var(--space-6) 0 var(--space-3)" id="cmp-input">
+      CMP-020: Input
+    </h3>
+    <div class="ds-showcase">
+      <div style="max-width:400px;display:flex;flex-direction:column;gap:var(--space-4)">
+        <div>
+          <label class="ds-label">Default Input</label>
+          <input class="ds-input ds-input--md" type="text" placeholder="Enter text...">
+          <span class="ds-helper">Helper text goes here</span>
+        </div>
+        <div>
+          <label class="ds-label">Error State</label>
+          <input class="ds-input ds-input--md ds-input--error" type="text" value="Invalid value">
+          <span class="ds-error-text">This field is required</span>
+        </div>
+        <div>
+          <label class="ds-label">Disabled</label>
+          <input class="ds-input ds-input--md" type="text" placeholder="Cannot edit" disabled>
+        </div>
+        <div class="ds-showcase__label">Sizes</div>
+        <input class="ds-input ds-input--sm" type="text" placeholder="Small (32px)">
+        <input class="ds-input ds-input--md" type="text" placeholder="Medium (40px)">
+        <input class="ds-input ds-input--lg" type="text" placeholder="Large (48px)">
+      </div>
+    </div>
+
+    <!-- CMP-030: Card -->
+    <h3 style="font-size:var(--font-size-lg);font-weight:var(--font-weight-semibold);margin:var(--space-6) 0 var(--space-3)" id="cmp-card">
+      CMP-030: Card
+    </h3>
+    <div class="ds-showcase">
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:var(--space-4)">
+        <div class="ds-card">
+          <div class="ds-card__header">Static Card</div>
+          <div class="ds-card__body">Card content with default shadow and border styling.</div>
+        </div>
+        <div class="ds-card ds-card--interactive" style="cursor:pointer">
+          <div class="ds-card__header">Interactive Card</div>
+          <div class="ds-card__body">Hover to see elevated shadow effect.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CMP-040: Table -->
+    <h3 style="font-size:var(--font-size-lg);font-weight:var(--font-weight-semibold);margin:var(--space-6) 0 var(--space-3)" id="cmp-table">
+      CMP-040: Table
+    </h3>
+    <div class="ds-showcase">
+      <table class="ds-table">
+        <thead>
+          <tr><th>Name</th><th>Type</th><th>Status</th><th>Actions</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Item Alpha</td><td>Type A</td>
+            <td><span class="ds-badge ds-badge--success">Active</span></td>
+            <td><button class="ds-btn ds-btn--ghost ds-btn--sm">Edit</button></td>
+          </tr>
+          <tr>
+            <td>Item Beta</td><td>Type B</td>
+            <td><span class="ds-badge ds-badge--warning">Pending</span></td>
+            <td><button class="ds-btn ds-btn--ghost ds-btn--sm">Edit</button></td>
+          </tr>
+          <tr>
+            <td>Item Gamma</td><td>Type A</td>
+            <td><span class="ds-badge ds-badge--error">Error</span></td>
+            <td><button class="ds-btn ds-btn--ghost ds-btn--sm">Edit</button></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- CMP-050: Modal (static preview) -->
+    <h3 style="font-size:var(--font-size-lg);font-weight:var(--font-weight-semibold);margin:var(--space-6) 0 var(--space-3)" id="cmp-modal">
+      CMP-050: Modal
+    </h3>
+    <div class="ds-showcase">
+      <div style="position:relative;background:var(--color-bg-tertiary);border-radius:var(--radius-lg);padding:var(--space-8);display:flex;justify-content:center">
+        <div class="ds-modal ds-modal--sm" style="position:relative">
+          <div class="ds-modal__header">Modal Title</div>
+          <button class="ds-modal__close" aria-label="Close">&times;</button>
+          <p style="font-size:var(--font-size-sm);color:var(--color-text-secondary);margin-bottom:var(--space-4)">
+            Modal body content. Supports scrolling for long content with max-height 85vh.
+          </p>
+          <div style="display:flex;gap:var(--space-3);justify-content:flex-end">
+            <button class="ds-btn ds-btn--secondary ds-btn--md">Cancel</button>
+            <button class="ds-btn ds-btn--primary ds-btn--md">Confirm</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CMP-060: Toast -->
+    <h3 style="font-size:var(--font-size-lg);font-weight:var(--font-weight-semibold);margin:var(--space-6) 0 var(--space-3)" id="cmp-toast">
+      CMP-060: Toast
+    </h3>
+    <div class="ds-showcase">
+      <div style="display:flex;flex-direction:column;gap:var(--space-3)">
+        <div class="ds-toast ds-toast--success">&#10003; Changes saved successfully.</div>
+        <div class="ds-toast ds-toast--error">&#10007; Failed to save changes.</div>
+        <div class="ds-toast ds-toast--warning">&#9888; Connection unstable.</div>
+        <div class="ds-toast ds-toast--info">&#8505; New version available.</div>
+      </div>
+    </div>
+
+    <!-- CMP-070: Badge -->
+    <h3 style="font-size:var(--font-size-lg);font-weight:var(--font-weight-semibold);margin:var(--space-6) 0 var(--space-3)" id="cmp-badge">
+      CMP-070: Badge
+    </h3>
+    <div class="ds-showcase">
+      <div class="ds-showcase__row">
+        <span class="ds-badge ds-badge--primary">Primary</span>
+        <span class="ds-badge ds-badge--success">Success</span>
+        <span class="ds-badge ds-badge--warning">Warning</span>
+        <span class="ds-badge ds-badge--error">Error</span>
+        <span class="ds-badge ds-badge--neutral">Neutral</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- =============================================
+       SECTION 5: LAYOUT PATTERNS
+       ============================================= -->
+  <section class="ds-section" id="layout">
+    <h2 class="ds-section__title">5. Layout Patterns</h2>
+    <p class="ds-section__desc">Responsive layout patterns for common page structures.</p>
+
+    <div class="ds-showcase">
+      {{layoutPatterns}}
+    </div>
+  </section>
+
+  <!-- =============================================
+       SECTION 6: ACCESSIBILITY
+       ============================================= -->
+  <section class="ds-section" id="accessibility">
+    <h2 class="ds-section__title">6. Accessibility</h2>
+    <p class="ds-section__desc">WCAG AA compliance, focus management, keyboard navigation, and ARIA attributes.</p>
+
+    <div class="ds-showcase">
+      <div class="ds-showcase__label">Focus Indicator</div>
+      <div class="ds-showcase__row">
+        <button class="ds-btn ds-btn--primary ds-btn--md" style="outline:2px solid var(--color-primary-300);outline-offset:2px">Focus ring (2px primary-300)</button>
+      </div>
+      <div class="ds-showcase__label">Contrast Requirements</div>
+      <div style="font-size:var(--font-size-sm);color:var(--color-text-secondary)">
+        Normal text: 4.5:1 minimum | Large text (>=18px bold): 3:1 minimum | Interactive focus: 3:1 minimum
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <div class="ds-footer">Copyright(c) 2026 U PLEAT</div>
+
+</div>
+
+<!-- Theme Toggle Script -->
+<script>
+(function(){
+  const saved = localStorage.getItem('ds-theme');
+  if (saved === 'dark') applyTheme('dark');
+  function applyTheme(t) {
+    document.documentElement.setAttribute('data-theme', t);
+    const icon = document.getElementById('theme-icon');
+    const label = document.getElementById('theme-label');
+    if (icon) icon.textContent = t === 'dark' ? '\u2600' : '\u263E';
+    if (label) label.textContent = t === 'dark' ? 'Light' : 'Dark';
+  }
+  window.toggleTheme = function() {
+    const current = document.documentElement.getAttribute('data-theme') || 'light';
+    const next = current === 'dark' ? 'light' : 'dark';
+    localStorage.setItem('ds-theme', next);
+    applyTheme(next);
+  };
+})();
+</script>
+
+</body>
+</html>

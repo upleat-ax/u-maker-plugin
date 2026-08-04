@@ -1,14 +1,14 @@
 {
-  "name": "umaker",
+  "name": "u-maker",
   "owner": {
     "name": "u-plugin"
   },
   "plugins": [
     {
-      "name": "umaker",
+      "name": "u-maker",
       "source": "./",
-      "description": "PBGD-based SSoT plugin for Claude Code. 4-phase pipeline (Plan/Build/Gatekeeping/Deploy), 10 agents, 29 um-* skills — skill bodies served by the u-maker terminal's embedded skills server.",
-      "version": "4.1.0-alpha.1",
+      "description": "PBGD-based SSoT plugin for Claude Code. 4-phase pipeline (Plan/Build/Gatekeeping/Deploy), 10 agents, 29 skills.",
+      "version": "4.0.0-alpha.31",
       "category": "development",
       "tags": ["pbgd", "ssot", "agents", "gatekeeper", "quality-gate", "deploy-phase", "reverse-engineering", "html-engine", "scoring"]
     }

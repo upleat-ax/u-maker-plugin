@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SSoT Documents — {{projectName}}</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6/css/all.min.css">
+<script>
+tailwind.config={darkMode:'class',theme:{extend:{fontFamily:{sans:['Inter','system-ui','Noto Sans KR','sans-serif']}}}};
+</script>
+<style>
+body{font-family:Inter,system-ui,'Noto Sans KR',sans-serif}
+.app-card{transition:all .2s ease}
+.app-card:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,.08)}
+.dark .app-card:hover{box-shadow:0 4px 12px rgba(0,0,0,.3)}
+.phase-dot{width:8px;height:8px;border-radius:50%;display:inline-block}
+</style>
+</head>
+<body class="bg-slate-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 min-h-screen">
+
+<!-- Theme Toggle -->
+<button id="theme-toggle" class="fixed top-4 right-4 z-50 p-2 rounded-lg bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors" aria-label="Toggle dark mode">
+  <svg class="w-5 h-5 hidden dark:block" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"/></svg>
+  <svg class="w-5 h-5 block dark:hidden" fill="currentColor" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"/></svg>
+</button>
+
+<div class="max-w-5xl mx-auto px-6 py-12">
+  <!-- Breadcrumb -->
+  <nav class="text-sm mb-8">
+    <a href="../index.html" class="text-blue-600 dark:text-blue-400 hover:underline">Home</a>
+    <span class="text-gray-400 mx-2">/</span>
+    <span class="text-gray-500 dark:text-gray-400">SSoT Documents</span>
+  </nav>
+
+  <!-- Header -->
+  <div class="mb-10">
+    <h1 class="text-2xl font-extrabold tracking-tight mb-1">SSoT Documents</h1>
+    <p class="text-gray-500 dark:text-gray-400 text-sm">All generated HTML documents by application</p>
+  </div>
+
+  <!-- App List -->
+  <div class="space-y-4">
+    {{#apps}}
+    <a href="{{name}}/index.html" class="app-card block bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-6">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-4">
+          <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white font-bold text-sm">
+            {{initial}}
+          </div>
+          <div>
+            <h2 class="text-base font-bold">{{name}}</h2>
+            <p class="text-xs text-gray-500 dark:text-gray-400">{{description}}</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-6 text-xs">
+          <div class="flex items-center gap-1.5">
+            <span class="phase-dot" style="background:#3b82f6"></span>
+            <span class="text-gray-500 dark:text-gray-400">Plan <strong class="text-gray-700 dark:text-gray-300">{{planCount}}</strong></span>
+          </div>
+          <div class="flex items-center gap-1.5">
+            <span class="phase-dot" style="background:#10b981"></span>
+            <span class="text-gray-500 dark:text-gray-400">Design <strong class="text-gray-700 dark:text-gray-300">{{designCount}}</strong></span>
+          </div>
+          <div class="flex items-center gap-1.5">
+            <span class="phase-dot" style="background:#f59e0b"></span>
+            <span class="text-gray-500 dark:text-gray-400">Check <strong class="text-gray-700 dark:text-gray-300">{{checkCount}}</strong></span>
+          </div>
+          <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+        </div>
+      </div>
+
+      <!-- Document List -->
+      <div class="mt-4 pt-4 border-t border-gray-100 dark:border-gray-800 grid grid-cols-3 gap-4">
+        <!-- Plan -->
+        <div>
+          <div class="text-xs font-semibold uppercase tracking-wider text-gray-400 mb-2">Plan</div>
+          <ul class="space-y-1">
+            {{#planDocs}}
+            <li class="text-xs text-gray-600 dark:text-gray-400">{{title}}</li>
+            {{/planDocs}}
+          </ul>
+        </div>
+        <!-- Design -->
+        <div>
+          <div class="text-xs font-semibold uppercase tracking-wider text-gray-400 mb-2">Design</div>
+          <ul class="space-y-1">
+            {{#designDocs}}
+            <li class="text-xs text-gray-600 dark:text-gray-400">{{title}}</li>
+            {{/designDocs}}
+          </ul>
+        </div>
+        <!-- Check -->
+        <div>
+          <div class="text-xs font-semibold uppercase tracking-wider text-gray-400 mb-2">Check</div>
+          <ul class="space-y-1">
+            {{#checkDocs}}
+            <li class="text-xs text-gray-600 dark:text-gray-400">{{title}}</li>
+            {{/checkDocs}}
+          </ul>
+        </div>
+      </div>
+    </a>
+    {{/apps}}
+  </div>
+
+  <!-- Empty State -->
+  {{^apps}}
+  <div class="text-center py-20 text-gray-400 dark:text-gray-500">
+    <svg class="w-12 h-12 mx-auto mb-4 opacity-40" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/></svg>
+    <p class="text-sm font-medium">No documents yet</p>
+    <p class="text-xs mt-1">Run <code class="bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">/u-plan</code> to generate your first documents</p>
+  </div>
+  {{/apps}}
+
+  <!-- Footer -->
+  <div class="text-center mt-12 text-xs text-gray-400 dark:text-gray-500">
+    Copyright(c) 2026 U PLEAT
+  </div>
+</div>
+
+<script>
+const toggle=document.getElementById('theme-toggle'),html=document.documentElement;
+if(localStorage.getItem('theme')==='dark'||(!localStorage.getItem('theme')&&window.matchMedia('(prefers-color-scheme:dark)').matches))html.classList.add('dark');
+toggle.addEventListener('click',()=>{html.classList.toggle('dark');localStorage.setItem('theme',html.classList.contains('dark')?'dark':'light')});
+</script>
+</body>
+</html>
