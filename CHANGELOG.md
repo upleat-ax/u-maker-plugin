@@ -2,6 +2,85 @@
 
 All notable changes to u-maker-plugin.
 
+## [4.0.0-alpha.35] — 2026-08-08
+
+**모든 생성 문서(.md/.html)에 "쉬운 글쓰기 (Plain Language) — 중학생 이해 수준" 하드 룰을 도입했다.** 지금까지 산출물의 설명 문장이 명사화·만연체·풀이 없는 약어로 어려워지는 것을 막을 중앙 규칙이 없었다. 이제 설명 문장은 중학생이 처음 읽어도 이해할 수 있어야 하고, 게이트 검사로 강제된다.
+
+### Added
+
+- **`doc-engine.md` § 8 "Writing Style — 쉬운 글쓰기 (Plain Language, HARD RULE)" 신설 — 규칙 원문(SSoT).** 여섯 가지 규칙: ① 짧은 문장(한 문장 한 내용, 약 50자) ② 쉬운 낱말(기재한다→적는다, 산정한다→계산한다) ③ 전문용어·약어는 첫 등장에서 괄호 한 줄 풀이 ④ 추상 개념에 비유·생활 예시 한 줄 ⑤ ID·코드·스키마·수치는 그대로 — 상세함(GK-01 완전성)은 유지하고 **표현만** 쉽게 ⑥ "중학생이 이 문단만 읽고 무엇을 왜 하는지 말할 수 있나" 자기 검사. 낱말 바꿔 쓰기 표(§ 8.2)·용어 풀이 예시(§ 8.3)·"글이 어렵다는 신호" 체크리스트(§ 8.4) 포함. 렌더링 절차에 검증 단계 추가.
+- **`html-engine.md` § 0.6 신설** — 같은 규칙의 HTML 적용 범위 정의: 본문 문단·`.sub`·`.thesis`·`.section-hint`·표 셀·다이어그램 라벨·어노테이션·글랜스 요약까지 전부.
+- **GK-06 (Content Composition) 에 `plain-language-middle-school` 체크 추가** — `gate-rules.json` + `u-agent-gatekeeper.md`. 세 줄 초과 문장, 풀이 없는 약어 2개 이상/문단, 비유 없는 추상 개념 서술을 감점. 쉬운 표현 때문에 내용이 빠지면 GK-06 가점이 아니라 GK-01 감점.
+
+### Changed
+
+- **문서를 생성하는 전 스킬·에이전트에 규칙 연결** — u-plan·u-design·u-output·u-report-html·u-report-daily·u-report-weekly·u-reports-roadmap·u-meeting-note·u-wireframe·u-qa·u-deploy·u-reverse·u-doc·u-gatekeeping·u-analyze·u-tools-figma·u-discuss SKILL.md 와 u-agent-plan·u-agent-design·u-agent-report·u-agent-qa·u-agent-deploy 에 SSoT 포인터 삽입.
+- **품질 루프 채점 기준 강화** — `u-report-html/references/scoring-criteria.md` 와 `u-meeting-note/references/scoring-criteria.md` 의 글쓰기 항목을 "중학생 이해 수준" 기준으로 상향(항목 수 10개 유지).
+- **digest 상세함 보존 명시** — u-analyze·u-tools-figma 의 digest 서술 문장에도 규칙이 적용되지만, 12개 카테고리 구조화 상세(비즈니스 로직·도메인 규칙 등)는 축소하지 않는다.
+
+## [4.0.0-alpha.34] — 2026-08-06
+
+**`the-html-report` 개인 스킬을 플러그인으로 흡수하고, HTML 테마를 공통 CSS 한 벌로 묶었다.** 그동안 `~/.claude/skills/the-html-report` 는 Pretendard + `#4f8cff` 블루·퍼플 그라데이션 + 라이트 전용이라 u-maker 산출물과 다른 문서처럼 보였다. 이제 **스타일은 한 벌(gray + pale blue · 시스템 서체 · 라이트/다크/색각 3모드), 템플릿은 여러 개**로 정리한다.
+
+### Added
+
+- **`_meta/theme/u-doc-theme.css` 신설 — 공통 테마 CSS 원본(SSoT 구현체).** 레이어 구조로 나눠 템플릿이 필요한 부분만 인라인 복사한다: `L0` tokens(light/dark/colorblind + 사이드바 + 명도 램프) · `L1` base+prose(hero/thesis/qword/section-hint/panel/card/table/toc/footer) · `L2a` 단일 컬럼 shell · `L2b` 3열 리포트 shell(사이드바 + 글랜스 레일) · `L3` components · `L4` chrome(fab-stack·진행률 바·반응형·인쇄).
+- **`skills/u-report-html/` 신설** (구 `the-html-report` 흡수·대체) — Report Writer + Report Reviewer 2-Agent 품질 루프로 10개 기준 평균 95점까지 반복 보완하는 HTML 문서 생성 스킬. `SKILL.md` · `references/design-system.md` · `references/scoring-criteria.md` · 템플릿 2종.
+  - `assets/template-report.html` — 3열(좌 목차 사이드바 + 본문 + 우 글랜스 레일), 기본값
+  - `assets/template-doc.html` — 단일 컬럼 `.doc-container`, 짧은 문서·인쇄용
+  - 두 템플릿은 색·서체·컴포넌트 CSS 가 완전히 동일하고 shell 만 다르다. **새 템플릿은 `L0`·`L1`·`L4` 를 그대로 두고 `L2` 만 새로 짜는 방식으로 얼마든지 추가**할 수 있다(design-system.md "새 템플릿 추가").
+- **`html-engine.md` § 0.5 우측 글랜스 레일** — the-html-report 에만 있던 `.glance` 요약 레일을 테마의 공식 선택 컴포넌트로 편입. 핵심 요약 3~5줄 + 섹션 앵커 블록, `.gb-count` 색은 `.ok`/`.warn`/`.bad`/`.neutral`, `#glance-toggle` + `localStorage.glanceOff`, 1200px 이하·인쇄 시 자동 숨김.
+
+### Changed
+
+- **the-html-report 테마 전면 교체** — Pretendard CDN → 시스템 서체 스택(14.5px/1.8), accent `#4f8cff` → `#3d6fa5`, `#4f8cff→#6366f1` 그라데이션 헤더 카드 → `hero` + 1px 밑줄, 흰 사이드바 → 잉크 네이비(`--sb-bg:#162033`→`#111827`), 본문 폭 840↔1100 → `--content-w` 1080/1440/1920 순환.
+- **라이트 전용 → 라이트/다크/색각 보정 3모드** — `.fab-stack` 테마 순환 버튼 + `localStorage.theme` 복원 + `.colorblind :focus-visible` 3px 고대비 outline. 기존 `.float-tools`(요약/폭/맨위)는 u-maker 표준 `.fab-stack`(테마/폭/요약/맨위)으로 통합.
+- **색 variant 재정의** — `.green`/`.yellow`/`.purple` 유채색 계열 폐기. 캐논 이름은 `.accent`/`.ok`/`.warn`/`.bad`/`.neutral` 이며, 구버전 클래스명은 별칭으로 남겨 기존 산출물이 깨지지 않는다(`.feature-card`·`.badge-*`·`.gb-count`·`.flow-node` 공통).
+- **GK-07 정합** — 섹션 제목의 `border-bottom: 2px solid var(--accent)` 밑줄을 `.qword` 하이라이트 칩으로 대체, 사이드바 active 의 컬러 테두리 제거(배경 채움 + 굵기만), `.decision-list` 를 항목별 카드 + shadow 에서 `.simple-list` 계열 구분선형으로 전환.
+- **평가 기준 2번을 "디자인 시스템 준수" → "테마 준수"로 재작성** — 금지 색 목록(lime/amber/green/teal/violet/pink/cyan/vivid blue), 웹폰트 CDN 금지, 3모드 동작, GK-07 단면 border, 반복 목록 카드화 여부를 명시적 감점 항목으로 추가. 1·6·8·9번도 새 구조(fab-stack·`.blk[id]`·미디어 쿼리 1200/900/760·타이포 스케일)에 맞춰 갱신.
+- **`html-engine.md` § 0 머리말** — 테마 구현체 표(공통 CSS + 템플릿 12종 + u-report-html 템플릿 2종)와 "스타일은 한 벌, 템플릿은 여럿" 원칙, 새 템플릿 작성 규칙을 명문화.
+- **사이드바 면을 다크 블루로** — `--sb-bg:#162033`→`#143050`, `--sb-deep:#111827`→`#0e2138`(다크 `#0f2337`→`#091724`). `output-index`·`output-split-page` 템플릿에도 같은 값 적용.
+- **컨트롤 위치를 사이드바 하단으로** — 테마·본문 폭·요약 레일·맨 위로 버튼이 본문 위에 떠 있던 `.fab-stack` 대신, 사이드바 맨 아래 면에 임베딩된 아이콘 줄(`.sidebar-tools` > `.sb-tool`)로 들어간다. 사이드바가 없는 단일 컬럼 템플릿만 기존 `.fab-stack` 을 유지한다. 900px 이하에서 사이드바가 사라지면 같은 줄이 우하단 알약 그룹으로 떨어지고, 사이드바에는 `padding-bottom:51px` 을 줘 `.sidebar-footer` 가 가려지지 않게 했다.
+- **형광펜(highlighter) 강조** — 제목·본문 핵심어를 배경 칩이 아니라 글자 아래 62%만 덮는 마커 자국(`linear-gradient` + `box-decoration-break:clone`)으로 그린다. 자리는 제목 `.highlight`, 섹션 제목 `.qword`, 본문 인라인 `<mark>`(= `.hl`) 세 곳. html-engine § 0.2 에 규격을 추가했다.
+- **인쇄 규칙 명문화** — `@media print` 에서 좌 사이드바·우 글랜스 레일·컨트롤·진행률 바를 모두 감추고 본문만 전체 폭으로 남긴다(§ 0.4).
+
+### Fixed
+
+40-에이전트 교차 감사에서 확정된 결함을 반영했다.
+
+- **인라인 SVG 다크 모드** — 하드코딩 hex(`fill="#111827"`)로 그린 다이어그램이 다크 배경에 묻히던 문제. 테마 SVG 클래스(`.svg-ink` `.svg-muted` `.svg-surface` `.svg-panel` `.svg-accent-bg` `.svg-accent` `.svg-border` `.svg-line` `.svg-stroke-accent` `.svg-marker` `.svg-warn` `.svg-bad`)를 추가하고, html-engine § 2 Rule 7 과 design-system 을 이 방식으로 갱신했다.
+- **대비 미달 2건** — `.empty`(`--gray-4`, 라이트 1.48:1)와 `.standard-arrow`(`--gray-3`, 라이트 2.56:1)를 `--dim` 으로 올려 3모드 모두 AA 를 넘긴다.
+- **`.dark` 에 `color-scheme:dark` 누락** — 스크롤바·폼 컨트롤이 다크에서 라이트 위젯으로 렌더되던 문제.
+- **모션 감축 미지원** — `@media (prefers-reduced-motion: reduce)` 에서 `scroll-behavior:auto` + 전환/애니메이션을 차단하고, "맨 위로"도 `behavior:'auto'` 로 떨어지게 했다.
+- **접근성 라벨** — 폭 토글의 `aria-label`("본문 폭 전환")이 보이는 라벨("본문 넓게")을 포함하지 않아 음성 제어가 실패하던 WCAG 2.5.3 위반을 수정(아이콘 전용 + 상태를 반영하는 `aria-label`/`title`). 글랜스 레일 토글에 `aria-expanded` + `aria-controls="glance"` 추가.
+- **`.mermaid`/`.mermaid-wrapper` 누락** — 두 템플릿의 L1 블록에 빠져 있어, 승인된 UML fallback 을 쓰면 라이트 고정 Mermaid 가 다크 배경 위에 그려지던 문제.
+
+### Notes
+
+- 개인 스킬 `~/.claude/skills/the-html-report` 는 중복 등록을 막기 위해 `~/.claude/skills-archive/` 로 옮겼다(삭제 아님). 새 위치는 플러그인 네임스페이스의 `u-maker:u-report-html`.
+- `/u-meeting-note` 의 템플릿 2종은 이번 범위 밖이다 — 이미 alpha.33 에서 팔레트·서체를 옮겼고 라이트 전용으로 남아 있다. 3모드·공통 CSS 편입은 후속 작업.
+
+## [4.0.0-alpha.33] — 2026-08-04
+
+**HTML 산출물 전체 색 테마를 gray + pale blue 한 벌로 축소.** alpha.32 에서 연두·노랑만 걷어냈다면, 이번에는 teal·violet·pink·cyan 같은 남은 유채색 계열까지 없애고 **면·글자는 중립 회색, 강조는 페일 블루** 로 통일한다. 단계·계열 구분은 색상(hue)이 아니라 **명도(depth)** 로 한다.
+
+### Changed
+
+- **팔레트 전면 교체** — accent `#2563eb` → `#3d6fa5`(steel blue), 하이라이트 `#dbe7ff` → `#dbe7f5`(pale blue), 면 `#f5f6f7` → `#f2f5f8`, 테두리 `#e5e7eb` → `#e2e8f0`, 잉크 `#111` → `#111827`.
+- **PBGD 단계색을 명도 램프로** — Plan `#2c5580`(deep steel) → Build `#3d6fa5`(steel) → Gatekeeping `#64748b`(slate) → Deploy `#334155`(charcoal). 기존 teal `#0d9488` · violet `#7c3aed` · pink `#db2777` 폐기.
+- **사이드바 네이비 → 그래파이트** `#1b2230` → `#232932`(dark `#171b22`), active 는 `rgba(168,196,224,.16)` 면 채움.
+- **차트 팔레트 재정의** — `--chart-blue/teal/violet/cyan/pink` → `--chart-1…6` 명도 램프 + `--chart-warn`/`--chart-red`. 인접 계열은 선 굵기·점 모양으로도 구분하도록 규칙 추가.
+- **로드맵 track 팔레트** — pale blue / cool gray / warm gray 3개 램프 × 4단계로 재구성(기존 `green*`/`amber*` 키 별칭 유지).
+- **`/u-meeting-note` 템플릿 2종 편입** — 그동안 빠져 있던 `template-general.html` · `template-review.html` 의 Pretendard CDN 제거(시스템 서체) 및 노랑·초록·보라 뱃지 팔레트 교체, 화자 구분 점 8종을 명도 램프로 전환.
+- **플로팅 컨트롤 3종을 전 템플릿에 통일** — daily-report · reports-index · root-index · output-root-index 에 없던 **본문 폭 토글 + 맨 위로** 버튼 추가, design-system 에 본문 폭 토글 추가. 고정 셸인 `output/{app}/index.html` 만 다크모드 버튼 단독.
+- **색각 보정 테마 추가** — 공통 HTML 템플릿 9종의 테마 버튼을 `light → dark → colorblind` 3단 순환으로 확장했다. Okabe-Ito 기반 blue/orange/magenta 의미색, 더 강한 중립 테두리, 3px 고대비 focus outline을 적용하고 `localStorage`에 선택값을 유지한다.
+- **`html-engine.md` § 0.1 재작성** — "연두·노랑 금지" → "gray + pale blue only" HARD RULE, 색 이름 표에 램프 추가, § 0.4 에 세 버튼 필수 규정, 자기검증 체크리스트 갱신.
+
+### Notes
+
+- 기본 light/dark의 유채색 예외는 **경고 orange `#c2410c` · 실패 red `#dc2626`(글자 `#b91c1c`)** 둘뿐이다. `colorblind` 모드에는 색각 다양성 대응용 고대비 팔레트를 별도 예외로 사용한다.
+- `u-design`/`u-tools-figma-ds`/`u-createproject` 의 `#3b82f6` 등은 **사용자 프로젝트의 디자인 토큰 예시**라 그대로 둔다(u-maker 문서 테마가 아니다).
+
 ## [4.0.0-alpha.32] — 2026-08-04
 
 **HTML 산출물 공통 테마 통일 — 시스템 서체 · blue accent(연두/노랑 제거) · 레퍼런스 문단 구조.** 아울러 `um-*` 스텁(fetch) 전환을 되돌려 **스킬 본문을 플러그인 안에 로컬로 유지**한다.
