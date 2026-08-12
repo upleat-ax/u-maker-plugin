@@ -167,10 +167,34 @@ base64 인코딩 → HTML 인라인 삽입은 이 스킬이 담당
 
 - Tailwind CDN (`https://cdn.tailwindcss.com`)
 - Font Awesome CDN (`https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6/css/all.min.css`) — UI 아이콘용 `fa-*` 클래스 (currentColor 상속 → 다크/라이트 자동 적응)
-- Dark/Light 모드 토글 (우상단 고정)
-- 다크 사이드바 (`#1e2432`) + 라이트 본문 (`#f8fafc`)
+- 라이트/다크/색각 보정 순환 · 본문 폭 · 맨 위로 컨트롤 — 사이드바 하단 `.sidebar-tools` 임베딩 (html-engine § 0.4; 900px 이하에서는 우하단 `.fab-stack` 으로 전환)
+- 잉크 네이비 사이드바 (`#162033` → `#111827` 세로 gradient) + 라이트 본문 (`#f8fafc`)
 - 사이드바 스크롤 추적 네비게이션
+- 반복 텍스트 목록은 `html-engine`의 `.simple-list`를 사용: 항목별 bordered rounded box·shadow·gap 금지, 행 사이 1px 중립 구분선만 허용
+- 설명 문장(섹션 리드, 회의 요약, 다음 주 과제 등)은 **쉬운 글쓰기(중학생 이해 수준)** 규칙을 따른다 — 짧은 문장·쉬운 낱말, 전문용어는 첫 등장에서 괄호 한 줄 풀이. 수치·ID·차트 데이터는 그대로 둔다. 규칙 원문: `skills/u-engine/references/html-engine.md` § 0.6 / `doc-engine.md` § 8, GK-06 `plain-language-middle-school` 검사로 강제
 - Copyright(c) 2026 U PLEAT 푸터
+
+#### 사이드바 컬러 및 상태 (필수)
+
+```css
+:root{
+  --sidebar-bg:#162033;--sidebar-deep:#111827;
+  --sidebar-fg:#f8fafc;--sidebar-muted:#c6d0df;--sidebar-dim:#8fa0b8;
+  --sidebar-accent:#a8c4e0;--sidebar-line:rgba(168,196,224,.14);
+  --sidebar-hover:rgba(168,196,224,.08);--sidebar-active:rgba(168,196,224,.16);
+  --sidebar-chip:rgba(168,196,224,.12);
+}
+.report-sidebar{background:linear-gradient(180deg,var(--sidebar-bg),var(--sidebar-deep));color:var(--sidebar-fg)}
+.report-sidebar .nav-item{color:var(--sidebar-muted)}
+.report-sidebar .nav-item:hover{background:var(--sidebar-hover);color:var(--sidebar-fg)}
+.report-sidebar .nav-item.active{background:var(--sidebar-active);color:var(--sidebar-fg);font-weight:700}
+.report-sidebar .nav-icon,.report-sidebar .nav-count{border:0;background:var(--sidebar-chip);color:var(--sidebar-accent);box-shadow:none}
+```
+
+- 제목은 `#f8fafc`, 기간은 `#a8b6ca`로 표시하여 정보 위계를 분명히 한다.
+- 섹션명 기본색은 `#c6d0df`; hover/active에서만 흰색으로 올린다.
+- 번호 칩(`01`~`09`)과 카운트 배지는 흰색 배경을 금지한다. 반투명 페일 블루 면을 사용한다.
+- 사이드바 전체를 중간 회색(`#242932` 계열) 단색으로 채우거나, 본문 텍스트를 저대비 회색으로 표시하지 않는다.
 
 #### 리포트 섹션 (순서)
 
@@ -182,8 +206,8 @@ base64 인코딩 → HTML 인라인 삽입은 이 스킬이 담당
 | 카드 | 값 | 색상 |
 |------|----|------|
 | 총 커밋 | `git_summary.total_commits` | blue |
-| 신규 항목 | FR+US+FT+TC 합산 delta | green |
-| 회의 횟수 | `meetings_summary.total_meetings` | amber |
+| 신규 항목 | FR+US+FT+TC 합산 delta | pale blue |
+| 회의 횟수 | `meetings_summary.total_meetings` | slate |
 | 미해결 이슈 | `meetings_summary.total_unresolved` | red |
 
 **3. 앱별 SSoT 현황 테이블**
@@ -246,8 +270,8 @@ SVG 차트 규칙:
 - `viewBox` 반응형 (`width="100%"`)
 - 곡선 커넥터 (Bezier `C` path)
 - 축 라벨, 범례(legend), 그리드 라인 포함
-- 색상: blue(`#2563eb`), teal(`#0d9488`), orange(`#c2410c`), red(`#dc2626`), violet(`#7c3aed`) — 연두·노랑 금지
-- dark mode 호환 (CSS 변수 사용)
+- 색상: § 0.1 명도 램프 — `#2c5580` · `#3d6fa5` · `#5b8db8` · `#8fb3d0` · `#64748b` (+ 경고 `#c2410c`, 실패 `#dc2626`) — gray + pale blue 외 금지
+- light/dark/colorblind 테마 호환 (CSS 변수 사용)
 - ASCII art 금지
 
 **5. 회의록 주간 요약**
@@ -260,7 +284,7 @@ SVG 차트 규칙:
 **6. Git 활동 요약**
 - 일별 커밋 히트맵 (SVG 7칸 grid, 진하기로 강도 표현)
 - 기여자별 커밋 수 (수평 바)
-- 주요 변경 사항 목록
+- 주요 변경 사항 목록 — `.simple-list`, 항목별 카드 금지
 
 **7. Playwright 캡처 갤러리** (캡처 있을 때만)
 - 앱별 그룹핑
@@ -270,6 +294,17 @@ SVG 차트 규칙:
 - 미해결 이슈 기반 자동 도출
 - 테스트 실패 항목 재검증 목록
 - 설계 대비 구현 gap이 큰 영역
+- 번호형 `.simple-list.simple-list--numbered`로 렌더링하고, 번호는 배경 없는 mono 텍스트로 표시
+
+#### 반복 목록 스타일 (전체 섹션 공통)
+
+출처/근거 파일, 주요 변경, 액션·권고, 다음 주 과제, 체크포인트·마일스톤은 카드 컬렉션이 아니라 단순 행 목록으로 렌더링한다.
+
+- 각 항목: `background:transparent; border:0; border-radius:0; box-shadow:none; margin:0`
+- 행 사이: `border-bottom:1px solid var(--border)`; 마지막 행은 구분선 없음
+- 현재/중요 행: `background:var(--accent-bg)` + `font-weight:700`; 테두리·radius 추가 금지
+- 3열 마일스톤: `이름 | 설명 | 날짜` grid를 유지하되 같은 행 구분선 스타일 적용
+- 요약 KPI·차트·캡처 갤러리·접기/펼치기 회의 카드는 독립 콘텐츠이므로 카드 스타일 유지
 
 ### Step 8: 인덱스 갱신
 

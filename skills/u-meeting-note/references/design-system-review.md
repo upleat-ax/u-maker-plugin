@@ -12,7 +12,7 @@ Minutes Writer 에이전트가 **화면 리뷰 회의록** (수정사항 리포�
 - **라이트 본문 + 우측 글랜스 레일** — 본문은 단일 컬럼(좌 사이드바 없음) + 상단 sticky nav(섹션 점프·유형 필터), **우측에 `.glance` 한눈 요약 레일**(요약·먼저!·유형별·약속). 바쁜 독자는 레일만 봐도 리뷰 전체 파악
 - **본문 폭 1440px ↔ 1920px 토글** + 글랜스 레일 접기 토글 (프로젝트 HTML 리포트 규칙)
 - **강조는 전체 border + 옅은 배경** — 한쪽 border accent 금지
-- **자체완결 단일 HTML** — 캡쳐 이미지는 전부 base64 인라인. 외부 참조는 Pretendard·Font Awesome CDN 만(아이콘용), 그 외 리소스는 인라인
+- **자체완결 단일 HTML** — 캡쳐 이미지는 전부 base64 인라인. 외부 참조는 Font Awesome CDN 만(아이콘용), 그 외 리소스는 인라인
 - **아이콘 = Font Awesome (이모티콘 금지)** — UI 아이콘은 `<i class="fa-solid fa-…">` (FA6, currentColor 상속). 이모지(📌🔥🏷🤝 등) 사용 금지
 - **쉬운 언어** — 전문용어는 괄호로 풀거나 일상어로 (예: "연동" → "서버에서 실제 데이터를 받아오도록 연결")
 
@@ -20,14 +20,14 @@ Minutes Writer 에이전트가 **화면 리뷰 회의록** (수정사항 리포�
 
 ```css
 :root {
-  --bg:#f4f5f8; --surface:#fff; --ink:#1c2333; --sub:#5b6474; --line:#e2e5ec;
-  --accent:#175cd3; --accent-bg:#eff6ff;
-  --bug:#d92d20;    --bug-bg:#fef3f2;    --bug-line:#f9c3bd;    /* 버그 */
-  --fix:#dc6803;    --fix-bg:#fffaeb;    --fix-line:#fedf89;    /* 수정 */
-  --link:#175cd3;   --link-bg:#eff6ff;   --link-line:#b2ccff;   /* 연동 */
-  --policy:#6941c6; --policy-bg:#f5f3ff; --policy-line:#d9d6fe; /* 정책 */
-  --first:#1c2333;  --first-bg:#eceef2;  --first-line:#c9cdd6;  /* 먼저! */
-  --ok:#079455;     --ok-bg:#ecfdf3;     --ok-line:#a6f4c5;     /* 약속/완료 */
+  --bg:#f2f5f8; --surface:#fff; --ink:#111827; --sub:#4b5563; --line:#e2e8f0;
+  --accent:#3d6fa5; --accent-bg:#eef3f9;
+  --bug:#dc2626;    --bug-bg:#f9f0ef;    --bug-line:#e9c9c6;    /* 버그 */
+  --fix:#c2410c;    --fix-bg:#f7f0ea;    --fix-line:#e6d3ba;    /* 수정 */
+  --link:#3d6fa5;   --link-bg:#eef3f9;   --link-line:#c3d6e8;   /* 연동 */
+  --policy:#64748b; --policy-bg:#f1f5f9; --policy-line:#cbd5e1; /* 정책 */
+  --first:#111827;  --first-bg:#eef2f6;  --first-line:#cbd5e1;  /* 먼저! */
+  --ok:#2c5580;     --ok-bg:#eef3f9;     --ok-line:#c3d6e8;     /* 약속/완료 */
   --radius:14px; --radius-sm:9px; --maxw:1440px;  /* body.wide → 1920px */
   --glance-w:320px;  /* 우측 글랜스 레일 폭 */
 }
@@ -184,7 +184,7 @@ Minutes Writer 에이전트가 **화면 리뷰 회의록** (수정사항 리포�
 
 ## 작성 원칙
 
-- `assets/template-review.html` 의 CSS 를 **인라인 복사**해 단일 HTML (Pretendard + Font Awesome CDN 예외). 아이콘은 이모지 대신 `fa-solid`
+- `assets/template-review.html` 의 CSS 를 **인라인 복사**해 단일 HTML (Font Awesome CDN 만 예외). 아이콘은 이모지 대신 `fa-solid`
 - **우측 글랜스 레일 먼저 채운다**: 요약(총건수·먼저!·화면수) + P0 목록 + 유형 집계 + 약속 → 본문은 그 상세
 - **간결·쉬운 말이 원칙**: 지금/할 일/확인은 각 1~2문장, 제목은 현상 중심 한 줄. 논문투·장문 금지
 - 전사에 나온 수정 지시는 **하나도 빠짐없이** 항목화 — 사소해 보여도 누락 금지 (사소한 것은 `수정` 뱃지로)

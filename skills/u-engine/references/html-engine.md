@@ -1,59 +1,95 @@
 # html-engine Reference
 
-The html-engine converts SSoT markdown documents into polished, self-contained HTML pages. It handles markdown parsing, inline SVG diagram generation (primary), Mermaid fallback for UML diagrams, base64 image embedding, Tailwind CSS styling, Font Awesome icon fonts, dark/light mode toggling, sidebar navigation, and Table of Contents generation. **SVG is the preferred diagram format** — self-contained, offline-capable, instantly rendered without CDN dependencies.
+The html-engine converts SSoT markdown documents into polished, self-contained HTML pages. It handles markdown parsing, inline SVG diagram generation (primary), Mermaid fallback for UML diagrams, base64 image embedding, Tailwind CSS styling, Font Awesome icon fonts, light/dark/color-vision-accessible theme switching, sidebar navigation, and Table of Contents generation. **SVG is the preferred diagram format** — self-contained, offline-capable, instantly rendered without CDN dependencies.
 
 ## 0. Document Theme (SSoT) — 서체 · 색 · 문단 구조
 
-모든 HTML 산출물(문서·인덱스·리포트·와이어프레임·디자인시스템·로드맵)은 아래 테마를 **공통 기준**으로 삼는다.
-`_meta/templates/*.html` 이 이 테마의 구현체이고, 엔진이 새로 만드는 HTML도 같은 토큰·타이포·문단 구조를 쓴다.
-템플릿을 고칠 일이 생기면 이 절과 템플릿을 **함께** 고친다.
+모든 HTML 산출물(문서·인덱스·리포트·와이어프레임·디자인시스템·로드맵·`/u-report-html` 문서)은 아래 테마를 **공통 기준**으로 삼는다.
+엔진이 새로 만드는 HTML도 같은 토큰·타이포·문단 구조를 쓴다. 이 절을 고칠 일이 생기면 아래 구현체를 **함께** 고친다.
 
-### 0.1 Color tokens — 연두·노랑 금지 (HARD RULE)
+**스타일은 한 벌, 템플릿은 여럿.** 색·서체·문단 리듬·플로팅 컨트롤은 이 절이 정하고, 레이아웃은 문서 성격에 따라 달라도 된다.
 
-**연두(lime / yellow-green)와 노랑(yellow / amber) 계열은 어떤 산출물에도 쓰지 않는다.**
-강조는 blue, 성공·완료는 teal, 경고는 orange, 실패는 red로 표현한다. (기존 `#f59e0b` amber, `#10b981`·`#22c55e` green,
-`#D7FF5A` lime 은 모두 폐기)
+| 구현체 | 역할 |
+|---|---|
+| `_meta/theme/u-doc-theme.css` | **공통 테마 CSS 원본.** 템플릿이 여기서 인라인 복사한다. 레이어: `L0` tokens · `L1` base+prose · `L2a` 단일 컬럼 shell · `L2b` 3열 리포트 shell · `L3` components · `L4` chrome |
+| `_meta/templates/*.html` (9종) | 엔진이 쓰는 문서·인덱스·리포트·디자인시스템 템플릿 |
+| `skills/u-report-html/assets/template-report.html` | 3열 리포트(좌 목차 + 본문 + 우 글랜스 레일) |
+| `skills/u-report-html/assets/template-doc.html` | 단일 컬럼 문서 |
+| `skills/u-wireframe/references/wireframe-*.template.html` | 와이어프레임(상단 sticky header 예외) |
+| `skills/u-reports-roadmap/assets/roadmap-template.html` | 간트 로드맵 |
+
+새 템플릿을 만들 때는 `L0`·`L1`·`L4` 를 값 그대로 인라인하고 `L2`(shell)만 새로 짠다.
+새 색·새 서체·새 문단 클래스가 필요해지면 그건 템플릿이 아니라 **테마 변경**이므로 이 절과 `u-doc-theme.css`, 기존 템플릿을 함께 갱신한다.
+
+### 0.1 Color tokens — gray + pale blue default + colorblind override (HARD RULE)
+
+**전체 색 테마는 회색(gray)과 연한 파랑(pale blue) 두 계열뿐이다.**
+연두(lime)·노랑(yellow/amber)은 물론 **teal·violet·pink·cyan 같은 유채색 계열도 쓰지 않는다.**
+면과 글자는 중립 회색, 강조·링크·하이라이트는 pale blue, 단계 구분은 **색상(hue)이 아니라 명도(depth)** 로 한다.
+(기존 `#D7FF5A` lime, `#f59e0b` amber, `#10b981`·`#22c55e` green, `#0d9488` teal, `#7c3aed` violet,
+`#db2777` pink, `#2563eb` vivid blue 는 모두 폐기)
+
+기본 라이트/다크 테마의 예외는 **상태 두 가지뿐이다** — 경고 orange `#c2410c`, 실패 red `#dc2626`. 배지·경고문에만 최소로 쓴다.
+`colorblind` 테마는 색각 다양성 대응을 위한 명시적 예외이며, 아래의 고대비 blue/orange/magenta 조합만 허용한다. 상태 텍스트·아이콘·레이블은 제거하지 않는다.
 
 ```css
 :root{
-  /* surface */
-  --bg:#fff;--panel:#f5f6f7;--soft:#fafafa;--surface:#fff;
-  --fg:#111;--muted:#4b5563;--dim:#6b7280;--border:#e5e7eb;
-  /* accent — blue family */
-  --accent:#2563eb;--accent-strong:#1d4ed8;--accent-soft:#93b4ff;
-  --accent-bg:#eef3ff;--accent-line:#9db9f0;--hi:#dbe7ff;   /* --hi = 형광펜 하이라이트 */
+  /* surface — neutral gray */
+  --bg:#fff;--panel:#f2f5f8;--soft:#f8fafc;--surface:#fff;
+  --fg:#111827;--muted:#4b5563;--dim:#6b7280;--border:#e2e8f0;
+  /* accent — pale steel blue */
+  --accent:#3d6fa5;--accent-strong:#2c5580;--accent-soft:#a8c4e0;
+  --accent-bg:#eef3f9;--accent-line:#b8cee4;--hi:#dbe7f5;   /* --hi = 형광펜 하이라이트 */
   /* status */
-  --ok-bg:#eaf3ff;--ok-fg:#1d4ed8;--bad-bg:#fdf2f1;--bad-fg:#b91c1c;
-  --warn-bg:#fff1ea;--warn-fg:#c2410c;
+  --ok-bg:#eef3f9;--ok-fg:#2c5580;--bad-bg:#f9f0ef;--bad-fg:#b91c1c;
+  --warn-bg:#f7f0ea;--warn-fg:#c2410c;
   /* PBGD phase */
-  --plan:#2563eb;--build:#0d9488;--gate:#7c3aed;--deploy:#db2777;
+  --plan:#2c5580;--build:#3d6fa5;--gate:#64748b;--deploy:#334155;
   --shadow:0 1px 2px rgba(17,17,17,.05);
   --content-w:1080px;
 }
 .dark{
-  --bg:#0d1117;--panel:#161b22;--soft:#12171e;--surface:#12171e;
-  --fg:#e6edf3;--muted:#9aa7b6;--dim:#7d8998;--border:#232b36;
-  --accent:#6ea8ff;--accent-strong:#93b4ff;--accent-soft:#93b4ff;
-  --accent-bg:#152238;--accent-line:#2f4c7d;--hi:#1d3a6b;
-  --ok-bg:#152238;--ok-fg:#93b4ff;--bad-bg:#2a1614;--bad-fg:#fca5a5;
-  --warn-bg:#2a1a12;--warn-fg:#fdba74;
-  --plan:#6ea8ff;--build:#2dd4bf;--gate:#a78bfa;--deploy:#f472b6;
+  --bg:#0f1319;--panel:#161c24;--soft:#131920;--surface:#131920;
+  --fg:#e6edf3;--muted:#9aa7b6;--dim:#7d8998;--border:#242c37;
+  --accent:#8ab4e0;--accent-strong:#a8c4e0;--accent-soft:#a8c4e0;
+  --accent-bg:#172230;--accent-line:#2c435c;--hi:#20344c;
+  --ok-bg:#172230;--ok-fg:#a8c4e0;--bad-bg:#261a18;--bad-fg:#fca5a5;
+  --warn-bg:#26201a;--warn-fg:#d9b48c;
+  --plan:#6d9dcb;--build:#8ab4e0;--gate:#94a3b8;--deploy:#cbd5e1;
   --shadow:0 1px 2px rgba(0,0,0,.45);
 }
+.colorblind{
+  color-scheme:light;
+  --bg:#fff;--panel:#f1f5f7;--soft:#f7fafb;--surface:#fff;
+  --fg:#1a1a1a;--muted:#3f4a54;--dim:#56616a;--border:#7c8993;
+  --accent:#0072b2;--accent-strong:#005a8d;--accent-soft:#56b4e9;
+  --accent-bg:#e6f3f8;--accent-line:#56b4e9;--hi:#d7eef7;
+  --ok-bg:#e6f3f8;--ok-fg:#005a8d;--bad-bg:#fff0e8;--bad-fg:#9f4500;
+  --warn-bg:#fff4d6;--warn-fg:#704700;
+  --plan:#0072b2;--build:#8a5700;--gate:#8f4a80;--deploy:#1a1a1a;
+  --shadow:0 1px 3px rgba(26,26,26,.12);
+}
+.colorblind :focus-visible{outline:3px solid #8a5700;outline-offset:3px}
 ```
 
-사이드바(문서 목차·앱 내비게이션)는 네이비 면을 쓴다: `--sb-bg:#1b2230`(dark 모드 `#12161f`),
-`--sb-fg:#e8edf5`, `--sb-muted:#93a1b5`, `--sb-dim:#6b7889`, 구분선 `rgba(255,255,255,.07)`.
+사이드바(문서 목차·앱 내비게이션)는 **다크 블루** 면을 쓴다: 위 `--sb-bg:#143050`에서 아래 `--sb-deep:#0e2138`로 이어지는 미세한 세로 gradient다(다크 테마는 `#0f2337` → `#091724`).
+텍스트는 `--sb-fg:#f8fafc`, `--sb-muted:#c6d0df`, `--sb-dim:#8fa0b8`, accent는 `--sb-accent:#a8c4e0`을 사용한다. 구분선은 `rgba(168,196,224,.14)`.
+hover는 `rgba(168,196,224,.08)`, active는 `rgba(168,196,224,.16)` 면 채움 + 굵기로만 표시한다(단면 border 금지). 번호·카운트 칩은 흰 배경을 금지하고 `rgba(168,196,224,.12)` 면 + `#a8c4e0` 텍스트를 쓴다.
 
-| 의미 | 색 | 쓰는 곳 |
-|---|---|---|
-| Accent / Plan | `#2563eb` | 링크, 기본 강조, Plan phase |
-| Highlight(형광펜) | `#dbe7ff` | `h1`·`h2` 안의 키워드, `.qword` 칩 |
-| Build / Design / 성공 | `#0d9488` (teal) | Design phase, pass 배지 |
-| Gatekeeping / Check | `#7c3aed` (violet) | Check phase, gate 리포트 |
-| Deploy / Loop | `#db2777` (pink) | Deploy phase, loop 리포트 |
-| 경고 | `#c2410c` (orange) | 재작업 필요, 80~94점 |
-| 실패 | `#dc2626` (red) | 차단, 80점 미만 |
+| 의미 | 색 | 이름 | 쓰는 곳 |
+|---|---|---|---|
+| Accent / 링크 | `#3d6fa5` | steel blue | 링크, 기본 강조, 아이콘 |
+| Highlight(형광펜) | `#dbe7f5` | pale blue | `h1`·`h2` 안의 키워드, `.qword` 칩 |
+| Plan | `#2c5580` | deep steel | Plan phase, 1단계 |
+| Build / Design / 성공 | `#3d6fa5` | steel blue | Design phase, pass 배지 |
+| Gatekeeping / Check | `#64748b` | slate | Check phase, gate 리포트 |
+| Deploy / Loop | `#334155` | charcoal | Deploy phase, loop 리포트 |
+| 경고 | `#c2410c` | orange | 재작업 필요, 80~94점 |
+| 실패 | `#dc2626` (채움) / `#b91c1c` (글자) | red | 차단, 80점 미만 |
+
+단계·계열을 더 나눠야 하면 hue를 늘리지 말고 아래 **명도 램프**에서 고른다(차트 계열도 동일):
+
+`#2c5580` → `#3d6fa5` → `#5b8db8` → `#8fb3d0` → `#b8cee4` (blue) · `#334155` → `#64748b` → `#94a3b8` → `#cbd5e1` (gray)
 
 ### 0.2 Typography
 
@@ -69,7 +105,7 @@ body{
 | 요소 | 크기 / 굵기 | 비고 |
 |---|---|---|
 | `h1` | 27px / 700 / `letter-spacing:-0.5px` / `line-height:1.35` | 문서 제목. hero 안에 둔다 |
-| `h2` | 17px / 700 | 섹션 제목. 앞에 `.qword` 하이라이트 칩 |
+| `h2` | 17px / 700 | 섹션 제목. 앞에 `.qword` 형광펜 칩 |
 | `h3` | 14.5px / 800 | 하위 제목 |
 | `h4` | 13px / 700 | 카드·표 내부 제목 |
 | 본문 `p` | 14.5px / 1.8 | 기본 |
@@ -79,6 +115,11 @@ body{
 | mono | `ui-monospace,'JetBrains Mono','Fira Code',monospace` | ID·경로·코드 |
 
 Inter / Pretendard 등 웹폰트 CDN은 쓰지 않는다 — **시스템 서체 스택만** 쓴다(오프라인에서도 동일하게 보인다).
+
+**형광펜(highlighter).** 핵심어는 색 글자가 아니라 **형광펜으로 그은 자국**으로 강조한다 — 글자 아랫부분 62%만 `--hi` 로 덮는
+`linear-gradient(to top,var(--hi) 0,var(--hi) 62%,transparent 62%)` 이며, 줄바꿈에서도 끊기지 않도록 `box-decoration-break:clone` 을 준다.
+쓰는 자리는 세 곳이다 — **제목(h1)** 안의 핵심어 `.highlight`, **섹션 제목(h2)** 앞의 `.qword`, **본문** 안의 인라인 키워드 `<mark>`(= `.hl`).
+한 문단에 형광펜은 하나면 충분하다. 남용하면 강조가 죽는다.
 
 ### 0.3 문단 구조 (Prose rhythm)
 
@@ -118,24 +159,119 @@ Inter / Pretendard 등 웹폰트 CDN은 쓰지 않는다 — **시스템 서체 
 2. **thesis** — 문서/섹션의 결론을 짙은 면 블록으로 먼저 보여 준다(선택이지만 index·리포트에는 권장).
 3. **section-hint** — `h2` 바로 뒤에 그 섹션이 답하는 질문을 서술한다. 본문으로 바로 들어가지 않는다.
 4. **section 간격 54px** — 섹션 사이는 넉넉히 띄우고, 섹션 내부 요소는 12~18px로 촘촘히 둔다.
-5. **면 처리(surface)** — 컨테이너(`.panel`)는 `--panel` 채움 + `border:none`, 그 안의 카드(`.card`)는
-   흰 면 + `box-shadow:0 1px 2px rgba(17,17,17,.05)`. **테두리로 구획을 나누지 않고 면으로 나눈다.**
-6. **표** — 4변 테두리 없이 `border-bottom:1px solid var(--border)` 행 구분선만 쓴다.
-7. **각주/전제** — `.note`, `.flowfoot` 은 `border-top:1px dashed var(--border)` 위에 11.5~12px로 적는다.
-8. **footer** — `1px solid var(--border)` 윗줄 + 12px/1.95 중립 텍스트.
-9. **한쪽 border 강조 금지** — § 6 Border / Accent Style Rules (GK-07) 를 그대로 따른다.
+5. **면 처리(surface)** — 컨테이너(`.panel`)는 `--panel` 채움 + `border:none`, 그 안의 독립 카드(`.card`)는
+   흰 면 + `box-shadow:0 1px 2px rgba(17,17,17,.05)`. 요약 지표·차트·독립 탐색 항목처럼 하나의 객체인 경우에만 카드를 쓴다.
+6. **반복 목록** — 출처·파일·액션·권고·체크포인트·마일스톤·변경사항처럼 텍스트 행이 반복되면 `.simple-list`를 쓴다. 항목별 배경·4변 border·radius·shadow·gap을 제거하고 `border-bottom:1px solid var(--border)` 구분선만 둔다.
+7. **표** — 4변 테두리 없이 `border-bottom:1px solid var(--border)` 행 구분선만 쓴다.
+8. **각주/전제** — `.note`, `.flowfoot` 은 `border-top:1px dashed var(--border)` 위에 11.5~12px로 적는다.
+9. **footer** — `1px solid var(--border)` 윗줄 + 12px/1.95 중립 텍스트.
+10. **한쪽 border 강조 금지** — § 6 Border / Accent Style Rules (GK-07) 를 그대로 따른다.
 
-### 0.4 Floating controls
+### 0.3.1 Simple repeated lists
 
-우하단에 알약(pill) 형태 플로팅 버튼을 쌓는다(`.fab-stack`, `right:22px; bottom:26px`).
+목록 항목 하나마다 bordered rounded box를 만들지 않는다. 기본형·번호형·3열형 모두 같은 행 구분선 문법을 사용한다.
+
+```html
+<ul class="simple-list simple-list--numbered">
+  <li><span><b>과제명:</b> 해야 할 일을 한 문장으로 쓴다.</span></li>
+</ul>
+
+<div class="simple-list">
+  <div class="simple-list-row is-current">
+    <strong class="list-label">M0 팀 잠금</strong>
+    <span class="list-detail">담당자와 의사결정권자를 확정</span>
+    <time class="list-meta">08-07</time>
+  </div>
+</div>
+```
+
+```css
+.simple-list{list-style:none;margin:10px 0 16px;padding:0}
+.simple-list>li,.simple-list-row{margin:0;padding:12px 8px;border:0;border-bottom:1px solid var(--border);border-radius:0;background:transparent;box-shadow:none}
+.simple-list>li:last-child,.simple-list-row:last-child{border-bottom:0}
+.simple-list>.is-current{background:var(--accent-bg);font-weight:700}
+```
+
+- 번호는 작은 mono 텍스트나 CSS counter로 표시한다. 번호 자체에 배경·border를 추가하지 않는다.
+- 현재/중요 행은 `background:var(--accent-bg)` + `font-weight`만 사용한다. 별도 테두리나 rounded box를 만들지 않는다.
+- 링크·`code`·상태 배지는 행 안의 인라인 요소로 유지할 수 있다.
+- 카드가 허용되는 경우: 요약 KPI, 차트, 독립 탐색 타일, 접기/펼치기처럼 항목 자체가 상호작용 컨테이너인 경우.
+
+### 0.4 Controls (테마 · 본문 폭 · 맨 위로)
+
+조작 버튼의 자리는 **페이지에 사이드바가 있느냐**로 갈린다.
+
+| 페이지 | 자리 | 클래스 |
+|---|---|---|
+| **좌측 사이드바가 있는 페이지** (3열 리포트, split 문서, app index) | 사이드바 **하단에 임베딩**한다 — 본문 위에 떠 있지 않고 사이드바 면에 얹힌 조용한 아이콘 줄 | `.sidebar-tools` > `.sb-tool` (`position:fixed; left:0; bottom:0; width:var(--sb-w)`) |
+| **사이드바가 없는 페이지** (단일 컬럼 문서·리포트) | 우하단 알약 스택 | `.fab-stack` > `.fab` (`right:22px; bottom:26px`) |
+
+임베딩할 때 사이드바에는 컨트롤 줄 높이만큼 `padding-bottom:51px` 을 줘서 `.sidebar-footer` 가 가려지지 않게 한다.
+버튼은 아이콘만 두고 `aria-label` + `title` 로 이름을 준다(눈에 띄지 않게). 900px 이하에서 사이드바가 사라지면 같은 줄이 우하단 알약 그룹으로 떨어진다.
+접기/펼치기 버튼(요약 레일 등)에는 `aria-expanded` + `aria-controls` 를 붙이고 상태에 따라 갱신한다.
+
+아래 표는 두 자리에 공통으로 적용된다.
 
 | 버튼 | 동작 | 스타일 |
 |---|---|---|
-| 다크/라이트 모드 | `html.dark` 토글 + `localStorage.theme` | 흰 알약, `box-shadow:0 4px 14px rgba(17,17,17,.13)` |
-| 본문 폭 | `--content-w` 를 1080 → 1440 → 1920 순환, `localStorage.docWidth` | 흰 알약 |
-| 맨 위로 | `window.scrollTo({top:0,behavior:'smooth'})` | 46px 원형, `--accent` 채움, 흰 화살표 |
+| 라이트/다크/색각 보정 모드 | `html.dark` / `html.colorblind` 순환 + `localStorage.theme` | 사이드바: `--sb-chip` 아이콘 칩 · 플로팅: 흰 알약 |
+| 본문 폭 | `--content-w` 를 1080 → 1440 → 1920 순환, `localStorage.docWidth` | 위와 동일 |
+| 맨 위로 | `window.scrollTo({top:0,behavior:…})` — `prefers-reduced-motion` 이면 `'auto'` | 사이드바: 같은 칩 · 플로팅: 46px 원형 `--accent` |
 
-리포트·요약 패널을 접는 페이지라면 같은 스택에 "요약 숨김/보임" 버튼을 추가한다. 인쇄 시 `.fab-stack{display:none}`.
+**세 버튼은 스크롤되는 모든 문서 페이지에 반드시 함께 넣는다** — 문서·split 문서·index·root index·reports index·
+daily/weekly 리포트·디자인시스템. 예외는 둘뿐이다:
+`output/{app}/index.html` 처럼 `body{overflow:hidden}` 인 고정 셸은 테마 순환 버튼만 두고(본문 폭·맨 위로가 동작할 스크롤 영역이 없다),
+와이어프레임은 앱 화면 자체를 흉내 내는 목업이므로 상단 sticky `doc-header` 를 쓴다.
+폭 값은 페이지 성격에 맞춘다 — 문서/인덱스 `1080 → 1440 → 1920`, 리포트 `960 → 1280 → 1600`, 디자인시스템 `1280 → 1600 → 1920`.
+요약 패널을 접는 페이지라면 같은 줄에 "요약 숨김/보임" 버튼을 추가한다.
+**인쇄 시에는 좌·우 사이드바와 컨트롤을 모두 감춘다** — `.sidebar,.glance,.sidebar-tools,.fab-stack,.progress-bar{display:none !important}` 로 본문만 전체 폭으로 남긴다.
+
+### 0.5 우측 글랜스 레일 (`.glance`) — 선택 컴포넌트
+
+읽는 사람이 본문을 다 읽지 않아도 요지를 파악하도록, 본문 오른쪽에 고정 요약 패널을 둘 수 있다.
+`/u-report-html` 의 3열 템플릿이 기본으로 쓰고, 엔진 산출물 중 **분량이 길고 결론이 중요한 페이지**(split index, 리포트)에도 붙일 수 있다.
+CSS 는 `u-doc-theme.css` `L2b` 에 있다.
+
+```html
+<aside class="glance">
+  <div class="glance-head"><span class="g-dot"></span><span class="glance-title">한눈에 보기</span></div>
+
+  <section class="glance-block">
+    <h3><i class="gb-ico fa-solid fa-thumbtack" aria-hidden="true"></i> 핵심 요약</h3>
+    <ul class="glance-summary"><li>문서 핵심 결론 한 줄</li></ul>
+  </section>
+
+  <section class="glance-block">
+    <h3><a href="#s1"><i class="gb-ico fa-solid fa-list-ul" aria-hidden="true"></i> 주요 항목 <span class="gb-count">N</span></a></h3>
+    <ul class="glance-list"><li>항목 한 줄</li></ul>
+  </section>
+</aside>
+```
+
+규칙:
+
+1. **핵심 요약은 3~5줄**, 각 줄은 문장이 아니라 요점. 블록 제목은 본문 섹션 `#id` 앵커로 건다.
+2. `.gb-count` 는 본문 실제 개수와 일치해야 한다. 색은 `.ok` `.warn` `.bad` `.neutral` 네 가지(기본 중립). 빈 블록은 `<li class="glance-empty">없음</li>`.
+3. 아이콘은 Font Awesome `fa-solid`(`.gb-ico`). 이모지 금지.
+4. `.fab-stack` 에 `#glance-toggle` 을 추가하고 `body.glance-off` 로 접는다(`localStorage.glanceOff`). 접히면 본문이 전체 폭으로 확장된다.
+5. 1200px 이하와 인쇄 시 자동으로 숨긴다. 레일 왼쪽 경계선은 **중립 1px** 만 쓴다(accent 단면 금지 — § 6 GK-07).
+
+### 0.6 쉬운 글쓰기 (Plain Language) — 중학생 이해 수준 (HARD RULE · 게이트 검사)
+
+**모든 산출물의 설명 문장은 중학생이 처음 읽어도 이해할 수 있게 쓴다.**
+**규칙 원문(SSoT)은 `doc-engine.md` § 8** 이다 — 여섯 규칙 전문, 낱말 바꿔 쓰기 표, 용어 풀이 예시,
+"글이 어렵다는 신호" 체크리스트가 모두 거기에 있다. 이 절은 **HTML 쪽 적용 범위**만 정한다.
+
+적용 범위: 모든 HTML 산출물(문서·인덱스·리포트·와이어프레임·회의록·로드맵·디자인시스템)의
+본문 문단 · `.sub` · `.thesis` · `.section-hint` · 표 셀 · 다이어그램 라벨 · 어노테이션 · 글랜스 요약.
+
+여섯 규칙 요약(원문은 doc-engine.md § 8):
+① 짧은 문장(한 문장 한 내용, 약 50자) ② 쉬운 낱말 먼저 ③ 전문용어·약어는 첫 등장에서 괄호 한 줄 풀이
+④ 추상 개념에 비유·생활 예시 한 줄 ⑤ ID·코드·스키마·수치는 그대로 — 상세함(GK-01)은 유지, 표현만 쉽게
+⑥ "중학생이 이 문단만 읽고 무엇을 왜 하는지 말할 수 있나" 자기 검사.
+
+**Gatekeeping GK-06(Content Composition)의 `plain-language-middle-school` 체크로 강제**된다 — 위반 시 감점.
+`/u-report-html` · `/u-meeting-note` 의 품질 루프 채점 기준에도 같은 항목이 들어 있다.
 
 ## 1. MD to HTML Conversion Pipeline
 
@@ -153,7 +289,7 @@ Step 5: Generate diagrams per mode:
 Step 6: Scan for image references → encode as base64
 Step 7: Generate Table of Contents from headings
 Step 8: Apply output-page.template.html wrapper
-Step 9: Inject dark/light toggle, Tailwind; load Mermaid CDN only if mode=mermaid|all
+Step 9: Inject light/dark/colorblind theme switch, Tailwind; load Mermaid CDN only if mode=mermaid|all
 Step 10: Write to output/{app}/{phase}/{docName}.html
 Step 11: Update output/{app}/index.html sidebar navigation
 Step 12: Update root index files (output/index.html, reports/index.html, index.html)
@@ -179,7 +315,7 @@ See § 12 "Domain Split Pipeline" for split mode details.
 - **Headings** (`# H1` through `###### H6`): Convert to `<h1>` through `<h6>` with auto-generated `id` attributes for TOC anchoring. The `id` is derived from the heading text: lowercase, spaces replaced with hyphens, special characters removed.
 - **Tables**: Convert to `<table>` with Tailwind classes: `class="w-full border-collapse text-sm"`. Header row uses `<thead>` with `class="bg-gray-100 dark:bg-gray-800"`. Body rows alternate with `even:bg-gray-50 dark:even:bg-gray-900`.
 - **Code blocks**: Wrap in `<pre><code>` with `class="bg-gray-100 dark:bg-gray-800 rounded-lg p-4 overflow-x-auto text-sm font-mono"`. Language-specific syntax highlighting via class `language-{lang}`.
-- **Lists**: Convert `- item` to `<ul>` and `1. item` to `<ol>` with appropriate Tailwind spacing classes.
+- **Lists**: Convert `- item` to `<ul>` and `1. item` to `<ol>`. 일반 bullet은 기본 들여쓰기만 쓰고 항목별 background/border/radius/shadow를 추가하지 않는다. 출처·액션·마일스톤처럼 구조화된 반복 행은 § 0.3.1 `.simple-list`를 쓴다.
 - **Bold / Italic**: `**bold**` → `<strong>`, `*italic*` → `<em>`.
 - **Links**: `[text](url)` → `<a href="url" class="text-blue-600 dark:text-blue-400 underline">text</a>`.
 
@@ -254,19 +390,24 @@ The "Default" column shows the rendering engine when `--diagram svg` (default). 
 3. **Curved connectors:** All arrows/lines MUST use `<path>` with cubic Bezier curves (`C` or `Q`). NEVER use `<line>` or straight `<polyline>`.
 4. **Arrowhead markers:** Define reusable `<marker id="arrowhead">` inside `<defs>`. Use `marker-end="url(#arrowhead)"` on paths.
 5. **Node labels:** Every node must display a human-readable label. Use `<text>` inside `<g>` groups with the node shape.
-6. **Color coding (PBGD)** — § 0.1 토큰과 동일해야 한다. **연두·노랑 금지:**
-   - Plan phase: `#2563eb` (blue-600)
-   - Build phase: `#0d9488` (teal-600)
-   - Gatekeeping phase: `#7c3aed` (violet-600)
-   - Deploy phase: `#db2777` (pink-600)
+6. **Color coding (PBGD)** — § 0.1 토큰과 동일해야 한다. **gray + pale blue 만:**
+   - Plan phase: `#2c5580` (deep steel)
+   - Build phase: `#3d6fa5` (steel blue)
+   - Gatekeeping phase: `#64748b` (slate)
+   - Deploy phase: `#334155` (charcoal)
    - Failed/blocked: `#dc2626` (red-600)
    - Neutral/border: `#334155` (slate-700)
-   - Background: `#f5f6f7` (panel)
-7. **Dark mode:** Use CSS variables or `currentColor` so diagrams adapt. Wrap color-sensitive fills in `class` attributes that respond to `dark:` selectors:
+   - Background: `#f2f5f8` (panel)
+7. **Dark mode:** 인라인 SVG 는 문서 CSS 를 그대로 받으므로, 색을 하드코딩하지 말고 `u-doc-theme.css` L3 의 **테마 SVG 클래스**로 지정한다 — 라이트/다크/색각 3모드가 자동으로 따라온다.
    ```svg
-   <rect class="fill-white dark:fill-gray-800" ... />
-   <text class="fill-gray-900 dark:fill-gray-100" ... />
+   <rect class="svg-surface svg-border" ... />          <!-- 면 --surface / 테두리 --border -->
+   <rect class="svg-accent-bg svg-stroke-accent" ... /> <!-- 강조 면 + 강조 테두리 -->
+   <text class="svg-ink" ... />                          <!-- 텍스트 --fg (보조는 .svg-muted) -->
+   <path class="svg-line" marker-end="url(#ah)" ... />   <!-- 커넥터 --gray-2, fill:none -->
+   <polygon class="svg-marker" ... />                    <!-- 화살촉 -->
    ```
+   전체 목록: `.svg-ink` `.svg-muted` `.svg-surface` `.svg-panel` `.svg-accent-bg` `.svg-accent` `.svg-border` `.svg-line` `.svg-stroke-accent` `.svg-marker` `.svg-warn` `.svg-bad`.
+   Tailwind 를 로드하는 엔진 산출물에서는 `class="fill-white dark:fill-gray-800"` 형태도 쓸 수 있으나, **테마 클래스를 우선**한다. 명도 램프 hex 를 직접 써야 할 때는 `.svg-surface` 면 위에 올려 다크에서도 읽히게 한다.
 8. **Node shapes by type:**
    - Rectangles with rounded corners (`rx="8"`) for entities/screens/features
    - Circles for status indicators
@@ -289,7 +430,7 @@ The "Default" column shows the rendering engine when `--diagram svg` (default). 
     - **Relationship connectors:** 엔티티 간 curved path (`C` Bezier)로 연결. 직선(`<line>`) 금지
     - **Cardinality labels:** 커넥터 양 끝에 `1`, `N`, `0..1`, `0..N` 등 카디널리티 텍스트 표시
     - **Relationship labels:** 커넥터 중앙에 관계 설명 텍스트 (예: "has many", "belongs to")
-    - **Color scheme:** Entity header: `#2563eb` (blue-600), PK badge: `#7c3aed` (violet), FK badge: `#0d9488` (teal), UK badge: `#0ea5e9` (sky) — amber/green 금지
+    - **Color scheme:** Entity header: `#2c5580` (deep steel), PK badge: `#334155` (charcoal), FK badge: `#3d6fa5` (steel blue), UK badge: `#8fb3d0` (pale blue) — gray + pale blue 외 금지
     - **Domain grouping:** 같은 도메인 엔티티를 배경 영역(`<rect>` with light fill)으로 그룹핑
     - **Layout:** 엔티티 30개 초과 시 도메인별로 분할. 엔티티 간 겹침 없도록 자동 배치
 13. **ERD relationship description section (필수):** ERD 도메인 페이지에 SVG 다이어그램 아래 관계 설명 카드를 HTML로 생성:
@@ -297,13 +438,13 @@ The "Default" column shows the rendering engine when `--diagram svg` (default). 
     - 관계의 비즈니스 의미를 자연어로 서술 (예: "하나의 주문(Order)은 여러 개의 주문항목(OrderItem)을 가진다")
     - 참조 무결성 규칙 명시 (CASCADE/SET NULL/RESTRICT 등)
 14. **ERD sample data section (필수):** ERD 도메인 페이지에 관계 설명 카드 아래, 샘플 데이터 섹션을 생성한다. `erd.json`의 각 entity `sampleData` 배열로부터:
-    - **샘플 데이터 테이블:** 엔티티별 샘플 레코드를 `<table>`로 렌더링. PK 컬럼은 `font-weight: bold`, FK 컬럼은 `#eef3ff`(accent-bg) 배경 하이라이트
+    - **샘플 데이터 테이블:** 엔티티별 샘플 레코드를 `<table>`로 렌더링. PK 컬럼은 `font-weight: bold`, FK 컬럼은 `#eef3f9`(accent-bg) 배경 하이라이트
     - **Sample Data Relation Diagram (inline SVG, 필수):** 샘플 데이터 간의 실제 FK 연결을 시각화하는 inline SVG 다이어그램:
       - **노드:** 각 샘플 레코드를 rounded rectangle 카드로 표현. 카드 내용 = 엔티티명 + PK 값 + 대표 컬럼값 (이름, 제목 등)
       - **커넥터:** FK 관계에 따라 부모 레코드 → 자식 레코드를 curved path (`C` Bezier)로 연결. 직선 금지
       - **레이블:** 커넥터 위에 FK 컬럼명 표시 (예: `userId`, `orderId`)
       - **그룹핑:** 같은 엔티티의 레코드를 수평으로 나열하고, 엔티티 그룹을 수직으로 배치. 각 엔티티 그룹에 라벨 헤더
-      - **Color scheme:** 엔티티 그룹별 헤더 색상 구분 (`#2563eb` → `#0d9488` → `#7c3aed` → `#db2777` 순환). 카드 배경: white/`#f5f6f7`. 커넥터: slate-700
+      - **Color scheme:** 엔티티 그룹별 헤더 색상 구분 (`#3d6fa5` → `#3d6fa5` → `#64748b` → `#334155` 순환). 카드 배경: white/`#f2f5f8`. 커넥터: slate-700
       - **비즈니스 시나리오:** 다이어그램 하단에 샘플 데이터가 표현하는 비즈니스 시나리오를 1~2문장으로 서술하는 `<p>` 텍스트 추가
       - **Dark mode:** 카드/텍스트에 `dark:` 클래스 적용
     - **관계 매핑 테이블:** 각 REL별로 부모 PK, 부모 대표값, 자식 PK, 자식 대표값, FK 컬럼을 정리하는 요약 테이블
@@ -320,7 +461,7 @@ The "Default" column shows the rendering engine when `--diagram svg` (default). 
       - File dropzone: dashed border `<rect>` with upload icon
       - Form groups: label + input stacked vertically
     - **Annotation markers:** 각 주요 UI 요소에 numbered circle marker (`<circle>` + `<text>`) 배치. 마커 번호는 annotation panel과 1:1 매핑
-    - **Color scheme:** sidebar bg: `#1b2230`, header bg: `#1b2230`, body bg: `#f5f6f7`, marker: `#2563eb`
+    - **Color scheme:** sidebar bg: `#162033`→`#111827`, header bg: `#162033`, body bg: `#f2f5f8`, marker: `#3d6fa5`
     - **Sizing:** `viewBox` 기반 반응형. sidebar 약 200px, main area 나머지
     - State Transition 다이어그램은 생성하지 않는다
 17. **Screen annotation panel (HTML):** wireframe 오른쪽에 배치되는 어노테이션 패널:
@@ -336,8 +477,8 @@ The "Default" column shows the rendering engine when `--diagram svg` (default). 
     - **Start node:** pill shape (화면 진입)
     - **Action nodes:** rounded rect (사용자 입력, API 호출 등)
     - **Decision diamonds:** `<polygon>` diamond shape (조건 분기: 유효성 검사, 상태 체크)
-    - **Error nodes:** red-tinted rect (`#fdf2f1` / `#b91c1c`)
-    - **Success node:** teal-tinted rect (`#f0fdfa` / `#0d9488`) — green/lime 금지
+    - **Error nodes:** red-tinted rect (`#f9f0ef` / `#b91c1c`)
+    - **Success node:** pale-blue-tinted rect (`#eef3f9` / `#3d6fa5`) — green/lime/teal 금지
     - **Connectors:** curved path with Yes/No labels
     - `screens.json`의 `validationRules` + `businessRules` 데이터로부터 생성
 20. **Screen sequential diagram (SVG):** 해당 화면의 사용자-시스템 상호작용 시퀀스:
@@ -390,8 +531,8 @@ Mermaid code blocks are preserved as `<pre class="mermaid">` elements wrapped in
     themeVariables: {
       fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", sans-serif',
       fontSize: '13px',
-      primaryColor: '#eef3ff',
-      primaryBorderColor: '#2563eb',
+      primaryColor: '#eef3f9',
+      primaryBorderColor: '#3d6fa5',
       lineColor: '#6b7280'
     }
   });
@@ -511,14 +652,14 @@ For diagrams that are not Mermaid-based (custom flow diagrams, architecture diag
 <svg viewBox="0 0 800 600" width="100%" xmlns="http://www.w3.org/2000/svg">
 ```
 
-4. **Color palette**: § 0.1 토큰과 동일하게 쓴다 (**연두·노랑 금지**):
-   - Backgrounds: `#f5f6f7` (panel), `#eceef0` (chip)
-   - Borders/lines: `#334155` (slate-700), 중립 divider `#e5e7eb`
-   - Primary accent: `#2563eb` (blue-600)
-   - Success: `#0d9488` (teal-600)
+4. **Color palette**: § 0.1 토큰과 동일하게 쓴다 (**gray + pale blue 외 금지**):
+   - Backgrounds: `#f2f5f8` (panel), `#eceef0` (chip)
+   - Borders/lines: `#334155` (slate-700), 중립 divider `#e2e8f0`
+   - Primary accent: `#3d6fa5` (blue-600)
+   - Success: `#3d6fa5` (steel blue)
    - Warning: `#c2410c` (orange-700)
    - Error: `#dc2626` (red-600)
-   - 보조 계열: `#7c3aed` (violet), `#db2777` (pink), `#0ea5e9` (sky)
+   - 보조 계열은 hue를 늘리지 말고 § 0.1 명도 램프에서 고른다: `#5b8db8` · `#8fb3d0` · `#b8cee4` · `#64748b` · `#94a3b8`
 
 5. **Text styling**: Use `font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif"` and appropriate font sizes (11.5-16px). 라벨 11.5px, 노드 제목 12.5~13px, 다이어그램 제목 14.5px.
 
@@ -618,7 +759,7 @@ Font Awesome (Free) provides the icon font for all UI chrome. Load it via CDN **
 
 ```html
 <body>
-  <!-- 목차 사이드바: 네이비 면(--sb-bg), 고정 폭 268px, 테두리 없음 -->
+  <!-- 목차 사이드바: 잉크 네이비 면(--sb-bg → --sb-deep), 고정 폭 268px, 테두리 없음 -->
   <aside class="split-sidebar">
     <div class="sb-header">…</div>
     <nav class="sb-body">
@@ -662,14 +803,15 @@ Font Awesome (Free) provides the icon font for all UI chrome. Load it via CDN **
 
 ### Border / Accent Style Rules (CSS) — 한쪽 border 강조 금지 (HARD RULE · 게이트 검사)
 
-**한쪽(단면) border만 색으로 강조하는 장식 스타일을 전면 금지한다 (No single-side accent borders).** 카드·콜아웃·하이라이트 박스·배너를 한 변에만 색을 입힌 막대(`border-left: 4px solid …` 류)로 꾸미지 않는다. active/선택 상태도 한쪽 컬러 border로 표시하지 않는다. 강조는 **전체 4변 `border` + 배경 채움(background tint) + `font-weight`**로 표현한다. 이 규칙은 **모든 HTML 산출물**(문서 출력·와이어프레임·디자인시스템·리포트·로드맵)에 적용되며, **Gatekeeping GK-07(Visual Adequacy)의 `no-single-side-accent-border` 체크로 강제**된다 — 위반 시 감점/FAIL.
+**한쪽(단면) border만 색으로 강조하는 장식 스타일을 전면 금지한다 (No single-side accent borders).** 카드·콜아웃·하이라이트 박스·배너를 한 변에만 색을 입힌 막대(`border-left: 4px solid …` 류)로 꾸미지 않는다. active/선택 상태도 한쪽 컬러 border로 표시하지 않는다. 강조는 **배경 채움(background tint) + `font-weight`**를 기본으로 하고, 경계가 기능적으로 필요할 때만 전체 4변 `border`를 쓴다. 이 규칙은 **모든 HTML 산출물**(문서 출력·와이어프레임·디자인시스템·리포트·로드맵)에 적용되며, **Gatekeeping GK-07(Visual Adequacy)의 `no-single-side-accent-border` 체크로 강제**된다 — 위반 시 감점/FAIL.
 
 | Prohibited (금지 — 장식/강조용 단면 border) | Use instead (대체) |
 |---|---|
-| `border-left: 4px solid {accent}` accent bar on a card/callout/banner | `border: 1px solid {color}` + tinted `background` (예: `background:#eff6ff`) |
+| `border-left: 4px solid {accent}` accent bar on a card/callout/banner | tinted `background` + `font-weight`; 경계가 필요할 때만 `border:1px solid {color}` |
 | nav/list/tab **active** 상태를 `border-left-color` / `border-bottom-color` 컬러 바로 표시 | `background: rgba(accent,.12)` + `font-weight:600~700` (막대 없음) |
 | 제목 `h1~h6` 컬러 밑줄 `border-bottom: 2px solid {accent}` | 밑줄 제거, 또는 `border-bottom: 1px solid {neutral-border}` (1px 중립선만) |
 | Tailwind `border-l-4`/`border-t-4`/`border-s-2` 등을 카드 액센트로 사용 | `border` + `bg-*` tint |
+| 반복 목록의 각 행에 `border rounded-xl shadow` 적용 | `.simple-list` + `border-bottom:1px solid var(--border)`; 마지막 행은 선 제거 |
 
 **Allowed (구조·기능 요소 — 장식 아님, 허용):**
 - **1px 중립색 구분선**: 테이블 행/셀, 섹션·푸터 divider, 사이드바 header/footer separator (`border-bottom`/`border-top: 1px solid {neutral}`). 색은 accent가 아닌 중립 border 토큰.
@@ -679,21 +821,21 @@ Font Awesome (Free) provides the icon font for all UI chrome. Load it via CDN **
 
 **판단 기준:** "박스/요소를 한쪽 색 막대로 **꾸미거나**, active를 한쪽 컬러 바로 **표시**"하면 → **금지**. "내용을 **가르는** 중립 구분선 · focus · 차트 마커"면 → 허용. 애매하면 **색**으로 판단한다: **accent색** 단면이면 금지(굵기 무관), **중립색** 단면은 구분선으로 허용(1px 권장, 구조용 section/footer/table 구분선은 2px도 허용).
 
-## 7. Floating Controls (Dark/Light · 본문 폭 · 맨 위로)
+## 7. Floating Controls (Light/Dark/Colorblind · 본문 폭 · 맨 위로)
 
 Every generated HTML page carries the floating control stack described in § 0.4 — 우측 **하단**에 알약 버튼을
-쌓는다(예전처럼 우측 상단 사각 버튼이 아니다). 최소 구성은 **다크/라이트 토글 · 본문 폭 전환 · 맨 위로** 3개다.
+쌓는다(예전처럼 우측 상단 사각 버튼이 아니다). 최소 구성은 **라이트/다크/색각 보정 순환 · 본문 폭 전환 · 맨 위로** 3개다.
 
 ### Default Mode
 
-Light mode is the default. The `<html>` element starts without the `dark` class.
+Light mode is the default. The `<html>` element starts without `dark` or `colorblind`; a saved choice takes precedence, then the OS dark preference is used as fallback.
 
 ### Implementation
 
 ```html
 <div class="fab-stack">
-  <button class="fab" id="theme-toggle" aria-label="Toggle dark mode">
-    <i class="fa-solid fa-circle-half-stroke" aria-hidden="true"></i> <span id="theme-label">다크 모드</span>
+  <button class="fab" id="theme-toggle" aria-label="다크 모드로 전환" title="현재 테마: 라이트">
+    <i class="fa-solid fa-moon" id="theme-icon" aria-hidden="true"></i> <span id="theme-label">다크 모드</span>
   </button>
   <button class="fab" id="width-toggle" aria-label="Toggle content width">
     <span id="width-label">본문 넓게</span>
@@ -707,17 +849,33 @@ Light mode is the default. The `<html>` element starts without the `dark` class.
 // 1) theme
 const html = document.documentElement,
       tBtn = document.getElementById('theme-toggle'),
-      tLab = document.getElementById('theme-label');
-function syncTheme(){ tLab.textContent = html.classList.contains('dark') ? '라이트 모드' : '다크 모드'; }
-if (localStorage.getItem('theme') === 'dark' ||
-    (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-  html.classList.add('dark');
+      tLab = document.getElementById('theme-label'),
+      tIcon = document.getElementById('theme-icon');
+const THEMES = ['light','dark','colorblind'];
+const THEME_NAMES = {light:'라이트',dark:'다크',colorblind:'색각 보정'};
+const THEME_ICONS = {light:'fa-sun',dark:'fa-moon',colorblind:'fa-eye'};
+function currentTheme(){
+  return html.classList.contains('dark') ? 'dark' : html.classList.contains('colorblind') ? 'colorblind' : 'light';
 }
-syncTheme();
-tBtn.addEventListener('click', () => {
-  html.classList.toggle('dark');
-  localStorage.setItem('theme', html.classList.contains('dark') ? 'dark' : 'light');
+function syncTheme(){
+  const current = currentTheme(), next = THEMES[(THEMES.indexOf(current) + 1) % THEMES.length];
+  tLab.textContent = THEME_NAMES[next] + ' 모드';
+  tBtn.setAttribute('aria-label', THEME_NAMES[next] + ' 모드로 전환');
+  tBtn.title = '현재 테마: ' + THEME_NAMES[current];
+  tIcon.className = 'fa-solid ' + THEME_ICONS[next];
+}
+function applyTheme(theme, persist = true){
+  html.classList.remove('dark','colorblind');
+  if (theme !== 'light') html.classList.add(theme);
+  html.dataset.theme = theme;
+  if (persist) localStorage.setItem('theme', theme);
   syncTheme();
+}
+const savedTheme = localStorage.getItem('theme');
+applyTheme(THEMES.includes(savedTheme) ? savedTheme : window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light', false);
+tBtn.addEventListener('click', () => {
+  const current = currentTheme();
+  applyTheme(THEMES[(THEMES.indexOf(current) + 1) % THEMES.length]);
   // NOTE: Mermaid stays in light mode ('default' theme) regardless of page theme.
 });
 
@@ -794,16 +952,16 @@ Whenever **any** of these events occur, ALL relevant index files MUST be regener
 
 | Report filename pattern | Type | `typeClass` | 색 |
 |------------------------|------|-------------|----|
-| `daily-*.html` | Daily | `type-daily` | blue `#2563eb` |
-| `gate-*.html` | Gate | `type-gate` | violet `#7c3aed` |
-| `summary-*.html` | Summary | `type-summary` | teal `#0d9488` |
-| `loop-*.html` | Loop | `type-loop` | pink `#db2777` |
+| `daily-*.html` | Daily | `type-daily` | steel blue `#3d6fa5` |
+| `gate-*.html` | Gate | `type-gate` | slate `#64748b` |
+| `summary-*.html` | Summary | `type-summary` | deep steel `#2c5580` |
+| `loop-*.html` | Loop | `type-loop` | charcoal `#334155` |
 
 ### Score Badge Classification
 
 | Score Range | `scoreClass` | 색 |
 |-------------|-------------|----|
-| >= 95 | `score-pass` | blue/teal `--ok-bg` + `--ok-fg` |
+| >= 95 | `score-pass` | pale blue `--ok-bg` + `--ok-fg` |
 | 80–94 | `score-warn` | orange `--warn-bg` + `--warn-fg` (amber 금지) |
 | < 80 | `score-fail` | red `--bad-bg` + `--bad-fg` |
 
@@ -831,8 +989,8 @@ The `output/{app}/index.html` file serves as the project's documentation portal 
 
 ### Sidebar Structure
 
-`output-index.template.html` 과 동일한 네이비 사이드바를 쓴다 — 폭 284px, 배경 `--sb-bg:#1b2230`,
-테두리 없음, 그룹 제목 앞에 단계 색 점(Plan blue · Design teal · Check violet).
+`output-index.template.html` 과 동일한 잉크 네이비 사이드바를 쓴다 — 폭 284px, 배경 `--sb-bg:#162033` → `--sb-deep:#111827`,
+테두리 없음, 그룹 제목 앞에 밝은 단계 색 점(Plan pale steel · Design steel blue · Check slate).
 
 ```html
 <nav class="nav-sidebar">
@@ -1028,7 +1186,7 @@ Read `erd.json` companion:
   1. **Inline SVG ERD (필수):** 해당 도메인의 entity boxes + relationship connectors를 SVG로 렌더링 (§ 2 Rule 12 참조). Mermaid가 아닌 inline SVG로 생성해야 `--diagram svg` 모드에서 정상 표시됨
   2. **Relationship descriptions (필수):** 각 관계를 카드 형태로 설명 — From → To, Type (1:1/1:N/N:M), FK Column, 비즈니스 의미 prose, 참조 무결성 규칙 (§ 2 Rule 13 참조)
   3. **Entity detail tables:** 각 엔티티의 column 상세 테이블 (Column, Type, PK, FK, Nullable, Default, Description)
-  4. **Sample data tables (필수):** 각 엔티티의 샘플 데이터를 `<table>`로 렌더링. PK 컬럼 bold, FK 컬럼 `#eef3ff` 하이라이트 (§ 2 Rule 14 참조)
+  4. **Sample data tables (필수):** 각 엔티티의 샘플 데이터를 `<table>`로 렌더링. PK 컬럼 bold, FK 컬럼 `#eef3f9` 하이라이트 (§ 2 Rule 14 참조)
   5. **Sample data relation diagram (필수):** 도메인 내 샘플 데이터 간 FK 연결을 inline SVG로 시각화. 레코드 카드 + curved connector + FK 라벨 + 비즈니스 시나리오 설명 (§ 2 Rule 14 참조)
   6. **Common table references:** 다른 도메인에서 참조하는 테이블 목록
 - **Slug**: Domain name slugified (e.g., `auth-domain.html`)
@@ -1133,9 +1291,10 @@ Read `testcases.json` companion:
 | `{{prevFile}}`, `{{prevName}}` | Previous domain page (if exists) |
 | `{{nextFile}}`, `{{nextName}}` | Next domain page (if exists) |
 
-**Layout:** 좌측 고정 네이비 사이드바(268px) — `01` mono ID + 도메인명 + 개수 배지, active 는 배경 채움 + 굵기.
+**Layout:** 좌측 고정 잉크 네이비 사이드바(268px) — `01` mono ID + 도메인명 + 개수 배지, active 는 배경 채움 + 굵기.
 본문은 breadcrumb → `.hero` → `.toc` → 내용 → 하단 prev/next(알약 버튼) → footer. 900px 이하에서 사이드바는
-햄버거로 접히고, 좌/우 방향키로 이전·다음 도메인 이동. 우하단 `.fab-stack` 은 모든 페이지 공통 (§ 0.4).
+햄버거로 접히고, 좌/우 방향키로 이전·다음 도메인 이동. 컨트롤(테마 · 본문 폭 · 맨 위로)은 § 0.4 에 따라
+사이드바 하단 `.sidebar-tools` 에 임베딩한다 — 900px 이하에서 사이드바가 접히면 우하단 `.fab-stack` 으로 떨어진다.
 
 ### 12.7 Slug Generation
 
@@ -1184,12 +1343,12 @@ The final assembled HTML page follows this structure (§ 0 테마를 그대로 �
 
   <!-- 우하단 플로팅 컨트롤 (§ 0.4) -->
   <div class="fab-stack">
-    <button class="fab" id="theme-toggle">다크 모드</button>
+    <button class="fab" id="theme-toggle" aria-label="다크 모드로 전환"><i class="fa-solid fa-moon" id="theme-icon"></i> <span id="theme-label">다크 모드</span></button>
     <button class="fab" id="width-toggle">본문 넓게</button>
     <button class="fab fab-round" id="to-top"><i class="fa-solid fa-arrow-up"></i></button>
   </div>
 
-  <!-- 좌측 네이비 사이드바 (split/index 페이지) -->
+  <!-- 좌측 잉크 네이비 사이드바 (split/index 페이지) -->
   <aside class="split-sidebar">...</aside>
 
   <div class="split-main">
@@ -1232,9 +1391,11 @@ The final assembled HTML page follows this structure (§ 0 테마를 그대로 �
 ### 체크리스트 (생성 후 자기검증)
 
 - [ ] 서체가 시스템 스택인가 (Inter/Pretendard CDN 없음), 본문 14.5px / line-height 1.8 인가
-- [ ] 연두(lime)·노랑(yellow/amber) 색이 **한 곳도** 없는가 (`#D7FF5A` `#f59e0b` `#fde68a` `#10b981` 등)
+- [ ] 기본 light/dark 색이 gray + pale blue 계열뿐인가 — lime `#D7FF5A`, amber `#f59e0b`, green `#10b981`, teal `#0d9488`, violet `#7c3aed`, pink `#db2777`, cyan `#0ea5e9` 가 **한 곳도** 없는가 (경고 orange `#c2410c` · 실패 red `#dc2626`, `.colorblind`의 지정 팔레트만 예외)
+- [ ] 색각 보정 테마가 `light → dark → colorblind` 순환, `localStorage.theme` 복원, 3px 고대비 focus outline을 모두 제공하는가
 - [ ] 모든 섹션이 `h2 > .qword` + `.section-hint` 로 시작하는가, 섹션 간격 54px 인가
 - [ ] 컨테이너는 채움 면 + 테두리 없음, 카드는 흰 면 + 미세 그림자인가
+- [ ] 출처·파일·액션·마일스톤 등 반복 텍스트 행이 `.simple-list` 구분선형이며, 항목별 bordered rounded box·shadow·gap이 없는가
 - [ ] 표에 4변 테두리가 없고 1px 행 구분선만 있는가
 - [ ] 한쪽 컬러 border 강조가 없는가 (§ 6 GK-07)
 - [ ] 우하단 `.fab-stack` 에 다크모드·본문 폭·맨 위로 버튼이 있는가

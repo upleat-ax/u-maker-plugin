@@ -20,34 +20,37 @@ Weekly 리포트의 인라인 SVG 차트 생성 규칙. Daily 리포트에도 �
 
 ### 색상 팔레트
 
+계열은 **gray + pale blue 명도 램프**로만 구분한다(hue를 늘리지 않는다). 경고 orange · 실패 red 만 예외.
+
 | 용도 | Light Mode | Dark Mode | CSS 변수 |
 |------|-----------|-----------|----------|
-| Primary (FR, commits) | `#2563eb` | `#6ea8ff` | `--chart-blue` |
-| Success (implemented, passed) | `#0d9488` | `#2dd4bf` | `--chart-teal` |
-| Warning (unresolved) | `#c2410c` | `#fdba74` | `--chart-orange` |
+| Primary (FR, commits) | `#2c5580` | `#8ab4e0` | `--chart-1` |
+| Success (implemented, passed) | `#3d6fa5` | `#6d9dcb` | `--chart-2` |
+| Info (meetings, US) | `#5b8db8` | `#a8c4e0` | `--chart-3` |
+| FT line | `#8fb3d0` | `#7d94ab` | `--chart-4` |
+| TC line | `#64748b` | `#94a3b8` | `--chart-5` |
+| 보조 (기타 계열) | `#b8cee4` | `#cbd5e1` | `--chart-6` |
+| Warning (unresolved) | `#c2410c` | `#d9b48c` | `--chart-warn` |
 | Danger (failed) | `#dc2626` | `#f87171` | `--chart-red` |
-| Info (meetings, US) | `#7c3aed` | `#a78bfa` | `--chart-violet` |
-| FT line | `#06b6d4` | `#22d3ee` | `--chart-cyan` |
-| TC line | `#db2777` | `#f472b6` | `--chart-pink` |
 | Grid / axis | `#e2e8f0` | `#334155` | `--chart-grid` |
 | Axis text | `#64748b` | `#94a3b8` | `--chart-label` |
-| Background | `#ffffff` | `#1e293b` | `--chart-bg` |
+| Background | `#ffffff` | `#161c24` | `--chart-bg` |
+
+인접 계열은 명도로만 갈리므로, 선 차트는 **선 굵기·점 모양(circle/square/diamond)** 을 함께 달리해 구분한다.
 
 ### CSS 변수 선언 (HTML `<style>`)
 ```css
 :root {
-  --chart-blue: #2563eb; --chart-teal: #0d9488;
-  --chart-orange: #c2410c; --chart-red: #dc2626;
-  --chart-violet: #7c3aed; --chart-cyan: #0ea5e9;
-  --chart-pink: #db2777; --chart-grid: #e2e8f0;
-  --chart-label: #64748b; --chart-bg: #ffffff;
+  --chart-1: #2c5580; --chart-2: #3d6fa5; --chart-3: #5b8db8;
+  --chart-4: #8fb3d0; --chart-5: #64748b; --chart-6: #b8cee4;
+  --chart-warn: #c2410c; --chart-red: #dc2626;
+  --chart-grid: #e2e8f0; --chart-label: #64748b; --chart-bg: #ffffff;
 }
 .dark {
-  --chart-blue: #6ea8ff; --chart-teal: #2dd4bf;
-  --chart-orange: #fdba74; --chart-red: #f87171;
-  --chart-violet: #a78bfa; --chart-cyan: #38bdf8;
-  --chart-pink: #f472b6; --chart-grid: #334155;
-  --chart-label: #9aa7b6; --chart-bg: #161b22;
+  --chart-1: #8ab4e0; --chart-2: #6d9dcb; --chart-3: #a8c4e0;
+  --chart-4: #7d94ab; --chart-5: #94a3b8; --chart-6: #cbd5e1;
+  --chart-warn: #d9b48c; --chart-red: #f87171;
+  --chart-grid: #334155; --chart-label: #9aa7b6; --chart-bg: #161c24;
 }
 ```
 
@@ -68,9 +71,9 @@ Weekly 리포트의 인라인 SVG 차트 생성 규칙. Daily 리포트에도 �
 차트 상단 우측에 수평 배치:
 ```html
 <g class="legend" transform="translate({x}, 12)">
-  <circle r="4" fill="var(--chart-blue)"/>
+  <circle r="4" fill="var(--chart-1)"/>
   <text x="10" font-size="11" fill="var(--chart-label)">Designed</text>
-  <circle cx="80" r="4" fill="var(--chart-teal)"/>
+  <circle cx="80" r="4" fill="var(--chart-2)"/>
   <text x="90" font-size="11" fill="var(--chart-label)">Implemented</text>
 </g>
 ```
@@ -79,7 +82,7 @@ Weekly 리포트의 인라인 SVG 차트 생성 규칙. Daily 리포트에도 �
 
 ```html
 <g class="data-point" tabindex="0">
-  <circle r="4" fill="var(--chart-blue)"/>
+  <circle r="4" fill="var(--chart-1)"/>
   <g class="tooltip" opacity="0">
     <rect rx="4" fill="#1e293b" opacity=".9"/>
     <text fill="#fff" font-size="11">04/10: 15</text>
@@ -186,7 +189,7 @@ cell gap: 4px
 
 - 7칸 가로 그리드 (월~일)
 - 색상 강도: commits 수 → 5단계 opacity
-  - 0: `#f1f5f9`, 1-3: 20%, 4-6: 40%, 7-10: 60%, 11+: 100% of `--chart-blue`
+  - 0: `#eef2f6`, 1-3: 20%, 4-6: 40%, 7-10: 60%, 11+: 100% of `--chart-1`
 - 호버 시 tooltip (날짜 + 커밋 수)
 
 ### 8. Progress Bar (진행률)
@@ -194,7 +197,7 @@ cell gap: 4px
 ```html
 <svg viewBox="0 0 200 16" width="100%">
   <rect width="200" height="16" rx="8" fill="var(--chart-grid)"/>
-  <rect width="{pct * 2}" height="16" rx="8" fill="var(--chart-teal)"/>
+  <rect width="{pct * 2}" height="16" rx="8" fill="var(--chart-2)"/>
   <text x="100" y="12" text-anchor="middle" font-size="10" fill="#fff">{pct}%</text>
 </svg>
 ```

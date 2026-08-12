@@ -68,6 +68,8 @@ For each document to process:
 
 Process each document according to its type. **Apply html-engine's full CSS rules — including the HARD RULE `§Border/Accent — 한쪽 border 강조 금지`**: no single-side accent borders (decorative `border-left/right/top/bottom` color bars, color-bar nav/tab active states, accent heading underlines); emphasize with full 4-side `border` + background tint + `font-weight`. Neutral 1px dividers, focus rings, and chart/data markers are allowed. Enforced by Gatekeeping GK-07.
 
+Also apply html-engine's **HARD RULE `§ 0.6 쉬운 글쓰기 (Plain Language) — 중학생 이해 수준`** to all explanatory prose in the regenerated HTML — body paragraphs, `.sub`/`.thesis`/`.section-hint`, table cells, diagram labels, and glance summaries. Short sentences, everyday words, first-use jargon glossed in one line; IDs, code, and values stay exact. Rule source: `../u-engine/references/html-engine.md` § 0.6 (MD-side original: `doc-engine.md` § 8). Enforced by Gatekeeping GK-06 `plain-language-middle-school`.
+
 #### Split Documents (Domain Split)
 
 | Document | Split Key | Output |

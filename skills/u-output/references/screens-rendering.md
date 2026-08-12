@@ -39,7 +39,7 @@ SC-ID badge, screen title, route path (`/path/to`), related FR IDs, priority, da
   - Cards: rounded `<rect>` + title + content area
   - Form groups: label + input stacked vertically
 - **Annotation markers:** 각 UI 요소에 numbered circle (`<circle>` + `<text>`) 배치
-- **Colors:** sidebar `#2d3a4a`, header `#3b1e6e`, body `#f0f3f7`, marker `#7c3aed`
+- **Colors:** sidebar `#2d3a4a`, header `#3b1e6e`, body `#f0f3f7`, marker `#64748b`
 - `viewBox` 기반 반응형. State Transition 다이어그램 생성 금지.
 
 ### Annotation Panel (wireframe 우측, HTML)
