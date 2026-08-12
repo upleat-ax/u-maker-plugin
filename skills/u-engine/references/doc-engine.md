@@ -108,7 +108,8 @@ Templates use `{{placeholder}}` for simple values and `{{#section}}...{{/section
 3. Replace all `{{placeholder}}` tokens with actual values
 4. Expand all `{{#section}}...{{/section}}` blocks with array data
 5. Remove any unresolved placeholders (replace with empty string)
-6. Write rendered content to target path
+6. Verify all prose follows § 8 Writing Style — 쉬운 글쓰기 (middle-school readability)
+7. Write rendered content to target path
 
 ## 3. JSON Companion Generation
 
@@ -321,3 +322,53 @@ Input:  docType, app
 Steps:  Remove .md → Remove .json → Remove nodes/edges from links.json → Verify no orphan references
 Output: Cleaned file system and dependency graph
 ```
+
+## 8. Writing Style — 쉬운 글쓰기 (Plain Language, HARD RULE)
+
+**doc-engine 이 만드는 모든 문서의 설명 문장은 중학생이 처음 읽어도 이해할 수 있게 쓴다.**
+이 절이 규칙 원문(SSoT)이다. HTML 쪽 적용 범위는 `html-engine.md` § 0.6 에 있고,
+**Gatekeeping GK-06(Content Composition)의 `plain-language-middle-school` 체크로 강제**된다.
+
+### 8.1 여섯 가지 규칙
+
+1. **짧은 문장.** 한 문장에는 한 가지 내용만 담는다. 대략 50자 안에서 끊는다.
+   이중 부정("~하지 않을 수 없다"), 만연체, 과한 명사화("검증의 수행" → "확인한다")를 금지한다.
+2. **쉬운 낱말 먼저.** 같은 뜻이면 일상어를 고른다.
+3. **전문용어·약어는 첫 등장에서 한 줄 풀이.** 괄호로 짧게 붙이고, 두 번째 등장부터는 용어만 쓴다.
+4. **비유·예시 한 줄.** 추상 개념 뒤에는 생활 예시를 붙인다.
+5. **기술 데이터는 그대로.** ID(FR-010)·코드·스키마·API 경로·수치·테이블 구조는 바꾸지 않는다.
+   쉬운 글쓰기는 **설명 문장**의 규칙이다. 상세함(GK-01 완전성)은 유지한 채 표현만 쉽게 한다.
+6. **자기 검사.** 섹션을 쓰고 나서 "중학생이 이 문단만 읽고 무엇을 왜 하는지 말할 수 있나?"를 자문한다.
+
+### 8.2 낱말 바꿔 쓰기 표 (예시)
+
+| 어려운 표현 | 쉬운 표현 |
+|---|---|
+| 기재한다 / 명기한다 | 적는다 |
+| 산정한다 | 계산한다 |
+| 수행한다 / 실시한다 | 한다 |
+| 도출한다 / 식별한다 | 찾는다 |
+| 누락 | 빠짐 |
+| 상이하다 | 다르다 |
+| 상기 / 하기 | 위의 / 아래의 |
+| ~에 대한 검증을 수행한다 | ~을 확인한다 |
+| 요구사항이 충족되었는지 여부 | 요구사항을 지켰는지 |
+
+### 8.3 용어 풀이 예시
+
+첫 등장에서 괄호 한 줄로 풀이한다. 풀이도 쉬운 말로 쓴다.
+
+- SSoT(모든 문서가 따르는 단 하나의 기준 문서)
+- API(프로그램끼리 정보를 주고받는 약속)
+- ERD(데이터를 어떤 표로 나눠 저장할지 그린 그림)
+- 외래 키 FK(다른 표의 행을 가리키는 값 — 주문서에 적힌 회원번호와 같다)
+- 트레이서빌리티(요구사항이 어디에 구현·시험됐는지 따라갈 수 있게 이어 둔 연결)
+
+### 8.4 글이 어렵다는 신호
+
+아래 중 하나라도 보이면 다시 쓴다.
+
+- 한 문장이 세 줄을 넘는다
+- 풀이 없는 약어가 문단에 두 개 이상 나온다
+- 문장 끝이 "~됨", "~임", "~에 기인함"처럼 명사로 끝난다 (개조식 bullet 은 예외)
+- 읽고 나서 "그래서 무엇을 하라는 것인지" 한 문장으로 말할 수 없다

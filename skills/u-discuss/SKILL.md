@@ -27,6 +27,8 @@ Run structured collaboration sessions. Types: brainstorm, review, decision, work
 3. Capture decisions, action items, ideas
 4. Export session summary
 
+> **Plain language (HARD RULE):** Session documents (summaries, decisions, action items) are written so a middle-school student understands the explanatory prose on first read. Rule source: `skills/u-engine/references/doc-engine.md` § 8 / `html-engine.md` § 0.6; enforced by the GK-06 `plain-language-middle-school` check.
+
 ## Reference Files
 
 - **`references/session-types.md`** — Detailed facilitation guides for each session type

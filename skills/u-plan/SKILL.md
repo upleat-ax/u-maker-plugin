@@ -26,6 +26,9 @@ If preconditions are not met → fail fast with: `"Run /u-prepare (or /u-analyze
 
 ## Execution Flow
 
+> **Writing style (HARD RULE):** All explanatory prose in the generated SRS/IA follows the plain-language rule (쉬운 글쓰기 — 중학생 이해 수준): short sentences, everyday words, first-use jargon glossed in one line. IDs (FR-010, IA-010), schemas, and figures stay exact — only the wording is simplified.
+> Rule source: `../u-engine/references/doc-engine.md` § 8 (MD) / `../u-engine/references/html-engine.md` § 0.6 (HTML). Enforced by Gatekeeping GK-06 `plain-language-middle-school`.
+
 ### Step 1: Generate SRS
 
 1. Load all digest files from `data/digest/` and `_clarifications.json` (if present).

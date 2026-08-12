@@ -22,6 +22,8 @@ Alias: `/u-ssot`
 
 > **doc-engine 진입점:** `doc-engine.md`는 항목 추가(`/u-add`)·갱신(`/u-update`) 명령을 참조하지만 이들은 존재하지 않는다. `/u-doc`은 그 **입력 측**(수집 → digest → 배치 제안)을 담당하고, 실제 문서 삽입·갱신은 `/u-plan`·`/u-design`이 수행한다(사용자 정책: 비파괴).
 
+> **쉬운 글쓰기(HARD RULE):** 이 스킬이 만드는 산출물(digest 요약, 배치 제안 표, 재정리 계획·보고)의 설명 문장은 중학생이 처음 읽어도 이해할 수 있게 쓴다. ID·경로·해시 등 기술 값은 그대로 둔다. 규칙 원문: `skills/u-engine/references/doc-engine.md` § 8(MD) · `html-engine.md` § 0.6(HTML), Gatekeeping GK-06 `plain-language-middle-school` 검사로 강제.
+
 ## Arguments
 
 | Argument | Required | Description |

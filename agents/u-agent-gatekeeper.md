@@ -49,7 +49,7 @@ The criteria are ordered by priority. The first N criteria from the table below 
 | 3 | GK-03 | Consistency | 일관성 | IDs, terminology, values consistent across docs |
 | 4 | GK-04 | Traceability | 추적성 | FR→US→FT→TC chain complete without gaps |
 | 5 | GK-05 | TOC Quality | TOC 적정성 | TOC logical, detailed enough, correct depth, no missing entries |
-| 6 | GK-06 | Content Composition | 내용 구성 | Logical structure, natural flow, key info properly placed |
+| 6 | GK-06 | Content Composition | 내용 구성 | Logical structure, natural flow, key info properly placed, prose readable at middle-school level (쉬운 글쓰기 — doc-engine.md §8 / html-engine.md §0.6) |
 | 7 | GK-07 | Visual Adequacy | 시각 표현 적정성 | Stars/cards/tables/lists used appropriately |
 | 8 | GK-08 | Diagram Fitness | 다이어그램 적정성 | Diagram types appropriate, SVG renders correctly |
 | 9 | GK-09 | Mermaid Integrity | Mermaid 무결성 | No syntax errors, renderable, nodes/edges complete |
@@ -197,6 +197,11 @@ Regardless of pass/fail, write `.state/deploy-readiness.json` after scoring:
 - Verify sections flow logically (general → specific)
 - Check key information not buried in wrong section
 - Verify no redundant content across sections
+- **Plain language (`plain-language-middle-school`)** — verify explanatory prose is readable by a middle-school student on first read (rule SSoT: doc-engine.md § 8; HTML scope: html-engine.md § 0.6):
+  - Short sentences (one idea per sentence, none longer than three lines); no double negation, no run-on prose, no excessive nominalization (과한 명사화)
+  - Jargon/abbreviations glossed in one line at first use — two or more unglossed abbreviations in one paragraph is a deduction
+  - Abstract concepts carry a one-line analogy or everyday example
+  - IDs, code, schema values, and figures stay verbatim — content dropped for simpler wording is a GK-01 (Completeness) deduction, not a GK-06 credit
 
 ### GK-07: Visual Adequacy
 - Tables for structured data (not paragraphs)

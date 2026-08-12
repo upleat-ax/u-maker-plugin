@@ -29,6 +29,8 @@ All document operations follow this protocol:
 4. Update `data/links.json` with new nodes and edges
 5. Verify `.md` ↔ `.json` synchronization
 
+All generated prose follows the Plain Language rule (doc-engine.md § 8): 설명 문장은 중학생도 이해할 수 있게 — 짧은 문장, 쉬운 낱말, 전문용어 첫 등장 시 한 줄 풀이. ID·코드·수치는 그대로 둔다.
+
 ### ID Convention
 
 - All IDs use 10-increment: FR-010, FR-020, FR-030
@@ -48,6 +50,7 @@ Key invariants enforced by html-engine:
 - `--diagram` mode: `svg` (default) | `mermaid` | `all`
 - No ASCII art except folder tree; Mermaid always light mode
 - No single-side accent borders (한쪽 border만 강조하는 장식/active 스타일 금지) — 전체 4변 border + 배경 채움 + font-weight로 강조; 1px 중립 구분선·focus·차트 마커만 단면 허용 (html-engine.md §6 "Border / Accent Style Rules")
+- Plain Language (쉬운 글쓰기) — 모든 설명 문장은 중학생 이해 수준으로 쓴다: 짧은 문장, 쉬운 낱말, 전문용어 첫 등장 시 한 줄 풀이, 비유·예시. ID·코드·수치는 그대로 (html-engine.md §0.6, doc-engine.md §8, GK-06 `plain-language-middle-school` 검사)
 - Use `/u-output` to regenerate HTML from existing `docs/` without re-running phase logic
 
 ## Command Options (All Phase Skills)

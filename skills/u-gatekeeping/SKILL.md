@@ -47,6 +47,8 @@ Gatekeeping phase unifies three responsibilities:
    - `98 > avg >= 95` → `deployReady: false, docScore: pass` (cleared for Gatekeeping complete, not Deploy).
    - `avg < 95` → `docScore: fail` (block until improvement).
 
+> **Plain language check (GK-06):** GK-06 (Content Composition) includes the `plain-language-middle-school` check — all explanatory prose in scored docs must read at middle-school level on first pass: short sentences, everyday words, jargon glossed at first use; IDs/code/schema/figures stay intact. Rule source: `skills/u-engine/references/doc-engine.md` § 8 / `html-engine.md` § 0.6. The gatekeeper reports this skill writes follow the same rule.
+
 ### Step 2: Runtime QA (Gatekeeping.RuntimeQA)
 
 1. Load `docs/{app}/plan/srs.json` — extract FT items.

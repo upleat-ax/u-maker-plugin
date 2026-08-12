@@ -29,6 +29,8 @@ Reverse-engineer an existing codebase into SSoT documents. Bottom-up: Code → D
 
 ## Execution Flow
 
+**Writing style (HARD RULE):** explanatory sentences in every generated SSoT document (Steps 2–6) follow the plain-language rule — readable by a middle-school student on first read. Extracted IDs, schemas, routes, and code stay verbatim; only the prose is simplified. Rule text: `skills/u-engine/references/doc-engine.md` § 8 (MD) / `html-engine.md` § 0.6 (HTML); enforced by the GK-06 `plain-language-middle-school` check.
+
 ### Step 0: Bootstrap
 
 1. Check for `.u-maker/` directory

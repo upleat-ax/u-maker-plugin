@@ -126,6 +126,12 @@ FR-020 → US-020 → FT-030 → TC-040 (PASS)
 - All FT→TC references must be bidirectional in `data/links.json`
 - Test results must include timestamps for each execution
 
+### Writing Style (Plain Language)
+
+- All explanatory prose in `testcases` / `test-results` documents follows the 쉬운 글쓰기 (Plain Language) rule: written so a middle-school reader can understand — short sentences, everyday words, jargon/abbreviations glossed with a one-line explanation at first use.
+- TC IDs, code, schema values, pass rates, and figures stay intact — readability applies to prose only, never at the cost of completeness.
+- Rule source: `u-engine` `doc-engine.md` § 8 / `html-engine.md` § 0.6; enforced by Gatekeeping GK-06 `plain-language-middle-school` check.
+
 ## 5. Output Files
 
 | File | Description |

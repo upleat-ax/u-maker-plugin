@@ -62,6 +62,8 @@ For each `pending` or `error` entry:
 8. Update `_index.json`: status=`done`, `analyzedAt`=ISO-8601 now, `digestPath`=relative path, `hash`=computed SHA-256.
 9. On failure → status=`error` with `error` field; continue to next file.
 
+> **Plain language (HARD RULE):** All explanatory prose in digest outputs (summaries, descriptions, rationale fields) is written so a middle-school student understands it on first read — rule source: `skills/u-engine/references/doc-engine.md` § 8 / `html-engine.md` § 0.6, enforced by the GK-06 `plain-language-middle-school` check. Structured extraction detail (requirements, constraints, domain rules, IDs, values) is never reduced — only the wording gets simpler.
+
 ### Step 3: Aggregate (light)
 
 1. After all per-file digests are written, optionally emit a lightweight aggregate summary (counts by source type, keywords frequency) into `data/digest/_summary.json`. This is advisory — `/u-plan` re-aggregates at SRS time.
