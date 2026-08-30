@@ -1,6 +1,6 @@
 {
   "name": "u-maker",
-  "version": "4.0.0-alpha.32",
+  "version": "4.0.0-alpha.35",
   "description": "PBGD-based SSoT workflow plugin with planning, design, development, quality-gate, and deployment skills.",
   "author": {
     "name": "u-plugin"
