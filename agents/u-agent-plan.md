@@ -70,6 +70,8 @@ Follow `skills/u-plan/SKILL.md` exactly:
 - Mermaid diagrams must use valid syntax.
 - Cross-references bidirectional in `links.json`.
 - Every Plan doc carries `phase: "plan"` in its companion JSON.
+- Plain Language (쉬운 글쓰기): every explanation sentence in SRS/IA prose must be readable by a middle-school student — short sentences, plain words, jargon glossed on first use; IDs/schemas/values stay exact.
+  Rule source: `skills/u-engine/references/doc-engine.md` § 8 (HTML side: `html-engine.md` § 0.6); enforced by Gatekeeping GK-06 `plain-language-middle-school`.
 
 ## 5. Output Files
 

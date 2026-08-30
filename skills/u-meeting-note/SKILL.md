@@ -142,7 +142,7 @@ Agent 도구로 **minutes-writer** 에이전트를 생성한다. 프롬프트에
 
 - 전사 텍스트 전문 또는 파일 경로 (+ Mode B: 추출한 항목 목록, 프레임 파일 경로·라벨 매핑)
 - 출력 HTML 파일 경로
-- 템플릿 CSS **인라인 복사** 지시 — Mode A: `assets/template-general.html`, Mode B: `assets/template-review.html` (Pretendard + Font Awesome CDN 예외; head 의 FA `<link>` 유지, 아이콘은 이모지 금지 → `<i class="fa-solid fa-…">`)
+- 템플릿 CSS **인라인 복사** 지시 — Mode A: `assets/template-general.html`, Mode B: `assets/template-review.html` (Font Awesome CDN 만 예외; head 의 FA `<link>` 유지, 아이콘은 이모지 금지 → `<i class="fa-solid fa-…">`)
 - 디자인 시스템 문서 읽기 지시 — Mode A: `references/design-system-general.md`, Mode B: `references/design-system-review.md`
 - 이미지는 **base64 인라인**으로 삽입해 자체완결 HTML 로 (Mode B)
 - **재작성 시**: Reviewer 의 피드백과 감점 항목을 프롬프트에 포함, 해당 부분만 개선
@@ -151,7 +151,9 @@ Agent 도구로 **minutes-writer** 에이전트를 생성한다. 프롬프트에
 
 - **3열 레이아웃**: 좌 다크 사이드바(목차) + 중앙 본문 + **우 글랜스 레일 필수**(요약·결정·미결·액션 한눈, 아이콘=Font Awesome `fa-solid`, 이모지 금지)
 - 기본 구조 **7섹션**: `개요 → 참석자 & 안건 → 논의 내용 → 결정 사항 → 미결 사항(#open-issues) → 액션 아이템 → AI 커멘트`
-- **간결·평이체 (최우선)**: 개조식 우선, 한 항목 1~2줄, 쉬운 말. **논문투·장문 금지** — "논문 같다"는 피드백의 직접 대응. 우측 레일은 각 항목 한 줄
+- **간결·평이체 (최우선, 중학생 이해 수준)**: 개조식 우선, 한 항목 1~2줄, 쉬운 말. **논문투·장문 금지** — "논문 같다"는 피드백의 직접 대응. 우측 레일은 각 항목 한 줄.
+  설명 문장은 중학생이 처음 읽어도 이해되게 — 전문용어·약어는 첫 등장에서 괄호 한 줄 풀이, ID·수치는 그대로
+  (쉬운 글쓰기 규칙 원문: u-engine `html-engine.md` §0.6 / `doc-engine.md` §8, GK-06 `plain-language-middle-school` 검사)
 - **결정 / 미결 / 액션 3분리**: 미결(아직 안 정한 것)은 결정에 넣지 말고 `#open-issues` `issue-list` 로
 - 화자 라벨은 `참여자1..N` 만, 실명 추론은 별도 테이블 (근거 컬럼 없음)
 - 다이어그램은 별도 섹션 금지 — 관련 논의 카드 바로 아래 인라인 SVG (시각화 가능 내용 있으면 필수)
@@ -163,7 +165,8 @@ Agent 도구로 **minutes-writer** 에이전트를 생성한다. 프롬프트에
 - 기본 구조: `히어로(메타) → 읽는 법(30초) → 먼저!(P0) → 목차 → 약속·규칙 → 영역별 수정 항목 → 전체 요약 테이블` + **우측 글랜스 레일**(요약·먼저!·유형별·약속, 아이콘=Font Awesome `fa-solid`, 이모지 금지)
 - 항목마다 지금/할 일/확인 3단 + 뱃지 + `⏱ H:MM:SS` + (캡쳐)
 - 뱃지 필터·본문 폭 토글(1440↔1920)·글랜스 토글 동작 유지
-- **쉬운 설명판·간결**이 원칙: 전문용어는 풀어 쓰고, 지금/할 일/확인은 1~2문장, "확인" 은 검증 가능한 문장으로
+- **쉬운 설명판·간결 (중학생 이해 수준)**이 원칙: 전문용어는 첫 등장에서 괄호 한 줄 풀이, 지금/할 일/확인은 1~2문장, "확인" 은 검증 가능한 문장으로 — 설명 문장은 중학생이 처음 읽어도 이해되게 쓴다
+  (쉬운 글쓰기 규칙 원문: u-engine `html-engine.md` §0.6 / `doc-engine.md` §8, GK-06 `plain-language-middle-school` 검사)
 
 ## Step 5: Reviewer Agent 실행
 

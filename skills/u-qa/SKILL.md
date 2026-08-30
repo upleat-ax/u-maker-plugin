@@ -19,6 +19,8 @@ version: 4.0.0
 2. Invoke `/u-gatekeeping --only qa` with the remaining arguments.
 3. Return its result unchanged.
 
+Note: the Runtime QA documents produced downstream (`testcases.md`, `test-results.md` + their HTML) follow the plain-language writing rule (HARD RULE) — explanatory sentences must be readable by a middle-school student on first read. Rule text: `skills/u-engine/references/doc-engine.md` § 8 (MD) and `html-engine.md` § 0.6 (HTML); enforced by the GK-06 `plain-language-middle-school` check.
+
 ## See also
 
 - `/u-gatekeeping` — Full Gatekeeping phase (doc scoring + runtime QA).

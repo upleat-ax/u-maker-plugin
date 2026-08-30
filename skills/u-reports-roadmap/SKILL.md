@@ -67,6 +67,8 @@ version: 1.0.0
 
 생성 후 검증: FINAL 컬럼이 실제 마감일, snapshot D-day 정확, 모든 트랙 id가 `DEFAULT_PHASES`·`DEFAULT_DETAILS`에 존재.
 
+**쉬운 글쓰기 (HARD RULE):** subtitle·framing·headline·트랙 `notes` 같은 설명 문장은 중학생이 처음 읽어도 이해할 수 있게 쓴다 — 짧은 문장, 쉬운 낱말, 전문용어(velocity·capacity 등)는 첫 등장에서 괄호 한 줄 풀이. 수치·MR·날짜·`(TBD)` 표기는 그대로 둔다. 규칙 원문: `skills/u-engine/references/html-engine.md` § 0.6 / `doc-engine.md` § 8 — GK-06 `plain-language-middle-school` 검사로 강제.
+
 ### Step 6 — Sidecar + index + summary
 
 - 사이드카 `roadmap-<slug>-<deadline>.data.json`에 **생성된** state 저장(→ `--rerender`용). 사용자의 브라우저 드래그/편집은 localStorage에만 단방향 저장되며 HTML/사이드카로 write-back 안 됨을 문서화.

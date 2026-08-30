@@ -128,6 +128,7 @@ The delegating skill must pass `--app` and `--loop` through verbatim.
 ## Quality Standards
 
 - **Completeness principle:** 프레임의 모든 기획 텍스트는 digest에서 구조화되어 보존된다. 누락 ⇒ 다운스트림 복구 불가.
+- **Plain language (쉬운 글쓰기, HARD RULE):** digest의 서술(설명) 문장은 중학생이 처음 읽어도 이해되게 쓴다 — 규칙 원문 `skills/u-engine/references/doc-engine.md` § 8 / `html-engine.md` § 0.6, GK-06 `plain-language-middle-school` 체크로 강제. 단, 12개 카테고리 구조화 상세(validationRules/domainRules/permissionRules 등)와 ID·값·수치는 절대 축소하지 않는다 — 표현만 쉽게.
 - **Variant-exhaustive:** `variantSources[]` in each digest must list which of (component-set / naming / positional / suffix) detected the variant. `unknown` is a failure mode.
 - **Coverage warnings:** any frame with missing semantic fields the content implies exist (e.g., form frame with no `validationRules[]`) is flagged.
 - **Idempotency:** re-running with unchanged Figma content must produce no new writes (hashes match).

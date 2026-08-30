@@ -18,7 +18,7 @@ Minutes Reviewer 에이전트가 생성된 HTML 을 평가할 때 사용하는 �
 # §A — Mode A 일반 회의록
 
 ## A1. 구조 완전성
-- `<!DOCTYPE html>`, `<html lang="ko">`, Pretendard CDN + **Font Awesome CDN**(head `<link>`), 전체 CSS 인라인
+- `<!DOCTYPE html>`, `<html lang="ko">`, **Font Awesome CDN**(head `<link>`) — 웹폰트 CDN 없이 시스템 서체 스택, 전체 CSS 인라인
 - `.progress-bar` + `.layout` > `.sidebar`(좌 네비) + `.main-content` + **`.glance`(우 한눈 요약 레일)** 구조
 - 좌 사이드바: header / nav(+`nav-count`) / footer
 - **우 글랜스 레일 필수**: `.glance-head` + 4블록(요약 `.glance-summary` / 결정사항→`#decisions` / 미결사항→`#open-issues` / 액션→`#actions`). 블록 아이콘은 **Font Awesome**(`fa-thumbtack`/`fa-circle-check`/`fa-hourglass-half`/`fa-list-check`, 이모지 금지), 결정/미결/액션 제목은 본문 앵커, `.gb-count` = 실제 수
@@ -46,7 +46,7 @@ Minutes Reviewer 에이전트가 생성된 HTML 을 평가할 때 사용하는 �
 
 ## A5. 논의 구조화 & 간결성
 - feature-card 주제별 그룹핑, 화자별 주장/질문/반박 분리, 연속 발화 turn 통합
-- **간결·평이 (하드 룰)**: 개조식(bullet) 우선, 한 항목 1~2줄. 논문투·장문·과한 명사화·수동태 금지, 쉬운 말. 3줄 초과 산문 문단이 카드를 덮으면 감점 (독자가 "논문 같다" 고 느끼는 원인)
+- **간결·평이 (하드 룰, 중학생 이해 수준)**: 개조식(bullet) 우선, 한 항목 1~2줄. 논문투·장문·과한 명사화·수동태 금지, 쉬운 말. 설명 문장은 중학생이 처음 읽어도 이해되게 — 전문용어·약어는 첫 등장에서 괄호 한 줄 풀이, 풀이 없는 약어 잔존 시 감점. 3줄 초과 산문 문단이 카드를 덮으면 감점 (독자가 "논문 같다" 고 느끼는 원인). 규칙 원문: u-engine `html-engine.md` §0.6 / `doc-engine.md` §8 (GK-06 `plain-language-middle-school` 검사와 동일 기준)
 - `.quote` 는 결정적 발언에만 (카드당 ≤1, 전체 3~6개) + 발화자·시각 표기
 - `.topic-meta` 로 논의 구간 타임스탬프 표기, `.annotation` 으로 배경 첨부
 - 곁가지 논의는 누락 대신 `details.collapse` 처리
@@ -106,7 +106,7 @@ Minutes Reviewer 에이전트가 생성된 HTML 을 평가할 때 사용하는 �
 - figcaption: `<b>라벨</b> 설명 + ⏱` 형식, 라벨 ASCII
 
 ## B6. 쉬운 언어 (설명판 품질)
-- 비개발자가 읽고 이해 가능 — 전문용어는 풀어 쓰거나 괄호 병기
+- **중학생·비개발자가 처음 읽어도 이해 가능 (하드 룰)** — 짧은 문장·쉬운 낱말, 전문용어·약어는 첫 등장에서 괄호 한 줄 풀이, ID·수치는 그대로. 규칙 원문: u-engine `html-engine.md` §0.6 / `doc-engine.md` §8 (GK-06 `plain-language-middle-school` 검사와 동일 기준)
 - 항목 제목은 현상 중심 한 줄, 존댓말 평서형 통일
 - 읽는 법(30초) 섹션이 실제 문서 규칙과 일치
 
@@ -119,7 +119,7 @@ Minutes Reviewer 에이전트가 생성된 HTML 을 평가할 때 사용하는 �
 ## B8. 디자인 시스템 준수
 - `:root` 변수·클래스가 `template-review.html` 과 일치, 팔레트 외 색 없음
 - 전체 border + 옅은 배경 (한쪽 border accent 금지)
-- 자체완결 단일 HTML (Pretendard + Font Awesome CDN 예외), **아이콘은 `fa-solid`, 이모티콘 금지**
+- 자체완결 단일 HTML (Font Awesome CDN 만 예외), **아이콘은 `fa-solid`, 이모티콘 금지**
 
 ## B9. 콘텐츠 정확성
 - 히어로 메타(일시·대상·항목수·목표) 정확, **항목수 일치** (메타 = 필터 전체 = 요약 테이블 행수 = 글랜스 유형 집계 합)

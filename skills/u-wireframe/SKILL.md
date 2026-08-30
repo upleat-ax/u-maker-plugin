@@ -84,6 +84,8 @@ For each screen, generate `{SCR-ID}.html` using `references/wireframe-page.templ
 
 **Annotation 작성 규칙 (CRITICAL):** 각 annotation은 해당 영역의 **기획서 역할**을 해야 한다 — 7개 항목(컴포넌트 동작, 입력/수정 여부, 필드 상세, 비즈니스 규칙, 화면 연동, 자동 생성/계산, 알럿/확인)을 해당되는 만큼 포함. Business rules: `BR-{SCR-ID}-NN`. **Generic placeholder/모호한 설명 금지.**
 
+**쉬운 글쓰기 (HARD RULE):** 어노테이션 패널과 BR(비즈니스 규칙) 설명 문장은 중학생이 처음 읽어도 이해할 수 있게 쓴다 — 짧은 문장, 쉬운 낱말, 전문용어는 첫 등장에서 괄호 한 줄 풀이. 기획 상세도(B-3)는 그대로 유지하고 표현만 쉽게 한다. 규칙 원문: `skills/u-engine/references/html-engine.md` § 0.6 / `doc-engine.md` § 8, GK-06 `plain-language-middle-school` 검사로 강제.
+
 Full rules + BAD/GOOD 예시 → **see `references/wireframe-rendering-rules.md` § B. Annotation 작성 규칙**.
 
 #### B. Wireframe Mockup Rendering Rules

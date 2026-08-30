@@ -50,9 +50,9 @@
       "id": "GK-06",
       "name": "Content Composition",
       "nameKo": "내용 구성",
-      "description": "Logical structure, natural section flow, key information properly placed",
+      "description": "Logical structure, natural section flow, key information properly placed. All explanatory prose written in plain language a middle-school student can understand: short sentences, everyday words, jargon/abbreviations glossed with a one-line explanation at first use, analogies for abstract concepts (per doc-engine.md §8 / html-engine.md §0.6). Technical IDs, code, schema values, and figures stay intact — readability applies to prose only, never at the cost of completeness.",
       "maxScore": 100,
-      "checks": ["section-flow-logical", "info-placement-appropriate", "no-redundancy"]
+      "checks": ["section-flow-logical", "info-placement-appropriate", "no-redundancy", "plain-language-middle-school"]
     },
     {
       "id": "GK-07",

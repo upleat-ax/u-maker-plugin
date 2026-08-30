@@ -135,6 +135,11 @@ Follow the execution flow defined in `skills/u-design/SKILL.md` exactly:
 - Mermaid diagrams must use valid, renderable syntax
 - SVG connectors must use curved connectors, not straight-line arrows
 
+### Writing Style (쉬운 글쓰기 · Plain Language)
+
+- All explanation prose in ERD/API/Screens/Design System docs must read at middle-school level: short sentences, plain words, jargon/abbreviations glossed on first use — while IDs, schemas, endpoints, and token values stay exact
+- Rule source: `skills/u-engine/references/doc-engine.md` § 8 (`.md`) and `skills/u-engine/references/html-engine.md` § 0.6 (HTML); enforced by Gatekeeping GK-06 `plain-language-middle-school`
+
 ## 5. Output Files
 
 | File | Description |

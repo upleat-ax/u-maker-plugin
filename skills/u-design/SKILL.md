@@ -18,6 +18,9 @@ UI Design sub-phase of the Build phase: generate `docs/{app}/design/` documents 
 
 ## Execution Flow
 
+> **Writing style (HARD RULE):** All explanatory prose in the generated ERD/API/Screens/Design System docs follows the plain-language rule (쉬운 글쓰기 — 중학생 이해 수준): short sentences, everyday words, first-use jargon glossed in one line. IDs (ENT-010, API-010, SC-010, DS-010), schemas, and token values stay exact — only the wording is simplified.
+> Rule source: `../u-engine/references/doc-engine.md` § 8 (MD) / `../u-engine/references/html-engine.md` § 0.6 (HTML). Enforced by Gatekeeping GK-06 `plain-language-middle-school`.
+
 ### Step 0: Verify Plan Prerequisite
 
 1. Check `docs/{app}/plan/` for required files: `srs.json`, `ia.json`

@@ -80,6 +80,8 @@ Audit entry per run (success, blocked, error). Retained indefinitely.
 - `manifest.json` validates against its schema on every write.
 - No secret values leak into artifacts (enforced by grep check on common secret-name patterns before writing).
 - Forced runs are clearly labelled (artifacts + manifest + audit entry).
+- Explanatory prose in runbooks and release notes follows the 쉬운 글쓰기 (Plain Language) rule: written so a middle-school reader can understand — short sentences, everyday words, jargon/abbreviations glossed with a one-line explanation at first use. Commands, paths, env var names, and version numbers stay intact.
+- Plain-language rule source: `u-engine` `doc-engine.md` § 8 / `html-engine.md` § 0.6; enforced by Gatekeeping GK-06 `plain-language-middle-school` check.
 
 ## 8. Handoff
 

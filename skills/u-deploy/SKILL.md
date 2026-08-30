@@ -98,6 +98,8 @@ For each (target, artifact) pair:
 
 Some artifacts are target-specific (e.g., `vercel.json` only for vercel); others are platform-agnostic (e.g., runbook).
 
+Writing style (HARD RULE): explanatory prose in document artifacts (runbook, env-template secrets checklist, release-notes, smoke-test) follows the plain-language rule — readable by a middle-school student on first read. Commands, config values, and IDs stay verbatim. Rule text: `skills/u-engine/references/doc-engine.md` § 8 (MD) / `html-engine.md` § 0.6 (HTML); enforced by the GK-06 `plain-language-middle-school` check.
+
 ### Step 5: Write deploy manifest
 
 Emit `.u-maker/data/deploy/manifest.json` conforming to `_meta/schemas/deploy-manifest.schema.json`. This is the SSoT for the Deploy phase and the key input for continuous regeneration.
