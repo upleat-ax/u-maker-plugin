@@ -8,24 +8,34 @@
 <style>
 /* ============================================================
    u-maker document theme — typography / color / prose rhythm
-   accent: blue family. 연두(lime)·노랑(yellow) 계열 사용 금지.
+   default palette: gray + pale blue. colorblind mode: Okabe-Ito 기반 고대비 예외.
    ============================================================ */
 :root{
-  --bg:#fff;--panel:#f5f6f7;--soft:#fafafa;--surface:#fff;
-  --fg:#111;--muted:#4b5563;--dim:#6b7280;--border:#e5e7eb;
-  --accent:#2563eb;--accent-strong:#1d4ed8;--accent-soft:#93b4ff;
-  --accent-bg:#eef3ff;--hi:#dbe7ff;
-  --plan:#2563eb;--build:#0d9488;--gate:#7c3aed;--deploy:#db2777;
+  --bg:#fff;--panel:#f2f5f8;--soft:#f8fafc;--surface:#fff;
+  --fg:#111827;--muted:#4b5563;--dim:#6b7280;--border:#e2e8f0;
+  --accent:#3d6fa5;--accent-strong:#2c5580;--accent-soft:#a8c4e0;
+  --accent-bg:#eef3f9;--hi:#dbe7f5;
+  --plan:#2c5580;--build:#3d6fa5;--gate:#64748b;--deploy:#334155;
   --shadow:0 1px 2px rgba(17,17,17,.05);
   --content-w:1080px;
 }
 .dark{
-  --bg:#0d1117;--panel:#161b22;--soft:#12171e;--surface:#12171e;
-  --fg:#e6edf3;--muted:#9aa7b6;--dim:#7d8998;--border:#232b36;
-  --accent:#6ea8ff;--accent-strong:#93b4ff;--accent-bg:#152238;--hi:#1d3a6b;
-  --plan:#6ea8ff;--build:#2dd4bf;--gate:#a78bfa;--deploy:#f472b6;
+  --bg:#0f1319;--panel:#161c24;--soft:#131920;--surface:#131920;
+  --fg:#e6edf3;--muted:#9aa7b6;--dim:#7d8998;--border:#242c37;
+  --accent:#8ab4e0;--accent-strong:#a8c4e0;--accent-bg:#172230;--hi:#20344c;
+  --plan:#6d9dcb;--build:#8ab4e0;--gate:#94a3b8;--deploy:#cbd5e1;
   --shadow:0 1px 2px rgba(0,0,0,.45);
 }
+.colorblind{
+  color-scheme:light;
+  --bg:#fff;--panel:#f1f5f7;--soft:#f7fafb;--surface:#fff;
+  --fg:#1a1a1a;--muted:#3f4a54;--dim:#56616a;--border:#7c8993;
+  --accent:#0072b2;--accent-strong:#005a8d;--accent-soft:#56b4e9;
+  --accent-bg:#e6f3f8;--hi:#d7eef7;
+  --plan:#0072b2;--build:#8a5700;--gate:#8f4a80;--deploy:#1a1a1a;
+  --shadow:0 1px 3px rgba(26,26,26,.12);
+}
+.colorblind :focus-visible{outline:3px solid #8a5700;outline-offset:3px}
 *{box-sizing:border-box}
 html,body{margin:0;padding:0;background:var(--bg)}
 body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;
@@ -75,7 +85,10 @@ code{background:var(--panel);padding:2px 6px;border-radius:4px;font-size:12px;fo
 .fab{background:#fff;color:var(--fg);border:0;border-radius:999px;padding:10px 18px;font:700 12.5px/1.4 inherit;letter-spacing:-0.005em;
      box-shadow:0 4px 14px rgba(17,17,17,.13);cursor:pointer;white-space:nowrap}
 .fab:hover{background:var(--panel)}
-.dark .fab{background:#161b22;color:var(--fg);box-shadow:0 4px 14px rgba(0,0,0,.55)}
+.dark .fab{background:#161c24;color:var(--fg);box-shadow:0 4px 14px rgba(0,0,0,.55)}
+.fab-round{width:46px;height:46px;padding:0;display:flex;align-items:center;justify-content:center;background:var(--accent);color:#fff;font-size:15px;
+           box-shadow:0 4px 14px rgba(61,111,165,.38)}
+.dark .fab-round{background:var(--accent);color:#0f1319}
 
 @media (max-width:760px){.wrap{padding:24px 16px 96px}.hero h1{font-size:22px}.fab-stack{right:14px;bottom:16px}}
 @media print{@page{size:A4;margin:12mm}body{font-size:12px}.fab-stack{display:none}.app-card{page-break-inside:avoid;break-inside:avoid}.app-badge,.phase-dot{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
@@ -84,7 +97,9 @@ code{background:var(--panel);padding:2px 6px;border-radius:4px;font-size:12px;fo
 <body>
 
 <div class="fab-stack">
-  <button class="fab" id="theme-toggle" aria-label="Toggle dark mode"><i class="fa-solid fa-circle-half-stroke" aria-hidden="true"></i> <span id="theme-label">다크 모드</span></button>
+  <button class="fab" id="theme-toggle" aria-label="다크 모드로 전환" title="현재 테마: 라이트"><i class="fa-solid fa-moon" id="theme-icon" aria-hidden="true"></i> <span id="theme-label">다크 모드</span></button>
+  <button class="fab" id="width-toggle" aria-label="Toggle content width"><span id="width-label">본문 넓게</span></button>
+  <button class="fab fab-round" id="to-top" aria-label="Scroll to top"><i class="fa-solid fa-arrow-up" aria-hidden="true"></i></button>
 </div>
 
 <div class="wrap">
@@ -149,11 +164,23 @@ code{background:var(--panel);padding:2px 6px;border-radius:4px;font-size:12px;fo
 </div>
 
 <script>
-const html=document.documentElement,tBtn=document.getElementById('theme-toggle'),tLab=document.getElementById('theme-label');
-function syncTheme(){tLab.textContent=html.classList.contains('dark')?'라이트 모드':'다크 모드';}
-if(localStorage.getItem('theme')==='dark'||(!localStorage.getItem('theme')&&window.matchMedia('(prefers-color-scheme:dark)').matches))html.classList.add('dark');
-syncTheme();
-tBtn.addEventListener('click',()=>{html.classList.toggle('dark');localStorage.setItem('theme',html.classList.contains('dark')?'dark':'light');syncTheme();});
+const html=document.documentElement,tBtn=document.getElementById('theme-toggle'),tLab=document.getElementById('theme-label'),tIcon=document.getElementById('theme-icon');
+const THEMES=['light','dark','colorblind'],THEME_NAMES={light:'라이트',dark:'다크',colorblind:'색각 보정'},THEME_ICONS={light:'fa-sun',dark:'fa-moon',colorblind:'fa-eye'};
+function currentTheme(){return html.classList.contains('dark')?'dark':html.classList.contains('colorblind')?'colorblind':'light';}
+function syncTheme(){const current=currentTheme(),next=THEMES[(THEMES.indexOf(current)+1)%THEMES.length];tLab.textContent=THEME_NAMES[next]+' 모드';tBtn.setAttribute('aria-label',THEME_NAMES[next]+' 모드로 전환');tBtn.title='현재 테마: '+THEME_NAMES[current];tIcon.className='fa-solid '+THEME_ICONS[next];}
+function applyTheme(theme,persist=true){html.classList.remove('dark','colorblind');if(theme!=='light')html.classList.add(theme);html.dataset.theme=theme;if(persist)localStorage.setItem('theme',theme);syncTheme();}
+const savedTheme=localStorage.getItem('theme');
+applyTheme(THEMES.includes(savedTheme)?savedTheme:window.matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light',false);
+tBtn.addEventListener('click',()=>{const current=currentTheme();applyTheme(THEMES[(THEMES.indexOf(current)+1)%THEMES.length]);});
+// Content width switcher
+const WIDTHS=['1080px','1440px','1920px'],LABELS=['본문 넓게','본문 더 넓게','본문 좁게'];
+let wIdx=Math.max(0,WIDTHS.indexOf(localStorage.getItem('docWidth')||WIDTHS[0]));
+const wBtn=document.getElementById('width-toggle'),wLab=document.getElementById('width-label');
+function applyWidth(){document.documentElement.style.setProperty('--content-w',WIDTHS[wIdx]);wLab.textContent=LABELS[wIdx];localStorage.setItem('docWidth',WIDTHS[wIdx]);}
+applyWidth();
+wBtn.addEventListener('click',()=>{wIdx=(wIdx+1)%WIDTHS.length;applyWidth();});
+// Scroll to top
+document.getElementById('to-top').addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
 </script>
 </body>
 </html>

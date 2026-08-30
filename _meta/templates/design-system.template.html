@@ -131,11 +131,11 @@
 
   /* --- DS-120: Document chrome (showcase page 자체의 서체/면/강조) ---
      프로젝트 DS 토큰과 분리된 값이다. 문서 산출물 공통 테마를 따르며,
-     accent는 blue 계열 고정 — 연두(lime)·노랑(yellow)은 사용하지 않는다. */
+     기본 accent는 blue 계열 고정이며 colorblind 모드만 Okabe-Ito 기반 고대비 예외를 쓴다. */
   --font-doc: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", sans-serif;
-  --doc-panel: #f5f6f7;
-  --doc-hi: #dbe7ff;
-  --doc-accent: #2563eb;
+  --doc-panel: #f2f5f8;
+  --doc-hi: #dbe7f5;
+  --doc-accent: #3d6fa5;
   --doc-shadow: 0 1px 2px rgba(17,17,17,.05);
   --doc-w: 1280px;
 }
@@ -150,11 +150,34 @@
   --color-text-tertiary: var(--color-gray-500);
   --color-border-default: var(--color-gray-700);
   --color-border-strong: var(--color-gray-600);
-  --doc-panel: #161b22;
-  --doc-hi: #1d3a6b;
-  --doc-accent: #6ea8ff;
+  --doc-panel: #161c24;
+  --doc-hi: #20344c;
+  --doc-accent: #8ab4e0;
   --doc-shadow: 0 1px 2px rgba(0,0,0,.45);
 }
+
+/* --- DS-040: Color-vision-accessible Mode Override --- */
+[data-theme="colorblind"] {
+  color-scheme: light;
+  --color-success-500: #0072b2;
+  --color-warning-500: #8a5700;
+  --color-error-500: #a84300;
+  --color-info-500: #0072b2;
+  --color-bg-primary: #ffffff;
+  --color-bg-secondary: #f1f5f7;
+  --color-bg-tertiary: #e6edf1;
+  --color-text-primary: #1a1a1a;
+  --color-text-secondary: #3f4a54;
+  --color-text-tertiary: #56616a;
+  --color-border-default: #7c8993;
+  --color-border-strong: #56616a;
+  --doc-panel: #f1f5f7;
+  --doc-hi: #d7eef7;
+  --doc-accent: #0072b2;
+  --doc-shadow: 0 1px 3px rgba(26,26,26,.12);
+}
+
+[data-theme="colorblind"] :focus-visible { outline: 3px solid #8a5700; outline-offset: 3px; }
 
 /* ============================================
    2. BASE STYLES
@@ -282,12 +305,12 @@ body {
   box-shadow: var(--shadow-lg); font-size: var(--font-size-sm);
   min-width: 300px; max-width: 480px;
 }
-/* semantic tints — teal(success) / orange(warning) / red(error) / blue(info).
-   연두(lime)·노랑(yellow) 계열 금지: warning은 amber가 아닌 orange를 쓴다. */
-.ds-toast--success { background: #f0fdfa; border: 1px solid #99f6e4; color: #115e59; }
-.ds-toast--error { background: #fef2f2; border: 1px solid #fecaca; color: #991b1b; }
-.ds-toast--warning { background: #fff7ed; border: 1px solid #fed7aa; color: #9a3412; }
-.ds-toast--info { background: #eff6ff; border: 1px solid #bfdbfe; color: #1e40af; }
+/* semantic tints — pale blue(success/info) / orange(warning) / red(error).
+   gray + pale blue 외 유채색 금지: success/info 는 teal 이 아닌 pale blue, warning 은 amber 가 아닌 orange 를 쓴다. */
+.ds-toast--success { background: #f2f6fa; border: 1px solid #c3d6e8; color: #2c5580; }
+.ds-toast--error { background: #f9f0ef; border: 1px solid #e9c9c6; color: #991b1b; }
+.ds-toast--warning { background: #f9f4ee; border: 1px solid #e6d3ba; color: #9a3412; }
+.ds-toast--info { background: #eef3f9; border: 1px solid #c3d6e8; color: #2c5580; }
 
 /* --- CMP-070: Badge --- */
 .ds-badge {
@@ -295,11 +318,29 @@ body {
   font-size: var(--font-size-xs); font-weight: var(--font-weight-medium);
   padding: 2px var(--space-2); border-radius: var(--radius-full);
 }
-.ds-badge--primary { background: var(--color-primary-100, rgba(59,130,246,0.1)); color: var(--color-primary-700, #1d4ed8); }
-.ds-badge--success { background: #ccfbf1; color: #115e59; }
-.ds-badge--warning { background: #ffedd5; color: #9a3412; }
-.ds-badge--error { background: #fee2e2; color: #991b1b; }
+.ds-badge--primary { background: var(--color-primary-100, rgba(59,130,246,0.1)); color: var(--color-primary-700, #2c5580); }
+.ds-badge--success { background: #dce7f2; color: #2c5580; }
+.ds-badge--warning { background: #f2e7db; color: #9a3412; }
+.ds-badge--error { background: #f3e0de; color: #991b1b; }
 .ds-badge--neutral { background: var(--color-gray-100); color: var(--color-gray-700); }
+
+/* Okabe-Ito 기반 의미색. 색상 외에도 각 컴포넌트의 텍스트/아이콘 레이블을 유지한다. */
+[data-theme="colorblind"] .ds-btn--primary { background: #0072b2; }
+[data-theme="colorblind"] .ds-btn--primary:hover { background: #005a8d; }
+[data-theme="colorblind"] .ds-btn--primary:active { background: #00456b; }
+[data-theme="colorblind"] .ds-btn--danger,
+[data-theme="colorblind"] .ds-btn--danger:hover { background: #a84300; }
+[data-theme="colorblind"] .ds-btn--danger:active { background: #7f3200; }
+[data-theme="colorblind"] .ds-btn--ghost { color: #005a8d; }
+[data-theme="colorblind"] .ds-input:focus { border-color: #0072b2; box-shadow: 0 0 0 3px rgba(0,114,178,.22); }
+[data-theme="colorblind"] .ds-toast--success,
+[data-theme="colorblind"] .ds-toast--info { background: #e6f3f8; border-color: #56b4e9; color: #005a8d; }
+[data-theme="colorblind"] .ds-toast--warning { background: #fff4d6; border-color: #8a5700; color: #704700; }
+[data-theme="colorblind"] .ds-toast--error { background: #fff0e8; border-color: #a84300; color: #9f4500; }
+[data-theme="colorblind"] .ds-badge--primary,
+[data-theme="colorblind"] .ds-badge--success { background: #e6f3f8; color: #005a8d; }
+[data-theme="colorblind"] .ds-badge--warning { background: #fff4d6; color: #704700; }
+[data-theme="colorblind"] .ds-badge--error { background: #fff0e8; color: #9f4500; }
 
 /* ============================================
    4. LAYOUT STYLES
@@ -378,7 +419,7 @@ body {
 .ds-to-top {
   width: 46px; height: 46px; padding: 0; justify-content: center;
   background: var(--doc-accent); color: #fff; font-size: 15px;
-  box-shadow: 0 4px 14px rgba(37,99,235,.38);
+  box-shadow: 0 4px 14px rgba(61,111,165,.38);
 }
 
 /* Meta bar */
@@ -410,10 +451,11 @@ body {
 
 <!-- Floating controls -->
 <div class="ds-fab-stack">
-  <button class="ds-theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark/light mode">
-    <i class="fa-solid fa-circle-half-stroke" id="theme-icon" aria-hidden="true"></i>
+  <button class="ds-theme-toggle" id="theme-toggle" onclick="toggleTheme()" aria-label="다크 모드로 전환" title="현재 테마: 라이트">
+    <i class="fa-solid fa-moon" id="theme-icon" aria-hidden="true"></i>
     <span id="theme-label">다크 모드</span>
   </button>
+  <button class="ds-theme-toggle" id="ds-width-toggle" aria-label="Toggle content width"><span id="ds-width-label">본문 넓게</span></button>
   <button class="ds-theme-toggle ds-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Scroll to top">
     <i class="fa-solid fa-arrow-up" aria-hidden="true"></i>
   </button>
@@ -771,20 +813,37 @@ body {
 <!-- Theme Toggle Script -->
 <script>
 (function(){
-  const saved = localStorage.getItem('ds-theme');
-  if (saved === 'dark') applyTheme('dark');
-  function applyTheme(t) {
-    document.documentElement.setAttribute('data-theme', t);
-    const label = document.getElementById('theme-label');
-    if (label) label.textContent = t === 'dark' ? '\uB77C\uC774\uD2B8 \uBAA8\uB4DC' : '\uB2E4\uD06C \uBAA8\uB4DC';
+  const THEMES=['light','dark','colorblind'];
+  const NAMES={light:'라이트',dark:'다크',colorblind:'색각 보정'};
+  const ICONS={light:'fa-sun',dark:'fa-moon',colorblind:'fa-eye'};
+  const root=document.documentElement,button=document.getElementById('theme-toggle'),label=document.getElementById('theme-label'),icon=document.getElementById('theme-icon');
+  function applyTheme(theme,persist=true) {
+    root.setAttribute('data-theme',theme);
+    const next=THEMES[(THEMES.indexOf(theme)+1)%THEMES.length];
+    label.textContent=NAMES[next]+' 모드';
+    button.setAttribute('aria-label',NAMES[next]+' 모드로 전환');
+    button.title='현재 테마: '+NAMES[theme];
+    icon.className='fa-solid '+ICONS[next];
+    if(persist)localStorage.setItem('ds-theme',theme);
   }
   window.toggleTheme = function() {
-    const current = document.documentElement.getAttribute('data-theme') || 'light';
-    const next = current === 'dark' ? 'light' : 'dark';
-    localStorage.setItem('ds-theme', next);
+    const current=root.getAttribute('data-theme')||'light';
+    const next=THEMES[(THEMES.indexOf(current)+1)%THEMES.length];
     applyTheme(next);
   };
+  const saved=localStorage.getItem('ds-theme');
+  applyTheme(THEMES.includes(saved)?saved:window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light',false);
 })();
+
+  // Content width switcher — 1280 / 1600 / 1920
+  (function(){
+    const WIDTHS=['1280px','1600px','1920px'],LABELS=['본문 넓게','본문 더 넓게','본문 좁게'];
+    let i=Math.max(0,WIDTHS.indexOf(localStorage.getItem('ds-width')||'1280px'));
+    const btn=document.getElementById('ds-width-toggle'),lab=document.getElementById('ds-width-label');
+    function apply(){document.documentElement.style.setProperty('--doc-w',WIDTHS[i]);lab.textContent=LABELS[i];localStorage.setItem('ds-width',WIDTHS[i]);}
+    apply();
+    btn.addEventListener('click',()=>{i=(i+1)%WIDTHS.length;apply();});
+  })();
 </script>
 
 </body>

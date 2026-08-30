@@ -7,23 +7,23 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6/css/all.min.css">
 <style>
 :root{
-  --bg:#f5f6f7;--surface:#fff;--border:#e5e7eb;--sb:#1b2230;--sb-text:#93a1b5;
-  --hdr:#1b2230;--section:#f5f6f7;--text:#111;--text2:#4b5563;--text3:#6b7280;
-  --accent:#2563eb;--anno:#2563eb;
-  --svg-node:#2563eb;--svg-node-text:#fff;--svg-condition:#c2410c;
-  --svg-action:#0d9488;--svg-arrow:#6b7280;--svg-actor:#7c3aed;--svg-bg:#f5f6f7;
+  --bg:#f2f5f8;--surface:#fff;--border:#e2e8f0;--sb:#232932;--sb-text:#98a2ae;
+  --hdr:#232932;--section:#f2f5f8;--text:#111827;--text2:#4b5563;--text3:#6b7280;
+  --accent:#3d6fa5;--anno:#3d6fa5;
+  --svg-node:#3d6fa5;--svg-node-text:#fff;--svg-condition:#c2410c;
+  --svg-action:#3d6fa5;--svg-arrow:#6b7280;--svg-actor:#64748b;--svg-bg:#f2f5f8;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;background:var(--bg);font-size:13px;line-height:1.7;letter-spacing:-0.005em;-webkit-font-smoothing:antialiased;color:var(--text)}
 
 /* ── Document Header (sticky) ── */
-.doc-header{background:#1b2230;color:#fff;padding:10px 20px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100;gap:12px}
+.doc-header{background:#232932;color:#fff;padding:10px 20px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100;gap:12px}
 .dh-left{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-.sid{background:#2563eb;color:#fff;padding:2px 10px;border-radius:4px;font-size:11px;font-weight:700;font-family:monospace}
+.sid{background:#3d6fa5;color:#fff;padding:2px 10px;border-radius:4px;font-size:11px;font-weight:700;font-family:monospace}
 .dh-name{font-size:14px;font-weight:700}
-.dh-path{font-family:ui-monospace,monospace;font-size:11px;color:#93a1b5;background:rgba(255,255,255,.08);padding:2px 8px;border-radius:4px}
+.dh-path{font-family:ui-monospace,monospace;font-size:11px;color:#98a2ae;background:rgba(255,255,255,.08);padding:2px 8px;border-radius:4px}
 .dh-right{display:flex;gap:8px;flex-shrink:0}
-.dh-right span,.dh-right a{font-size:11px;color:#93a1b5;background:rgba(255,255,255,.08);padding:2px 8px;border-radius:4px;text-decoration:none}
+.dh-right span,.dh-right a{font-size:11px;color:#98a2ae;background:rgba(255,255,255,.08);padding:2px 8px;border-radius:4px;text-decoration:none}
 .dh-right a:hover{color:#fff;background:rgba(255,255,255,.16)}
 
 /* ── Stage: App Frame + Annotation Panel ── */
@@ -38,9 +38,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,"Apple SD
 .sb-list{list-style:none;padding:6px 0;flex:1;overflow-y:auto}
 .sbi{padding:8px 14px;font-size:12px;color:var(--sb-text);cursor:pointer;display:flex;align-items:center;gap:8px}
 .sbi:hover{background:rgba(255,255,255,.06);color:#fff}
-.sbi.active{background:rgba(37,99,235,.20);color:#fff;font-weight:700}
+.sbi.active{background:rgba(61,111,165,.20);color:#fff;font-weight:700}
 .sbi.sub{padding:6px 14px 6px 36px;font-size:11px}
-.sbi.sub.active{color:#93b4ff}
+.sbi.sub.active{color:#a8c4e0}
 
 /* ── App Main (inside app-frame) ── */
 .app-main{flex:1;display:flex;flex-direction:column;overflow-y:auto}
@@ -61,27 +61,27 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,"Apple SD
 .info-val{font-size:12px;color:var(--text);font-weight:600}
 
 /* ── Tags ── */
-.work-tag{background:#eef3ff;color:#1d4ed8;font-size:10px;padding:1px 6px;border-radius:4px;margin-right:3px;font-weight:600}
+.work-tag{background:#eef3f9;color:#2c5580;font-size:10px;padding:1px 6px;border-radius:4px;margin-right:3px;font-weight:600}
 
 /* ── Photo Upload ── */
 .photo-section{margin-bottom:12px}
 .photo-label{font-size:11px;font-weight:700;margin-bottom:6px;display:flex;align-items:center;gap:6px}
 .photo-counter{font-size:10px;color:var(--text3);font-weight:400}
 .photo-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:6px}
-.photo-thumb{width:100%;aspect-ratio:1;background:#f1f5f9;border:1px solid var(--border);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:20px;color:var(--text3);position:relative}
+.photo-thumb{width:100%;aspect-ratio:1;background:#eef2f6;border:1px solid var(--border);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:20px;color:var(--text3);position:relative}
 .photo-del{position:absolute;top:2px;right:2px;width:16px;height:16px;background:#ef4444;color:#fff;border-radius:50%;font-size:9px;display:flex;align-items:center;justify-content:center;cursor:pointer;border:none}
-.photo-add{background:#eef3ff;border:2px dashed #2563eb;color:#2563eb;cursor:pointer;font-size:12px;font-weight:700}
+.photo-add{background:#eef3f9;border:2px dashed #3d6fa5;color:#3d6fa5;cursor:pointer;font-size:12px;font-weight:700}
 
 /* ── Signature ── */
 .sign-canvas{width:100%;height:100px;background:#fff;border:2px solid var(--border);border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--text3);font-size:12px}
-.sign-reset{font-size:10px;color:#2563eb;cursor:pointer;text-decoration:underline;margin-top:4px;display:inline-block}
+.sign-reset{font-size:10px;color:#3d6fa5;cursor:pointer;text-decoration:underline;margin-top:4px;display:inline-block}
 
 /* ── Footer Bar (sticky bottom in app-frame) ── */
 .footer-bar{display:flex;justify-content:flex-end;gap:10px;padding:12px 16px;background:#fff;border-top:2px solid var(--border);position:sticky;bottom:0}
 
 /* ── Buttons ── */
 .btn{padding:7px 18px;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;border:none;display:inline-flex;align-items:center;gap:6px}
-.btn.primary{background:#2563eb;color:#fff}
+.btn.primary{background:#3d6fa5;color:#fff}
 .btn.secondary{background:#fff;color:var(--text2);border:1px solid var(--border)}
 .btn.danger{background:#ef4444;color:#fff}
 .btn.outline{background:#fff;color:var(--text2);border:1px solid var(--border)}
@@ -93,23 +93,23 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,"Apple SD
 
 /* ── Table ── */
 .wf-table{width:100%;border-collapse:collapse;font-size:12px}
-.wf-table thead{background:#1b2230;color:#fff}
+.wf-table thead{background:#232932;color:#fff}
 .wf-table th{padding:8px 10px;text-align:left;font-size:11px;font-weight:600}
-.wf-table td{padding:8px 10px;border-bottom:1px solid #f1f5f9;vertical-align:top}
+.wf-table td{padding:8px 10px;border-bottom:1px solid #eef2f6;vertical-align:top}
 .wf-table tr:hover{background:#f8fafc}
 
 /* ── Badge ── */
 .wf-badge{display:inline-block;padding:1px 8px;border-radius:10px;font-size:10px;font-weight:600}
-.wf-badge-blue{background:#dbeafe;color:#1d4ed8}
-.wf-badge-green{background:#ccfbf1;color:#115e59}
-.wf-badge-red{background:#fee2e2;color:#dc2626}
-.wf-badge-gray{background:#f1f5f9;color:#475569}
-.wf-badge-amber{background:#ffedd5;color:#9a3412}
+.wf-badge-blue{background:#dce7f2;color:#2c5580}
+.wf-badge-green{background:#dce7f2;color:#2c5580}
+.wf-badge-red{background:#f3e0de;color:#dc2626}
+.wf-badge-gray{background:#eef2f6;color:#475569}
+.wf-badge-amber{background:#f2e7db;color:#9a3412}
 
 /* ── Tabs ── */
 .wf-tabs{display:flex;border-bottom:1px solid var(--border);gap:4px}
 .wf-tab{padding:8px 16px;font-size:12px;font-weight:500;color:#64748b;cursor:pointer;border-radius:6px 6px 0 0}
-.wf-tab.active{color:var(--accent);background:rgba(37,99,235,.10);font-weight:700}
+.wf-tab.active{color:var(--accent);background:rgba(61,111,165,.10);font-weight:700}
 
 /* ── Stats Card ── */
 .wf-stat{background:#fff;border:1px solid var(--border);border-radius:8px;padding:14px}
@@ -122,7 +122,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,"Apple SD
 /* ── Annotation Panel ── */
 .anno-panel{background:#fff;border:1px solid var(--border);border-radius:10px;padding:16px;font-size:12px}
 .anno-title{font-size:13px;font-weight:700;color:var(--text);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border)}
-.anno-item{display:flex;gap:8px;align-items:flex-start;margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid #f1f5f9}
+.anno-item{display:flex;gap:8px;align-items:flex-start;margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid #eef2f6}
 .anno-item:last-of-type{border-bottom:none}
 .an{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;min-width:20px;background:var(--anno);color:#fff;border-radius:50%;font-size:10px;font-weight:700;margin-top:1px}
 .ad{font-size:11px;color:var(--text2);line-height:1.5}
@@ -138,13 +138,13 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,"Apple SD
 .overlay-title{font-size:14px;font-weight:700;margin-bottom:14px;color:var(--text)}
 .overlay-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 .overlay-card{border:1px solid var(--border);border-radius:8px;overflow:hidden}
-.overlay-card-header{background:#f1f5f9;padding:8px 12px;font-size:11px;font-weight:700;color:var(--text2);display:flex;align-items:center;gap:6px;border-bottom:1px solid var(--border)}
+.overlay-card-header{background:#eef2f6;padding:8px 12px;font-size:11px;font-weight:700;color:var(--text2);display:flex;align-items:center;gap:6px;border-bottom:1px solid var(--border)}
 .overlay-type-badge{font-size:9px;padding:1px 6px;border-radius:4px;font-weight:700;text-transform:uppercase}
-.overlay-type-modal .overlay-type-badge{background:#dbeafe;color:#1d4ed8}
-.overlay-type-bottomsheet .overlay-type-badge{background:#ffedd5;color:#9a3412}
-.overlay-type-popup .overlay-type-badge{background:#f3e8ff;color:#7c3aed}
-.overlay-type-drawer .overlay-type-badge{background:#ccfbf1;color:#115e59}
-.overlay-type-toast .overlay-type-badge{background:#fee2e2;color:#dc2626}
+.overlay-type-modal .overlay-type-badge{background:#dce7f2;color:#2c5580}
+.overlay-type-bottomsheet .overlay-type-badge{background:#f2e7db;color:#9a3412}
+.overlay-type-popup .overlay-type-badge{background:#f1f5f9;color:#64748b}
+.overlay-type-drawer .overlay-type-badge{background:#dce7f2;color:#2c5580}
+.overlay-type-toast .overlay-type-badge{background:#f3e0de;color:#dc2626}
 .overlay-card-body{padding:12px;min-height:180px;background:#fff;position:relative}
 
 /* ── 주요 흐름도 Section (3-column: Sequence + Class + ERD) ── */
@@ -153,7 +153,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,"Apple SD
 .diag-sub{font-size:11px;color:var(--text2);margin-bottom:14px}
 .diag-grid-3col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
 .diag-block{margin-bottom:16px}
-.diag-block h3{font-size:11px;font-weight:700;color:#2563eb;margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px}
+.diag-block h3{font-size:11px;font-weight:700;color:#3d6fa5;margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px}
 svg.diag{width:100%;border:1px solid var(--border);border-radius:8px;background:var(--svg-bg);display:block}
 /* Full-width diagram (single wide) */
 .diag-block.full{grid-column:1/-1}
@@ -163,16 +163,16 @@ svg.diag{width:100%;border:1px solid var(--border);border-radius:8px;background:
 .process-title{font-size:14px;font-weight:700;margin-bottom:6px;color:var(--text)}
 .process-sub{font-size:11px;color:var(--text2);margin-bottom:14px}
 .process-block{margin-bottom:16px}
-.process-block h3{font-size:11px;font-weight:700;color:#2563eb;margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px}
+.process-block h3{font-size:11px;font-weight:700;color:#3d6fa5;margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px}
 
 /* ── Component Spec Table ── */
 .spec-wrap{padding:16px;background:#fff;border-top:2px solid var(--border)}
 .spec-title{font-size:13px;font-weight:700;margin-bottom:10px;color:var(--text)}
 .spec-tbl{width:100%;border-collapse:collapse;font-size:12px}
-.spec-tbl th{background:#f1f5f9;padding:7px 10px;text-align:left;font-size:11px;font-weight:700;color:var(--text2);border-bottom:1px solid var(--border)}
-.spec-tbl td{padding:7px 10px;border-bottom:1px solid #f5f7fa;color:var(--text);vertical-align:top}
+.spec-tbl th{background:#eef2f6;padding:7px 10px;text-align:left;font-size:11px;font-weight:700;color:var(--text2);border-bottom:1px solid var(--border)}
+.spec-tbl td{padding:7px 10px;border-bottom:1px solid #f2f5f8;color:var(--text);vertical-align:top}
 .spec-tbl tr:last-child td{border-bottom:none}
-code{font-family:monospace;background:#f1f5f9;padding:1px 5px;border-radius:3px;font-size:11px;color:#e11d48}
+code{font-family:monospace;background:#eef2f6;padding:1px 5px;border-radius:3px;font-size:11px;color:#334155}
 
 /* ── Footer ── */
 .doc-footer{padding:12px 16px;background:#f8fafc;border-top:1px solid var(--border);text-align:center;font-size:11px;color:var(--text3)}

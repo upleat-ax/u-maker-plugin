@@ -11,21 +11,21 @@
   *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
   :root {
-    --bg: #f4f5f8;
+    --bg: #f2f5f8;
     --surface: #ffffff;
-    --ink: #1c2333;
-    --sub: #5b6474;
-    --line: #e2e5ec;
-    --accent: #175cd3;
-    --accent-bg: #eff6ff;
+    --ink: #111827;
+    --sub: #4b5563;
+    --line: #e2e8f0;
+    --accent: #3d6fa5;
+    --accent-bg: #eef3f9;
 
     /* 뱃지 팔레트 (유형별 본색 / 옅은 배경 / 옅은 테두리) */
-    --bug: #d92d20;    --bug-bg: #fef3f2;    --bug-line: #f9c3bd;
-    --fix: #dc6803;    --fix-bg: #fffaeb;    --fix-line: #fedf89;
-    --link: #175cd3;   --link-bg: #eff6ff;   --link-line: #b2ccff;
-    --policy: #6941c6; --policy-bg: #f5f3ff; --policy-line: #d9d6fe;
-    --first: #1c2333;  --first-bg: #eceef2;  --first-line: #c9cdd6;
-    --ok: #079455;     --ok-bg: #ecfdf3;     --ok-line: #a6f4c5;
+    --bug: #dc2626;    --bug-bg: #f9f0ef;    --bug-line: #e9c9c6;
+    --fix: #c2410c;    --fix-bg: #f7f0ea;    --fix-line: #e6d3ba;
+    --link: #3d6fa5;   --link-bg: #eef3f9;   --link-line: #c3d6e8;
+    --policy: #64748b; --policy-bg: #f1f5f9; --policy-line: #cbd5e1;
+    --first: #111827;  --first-bg: #eef2f6;  --first-line: #cbd5e1;
+    --ok: #2c5580;     --ok-bg: #eef3f9;     --ok-line: #c3d6e8;
 
     --radius: 14px;
     --radius-sm: 9px;
@@ -38,7 +38,7 @@
 
   html { scroll-behavior: smooth; }
   body {
-    font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, 'Apple SD Gothic Neo', 'Malgun Gothic', 'Noto Sans KR', sans-serif;
     background: var(--bg);
     color: var(--ink);
     line-height: 1.7;
@@ -106,7 +106,7 @@
 
   /* ── Hero ── */
   .hero {
-    background: linear-gradient(135deg, #1c2333 0%, #2b3550 100%);
+    background: linear-gradient(135deg, #111827 0%, #2b3550 100%);
     color: #fff;
     border-radius: var(--radius);
     padding: 36px 40px;
@@ -224,7 +224,7 @@
 
   /* ── 타임스탬프 (영상 위치) ── */
   .ts {
-    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-family: ui-monospace, 'JetBrains Mono', 'SF Mono', 'Fira Code', monospace;
     font-size: 11.5px;
     font-weight: 700;
     color: var(--accent);
@@ -446,7 +446,7 @@
     margin-bottom: 14px;
   }
   .item-no {
-    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-family: ui-monospace, 'JetBrains Mono', 'SF Mono', 'Fira Code', monospace;
     font-size: 12px;
     font-weight: 800;
     color: var(--sub);
@@ -591,7 +591,7 @@
   .sum-table tbody tr:last-child td { border-bottom: none; }
   .sum-table tbody tr:hover { background: #f9fafb; }
   .sum-table .mono {
-    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-family: ui-monospace, 'JetBrains Mono', 'SF Mono', 'Fira Code', monospace;
     font-size: 12px;
     color: var(--sub);
     white-space: nowrap;
@@ -661,7 +661,7 @@
     body { padding-right: 0; }
     .wrap { padding: 0; max-width: 100%; }
     .fix-item, .rule-card, .p0, .legend { break-inside: avoid; box-shadow: none; }
-    .hero { background: #1c2333 !important; -webkit-print-color-adjust: exact; }
+    .hero { background: #111827 !important; -webkit-print-color-adjust: exact; }
   }
 
   @media (max-width: 1200px) {

@@ -5,8 +5,8 @@ Minutes Writer 에이전트가 **일반 회의록** HTML 생성 시 참조하는
 
 ## Design Principles
 
-- **다크 사이드바 + 라이트 본문**: 사이드바 `#1e2432`, 본문 `#f6f7f9`
-- **Pretendard 폰트** 기본, 타임스탬프·코드성 텍스트는 모노스페이스
+- **그래파이트 사이드바 + 라이트 본문**: 사이드바 `#232932`, 본문 `#f2f5f8` (gray + pale blue 테마)
+- **시스템 서체 스택**(`-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Apple SD Gothic Neo', 'Noto Sans KR'`) 기본 — 웹폰트 CDN 금지, 타임스탬프·코드성 텍스트는 모노스페이스
 - **스크롤 추적**: 사이드바 네비게이션이 스크롤 위치 따라 활성 전환 + 상단 진행률 바
 - **좌 네비 + 우 글랜스 레일 (3열)**: 좌측 다크 사이드바(목차) + 중앙 본문 + **우측 `.glance` 레일**(요약·결정·미결·액션 한눈). 바쁜 독자는 우측 레일만 봐도 회의 결과 파악
 - **간결·평이체가 원칙 (하드 룰)**: 본문은 논문투 금지. 개조식(bullet) 우선, 한 항목 1~2줄, 쉬운 말. "정제된 문어체"라도 짧게 — 길고 현학적인 산문은 이 스킬의 실패 모드
@@ -18,15 +18,15 @@ Minutes Writer 에이전트가 **일반 회의록** HTML 생성 시 참조하는
 
 ```css
 :root {
-  --bg: #f6f7f9;  --surface: #ffffff;
-  --sidebar-bg: #1e2432;  --sidebar-text: #b0b8c9;  --sidebar-accent: #4f8cff;
-  --text: #1e2432;  --text-secondary: #5a6376;  --border: #e2e5ea;
-  --accent: #4f8cff;  --accent-light: #eaf1ff;
-  --green: #22c55e;  --green-light: #ecfdf5;
-  --red: #ef4444;    --red-light: #fef2f2;
-  --yellow: #f59e0b; --yellow-light: #fffbeb;
-  --purple: #8b5cf6; --purple-light: #f5f3ff;
-  --gray: #6b7280;   --gray-light: #f3f4f6;
+  --bg: #f2f5f8;  --surface: #ffffff;
+  --sidebar-bg: #232932;  --sidebar-text: #98a2ae;  --sidebar-accent: #3d6fa5;
+  --text: #232932;  --text-secondary: #4b5563;  --border: #e2e8f0;
+  --accent: #3d6fa5;  --accent-light: #eef3f9;
+  --ok: #3d6fa5;  --ok-light: #eef3f9;
+  --red: #dc2626;    --red-light: #f9f0ef;
+  --warn: #c2410c; --warn-light: #f7f0ea;
+  --slate: #64748b; --slate-light: #f1f5f9;
+  --gray: #6b7280;   --gray-light: #eef2f6;
   --radius: 12px;    --radius-sm: 8px;
   --article-w: 780px;   /* body.wide → 1100px */
   --glance-w: 320px;    /* 우측 글랜스 레일 폭 */
@@ -292,7 +292,7 @@ Minutes Writer 에이전트가 **일반 회의록** HTML 생성 시 참조하는
 </div>
 ```
 
-SVG 규칙: 인라인, `viewBox` 반응형(고정 width/height 금지), 색상은 `#4f8cff #22c55e #ef4444 #f59e0b #8b5cf6 #1e293b #f8fafc`, 폰트 `Pretendard, -apple-system, sans-serif`, 고유 ID prefix, 주요 요소 `<title>`. **Mermaid 사용 금지 — 항상 직접 SVG.**
+SVG 규칙: 인라인, `viewBox` 반응형(고정 width/height 금지), 색상은 `#3d6fa5 #3d6fa5 #dc2626 #c2410c #64748b #1e293b #f8fafc`, 폰트 `-apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', sans-serif`, 고유 ID prefix, 주요 요소 `<title>`. **Mermaid 사용 금지 — 항상 직접 SVG.**
 
 ### 12. 녹화 화면 캡쳐 (선택)
 
@@ -353,7 +353,7 @@ meeting-info (메타 그리드 + stat-row)
 
 ## 작성 원칙
 
-- `assets/template-general.html` 의 CSS 를 **인라인 복사**해 단일 HTML (Pretendard + Font Awesome CDN 예외). 아이콘은 이모지 대신 `fa-solid` — head 의 FA CDN `<link>` 유지
+- `assets/template-general.html` 의 CSS 를 **인라인 복사**해 단일 HTML (Font Awesome CDN 만 예외). 아이콘은 이모지 대신 `fa-solid` — head 의 FA CDN `<link>` 유지
 - **간결·평이체 (최우선)**: 구어체 → 짧은 문어체. 개조식 우선, 한 항목 1~2줄, 쉬운 말. 논문투·장문·현학적 표현 금지 (독자가 "논문 같다"고 느끼지 않게)
 - **우 글랜스 레일 먼저 채운다**: 요약 3~5줄 + 결정/미결/액션 한 줄 요약 → 본문은 그 근거를 간결히 부연
 - **화자 라벨은 `참여자1..N` 만** — 본문 실명 직접 사용 금지 (실명은 화자 추론 테이블에서만)

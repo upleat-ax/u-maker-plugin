@@ -181,9 +181,11 @@ URL: https://hj-wiki.upleat.ai/69cd33f60b6f1e9c6e7398f1?tab=meeting
 **HTML 필수 요소:**
 - Tailwind CDN (`https://cdn.tailwindcss.com`)
 - Font Awesome CDN (`https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6/css/all.min.css`) — UI 아이콘용 `fa-*` 클래스 (currentColor 상속 → 다크/라이트 자동 적응)
-- Dark/Light 모드 토글 (우상단 고정)
-- 다크 사이드바 (`#1e2432`) + 라이트 본문 (`#f8fafc`)
+- 라이트/다크/색각 보정 순환 · 본문 폭 · 맨 위로 컨트롤 — 사이드바 하단 `.sidebar-tools` 임베딩 (html-engine § 0.4; 900px 이하에서는 우하단 `.fab-stack` 으로 전환)
+- 잉크 네이비 사이드바 (`#162033` → `#111827` 세로 gradient) + 라이트 본문 (`#f8fafc`); 색·hover·active·번호/카운트 칩은 `u-report-weekly`의 사이드바 규칙과 동일
 - 사이드바 스크롤 추적 네비게이션
+- 반복 텍스트 목록은 `html-engine`의 `.simple-list`를 사용: 항목별 bordered rounded box·shadow·gap 금지, 행 사이 1px 중립 구분선만 허용
+- 설명 문장(요약·회의록 요약·변경 상세 등)은 **중학생 이해 수준 쉬운 글쓰기**로 쓴다 — 짧은 문장, 쉬운 낱말, 전문용어·약어는 첫 등장에서 괄호 한 줄 풀이. 수치·ID·커밋 해시는 그대로 둔다. 규칙 원문: `skills/u-engine/references/html-engine.md` § 0.6 / `doc-engine.md` § 8 (Gatekeeping GK-06 `plain-language-middle-school` 검사로 강제)
 - Copyright(c) 2026 U PLEAT 푸터
 
 #### 리포트 섹션 (순서)
@@ -196,8 +198,8 @@ URL: https://hj-wiki.upleat.ai/69cd33f60b6f1e9c6e7398f1?tab=meeting
 | 카드 | 값 | 색상 |
 |------|----|------|
 | 오늘 커밋 | `git.commits` | blue |
-| 문서 변경 | docs changes count | green |
-| 회의 논의 | `meetings.topics_discussed` | amber |
+| 문서 변경 | docs changes count | pale blue |
+| 회의 논의 | `meetings.topics_discussed` | slate |
 | 미해결 이슈 | `meetings.unresolved_issues` | red |
 
 **3. SSoT 문서 현황 테이블 (앱별)**
@@ -216,12 +218,12 @@ URL: https://hj-wiki.upleat.ai/69cd33f60b6f1e9c6e7398f1?tab=meeting
 SVG 차트 규칙:
 - `viewBox` 기반 반응형 (`width="100%"`)
 - 곡선 커넥터 (Bezier `C` path)
-- 색상: blue(`#2563eb`), teal(`#0d9488`), orange(`#c2410c`), red(`#dc2626`), violet(`#7c3aed`) — 연두·노랑 금지
+- 색상: § 0.1 명도 램프 — `#2c5580` · `#3d6fa5` · `#5b8db8` · `#8fb3d0` · `#64748b` (+ 경고 `#c2410c`, 실패 `#dc2626`) — gray + pale blue 외 금지
 - 호버 시 tooltip (CSS only)
-- dark mode 지원 (CSS 변수)
+- light/dark/colorblind 테마 전환 지원 (CSS 변수 + `localStorage.theme`)
 
 **5. Git 커밋 목록**
-- 시간순 타임라인 (세로 라인 + 원형 dot)
+- 시간순 타임라인 (세로 라인 + 원형 dot, 항목별 카드 금지)
 - 커밋 해시 (축약), 작성자, 메시지, 변경 파일 접기/펼치기
 
 **6. 회의록 요약**
@@ -234,7 +236,11 @@ SVG 차트 규칙:
 
 **8. 금일 변경 상세**
 - 문서별 변경 내역: 추가된 항목, 수정된 항목
-- diff 하이라이트 (추가: green, 삭제: red)
+- diff 하이라이트 (추가: pale blue `#eef3f9`/`#2c5580`, 삭제: red)
+
+#### 반복 목록 스타일 (전체 섹션 공통)
+
+변경 파일, 커밋, 액션·권고, 출처/근거 목록은 `.simple-list`로 렌더링한다. 각 행은 투명 배경 + 1px 중립 하단 구분선만 사용하며 `border-radius`, 4변 border, shadow, 행 간 gap을 두지 않는다. 현재/중요 행은 `background:var(--accent-bg)` + `font-weight`로만 강조한다. 요약 KPI·차트·캡처·회의 접기/펼치기처럼 독립 콘텐츠인 경우에만 카드 스타일을 유지한다.
 
 ### Step 7: 인덱스 갱신
 
@@ -265,4 +271,4 @@ u-report-daily complete.
 - `references/stats-schema.md` — 통계 JSON 스키마 상세 정의
 - `_meta/templates/daily-report.template.html` — 기본 템플릿 (레거시, 참고용)
 - `_meta/templates/reports-index.template.html` — 리포트 인덱스 템플릿
-- `skills/u-engine/references/html-engine.md` — HTML 엔진 공통 규칙 (SVG, Tailwind, dark/light toggle)
+- `skills/u-engine/references/html-engine.md` — HTML 엔진 공통 규칙 (SVG, Tailwind, light/dark/colorblind theme switch)
